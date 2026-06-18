@@ -295,15 +295,6 @@ def _require_bool(config: Mapping[str, Any], key: str, section: str) -> bool:
     return value
 
 
-def _require_int(config: Mapping[str, Any], key: str, section: str) -> int:
-    if key not in config:
-        raise ConfigError(f"Missing required key: {section}.{key}")
-    value = config[key]
-    if not isinstance(value, int) or isinstance(value, bool):
-        raise ConfigError(f"{section}.{key} must be an integer.")
-    return value
-
-
 def _require_positive_int(config: Mapping[str, Any], key: str, section: str) -> int:
     value = _require_int(config, key, section)
     if value <= 0:
@@ -311,23 +302,82 @@ def _require_positive_int(config: Mapping[str, Any], key: str, section: str) -> 
     return value
 
 
+def _require_int(config: Mapping[str, Any], key: str, section: str) -> int:
+    if key not in config:
+        raise ConfigError(f"Missing required key: {section}.{key}")
+
+    value = config[key]
+
+    if isinstance(value, bool):
+        raise ConfigError(f"{section}.{key} must be an integer.")
+
+    if isinstance(value, int):
+        return value
+
+    if isinstance(value, str):
+        try:
+            parsed = int(value)
+        except ValueError as exc:
+            raise ConfigError(f"{section}.{key} must be an integer.") from exc
+
+        if isinstance(config, dict):
+            config[key] = parsed
+        return parsed
+
+    raise ConfigError(f"{section}.{key} must be an integer.")
+
+
 def _require_positive_number(config: Mapping[str, Any], key: str, section: str) -> float:
     if key not in config:
         raise ConfigError(f"Missing required key: {section}.{key}")
+
     value = config[key]
-    if not isinstance(value, (int, float)) or isinstance(value, bool):
+
+    if isinstance(value, bool):
         raise ConfigError(f"{section}.{key} must be a number.")
-    if float(value) <= 0.0:
+
+    if isinstance(value, (int, float)):
+        parsed = float(value)
+    elif isinstance(value, str):
+        try:
+            parsed = float(value)
+        except ValueError as exc:
+            raise ConfigError(f"{section}.{key} must be a number.") from exc
+    else:
+        raise ConfigError(f"{section}.{key} must be a number.")
+
+    if parsed <= 0.0:
         raise ConfigError(f"{section}.{key} must be positive.")
-    return float(value)
+
+    if isinstance(config, dict):
+        config[key] = parsed
+
+    return parsed
 
 
 def _require_nonnegative_number(config: Mapping[str, Any], key: str, section: str) -> float:
     if key not in config:
         raise ConfigError(f"Missing required key: {section}.{key}")
+
     value = config[key]
-    if not isinstance(value, (int, float)) or isinstance(value, bool):
+
+    if isinstance(value, bool):
         raise ConfigError(f"{section}.{key} must be a number.")
-    if float(value) < 0.0:
+
+    if isinstance(value, (int, float)):
+        parsed = float(value)
+    elif isinstance(value, str):
+        try:
+            parsed = float(value)
+        except ValueError as exc:
+            raise ConfigError(f"{section}.{key} must be a number.") from exc
+    else:
+        raise ConfigError(f"{section}.{key} must be a number.")
+
+    if parsed < 0.0:
         raise ConfigError(f"{section}.{key} must be nonnegative.")
-    return float(value)
+
+    if isinstance(config, dict):
+        config[key] = parsed
+
+    return parsed
