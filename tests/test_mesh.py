@@ -170,7 +170,8 @@ def test_mesh_save_load_and_plots(tmp_path):
     assert mesh_plot.exists()
     assert tags_plot.exists()
 
-    def test_mesh_uses_all_nodes(tmp_path):
+
+def test_mesh_uses_all_nodes(tmp_path):
     cfg = validate_config(
         _minimal_config(tmp_path),
         require_big_data_root_exists=False,

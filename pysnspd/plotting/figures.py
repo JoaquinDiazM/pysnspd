@@ -108,10 +108,10 @@ def plot_mesh_geometry(
     ax.set_aspect("equal", adjustable="box")
     _set_mesh_limits(ax, mesh)
     ax.grid(True, linewidth=0.25, alpha=0.35)
-    ax.legend(loc="upper center", ncol=4, fontsize=7, frameon=True)
+    _legend_below(ax, ncol=3, fontsize=7, y_offset=-0.4)
 
     fig.tight_layout()
-    fig.savefig(output, dpi=dpi)
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
 
     return output
@@ -167,10 +167,10 @@ def plot_boundary_tags(
     ax.set_aspect("equal", adjustable="box")
     _set_mesh_limits(ax, mesh)
     ax.grid(True, linewidth=0.25, alpha=0.35)
-    ax.legend(loc="upper center", ncol=5, fontsize=8, frameon=True)
+    _legend_below(ax, ncol=2, fontsize=8, y_offset=-0.25)
 
     fig.tight_layout()
-    fig.savefig(output, dpi=dpi)
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
 
     return output
@@ -271,6 +271,24 @@ def _set_mesh_limits(ax, mesh: MeshData) -> None:
 
     ax.set_xlim(-0.04 * length_nm, 1.04 * length_nm)
     ax.set_ylim(-0.68 * width_nm, 0.68 * width_nm)
+
+def _legend_below(ax, *, ncol: int, fontsize: int = 7, y_offset: float = -0.2) -> None:
+    """
+    Place the legend below the axes so it does not cover the mesh.
+    """
+    handles, labels = ax.get_legend_handles_labels()
+    if not handles:
+        return
+
+    ax.legend(
+        handles,
+        labels,
+        loc="upper center",
+        bbox_to_anchor=(0.5, y_offset),
+        ncol=ncol,
+        fontsize=fontsize,
+        frameon=True,
+    )
 
 def plot_stationary_state(config, run_name):
     """Plot stationary gTDGL fields and current-conservation diagnostics."""
