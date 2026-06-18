@@ -254,21 +254,62 @@ Debe reunir chequeos de conservación de corriente, consistencia energética, au
 
 ---
 
-## 6. Orden recomendado de implementación (La marca ★ representa en que punto estamos trabajando)
+## 6. Roadmap metodológico de implementación
 
-1. Implementar `config.py` y `io/manager.py`. (★)
-2. Implementar malla, aristas, bordes y visualización básica de malla.
-3. Implementar Usadel y catálogo DOS.
-4. Implementar integrales `mathcal{J}_S` y `mathcal{J}_R` como catálogos independientes.
-5. Implementar handler de PRE-run.
-6. Implementar predicción analítica inicial de SS-run.
-7. Implementar gTDGL estacionario sin fotón.
-8. Validar conservación de corriente y ausencia de voltaje espurio.
-9. Implementar phonon bubble.
-10. Implementar PHOTON-run térmico desacoplado como prueba.
-11. Acoplar PHOTON-run térmico + gTDGL.
-12. Acoplar circuito.
-13. Implementar plots comparables entre runs.
+El desarrollo de `pySNSPD` se organiza como una secuencia de objetivos verificables. La idea no es implementar todo el modelo de una vez, sino construir una cadena modular donde cada bloque pueda probarse de forma independiente antes de acoplarse al siguiente. La marca ★ indica el objetivo actualmente en desarrollo.
+
+### Objetivos generales
+
+**OG1. Infraestructura reproducible de simulación.**
+Construir una base de librería que permita configurar proyectos, organizar datos pesados fuera del repositorio, registrar metadatos de cada corrida y reproducir resultados sin depender de rutas o nombres ambiguos.
+
+**OG2. Construcción de catálogos microscópicos y mesoscópicos.**
+Precomputar los objetos costosos del modelo, incluyendo malla, aristas, parámetros Usadel, densidad de estados de cuasipartículas y catálogos de integrales de fase espacial (\mathcal J_S) y (\mathcal J_R).
+
+**OG3. Simulación acoplada de detección.**
+Integrar condición estacionaria, excitación por fotón, evolución térmica, dinámica gTDGL, conservación de corriente y circuito externo para estudiar cuándo una perturbación local produce un evento disipativo observable.
+
+### Objetivos específicos y resultados esperados
+
+1. **Configurar proyecto y manejo de archivos. ★**
+   Resultado esperado: lectura de configuración, validación de `big_data_root`, creación automática de carpetas `raw/`, `plots/`, `logs/`, `catalogs/` y escritura de manifests por corrida.
+
+2. **Implementar malla, aristas, bordes y visualización básica.**
+   Resultado esperado: generación reproducible de mallas Delaunay, identificación de bordes/contactos, aristas internas y plots diagnósticos de geometría.
+
+3. **Implementar bloque Usadel y catálogo DOS.**
+   Resultado esperado: catálogo (\rho(E;|\Delta|,q)), relación corriente--momento superconductivo y parámetros materiales derivados para la etapa mesoscópica.
+
+4. **Implementar catálogos (\mathcal J_S) y (\mathcal J_R).**
+   Resultado esperado: tablas interpolables de integrales de scattering y recombinación/pair-breaking compatibles con la proyección energética del Apéndice A.
+
+5. **Construir el handler de PRE-run.**
+   Resultado esperado: etapa reproducible y paralelizable que genere malla, catálogos microscópicos, metadatos y rutas de salida antes de cualquier evolución temporal.
+
+6. **Construir condición inicial analítica para SS-run.**
+   Resultado esperado: campo inicial razonable para (|\Delta|), fase, corriente y potencial, reduciendo el tiempo necesario para alcanzar un estado estacionario numérico.
+
+7. **Implementar gTDGL estacionario sin fotón.**
+   Resultado esperado: solver estacionario capaz de relajar la nanocinta polarizada sin generar artefactos eléctricos dominantes.
+
+8. **Validar conservación de corriente.**
+   Resultado esperado: diagnósticos de (\nabla\cdot\mathbf j), corriente integrada en contactos, fase desenvuelta y voltaje espurio en estado estacionario.
+
+9. **Implementar phonon bubble.**
+   Resultado esperado: fuente inicial dependiente de la energía del fotón y de la geometría local de absorción.
+
+10. **Implementar PHOTON-run térmico desacoplado.**
+    Resultado esperado: evolución de (T_e) y (T_{ph}) usando (P_{ep}^{S}), (P_{ep}^{R}), difusión y escape, sin acoplar todavía la respuesta gTDGL.
+
+11. **Acoplar PHOTON-run térmico con gTDGL.**
+    Resultado esperado: evolución conjunta de temperatura electrónica, parámetro de orden, corriente y potencial después de la absorción.
+
+12. **Acoplar circuito externo.**
+    Resultado esperado: evolución de (I_{\rm SNSPD}(t)), (V_{\rm TDGL}(t)) y (V_{\rm out}(t)) con una lectura compatible con una línea de (50,\Omega).
+
+13. **Implementar comparación entre corridas.**
+    Resultado esperado: módulo de ploteo que use el mismo `run_name` para datos y figuras, permitiendo comparar bias, energía del fotón, geometría, catálogos y respuesta eléctrica.
+
 
 ---
 
