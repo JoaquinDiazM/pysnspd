@@ -1,0 +1,56 @@
+project:
+  name: pysnspd_template_project
+  big_data_root: /home/jdiaz/scratch/big_data
+  default_run_name: NbN_120nm_35uA_1064nm_test001
+
+parallel:
+  enabled: true
+  workers: 2
+  backend: process
+
+material:
+  name: NbN
+  Tc_K: 8.65
+  D_m2_s: 1.58e-4
+  sigma_n_S_m: 4.2e5
+  lambda_L_m: 5.4e-7
+  thickness_m: 7.0e-9
+  width_m: 120.0e-9
+
+bias:
+  T_bias_K: 0.9
+  I_bias_A: 35.0e-6
+
+mesh:
+  type: delaunay
+  target_spacing_m: 4.0e-9
+  seed: 12345
+
+catalogs:
+  dos:
+    n_delta: 21
+    n_q: 26
+    n_energy: 2000
+    n_matsubara: 500
+  phase_space:
+    n_Te: 40
+    n_Tph: 40
+    n_delta: 21
+    n_q: 26
+    n_omega: 1200
+
+ss_run:
+  max_steps: 10000
+  dt_s: 1.0e-15
+  convergence_tol: 1.0e-7
+
+photon_run:
+  photon_wavelength_m: 1064.0e-9
+  max_steps: 20000
+  dt_s: 1.0e-15
+  bubble_radius_m: 10.0e-9
+
+circuit:
+  R_load_ohm: 50.0
+  L_bias_H: 1.0e-6
+  C_rf_F: 1.0e-12
