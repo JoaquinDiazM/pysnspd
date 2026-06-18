@@ -12,24 +12,24 @@ El modelo separa el problema en cuatro niveles:
 
 1. **Material y espectro microscópico**  
    Se obtiene una descripción de superconductor sucio mediante Usadel. Este bloque entrega cantidades como
-   `Delta`, `rho(E; |Delta|, q)`, `D`, `sigma_n`, corriente crítica estimada, relación corriente--momento condensado y catálogos espectrales.
+   $\Delta$, $\rho(E;\lvert\Delta\rvert,q)$, $D$, $\sigma_n$, corriente crítica estimada, relación corriente--momento condensado y catálogos espectrales.
 
 2. **Proyección cinética QP--fonón**  
-   A partir de los kernels tipo Simon/MIT se proyectan las ecuaciones cinéticas sobre energía. El resultado no es resolver siempre `f(E,t)` y `n(Omega,t)` completos, sino construir potencias microscópicas:
+   A partir de los kernels tipo Simon/MIT se proyectan las ecuaciones cinéticas sobre energía. El resultado no es resolver siempre $f(E,t)$ y $n(\Omega,t)$ completos, sino construir potencias microscópicas:
 
-   - `P_ep_S`: potencia de scattering QP--fonón.
-   - `P_ep_R`: potencia de recombinación / pair-breaking.
-   - `P_esc`: escape fonónico hacia sustrato.
+   - $P_{ep}^{S}$: potencia de scattering QP--fonón.
+   - $P_{ep}^{R}$: potencia de recombinación / pair-breaking.
+   - $P_{esc}$: escape fonónico hacia sustrato.
 
-   Estas potencias se tabulan mediante integrales de phase space `mathcal{J}_S` y `mathcal{J}_R`, dependientes de `Te`, `Tph`, `|Delta|` y `q`.
+   Estas potencias se tabulan mediante integrales de phase space $\mathcal{J}_S$ y $\mathcal{J}_R$, dependientes de $T_e$, $T_{ph}$, $\lvert\Delta\rvert$ y $q$.
 
 3. **Dinámica mesoscópica gTDGL**  
-   La dinámica del parámetro de orden `Psi = R exp(i phi)` decide si la perturbación térmica se convierte en un evento disipativo. Este bloque resuelve amplitud, fase, potencial eléctrico, corrientes y continuidad.
+   La dinámica del parámetro de orden $\Psi = R\exp(i\phi)$ decide si la perturbación térmica se convierte en un evento disipativo. Este bloque resuelve amplitud, fase, potencial eléctrico, corrientes y continuidad.
 
 4. **Circuito externo y lectura**  
-   La caída de voltaje interna `V_TDGL(t)` se acopla a un circuito mínimo o extendido para obtener `I_SNSPD(t)` y `V_out(t)`.
+   La caída de voltaje interna $V_{\rm TDGL}(t)$ se acopla a un circuito mínimo o extendido para obtener $I_{\rm SNSPD}(t)$ y $V_{\rm out}(t)$.
 
-La contribución conceptual del framework es que no usa una ecuación térmica `2T` como receta aislada. La ecuación térmica se interpreta como una **proyección energética** de la cinética QP--fonón, compatible con gTDGL, Usadel y el circuito.
+La contribución conceptual del framework es que no usa una ecuación térmica $2T$ como receta aislada. La ecuación térmica se interpreta como una **proyección energética** de la cinética QP--fonón, compatible con gTDGL, Usadel y el circuito.
 
 ---
 
@@ -49,8 +49,8 @@ Debe generar:
 - geometría de contactos y bordes;
 - parámetros materiales derivados;
 - solución Usadel para el estado de bias;
-- catálogo fino de DOS de cuasipartículas `rho(E; |Delta|, q)`;
-- catálogo fino de integrales de phase space `mathcal{J}_S` y `mathcal{J}_R`;
+- catálogo fino de DOS de cuasipartículas $\rho(E;\lvert\Delta\rvert,q)$;
+- catálogo fino de integrales de phase space $\mathcal{J}_S$ y $\mathcal{J}_R$;
 - metadatos suficientes para reproducibilidad.
 
 La PRE-run debe poder paralelizarse, porque la construcción de catálogos finos puede ser costosa. La configuración debe permitir decidir cuántos workers, procesos o nodos se usarán.
@@ -61,11 +61,11 @@ La etapa SS-run busca la condición inicial estacionaria previa al fotón.
 
 Debe cargar los resultados de PRE-run y construir una predicción analítica inicial razonable:
 
-- `Te = Tph = T_bath`;
-- amplitud `|Delta|` cercana al valor Usadel/BCS compatible con `T_bias` e `I_bias`;
-- fase con rampa longitudinal consistente con el momento condensado `q`;
+- $T_e = T_{ph} = T_{\rm bath}$;
+- amplitud $\lvert\Delta\rvert$ cercana al valor Usadel/BCS compatible con $T_{\rm bias}$ e $I_{\rm bias}$;
+- fase con rampa longitudinal consistente con el momento condensado $q$;
 - potencial eléctrico inicialmente cercano a cero;
-- corriente total compatible con `I_bias`;
+- corriente total compatible con $I_{\rm bias}$;
 - circuito en estado estacionario.
 
 El objetivo no es partir de ruido ni de una condición arbitraria, sino desde una aproximación física que haga converger rápido hacia un estacionario numéricamente limpio.
@@ -85,13 +85,13 @@ Debe cargar:
 
 La perturbación inicial se introduce como una phonon bubble construida desde la energía del fotón. Luego se evoluciona:
 
-- temperatura electrónica efectiva `Te(x,y,t)`;
-- temperatura fonónica efectiva `Tph(x,y,t)`;
-- parámetro de orden `Psi(x,y,t)`;
+- temperatura electrónica efectiva $T_e(x,y,t)$;
+- temperatura fonónica efectiva $T_{ph}(x,y,t)$;
+- parámetro de orden $\Psi(x,y,t)$;
 - potencial eléctrico;
 - corrientes;
 - circuito externo;
-- señales `V_TDGL(t)`, `I_SNSPD(t)`, `V_out(t)`.
+- señales $V_{\rm TDGL}(t)$, $I_{\rm SNSPD}(t)$, $V_{\rm out}(t)$.
 
 ---
 
@@ -226,7 +226,7 @@ Contiene malla, Delaunay, aristas, conectividad, bordes y geometría de contacto
 
 ### `pysnspd.usadel`
 
-Contiene calibración material, ecuación Usadel, barridos en `q`, relación corriente--momento, DOS de QPs y catálogos espectrales.
+Contiene calibración material, ecuación Usadel, barridos en $q$, relación corriente--momento, DOS de QPs y catálogos espectrales.
 
 ### `pysnspd.kinetic`
 
@@ -264,7 +264,7 @@ El desarrollo de `pySNSPD` se organiza como una secuencia de objetivos verificab
 Construir una base de librería que permita configurar proyectos, organizar datos pesados fuera del repositorio, registrar metadatos de cada corrida y reproducir resultados sin depender de rutas o nombres ambiguos.
 
 **OG2. Construcción de catálogos microscópicos y mesoscópicos.**
-Precomputar los objetos costosos del modelo, incluyendo malla, aristas, parámetros Usadel, densidad de estados de cuasipartículas y catálogos de integrales de fase espacial (\mathcal J_S) y (\mathcal J_R).
+Precomputar los objetos costosos del modelo, incluyendo malla, aristas, parámetros Usadel, densidad de estados de cuasipartículas y catálogos de integrales de fase espacial $\mathcal{J}_S$ y $\mathcal{J}_R$.
 
 **OG3. Simulación acoplada de detección.**
 Integrar condición estacionaria, excitación por fotón, evolución térmica, dinámica gTDGL, conservación de corriente y circuito externo para estudiar cuándo una perturbación local produce un evento disipativo observable.
@@ -278,34 +278,34 @@ Integrar condición estacionaria, excitación por fotón, evolución térmica, d
    Resultado esperado: generación reproducible de mallas Delaunay, identificación de bordes/contactos, aristas internas y plots diagnósticos de geometría.
 
 3. **Implementar bloque Usadel y catálogo DOS.**
-   Resultado esperado: catálogo (\rho(E;|\Delta|,q)), relación corriente--momento superconductivo y parámetros materiales derivados para la etapa mesoscópica.
+   Resultado esperado: catálogo $\rho(E;\lvert\Delta\rvert,q)$, relación corriente--momento superconductivo y parámetros materiales derivados para la etapa mesoscópica.
 
-4. **Implementar catálogos (\mathcal J_S) y (\mathcal J_R).**
+4. **Implementar catálogos $\mathcal{J}_S$ y $\mathcal{J}_R$.**
    Resultado esperado: tablas interpolables de integrales de scattering y recombinación/pair-breaking compatibles con la proyección energética del Apéndice A.
 
 5. **Construir el handler de PRE-run.**
    Resultado esperado: etapa reproducible y paralelizable que genere malla, catálogos microscópicos, metadatos y rutas de salida antes de cualquier evolución temporal.
 
 6. **Construir condición inicial analítica para SS-run.**
-   Resultado esperado: campo inicial razonable para (|\Delta|), fase, corriente y potencial, reduciendo el tiempo necesario para alcanzar un estado estacionario numérico.
+   Resultado esperado: campo inicial razonable para $\lvert\Delta\rvert$, fase, corriente y potencial, reduciendo el tiempo necesario para alcanzar un estado estacionario numérico.
 
 7. **Implementar gTDGL estacionario sin fotón.**
    Resultado esperado: solver estacionario capaz de relajar la nanocinta polarizada sin generar artefactos eléctricos dominantes.
 
 8. **Validar conservación de corriente.**
-   Resultado esperado: diagnósticos de (\nabla\cdot\mathbf j), corriente integrada en contactos, fase desenvuelta y voltaje espurio en estado estacionario.
+   Resultado esperado: diagnósticos de $\nabla\cdot\mathbf j$, corriente integrada en contactos, fase desenvuelta y voltaje espurio en estado estacionario.
 
 9. **Implementar phonon bubble.**
    Resultado esperado: fuente inicial dependiente de la energía del fotón y de la geometría local de absorción.
 
 10. **Implementar PHOTON-run térmico desacoplado.**
-    Resultado esperado: evolución de (T_e) y (T_{ph}) usando (P_{ep}^{S}), (P_{ep}^{R}), difusión y escape, sin acoplar todavía la respuesta gTDGL.
+    Resultado esperado: evolución de $T_e$ y $T_{ph}$ usando $P_{ep}^{S}$, $P_{ep}^{R}$, difusión y escape, sin acoplar todavía la respuesta gTDGL.
 
 11. **Acoplar PHOTON-run térmico con gTDGL.**
     Resultado esperado: evolución conjunta de temperatura electrónica, parámetro de orden, corriente y potencial después de la absorción.
 
 12. **Acoplar circuito externo.**
-    Resultado esperado: evolución de (I_{\rm SNSPD}(t)), (V_{\rm TDGL}(t)) y (V_{\rm out}(t)) con una lectura compatible con una línea de (50,\Omega).
+    Resultado esperado: evolución de $I_{\rm SNSPD}(t)$, $V_{\rm TDGL}(t)$ y $V_{\rm out}(t)$ con una lectura compatible con una línea de $50\,\Omega$.
 
 13. **Implementar comparación entre corridas.**
     Resultado esperado: módulo de ploteo que use el mismo `run_name` para datos y figuras, permitiendo comparar bias, energía del fotón, geometría, catálogos y respuesta eléctrica.
