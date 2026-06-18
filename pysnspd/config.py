@@ -172,6 +172,9 @@ def validate_config(
     _require_positive_number(mesh, "target_spacing_m", "mesh")
     _require_int(mesh, "seed", "mesh")
 
+    if "length_m" in mesh:
+        _require_positive_number(mesh, "length_m", "mesh")
+
     catalogs = _require_section(cfg, "catalogs")
     dos = _require_nested_section(catalogs, "dos", "catalogs")
     for key in ["n_delta", "n_q", "n_energy", "n_matsubara"]:
@@ -222,6 +225,7 @@ def summarize_config(config: Mapping[str, Any]) -> str:
         f"bias.I_bias_A            : {cfg['bias']['I_bias_A']}",
         f"mesh.type                : {cfg['mesh']['type']}",
         f"mesh.target_spacing_m    : {cfg['mesh']['target_spacing_m']}",
+        f"mesh.seed                : {cfg['mesh']['seed']}",
     ]
     return "\n".join(lines)
 

@@ -4,6 +4,7 @@ Basic plotting utilities for pySNSPD.
 OE2 scope:
 - Mesh geometry plot.
 - Boundary tag diagnostic plot.
+- Clear visual distinction between interior nodes, contacts and boundaries.
 
 These functions save figures to disk and do not display interactive windows.
 """
@@ -24,6 +25,17 @@ from pysnspd.mesh.delaunay import MeshData
 from pysnspd.mesh.edges import EdgeData
 
 
+_COLORS = {
+    "interior_node": "#4b5563",
+    "interior_edge": "#cbd5e1",
+    "left": "#d62728",
+    "right": "#9467bd",
+    "top": "#1f77b4",
+    "bottom": "#2ca02c",
+    "boundary_unknown": "#111827",
+}
+
+
 def plot_mesh_geometry(
     mesh: MeshData,
     edge_data: EdgeData,
@@ -32,43 +44,71 @@ def plot_mesh_geometry(
     dpi: int = 180,
 ) -> Path:
     """
-    Plot nodes, triangles and boundary edges.
+    Plot nodes, interior edges and boundary edges with distinct styling.
     """
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
     nodes_nm = mesh.nodes * 1.0e9
+    node_tags = _classify_nodes(mesh)
 
-    fig, ax = plt.subplots(figsize=(9.0, 3.0))
+    fig, ax = plt.subplots(figsize=(9.0, 3.2))
 
-    ax.triplot(
-        nodes_nm[:, 0],
-        nodes_nm[:, 1],
-        mesh.triangles,
+    _draw_edge_group(
+        ax,
+        nodes_nm,
+        edge_data,
+        edge_data.tags == "interior",
+        color=_COLORS["interior_edge"],
         linewidth=0.35,
-        alpha=0.8,
+        alpha=0.55,
+        label="interior edges",
     )
 
-    ax.scatter(
-        nodes_nm[:, 0],
-        nodes_nm[:, 1],
-        s=3,
-        alpha=0.9,
+    for tag in ["top", "bottom", "left", "right", "boundary_unknown"]:
+        mask = edge_data.tags == tag
+        if np.any(mask):
+            _draw_edge_group(
+                ax,
+                nodes_nm,
+                edge_data,
+                mask,
+                color=_COLORS[tag],
+                linewidth=1.25 if tag in {"top", "bottom"} else 1.8,
+                alpha=0.95,
+                label=f"{tag} edges",
+            )
+
+    _draw_node_group(
+        ax,
+        nodes_nm,
+        node_tags == "interior",
+        color=_COLORS["interior_node"],
+        size=3,
+        alpha=0.65,
+        label="interior nodes",
     )
 
-    boundary_edges = edge_data.edges[edge_data.is_boundary]
-    if boundary_edges.size:
-        segments = nodes_nm[boundary_edges]
-        collection = LineCollection(segments, linewidths=1.2)
-        ax.add_collection(collection)
+    for tag in ["top", "bottom", "left", "right", "boundary_unknown"]:
+        mask = node_tags == tag
+        if np.any(mask):
+            _draw_node_group(
+                ax,
+                nodes_nm,
+                mask,
+                color=_COLORS[tag],
+                size=8 if tag in {"left", "right"} else 6,
+                alpha=0.95,
+                label=f"{tag} nodes",
+            )
 
-    ax.set_title("Delaunay nanowire mesh")
+    ax.set_title("Protected nanowire mesh")
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlim(-0.03 * mesh.length_m * 1.0e9, 1.03 * mesh.length_m * 1.0e9)
-    ax.set_ylim(-0.65 * mesh.width_m * 1.0e9, 0.65 * mesh.width_m * 1.0e9)
-    ax.grid(True, linewidth=0.25, alpha=0.4)
+    _set_mesh_limits(ax, mesh)
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(loc="upper center", ncol=4, fontsize=7, frameon=True)
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi)
@@ -85,52 +125,49 @@ def plot_boundary_tags(
     dpi: int = 180,
 ) -> Path:
     """
-    Plot boundary edges colored by tag.
+    Plot only the boundary-tag diagnostic with a light interior background.
     """
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
     nodes_nm = mesh.nodes * 1.0e9
 
-    fig, ax = plt.subplots(figsize=(9.0, 3.0))
+    fig, ax = plt.subplots(figsize=(9.0, 3.2))
 
-    ax.triplot(
-        nodes_nm[:, 0],
-        nodes_nm[:, 1],
-        mesh.triangles,
+    _draw_edge_group(
+        ax,
+        nodes_nm,
+        edge_data,
+        edge_data.tags == "interior",
+        color=_COLORS["interior_edge"],
         linewidth=0.25,
-        alpha=0.25,
+        alpha=0.30,
+        label=None,
     )
 
-    tag_styles = {
-        "left": {"linewidth": 2.5},
-        "right": {"linewidth": 2.5},
-        "top": {"linewidth": 1.5},
-        "bottom": {"linewidth": 1.5},
-        "boundary_unknown": {"linewidth": 2.0},
-    }
-
-    for tag, style in tag_styles.items():
+    for tag in ["left", "right", "top", "bottom", "boundary_unknown"]:
         mask = edge_data.tags == tag
         if not np.any(mask):
             continue
 
-        segments = nodes_nm[edge_data.edges[mask]]
-        collection = LineCollection(
-            segments,
-            linewidths=style["linewidth"],
+        _draw_edge_group(
+            ax,
+            nodes_nm,
+            edge_data,
+            mask,
+            color=_COLORS[tag],
+            linewidth=2.4 if tag in {"left", "right"} else 1.8,
+            alpha=0.98,
             label=f"{tag} ({int(np.count_nonzero(mask))})",
         )
-        ax.add_collection(collection)
 
     ax.set_title("Boundary tags")
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlim(-0.03 * mesh.length_m * 1.0e9, 1.03 * mesh.length_m * 1.0e9)
-    ax.set_ylim(-0.65 * mesh.width_m * 1.0e9, 0.65 * mesh.width_m * 1.0e9)
-    ax.grid(True, linewidth=0.25, alpha=0.4)
-    ax.legend(loc="upper center", ncol=5, fontsize=7, frameon=True)
+    _set_mesh_limits(ax, mesh)
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(loc="upper center", ncol=5, fontsize=8, frameon=True)
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi)
@@ -138,6 +175,102 @@ def plot_boundary_tags(
 
     return output
 
+
+def _draw_edge_group(
+    ax,
+    nodes_nm: np.ndarray,
+    edge_data: EdgeData,
+    mask: np.ndarray,
+    *,
+    color: str,
+    linewidth: float,
+    alpha: float,
+    label: str | None,
+) -> None:
+    """
+    Draw a masked edge group.
+    """
+    if not np.any(mask):
+        return
+
+    segments = nodes_nm[edge_data.edges[mask]]
+    collection = LineCollection(
+        segments,
+        colors=color,
+        linewidths=linewidth,
+        alpha=alpha,
+        label=label,
+    )
+    ax.add_collection(collection)
+
+
+def _draw_node_group(
+    ax,
+    nodes_nm: np.ndarray,
+    mask: np.ndarray,
+    *,
+    color: str,
+    size: float,
+    alpha: float,
+    label: str,
+) -> None:
+    """
+    Draw a masked node group.
+    """
+    if not np.any(mask):
+        return
+
+    ax.scatter(
+        nodes_nm[mask, 0],
+        nodes_nm[mask, 1],
+        s=size,
+        c=color,
+        alpha=alpha,
+        linewidths=0.0,
+        label=label,
+        zorder=3,
+    )
+
+
+def _classify_nodes(mesh: MeshData) -> np.ndarray:
+    """
+    Classify nodes as interior, left, right, top, bottom or boundary_unknown.
+
+    Corners are assigned to left/right contacts. This is intentional because
+    contact treatment will be more important than top/bottom insulation at
+    the longitudinal terminals.
+    """
+    nodes = mesh.nodes
+    tags = np.full(mesh.n_nodes, "interior", dtype="<U32")
+
+    atol = max(1.0e-15, mesh.target_spacing_m * 1.0e-6)
+
+    left = np.isclose(nodes[:, 0], 0.0, atol=atol, rtol=0.0)
+    right = np.isclose(nodes[:, 0], mesh.length_m, atol=atol, rtol=0.0)
+    bottom = np.isclose(nodes[:, 1], -0.5 * mesh.width_m, atol=atol, rtol=0.0)
+    top = np.isclose(nodes[:, 1], 0.5 * mesh.width_m, atol=atol, rtol=0.0)
+
+    tags[top] = "top"
+    tags[bottom] = "bottom"
+    tags[left] = "left"
+    tags[right] = "right"
+
+    boundary = left | right | top | bottom
+    unknown = boundary & (tags == "interior")
+    tags[unknown] = "boundary_unknown"
+
+    return tags
+
+
+def _set_mesh_limits(ax, mesh: MeshData) -> None:
+    """
+    Set plot limits with a small padding.
+    """
+    length_nm = mesh.length_m * 1.0e9
+    width_nm = mesh.width_m * 1.0e9
+
+    ax.set_xlim(-0.04 * length_nm, 1.04 * length_nm)
+    ax.set_ylim(-0.68 * width_nm, 0.68 * width_nm)
 
 def plot_stationary_state(config, run_name):
     """Plot stationary gTDGL fields and current-conservation diagnostics."""

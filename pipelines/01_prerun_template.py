@@ -4,7 +4,7 @@ PRE-run template for pySNSPD.
 OE2 implementation:
 - Load project configuration.
 - Create the run folder layout.
-- Generate a rectangular Delaunay mesh.
+- Generate a protected rectangular mesh.
 - Extract edges and boundary tags.
 - Save mesh/edge arrays and summaries.
 - Save diagnostic mesh plots.
@@ -58,6 +58,15 @@ def parse_args() -> argparse.Namespace:
         default=0.20,
         help="Interior mesh jitter as fraction of nominal spacing.",
     )
+    parser.add_argument(
+        "--boundary-guard-layers",
+        type=int,
+        default=1,
+        help=(
+            "Number of grid layers near each boundary kept unjittered. "
+            "Use 1 as the default for stable boundary operators."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -76,6 +85,7 @@ def main() -> int:
     mesh = generate_rectangular_delaunay_mesh(
         cfg,
         jitter_fraction=args.jitter_fraction,
+        boundary_guard_layers=args.boundary_guard_layers,
     )
 
     edge_data = build_edge_data(

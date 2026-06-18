@@ -169,3 +169,18 @@ def test_mesh_save_load_and_plots(tmp_path):
 
     assert mesh_plot.exists()
     assert tags_plot.exists()
+
+    def test_mesh_uses_all_nodes(tmp_path):
+    cfg = validate_config(
+        _minimal_config(tmp_path),
+        require_big_data_root_exists=False,
+    )
+
+    mesh = generate_rectangular_delaunay_mesh(cfg)
+    used_nodes = np.unique(mesh.triangles.reshape(-1))
+
+    assert used_nodes.size == mesh.n_nodes
+
+    summary = mesh_summary(mesh)
+    assert summary["n_unused_nodes"] == 0
+    assert summary["area_relative_error"] < 1.0e-12
