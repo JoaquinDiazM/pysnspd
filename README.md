@@ -271,10 +271,10 @@ Integrar condición estacionaria, excitación por fotón, evolución térmica, d
 
 ### Objetivos específicos y resultados esperados
 
-1. **Configurar proyecto y manejo de archivos. ★**
+1. **Configurar proyecto y manejo de archivos.**
    Resultado esperado: lectura de configuración, validación de `big_data_root`, creación automática de carpetas `raw/`, `plots/`, `logs/`, `catalogs/` y escritura de manifests por corrida.
 
-2. **Implementar malla, aristas, bordes y visualización básica.**
+2. **Implementar malla, aristas, bordes y visualización básica. ★**
    Resultado esperado: generación reproducible de mallas Delaunay, identificación de bordes/contactos, aristas internas y plots diagnósticos de geometría.
 
 3. **Implementar bloque Usadel y catálogo DOS.**
