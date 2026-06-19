@@ -291,6 +291,58 @@ def _legend_below(ax, *, ncol: int, fontsize: int = 7, y_offset: float = -0.2) -
         frameon=True,
     )
 
+
+def plot_usadel_dos_slices(
+    catalog,
+    output_path: str | Path,
+    *,
+    dpi: int = 220,
+) -> Path:
+    """
+    Plot representative DOS slices from a Usadel/Dynes catalogue.
+
+    The plot shows the largest-Delta slice for several depairing values.
+    """
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    energy_meV = catalog.energy_values_J / 1.602176634e-22
+    rho = catalog.rho_delta_gamma_E
+
+    delta_index = rho.shape[0] - 1
+    n_gamma = rho.shape[1]
+
+    if n_gamma <= 4:
+        gamma_indices = list(range(n_gamma))
+    else:
+        gamma_indices = sorted(set([0, n_gamma // 3, 2 * n_gamma // 3, n_gamma - 1]))
+
+    fig, ax = plt.subplots(figsize=(7.0, 4.2))
+
+    for idx in gamma_indices:
+        gamma_meV = catalog.gamma_values_J[idx] / 1.602176634e-22
+        ax.plot(
+            energy_meV,
+            rho[delta_index, idx, :],
+            linewidth=1.2,
+            label=rf"$\Gamma_q={gamma_meV:.3f}$ meV",
+        )
+
+    delta_meV = catalog.delta_values_J[delta_index] / 1.602176634e-22
+    ax.axvline(delta_meV, linestyle="--", linewidth=0.9, alpha=0.7)
+
+    ax.set_title("DOS catalogue diagnostic")
+    ax.set_xlabel("E [meV]")
+    ax.set_ylabel(r"$\rho(E;|\Delta|,\Gamma_q)$")
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(loc="best", fontsize=8, frameon=True)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return output
+
 def plot_stationary_state(config, run_name):
     """Plot stationary gTDGL fields and current-conservation diagnostics."""
     return 0
