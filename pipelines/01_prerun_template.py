@@ -31,6 +31,7 @@ from pysnspd.mesh.edges import (
 from pysnspd.plotting.figures import (
     plot_boundary_tags,
     plot_mesh_geometry,
+    plot_phase_space_slices,
     plot_usadel_calibration_sweep,
     plot_usadel_dos_slices,
 )
@@ -38,6 +39,11 @@ from pysnspd.usadel.catalog import (
     build_usadel_catalog_from_config,
     catalog_summary,
     save_usadel_catalog_npz,
+)
+from pysnspd.kinetic.phase_space import (
+    build_phase_space_catalog_from_usadel_catalog,
+    phase_space_summary,
+    save_phase_space_catalog_npz,
 )
 
 
@@ -88,6 +94,42 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=6.0,
         help="Maximum DOS energy as multiple of Delta0.",
+    )
+    parser.add_argument(
+        "--phase-n-Te",
+        type=int,
+        default=6,
+        help="Number of Te grid points for OE4 first-attempt phase-space catalogue.",
+    )
+    parser.add_argument(
+        "--phase-n-delta",
+        type=int,
+        default=6,
+        help="Number of Delta grid points selected from the Usadel catalogue.",
+    )
+    parser.add_argument(
+        "--phase-n-q",
+        type=int,
+        default=6,
+        help="Number of q grid points selected from the Usadel catalogue.",
+    )
+    parser.add_argument(
+        "--phase-n-omega",
+        type=int,
+        default=160,
+        help="Number of Omega grid points for OE4 first-attempt phase-space catalogue.",
+    )
+    parser.add_argument(
+        "--phase-Te-min-K",
+        type=float,
+        default=None,
+        help="Optional minimum Te for the phase-space catalogue.",
+    )
+    parser.add_argument(
+        "--phase-Te-max-K",
+        type=float,
+        default=None,
+        help="Optional maximum Te for the phase-space catalogue.",
     )
     return parser.parse_args()
 
@@ -184,6 +226,44 @@ def main() -> int:
         usadel_catalog,
         plots_diagnostics / "usadel_calibration_sweep.png",
     )
+
+    phase_catalog = build_phase_space_catalog_from_usadel_catalog(
+        usadel_catalog,
+        cfg,
+        n_Te=args.phase_n_Te,
+        n_delta=args.phase_n_delta,
+        n_q=args.phase_n_q,
+        n_omega=args.phase_n_omega,
+        Te_min_K=args.phase_Te_min_K,
+        Te_max_K=args.phase_Te_max_K,
+    )
+
+    phase_npz = save_phase_space_catalog_npz(
+        phase_catalog,
+        raw_pre / "phase_space_catalog.npz",
+    )
+
+    phase_summary_data = phase_space_summary(phase_catalog)
+    phase_summary_path = raw_pre / "phase_space_summary.yaml"
+
+    with phase_summary_path.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(
+            {
+                "run_name": run_name,
+                "phase_space": phase_summary_data,
+                "metadata": phase_catalog.metadata,
+            },
+            f,
+            sort_keys=False,
+            allow_unicode=True,
+            default_flow_style=False,
+        )
+
+    phase_plot = plot_phase_space_slices(
+        phase_catalog,
+        plots_diagnostics / "phase_space_slices.png",
+    )
+
     manifest_path = write_manifest(
         cfg,
         run_name,
@@ -201,9 +281,13 @@ def main() -> int:
                 "usadel_summary": str(usadel_summary_path),
                 "usadel_plot": str(usadel_plot),
                 "calibration_plot": str(calibration_plot),
+                "phase_space_npz": str(phase_npz),
+                "phase_space_summary": str(phase_summary_path),
+                "phase_space_plot": str(phase_plot),
             },
             "mesh_edge_summary": mesh_edge_summary,
             "usadel_summary": usadel_summary,
+            "phase_space_summary": phase_summary_data,
         },
     )
 
@@ -237,6 +321,11 @@ def main() -> int:
         print("Calibration warnings: none")
 
     print()
+    print("Phase-space summary")
+    for key, value in phase_summary_data.items():
+        print(f"  {key}: {value}")
+
+    print()
     print("Outputs")
     print(f"  mesh_npz            : {mesh_npz}")
     print(f"  edges_npz           : {edges_npz}")
@@ -248,6 +337,9 @@ def main() -> int:
     print(f"  usadel_plot         : {usadel_plot}")
     print(f"  calibration_plot    : {calibration_plot}")
     print(f"  pre_manifest        : {manifest_path}")
+    print(f"  phase_space_npz    : {phase_npz}")
+    print(f"  phase_space_summary: {phase_summary_path}")
+    print(f"  phase_space_plot   : {phase_plot}")
     print("Status: OK")
 
     return 0

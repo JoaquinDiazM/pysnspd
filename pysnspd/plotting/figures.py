@@ -468,6 +468,80 @@ def plot_usadel_calibration_sweep(
     plt.close(fig)
 
     return output
+
+def plot_phase_space_slices(
+    catalog,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """
+    Plot representative phase-space slices J_S and J_R.
+
+    The diagnostic uses the largest Delta slice, an intermediate q slice and a
+    few Te values.
+    """
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    omega_meV = catalog.omega_values_J / 1.602176634e-22
+
+    delta_index = catalog.delta_values_J.size - 1
+    q_index = catalog.q_values_m_inv.size // 2
+
+    n_Te = catalog.Te_values_K.size
+    if n_Te <= 3:
+        Te_indices = list(range(n_Te))
+    else:
+        Te_indices = sorted(set([0, n_Te // 2, n_Te - 1]))
+
+    fig, ax = plt.subplots(figsize=(7.4, 4.4))
+
+    for iT in Te_indices:
+        Te = catalog.Te_values_K[iT]
+        JS_meV = catalog.J_S_TdqO_J[iT, delta_index, q_index, :] / 1.602176634e-22
+        JR_meV = catalog.J_R_TdqO_J[iT, delta_index, q_index, :] / 1.602176634e-22
+
+        ax.plot(
+            omega_meV,
+            JS_meV,
+            linewidth=1.2,
+            label=rf"$\mathcal{{J}}_S$, $T_e={Te:.1f}$ K",
+        )
+        ax.plot(
+            omega_meV,
+            JR_meV,
+            linewidth=1.2,
+            linestyle="--",
+            label=rf"$\mathcal{{J}}_R$, $T_e={Te:.1f}$ K",
+        )
+
+    delta_meV = catalog.delta_values_J[delta_index] / 1.602176634e-22
+    gamma_meV = catalog.gamma_values_J[q_index] / 1.602176634e-22
+
+    ax.axvline(2.0 * delta_meV, linestyle=":", linewidth=0.9, alpha=0.8)
+
+    ax.set_title(
+        "Phase-space catalogue diagnostic\n"
+        rf"$\Delta={delta_meV:.3f}$ meV, "
+        rf"$\Gamma_q={gamma_meV:.3f}$ meV"
+    )
+    ax.set_xlabel(r"$\Omega$ [meV]")
+    ax.set_ylabel(r"$\mathcal{J}_{S,R}$ [meV]")
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.20),
+        ncol=2,
+        fontsize=8,
+        frameon=True,
+    )
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return output
 def plot_stationary_state(config, run_name):
     """Plot stationary gTDGL fields and current-conservation diagnostics."""
     return 0
