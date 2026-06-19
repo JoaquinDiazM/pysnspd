@@ -16,9 +16,15 @@ from pysnspd.usadel.parameters import (
 )
 from pysnspd.usadel.solver import (
     anomalous_proxy,
+    bcs_complex_cos_theta,
     compute_dos_grid,
     dos_diagnostics,
     dynes_bcs_dos,
+    solve_usadel_cos_theta_branch,
+    usadel_anomalous_abs,
+    usadel_dos,
+    usadel_quartic_derivative,
+    usadel_quartic_residual,
 )
 from pysnspd.usadel.catalog import (
     UsadelCatalog,
@@ -42,9 +48,15 @@ __all__ = [
     "material_parameters_from_config",
     "q_axis_from_depairing_energy_m_inv",
     "anomalous_proxy",
+    "bcs_complex_cos_theta",
     "compute_dos_grid",
     "dos_diagnostics",
     "dynes_bcs_dos",
+    "solve_usadel_cos_theta_branch",
+    "usadel_anomalous_abs",
+    "usadel_dos",
+    "usadel_quartic_derivative",
+    "usadel_quartic_residual",
     "UsadelCatalog",
     "J_to_meV",
     "build_usadel_catalog_from_config",

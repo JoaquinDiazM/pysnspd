@@ -15,7 +15,12 @@ from pysnspd.usadel.parameters import (
     depairing_energy_grid_J,
     q_axis_from_depairing_energy_m_inv,
 )
-from pysnspd.usadel.solver import dynes_bcs_dos
+from pysnspd.usadel.solver import (
+    bcs_complex_cos_theta,
+    solve_usadel_cos_theta_branch,
+    usadel_dos,
+    usadel_quartic_residual,
+)
 
 
 def _minimal_config(tmp_path: Path) -> dict:
@@ -106,16 +111,66 @@ def test_depairing_and_q_axes():
     assert np.all(np.diff(q_values) >= 0.0)
 
 
-def test_dynes_dos_normal_state_and_finite_values():
+def test_gamma_zero_matches_bcs_branch():
+    delta = 1.0
+    eta = 1.0e-3
+    energy = np.linspace(0.0, 6.0, 300)
+
+    c_bcs = bcs_complex_cos_theta(
+        energy,
+        delta_J=delta,
+        eta_J=eta,
+    )
+    c_usadel = solve_usadel_cos_theta_branch(
+        energy,
+        delta_J=delta,
+        gamma_J=0.0,
+        eta_J=eta,
+    )
+
+    assert np.allclose(c_bcs, c_usadel)
+
+
+def test_usadel_branch_satisfies_quartic_residual():
+    delta = 1.0
+    gamma = 0.2
+    eta = 1.0e-3
+    energy = np.linspace(0.0, 6.0, 120)
+
+    c_values = solve_usadel_cos_theta_branch(
+        energy,
+        delta_J=delta,
+        gamma_J=gamma,
+        eta_J=eta,
+    )
+
+    residuals = []
+    for E, c in zip(energy, c_values):
+        r = usadel_quartic_residual(
+            c,
+            z_J=complex(E, eta),
+            delta_J=delta,
+            gamma_J=gamma,
+        )
+        residuals.append(abs(r))
+
+    residuals = np.asarray(residuals)
+
+    assert np.all(np.isfinite(c_values))
+    assert np.max(residuals) < 1.0e-7
+
+
+def test_usadel_dos_normal_state_and_finite_values():
     E = np.linspace(0.0, 10.0, 100)
-    rho_normal = dynes_bcs_dos(E, delta_J=0.0)
+    rho_normal = usadel_dos(E, delta_J=0.0)
 
     assert np.allclose(rho_normal, 1.0)
 
-    rho_sc = dynes_bcs_dos(E, delta_J=1.0, eta_J=1.0e-3)
+    rho_sc = usadel_dos(E, delta_J=1.0, gamma_J=0.2, eta_J=1.0e-3)
     assert rho_sc.shape == E.shape
     assert np.all(np.isfinite(rho_sc))
     assert np.min(rho_sc) >= 0.0
+    assert rho_sc[-1] > 0.9
 
 
 def test_build_save_load_usadel_catalog(tmp_path):
@@ -137,6 +192,7 @@ def test_build_save_load_usadel_catalog(tmp_path):
     summary = catalog_summary(catalog)
     assert summary["shape"] == [6, 5, 80]
     assert summary["rho_is_finite"] is True
+    assert summary["backend"] == "uniform_dirty_usadel_quartic_oe3_v2"
 
     path = save_usadel_catalog_npz(catalog, tmp_path / "usadel_dos_catalog.npz")
     loaded = load_usadel_catalog_npz(path)
@@ -145,4 +201,4 @@ def test_build_save_load_usadel_catalog(tmp_path):
     assert np.allclose(catalog.delta_values_J, loaded.delta_values_J)
     assert np.allclose(catalog.gamma_values_J, loaded.gamma_values_J)
     assert np.allclose(catalog.rho_delta_gamma_E, loaded.rho_delta_gamma_E)
-    assert loaded.metadata["backend"] == "dynes_bcs_proxy_for_usadel_oe3"
+    assert loaded.metadata["backend"] == "uniform_dirty_usadel_quartic_oe3_v2"

@@ -1,10 +1,10 @@
 """
 Usadel/DOS catalogue construction for pySNSPD.
 
-OE3 first implementation:
+OE3 v2:
 - Build a quasistatic spectral catalogue over |Delta| and depairing energy.
-- Save/load the catalogue as compressed npz.
-- Provide summaries for manifests and diagnostics.
+- The DOS backend is now the real-axis uniform dirty-limit Usadel quartic.
+- The catalogue interface remains compatible with OE3 v1.
 """
 
 from __future__ import annotations
@@ -29,25 +29,6 @@ from pysnspd.usadel.solver import compute_dos_grid, dos_diagnostics
 class UsadelCatalog:
     """
     Container for the OE3 quasistatic spectral catalogue.
-
-    Attributes
-    ----------
-    energy_values_J:
-        Energy axis.
-    delta_values_J:
-        Gap-magnitude axis.
-    gamma_values_J:
-        Depairing/current-broadening proxy axis.
-    q_values_m_inv:
-        Equivalent phase-gradient scale.
-    rho_delta_gamma_E:
-        Normalized DOS array with shape ``(n_delta, n_gamma, n_energy)``.
-    anomalous_delta_gamma_E:
-        Regularized anomalous spectral proxy with the same shape.
-    eta_J:
-        Numerical broadening.
-    metadata:
-        Human-readable metadata dictionary.
     """
     energy_values_J: np.ndarray
     delta_values_J: np.ndarray
@@ -72,7 +53,11 @@ def build_usadel_catalog_from_config(
     energy_max_factor: float = 6.0,
 ) -> UsadelCatalog:
     """
-    Build the first OE3 DOS catalogue from the project config.
+    Build the OE3 v2 DOS catalogue from the project config.
+
+    This function does not yet solve the Matsubara self-consistency problem for
+    ``Delta(q,T)`` or ``j_s(q,T)``. Instead, it builds the real-axis spectral
+    catalogue over independent ``|Delta|`` and depairing ``Gamma_q`` axes.
     """
     cfg = validate_config(config, require_big_data_root_exists=False)
     mat = material_parameters_from_config(cfg)
@@ -87,15 +72,18 @@ def build_usadel_catalog_from_config(
     delta_bias_J = mat.delta_bias_J
 
     delta_values_J = np.linspace(0.0, delta_ref_J, n_delta)
+
     gamma_values_J = depairing_energy_grid_J(
         delta_ref_J=delta_ref_J,
         n_q=n_q,
         gamma_max_fraction=gamma_max_fraction,
     )
+
     q_values_m_inv = q_axis_from_depairing_energy_m_inv(
         gamma_values_J,
         D_m2_s=mat.D_m2_s,
     )
+
     energy_values = energy_axis_J(
         delta_ref_J=delta_ref_J,
         n_energy=n_energy,
@@ -112,13 +100,17 @@ def build_usadel_catalog_from_config(
     )
 
     metadata = {
-        "backend": "dynes_bcs_proxy_for_usadel_oe3",
+        "backend": "uniform_dirty_usadel_quartic_oe3_v2",
         "description": (
-            "First OE3 spectral catalogue. It preserves the Usadel catalogue "
-            "interface but uses a BCS/Dynes current-broadening proxy. "
-            "The full self-consistent dirty-limit Usadel solver will replace "
-            "this backend later."
+            "OE3 v2 spectral catalogue. The DOS is computed from the real-axis "
+            "uniform dirty-limit Usadel quartic with depairing Gamma_q. "
+            "The catalogue is built over independent |Delta| and Gamma_q axes. "
+            "The Matsubara self-consistent Delta(q,T), j_s(q,T), and Ic sweep "
+            "are not implemented in this backend yet."
         ),
+        "spectral_equation": "(Gamma*c - i*z)^2*(1-c^2) - Delta^2*c^2 = 0",
+        "rho_definition": "rho(E)=Re[c(E)]",
+        "gamma_definition": "Gamma_q = hbar*D*q^2/2",
         "material": mat.name,
         "Tc_K": mat.Tc_K,
         "T_bias_K": mat.T_bias_K,
@@ -164,6 +156,7 @@ def catalog_summary(catalog: UsadelCatalog) -> dict[str, Any]:
     )
 
     summary = {
+        "backend": str(catalog.metadata.get("backend", "unknown")),
         "shape": list(catalog.shape),
         "n_delta": int(catalog.delta_values_J.size),
         "n_q": int(catalog.gamma_values_J.size),
