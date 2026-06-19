@@ -31,6 +31,7 @@ from pysnspd.mesh.edges import (
 from pysnspd.plotting.figures import (
     plot_boundary_tags,
     plot_mesh_geometry,
+    plot_usadel_calibration_sweep,
     plot_usadel_dos_slices,
 )
 from pysnspd.usadel.catalog import (
@@ -75,8 +76,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--gamma-max-fraction",
         type=float,
-        default=0.35,
-        help="Maximum depairing proxy Gamma_q as fraction of Delta0.",
+        default=0.80,
+        help=(
+            "Maximum depairing proxy Gamma_q as fraction of Delta0. "
+            "The default 0.80 is chosen to cover current-crowding regions "
+            "above the uniform critical current."
+        ),
     )
     parser.add_argument(
         "--energy-max-factor",
@@ -175,7 +180,10 @@ def main() -> int:
         usadel_catalog,
         plots_diagnostics / "usadel_dos_slices.png",
     )
-
+    calibration_plot = plot_usadel_calibration_sweep(
+        usadel_catalog,
+        plots_diagnostics / "usadel_calibration_sweep.png",
+    )
     manifest_path = write_manifest(
         cfg,
         run_name,
@@ -192,6 +200,7 @@ def main() -> int:
                 "usadel_npz": str(usadel_npz),
                 "usadel_summary": str(usadel_summary_path),
                 "usadel_plot": str(usadel_plot),
+                "calibration_plot": str(calibration_plot),
             },
             "mesh_edge_summary": mesh_edge_summary,
             "usadel_summary": usadel_summary,
@@ -218,6 +227,14 @@ def main() -> int:
     print("Usadel/DOS summary")
     for key, value in usadel_summary.items():
         print(f"  {key}: {value}")
+    calibration_warnings = usadel_summary.get("calibration_warnings", [])
+    print()
+    if calibration_warnings:
+        print("Calibration warnings")
+        for warning in calibration_warnings:
+            print(f"  WARNING: {warning}")
+    else:
+        print("Calibration warnings: none")
 
     print()
     print("Outputs")
@@ -229,6 +246,7 @@ def main() -> int:
     print(f"  usadel_npz          : {usadel_npz}")
     print(f"  usadel_summary      : {usadel_summary_path}")
     print(f"  usadel_plot         : {usadel_plot}")
+    print(f"  calibration_plot    : {calibration_plot}")
     print(f"  pre_manifest        : {manifest_path}")
     print("Status: OK")
 

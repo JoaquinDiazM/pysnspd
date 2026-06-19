@@ -343,6 +343,131 @@ def plot_usadel_dos_slices(
 
     return output
 
+def plot_usadel_calibration_sweep(
+    catalog,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """
+    Plot the Usadel critical-current calibration sweep.
+
+    The figure shows I(q) and Delta_eq(q). The calibrated critical point is
+    marked explicitly.
+    """
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    q = catalog.calibration_q_values_m_inv
+    current_uA = catalog.calibration_current_values_A * 1.0e6
+    delta_meV = catalog.calibration_delta_eq_values_J / 1.602176634e-22
+
+    metadata = catalog.metadata
+    cal = metadata["calibration"]
+
+    q_c = float(cal["q_critical_m_inv"])
+    Ic_uA = float(cal["Ic_model_A"]) * 1.0e6
+    delta_c_meV = float(cal["delta_critical_meV"])
+    D_m2_s = float(metadata["D_m2_s"])
+    jc_A_m2 = float(cal["jc_target_A_m2"])
+
+    # Color convention
+    current_color = "tab:blue"
+    current_light = "cornflowerblue"
+    gap_color = "tab:red"
+    gap_light = "lightcoral"
+    qcrit_color = "0.35"
+
+    fig, ax1 = plt.subplots(figsize=(7.2, 4.4))
+
+    # Current branch
+    ax1.plot(
+        q * 1.0e-6,
+        current_uA,
+        color=current_color,
+        linewidth=1.5,
+        label=r"$I_s(q)$",
+    )
+    ax1.axvline(
+        q_c * 1.0e-6,
+        color=qcrit_color,
+        linestyle="--",
+        linewidth=0.9,
+        alpha=0.8,
+        label=r"$q_c$",
+    )
+    ax1.axhline(
+        Ic_uA,
+        color=current_light,
+        linestyle=":",
+        linewidth=0.9,
+        alpha=0.9,
+    )
+    ax1.scatter(
+        [q_c * 1.0e-6],
+        [Ic_uA],
+        color=current_color,
+        edgecolor="white",
+        linewidth=0.6,
+        s=28,
+        zorder=4,
+        label=rf"$I_c={Ic_uA:.3f}\,\mu\mathrm{{A}}$",
+    )
+
+    ax1.set_xlabel(r"$q$ [$10^6\,\mathrm{m}^{-1}$]")
+    ax1.set_ylabel(r"$I_s$ [$\mu$A]", color=current_color)
+    ax1.tick_params(axis="y", colors=current_color)
+    ax1.spines["left"].set_color(current_color)
+    ax1.grid(True, linewidth=0.25, alpha=0.35)
+
+    # Gap branch
+    ax2 = ax1.twinx()
+    ax2.plot(
+        q * 1.0e-6,
+        delta_meV,
+        color=gap_color,
+        linewidth=1.2,
+        linestyle="--",
+        label=r"$\Delta_{\rm eq}(q)$",
+    )
+    ax2.scatter(
+        [q_c * 1.0e-6],
+        [delta_c_meV],
+        color=gap_color,
+        edgecolor="white",
+        linewidth=0.6,
+        s=28,
+        zorder=4,
+        label=rf"$\Delta(q_c)={delta_c_meV:.3f}$ meV",
+    )
+    ax2.set_ylabel(r"$\Delta_{\rm eq}$ [meV]", color=gap_color)
+    ax2.tick_params(axis="y", colors=gap_color)
+    ax2.spines["right"].set_color(gap_color)
+
+    title = (
+        "Usadel calibration sweep\n"
+        rf"$D={D_m2_s:.3e}\,\mathrm{{m^2/s}}$, "
+        rf"$j_c={jc_A_m2:.3e}\,\mathrm{{A/m^2}}$"
+    )
+    ax1.set_title(title)
+
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax1.legend(
+        h1 + h2,
+        l1 + l2,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.20),
+        ncol=2,
+        fontsize=8,
+        frameon=True,
+    )
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return output
 def plot_stationary_state(config, run_name):
     """Plot stationary gTDGL fields and current-conservation diagnostics."""
     return 0

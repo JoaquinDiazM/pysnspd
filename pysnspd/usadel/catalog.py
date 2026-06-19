@@ -57,7 +57,7 @@ def build_usadel_catalog_from_config(
     config: Mapping[str, Any],
     *,
     eta_fraction: float = 1.0e-3,
-    gamma_max_fraction: float = 0.35,
+    gamma_max_fraction: float = 0.80,
     energy_max_factor: float = 6.0,
 ) -> UsadelCatalog:
     """
