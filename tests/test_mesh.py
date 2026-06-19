@@ -37,11 +37,17 @@ def _minimal_config(tmp_path: Path) -> dict:
         "material": {
             "name": "NbN",
             "Tc_K": 8.65,
-            "D_m2_s": 1.58e-4,
             "sigma_n_S_m": "4.2e5",
             "lambda_L_m": 5.4e-7,
             "thickness_m": 7.0e-9,
             "width_m": 120.0e-9,
+        },
+        "calibration": {
+            "Ic_target_A": 38.8e-6,
+            "n_gamma_sweep": 40,
+            "gamma_max_fraction": 0.80,
+            "D_warn_min_m2_s": 5.0e-5,
+            "D_warn_max_m2_s": 5.0e-4,
         },
         "bias": {
             "T_bias_K": 0.9,

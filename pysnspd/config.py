@@ -104,6 +104,7 @@ def validate_config(
         "project",
         "parallel",
         "material",
+        "calibration",
         "bias",
         "mesh",
         "catalogs",
@@ -153,13 +154,34 @@ def validate_config(
     _require_string(material, "name", "material")
     for key in [
         "Tc_K",
-        "D_m2_s",
         "sigma_n_S_m",
         "lambda_L_m",
         "thickness_m",
         "width_m",
     ]:
         _require_positive_number(material, key, "material")
+
+    if "D_m2_s" in material:
+        _require_positive_number(material, "D_m2_s", "material")
+
+    calibration = _require_section(cfg, "calibration")
+    _require_positive_number(calibration, "Ic_target_A", "calibration")
+
+    if "n_gamma_sweep" not in calibration:
+        calibration["n_gamma_sweep"] = 160
+    _require_positive_int(calibration, "n_gamma_sweep", "calibration")
+
+    if "gamma_max_fraction" not in calibration:
+        calibration["gamma_max_fraction"] = 0.80
+    _require_positive_number(calibration, "gamma_max_fraction", "calibration")
+
+    if "D_warn_min_m2_s" not in calibration:
+        calibration["D_warn_min_m2_s"] = 5.0e-5
+    _require_positive_number(calibration, "D_warn_min_m2_s", "calibration")
+
+    if "D_warn_max_m2_s" not in calibration:
+        calibration["D_warn_max_m2_s"] = 5.0e-4
+    _require_positive_number(calibration, "D_warn_max_m2_s", "calibration")
 
     bias = _require_section(cfg, "bias")
     _require_positive_number(bias, "T_bias_K", "bias")
@@ -223,6 +245,8 @@ def summarize_config(config: Mapping[str, Any]) -> str:
         f"material.thickness_m     : {cfg['material']['thickness_m']}",
         f"bias.T_bias_K            : {cfg['bias']['T_bias_K']}",
         f"bias.I_bias_A            : {cfg['bias']['I_bias_A']}",
+        f"calibration.Ic_target_A : {cfg['calibration']['Ic_target_A']}",
+        f"calibration.jc_target_A_m2 : {cfg['calibration']['Ic_target_A'] / (cfg['material']['width_m'] * cfg['material']['thickness_m'])}",
         f"mesh.type                : {cfg['mesh']['type']}",
         f"mesh.target_spacing_m    : {cfg['mesh']['target_spacing_m']}",
         f"mesh.seed                : {cfg['mesh']['seed']}",

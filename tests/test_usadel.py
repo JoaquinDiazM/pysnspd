@@ -22,6 +22,8 @@ from pysnspd.usadel.solver import (
     usadel_quartic_residual,
 )
 
+from pysnspd.usadel.calibration import calibrate_diffusion_from_config
+
 
 def _minimal_config(tmp_path: Path) -> dict:
     return {
@@ -38,11 +40,17 @@ def _minimal_config(tmp_path: Path) -> dict:
         "material": {
             "name": "NbN",
             "Tc_K": 8.65,
-            "D_m2_s": 1.58e-4,
             "sigma_n_S_m": "4.2e5",
             "lambda_L_m": 5.4e-7,
             "thickness_m": 7.0e-9,
             "width_m": 120.0e-9,
+        },
+        "calibration": {
+            "Ic_target_A": 38.8e-6,
+            "n_gamma_sweep": 40,
+            "gamma_max_fraction": 0.80,
+            "D_warn_min_m2_s": 5.0e-5,
+            "D_warn_max_m2_s": 5.0e-4,
         },
         "bias": {
             "T_bias_K": 0.9,
@@ -192,7 +200,7 @@ def test_build_save_load_usadel_catalog(tmp_path):
     summary = catalog_summary(catalog)
     assert summary["shape"] == [6, 5, 80]
     assert summary["rho_is_finite"] is True
-    assert summary["backend"] == "uniform_dirty_usadel_quartic_oe3_v2"
+    assert summary["backend"] == "uniform_dirty_usadel_quartic_with_Ic_calibrated_D_oe3"
 
     path = save_usadel_catalog_npz(catalog, tmp_path / "usadel_dos_catalog.npz")
     loaded = load_usadel_catalog_npz(path)
@@ -201,4 +209,20 @@ def test_build_save_load_usadel_catalog(tmp_path):
     assert np.allclose(catalog.delta_values_J, loaded.delta_values_J)
     assert np.allclose(catalog.gamma_values_J, loaded.gamma_values_J)
     assert np.allclose(catalog.rho_delta_gamma_E, loaded.rho_delta_gamma_E)
-    assert loaded.metadata["backend"] == "uniform_dirty_usadel_quartic_oe3_v2"
+    assert loaded.metadata["backend"] == "uniform_dirty_usadel_quartic_with_Ic_calibrated_D_oe3"
+
+def test_diffusion_calibration_from_critical_current(tmp_path):
+    cfg = validate_config(
+        _minimal_config(tmp_path),
+        require_big_data_root_exists=False,
+    )
+
+    result = calibrate_diffusion_from_config(cfg)
+
+    assert result.D_m2_s > 0.0
+    assert result.Ic_target_A > 0.0
+    assert result.jc_target_A_m2 > 0.0
+    assert result.Ic_model_A > 0.0
+    assert abs(result.Ic_model_A - result.Ic_target_A) / result.Ic_target_A < 1.0e-10
+    assert result.q_critical_m_inv > 0.0
+    assert result.current_values_A.shape == result.gamma_values_J.shape

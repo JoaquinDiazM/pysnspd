@@ -1,13 +1,7 @@
 """
 Material and spectral parameters for the pySNSPD Usadel block.
 
-OE3 first implementation:
-- Define physical constants.
-- Extract material parameters from the project config.
-- Estimate weak-coupling BCS gap scales.
-- Define a depairing-energy axis associated with current-carrying states.
-
-The full self-consistent dirty-limit Usadel sweep is not implemented yet.
+D is not a user input. It is calibrated from the user-provided critical current.
 """
 
 from __future__ import annotations
@@ -28,7 +22,7 @@ HBAR_J_S = 1.054571817e-34
 
 @dataclass(frozen=True)
 class MaterialParameters:
-    """Material parameters required by the first Usadel catalogue."""
+    """Material parameters required by the Usadel catalogue."""
     name: str
     Tc_K: float
     T_bias_K: float
@@ -37,6 +31,8 @@ class MaterialParameters:
     thickness_m: float
     width_m: float
     I_bias_A: float
+    Ic_target_A: float
+    jc_target_A_m2: float
 
     @property
     def delta0_J(self) -> float:
@@ -62,18 +58,26 @@ class MaterialParameters:
 def material_parameters_from_config(config: Mapping[str, Any]) -> MaterialParameters:
     """
     Build :class:`MaterialParameters` from a validated config dictionary.
+
+    The diffusion coefficient is calibrated from ``calibration.Ic_target_A``.
     """
     cfg = validate_config(config, require_big_data_root_exists=False)
+
+    from pysnspd.usadel.calibration import calibrate_diffusion_from_config
+
+    calibration = calibrate_diffusion_from_config(cfg)
 
     return MaterialParameters(
         name=str(cfg["material"]["name"]),
         Tc_K=float(cfg["material"]["Tc_K"]),
         T_bias_K=float(cfg["bias"]["T_bias_K"]),
-        D_m2_s=float(cfg["material"]["D_m2_s"]),
+        D_m2_s=float(calibration.D_m2_s),
         sigma_n_S_m=float(cfg["material"]["sigma_n_S_m"]),
         thickness_m=float(cfg["material"]["thickness_m"]),
         width_m=float(cfg["material"]["width_m"]),
         I_bias_A=float(cfg["bias"]["I_bias_A"]),
+        Ic_target_A=float(calibration.Ic_target_A),
+        jc_target_A_m2=float(calibration.jc_target_A_m2),
     )
 
 
@@ -92,12 +96,6 @@ def bcs_gap_zero_J(Tc_K: float) -> float:
 def bcs_gap_J(T_K: float, Tc_K: float) -> float:
     """
     Approximate weak-coupling BCS gap at temperature ``T_K``.
-
-    Uses the common interpolation
-
-        Delta(T) = Delta_0 tanh[1.74 sqrt(Tc/T - 1)]
-
-    for ``0 < T < Tc``.
     """
     if Tc_K <= 0.0:
         raise ValueError("Tc_K must be positive.")
@@ -124,10 +122,6 @@ def depairing_energy_grid_J(
 ) -> np.ndarray:
     """
     Build a depairing-energy grid.
-
-    The first OE3 catalogue uses a scalar depairing energy ``Gamma_q`` as the
-    current-carrying spectral coordinate. Later this can be replaced by a
-    fully self-consistent q/current sweep.
     """
     if delta_ref_J <= 0.0:
         raise ValueError("delta_ref_J must be positive.")
@@ -148,14 +142,9 @@ def q_axis_from_depairing_energy_m_inv(
     D_m2_s: float,
 ) -> np.ndarray:
     """
-    Convert depairing energies to an equivalent phase-gradient scale.
-
-    We use the diffusive estimate
+    Convert depairing energies to phase-gradient values.
 
         Gamma_q = hbar D q^2 / 2.
-
-    This is a catalogue coordinate in OE3, not yet a calibrated experimental
-    current sweep.
     """
     if D_m2_s <= 0.0:
         raise ValueError("D_m2_s must be positive.")
