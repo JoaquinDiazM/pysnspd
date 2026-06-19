@@ -176,8 +176,15 @@ def build_phase_space_catalog_from_usadel_catalog(
                     delta_J=delta_J,
                 )
 
+    energy_max_J = float(energy[-1])
+    energy_floor_J = max(float(energy[1]) * 0.5, 1.0e-300)
+    js_lower_by_delta_J = np.maximum(delta_values_J, energy_floor_J)
+    js_hard_cutoff_by_delta_J = np.maximum(0.0, energy_max_J - js_lower_by_delta_J)
+    jr_threshold_by_delta_J = np.maximum(0.0, 2.0 * delta_values_J)
+    omega_max_J = float(omega_values_J[-1])
+
     metadata = {
-        "backend": "phase_space_from_usadel_dos_oe4_v1_1",
+        "backend": "phase_space_from_usadel_dos_oe4_v1_2",
         "description": (
             "OE4 first phase-space catalogue. It tabulates J_S and J_R from the "
             "Usadel DOS catalogue. It does not yet include alpha^2F(Omega), "
@@ -204,6 +211,51 @@ def build_phase_space_catalog_from_usadel_catalog(
         "Te_max_K": float(Te_values_K[-1]),
         "omega_max_J": float(omega_values_J[-1]),
         "omega_max_meV": J_to_meV(float(omega_values_J[-1])),
+        "energy_max_J": energy_max_J,
+        "energy_max_meV": J_to_meV(energy_max_J),
+        "energy_floor_J": energy_floor_J,
+        "js_hard_cutoff_by_delta_J": js_hard_cutoff_by_delta_J.tolist(),
+        "js_hard_cutoff_by_delta_meV": [
+            J_to_meV(float(v)) for v in js_hard_cutoff_by_delta_J
+        ],
+        "jr_threshold_by_delta_J": jr_threshold_by_delta_J.tolist(),
+        "jr_threshold_by_delta_meV": [
+            J_to_meV(float(v)) for v in jr_threshold_by_delta_J
+        ],
+        "scattering_window_is_truncated": bool(
+            omega_max_J > float(np.min(js_hard_cutoff_by_delta_J))
+        ),
+        "energy_window_policy": (
+            "PDF Appendix A writes the scattering energy moment with an upper "
+            "limit extending to infinity. The implemented OE4 catalogue uses a "
+            "finite Usadel DOS grid, so J_S is actually integrated only where "
+            "both E and E+Omega lie inside the parent DOS catalogue. The value "
+            "js_hard_cutoff_by_delta marks the Omega where this numerical "
+            "support collapses for each Delta slice."
+        ),
+        "coherence_factor_policy": (
+            "PDF Appendix A notes that the most general dirty-limit structure "
+            "would use N1(E)N1(E') +/- R2(E)R2(E'). OE4-v1.2 still follows the "
+            "Simon/BCS reduced coherence factors rho(E)rho(E')[1 +/- "
+            "Delta^2/(EE')], with rho supplied by the Usadel DOS catalogue."
+        ),
+        "threshold_policy": (
+            "J_R(Omega)=0 for Omega <= 2 Delta, following the Simon/BCS "
+            "integration limits in Appendix A. In a strongly depaired Usadel "
+            "spectrum, the physical spectral onset may be closer to 2E_g, with "
+            "E_g <= Delta; OE4-v1.2 records this as a modelling limitation."
+        ),
+        "normal_limit_policy": (
+            "J_R is set to zero for Delta <= 0 because it is treated as a "
+            "distinct superconducting recombination/pair-breaking channel. "
+            "Normal electron-phonon energy exchange belongs to J_S and must be "
+            "validated later through the Debye normal-state T^5 limit."
+        ),
+        "thermal_closure_policy": (
+            "OE4 assumes f(E)->f_FD(E,Te). The full kinetic equations evolve "
+            "nonthermal f(E,t) and n(Omega,t); therefore equal electronic "
+            "energy does not guarantee identical collision power."
+        ),
         "normal_limit_policy": (
             "J_R is set to zero for Delta <= 0 because it is treated as a "
             "distinct superconducting recombination/pair-breaking channel. "
@@ -261,6 +313,12 @@ def scattering_phase_space_spectrum(
     f_E = fermi_positive_energy(E, Te_K)
 
     out = np.zeros_like(omega, dtype=float)
+    # NOTE [PDF Appendix A mismatch]:
+    # The appendix writes the scattering energy moment with an upper limit
+    # extending to infinity. Here the Usadel DOS catalogue has a finite E_max.
+    # Therefore the implemented integral is truncated by the requirement
+    # E + Omega <= E_max. This is a numerical support limit, not a physical
+    # high-energy cutoff in the microscopic kinetic equation.
     E_max = float(E[-1])
     E_floor = max(float(E[1]) * 0.5, 1.0e-300)
 
@@ -415,13 +473,17 @@ def pair_recombination_thermal_factor(
 
 
 def phase_space_summary(catalog: PhaseSpaceCatalog) -> dict[str, Any]:
-    """
-    Return a compact summary dictionary.
+    """Return a compact summary dictionary.
+
+    The extra window fields are not new physics. They document where the
+    implemented finite-DOS catalogue differs from the ideal Appendix-A energy
+    integrals, whose upper energy limit is formally infinite.
     """
     JS = catalog.J_S_TdqO_J
     JR = catalog.J_R_TdqO_J
+    window = phase_space_energy_window_summary(catalog)
 
-    return {
+    summary = {
         "backend": str(catalog.metadata.get("backend", "unknown")),
         "shape": list(catalog.shape),
         "n_Te": int(catalog.Te_values_K.size),
@@ -447,6 +509,65 @@ def phase_space_summary(catalog: PhaseSpaceCatalog) -> dict[str, Any]:
         "grid_is_downsampled": bool(catalog.metadata.get("grid_is_downsampled", False)),
         "normal_limit_policy": str(catalog.metadata.get("normal_limit_policy", "")),
         "threshold_policy": str(catalog.metadata.get("threshold_policy", "")),
+        "energy_window_policy": str(catalog.metadata.get("energy_window_policy", "")),
+        "coherence_factor_policy": str(catalog.metadata.get("coherence_factor_policy", "")),
+        "thermal_closure_policy": str(catalog.metadata.get("thermal_closure_policy", "")),
+    }
+    summary.update(window)
+    return summary
+
+
+def phase_space_energy_window_summary(catalog: PhaseSpaceCatalog) -> dict[str, Any]:
+    """Summarize finite-energy-window limitations of the phase-space catalogue.
+
+    This diagnostic is deliberately separate from the physics kernels. The
+    Appendix-A scattering integral is formally over an infinite quasiparticle
+    energy axis, but the numerical implementation can only evaluate rho(E) on
+    the finite Usadel DOS grid. For scattering, E' = E + Omega, so the available
+    interval collapses when Omega approaches E_max - Delta. For recombination,
+    E' = Omega - E; the Appendix-A BCS threshold is Omega >= 2 Delta.
+    """
+    omega_max_J = float(np.max(catalog.omega_values_J))
+    energy_max_J = float(catalog.metadata.get("energy_max_J", omega_max_J))
+
+    js_cutoff = np.asarray(
+        catalog.metadata.get("js_hard_cutoff_by_delta_J", []),
+        dtype=float,
+    )
+    if js_cutoff.size != catalog.delta_values_J.size:
+        energy_floor_J = float(catalog.metadata.get("energy_floor_J", 1.0e-300))
+        lower = np.maximum(catalog.delta_values_J, energy_floor_J)
+        js_cutoff = np.maximum(0.0, energy_max_J - lower)
+
+    jr_threshold = np.asarray(
+        catalog.metadata.get("jr_threshold_by_delta_J", []),
+        dtype=float,
+    )
+    if jr_threshold.size != catalog.delta_values_J.size:
+        jr_threshold = np.maximum(0.0, 2.0 * catalog.delta_values_J)
+
+    finite_js = js_cutoff[np.isfinite(js_cutoff)]
+    finite_jr = jr_threshold[np.isfinite(jr_threshold)]
+
+    js_min = float(np.min(finite_js)) if finite_js.size else float("nan")
+    js_max = float(np.max(finite_js)) if finite_js.size else float("nan")
+    jr_min = float(np.min(finite_jr)) if finite_jr.size else float("nan")
+    jr_max = float(np.max(finite_jr)) if finite_jr.size else float("nan")
+
+    return {
+        "energy_max_J": energy_max_J,
+        "energy_max_meV": J_to_meV(energy_max_J),
+        "J_S_hard_cutoff_min_J": js_min,
+        "J_S_hard_cutoff_min_meV": J_to_meV(js_min) if np.isfinite(js_min) else float("nan"),
+        "J_S_hard_cutoff_max_J": js_max,
+        "J_S_hard_cutoff_max_meV": J_to_meV(js_max) if np.isfinite(js_max) else float("nan"),
+        "J_R_threshold_min_J": jr_min,
+        "J_R_threshold_min_meV": J_to_meV(jr_min) if np.isfinite(jr_min) else float("nan"),
+        "J_R_threshold_max_J": jr_max,
+        "J_R_threshold_max_meV": J_to_meV(jr_max) if np.isfinite(jr_max) else float("nan"),
+        "scattering_window_is_truncated": bool(omega_max_J > js_min)
+        if np.isfinite(js_min)
+        else False,
     }
 
 
