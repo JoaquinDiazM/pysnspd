@@ -41,7 +41,7 @@ def plot_mesh_geometry(
     edge_data: EdgeData,
     output_path: str | Path,
     *,
-    dpi: int = 180,
+    dpi: int = 480,
 ) -> Path:
     """
     Plot nodes, interior edges and boundary edges with distinct styling.
@@ -62,7 +62,7 @@ def plot_mesh_geometry(
         color=_COLORS["interior_edge"],
         linewidth=0.35,
         alpha=0.55,
-        label="interior edges",
+        label=None,
     )
 
     for tag in ["top", "bottom", "left", "right", "boundary_unknown"]:
@@ -74,9 +74,10 @@ def plot_mesh_geometry(
                 edge_data,
                 mask,
                 color=_COLORS[tag],
-                linewidth=1.25 if tag in {"top", "bottom"} else 1.8,
+                linewidth=0.45 if tag in {"top", "bottom"} else 0.5,
                 alpha=0.95,
-                label=f"{tag} edges",
+                #label=f"{tag} edges",
+                label=None,
             )
 
     _draw_node_group(
@@ -84,7 +85,7 @@ def plot_mesh_geometry(
         nodes_nm,
         node_tags == "interior",
         color=_COLORS["interior_node"],
-        size=3,
+        size=1,
         alpha=0.65,
         label="interior nodes",
     )
@@ -97,18 +98,18 @@ def plot_mesh_geometry(
                 nodes_nm,
                 mask,
                 color=_COLORS[tag],
-                size=8 if tag in {"left", "right"} else 6,
+                size=2 if tag in {"left", "right"} else 1.5,
                 alpha=0.95,
                 label=f"{tag} nodes",
             )
 
-    ax.set_title("Protected nanowire mesh")
+    ax.set_title("Nanowire mesh")
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
     _set_mesh_limits(ax, mesh)
-    ax.grid(True, linewidth=0.25, alpha=0.35)
-    _legend_below(ax, ncol=3, fontsize=7, y_offset=-0.4)
+    ax.grid(False)
+    _legend_below(ax, ncol=3, fontsize=7, y_offset=-0.25)
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -122,7 +123,7 @@ def plot_boundary_tags(
     edge_data: EdgeData,
     output_path: str | Path,
     *,
-    dpi: int = 180,
+    dpi: int = 480,
 ) -> Path:
     """
     Plot only the boundary-tag diagnostic with a light interior background.
@@ -156,7 +157,7 @@ def plot_boundary_tags(
             edge_data,
             mask,
             color=_COLORS[tag],
-            linewidth=2.4 if tag in {"left", "right"} else 1.8,
+            linewidth=0.45 if tag in {"left", "right"} else 0.5,
             alpha=0.98,
             label=f"{tag} ({int(np.count_nonzero(mask))})",
         )
@@ -166,7 +167,7 @@ def plot_boundary_tags(
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
     _set_mesh_limits(ax, mesh)
-    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.grid(False)
     _legend_below(ax, ncol=2, fontsize=8, y_offset=-0.25)
 
     fig.tight_layout()

@@ -274,10 +274,10 @@ Integrar condición estacionaria, excitación por fotón, evolución térmica, d
 1. **Configurar proyecto y manejo de archivos.**
    Resultado esperado: lectura de configuración, validación de `big_data_root`, creación automática de carpetas `raw/`, `plots/`, `logs/`, `catalogs/` y escritura de manifests por corrida.
 
-2. **Implementar malla, aristas, bordes y visualización básica. ★**
+2. **Implementar malla, aristas, bordes y visualización básica.**
    Resultado esperado: generación reproducible de mallas Delaunay, identificación de bordes/contactos, aristas internas y plots diagnósticos de geometría.
 
-3. **Implementar bloque Usadel y catálogo DOS.**
+3. **Implementar bloque Usadel y catálogo DOS. ★**
    Resultado esperado: catálogo $\rho(E;\lvert\Delta\rvert,q)$, relación corriente--momento superconductivo y parámetros materiales derivados para la etapa mesoscópica.
 
 4. **Implementar catálogos $\mathcal{J}_S$ y $\mathcal{J}_R$.**
