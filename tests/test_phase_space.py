@@ -146,4 +146,65 @@ def test_build_save_load_phase_space_catalog(tmp_path):
     assert np.allclose(phase_catalog.omega_values_J, loaded.omega_values_J)
     assert np.allclose(phase_catalog.J_S_TdqO_J, loaded.J_S_TdqO_J)
     assert np.allclose(phase_catalog.J_R_TdqO_J, loaded.J_R_TdqO_J)
-    assert loaded.metadata["backend"] == "phase_space_from_usadel_dos_oe4_v1"
+    assert loaded.metadata["backend"] == "phase_space_from_usadel_dos_oe4_v1_1"
+
+
+def test_recombination_threshold_and_normal_limit_are_explicit():
+    from pysnspd.kinetic.phase_space import recombination_phase_space_spectrum
+
+    meV_J = 1.602176634e-22
+    E = np.linspace(0.0, 10.0, 500) * meV_J
+    delta = 1.0 * meV_J
+    rho = np.ones_like(E)
+
+    omega = np.array([0.0, 1.0, 1.999, 2.0, 2.5, 4.0]) * delta
+    JR = recombination_phase_space_spectrum(
+        E,
+        rho,
+        omega,
+        Te_K=6.0,
+        delta_J=delta,
+    )
+
+    assert np.all(np.isfinite(JR))
+    assert np.all(JR >= 0.0)
+    assert np.allclose(JR[:4], 0.0)
+    assert np.any(JR[4:] > 0.0)
+
+    JR_normal = recombination_phase_space_spectrum(
+        E,
+        rho,
+        omega,
+        Te_K=6.0,
+        delta_J=0.0,
+    )
+    assert np.allclose(JR_normal, 0.0)
+
+
+def test_scattering_zero_omega_is_zero_and_positive_omega_is_finite():
+    from pysnspd.kinetic.phase_space import scattering_phase_space_spectrum
+
+    meV_J = 1.602176634e-22
+    E = np.linspace(0.0, 10.0, 500) * meV_J
+    delta = 1.0 * meV_J
+    rho = np.ones_like(E)
+
+    omega = np.array([0.0, 0.5, 2.0]) * meV_J
+    JS = scattering_phase_space_spectrum(
+        E,
+        rho,
+        omega,
+        Te_K=6.0,
+        delta_J=delta,
+    )
+
+    assert np.all(np.isfinite(JS))
+    assert np.all(JS >= 0.0)
+    assert np.isclose(JS[0], 0.0, atol=1.0e-35)
+
+
+def test_phase_space_uses_trapezoid_not_deprecated_trapz():
+    source = Path("pysnspd/kinetic/phase_space.py").read_text(encoding="utf-8")
+    assert "np.trapz" not in source
+    assert "np.trapezoid" in source
+

@@ -177,7 +177,7 @@ def build_phase_space_catalog_from_usadel_catalog(
                 )
 
     metadata = {
-        "backend": "phase_space_from_usadel_dos_oe4_v1",
+        "backend": "phase_space_from_usadel_dos_oe4_v1_1",
         "description": (
             "OE4 first phase-space catalogue. It tabulates J_S and J_R from the "
             "Usadel DOS catalogue. It does not yet include alpha^2F(Omega), "
@@ -204,6 +204,15 @@ def build_phase_space_catalog_from_usadel_catalog(
         "Te_max_K": float(Te_values_K[-1]),
         "omega_max_J": float(omega_values_J[-1]),
         "omega_max_meV": J_to_meV(float(omega_values_J[-1])),
+        "normal_limit_policy": (
+            "J_R is set to zero for Delta <= 0 because it is treated as a "
+            "distinct superconducting recombination/pair-breaking channel. "
+            "Normal electron-phonon energy exchange belongs to J_S."
+        ),
+        "threshold_policy": (
+            "J_R(Omega)=0 for Omega <= 2 Delta because the recombination "
+            "interval has zero or negative width."
+        ),
     }
 
     return PhaseSpaceCatalog(
@@ -282,7 +291,7 @@ def scattering_phase_space_spectrum(
         integrand = rho_E_m * rho_Ep * coherence * (f_E[mask] - f_Ep)
         integrand = np.nan_to_num(integrand, nan=0.0, posinf=0.0, neginf=0.0)
 
-        out[i] = float(np.trapz(integrand, E_m))
+        out[i] = float(np.trapezoid(integrand, E_m))
 
     return np.maximum(out, 0.0)
 
@@ -354,7 +363,7 @@ def recombination_phase_space_spectrum(
         integrand = rho_E_m * rho_Ep * coherence * thermal_factor
         integrand = np.nan_to_num(integrand, nan=0.0, posinf=0.0, neginf=0.0)
 
-        out[i] = float(np.trapz(integrand, E_m))
+        out[i] = float(np.trapezoid(integrand, E_m))
 
     return np.maximum(out, 0.0)
 
@@ -436,6 +445,8 @@ def phase_space_summary(catalog: PhaseSpaceCatalog) -> dict[str, Any]:
         "J_R_max_J": float(np.max(JR)),
         "J_R_is_finite": bool(np.all(np.isfinite(JR))),
         "grid_is_downsampled": bool(catalog.metadata.get("grid_is_downsampled", False)),
+        "normal_limit_policy": str(catalog.metadata.get("normal_limit_policy", "")),
+        "threshold_policy": str(catalog.metadata.get("threshold_policy", "")),
     }
 
 
