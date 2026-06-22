@@ -323,7 +323,7 @@ def plot_low_energy_recombination_scattering_band(
     delta_meV = float(result.delta_J / MEV_J)
 
     if omega_max_meV is None:
-        omega_max_meV = max(8.0, 2.0 * delta_meV + 6.0, 6.0 * delta_meV)
+        omega_max_meV = max(16.0, 4.0 * delta_meV + 6.0, 8.0 * delta_meV)
 
     mask = omega_meV <= float(omega_max_meV)
     if np.sum(mask) < 3:

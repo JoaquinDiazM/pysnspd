@@ -709,6 +709,25 @@ def _run_oe5_prerun_block(
     return summary, outputs
 
 
+
+def _resolve_oe5_Tph_K(cfg: dict[str, Any], args: argparse.Namespace) -> float:
+    """Resolve the OE5 phonon temperature for the integrated PRE-run.
+
+    The temporary OE5 debug pipeline used an argument named args.Tph_K.
+    The official PRE-run uses OE5-specific flags instead, so all OE5 code
+    should call this resolver and never access args.Tph_K directly.
+    """
+    user_value = getattr(args, "oe5_Tph_K", None)
+    if user_value is not None:
+        return float(user_value)
+
+    bias_cfg = cfg.get("bias", {})
+    if isinstance(bias_cfg, dict) and "T_bias_K" in bias_cfg:
+        return float(bias_cfg["T_bias_K"])
+
+    return 0.9
+
+
 def _resolve_eliashberg_path(cfg: dict[str, Any], user_path: str | None) -> Path:
     if user_path is not None:
         path = Path(user_path).expanduser().resolve()
