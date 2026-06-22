@@ -146,6 +146,7 @@ def test_stationary_relaxation_smoke_zero_current_seed():
         dt_s=1.0e-16,
         tolerance_eta=1.0,
         tolerance_current_residual=1.0,
+        target_current_A=0.0,
     )
 
     assert result.summary["accepted_steps"] >= 1
