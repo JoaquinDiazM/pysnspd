@@ -145,6 +145,15 @@ def parse_args() -> argparse.Namespace:
             "big_data_root/catalogs/simon_2025/nbn-a2f-ph.dat."
         ),
     )
+    parser.add_argument(
+        "--oe5-Tph-K",
+        type=float,
+        default=None,
+        help=(
+            "OE5 phonon temperature in K. If omitted, use bias.T_bias_K "
+            "from the config, falling back to 0.9 K."
+        ),
+    )
     parser.add_argument("--oe5-Te-min-K", type=float, default=0.9)
     parser.add_argument("--oe5-Te-max-K", type=float, default=34.6)
     parser.add_argument("--oe5-n-Te", type=int, default=180)
@@ -416,6 +425,8 @@ def _run_oe5_prerun_block(
     eliashberg_path = _resolve_eliashberg_path(cfg, args.eliashberg_dat)
     spectrum = load_simon_eliashberg_dat(eliashberg_path)
 
+    Tph_K = _resolve_oe5_Tph_K(cfg, args)
+
     D_m2_s = float(usadel_catalog.metadata["D_m2_s"])
     sigma_n = float(usadel_catalog.metadata["sigma_n_S_m"])
     Tc_K = float(usadel_catalog.metadata["Tc_K"])
@@ -447,7 +458,7 @@ def _run_oe5_prerun_block(
     else:
         q_scan_Te = np.asarray(
             [
-                float(args.Tph_K),
+                Tph_K,
                 0.8 * Tc_K,
                 Tc_K,
                 min(2.0 * Tc_K, float(args.oe5_Te_max_K)),
@@ -487,7 +498,7 @@ def _run_oe5_prerun_block(
 
     power_curve = compute_power_curve_thermal_usadel_state(
         Te_values,
-        Tph_K=float(args.Tph_K),
+        Tph_K=Tph_K,
         state=state,
         thermal_grid=thermal_grid,
         phase_space_catalog=phase_catalog,
@@ -500,7 +511,7 @@ def _run_oe5_prerun_block(
 
     q_scan = compute_power_scan_thermal_usadel(
         q_scan_Te,
-        Tph_K=float(args.Tph_K),
+        Tph_K=Tph_K,
         thermal_grid=thermal_grid,
         phase_space_catalog=phase_catalog,
         spectrum=spectrum,
@@ -517,7 +528,7 @@ def _run_oe5_prerun_block(
 
     support_result = compute_projected_powers(
         support_Te,
-        float(args.Tph_K),
+        Tph_K,
         support_delta,
         float(state["q_m_inv"]),
         phase_catalog,
@@ -611,7 +622,7 @@ def _run_oe5_prerun_block(
         "selected_thermal_usadel_state": state,
         "support_state": {
             "Te_K": float(support_Te),
-            "Tph_K": float(args.Tph_K),
+            "Tph_K": float(Tph_K),
             "delta_meV": float(support_delta / MEV_J),
             "q_m_inv": float(state["q_m_inv"]),
             "P_S_W_m3": support_result.P_S_W_m3,
@@ -625,7 +636,7 @@ def _run_oe5_prerun_block(
             ),
         },
         "power_axis": {
-            "Tph_K": float(args.Tph_K),
+            "Tph_K": float(Tph_K),
             "Te_min_K": float(Te_values[0]),
             "Te_max_K": float(Te_values[-1]),
             "n_Te": int(Te_values.size),
