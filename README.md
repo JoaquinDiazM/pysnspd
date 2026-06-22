@@ -280,10 +280,10 @@ Integrar condición estacionaria, excitación por fotón, evolución térmica, d
 3. **Implementar bloque Usadel y catálogo DOS.**
    Resultado esperado: catálogo $\rho(E;\lvert\Delta\rvert,q)$, relación corriente--momento superconductivo y parámetros materiales derivados para la etapa mesoscópica.
 
-4. **Implementar catálogos $\mathcal{J}_S$ y $\mathcal{J}_R$. ★**
+4. **Implementar catálogos $\mathcal{J}_S$ y $\mathcal{J}_R$.**
    Resultado esperado: tablas interpolables de integrales de scattering y recombinación/pair-breaking compatibles con la proyección energética del Apéndice A.
 
-5. **Construir el handler de PRE-run.**
+5. **Construir el handler de PRE-run. ★**
    Resultado esperado: etapa reproducible y paralelizable que genere malla, catálogos microscópicos, metadatos y rutas de salida antes de cualquier evolución temporal.
 
 6. **Construir condición inicial analítica para SS-run.**

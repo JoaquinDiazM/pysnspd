@@ -475,16 +475,22 @@ def plot_phase_space_slices(
     *,
     dpi: int = 480,
 ) -> Path:
-    """
-    Plot representative phase-space slices J_S and J_R.
+    """Plot representative phase-space slices J_S and J_R.
 
     The diagnostic uses the largest Delta slice, an intermediate q slice and a
     few Te values.
+
+    NOTE [PDF Appendix A mismatch]:
+    Appendix A writes the scattering energy moment with an infinite upper
+    energy limit. The plotted OE4 catalogue uses a finite Usadel DOS grid.
+    Therefore the vertical line at E_max - Delta and the shaded region mark a
+    numerical window limitation of J_S, not a physical suppression mechanism.
     """
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    omega_meV = catalog.omega_values_J / 1.602176634e-22
+    meV_J = 1.602176634e-22
+    omega_meV = catalog.omega_values_J / meV_J
 
     delta_index = catalog.delta_values_J.size - 1
     q_index = catalog.q_values_m_inv.size // 2
@@ -495,12 +501,12 @@ def plot_phase_space_slices(
     else:
         Te_indices = sorted(set([0, n_Te // 2, n_Te - 1]))
 
-    fig, ax = plt.subplots(figsize=(7.4, 4.4))
+    fig, ax = plt.subplots(figsize=(7.8, 4.8))
 
     for iT in Te_indices:
         Te = catalog.Te_values_K[iT]
-        JS_meV = catalog.J_S_TdqO_J[iT, delta_index, q_index, :] / 1.602176634e-22
-        JR_meV = catalog.J_R_TdqO_J[iT, delta_index, q_index, :] / 1.602176634e-22
+        JS_meV = catalog.J_S_TdqO_J[iT, delta_index, q_index, :] / meV_J
+        JR_meV = catalog.J_R_TdqO_J[iT, delta_index, q_index, :] / meV_J
 
         ax.plot(
             omega_meV,
@@ -516,10 +522,46 @@ def plot_phase_space_slices(
             label=rf"$\mathcal{{J}}_R$, $T_e={Te:.1f}$ K",
         )
 
-    delta_meV = catalog.delta_values_J[delta_index] / 1.602176634e-22
-    gamma_meV = catalog.gamma_values_J[q_index] / 1.602176634e-22
+    delta_meV = catalog.delta_values_J[delta_index] / meV_J
+    gamma_meV = catalog.gamma_values_J[q_index] / meV_J
 
-    ax.axvline(2.0 * delta_meV, linestyle=":", linewidth=0.9, alpha=0.8)
+    # Recombination/pair-breaking threshold from the Appendix-A Simon/BCS
+    # integration interval E in [Delta, Omega-Delta].
+    jr_threshold_meV = 2.0 * delta_meV
+    ax.axvline(
+        jr_threshold_meV,
+        linestyle=":",
+        linewidth=1.0,
+        alpha=0.85,
+        label=rf"$2\Delta={jr_threshold_meV:.2f}$ meV",
+    )
+
+    # Finite-DOS support limit for scattering: E' = E + Omega must remain
+    # inside the parent Usadel catalogue. This line is numerical, not physical.
+    js_cutoffs = catalog.metadata.get("js_hard_cutoff_by_delta_J", None)
+    if js_cutoffs is not None and len(js_cutoffs) == catalog.delta_values_J.size:
+        js_cutoff_meV = float(js_cutoffs[delta_index]) / meV_J
+    else:
+        energy_max_J = float(
+            catalog.metadata.get("energy_max_J", np.max(catalog.omega_values_J))
+        )
+        js_cutoff_meV = max(0.0, energy_max_J - catalog.delta_values_J[delta_index]) / meV_J
+
+    if np.isfinite(js_cutoff_meV) and js_cutoff_meV > 0.0:
+        ax.axvline(
+            js_cutoff_meV,
+            linestyle="-.",
+            linewidth=1.0,
+            alpha=0.85,
+            label=rf"$E_{{\max}}-\Delta={js_cutoff_meV:.2f}$ meV",
+        )
+        if js_cutoff_meV < float(np.max(omega_meV)):
+            ax.axvspan(
+                js_cutoff_meV,
+                float(np.max(omega_meV)),
+                alpha=0.08,
+                label=r"$\mathcal{J}_S$ finite-window zone",
+            )
 
     ax.set_title(
         "Phase-space catalogue diagnostic\n"
@@ -531,7 +573,7 @@ def plot_phase_space_slices(
     ax.grid(True, linewidth=0.25, alpha=0.35)
     ax.legend(
         loc="upper center",
-        bbox_to_anchor=(0.5, -0.20),
+        bbox_to_anchor=(0.5, -0.22),
         ncol=2,
         fontsize=8,
         frameon=True,
@@ -540,8 +582,9 @@ def plot_phase_space_slices(
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
-
     return output
+
+
 def plot_stationary_state(config, run_name):
     """Plot stationary gTDGL fields and current-conservation diagnostics."""
     return 0
