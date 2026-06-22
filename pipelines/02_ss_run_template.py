@@ -1,22 +1,345 @@
-"""SS-run placeholder pipeline."""
+"""SS-run template: OE6 analytic seed + OE7 stationary gTDGL/Poisson relaxation.
+
+This pipeline supersedes the temporary ``02_oe6_ss_seed.py`` pipeline. It
+loads PRE-run outputs, builds the analytic seed, then relaxes the mesoscopic
+gTDGL/Poisson sector at frozen Te=Tph=T_bias. The external circuit and thermal
+equations remain inactive in OE7.
+"""
+from __future__ import annotations
 
 import argparse
+from pathlib import Path
+
+import yaml
 
 from pysnspd.config import load_config, validate_config
-from pysnspd.runs.ssrun import run_ssrun
+from pysnspd.io.manager import create_run_layout, write_manifest
+from pysnspd.mesh.delaunay import load_mesh_npz
+from pysnspd.mesh.edges import load_edges_npz
+from pysnspd.usadel.catalog import load_usadel_catalog_npz
+from pysnspd.gtdgl.seed import (
+    build_stationary_seed,
+    save_stationary_seed_npz,
+    seed_summary,
+)
+from pysnspd.gtdgl.material import build_gtdgl_material
+from pysnspd.gtdgl.operators import build_fv_operators
+from pysnspd.gtdgl.relax import (
+    relax_stationary_gtdgl,
+    save_relaxation_history_npz,
+    save_stationary_state_npz,
+)
+from pysnspd.plotting.ss_seed import (
+    plot_ss_seed_boundary_currents,
+    plot_ss_seed_current_density,
+    plot_ss_seed_delta,
+    plot_ss_seed_divergence,
+    plot_ss_seed_phase,
+)
+from pysnspd.plotting.ss_run import (
+    plot_ss_boundary_currents,
+    plot_ss_relaxation_history,
+    plot_ss_state_current_density,
+    plot_ss_state_delta,
+    plot_ss_state_divergence,
+    plot_ss_state_phase,
+    plot_ss_state_phi,
+)
 
 
-def main():
-    """Launch the stationary-state run scaffold."""
-    parser = argparse.ArgumentParser(description="Run SS-run template.")
-    parser.add_argument("--config", required=True, help="Path to project YAML configuration.")
-    parser.add_argument("--run-name", required=True, help="Canonical run name.")
-    args = parser.parse_args()
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="SS-run template: analytic seed plus stationary gTDGL/Poisson relaxation."
+    )
+    parser.add_argument("--config", required=True, help="Path to YAML config.")
+    parser.add_argument("--run-name", required=True, help="Run name where SS outputs are written.")
+    parser.add_argument(
+        "--pre-run-name",
+        default=None,
+        help="Run name containing PRE outputs. If omitted, use --run-name.",
+    )
+    parser.add_argument(
+        "--I-bias-A",
+        type=float,
+        default=None,
+        help="Override bias current. If omitted, use Usadel catalogue metadata.",
+    )
+    parser.add_argument(
+        "--T-bias-K",
+        type=float,
+        default=None,
+        help="Override bias temperature. If omitted, use Usadel catalogue metadata.",
+    )
+    parser.add_argument(
+        "--phase-origin",
+        choices=["center", "left"],
+        default="center",
+        help="Origin used in theta=q*(x-x0) for the analytic seed.",
+    )
+    parser.add_argument(
+        "--ss-steps",
+        type=int,
+        default=2000,
+        help="Maximum number of stationary gTDGL/Poisson steps.",
+    )
+    parser.add_argument(
+        "--ss-min-steps",
+        type=int,
+        default=10,
+        help="Minimum accepted steps before allowing convergence.",
+    )
+    parser.add_argument(
+        "--ss-dt-fs",
+        type=float,
+        default=0.25,
+        help="Initial SS gTDGL time step in femtoseconds.",
+    )
+    parser.add_argument(
+        "--ss-tau-scale",
+        type=float,
+        default=0.10,
+        help=(
+            "Scale tau_ee(Tc) and tau_ep(Tc) during SS relaxation. "
+            "The default 0.10 accelerates approach to the same stationary state."
+        ),
+    )
+    parser.add_argument(
+        "--ss-tolerance-eta",
+        type=float,
+        default=1.0e-9,
+        help="Convergence tolerance for max relative |Delta|^2 change.",
+    )
+    parser.add_argument(
+        "--ss-tolerance-current-residual",
+        type=float,
+        default=1.0e-6,
+        help="Convergence tolerance for the dimensionless div(j) residual.",
+    )
+    parser.add_argument(
+        "--ss-no-adapt-dt",
+        action="store_true",
+        help="Disable simple adaptive time-step rejection/growth.",
+    )
+    parser.add_argument(
+        "--ss-unlock-terminals",
+        action="store_true",
+        help="Do not pin the complex order parameter at left/right terminals.",
+    )
+    parser.add_argument(
+        "--dpi",
+        type=int,
+        default=480,
+        help="DPI for diagnostic plots.",
+    )
+    return parser.parse_args()
 
-    config = load_config(args.config)
-    validate_config(config)
-    run_ssrun(config, args.run_name)
+
+def main() -> int:
+    args = parse_args()
+
+    cfg = validate_config(load_config(args.config))
+    run_name = args.run_name
+    pre_run_name = args.pre_run_name or run_name
+
+    layout = create_run_layout(cfg, run_name)
+    raw_ss = Path(layout["raw_ss"])
+    plots_diag = Path(layout["plots_diagnostics"])
+
+    big_root = Path(cfg["project"]["big_data_root"]).expanduser().resolve()
+    raw_pre = big_root / "raw" / pre_run_name / "pre"
+
+    mesh_path = raw_pre / "mesh.npz"
+    edges_path = raw_pre / "edges.npz"
+    usadel_path = raw_pre / "usadel_dos_catalog.npz"
+
+    _require_existing(mesh_path)
+    _require_existing(edges_path)
+    _require_existing(usadel_path)
+
+    mesh = load_mesh_npz(mesh_path)
+    edge_data = load_edges_npz(edges_path)
+    usadel_catalog = load_usadel_catalog_npz(usadel_path)
+
+    seed = build_stationary_seed(
+        mesh=mesh,
+        edge_data=edge_data,
+        usadel_catalog=usadel_catalog,
+        I_bias_A=args.I_bias_A,
+        T_bias_K=args.T_bias_K,
+        phase_origin=args.phase_origin,
+    )
+    seed_npz = save_stationary_seed_npz(seed, raw_ss / "ss_seed.npz")
+    seed_sum = seed_summary(seed)
+
+    material = build_gtdgl_material(cfg, usadel_catalog, tau_scale=args.ss_tau_scale)
+    fv_ops = build_fv_operators(mesh, edge_data)
+
+    result = relax_stationary_gtdgl(
+        mesh=mesh,
+        edge_data=edge_data,
+        seed=seed,
+        material=material,
+        ops=fv_ops,
+        steps=args.ss_steps,
+        min_steps=args.ss_min_steps,
+        dt_s=args.ss_dt_fs * 1.0e-15,
+        tolerance_eta=args.ss_tolerance_eta,
+        tolerance_current_residual=args.ss_tolerance_current_residual,
+        adapt_dt=not args.ss_no_adapt_dt,
+        lock_terminals=not args.ss_unlock_terminals,
+    )
+
+    state_npz = save_stationary_state_npz(result.state, raw_ss / "ss_state_relaxed.npz")
+    history_npz = save_relaxation_history_npz(result.history, raw_ss / "ss_relaxation_history.npz")
+
+    summary_path = raw_ss / "ss_run_summary.yaml"
+    summary_doc = {
+        "run_name": run_name,
+        "pre_run_name": pre_run_name,
+        "stage": "ss",
+        "seed": seed_sum,
+        "stationary": result.summary,
+        "metadata": {
+            "backend": "oe7_ss_run_template_v1",
+            "description": (
+                "SS-run template with OE6 analytic seed followed by OE7 frozen-temperature "
+                "stationary gTDGL/Poisson relaxation."
+            ),
+            "thermal_policy": "frozen_Te_Tph",
+            "circuit_policy": "inactive",
+            "tau_policy": "tau_ee and tau_ep multiplied by --ss-tau-scale during SS only",
+            "inputs": {
+                "mesh_npz": str(mesh_path),
+                "edges_npz": str(edges_path),
+                "usadel_npz": str(usadel_path),
+            },
+        },
+    }
+    with summary_path.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(summary_doc, f, sort_keys=False, allow_unicode=True)
+
+    seed_delta_plot = plot_ss_seed_delta(mesh, seed, plots_diag / "ss_seed_delta.png", dpi=args.dpi)
+    seed_phase_plot = plot_ss_seed_phase(mesh, seed, plots_diag / "ss_seed_phase.png", dpi=args.dpi)
+    seed_current_plot = plot_ss_seed_current_density(
+        mesh, seed, plots_diag / "ss_seed_current_density.png", dpi=args.dpi
+    )
+    seed_div_plot = plot_ss_seed_divergence(mesh, seed, plots_diag / "ss_seed_divergence.png", dpi=args.dpi)
+    seed_boundary_plot = plot_ss_seed_boundary_currents(
+        seed, plots_diag / "ss_seed_boundary_currents.png", dpi=args.dpi
+    )
+
+    relaxed_delta_plot = plot_ss_state_delta(
+        mesh, result.state, plots_diag / "ss_relaxed_delta.png", dpi=args.dpi
+    )
+    relaxed_phase_plot = plot_ss_state_phase(
+        mesh, result.state, plots_diag / "ss_relaxed_phase.png", dpi=args.dpi
+    )
+    relaxed_phi_plot = plot_ss_state_phi(
+        mesh, result.state, plots_diag / "ss_relaxed_phi.png", dpi=args.dpi
+    )
+    relaxed_current_plot = plot_ss_state_current_density(
+        mesh, result.state, plots_diag / "ss_relaxed_current_density.png", dpi=args.dpi
+    )
+    relaxed_div_plot = plot_ss_state_divergence(
+        mesh, result.state, plots_diag / "ss_relaxed_divergence.png", dpi=args.dpi
+    )
+    relaxed_boundary_plot = plot_ss_boundary_currents(
+        result.summary, plots_diag / "ss_relaxed_boundary_currents.png", dpi=args.dpi
+    )
+    history_plot = plot_ss_relaxation_history(
+        result.history, plots_diag / "ss_relaxation_history.png", dpi=args.dpi
+    )
+
+    manifest = write_manifest(
+        cfg,
+        run_name,
+        stage="ss",
+        extra={
+            "pipeline": "02_ss_run_template.py",
+            "purpose": "OE7 stationary gTDGL/Poisson relaxation from analytic seed.",
+            "pre_run_name": pre_run_name,
+            "inputs": {
+                "mesh_npz": str(mesh_path),
+                "edges_npz": str(edges_path),
+                "usadel_npz": str(usadel_path),
+            },
+            "outputs": {
+                "seed_npz": str(seed_npz),
+                "state_npz": str(state_npz),
+                "history_npz": str(history_npz),
+                "summary_yaml": str(summary_path),
+                "seed_delta_plot": str(seed_delta_plot),
+                "seed_phase_plot": str(seed_phase_plot),
+                "seed_current_plot": str(seed_current_plot),
+                "seed_divergence_plot": str(seed_div_plot),
+                "seed_boundary_currents_plot": str(seed_boundary_plot),
+                "relaxed_delta_plot": str(relaxed_delta_plot),
+                "relaxed_phase_plot": str(relaxed_phase_plot),
+                "relaxed_phi_plot": str(relaxed_phi_plot),
+                "relaxed_current_plot": str(relaxed_current_plot),
+                "relaxed_divergence_plot": str(relaxed_div_plot),
+                "relaxed_boundary_currents_plot": str(relaxed_boundary_plot),
+                "history_plot": str(history_plot),
+            },
+            "seed_summary": seed_sum,
+            "stationary_summary": result.summary,
+        },
+    )
+
+    print("SS-run template: OE6 seed + OE7 stationary gTDGL/Poisson")
+    print(f"run_name             : {run_name}")
+    print(f"pre_run_name         : {pre_run_name}")
+    print(f"raw_pre              : {raw_pre}")
+    print(f"raw_ss               : {raw_ss}")
+    print(f"plots_diagnostics    : {plots_diag}")
+    print()
+    print("Seed")
+    for key in (
+        "I_bias_A",
+        "Ic_A",
+        "I_bias_over_Ic",
+        "q_bias_m_inv",
+        "q_critical_m_inv",
+        "delta_bias_meV",
+        "terminal_voltage_V",
+    ):
+        print(f"  {key}: {seed_sum[key]}")
+    print()
+    print("Stationary relaxation")
+    for key in (
+        "converged",
+        "accepted_steps",
+        "rejected_steps",
+        "final_time_ps",
+        "tau_scale",
+        "tau_ee_Tc_effective_ps",
+        "tau_ep_Tc_effective_ps",
+        "terminal_voltage_V",
+        "current_residual",
+        "eta_R_final",
+        "divergence_rms_A_m3",
+    ):
+        print(f"  {key}: {result.summary[key]}")
+    print()
+    print("Boundary currents [A]")
+    for key, value in result.summary["boundary_currents_A"].items():
+        print(f"  {key}: {value}")
+    print()
+    print("Outputs")
+    print(f"  seed_npz        : {seed_npz}")
+    print(f"  state_npz       : {state_npz}")
+    print(f"  history_npz     : {history_npz}")
+    print(f"  summary_yaml    : {summary_path}")
+    print(f"  manifest        : {manifest}")
+    print("Status: OK")
     return 0
+
+
+def _require_existing(path: Path) -> None:
+    if not path.exists():
+        raise FileNotFoundError(f"Required SS-run input does not exist: {path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Required SS-run input is not a file: {path}")
 
 
 if __name__ == "__main__":
