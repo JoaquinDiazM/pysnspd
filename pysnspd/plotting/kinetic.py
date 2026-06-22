@@ -40,6 +40,37 @@ def plot_eliashberg_spectrum(spectrum, output_path: str | Path, *, dpi: int = 48
     return output
 
 
+def plot_usadel_self_consistent_trajectory(
+    trajectory,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot the Usadel self-consistent Delta(q) trajectory used in OE5."""
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    frac = np.asarray(trajectory.current_fraction, dtype=float)
+    delta_meV = np.asarray(trajectory.delta_eq_values_J, dtype=float) / MEV_J
+    q = np.asarray(trajectory.q_values_m_inv, dtype=float)
+    q_norm = q / np.max(q) if np.max(q) > 0.0 else q
+
+    fig, ax = plt.subplots(figsize=(7.5, 4.6))
+    ax.plot(frac, delta_meV, linewidth=1.5, label=r"$\Delta_{\rm eq}(q)$ [meV]")
+    ax.plot(frac, q_norm, linewidth=1.2, linestyle="--", label=r"$q/q_{\max}$")
+
+    ax.set_title("Usadel self-consistent stable branch")
+    ax.set_xlabel(r"normalized current $I/I_c$")
+    ax.set_ylabel(r"$\Delta_{\rm eq}$ [meV] / normalized $q$")
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(frameon=True)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return output
+
+
 def plot_power_curve(
     power_curve: Mapping[str, np.ndarray],
     output_path: str | Path,
@@ -48,7 +79,7 @@ def plot_power_curve(
     title_suffix: str = "",
     dpi: int = 480,
 ) -> Path:
-    """Plot projected electron-phonon powers versus Te."""
+    """Plot projected electron-phonon powers versus Te at one Usadel state."""
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
@@ -92,71 +123,44 @@ def plot_power_curve(
     return output
 
 
-def plot_gap_policy_power_curves(
-    curves: Mapping[str, Mapping[str, np.ndarray]],
+def plot_power_vs_usadel_current(
+    q_scan: Mapping[str, np.ndarray],
     output_path: str | Path,
     *,
-    Tc_K: float,
     dpi: int = 480,
 ) -> Path:
-    """Plot fixed-gap, BCS-like-gap and normal diagnostic power curves.
-
-    This plot is intentionally a diagnostic rather than a final thermal model.
-    It shows how the large recombination channel is suppressed when Delta is
-    allowed to collapse above Tc.
-    """
+    """Plot projected powers along the self-consistent Usadel current branch."""
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
+
+    x = np.asarray(q_scan["current_fraction"], dtype=float)
+    Te_values = np.asarray(q_scan["Te_values_K"], dtype=float)
+    P_total = np.asarray(q_scan["P_total_W_m3"], dtype=float)
+    P_R = np.asarray(q_scan["P_R_W_m3"], dtype=float)
 
     fig, ax = plt.subplots(figsize=(7.8, 5.0))
 
-    for label, curve in curves.items():
-        Te = np.asarray(curve["Te_values_K"], dtype=float)
-        total = np.asarray(curve["P_total_W_m3"], dtype=float)
-        recomb = np.asarray(curve["P_R_W_m3"], dtype=float)
+    for i, Te in enumerate(Te_values):
+        ax.plot(
+            x,
+            P_total[i, :],
+            linewidth=1.4,
+            label=rf"total, $T_e={Te:.2f}$ K",
+        )
+        ax.plot(
+            x,
+            P_R[i, :],
+            linewidth=1.0,
+            linestyle="--",
+            label=rf"$R$, $T_e={Te:.2f}$ K",
+        )
 
-        ax.plot(Te, total, linewidth=1.4, label=f"{label}: total")
-        ax.plot(Te, recomb, linewidth=1.0, linestyle="--", label=f"{label}: R")
-
-    ax.axvline(Tc_K, linewidth=1.0, linestyle=":", label=rf"$T_c={Tc_K:.2f}$ K")
     ax.axhline(0.0, linewidth=0.8)
-
-    ax.set_title("Gap-policy diagnostic for projected powers")
-    ax.set_xlabel(r"$T_e$ [K]")
+    ax.set_title("Projected powers along Usadel self-consistent branch")
+    ax.set_xlabel(r"normalized current $I/I_c$")
     ax.set_ylabel(r"power density [W m$^{-3}$]")
     ax.grid(True, linewidth=0.25, alpha=0.35)
     ax.legend(frameon=True, fontsize=8)
-
-    fig.tight_layout()
-    fig.savefig(output, dpi=dpi, bbox_inches="tight")
-    plt.close(fig)
-    return output
-
-
-def plot_gap_policy_delta_curves(
-    curves: Mapping[str, Mapping[str, np.ndarray]],
-    output_path: str | Path,
-    *,
-    Tc_K: float,
-    dpi: int = 480,
-) -> Path:
-    """Plot Delta(Te) trajectories used by gap-policy diagnostics."""
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    fig, ax = plt.subplots(figsize=(7.5, 4.5))
-
-    for label, curve in curves.items():
-        Te = np.asarray(curve["Te_values_K"], dtype=float)
-        delta_meV = np.asarray(curve["delta_values_J"], dtype=float) / MEV_J
-        ax.plot(Te, delta_meV, linewidth=1.3, label=label)
-
-    ax.axvline(Tc_K, linewidth=1.0, linestyle=":", label=rf"$T_c={Tc_K:.2f}$ K")
-    ax.set_title(r"Diagnostic $\Delta(T_e)$ trajectories")
-    ax.set_xlabel(r"$T_e$ [K]")
-    ax.set_ylabel(r"$|\Delta|$ [meV]")
-    ax.grid(True, linewidth=0.25, alpha=0.35)
-    ax.legend(frameon=True)
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")

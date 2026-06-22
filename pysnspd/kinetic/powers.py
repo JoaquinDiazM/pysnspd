@@ -46,6 +46,8 @@ HBAR_J_S = 1.054571817e-34
 KB_J_K = 1.380649e-23
 E_CHARGE_C = 1.602176634e-19
 ZETA_5 = 1.03692775514337
+MEV_J = 1.602176634e-22
+
 TAU0_OVER_TAU_EP_TC = 720.0 * ZETA_5 / (np.pi**2)
 
 
@@ -71,23 +73,31 @@ class ProjectedPowerResult:
     metadata: dict[str, Any]
 
 
-def tau0_from_tau_ep_Tc(tau_ep_Tc_s: float) -> float:
-    """Convert the linear relaxation time at Tc into Vodolazov tau0.
+@dataclass(frozen=True)
+class UsadelSelfConsistentTrajectory:
+    """Stable-branch Usadel trajectory Delta_eq(q,T_bias).
 
-    The Debye/Vodolazov power is
+    This object is extracted from the OE3 Usadel calibration sweep. It is
+    self-consistent in the sense used by the current pySNSPD OE3 block:
+    Delta_eq is obtained from the Matsubara Usadel gap equation for each
+    depairing energy Gamma_q at the configured bias temperature T_bias.
 
-        P_D = 96 zeta(5) N(0) k_B^2/(tau0 Tc^3) * (Te^5 - Tph^5).
-
-    Linearizing this expression around T=Tc and using
-
-        C_e^N(T) = (2 pi^2/3) N(0) k_B^2 T
-
-    gives
-
-        tau_ep(Tc) = [pi^2/(720 zeta(5))] tau0.
-
-    Hence tau0 is approximately 75.6 times larger than tau_ep(Tc).
+    It is not a substitute for the future time-dependent gTDGL field
+    Delta(r,t). It is the correct OE5 diagnostic trajectory for avoiding the
+    artificial fixed-gap plots used during earlier debugging.
     """
+
+    q_values_m_inv: np.ndarray
+    gamma_values_J: np.ndarray
+    delta_eq_values_J: np.ndarray
+    current_values_A: np.ndarray
+    current_density_values_A_m2: np.ndarray
+    current_fraction: np.ndarray
+    metadata: dict[str, Any]
+
+
+def tau0_from_tau_ep_Tc(tau_ep_Tc_s: float) -> float:
+    """Convert the linear relaxation time at Tc into Vodolazov tau0."""
     if tau_ep_Tc_s <= 0.0:
         raise ValueError("tau_ep_Tc_s must be positive.")
     return float(TAU0_OVER_TAU_EP_TC * tau_ep_Tc_s)
@@ -124,13 +134,7 @@ def electronic_density_of_states_from_sigma_D(
 
 
 def bose_positive_energy(omega_J: np.ndarray, T_K: float) -> np.ndarray:
-    """Bose-Einstein occupation for positive energy Omega.
-
-    At Omega=0 the mathematical occupation diverges. For OE5 power integrals
-    the point Omega=0 has zero measure and alpha^2F is zero or negligible.
-    We set the exact zero point to zero to avoid inf-inf cancellation in
-    [n_e - n_ph].
-    """
+    """Bose-Einstein occupation for positive energy Omega."""
     if T_K <= 0.0:
         raise ValueError("Temperature must be positive.")
 
@@ -154,22 +158,130 @@ def bose_difference(omega_J: np.ndarray, Te_K: float, Tph_K: float) -> np.ndarra
     return bose_positive_energy(omega_J, Te_K) - bose_positive_energy(omega_J, Tph_K)
 
 
-def diagnostic_bcs_gap_factor(Te_K: np.ndarray, Tc_K: float) -> np.ndarray:
-    """Return a BCS-like equilibrium gap factor Delta(T)/Delta(0).
+def build_usadel_self_consistent_trajectory(
+    usadel_catalog,
+    *,
+    n_q: int = 120,
+    stable_branch_only: bool = True,
+) -> UsadelSelfConsistentTrajectory:
+    """Build an interpolated stable-branch Usadel trajectory.
 
-    This is a diagnostic closure only. It is not the final coupled gTDGL
-    prescription. It is used in OE5 to demonstrate that the large fixed-gap
-    recombination power at Te >> Tc is not a physically self-consistent state.
+    The OE3 Usadel block stores a calibration sweep containing
+    ``calibration_q_values_m_inv``, ``calibration_delta_eq_values_J`` and
+    ``calibration_current_values_A``. This function extracts the stable branch
+    up to the maximum supercurrent and interpolates it onto a smooth q-axis.
     """
-    Te = np.asarray(Te_K, dtype=float)
-    if Tc_K <= 0.0:
-        raise ValueError("Tc_K must be positive.")
+    q_raw = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
+    gamma_raw = np.asarray(usadel_catalog.calibration_gamma_values_J, dtype=float)
+    delta_raw = np.asarray(usadel_catalog.calibration_delta_eq_values_J, dtype=float)
+    current_raw = np.asarray(usadel_catalog.calibration_current_values_A, dtype=float)
+    current_density_raw = np.asarray(
+        usadel_catalog.calibration_current_density_values_A_m2,
+        dtype=float,
+    )
 
-    out = np.zeros_like(Te, dtype=float)
-    mask = (Te > 0.0) & (Te < Tc_K)
-    x = np.sqrt(np.maximum(Tc_K / Te[mask] - 1.0, 0.0))
-    out[mask] = np.tanh(1.74 * x)
-    return np.clip(out, 0.0, 1.0)
+    finite = (
+        np.isfinite(q_raw)
+        & np.isfinite(gamma_raw)
+        & np.isfinite(delta_raw)
+        & np.isfinite(current_raw)
+        & np.isfinite(current_density_raw)
+    )
+    finite &= q_raw >= 0.0
+    finite &= delta_raw >= 0.0
+    finite &= current_raw >= 0.0
+
+    if np.sum(finite) < 3:
+        raise ValueError("Usadel calibration sweep does not contain enough valid points.")
+
+    q_raw = q_raw[finite]
+    gamma_raw = gamma_raw[finite]
+    delta_raw = delta_raw[finite]
+    current_raw = current_raw[finite]
+    current_density_raw = current_density_raw[finite]
+
+    order = np.argsort(q_raw)
+    q_raw = q_raw[order]
+    gamma_raw = gamma_raw[order]
+    delta_raw = delta_raw[order]
+    current_raw = current_raw[order]
+    current_density_raw = current_density_raw[order]
+
+    idx_ic = int(np.argmax(current_raw))
+    Ic_A = float(current_raw[idx_ic])
+    q_critical = float(q_raw[idx_ic])
+    delta_critical = float(delta_raw[idx_ic])
+
+    if stable_branch_only:
+        q_raw = q_raw[: idx_ic + 1]
+        gamma_raw = gamma_raw[: idx_ic + 1]
+        delta_raw = delta_raw[: idx_ic + 1]
+        current_raw = current_raw[: idx_ic + 1]
+        current_density_raw = current_density_raw[: idx_ic + 1]
+
+    if Ic_A <= 0.0:
+        raise ValueError("Usadel calibration critical current is not positive.")
+
+    if n_q <= 1:
+        q_values = q_raw
+    else:
+        q_values = np.linspace(float(q_raw[0]), float(q_raw[-1]), int(n_q))
+
+    gamma_values = np.interp(q_values, q_raw, gamma_raw)
+    delta_values = np.interp(q_values, q_raw, delta_raw)
+    current_values = np.interp(q_values, q_raw, current_raw)
+    current_density_values = np.interp(q_values, q_raw, current_density_raw)
+    current_fraction = current_values / Ic_A
+
+    metadata = {
+        "backend": "usadel_self_consistent_trajectory_from_oe3_calibration",
+        "stable_branch_only": bool(stable_branch_only),
+        "n_q": int(q_values.size),
+        "Ic_A": Ic_A,
+        "q_critical_m_inv": q_critical,
+        "delta_critical_J": delta_critical,
+        "delta_critical_meV": float(delta_critical / MEV_J),
+        "T_bias_K": float(usadel_catalog.metadata.get("T_bias_K", np.nan)),
+        "source": (
+            "Extracted from OE3 Matsubara Usadel calibration sweep. "
+            "Delta_eq(q,T_bias) is used as the self-consistent OE5 diagnostic "
+            "trajectory."
+        ),
+    }
+
+    return UsadelSelfConsistentTrajectory(
+        q_values_m_inv=q_values,
+        gamma_values_J=gamma_values,
+        delta_eq_values_J=delta_values,
+        current_values_A=current_values,
+        current_density_values_A_m2=current_density_values,
+        current_fraction=current_fraction,
+        metadata=metadata,
+    )
+
+
+def select_usadel_state_by_current_fraction(
+    trajectory: UsadelSelfConsistentTrajectory,
+    target_fraction: float,
+) -> dict[str, float]:
+    """Select the self-consistent trajectory point closest to I/Ic."""
+    if target_fraction < 0.0:
+        raise ValueError("target_fraction must be non-negative.")
+
+    frac = np.asarray(trajectory.current_fraction, dtype=float)
+    idx = int(np.argmin(np.abs(frac - float(target_fraction))))
+
+    return {
+        "index": idx,
+        "current_fraction": float(trajectory.current_fraction[idx]),
+        "current_A": float(trajectory.current_values_A[idx]),
+        "current_density_A_m2": float(trajectory.current_density_values_A_m2[idx]),
+        "q_m_inv": float(trajectory.q_values_m_inv[idx]),
+        "gamma_J": float(trajectory.gamma_values_J[idx]),
+        "gamma_meV": float(trajectory.gamma_values_J[idx] / MEV_J),
+        "delta_J": float(trajectory.delta_eq_values_J[idx]),
+        "delta_meV": float(trajectory.delta_eq_values_J[idx] / MEV_J),
+    }
 
 
 def phase_space_spectra_at_state(
@@ -179,11 +291,7 @@ def phase_space_spectra_at_state(
     delta_J: float,
     q_m_inv: float,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Trilinearly interpolate OE4 J_S and J_R at a local state.
-
-    The interpolation is over the catalogue axes Te, Delta and q. The returned
-    spectra live on the catalogue Omega axis.
-    """
+    """Trilinearly interpolate OE4 J_S and J_R at a local state."""
     t_axis = np.asarray(phase_space_catalog.Te_values_K, dtype=float)
     d_axis = np.asarray(phase_space_catalog.delta_values_J, dtype=float)
     q_axis = np.asarray(phase_space_catalog.q_values_m_inv, dtype=float)
@@ -200,56 +308,6 @@ def phase_space_spectra_at_state(
     return out_S, out_R
 
 
-def compute_scattering_power(
-    Te: float,
-    Tph: float,
-    delta: float,
-    q: float,
-    phase_space_catalog,
-    alpha2F: EliashbergSpectrum,
-    *,
-    N0_J_m3: float,
-    omega_max_meV: float | None = None,
-) -> float:
-    """Compute ``P_ep^S`` from the projected Simon scattering channel."""
-    result = compute_projected_powers(
-        Te,
-        Tph,
-        delta,
-        q,
-        phase_space_catalog,
-        alpha2F,
-        N0_J_m3=N0_J_m3,
-        omega_max_meV=omega_max_meV,
-    )
-    return result.P_S_W_m3
-
-
-def compute_recombination_power(
-    Te: float,
-    Tph: float,
-    delta: float,
-    q: float,
-    phase_space_catalog,
-    alpha2F: EliashbergSpectrum,
-    *,
-    N0_J_m3: float,
-    omega_max_meV: float | None = None,
-) -> float:
-    """Compute ``P_ep^R`` from the projected recombination/pair-breaking channel."""
-    result = compute_projected_powers(
-        Te,
-        Tph,
-        delta,
-        q,
-        phase_space_catalog,
-        alpha2F,
-        N0_J_m3=N0_J_m3,
-        omega_max_meV=omega_max_meV,
-    )
-    return result.P_R_W_m3
-
-
 def compute_projected_powers(
     Te_K: float,
     Tph_K: float,
@@ -264,15 +322,14 @@ def compute_projected_powers(
     """Compute OE5 projected powers for one local state.
 
     Positive power means energy leaves the electronic system and enters the
-    phonon system. In the electron-temperature equation, these terms enter
-    with a minus sign.
+    phonon system.
     """
     if N0_J_m3 <= 0.0:
         raise ValueError("N0_J_m3 must be positive.")
 
     omega = np.asarray(phase_space_catalog.omega_values_J, dtype=float)
     if omega_max_meV is not None:
-        omega_max_J = float(omega_max_meV) * 1.602176634e-22
+        omega_max_J = float(omega_max_meV) * MEV_J
         mask = omega <= omega_max_J
     else:
         mask = np.ones_like(omega, dtype=bool)
@@ -304,7 +361,7 @@ def compute_projected_powers(
     )
 
     metadata = {
-        "backend": "projected_powers_oe5_v2",
+        "backend": "projected_powers_oe5_v3_usadel_self_consistent",
         "sign_convention": (
             "Positive P_S/P_R means energy leaves electrons and enters phonons."
         ),
@@ -335,80 +392,68 @@ def compute_projected_powers(
     )
 
 
-def compute_total_electron_phonon_power(
+def compute_scattering_power(
     Te: float,
     Tph: float,
     delta: float,
     q: float,
-    catalogs,
+    phase_space_catalog,
+    alpha2F: EliashbergSpectrum,
+    *,
+    N0_J_m3: float,
+    omega_max_meV: float | None = None,
 ) -> float:
-    """Compute the net projected electron-phonon power used by thermal solver.
-
-    This compatibility wrapper expects ``catalogs`` to contain:
-
-        phase_space_catalog
-        eliashberg_spectrum
-        N0_J_m3
-    """
-    result = compute_projected_powers(
+    """Compute ``P_ep^S`` from the projected Simon scattering channel."""
+    return compute_projected_powers(
         Te,
         Tph,
         delta,
         q,
-        catalogs["phase_space_catalog"],
-        catalogs["eliashberg_spectrum"],
-        N0_J_m3=float(catalogs["N0_J_m3"]),
-    )
-    return result.P_total_W_m3
+        phase_space_catalog,
+        alpha2F,
+        N0_J_m3=N0_J_m3,
+        omega_max_meV=omega_max_meV,
+    ).P_S_W_m3
 
 
-def compute_escape_power(Tph, Tbath, phonon_dos, tau_esc):
-    """Placeholder for OE6 phonon escape power.
+def compute_recombination_power(
+    Te: float,
+    Tph: float,
+    delta: float,
+    q: float,
+    phase_space_catalog,
+    alpha2F: EliashbergSpectrum,
+    *,
+    N0_J_m3: float,
+    omega_max_meV: float | None = None,
+) -> float:
+    """Compute ``P_ep^R`` from the projected recombination/pair-breaking channel."""
+    return compute_projected_powers(
+        Te,
+        Tph,
+        delta,
+        q,
+        phase_space_catalog,
+        alpha2F,
+        N0_J_m3=N0_J_m3,
+        omega_max_meV=omega_max_meV,
+    ).P_R_W_m3
 
-    Escape is not part of OE5 projected electron-phonon collision powers. It
-    will be implemented when the phonon energy balance is activated.
-    """
-    raise NotImplementedError("Phonon escape belongs to the next thermal-balance OE.")
 
-
-def compute_power_curve(
+def compute_power_curve_at_usadel_state(
     Te_values_K: np.ndarray,
     *,
     Tph_K: float,
-    delta_J: float,
-    q_m_inv: float,
+    state: dict[str, float],
     phase_space_catalog,
     spectrum: EliashbergSpectrum,
     N0_J_m3: float,
     tau0_s: float,
     Tc_K: float,
     omega_max_meV: float | None = None,
-    delta_values_J: np.ndarray | None = None,
-    q_values_m_inv: np.ndarray | None = None,
 ) -> dict[str, np.ndarray]:
-    """Compute projected powers as a function of Te for diagnostics.
-
-    ``delta_values_J`` and ``q_values_m_inv`` may be supplied to evaluate a
-    non-fixed trajectory through the catalogue, for example a BCS-like
-    diagnostic Delta(Te) curve. This is only a 0D diagnostic; the final coupled
-    model will use Delta(r,t) and q(r,t) from gTDGL.
-    """
+    """Compute projected powers versus Te at one self-consistent Usadel state."""
     Te_values = np.asarray(Te_values_K, dtype=float)
-    n = Te_values.size
-
-    if delta_values_J is None:
-        delta_curve = np.full(n, float(delta_J), dtype=float)
-    else:
-        delta_curve = np.asarray(delta_values_J, dtype=float)
-        if delta_curve.shape != Te_values.shape:
-            raise ValueError("delta_values_J must have the same shape as Te_values_K.")
-
-    if q_values_m_inv is None:
-        q_curve = np.full(n, float(q_m_inv), dtype=float)
-    else:
-        q_curve = np.asarray(q_values_m_inv, dtype=float)
-        if q_curve.shape != Te_values.shape:
-            raise ValueError("q_values_m_inv must have the same shape as Te_values_K.")
 
     P_S = np.zeros_like(Te_values)
     P_R = np.zeros_like(Te_values)
@@ -419,8 +464,8 @@ def compute_power_curve(
         result = compute_projected_powers(
             float(Te),
             float(Tph_K),
-            float(delta_curve[i]),
-            float(q_curve[i]),
+            float(state["delta_J"]),
+            float(state["q_m_inv"]),
             phase_space_catalog,
             spectrum,
             N0_J_m3=float(N0_J_m3),
@@ -439,12 +484,61 @@ def compute_power_curve(
 
     return {
         "Te_values_K": Te_values,
-        "delta_values_J": delta_curve,
-        "q_values_m_inv": q_curve,
+        "delta_values_J": np.full_like(Te_values, float(state["delta_J"])),
+        "q_values_m_inv": np.full_like(Te_values, float(state["q_m_inv"])),
         "P_S_W_m3": P_S,
         "P_R_W_m3": P_R,
         "P_total_W_m3": P_total,
         "P_Debye_Vodolazov_W_m3": P_D,
+    }
+
+
+def compute_usadel_q_power_scan(
+    Te_values_K: np.ndarray,
+    *,
+    Tph_K: float,
+    trajectory: UsadelSelfConsistentTrajectory,
+    phase_space_catalog,
+    spectrum: EliashbergSpectrum,
+    N0_J_m3: float,
+    omega_max_meV: float | None = None,
+) -> dict[str, np.ndarray]:
+    """Compute projected powers along the self-consistent Usadel q trajectory."""
+    Te_values = np.asarray(Te_values_K, dtype=float)
+    q_values = np.asarray(trajectory.q_values_m_inv, dtype=float)
+    delta_values = np.asarray(trajectory.delta_eq_values_J, dtype=float)
+
+    shape = (Te_values.size, q_values.size)
+    P_S = np.zeros(shape, dtype=float)
+    P_R = np.zeros(shape, dtype=float)
+    P_total = np.zeros(shape, dtype=float)
+
+    for iT, Te in enumerate(Te_values):
+        for iq, (q, delta) in enumerate(zip(q_values, delta_values, strict=True)):
+            result = compute_projected_powers(
+                float(Te),
+                float(Tph_K),
+                float(delta),
+                float(q),
+                phase_space_catalog,
+                spectrum,
+                N0_J_m3=float(N0_J_m3),
+                omega_max_meV=omega_max_meV,
+            )
+            P_S[iT, iq] = result.P_S_W_m3
+            P_R[iT, iq] = result.P_R_W_m3
+            P_total[iT, iq] = result.P_total_W_m3
+
+    return {
+        "Te_values_K": Te_values,
+        "q_values_m_inv": q_values,
+        "gamma_values_J": np.asarray(trajectory.gamma_values_J, dtype=float),
+        "delta_values_J": delta_values,
+        "current_values_A": np.asarray(trajectory.current_values_A, dtype=float),
+        "current_fraction": np.asarray(trajectory.current_fraction, dtype=float),
+        "P_S_W_m3": P_S,
+        "P_R_W_m3": P_R,
+        "P_total_W_m3": P_total,
     }
 
 
@@ -456,13 +550,7 @@ def compute_vodolazov_debye_power_density(
     tau0_s: float,
     Tc_K: float,
 ) -> float:
-    """Normal-state Debye/Vodolazov electron-phonon power density.
-
-    P_D = 96 zeta(5) N(0) k_B^2 / [tau0 Tc^3] * (Te^5 - Tph^5).
-
-    This is used as a magnitude and limiting-form check for the scattering
-    channel. It is not used to overwrite the Simon/Eliashberg projected power.
-    """
+    """Normal-state Debye/Vodolazov electron-phonon power density."""
     if N0_J_m3 <= 0.0:
         raise ValueError("N0_J_m3 must be positive.")
     if tau0_s <= 0.0:
@@ -474,12 +562,33 @@ def compute_vodolazov_debye_power_density(
     return float(prefactor * (Te_K**5 - Tph_K**5))
 
 
-def cumulative_spectral_support(result: ProjectedPowerResult) -> dict[str, np.ndarray]:
-    """Return cumulative support curves for the OE5 spectral integrands.
+def compute_total_electron_phonon_power(
+    Te: float,
+    Tph: float,
+    delta: float,
+    q: float,
+    catalogs,
+) -> float:
+    """Compatibility wrapper for future thermal solver."""
+    result = compute_projected_powers(
+        Te,
+        Tph,
+        delta,
+        q,
+        catalogs["phase_space_catalog"],
+        catalogs["eliashberg_spectrum"],
+        N0_J_m3=float(catalogs["N0_J_m3"]),
+    )
+    return result.P_total_W_m3
 
-    These curves are not powers; they diagnose which Omega intervals dominate
-    the projected power integrals.
-    """
+
+def compute_escape_power(Tph, Tbath, phonon_dos, tau_esc):
+    """Placeholder for OE6 phonon escape power."""
+    raise NotImplementedError("Phonon escape belongs to the next thermal-balance OE.")
+
+
+def cumulative_spectral_support(result: ProjectedPowerResult) -> dict[str, np.ndarray]:
+    """Return cumulative support curves for the OE5 spectral integrands."""
     omega = result.omega_J
     alpha_weight = np.abs(result.alpha2F * omega)
     S_weight = np.abs(result.integrand_S_J2)
