@@ -298,3 +298,82 @@ def plot_spectral_support(
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
+
+
+def plot_low_energy_recombination_scattering_band(
+    result,
+    output_path: str | Path,
+    *,
+    omega_max_meV: float | None = None,
+    dpi: int = 480,
+) -> Path:
+    """Compare cumulative S/R powers in the low-energy gap-scale band.
+
+    The goal is not to compare the full integrated powers, but to check whether
+    the superconducting recombination channel is comparable to scattering in
+    the low-energy region where Omega is of order a few Delta.
+
+    This plot is only meaningful when Delta > 0.
+    """
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    omega_J = np.asarray(result.omega_J, dtype=float)
+    omega_meV = omega_J / MEV_J
+    delta_meV = float(result.delta_J / MEV_J)
+
+    if omega_max_meV is None:
+        omega_max_meV = max(8.0, 2.0 * delta_meV + 6.0, 6.0 * delta_meV)
+
+    mask = omega_meV <= float(omega_max_meV)
+    if np.sum(mask) < 3:
+        mask = np.ones_like(omega_meV, dtype=bool)
+
+    om = omega_J[mask]
+    x = omega_meV[mask]
+
+    s_integrand = np.asarray(result.integrand_S_J2[mask], dtype=float)
+    r_integrand = np.asarray(result.integrand_R_J2[mask], dtype=float)
+
+    # Local cumulative trapezoids without scipy.
+    d_om = np.diff(om)
+    cS = np.concatenate(
+        [[0.0], np.cumsum(0.5 * (s_integrand[1:] + s_integrand[:-1]) * d_om)]
+    )
+    cR = np.concatenate(
+        [[0.0], np.cumsum(0.5 * (r_integrand[1:] + r_integrand[:-1]) * d_om)]
+    )
+
+    pref_S = 8.0 * np.pi * float(result.N0_J_m3) / 1.054571817e-34
+    pref_R = 4.0 * np.pi * float(result.N0_J_m3) / 1.054571817e-34
+
+    PS_partial = pref_S * cS
+    PR_partial = pref_R * cR
+
+    fig, ax = plt.subplots(figsize=(7.6, 4.8))
+
+    ax.plot(x, PS_partial, linewidth=1.4, label=r"partial $P_{ep}^{S}(\Omega_c)$")
+    ax.plot(x, PR_partial, linewidth=1.4, label=r"partial $P_{ep}^{R}(\Omega_c)$")
+
+    if delta_meV > 0.0:
+        ax.axvline(
+            2.0 * delta_meV,
+            linewidth=1.0,
+            linestyle=":",
+            label=rf"$2\Delta={2.0 * delta_meV:.2f}$ meV",
+        )
+
+    ax.axhline(0.0, linewidth=0.8)
+    ax.set_title(
+        "Low-energy gap-scale power band\n"
+        rf"$T_e={result.Te_K:.2f}$ K, $\Delta={delta_meV:.3f}$ meV"
+    )
+    ax.set_xlabel(r"upper phonon energy $\Omega_c$ [meV]")
+    ax.set_ylabel(r"partial power density [W m$^{-3}$]")
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(frameon=True, fontsize=8)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return output
