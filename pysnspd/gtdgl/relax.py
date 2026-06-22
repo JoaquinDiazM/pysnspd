@@ -19,6 +19,7 @@ from pysnspd.gtdgl.material import (
     K_B_J_K,
     GTDGLMaterial,
 )
+
 from pysnspd.gtdgl.operators import (
     FVOperators,
     boundary_currents_from_node_vectors,
@@ -28,7 +29,9 @@ from pysnspd.gtdgl.operators import (
     edge_scalar_gradient,
     edge_scalar_to_node_vector,
     laplacian,
+    terminal_boundary_accum_A_m,
     terminal_voltage,
+    unwrap_phase_graph,
 )
 
 try:
@@ -87,8 +90,14 @@ def compute_current_fields(
     Te_K: np.ndarray,
     material: GTDGLMaterial,
     ops: FVOperators,
+    boundary_accum_A_m: np.ndarray | None = None,
 ) -> CurrentFields:
-    """Evaluate Usadel-like, GL, normal and total currents on edges and nodes."""
+    """Evaluate Usadel-like, GL, normal and total currents.
+
+    The superconducting and normal currents live on edges. The total divergence
+    can optionally include prescribed terminal fluxes through
+    ``boundary_accum_A_m``.
+    """
     psi = np.asarray(psi_J, dtype=np.complex128)
     phi = np.asarray(phi_V, dtype=float)
     Te = np.asarray(Te_K, dtype=float)
@@ -122,7 +131,11 @@ def compute_current_fields(
 
     div_us = divergence_from_edge_scalar(edge_js_us, ops)
     div_gl = divergence_from_edge_scalar(edge_js_gl, ops)
-    div_total = divergence_from_edge_scalar(edge_jtot, ops)
+    div_total = divergence_from_edge_scalar(
+        edge_jtot,
+        ops,
+        boundary_accum_A_m=boundary_accum_A_m,
+    )
 
     js_x, js_y = edge_scalar_to_node_vector(edge_js_us, ops)
     jn_x, jn_y = edge_scalar_to_node_vector(edge_jn, ops)
@@ -145,32 +158,55 @@ def compute_current_fields(
         node_jtot_y_A_m2=jt_y,
     )
 
-
 def solve_poisson_potential(
     *,
     edge_js_us_A_m2: np.ndarray,
     material: GTDGLMaterial,
     ops: FVOperators,
+    edge_data=None,
+    target_current_A: float | None = None,
 ) -> np.ndarray:
-    """Solve sigma_n Laplacian(phi) = div(j_s^Us) with mean-zero gauge."""
+    """Solve Poisson with conservative terminal-current boundary terms.
+
+    The discrete condition is
+
+        div_edges(j_s + j_n) + div_boundary(j_terminal) = 0,
+
+    with j_n = -sigma_n grad(phi). This prevents Poisson from cancelling the
+    imposed transport current.
+    """
     js = np.asarray(edge_js_us_A_m2, dtype=float)
     conductance = material.sigma_n_S_m * ops.dual_face_length_m / ops.edge_length_m
     i = ops.edge_i
     j = ops.edge_j
 
     rhs = np.zeros(ops.n_nodes, dtype=float)
+
     edge_flux = ops.dual_face_length_m * js
     np.add.at(rhs, i, -edge_flux)
     np.add.at(rhs, j, edge_flux)
+
+    if target_current_A is not None:
+        if edge_data is None:
+            raise ValueError("edge_data is required when target_current_A is used.")
+        boundary_accum = terminal_boundary_accum_A_m(
+            edge_data,
+            n_nodes=ops.n_nodes,
+            target_current_A=float(target_current_A),
+            thickness_m=material.thickness_m,
+        )
+        rhs -= boundary_accum
 
     if coo_matrix is not None and spsolve is not None:
         rows = np.concatenate([i, i, j, j])
         cols = np.concatenate([i, j, j, i])
         data = np.concatenate([conductance, -conductance, conductance, -conductance])
+
         matrix = coo_matrix((data, (rows, cols)), shape=(ops.n_nodes, ops.n_nodes)).tolil()
         matrix[0, :] = 0.0
         matrix[0, 0] = 1.0
         rhs[0] = 0.0
+
         phi = np.asarray(spsolve(matrix.tocsr(), rhs), dtype=float)
     else:
         matrix = np.zeros((ops.n_nodes, ops.n_nodes), dtype=float)
@@ -179,14 +215,15 @@ def solve_poisson_potential(
             matrix[a, b] -= g
             matrix[b, b] += g
             matrix[b, a] -= g
+
         matrix[0, :] = 0.0
         matrix[0, 0] = 1.0
         rhs[0] = 0.0
+
         phi = np.linalg.solve(matrix, rhs)
 
     phi -= float(np.mean(phi))
     return phi
-
 
 def gtdgl_forcing(
     *,
@@ -303,18 +340,40 @@ def relax_stationary_gtdgl(
     dt_min_s: float = 1.0e-18,
     dt_max_s: float = 2.0e-15,
     lock_terminals: bool = True,
+    target_current_A: float | None = None,
 ) -> RelaxationResult:
-    """Relax the OE6 seed with frozen temperatures and gTDGL/Poisson active."""
+    """Relax the OE6 seed with frozen temperatures and active gTDGL/Poisson.
+
+    The important OE7 point is that Poisson is solved with conservative
+    terminal-current boundary fluxes. Therefore the scalar potential enforces
+    div(j_s + j_n) = 0 without cancelling the imposed transport current.
+    """
     if steps <= 0:
         raise ValueError("steps must be positive.")
     if dt_s <= 0.0:
         raise ValueError("dt_s must be positive.")
+    if min_steps < 0:
+        raise ValueError("min_steps must be non-negative.")
 
-    psi0 = np.asarray(seed.node_psi_real_J, dtype=float) + 1j * np.asarray(seed.node_psi_imag_J, dtype=float)
+    if target_current_A is None:
+        target_current_A = _seed_target_current_A(seed)
+    target_current_A = float(target_current_A)
+
+    psi0 = (
+        np.asarray(seed.node_psi_real_J, dtype=float)
+        + 1j * np.asarray(seed.node_psi_imag_J, dtype=float)
+    )
     psi = psi0.copy()
     phi = np.asarray(seed.node_phi_electric_V, dtype=float).copy()
     Te = np.asarray(seed.node_Te_K, dtype=float).copy()
     Tph = np.asarray(seed.node_Tph_K, dtype=float).copy()
+
+    boundary_accum = terminal_boundary_accum_A_m(
+        edge_data,
+        n_nodes=ops.n_nodes,
+        target_current_A=target_current_A,
+        thickness_m=material.thickness_m,
+    )
 
     t_s = 0.0
     accepted = 0
@@ -329,7 +388,14 @@ def relax_stationary_gtdgl(
     hist_ir: list[float] = []
     hist_il: list[float] = []
 
-    currents = compute_current_fields(psi_J=psi, phi_V=phi, Te_K=Te, material=material, ops=ops)
+    currents = compute_current_fields(
+        psi_J=psi,
+        phi_V=phi,
+        Te_K=Te,
+        material=material,
+        ops=ops,
+        boundary_accum_A_m=boundary_accum,
+    )
 
     for _ in range(int(steps)):
         forcing = gtdgl_forcing(
@@ -339,6 +405,7 @@ def relax_stationary_gtdgl(
             material=material,
             ops=ops,
         )
+
         psi_trial, ok, min_disc = kwt_local_update(
             psi_J=psi,
             phi_V=phi,
@@ -353,7 +420,9 @@ def relax_stationary_gtdgl(
             if adapt_dt and dt_s > dt_min_s:
                 dt_s = max(dt_min_s, 0.5 * dt_s)
                 continue
-            raise FloatingPointError(f"KWT update failed; min discriminant={min_disc:.6e}")
+            raise FloatingPointError(
+                f"KWT update failed; min discriminant={min_disc:.6e}"
+            )
 
         psi_trial = apply_terminal_dirichlet(
             psi_trial_J=psi_trial,
@@ -362,27 +431,40 @@ def relax_stationary_gtdgl(
             enabled=lock_terminals,
         )
 
+        # First evaluate the superconducting current from the trial order
+        # parameter. The potential is then obtained from the conservative
+        # Poisson problem with imposed left/right terminal fluxes.
         trial_currents_no_phi = compute_current_fields(
             psi_J=psi_trial,
             phi_V=np.zeros_like(phi),
             Te_K=Te,
             material=material,
             ops=ops,
+            boundary_accum_A_m=boundary_accum,
         )
+
         phi_trial = solve_poisson_potential(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
             material=material,
             ops=ops,
+            edge_data=edge_data,
+            target_current_A=target_current_A,
         )
+
         trial_currents = compute_current_fields(
             psi_J=psi_trial,
             phi_V=phi_trial,
             Te_K=Te,
             material=material,
             ops=ops,
+            boundary_accum_A_m=boundary_accum,
         )
 
-        eta = float(np.max(np.abs(np.abs(psi_trial) ** 2 - np.abs(psi) ** 2)) / material.delta0_J**2)
+        eta = float(
+            np.max(np.abs(np.abs(psi_trial) ** 2 - np.abs(psi) ** 2))
+            / material.delta0_J**2
+        )
+
         if eta > eta_reject and adapt_dt and dt_s > dt_min_s:
             rejected += 1
             dt_s = max(dt_min_s, 0.5 * dt_s)
@@ -395,7 +477,11 @@ def relax_stationary_gtdgl(
         accepted += 1
 
         residual = current_residual(currents, mesh)
-        voltage = terminal_voltage(np.asarray(mesh.nodes, dtype=float), phi, length_m=float(mesh.length_m))
+        voltage = terminal_voltage(
+            np.asarray(mesh.nodes, dtype=float),
+            phi,
+            length_m=float(mesh.length_m),
+        )
         boundary = boundary_currents_from_node_vectors(
             mesh=mesh,
             edge_data=edge_data,
@@ -412,7 +498,11 @@ def relax_stationary_gtdgl(
         hist_ir.append(boundary["right_A"])
         hist_il.append(boundary["left_A"])
 
-        if accepted >= min_steps and eta < tolerance_eta and residual < tolerance_current_residual:
+        if (
+            accepted >= min_steps
+            and eta < tolerance_eta
+            and residual < tolerance_current_residual
+        ):
             converged = True
             break
 
@@ -420,16 +510,18 @@ def relax_stationary_gtdgl(
             dt_s = min(dt_max_s, 1.2 * dt_s)
 
     metadata = {
-        "backend": "oe7_stationary_gtdgl_poisson_v1",
+        "backend": "oe7_stationary_gtdgl_poisson_v2_terminal_flux",
         "description": (
             "Frozen-temperature stationary gTDGL/Poisson relaxation from the OE6 "
-            "analytic seed. External circuit and thermal evolution are inactive."
+            "analytic seed. Poisson includes conservative left/right terminal "
+            "current fluxes. External circuit and thermal evolution are inactive."
         ),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
         "requested_steps": int(steps),
         "converged": bool(converged),
         "final_time_s": float(t_s),
+        "target_current_A": float(target_current_A),
         "tau_scale": float(material.tau_scale),
         "tau_ee_Tc_effective_s": float(material.tau_scale * material.tau_ee_Tc_s),
         "tau_ep_Tc_effective_s": float(material.tau_scale * material.tau_ep_Tc_s),
@@ -437,6 +529,7 @@ def relax_stationary_gtdgl(
         "thermal_policy": "frozen_Te_Tph",
         "circuit_policy": "inactive",
         "poisson_gauge": "mean_zero",
+        "poisson_boundary_policy": "conservative_terminal_flux",
     }
 
     state = GTDGLStationaryState(
@@ -447,6 +540,7 @@ def relax_stationary_gtdgl(
         currents=currents,
         metadata=metadata,
     )
+
     history = {
         "t_s": np.asarray(hist_t, dtype=float),
         "dt_s": np.asarray(hist_dt, dtype=float),
@@ -456,6 +550,7 @@ def relax_stationary_gtdgl(
         "integrated_right_current_A": np.asarray(hist_ir, dtype=float),
         "integrated_left_current_A": np.asarray(hist_il, dtype=float),
     }
+
     summary = stationary_summary(
         mesh=mesh,
         edge_data=edge_data,
@@ -463,8 +558,34 @@ def relax_stationary_gtdgl(
         material=material,
         history=history,
     )
-    return RelaxationResult(state=state, history=history, summary=summary)
 
+    return RelaxationResult(
+        state=state,
+        history=history,
+        summary=summary,
+    )
+
+
+def _seed_target_current_A(seed) -> float:
+    """Extract the imposed transport current from an OE6 seed object."""
+    for name in ("I_bias_A", "target_current_A", "current_A"):
+        if hasattr(seed, name):
+            value = float(getattr(seed, name))
+            if np.isfinite(value):
+                return value
+
+    metadata = getattr(seed, "metadata", None)
+    if isinstance(metadata, dict):
+        for name in ("I_bias_A", "target_current_A", "current_A"):
+            if name in metadata:
+                value = float(metadata[name])
+                if np.isfinite(value):
+                    return value
+
+    raise AttributeError(
+        "Could not infer target_current_A from seed. Pass target_current_A "
+        "explicitly or ensure the seed contains I_bias_A."
+    )
 
 def current_residual(currents: CurrentFields, mesh) -> float:
     """Dimensionless current-continuity residual from Appendix B Eq. (177)."""
@@ -485,7 +606,7 @@ def stationary_summary(
 ) -> dict[str, Any]:
     """Build a compact YAML/console summary for the stationary state."""
     R = np.abs(state.psi_J)
-    theta = np.unwrap(np.angle(state.psi_J))
+    theta = unwrap_phase_graph(state.psi_J, edge_data.edges)
     div = state.currents.node_div_jtot_A_m3
     voltage = terminal_voltage(np.asarray(mesh.nodes, dtype=float), state.phi_V, length_m=float(mesh.length_m))
     boundary = boundary_currents_from_node_vectors(

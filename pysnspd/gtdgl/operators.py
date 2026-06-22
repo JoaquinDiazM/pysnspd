@@ -121,18 +121,185 @@ def laplacian(values: np.ndarray, ops: FVOperators) -> np.ndarray:
     return out / ops.node_area_m2
 
 
-def divergence_from_edge_scalar(edge_current_i_to_j: np.ndarray, ops: FVOperators) -> np.ndarray:
+def divergence_from_edge_scalar(
+    edge_current_i_to_j: np.ndarray,
+    ops: FVOperators,
+    *,
+    boundary_accum_A_m: np.ndarray | None = None,
+) -> np.ndarray:
     """Finite-volume divergence of an edge current scalar.
 
     The edge scalar is positive when current flows from edge_i to edge_j.
+
+    Parameters
+    ----------
+    edge_current_i_to_j:
+        Edge current density [A/m^2] projected along the oriented edge.
+    ops:
+        Finite-volume edge geometry.
+    boundary_accum_A_m:
+        Optional nodal boundary flux accumulator [A/m]. This is where
+        prescribed terminal currents enter the conservative divergence.
     """
     current = np.asarray(edge_current_i_to_j, dtype=float)
     out = np.zeros(ops.n_nodes, dtype=float)
+
     flux = ops.dual_face_length_m * current
     np.add.at(out, ops.edge_i, flux)
     np.add.at(out, ops.edge_j, -flux)
+
+    if boundary_accum_A_m is not None:
+        boundary = np.asarray(boundary_accum_A_m, dtype=float)
+        if boundary.shape != out.shape:
+            raise ValueError(
+                "boundary_accum_A_m must have shape "
+                f"{out.shape}, got {boundary.shape}."
+            )
+        out += boundary
+
     return out / ops.node_area_m2
 
+
+def boundary_node_measure_m(
+    edge_data,
+    *,
+    n_nodes: int,
+    tag: str,
+) -> np.ndarray:
+    """Lump boundary-edge lengths onto boundary nodes.
+
+    The returned array has units of meters and sums to the geometric length of
+    the tagged boundary. Each boundary edge contributes half of its length to
+    each endpoint.
+    """
+    tags = np.asarray(edge_data.tags).astype(str)
+    edges = np.asarray(edge_data.edges, dtype=np.int64)
+    lengths = np.asarray(edge_data.lengths, dtype=float)
+
+    measure = np.zeros(int(n_nodes), dtype=float)
+    mask = tags == str(tag)
+    if not np.any(mask):
+        return measure
+
+    e = edges[mask]
+    ell = lengths[mask]
+    np.add.at(measure, e[:, 0], 0.5 * ell)
+    np.add.at(measure, e[:, 1], 0.5 * ell)
+    return measure
+
+
+def terminal_outward_flux_densities_A_m2(
+    edge_data,
+    *,
+    n_nodes: int,
+    target_current_A: float,
+    thickness_m: float,
+) -> dict[str, float]:
+    """Return prescribed outward current densities at left/right terminals.
+
+    Positive current flows from left to right. Therefore the outward flux is
+    negative at the left terminal and positive at the right terminal.
+    """
+    left_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="left")
+    right_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="right")
+
+    width_left_m = float(np.sum(left_measure))
+    width_right_m = float(np.sum(right_measure))
+    if width_left_m <= 0.0 or width_right_m <= 0.0:
+        raise ValueError("Left/right terminal boundary measures must be positive.")
+    if thickness_m <= 0.0:
+        raise ValueError("thickness_m must be positive.")
+
+    I = float(target_current_A)
+    return {
+        "left_A_m2": -I / (float(thickness_m) * width_left_m),
+        "right_A_m2": I / (float(thickness_m) * width_right_m),
+        "width_left_m": width_left_m,
+        "width_right_m": width_right_m,
+    }
+
+
+def terminal_boundary_accum_A_m(
+    edge_data,
+    *,
+    n_nodes: int,
+    target_current_A: float,
+    thickness_m: float,
+) -> np.ndarray:
+    """Build nodal terminal-flux accumulator for div(j)=0.
+
+    The accumulator has units [A/m], i.e. current per film thickness. It must be
+    added to the edge-flux accumulator before division by node area.
+    """
+    left_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="left")
+    right_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="right")
+    flux = terminal_outward_flux_densities_A_m2(
+        edge_data,
+        n_nodes=n_nodes,
+        target_current_A=target_current_A,
+        thickness_m=thickness_m,
+    )
+
+    out = np.zeros(int(n_nodes), dtype=float)
+    out += left_measure * flux["left_A_m2"]
+    out += right_measure * flux["right_A_m2"]
+    return out
+
+
+def unwrap_phase_graph(
+    psi: np.ndarray,
+    edges: np.ndarray,
+    *,
+    seed_index: int | None = None,
+    subtract_mean: bool = False,
+) -> np.ndarray:
+    """Unwrap phase by walking the mesh graph.
+
+    This avoids the artificial 2*pi accumulation that appears when np.unwrap is
+    applied to a flattened 2D mesh.
+    """
+    z = np.asarray(psi, dtype=np.complex128).reshape(-1)
+    edges = np.asarray(edges, dtype=np.int64)
+    n = int(z.size)
+
+    if n == 0:
+        return np.array([], dtype=float)
+
+    if seed_index is None:
+        seed_index = 0
+    seed_index = int(seed_index)
+
+    adj: list[list[tuple[int, float]]] = [[] for _ in range(n)]
+    dtheta = np.angle(z[edges[:, 1]] * np.conjugate(z[edges[:, 0]]))
+    for (i, j), dth in zip(edges, dtheta):
+        ii = int(i)
+        jj = int(j)
+        adj[ii].append((jj, float(dth)))
+        adj[jj].append((ii, -float(dth)))
+
+    theta = np.full(n, np.nan, dtype=float)
+    visited = np.zeros(n, dtype=bool)
+
+    starts = [seed_index] + [i for i in range(n) if i != seed_index]
+    for start in starts:
+        if visited[start]:
+            continue
+        theta[start] = float(np.angle(z[start]))
+        visited[start] = True
+        stack = [start]
+
+        while stack:
+            i = stack.pop()
+            for j, dth in adj[i]:
+                if not visited[j]:
+                    theta[j] = theta[i] + dth
+                    visited[j] = True
+                    stack.append(j)
+
+    if subtract_mean:
+        theta -= float(np.nanmean(theta))
+
+    return theta
 
 def edge_scalar_to_node_vector(edge_current_i_to_j: np.ndarray, ops: FVOperators) -> tuple[np.ndarray, np.ndarray]:
     """Average edge-oriented current scalars into node vector components."""

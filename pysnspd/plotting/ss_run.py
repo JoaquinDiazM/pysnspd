@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
+from pysnspd.gtdgl.operators import unwrap_phase_graph
 
 MEV_J = 1.602176634e-22
 
@@ -188,9 +189,19 @@ def _plot_node_scalar(
 
 
 def _unwrap_phase_by_x(mesh, theta_wrapped: np.ndarray) -> np.ndarray:
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    order = np.lexsort((nodes[:, 1], nodes[:, 0]))
-    theta_sorted = np.unwrap(np.asarray(theta_wrapped, dtype=float)[order])
-    out = np.empty_like(theta_sorted)
-    out[order] = theta_sorted
-    return out
+    psi = np.exp(1j * np.asarray(theta_wrapped, dtype=float))
+    edges = _edges_from_triangles(mesh.triangles)
+    return unwrap_phase_graph(psi, edges)
+
+
+def _edges_from_triangles(triangles: np.ndarray) -> np.ndarray:
+    triangles = np.asarray(triangles, dtype=np.int64)
+    pairs = np.vstack(
+        [
+            triangles[:, [0, 1]],
+            triangles[:, [1, 2]],
+            triangles[:, [2, 0]],
+        ]
+    )
+    pairs.sort(axis=1)
+    return np.unique(pairs, axis=0)
