@@ -1,6 +1,6 @@
-"""OE5 debug pipeline: projected electron-phonon powers.
+"""OE5 debug pipeline: thermal-Usadel projected electron-phonon powers.
 
-This final OE5 debug pipeline consumes:
+This final OE5 audit consumes:
 
 1. An OE4 phase-space catalogue:
        phase_space_catalog.npz
@@ -11,13 +11,16 @@ This final OE5 debug pipeline consumes:
 3. A Simon et al. 2025 Eliashberg/PhDOS data file:
        nbn-a2f-ph.dat
 
-Unlike the intermediate OE5 attempts, this version does not plot a fixed,
-non-self-consistent gap trajectory. Instead, it extracts the stable branch of
-the OE3 Usadel calibration sweep,
+It constructs a thermal Usadel equilibrium grid,
 
-    Delta_eq(q,T_bias),
+    Delta_eq(Te,q),
 
-and evaluates the projected powers along that self-consistent branch.
+using the same Matsubara self-consistency solver as OE3. The projected powers
+are then evaluated as
+
+    P_ep(Te; Delta_eq(Te,q), q).
+
+This removes the earlier fixed-gap and BCS-like diagnostic plots.
 """
 
 from __future__ import annotations
@@ -38,22 +41,24 @@ from pysnspd.kinetic.eliashberg import (
 from pysnspd.kinetic.phase_space import load_phase_space_catalog_npz
 from pysnspd.kinetic.powers import (
     TAU0_OVER_TAU_EP_TC,
-    build_usadel_self_consistent_trajectory,
-    compute_power_curve_at_usadel_state,
+    build_thermal_usadel_grid,
+    compute_power_curve_thermal_usadel_state,
+    compute_power_scan_thermal_usadel,
     compute_projected_powers,
-    compute_usadel_q_power_scan,
     cumulative_spectral_support,
     electronic_density_of_states_from_sigma_D,
-    select_usadel_state_by_current_fraction,
+    select_thermal_usadel_q_state,
     tau0_from_tau_ep_Tc,
     tau_ep_Tc_from_tau0,
+    thermal_usadel_delta_at_state,
 )
 from pysnspd.plotting.kinetic import (
     plot_eliashberg_spectrum,
-    plot_power_curve,
-    plot_power_vs_usadel_current,
+    plot_power_curve_thermal_usadel,
+    plot_power_ratios_thermal_usadel,
+    plot_power_scan_thermal_usadel,
     plot_spectral_support,
-    plot_usadel_self_consistent_trajectory,
+    plot_thermal_usadel_gap_grid,
 )
 from pysnspd.usadel.catalog import load_usadel_catalog_npz
 
@@ -63,7 +68,7 @@ MEV_J = 1.602176634e-22
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="OE5 projected power debug using Usadel self-consistent branch."
+        description="OE5 projected powers with thermal Usadel self-consistency."
     )
 
     parser.add_argument("--config", required=True, help="Path to YAML config.")
@@ -87,17 +92,8 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--Tph-K", type=float, default=0.9)
     parser.add_argument("--Te-min-K", type=float, default=0.9)
-    parser.add_argument(
-        "--Te-max-K",
-        type=float,
-        default=None,
-        help=(
-            "Maximum Te for power-vs-Te diagnostic. If omitted, the pipeline "
-            "uses 0.95 Tc to avoid interpreting a low-temperature Usadel "
-            "self-consistent gap above Tc."
-        ),
-    )
-    parser.add_argument("--n-Te", type=int, default=100)
+    parser.add_argument("--Te-max-K", type=float, default=34.6)
+    parser.add_argument("--n-Te", type=int, default=160)
 
     parser.add_argument(
         "--q-scan-Te-K",
@@ -105,23 +101,29 @@ def parse_args() -> argparse.Namespace:
         nargs="*",
         default=None,
         help=(
-            "Electron temperatures used for the self-consistent Usadel q-scan. "
-            "If omitted, uses Tph, 0.5Tc and 0.8Tc."
+            "Electron temperatures used for the thermal Usadel q-scan. "
+            "If omitted, uses Tph, 0.8Tc, Tc and 2Tc clipped to Te range."
         ),
     )
     parser.add_argument(
-        "--n-q-trajectory",
+        "--n-q-thermal",
         type=int,
         default=120,
-        help="Number of q points in the interpolated stable Usadel branch.",
+        help="Number of q points in the thermal Usadel grid.",
+    )
+    parser.add_argument(
+        "--n-matsubara-thermal",
+        type=int,
+        default=500,
+        help="Number of Matsubara frequencies for Delta_eq(Te,q).",
     )
     parser.add_argument(
         "--state-current-fraction",
         type=float,
         default=None,
         help=(
-            "Select representative Usadel state by I/Ic. If omitted, use the "
-            "configured bias current divided by the calibrated Ic."
+            "Select representative q by reference I(q,T_bias)/Ic(T_bias). "
+            "If omitted, use configured I_bias/Ic from the OE3 metadata."
         ),
     )
     parser.add_argument(
@@ -173,6 +175,11 @@ def main() -> int:
     sigma_n = float(usadel_catalog.metadata["sigma_n_S_m"])
     Tc_K = float(usadel_catalog.metadata["Tc_K"])
     T_bias_K = float(usadel_catalog.metadata["T_bias_K"])
+    I_bias_A = float(usadel_catalog.metadata.get("I_bias_A", 0.0))
+
+    calibration = usadel_catalog.metadata.get("calibration", {})
+    Ic_A = float(calibration.get("Ic_model_A", calibration.get("Ic_target_A", np.nan)))
+
     N0 = electronic_density_of_states_from_sigma_D(sigma_n, D_m2_s)
 
     if args.tau0_ps is not None:
@@ -184,24 +191,7 @@ def main() -> int:
         tau0_s = tau0_from_tau_ep_Tc(tau_ep_Tc_s)
         tau_source = "converted_from_tau_ep_Tc"
 
-    trajectory = build_usadel_self_consistent_trajectory(
-        usadel_catalog,
-        n_q=int(args.n_q_trajectory),
-        stable_branch_only=True,
-    )
-
-    Ic_A = float(trajectory.metadata["Ic_A"])
-    if args.state_current_fraction is None:
-        I_bias_A = float(usadel_catalog.metadata.get("I_bias_A", 0.0))
-        target_fraction = I_bias_A / Ic_A if Ic_A > 0.0 else 0.80
-        target_fraction = float(np.clip(target_fraction, 0.0, 1.0))
-    else:
-        target_fraction = float(args.state_current_fraction)
-
-    state = select_usadel_state_by_current_fraction(trajectory, target_fraction)
-
-    Te_max = float(args.Te_max_K) if args.Te_max_K is not None else 0.95 * Tc_K
-    Te_values = np.linspace(float(args.Te_min_K), Te_max, int(args.n_Te))
+    Te_values = np.linspace(float(args.Te_min_K), float(args.Te_max_K), int(args.n_Te))
 
     if args.q_scan_Te_K:
         q_scan_Te = np.asarray(args.q_scan_Te_K, dtype=float)
@@ -209,17 +199,41 @@ def main() -> int:
         q_scan_Te = np.asarray(
             [
                 float(args.Tph_K),
-                0.5 * Tc_K,
                 0.8 * Tc_K,
+                Tc_K,
+                min(2.0 * Tc_K, float(args.Te_max_K)),
             ],
             dtype=float,
         )
-    q_scan_Te = np.unique(np.clip(q_scan_Te, float(args.Tph_K), Te_max))
+    q_scan_Te = np.unique(
+        np.clip(q_scan_Te, float(args.Te_min_K), float(args.Te_max_K))
+    )
 
-    power_curve = compute_power_curve_at_usadel_state(
+    thermal_Te_axis = np.unique(np.concatenate([Te_values, q_scan_Te]))
+
+    thermal_grid = build_thermal_usadel_grid(
+        usadel_catalog,
+        thermal_Te_axis,
+        n_q=int(args.n_q_thermal),
+        n_matsubara=int(args.n_matsubara_thermal),
+        stable_lowT_branch_only=True,
+    )
+
+    if args.state_current_fraction is None:
+        if np.isfinite(Ic_A) and Ic_A > 0.0:
+            target_fraction = float(np.clip(I_bias_A / Ic_A, 0.0, 1.0))
+        else:
+            target_fraction = 0.90
+    else:
+        target_fraction = float(args.state_current_fraction)
+
+    state = select_thermal_usadel_q_state(thermal_grid, target_fraction)
+
+    power_curve = compute_power_curve_thermal_usadel_state(
         Te_values,
         Tph_K=float(args.Tph_K),
         state=state,
+        thermal_grid=thermal_grid,
         phase_space_catalog=phase_catalog,
         spectrum=spectrum,
         N0_J_m3=N0,
@@ -228,20 +242,26 @@ def main() -> int:
         omega_max_meV=args.omega_max_meV,
     )
 
-    q_scan = compute_usadel_q_power_scan(
+    q_scan = compute_power_scan_thermal_usadel(
         q_scan_Te,
         Tph_K=float(args.Tph_K),
-        trajectory=trajectory,
+        thermal_grid=thermal_grid,
         phase_space_catalog=phase_catalog,
         spectrum=spectrum,
         N0_J_m3=N0,
         omega_max_meV=args.omega_max_meV,
     )
 
+    representative_Te = float(q_scan_Te[-1])
+    representative_delta = thermal_usadel_delta_at_state(
+        thermal_grid,
+        Te_K=representative_Te,
+        q_m_inv=float(state["q_m_inv"]),
+    )
     representative = compute_projected_powers(
-        float(q_scan_Te[-1]),
+        representative_Te,
         float(args.Tph_K),
-        float(state["delta_J"]),
+        representative_delta,
         float(state["q_m_inv"]),
         phase_catalog,
         spectrum,
@@ -254,26 +274,31 @@ def main() -> int:
         spectrum,
         plots_diag / "eliashberg_spectrum.png",
     )
-    trajectory_plot = plot_usadel_self_consistent_trajectory(
-        trajectory,
-        plots_diag / "usadel_self_consistent_trajectory.png",
+    thermal_gap_plot = plot_thermal_usadel_gap_grid(
+        thermal_grid,
+        plots_diag / "thermal_usadel_gap_grid.png",
+        target_fraction=state["reference_current_fraction"],
     )
-    power_plot = plot_power_curve(
+    power_plot = plot_power_curve_thermal_usadel(
         power_curve,
-        plots_comp / "electron_phonon_power_vs_Te_usadel_state.png",
+        plots_comp / "electron_phonon_power_vs_Te_thermal_usadel.png",
         tau_label=r"$\tau_0$ from $\tau_{ep}(T_c)$",
         title_suffix=(
-            rf"Usadel state: $I/I_c={state['current_fraction']:.3f}$, "
-            rf"$\Delta={state['delta_meV']:.3f}$ meV"
+            rf"thermal Usadel state: "
+            rf"$I/I_c^{{bias}}={state['reference_current_fraction']:.3f}$"
         ),
     )
-    q_power_plot = plot_power_vs_usadel_current(
+    ratio_plot = plot_power_ratios_thermal_usadel(
+        power_curve,
+        plots_comp / "electron_phonon_power_ratios_vs_Te.png",
+    )
+    scan_plot = plot_power_scan_thermal_usadel(
         q_scan,
-        plots_comp / "electron_phonon_power_vs_usadel_current.png",
+        plots_comp / "electron_phonon_power_vs_thermal_usadel_current.png",
     )
     support_plot = plot_spectral_support(
         support,
-        plots_comp / "spectral_support_usadel_state.png",
+        plots_comp / "spectral_support_thermal_usadel_state.png",
     )
 
     power_npz = raw_ss / "oe5_power_catalog.npz"
@@ -285,13 +310,18 @@ def main() -> int:
         state_P_S_W_m3=power_curve["P_S_W_m3"],
         state_P_R_W_m3=power_curve["P_R_W_m3"],
         state_P_total_W_m3=power_curve["P_total_W_m3"],
+        state_P_normal_Eliashberg_W_m3=power_curve["P_normal_Eliashberg_W_m3"],
         state_P_Debye_Vodolazov_W_m3=power_curve["P_Debye_Vodolazov_W_m3"],
+        thermal_grid_Te_values_K=thermal_grid.Te_values_K,
+        thermal_grid_q_values_m_inv=thermal_grid.q_values_m_inv,
+        thermal_grid_gamma_values_J=thermal_grid.gamma_values_J,
+        thermal_grid_delta_eq_Tq_J=thermal_grid.delta_eq_Tq_J,
+        thermal_grid_current_Tq_A=thermal_grid.current_Tq_A,
+        thermal_grid_reference_current_fraction=thermal_grid.reference_current_fraction,
         q_scan_Te_values_K=q_scan["Te_values_K"],
         q_scan_q_values_m_inv=q_scan["q_values_m_inv"],
-        q_scan_gamma_values_J=q_scan["gamma_values_J"],
+        q_scan_reference_current_fraction=q_scan["reference_current_fraction"],
         q_scan_delta_values_J=q_scan["delta_values_J"],
-        q_scan_current_values_A=q_scan["current_values_A"],
-        q_scan_current_fraction=q_scan["current_fraction"],
         q_scan_P_S_W_m3=q_scan["P_S_W_m3"],
         q_scan_P_R_W_m3=q_scan["P_R_W_m3"],
         q_scan_P_total_W_m3=q_scan["P_total_W_m3"],
@@ -309,7 +339,7 @@ def main() -> int:
     )
 
     summary = {
-        "backend": "oe5_projected_power_debug_v3_usadel_self_consistent",
+        "backend": "oe5_projected_power_debug_v4_thermal_usadel",
         "inputs": {
             "phase_space_npz": str(phase_path),
             "usadel_npz": str(usadel_path),
@@ -321,13 +351,21 @@ def main() -> int:
             "N0_J_m3": N0,
             "Tc_K": Tc_K,
             "T_bias_K": T_bias_K,
+            "I_bias_A": I_bias_A,
+            "Ic_A": Ic_A,
             "tau_source": tau_source,
             "tau_ep_Tc_ps": float(tau_ep_Tc_s / 1.0e-12),
             "tau0_ps": float(tau0_s / 1.0e-12),
             "tau0_over_tau_ep_Tc": float(TAU0_OVER_TAU_EP_TC),
         },
-        "usadel_trajectory": trajectory.metadata,
-        "selected_usadel_state": state,
+        "thermal_usadel_grid": {
+            **thermal_grid.metadata,
+            "Te_min_K": float(thermal_grid.Te_values_K[0]),
+            "Te_max_K": float(thermal_grid.Te_values_K[-1]),
+            "delta_max_meV": float(np.max(thermal_grid.delta_eq_Tq_J) / MEV_J),
+            "delta_min_meV": float(np.min(thermal_grid.delta_eq_Tq_J) / MEV_J),
+        },
+        "selected_thermal_usadel_state": state,
         "power_axis": {
             "Tph_K": float(args.Tph_K),
             "Te_min_K": float(Te_values[0]),
@@ -338,9 +376,9 @@ def main() -> int:
         },
         "eliashberg": spectrum_summary(spectrum),
         "representative_power": {
-            "Te_K": float(q_scan_Te[-1]),
+            "Te_K": representative_Te,
             "Tph_K": float(args.Tph_K),
-            "delta_meV": float(state["delta_meV"]),
+            "delta_meV": float(representative_delta / MEV_J),
             "q_m_inv": float(state["q_m_inv"]),
             "P_S_W_m3": representative.P_S_W_m3,
             "P_R_W_m3": representative.P_R_W_m3,
@@ -348,12 +386,12 @@ def main() -> int:
             "omega_max_meV_used": representative.metadata["omega_max_meV_used"],
         },
         "curve_extrema": {
-            "state_P_S_min_W_m3": float(np.min(power_curve["P_S_W_m3"])),
             "state_P_S_max_W_m3": float(np.max(power_curve["P_S_W_m3"])),
-            "state_P_R_min_W_m3": float(np.min(power_curve["P_R_W_m3"])),
             "state_P_R_max_W_m3": float(np.max(power_curve["P_R_W_m3"])),
-            "state_P_total_min_W_m3": float(np.min(power_curve["P_total_W_m3"])),
             "state_P_total_max_W_m3": float(np.max(power_curve["P_total_W_m3"])),
+            "state_P_normal_Eliashberg_max_W_m3": float(
+                np.max(power_curve["P_normal_Eliashberg_W_m3"])
+            ),
             "state_P_Debye_max_W_m3": float(
                 np.max(power_curve["P_Debye_Vodolazov_W_m3"])
             ),
@@ -363,22 +401,27 @@ def main() -> int:
         },
         "interpretation": {
             "self_consistency_policy": (
-                "OE5-v3 uses Delta_eq(q,T_bias) from the OE3 Matsubara Usadel "
-                "calibration sweep. No artificial fixed-gap or BCS-like diagnostic "
-                "trajectory is plotted."
+                "OE5-v4 uses Delta_eq(Te,q) from the Matsubara Usadel gap "
+                "equation. Fixed-gap and BCS-like diagnostic plots were removed."
+            ),
+            "normal_reference_policy": (
+                "The normal Eliashberg and Debye curves are references for the "
+                "Delta -> 0 limit. They are not replacements for the "
+                "superconducting projected powers."
             ),
             "future_coupled_policy": (
-                "In the coupled gTDGL/thermal model, Delta(r,t) and q(r,t) will "
-                "replace this static Usadel calibration trajectory."
+                "In PHOTON-runs, Delta(r,t) and q(r,t) from gTDGL will replace "
+                "this local thermal-equilibrium Usadel grid."
             ),
         },
         "outputs": {
             "power_npz": str(power_npz),
             "power_summary": str(raw_ss / "oe5_power_summary.yaml"),
             "eliashberg_plot": str(spectrum_plot),
-            "trajectory_plot": str(trajectory_plot),
+            "thermal_gap_plot": str(thermal_gap_plot),
             "power_plot": str(power_plot),
-            "q_power_plot": str(q_power_plot),
+            "ratio_plot": str(ratio_plot),
+            "scan_plot": str(scan_plot),
             "support_plot": str(support_plot),
         },
     }
@@ -394,8 +437,8 @@ def main() -> int:
         extra={
             "pipeline": "02_oe5_power_debug.py",
             "purpose": (
-                "OE5 local projected electron-phonon powers evaluated on the "
-                "OE3 Usadel self-consistent stable branch."
+                "OE5 local projected electron-phonon powers evaluated with "
+                "thermal Usadel self-consistency Delta_eq(Te,q)."
             ),
             "summary": summary,
         },
@@ -416,18 +459,20 @@ def main() -> int:
     print(f"  N0_J_m3                 : {N0}")
     print(f"  Tc_K                    : {Tc_K}")
     print(f"  T_bias_K                : {T_bias_K}")
+    print(f"  I_bias_A                : {I_bias_A}")
+    print(f"  Ic_A                    : {Ic_A}")
     print(f"  tau_source              : {tau_source}")
     print(f"  tau_ep_Tc_ps            : {tau_ep_Tc_s / 1.0e-12}")
     print(f"  tau0_ps                 : {tau0_s / 1.0e-12}")
     print()
-    print("Selected Usadel state")
+    print("Selected thermal Usadel q-state")
     for key, value in state.items():
         print(f"  {key}: {value}")
     print()
     print("Representative projected power")
-    print(f"  Te_K                    : {q_scan_Te[-1]}")
+    print(f"  Te_K                    : {representative_Te}")
     print(f"  Tph_K                   : {args.Tph_K}")
-    print(f"  delta_meV               : {state['delta_meV']}")
+    print(f"  delta_meV               : {representative_delta / MEV_J}")
     print(f"  q_m_inv                 : {state['q_m_inv']}")
     print(f"  P_S_W_m3                : {representative.P_S_W_m3}")
     print(f"  P_R_W_m3                : {representative.P_R_W_m3}")
@@ -437,9 +482,10 @@ def main() -> int:
     print(f"  power_npz               : {power_npz}")
     print(f"  power_summary           : {summary_path}")
     print(f"  eliashberg_plot         : {spectrum_plot}")
-    print(f"  trajectory_plot         : {trajectory_plot}")
+    print(f"  thermal_gap_plot        : {thermal_gap_plot}")
     print(f"  power_plot              : {power_plot}")
-    print(f"  q_power_plot            : {q_power_plot}")
+    print(f"  ratio_plot              : {ratio_plot}")
+    print(f"  scan_plot               : {scan_plot}")
     print(f"  support_plot            : {support_plot}")
     print(f"  manifest                : {manifest}")
     print("Status: OK")

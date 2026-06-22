@@ -21,15 +21,21 @@ Physical Review B 112, 174512 (2025). The Vodolazov/Allmaras T^5 form is
 used only as a normal-state Debye consistency check, not as the microscopic
 starting point.
 
-Important convention
---------------------
-The Vodolazov/Allmaras parameter tau0 is not the linear electron-phonon
-relaxation time at Tc. Linearizing the Debye T^5 power around T=Tc gives
+OE5-v4 policy
+-------------
+OE5-v4 removes the earlier fixed-gap and BCS-like diagnostic closures. It
+builds a thermal self-consistent Usadel grid,
 
-    tau0 = [720 zeta(5) / pi^2] tau_ep(Tc).
+    Delta_eq(Te, q),
 
-Therefore a material value such as tau_ep(Tc)=24.7 ps must not be inserted
-directly as tau0 in the T^5 comparison.
+using the existing OE3 Matsubara Usadel self-consistency solver. Projected
+powers are then evaluated as
+
+    P_ep(Te; Delta_eq(Te,q), q).
+
+This still is not the final gTDGL-coupled dynamics, because future PHOTON-runs
+will use Delta(r,t) and q(r,t). It is, however, the correct local equilibrium
+audit for OE5.
 """
 
 from __future__ import annotations
@@ -40,6 +46,11 @@ from typing import Any
 import numpy as np
 
 from pysnspd.kinetic.eliashberg import EliashbergSpectrum, j_to_mev
+from pysnspd.usadel.calibration import (
+    matsubara_energy_axis_J,
+    solve_gap_for_gamma_J,
+    solve_matsubara_s_values,
+)
 
 
 HBAR_J_S = 1.054571817e-34
@@ -74,30 +85,31 @@ class ProjectedPowerResult:
 
 
 @dataclass(frozen=True)
-class UsadelSelfConsistentTrajectory:
-    """Stable-branch Usadel trajectory Delta_eq(q,T_bias).
+class ThermalUsadelGrid:
+    """Thermal Usadel equilibrium grid Delta_eq(Te,q).
 
-    This object is extracted from the OE3 Usadel calibration sweep. It is
-    self-consistent in the sense used by the current pySNSPD OE3 block:
-    Delta_eq is obtained from the Matsubara Usadel gap equation for each
-    depairing energy Gamma_q at the configured bias temperature T_bias.
+    The q-axis is inherited from the OE3 low-temperature current calibration
+    branch, usually up to the low-temperature critical point. For each
+    temperature Te and depairing energy Gamma_q, Delta_eq is recomputed from
+    the Matsubara self-consistency equation.
 
-    It is not a substitute for the future time-dependent gTDGL field
-    Delta(r,t). It is the correct OE5 diagnostic trajectory for avoiding the
-    artificial fixed-gap plots used during earlier debugging.
+    The field ``reference_current_fraction`` is I(q,T_bias)/Ic(T_bias), used
+    only as a stable horizontal coordinate for diagnostics.
     """
 
+    Te_values_K: np.ndarray
     q_values_m_inv: np.ndarray
     gamma_values_J: np.ndarray
-    delta_eq_values_J: np.ndarray
-    current_values_A: np.ndarray
-    current_density_values_A_m2: np.ndarray
-    current_fraction: np.ndarray
+    delta_eq_Tq_J: np.ndarray
+    current_Tq_A: np.ndarray
+    current_density_Tq_A_m2: np.ndarray
+    current_fraction_Tq: np.ndarray
+    reference_current_fraction: np.ndarray
     metadata: dict[str, Any]
 
 
 def tau0_from_tau_ep_Tc(tau_ep_Tc_s: float) -> float:
-    """Convert the linear relaxation time at Tc into Vodolazov tau0."""
+    """Convert linear tau_ep(Tc) into the Vodolazov/Allmaras tau0."""
     if tau_ep_Tc_s <= 0.0:
         raise ValueError("tau_ep_Tc_s must be positive.")
     return float(TAU0_OVER_TAU_EP_TC * tau_ep_Tc_s)
@@ -158,130 +170,199 @@ def bose_difference(omega_J: np.ndarray, Te_K: float, Tph_K: float) -> np.ndarra
     return bose_positive_energy(omega_J, Te_K) - bose_positive_energy(omega_J, Tph_K)
 
 
-def build_usadel_self_consistent_trajectory(
+def build_thermal_usadel_grid(
     usadel_catalog,
+    Te_values_K: np.ndarray,
     *,
-    n_q: int = 120,
-    stable_branch_only: bool = True,
-) -> UsadelSelfConsistentTrajectory:
-    """Build an interpolated stable-branch Usadel trajectory.
+    n_q: int = 160,
+    n_matsubara: int = 500,
+    stable_lowT_branch_only: bool = True,
+) -> ThermalUsadelGrid:
+    """Build Delta_eq(Te,q) using the OE3 Matsubara Usadel solver.
 
-    The OE3 Usadel block stores a calibration sweep containing
-    ``calibration_q_values_m_inv``, ``calibration_delta_eq_values_J`` and
-    ``calibration_current_values_A``. This function extracts the stable branch
-    up to the maximum supercurrent and interpolates it onto a smooth q-axis.
+    Parameters
+    ----------
+    usadel_catalog:
+        OE3 catalogue loaded from ``usadel_dos_catalog.npz``.
+    Te_values_K:
+        Electron-temperature axis where Delta_eq is recomputed.
+    n_q:
+        Number of q points in the interpolated low-temperature branch.
+    n_matsubara:
+        Number of Matsubara frequencies used for the gap solve.
+    stable_lowT_branch_only:
+        If True, use q in [0,q_c(T_bias)] from the OE3 calibration sweep.
+
+    Notes
+    -----
+    This function is the OE5-v4 replacement for all fixed-gap diagnostic plots.
+    It evaluates the same self-consistency equation as OE3, but at each Te.
     """
-    q_raw = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
-    gamma_raw = np.asarray(usadel_catalog.calibration_gamma_values_J, dtype=float)
-    delta_raw = np.asarray(usadel_catalog.calibration_delta_eq_values_J, dtype=float)
-    current_raw = np.asarray(usadel_catalog.calibration_current_values_A, dtype=float)
-    current_density_raw = np.asarray(
-        usadel_catalog.calibration_current_density_values_A_m2,
-        dtype=float,
-    )
+    Te_values = np.asarray(Te_values_K, dtype=float)
+    if Te_values.ndim != 1 or Te_values.size < 2:
+        raise ValueError("Te_values_K must be a one-dimensional array with >=2 values.")
+    if np.any(Te_values <= 0.0):
+        raise ValueError("All Te values must be positive.")
+    if np.any(np.diff(Te_values) < 0.0):
+        raise ValueError("Te_values_K must be sorted.")
 
-    finite = (
-        np.isfinite(q_raw)
-        & np.isfinite(gamma_raw)
-        & np.isfinite(delta_raw)
-        & np.isfinite(current_raw)
-        & np.isfinite(current_density_raw)
-    )
-    finite &= q_raw >= 0.0
-    finite &= delta_raw >= 0.0
-    finite &= current_raw >= 0.0
+    D_m2_s = float(usadel_catalog.metadata["D_m2_s"])
+    sigma_n = float(usadel_catalog.metadata["sigma_n_S_m"])
+    width_m = float(usadel_catalog.metadata["width_m"])
+    thickness_m = float(usadel_catalog.metadata["thickness_m"])
+    area_m2 = width_m * thickness_m
+    Tc_K = float(usadel_catalog.metadata["Tc_K"])
+    T_bias_K = float(usadel_catalog.metadata["T_bias_K"])
 
-    if np.sum(finite) < 3:
-        raise ValueError("Usadel calibration sweep does not contain enough valid points.")
+    q_cal = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
+    current_cal = np.asarray(usadel_catalog.calibration_current_values_A, dtype=float)
 
-    q_raw = q_raw[finite]
-    gamma_raw = gamma_raw[finite]
-    delta_raw = delta_raw[finite]
-    current_raw = current_raw[finite]
-    current_density_raw = current_density_raw[finite]
+    valid = np.isfinite(q_cal) & np.isfinite(current_cal)
+    valid &= q_cal >= 0.0
+    valid &= current_cal >= 0.0
+    if np.sum(valid) < 3:
+        raise ValueError("Invalid OE3 calibration branch.")
 
-    order = np.argsort(q_raw)
-    q_raw = q_raw[order]
-    gamma_raw = gamma_raw[order]
-    delta_raw = delta_raw[order]
-    current_raw = current_raw[order]
-    current_density_raw = current_density_raw[order]
+    q_cal = q_cal[valid]
+    current_cal = current_cal[valid]
+    order = np.argsort(q_cal)
+    q_cal = q_cal[order]
+    current_cal = current_cal[order]
 
-    idx_ic = int(np.argmax(current_raw))
-    Ic_A = float(current_raw[idx_ic])
-    q_critical = float(q_raw[idx_ic])
-    delta_critical = float(delta_raw[idx_ic])
+    idx_ic = int(np.argmax(current_cal))
+    Ic_bias_A = float(current_cal[idx_ic])
+    q_c_bias = float(q_cal[idx_ic])
 
-    if stable_branch_only:
-        q_raw = q_raw[: idx_ic + 1]
-        gamma_raw = gamma_raw[: idx_ic + 1]
-        delta_raw = delta_raw[: idx_ic + 1]
-        current_raw = current_raw[: idx_ic + 1]
-        current_density_raw = current_density_raw[: idx_ic + 1]
-
-    if Ic_A <= 0.0:
-        raise ValueError("Usadel calibration critical current is not positive.")
+    if stable_lowT_branch_only:
+        q_min = 0.0
+        q_max = q_c_bias
+    else:
+        q_min = float(np.min(q_cal))
+        q_max = float(np.max(q_cal))
 
     if n_q <= 1:
-        q_values = q_raw
+        q_values = np.asarray([q_max], dtype=float)
     else:
-        q_values = np.linspace(float(q_raw[0]), float(q_raw[-1]), int(n_q))
+        q_values = np.linspace(q_min, q_max, int(n_q))
 
-    gamma_values = np.interp(q_values, q_raw, gamma_raw)
-    delta_values = np.interp(q_values, q_raw, delta_raw)
-    current_values = np.interp(q_values, q_raw, current_raw)
-    current_density_values = np.interp(q_values, q_raw, current_density_raw)
-    current_fraction = current_values / Ic_A
+    gamma_values = 0.5 * HBAR_J_S * D_m2_s * q_values * q_values
+
+    current_reference = np.interp(q_values, q_cal, current_cal)
+    if Ic_bias_A > 0.0:
+        reference_fraction = current_reference / Ic_bias_A
+    else:
+        reference_fraction = np.zeros_like(q_values)
+
+    delta_grid = np.zeros((Te_values.size, q_values.size), dtype=float)
+    current_grid = np.zeros_like(delta_grid)
+    current_density_grid = np.zeros_like(delta_grid)
+    current_fraction_grid = np.zeros_like(delta_grid)
+
+    for iT, Te in enumerate(Te_values):
+        eps_n = matsubara_energy_axis_J(T_K=float(Te), n_matsubara=int(n_matsubara))
+
+        for iq, (q, gamma) in enumerate(zip(q_values, gamma_values, strict=True)):
+            delta = solve_gap_for_gamma_J(
+                gamma_J=float(gamma),
+                T_K=float(Te),
+                Tc_K=Tc_K,
+                eps_n_J=eps_n,
+            )
+            delta_grid[iT, iq] = delta
+
+            if delta > 0.0 and q > 0.0:
+                s = solve_matsubara_s_values(
+                    delta_J=float(delta),
+                    gamma_J=float(gamma),
+                    eps_n_J=eps_n,
+                )
+                sum_s2 = float(np.sum(s * s))
+                current = (
+                    area_m2
+                    * (2.0 * np.pi * KB_J_K * float(Te) / E_CHARGE_C)
+                    * sigma_n
+                    * float(q)
+                    * sum_s2
+                )
+            else:
+                current = 0.0
+
+            current_grid[iT, iq] = current
+            current_density_grid[iT, iq] = current / area_m2
+
+        row_max = float(np.max(current_grid[iT, :]))
+        if row_max > 0.0:
+            current_fraction_grid[iT, :] = current_grid[iT, :] / row_max
 
     metadata = {
-        "backend": "usadel_self_consistent_trajectory_from_oe3_calibration",
-        "stable_branch_only": bool(stable_branch_only),
-        "n_q": int(q_values.size),
-        "Ic_A": Ic_A,
-        "q_critical_m_inv": q_critical,
-        "delta_critical_J": delta_critical,
-        "delta_critical_meV": float(delta_critical / MEV_J),
-        "T_bias_K": float(usadel_catalog.metadata.get("T_bias_K", np.nan)),
-        "source": (
-            "Extracted from OE3 Matsubara Usadel calibration sweep. "
-            "Delta_eq(q,T_bias) is used as the self-consistent OE5 diagnostic "
-            "trajectory."
+        "backend": "thermal_usadel_grid_oe5_v4",
+        "description": (
+            "Delta_eq(Te,q) recomputed with the OE3 Matsubara Usadel "
+            "self-consistency solver. This replaces fixed-gap OE5 diagnostics."
         ),
+        "n_Te": int(Te_values.size),
+        "n_q": int(q_values.size),
+        "n_matsubara": int(n_matsubara),
+        "Tc_K": Tc_K,
+        "T_bias_K": T_bias_K,
+        "D_m2_s": D_m2_s,
+        "sigma_n_S_m": sigma_n,
+        "width_m": width_m,
+        "thickness_m": thickness_m,
+        "Ic_bias_A": Ic_bias_A,
+        "q_c_bias_m_inv": q_c_bias,
+        "stable_lowT_branch_only": bool(stable_lowT_branch_only),
     }
 
-    return UsadelSelfConsistentTrajectory(
+    return ThermalUsadelGrid(
+        Te_values_K=Te_values,
         q_values_m_inv=q_values,
         gamma_values_J=gamma_values,
-        delta_eq_values_J=delta_values,
-        current_values_A=current_values,
-        current_density_values_A_m2=current_density_values,
-        current_fraction=current_fraction,
+        delta_eq_Tq_J=delta_grid,
+        current_Tq_A=current_grid,
+        current_density_Tq_A_m2=current_density_grid,
+        current_fraction_Tq=current_fraction_grid,
+        reference_current_fraction=reference_fraction,
         metadata=metadata,
     )
 
 
-def select_usadel_state_by_current_fraction(
-    trajectory: UsadelSelfConsistentTrajectory,
-    target_fraction: float,
+def select_thermal_usadel_q_state(
+    grid: ThermalUsadelGrid,
+    target_reference_current_fraction: float,
 ) -> dict[str, float]:
-    """Select the self-consistent trajectory point closest to I/Ic."""
-    if target_fraction < 0.0:
-        raise ValueError("target_fraction must be non-negative.")
+    """Select a fixed q state by low-temperature reference I/Ic."""
+    if target_reference_current_fraction < 0.0:
+        raise ValueError("target_reference_current_fraction must be non-negative.")
 
-    frac = np.asarray(trajectory.current_fraction, dtype=float)
-    idx = int(np.argmin(np.abs(frac - float(target_fraction))))
+    frac = np.asarray(grid.reference_current_fraction, dtype=float)
+    idx = int(np.argmin(np.abs(frac - float(target_reference_current_fraction))))
 
     return {
-        "index": idx,
-        "current_fraction": float(trajectory.current_fraction[idx]),
-        "current_A": float(trajectory.current_values_A[idx]),
-        "current_density_A_m2": float(trajectory.current_density_values_A_m2[idx]),
-        "q_m_inv": float(trajectory.q_values_m_inv[idx]),
-        "gamma_J": float(trajectory.gamma_values_J[idx]),
-        "gamma_meV": float(trajectory.gamma_values_J[idx] / MEV_J),
-        "delta_J": float(trajectory.delta_eq_values_J[idx]),
-        "delta_meV": float(trajectory.delta_eq_values_J[idx] / MEV_J),
+        "q_index": idx,
+        "reference_current_fraction": float(frac[idx]),
+        "q_m_inv": float(grid.q_values_m_inv[idx]),
+        "gamma_J": float(grid.gamma_values_J[idx]),
+        "gamma_meV": float(grid.gamma_values_J[idx] / MEV_J),
     }
+
+
+def thermal_usadel_delta_at_state(
+    grid: ThermalUsadelGrid,
+    *,
+    Te_K: float,
+    q_m_inv: float,
+) -> float:
+    """Bilinearly interpolate Delta_eq(Te,q) from a ThermalUsadelGrid."""
+    return float(
+        _interp2(
+            grid.Te_values_K,
+            grid.q_values_m_inv,
+            grid.delta_eq_Tq_J,
+            float(Te_K),
+            float(q_m_inv),
+        )
+    )
 
 
 def phase_space_spectra_at_state(
@@ -319,11 +400,7 @@ def compute_projected_powers(
     N0_J_m3: float,
     omega_max_meV: float | None = None,
 ) -> ProjectedPowerResult:
-    """Compute OE5 projected powers for one local state.
-
-    Positive power means energy leaves the electronic system and enters the
-    phonon system.
-    """
+    """Compute OE5 projected powers for one local state."""
     if N0_J_m3 <= 0.0:
         raise ValueError("N0_J_m3 must be positive.")
 
@@ -361,7 +438,7 @@ def compute_projected_powers(
     )
 
     metadata = {
-        "backend": "projected_powers_oe5_v3_usadel_self_consistent",
+        "backend": "projected_powers_oe5_v4_thermal_usadel",
         "sign_convention": (
             "Positive P_S/P_R means energy leaves electrons and enters phonons."
         ),
@@ -440,11 +517,12 @@ def compute_recombination_power(
     ).P_R_W_m3
 
 
-def compute_power_curve_at_usadel_state(
+def compute_power_curve_thermal_usadel_state(
     Te_values_K: np.ndarray,
     *,
     Tph_K: float,
     state: dict[str, float],
+    thermal_grid: ThermalUsadelGrid,
     phase_space_catalog,
     spectrum: EliashbergSpectrum,
     N0_J_m3: float,
@@ -452,28 +530,50 @@ def compute_power_curve_at_usadel_state(
     Tc_K: float,
     omega_max_meV: float | None = None,
 ) -> dict[str, np.ndarray]:
-    """Compute projected powers versus Te at one self-consistent Usadel state."""
+    """Compute projected powers versus Te at fixed q with Delta_eq(Te,q)."""
     Te_values = np.asarray(Te_values_K, dtype=float)
 
+    delta_values = np.zeros_like(Te_values)
+    q_values = np.full_like(Te_values, float(state["q_m_inv"]))
     P_S = np.zeros_like(Te_values)
     P_R = np.zeros_like(Te_values)
     P_total = np.zeros_like(Te_values)
     P_D = np.zeros_like(Te_values)
+    P_N = np.zeros_like(Te_values)
 
     for i, Te in enumerate(Te_values):
+        delta = thermal_usadel_delta_at_state(
+            thermal_grid,
+            Te_K=float(Te),
+            q_m_inv=float(state["q_m_inv"]),
+        )
+        delta_values[i] = delta
+
         result = compute_projected_powers(
             float(Te),
             float(Tph_K),
-            float(state["delta_J"]),
+            float(delta),
             float(state["q_m_inv"]),
             phase_space_catalog,
             spectrum,
             N0_J_m3=float(N0_J_m3),
             omega_max_meV=omega_max_meV,
         )
+        normal = compute_projected_powers(
+            float(Te),
+            float(Tph_K),
+            0.0,
+            0.0,
+            phase_space_catalog,
+            spectrum,
+            N0_J_m3=float(N0_J_m3),
+            omega_max_meV=omega_max_meV,
+        )
+
         P_S[i] = result.P_S_W_m3
         P_R[i] = result.P_R_W_m3
         P_total[i] = result.P_total_W_m3
+        P_N[i] = normal.P_S_W_m3
         P_D[i] = compute_vodolazov_debye_power_density(
             float(Te),
             float(Tph_K),
@@ -484,41 +584,49 @@ def compute_power_curve_at_usadel_state(
 
     return {
         "Te_values_K": Te_values,
-        "delta_values_J": np.full_like(Te_values, float(state["delta_J"])),
-        "q_values_m_inv": np.full_like(Te_values, float(state["q_m_inv"])),
+        "delta_values_J": delta_values,
+        "q_values_m_inv": q_values,
         "P_S_W_m3": P_S,
         "P_R_W_m3": P_R,
         "P_total_W_m3": P_total,
+        "P_normal_Eliashberg_W_m3": P_N,
         "P_Debye_Vodolazov_W_m3": P_D,
     }
 
 
-def compute_usadel_q_power_scan(
+def compute_power_scan_thermal_usadel(
     Te_values_K: np.ndarray,
     *,
     Tph_K: float,
-    trajectory: UsadelSelfConsistentTrajectory,
+    thermal_grid: ThermalUsadelGrid,
     phase_space_catalog,
     spectrum: EliashbergSpectrum,
     N0_J_m3: float,
     omega_max_meV: float | None = None,
 ) -> dict[str, np.ndarray]:
-    """Compute projected powers along the self-consistent Usadel q trajectory."""
+    """Compute projected powers on the full Delta_eq(Te,q) grid."""
     Te_values = np.asarray(Te_values_K, dtype=float)
-    q_values = np.asarray(trajectory.q_values_m_inv, dtype=float)
-    delta_values = np.asarray(trajectory.delta_eq_values_J, dtype=float)
+    q_values = np.asarray(thermal_grid.q_values_m_inv, dtype=float)
 
     shape = (Te_values.size, q_values.size)
+    delta = np.zeros(shape, dtype=float)
     P_S = np.zeros(shape, dtype=float)
     P_R = np.zeros(shape, dtype=float)
     P_total = np.zeros(shape, dtype=float)
 
     for iT, Te in enumerate(Te_values):
-        for iq, (q, delta) in enumerate(zip(q_values, delta_values, strict=True)):
+        for iq, q in enumerate(q_values):
+            d = thermal_usadel_delta_at_state(
+                thermal_grid,
+                Te_K=float(Te),
+                q_m_inv=float(q),
+            )
+            delta[iT, iq] = d
+
             result = compute_projected_powers(
                 float(Te),
                 float(Tph_K),
-                float(delta),
+                float(d),
                 float(q),
                 phase_space_catalog,
                 spectrum,
@@ -532,10 +640,12 @@ def compute_usadel_q_power_scan(
     return {
         "Te_values_K": Te_values,
         "q_values_m_inv": q_values,
-        "gamma_values_J": np.asarray(trajectory.gamma_values_J, dtype=float),
-        "delta_values_J": delta_values,
-        "current_values_A": np.asarray(trajectory.current_values_A, dtype=float),
-        "current_fraction": np.asarray(trajectory.current_fraction, dtype=float),
+        "gamma_values_J": np.asarray(thermal_grid.gamma_values_J, dtype=float),
+        "reference_current_fraction": np.asarray(
+            thermal_grid.reference_current_fraction,
+            dtype=float,
+        ),
+        "delta_values_J": delta,
         "P_S_W_m3": P_S,
         "P_R_W_m3": P_R,
         "P_total_W_m3": P_total,
@@ -653,6 +763,26 @@ def _trilinear(
     c1 = c10 * (1.0 - wd) + c11 * wd
 
     return c0 * (1.0 - wt) + c1 * wt
+
+
+def _interp2(
+    x_axis: np.ndarray,
+    y_axis: np.ndarray,
+    values_xy: np.ndarray,
+    x: float,
+    y: float,
+) -> float:
+    x0, x1, wx = _bracket_weight(x_axis, x)
+    y0, y1, wy = _bracket_weight(y_axis, y)
+
+    v00 = values_xy[x0, y0]
+    v01 = values_xy[x0, y1]
+    v10 = values_xy[x1, y0]
+    v11 = values_xy[x1, y1]
+
+    v0 = v00 * (1.0 - wy) + v01 * wy
+    v1 = v10 * (1.0 - wy) + v11 * wy
+    return float(v0 * (1.0 - wx) + v1 * wx)
 
 
 def _cumulative_fraction(x: np.ndarray, weight: np.ndarray) -> np.ndarray:

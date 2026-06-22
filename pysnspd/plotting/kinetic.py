@@ -40,30 +40,53 @@ def plot_eliashberg_spectrum(spectrum, output_path: str | Path, *, dpi: int = 48
     return output
 
 
-def plot_usadel_self_consistent_trajectory(
-    trajectory,
+def plot_thermal_usadel_gap_grid(
+    thermal_grid,
     output_path: str | Path,
     *,
+    target_fraction: float | None = None,
     dpi: int = 480,
 ) -> Path:
-    """Plot the Usadel self-consistent Delta(q) trajectory used in OE5."""
+    """Plot Delta_eq(Te,q) for representative current fractions."""
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    frac = np.asarray(trajectory.current_fraction, dtype=float)
-    delta_meV = np.asarray(trajectory.delta_eq_values_J, dtype=float) / MEV_J
-    q = np.asarray(trajectory.q_values_m_inv, dtype=float)
-    q_norm = q / np.max(q) if np.max(q) > 0.0 else q
+    Te = np.asarray(thermal_grid.Te_values_K, dtype=float)
+    frac = np.asarray(thermal_grid.reference_current_fraction, dtype=float)
+    delta = np.asarray(thermal_grid.delta_eq_Tq_J, dtype=float) / MEV_J
 
-    fig, ax = plt.subplots(figsize=(7.5, 4.6))
-    ax.plot(frac, delta_meV, linewidth=1.5, label=r"$\Delta_{\rm eq}(q)$ [meV]")
-    ax.plot(frac, q_norm, linewidth=1.2, linestyle="--", label=r"$q/q_{\max}$")
+    targets = [0.0, 0.5, 0.8, 0.95]
+    if target_fraction is not None:
+        targets.append(float(target_fraction))
 
-    ax.set_title("Usadel self-consistent stable branch")
-    ax.set_xlabel(r"normalized current $I/I_c$")
-    ax.set_ylabel(r"$\Delta_{\rm eq}$ [meV] / normalized $q$")
+    indices = []
+    for f in targets:
+        idx = int(np.argmin(np.abs(frac - f)))
+        if idx not in indices:
+            indices.append(idx)
+
+    fig, ax = plt.subplots(figsize=(7.5, 4.8))
+
+    for idx in indices:
+        ax.plot(
+            Te,
+            delta[:, idx],
+            linewidth=1.3,
+            label=rf"$I/I_c^{{bias}}\approx {frac[idx]:.3f}$",
+        )
+
+    ax.axvline(
+        float(thermal_grid.metadata["Tc_K"]),
+        linewidth=1.0,
+        linestyle=":",
+        label=rf"$T_c={thermal_grid.metadata['Tc_K']:.2f}$ K",
+    )
+
+    ax.set_title(r"Thermal Usadel self-consistency: $\Delta_{\rm eq}(T_e,q)$")
+    ax.set_xlabel(r"$T_e$ [K]")
+    ax.set_ylabel(r"$\Delta_{\rm eq}$ [meV]")
     ax.grid(True, linewidth=0.25, alpha=0.35)
-    ax.legend(frameon=True)
+    ax.legend(frameon=True, fontsize=8)
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -71,7 +94,7 @@ def plot_usadel_self_consistent_trajectory(
     return output
 
 
-def plot_power_curve(
+def plot_power_curve_thermal_usadel(
     power_curve: Mapping[str, np.ndarray],
     output_path: str | Path,
     *,
@@ -79,13 +102,14 @@ def plot_power_curve(
     title_suffix: str = "",
     dpi: int = 480,
 ) -> Path:
-    """Plot projected electron-phonon powers versus Te at one Usadel state."""
+    """Plot projected powers versus Te using Delta_eq(Te,q)."""
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
     Te = np.asarray(power_curve["Te_values_K"], dtype=float)
 
-    fig, ax = plt.subplots(figsize=(7.5, 4.8))
+    fig, ax = plt.subplots(figsize=(7.6, 4.9))
+
     ax.plot(Te, power_curve["P_S_W_m3"], linewidth=1.3, label=r"$P_{ep}^{S}$")
     ax.plot(Te, power_curve["P_R_W_m3"], linewidth=1.3, label=r"$P_{ep}^{R}$")
     ax.plot(
@@ -94,11 +118,17 @@ def plot_power_curve(
         linewidth=1.5,
         label=r"$P_{ep}^{S}+P_{ep}^{R}$",
     )
+    ax.plot(
+        Te,
+        power_curve["P_normal_Eliashberg_W_m3"],
+        linewidth=1.2,
+        linestyle="-.",
+        label=r"normal Eliashberg $\Delta=0$",
+    )
 
     debye_label = r"Vodolazov/Allmaras Debye $T^5$"
     if tau_label:
         debye_label += f" ({tau_label})"
-
     ax.plot(
         Te,
         power_curve["P_Debye_Vodolazov_W_m3"],
@@ -115,7 +145,7 @@ def plot_power_curve(
     ax.set_xlabel(r"$T_e$ [K]")
     ax.set_ylabel(r"power density [W m$^{-3}$]")
     ax.grid(True, linewidth=0.25, alpha=0.35)
-    ax.legend(frameon=True)
+    ax.legend(frameon=True, fontsize=8)
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -123,42 +153,99 @@ def plot_power_curve(
     return output
 
 
-def plot_power_vs_usadel_current(
-    q_scan: Mapping[str, np.ndarray],
+def plot_power_ratios_thermal_usadel(
+    power_curve: Mapping[str, np.ndarray],
     output_path: str | Path,
     *,
     dpi: int = 480,
 ) -> Path:
-    """Plot projected powers along the self-consistent Usadel current branch."""
+    """Plot ratios against the Vodolazov/Allmaras Debye reference."""
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    x = np.asarray(q_scan["current_fraction"], dtype=float)
-    Te_values = np.asarray(q_scan["Te_values_K"], dtype=float)
-    P_total = np.asarray(q_scan["P_total_W_m3"], dtype=float)
-    P_R = np.asarray(q_scan["P_R_W_m3"], dtype=float)
+    Te = np.asarray(power_curve["Te_values_K"], dtype=float)
+    debye = np.asarray(power_curve["P_Debye_Vodolazov_W_m3"], dtype=float)
+
+    def ratio(y):
+        y = np.asarray(y, dtype=float)
+        out = np.full_like(y, np.nan)
+        mask = np.abs(debye) > 0.0
+        out[mask] = y[mask] / debye[mask]
+        return out
+
+    fig, ax = plt.subplots(figsize=(7.5, 4.6))
+    ax.plot(Te, ratio(power_curve["P_S_W_m3"]), linewidth=1.3, label=r"$P_S/P_D$")
+    ax.plot(
+        Te,
+        ratio(power_curve["P_total_W_m3"]),
+        linewidth=1.3,
+        label=r"$(P_S+P_R)/P_D$",
+    )
+    ax.plot(
+        Te,
+        ratio(power_curve["P_normal_Eliashberg_W_m3"]),
+        linewidth=1.2,
+        linestyle="-.",
+        label=r"$P_{\Delta=0}^{\rm Eliashberg}/P_D$",
+    )
+
+    ax.axhline(1.0, linewidth=0.8, linestyle=":")
+    ax.set_title("Power-density ratios relative to Debye reference")
+    ax.set_xlabel(r"$T_e$ [K]")
+    ax.set_ylabel("ratio")
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(frameon=True, fontsize=8)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return output
+
+
+def plot_power_scan_thermal_usadel(
+    scan: Mapping[str, np.ndarray],
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot powers along the thermal Usadel q branch.
+
+    A semilog scale is used because low-temperature curves otherwise collapse
+    visually under the largest Te curve.
+    """
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    x = np.asarray(scan["reference_current_fraction"], dtype=float)
+    Te_values = np.asarray(scan["Te_values_K"], dtype=float)
+    P_total = np.asarray(scan["P_total_W_m3"], dtype=float)
+    P_R = np.asarray(scan["P_R_W_m3"], dtype=float)
+
+    floor = 1.0e-100
 
     fig, ax = plt.subplots(figsize=(7.8, 5.0))
 
     for i, Te in enumerate(Te_values):
-        ax.plot(
+        total = np.where(np.abs(P_total[i, :]) > floor, np.abs(P_total[i, :]), np.nan)
+        recomb = np.where(np.abs(P_R[i, :]) > floor, np.abs(P_R[i, :]), np.nan)
+
+        ax.semilogy(
             x,
-            P_total[i, :],
+            total,
             linewidth=1.4,
             label=rf"total, $T_e={Te:.2f}$ K",
         )
-        ax.plot(
+        ax.semilogy(
             x,
-            P_R[i, :],
+            recomb,
             linewidth=1.0,
             linestyle="--",
             label=rf"$R$, $T_e={Te:.2f}$ K",
         )
 
-    ax.axhline(0.0, linewidth=0.8)
-    ax.set_title("Projected powers along Usadel self-consistent branch")
-    ax.set_xlabel(r"normalized current $I/I_c$")
-    ax.set_ylabel(r"power density [W m$^{-3}$]")
+    ax.set_title("Projected powers along thermal Usadel branch")
+    ax.set_xlabel(r"reference normalized current $I(q,T_{bias})/I_c(T_{bias})$")
+    ax.set_ylabel(r"$|P|$ [W m$^{-3}$]")
     ax.grid(True, linewidth=0.25, alpha=0.35)
     ax.legend(frameon=True, fontsize=8)
 
