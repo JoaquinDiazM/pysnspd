@@ -62,6 +62,87 @@ def plot_ss_state_phi(mesh, state, output_path: str | Path, *, dpi: int = 480) -
         dpi=dpi,
     )
 
+def plot_ss_phi_snapshots(
+    mesh,
+    history: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+    ncols: int = 3,
+) -> Path:
+    """Plot electrostatic-potential snapshots during OE7 relaxation.
+
+    Expects history keys:
+        phi_snapshot_t_s : shape [n_snapshots]
+        phi_snapshot_V   : shape [n_snapshots, n_nodes]
+    """
+    if "phi_snapshot_V" not in history or "phi_snapshot_t_s" not in history:
+        raise KeyError("history must contain phi_snapshot_V and phi_snapshot_t_s.")
+
+    phi = np.asarray(history["phi_snapshot_V"], dtype=float)
+    t_s = np.asarray(history["phi_snapshot_t_s"], dtype=float)
+
+    if phi.ndim != 2:
+        raise ValueError(f"phi_snapshot_V must be 2D, got shape {phi.shape}.")
+    if t_s.ndim != 1 or t_s.size != phi.shape[0]:
+        raise ValueError(
+            "phi_snapshot_t_s must be 1D and match the number of phi snapshots."
+        )
+
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x_nm = nodes[:, 0] * 1.0e9
+    y_nm = nodes[:, 1] * 1.0e9
+    triangles = np.asarray(mesh.triangles, dtype=np.int64)
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    n_snap = int(phi.shape[0])
+    ncols = max(1, int(ncols))
+    nrows = int(np.ceil(n_snap / ncols))
+
+    vmax = float(np.nanmax(np.abs(phi))) if phi.size else 1.0
+    vmax = max(vmax, 1.0e-30)
+    vmin = -vmax
+
+    tri = mtri.Triangulation(x_nm, y_nm, triangles)
+
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=(3.4 * ncols, 2.7 * nrows),
+        constrained_layout=True,
+        squeeze=False,
+    )
+
+    last_im = None
+    for k in range(nrows * ncols):
+        ax = axes.flat[k]
+        if k >= n_snap:
+            ax.axis("off")
+            continue
+
+        last_im = ax.tripcolor(
+            tri,
+            phi[k],
+            shading="gouraud",
+            vmin=vmin,
+            vmax=vmax,
+        )
+        ax.set_title(f"t = {t_s[k] / 1.0e-12:.3g} ps")
+        ax.set_xlabel("x [nm]")
+        ax.set_ylabel("y [nm]")
+        ax.set_aspect("equal", adjustable="box")
+        ax.grid(False)
+
+    if last_im is not None:
+        cbar = fig.colorbar(last_im, ax=axes.ravel().tolist())
+        cbar.set_label("φ [V]")
+
+    fig.suptitle("OE7 SS: electrostatic potential φ snapshots")
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
 
 def plot_ss_state_divergence(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
     """Plot finite-volume current divergence."""

@@ -39,6 +39,7 @@ from pysnspd.plotting.ss_seed import (
 from pysnspd.plotting.ss_run import (
     plot_ss_boundary_current_reconstruction_comparison,
     plot_ss_boundary_currents,
+    plot_ss_phi_snapshots,
     plot_ss_relaxation_history,
     plot_ss_state_current_density,
     plot_ss_state_delta,
@@ -134,6 +135,12 @@ def parse_args() -> argparse.Namespace:
         help="DPI for diagnostic plots.",
     )
     parser.add_argument(
+        "--ss-n-phi-snapshots",
+        type=int,
+        default=6,
+        help="Number of electrostatic-potential snapshots to save and plot during OE7.",
+    )
+    parser.add_argument(
         "--ss-progress",
         action="store_true",
         help="Show a progress bar during OE7 stationary relaxation.",
@@ -195,6 +202,7 @@ def main() -> int:
         adapt_dt=not args.ss_no_adapt_dt,
         lock_terminals=not args.ss_unlock_terminals,
         progress=args.ss_progress,
+        n_phi_snapshots=args.ss_n_phi_snapshots,
     )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "ss_state_relaxed.npz")
@@ -244,6 +252,13 @@ def main() -> int:
     )
     relaxed_phi_plot = plot_ss_state_phi(
         mesh, result.state, plots_diag / "ss_relaxed_phi.png", dpi=args.dpi
+    )
+    phi_snapshots_plot = plot_ss_phi_snapshots(
+        mesh,
+        result.history,
+        plots_diag / "ss_phi_snapshots.png",
+        dpi=args.dpi,
+        ncols=3,
     )
     relaxed_current_plot = plot_ss_state_current_density(
         mesh,
@@ -308,6 +323,7 @@ def main() -> int:
                 "relaxed_delta_plot": str(relaxed_delta_plot),
                 "relaxed_phase_plot": str(relaxed_phase_plot),
                 "relaxed_phi_plot": str(relaxed_phi_plot),
+                "phi_snapshots_plot": str(phi_snapshots_plot),
                 "relaxed_current_plot": str(relaxed_current_plot),
                 "relaxed_divergence_plot": str(relaxed_div_plot),
                 "relaxed_boundary_currents_plot": str(relaxed_boundary_plot),

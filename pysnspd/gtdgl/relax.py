@@ -320,6 +320,117 @@ def terminal_node_mask(mesh) -> np.ndarray:
     tol = max(1.0e-15, 1.0e-9 * float(mesh.length_m))
     return (np.abs(x - np.min(x)) <= tol) | (np.abs(x - np.max(x)) <= tol)
 
+def terminal_inner_node_pairs(mesh) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    """Pair terminal nodes with their immediate inward neighbours.
+
+    The current mesh has protected, non-jittered boundary layers, so this gives
+    a clean terminal normal direction while still being robust to small jitter.
+    """
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x = nodes[:, 0]
+    y = nodes[:, 1]
+
+    xmin = float(np.min(x))
+    xmax = float(np.max(x))
+    h = float(getattr(mesh, "target_spacing_m", 1.0e-9))
+    tol = max(1.0e-15, 1.0e-9 * float(mesh.length_m))
+
+    left = np.where(np.abs(x - xmin) <= tol)[0]
+    right = np.where(np.abs(x - xmax) <= tol)[0]
+
+    def pair_one_side(boundary: np.ndarray, *, side: str) -> tuple[np.ndarray, np.ndarray]:
+        inner = np.empty_like(boundary, dtype=np.int64)
+
+        for k, b in enumerate(boundary):
+            if side == "left":
+                candidates = np.where(x > x[b] + tol)[0]
+                dx = x[candidates] - x[b]
+            elif side == "right":
+                candidates = np.where(x < x[b] - tol)[0]
+                dx = x[b] - x[candidates]
+            else:
+                raise ValueError(f"Unknown side {side!r}.")
+
+            if candidates.size == 0:
+                raise ValueError(f"No inward candidates found for {side} terminal node {b}.")
+
+            dy = y[candidates] - y[b]
+
+            # Strongly prefer same-y first inward neighbours; fall back to nearest.
+            score = (dy / max(h, 1.0e-300)) ** 2 + 0.05 * (dx / max(h, 1.0e-300)) ** 2
+            inner[k] = int(candidates[int(np.argmin(score))])
+
+        return boundary.astype(np.int64), inner
+
+    return {
+        "left": pair_one_side(left, side="left"),
+        "right": pair_one_side(right, side="right"),
+    }
+
+
+def apply_terminal_supercurrent_bc(
+    *,
+    psi_trial_J: np.ndarray,
+    Te_K: np.ndarray,
+    mesh,
+    material: GTDGLMaterial,
+    target_current_A: float,
+    enabled: bool = True,
+) -> np.ndarray:
+    """Apply superconducting terminal boundary condition.
+
+    Terminal amplitude is copied from the immediate inward neighbour,
+
+        R_boundary = R_inner,
+
+    while the terminal phase is chosen so that
+
+        j_s^Us(R_inner, T, q_b) = I_bias/(w d).
+
+    This replaces the older hard Dirichlet condition Psi_terminal=Psi_seed.
+    """
+    psi = np.array(psi_trial_J, dtype=np.complex128, copy=True)
+    if not enabled:
+        return psi
+
+    j_target = float(target_current_A) / (material.width_m * material.thickness_m)
+    pairs = terminal_inner_node_pairs(mesh)
+
+    for side, sign in (("left", -1.0), ("right", +1.0)):
+        boundary, inner = pairs[side]
+
+        R_inner = np.abs(psi[inner])
+        theta_inner = np.angle(psi[inner])
+        Te_inner = np.maximum(np.asarray(Te_K, dtype=float)[inner], 1.0e-12)
+
+        coeff = (
+            np.pi
+            * material.sigma_n_S_m
+            / (2.0 * E_CHARGE_C)
+            * R_inner
+            * np.tanh(R_inner / (2.0 * K_B_J_K * Te_inner))
+        )
+
+        if np.any(coeff <= 0.0) or not np.all(np.isfinite(coeff)):
+            raise FloatingPointError(
+                "Cannot impose superconducting terminal current because "
+                "the local Usadel current coefficient is non-positive or non-finite."
+            )
+
+        q_b = j_target / coeff
+
+        dx = np.abs(
+            np.asarray(mesh.nodes, dtype=float)[boundary, 0]
+            - np.asarray(mesh.nodes, dtype=float)[inner, 0]
+        )
+
+        # left: theta_boundary = theta_inner - q dx
+        # right: theta_boundary = theta_inner + q dx
+        theta_boundary = theta_inner + sign * q_b * dx
+
+        psi[boundary] = R_inner * np.exp(1j * theta_boundary)
+
+    return psi
 
 def apply_terminal_dirichlet(
     *,
@@ -355,6 +466,7 @@ def relax_stationary_gtdgl(
     lock_terminals: bool = True,
     target_current_A: float | None = None,
     progress: bool = False,
+    n_phi_snapshots: int = 6,
 ) -> RelaxationResult:
     """Relax the OE6 seed with frozen temperatures and active gTDGL/Poisson.
 
@@ -382,10 +494,11 @@ def relax_stationary_gtdgl(
     Te = np.asarray(seed.node_Te_K, dtype=float).copy()
     Tph = np.asarray(seed.node_Tph_K, dtype=float).copy()
 
-    boundary_accum = _seed_compatible_boundary_accum_A_m(
-        seed=seed,
-        material=material,
-        ops=ops,
+    boundary_accum = terminal_boundary_accum_A_m(
+        edge_data,
+        n_nodes=ops.n_nodes,
+        target_current_A=target_current_A,
+        thickness_m=material.thickness_m,
     )
 
     t_s = 0.0
@@ -400,6 +513,15 @@ def relax_stationary_gtdgl(
     hist_v: list[float] = []
     hist_ir: list[float] = []
     hist_il: list[float] = []
+
+    n_phi_snapshots = max(2, int(n_phi_snapshots))
+    phi_snapshot_t_s: list[float] = [0.0]
+    phi_snapshot_V: list[np.ndarray] = [phi.copy()]
+    phi_snapshot_steps = set(
+        np.unique(
+            np.rint(np.linspace(1, int(steps), n_phi_snapshots - 1)).astype(int)
+        ).tolist()
+    )
 
     currents = compute_current_fields(
         psi_J=psi,
@@ -441,10 +563,12 @@ def relax_stationary_gtdgl(
                 f"KWT update failed; min discriminant={min_disc:.6e}"
             )
 
-        psi_trial = apply_terminal_dirichlet(
+        psi_trial = apply_terminal_supercurrent_bc(
             psi_trial_J=psi_trial,
-            psi_reference_J=psi0,
+            Te_K=Te,
             mesh=mesh,
+            material=material,
+            target_current_A=target_current_A,
             enabled=lock_terminals,
         )
 
@@ -521,6 +645,9 @@ def relax_stationary_gtdgl(
         hist_v.append(voltage)
         hist_ir.append(boundary["right_A"])
         hist_il.append(boundary["left_A"])
+        if accepted in phi_snapshot_steps:
+            phi_snapshot_t_s.append(t_s)
+            phi_snapshot_V.append(phi.copy())
 
         if (
             accepted >= min_steps
@@ -532,6 +659,20 @@ def relax_stationary_gtdgl(
 
         if adapt_dt and eta < 0.1 * tolerance_eta:
             dt_s = min(dt_max_s, 1.2 * dt_s)
+
+    if not phi_snapshot_t_s or phi_snapshot_t_s[-1] != t_s:
+        phi_snapshot_t_s.append(t_s)
+        phi_snapshot_V.append(phi.copy())
+
+    if len(phi_snapshot_t_s) > n_phi_snapshots:
+        keep = np.unique(
+            np.rint(np.linspace(0, len(phi_snapshot_t_s) - 1, n_phi_snapshots)).astype(int)
+        )
+        if keep[-1] != len(phi_snapshot_t_s) - 1:
+            keep[-1] = len(phi_snapshot_t_s) - 1
+
+        phi_snapshot_t_s = [phi_snapshot_t_s[int(i)] for i in keep]
+        phi_snapshot_V = [phi_snapshot_V[int(i)] for i in keep]
 
     metadata = {
         "backend": "oe7_stationary_gtdgl_poisson_v2_terminal_flux",
@@ -553,7 +694,12 @@ def relax_stationary_gtdgl(
         "thermal_policy": "frozen_Te_Tph",
         "circuit_policy": "inactive",
         "poisson_gauge": "mean_zero",
-        "poisson_boundary_policy": "conservative_terminal_flux",
+        "poisson_boundary_policy": "target_current_terminal_flux",
+        "terminal_order_parameter_policy": (
+            "Neumann amplitude from immediate inward neighbour plus "
+            "Usadel supercurrent phase-gradient condition"
+        ),
+        "n_phi_snapshots": int(len(phi_snapshot_t_s)),
     }
 
     state = GTDGLStationaryState(
@@ -573,6 +719,8 @@ def relax_stationary_gtdgl(
         "terminal_voltage_V": np.asarray(hist_v, dtype=float),
         "integrated_right_current_A": np.asarray(hist_ir, dtype=float),
         "integrated_left_current_A": np.asarray(hist_il, dtype=float),
+        "phi_snapshot_t_s": np.asarray(phi_snapshot_t_s, dtype=float),
+        "phi_snapshot_V": np.vstack(phi_snapshot_V),
     }
 
     summary = stationary_summary(
