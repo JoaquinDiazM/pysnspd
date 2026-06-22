@@ -15,13 +15,18 @@ MEV_J = 1.602176634e-22
 
 
 def plot_ss_seed_delta(mesh, seed, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot the seed superconducting gap amplitude."""
+    """Plot the analytic seed order-parameter amplitude."""
+    delta_meV = seed.node_delta_J / MEV_J
+    vmax = max(float(np.nanmax(delta_meV)), 1.0e-30)
+
     return _plot_node_scalar(
         mesh,
-        seed.node_delta_J / MEV_J,
+        delta_meV,
         output_path,
-        title=r"OE6 seed: $\Delta$",
-        label=r"$\Delta$ [meV]",
+        title="OE6 seed: Δ",
+        label="Δ [meV]",
+        vmin=0.0,
+        vmax=vmax,
         dpi=dpi,
     )
 
@@ -60,7 +65,8 @@ def plot_ss_seed_current_density(
     jmag = np.sqrt(jx * jx + jy * jy)
 
     fig, ax = plt.subplots(figsize=(8.0, 3.2))
-    im = ax.tripcolor(tri, jmag, shading="gouraud")
+    vmax = max(float(np.nanmax(jmag)), 1.0e-30)
+    im = ax.tripcolor(tri, jmag, shading="gouraud", vmin=0.0, vmax=vmax)
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(r"$|\mathbf{j}|$ [A m$^{-2}$]")
 
@@ -134,7 +140,9 @@ def _plot_node_scalar(
     *,
     title: str,
     label: str,
-    dpi: int,
+    vmin=None,
+    vmax=None,
+    dpi: int = 480,
 ) -> Path:
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -143,10 +151,23 @@ def _plot_node_scalar(
     x_nm = nodes[:, 0] * 1.0e9
     y_nm = nodes[:, 1] * 1.0e9
 
-    tri = mtri.Triangulation(x_nm, y_nm, np.asarray(mesh.triangles, dtype=np.int64))
+    tri = mtri.Triangulation(
+        x_nm,
+        y_nm,
+        np.asarray(mesh.triangles, dtype=np.int64),
+    )
+
+    z = np.asarray(values, dtype=float).reshape(-1)
 
     fig, ax = plt.subplots(figsize=(8.0, 3.2))
-    im = ax.tripcolor(tri, np.asarray(values, dtype=float), shading="gouraud")
+    im = ax.tripcolor(
+        tri,
+        z,
+        shading="gouraud",
+        vmin=vmin,
+        vmax=vmax,
+    )
+
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(label)
 
@@ -160,3 +181,5 @@ def _plot_node_scalar(
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
+
+##

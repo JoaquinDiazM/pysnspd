@@ -37,6 +37,7 @@ from pysnspd.plotting.ss_seed import (
     plot_ss_seed_phase,
 )
 from pysnspd.plotting.ss_run import (
+    plot_ss_boundary_current_reconstruction_comparison,
     plot_ss_boundary_currents,
     plot_ss_relaxation_history,
     plot_ss_state_current_density,
@@ -44,6 +45,7 @@ from pysnspd.plotting.ss_run import (
     plot_ss_state_divergence,
     plot_ss_state_phase,
     plot_ss_state_phi,
+    plot_ss_transport_current_profile,
 )
 
 
@@ -244,13 +246,37 @@ def main() -> int:
         mesh, result.state, plots_diag / "ss_relaxed_phi.png", dpi=args.dpi
     )
     relaxed_current_plot = plot_ss_state_current_density(
-        mesh, result.state, plots_diag / "ss_relaxed_current_density.png", dpi=args.dpi
+        mesh,
+        result.state,
+        plots_diag / "ss_relaxed_current_density.png",
+        ops=fv_ops,
+        dpi=args.dpi,
     )
     relaxed_div_plot = plot_ss_state_divergence(
         mesh, result.state, plots_diag / "ss_relaxed_divergence.png", dpi=args.dpi
     )
     relaxed_boundary_plot = plot_ss_boundary_currents(
         result.summary, plots_diag / "ss_relaxed_boundary_currents.png", dpi=args.dpi
+    )
+    boundary_reconstruction_plot = plot_ss_boundary_current_reconstruction_comparison(
+        mesh=mesh,
+        edge_data=edge_data,
+        ops=fv_ops,
+        state=result.state,
+        output_path=plots_diag / "ss_boundary_current_reconstruction.png",
+        target_current_A=seed_sum["I_bias_A"],
+        thickness_m=material.thickness_m,
+        dpi=args.dpi,
+    )
+
+    transport_profile_plot = plot_ss_transport_current_profile(
+        mesh=mesh,
+        ops=fv_ops,
+        state=result.state,
+        output_path=plots_diag / "ss_transport_current_profile.png",
+        target_current_A=seed_sum["I_bias_A"],
+        thickness_m=material.thickness_m,
+        dpi=args.dpi,
     )
     history_plot = plot_ss_relaxation_history(
         result.history, plots_diag / "ss_relaxation_history.png", dpi=args.dpi
@@ -285,6 +311,8 @@ def main() -> int:
                 "relaxed_current_plot": str(relaxed_current_plot),
                 "relaxed_divergence_plot": str(relaxed_div_plot),
                 "relaxed_boundary_currents_plot": str(relaxed_boundary_plot),
+                "boundary_reconstruction_plot": str(boundary_reconstruction_plot),
+                "transport_profile_plot": str(transport_profile_plot),
                 "history_plot": str(history_plot),
             },
             "seed_summary": seed_sum,

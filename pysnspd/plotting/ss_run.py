@@ -7,17 +7,33 @@ import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 from pysnspd.gtdgl.operators import unwrap_phase_graph
 
+from pysnspd.gtdgl.operators import (
+    boundary_currents_from_edge_scalar_least_squares,
+    boundary_currents_from_node_vectors,
+    edge_scalar_to_node_vector_least_squares,
+    strip_transport_current_profile_from_node_vectors,
+)
+
 MEV_J = 1.602176634e-22
 
 
 def plot_ss_state_delta(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot the relaxed order-parameter amplitude in meV."""
+    """Plot the relaxed order-parameter amplitude in meV.
+
+    The color scale starts at zero to avoid visually amplifying tiny numerical
+    variations around the nearly uniform superconducting gap.
+    """
+    delta_meV = np.abs(state.psi_J) / MEV_J
+    vmax = max(float(np.nanmax(delta_meV)), 1.0e-30)
+
     return _plot_node_scalar(
         mesh,
-        np.abs(state.psi_J) / MEV_J,
+        delta_meV,
         output_path,
         title="OE7 SS: relaxed Δ",
         label="Δ [meV]",
+        vmin=0.0,
+        vmax=vmax,
         dpi=dpi,
     )
 
@@ -64,23 +80,46 @@ def plot_ss_state_divergence(mesh, state, output_path: str | Path, *, dpi: int =
     )
 
 
-def plot_ss_state_current_density(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot total current-density magnitude and node-averaged vectors."""
+def plot_ss_state_current_density(
+    mesh,
+    state,
+    output_path: str | Path,
+    *,
+    ops=None,
+    dpi: int = 480,
+) -> Path:
+    """Plot total current-density magnitude and vectors.
+
+    If FV operators are provided, reconstruct the node vector field from edge
+    current projections using local least squares. This matches the diagnostic
+    philosophy of the older notebook better than the simple node average.
+    """
     nodes = np.asarray(mesh.nodes, dtype=float)
     x_nm = nodes[:, 0] * 1.0e9
     y_nm = nodes[:, 1] * 1.0e9
     triangles = np.asarray(mesh.triangles, dtype=np.int64)
 
-    jx = np.asarray(state.currents.node_jtot_x_A_m2, dtype=float)
-    jy = np.asarray(state.currents.node_jtot_y_A_m2, dtype=float)
+    if ops is not None:
+        jx, jy = edge_scalar_to_node_vector_least_squares(
+            state.currents.edge_jtot_A_m2,
+            ops,
+        )
+        title = "OE7 SS: total current density"
+    else:
+        jx = np.asarray(state.currents.node_jtot_x_A_m2, dtype=float)
+        jy = np.asarray(state.currents.node_jtot_y_A_m2, dtype=float)
+        title = "OE7 SS: total current density"
+
     mag = np.sqrt(jx**2 + jy**2)
+    vmax = max(float(np.nanmax(mag)), 1.0e-30)
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
     fig, ax = plt.subplots(figsize=(7.0, 3.2), constrained_layout=True)
     tri = mtri.Triangulation(x_nm, y_nm, triangles)
-    im = ax.tripcolor(tri, mag, shading="gouraud")
+
+    im = ax.tripcolor(tri, mag, shading="gouraud", vmin=0.0, vmax=vmax)
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(r"$|\vec{j}|$ [A m$^{-2}$]")
 
@@ -98,7 +137,7 @@ def plot_ss_state_current_density(mesh, state, output_path: str | Path, *, dpi: 
             width=0.0025,
         )
 
-    ax.set_title("OE7 SS: total current density")
+    ax.set_title(title)
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
@@ -205,3 +244,107 @@ def _edges_from_triangles(triangles: np.ndarray) -> np.ndarray:
     )
     pairs.sort(axis=1)
     return np.unique(pairs, axis=0)
+
+def plot_ss_boundary_current_reconstruction_comparison(
+    *,
+    mesh,
+    edge_data,
+    ops,
+    state,
+    output_path: str | Path,
+    target_current_A: float | None = None,
+    thickness_m: float,
+    dpi: int = 480,
+) -> Path:
+    """Compare terminal currents from different diagnostic reconstructions."""
+    node_avg = boundary_currents_from_node_vectors(
+        mesh=mesh,
+        edge_data=edge_data,
+        jx_A_m2=state.currents.node_jtot_x_A_m2,
+        jy_A_m2=state.currents.node_jtot_y_A_m2,
+        thickness_m=thickness_m,
+    )
+
+    ls = boundary_currents_from_edge_scalar_least_squares(
+        mesh=mesh,
+        edge_data=edge_data,
+        ops=ops,
+        edge_current_i_to_j=state.currents.edge_jtot_A_m2,
+        thickness_m=thickness_m,
+    )
+
+    labels = [
+        "left\nnode avg",
+        "left\nLS",
+        "right\nnode avg",
+        "right\nLS",
+    ]
+    values = [
+        node_avg.get("left_A", 0.0),
+        ls.get("left_A", 0.0),
+        node_avg.get("right_A", 0.0),
+        ls.get("right_A", 0.0),
+    ]
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(6.8, 3.4), constrained_layout=True)
+    ax.bar(labels, values)
+    ax.axhline(0.0, linewidth=0.8)
+
+    if target_current_A is not None:
+        I = float(target_current_A)
+        ax.axhline(+I, linestyle="--", linewidth=0.9, label=r"$+I_{\rm target}$")
+        ax.axhline(-I, linestyle="--", linewidth=0.9, label=r"$-I_{\rm target}$")
+        ax.legend(frameon=False)
+
+    ax.set_title("OE7 SS: boundary-current reconstruction")
+    ax.set_ylabel("current [A]")
+    ax.grid(False)
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
+
+
+def plot_ss_transport_current_profile(
+    *,
+    mesh,
+    ops,
+    state,
+    output_path: str | Path,
+    target_current_A: float | None = None,
+    thickness_m: float,
+    n_bins: int = 41,
+    dpi: int = 480,
+) -> Path:
+    """Plot longitudinal transport-current profile from LS reconstructed jx."""
+    jx_ls, _ = edge_scalar_to_node_vector_least_squares(
+        state.currents.edge_jtot_A_m2,
+        ops,
+    )
+
+    x_m, I_A = strip_transport_current_profile_from_node_vectors(
+        mesh=mesh,
+        jx_A_m2=jx_ls,
+        thickness_m=thickness_m,
+        n_bins=n_bins,
+    )
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(6.6, 3.4), constrained_layout=True)
+    ax.plot(x_m * 1.0e9, I_A, marker="o", markersize=2.5, linewidth=1.0)
+
+    if target_current_A is not None:
+        ax.axhline(float(target_current_A), linestyle="--", linewidth=0.9, label=r"$I_{\rm target}$")
+        ax.legend(frameon=False)
+
+    ax.set_title("OE7 SS: LS transport-current profile")
+    ax.set_xlabel("x [nm]")
+    ax.set_ylabel("I(x) [A]")
+    ax.grid(False)
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output

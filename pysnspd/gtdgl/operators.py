@@ -321,6 +321,132 @@ def edge_scalar_to_node_vector(edge_current_i_to_j: np.ndarray, ops: FVOperators
     out[:, 1] /= safe
     return out[:, 0], out[:, 1]
 
+def edge_scalar_to_node_vector_least_squares(
+    edge_current_i_to_j: np.ndarray,
+    ops: FVOperators,
+    *,
+    ridge: float = 1.0e-30,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Least-squares reconstruction of a node vector field from edge projections.
+
+    Each edge stores the scalar projection
+
+        j_e = j . ehat_e
+
+    with ehat_e oriented from edge_i to edge_j. For each node, reconstruct
+    j=(jx,jy) by a local weighted least-squares fit over incident edges.
+
+    This is a diagnostic reconstruction. It does not modify the FV evolution.
+    """
+    current = np.asarray(edge_current_i_to_j, dtype=float)
+    if current.shape != (ops.n_edges,):
+        raise ValueError(f"edge_current_i_to_j must have shape ({ops.n_edges},).")
+
+    ux = ops.edge_unit[:, 0]
+    uy = ops.edge_unit[:, 1]
+
+    # Geometry weights. Only relative weights matter for the local LS fit.
+    w = np.maximum(ops.dual_face_length_m, 1.0e-300)
+
+    a11 = np.zeros(ops.n_nodes, dtype=float)
+    a12 = np.zeros(ops.n_nodes, dtype=float)
+    a22 = np.zeros(ops.n_nodes, dtype=float)
+    b1 = np.zeros(ops.n_nodes, dtype=float)
+    b2 = np.zeros(ops.n_nodes, dtype=float)
+
+    c11 = w * ux * ux
+    c12 = w * ux * uy
+    c22 = w * uy * uy
+    r1 = w * current * ux
+    r2 = w * current * uy
+
+    for nodes in (ops.edge_i, ops.edge_j):
+        np.add.at(a11, nodes, c11)
+        np.add.at(a12, nodes, c12)
+        np.add.at(a22, nodes, c22)
+        np.add.at(b1, nodes, r1)
+        np.add.at(b2, nodes, r2)
+
+    trace = a11 + a22
+    reg = ridge * np.maximum(trace, 1.0)
+    a11 = a11 + reg
+    a22 = a22 + reg
+
+    det = a11 * a22 - a12 * a12
+    safe = np.abs(det) > 1.0e-300
+
+    jx = np.zeros(ops.n_nodes, dtype=float)
+    jy = np.zeros(ops.n_nodes, dtype=float)
+
+    jx[safe] = (a22[safe] * b1[safe] - a12[safe] * b2[safe]) / det[safe]
+    jy[safe] = (-a12[safe] * b1[safe] + a11[safe] * b2[safe]) / det[safe]
+
+    # Fallback for pathological isolated/singular nodes.
+    if not np.all(safe):
+        jx_avg, jy_avg = edge_scalar_to_node_vector(current, ops)
+        jx[~safe] = jx_avg[~safe]
+        jy[~safe] = jy_avg[~safe]
+
+    return jx, jy
+
+
+def boundary_currents_from_edge_scalar_least_squares(
+    *,
+    mesh,
+    edge_data,
+    ops: FVOperators,
+    edge_current_i_to_j: np.ndarray,
+    thickness_m: float,
+) -> dict[str, float]:
+    """Boundary-current diagnostic using LS node-vector reconstruction."""
+    jx, jy = edge_scalar_to_node_vector_least_squares(edge_current_i_to_j, ops)
+    return boundary_currents_from_node_vectors(
+        mesh=mesh,
+        edge_data=edge_data,
+        jx_A_m2=jx,
+        jy_A_m2=jy,
+        thickness_m=thickness_m,
+    )
+
+
+def strip_transport_current_profile_from_node_vectors(
+    *,
+    mesh,
+    jx_A_m2: np.ndarray,
+    thickness_m: float,
+    n_bins: int = 41,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Estimate I(x)=d*w*<jx>_strip as a diagnostic profile.
+
+    This is not used by the solver. It is only a visualization/diagnostic
+    estimate of how much longitudinal current the reconstructed node field
+    carries across vertical strips.
+    """
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    jx = np.asarray(jx_A_m2, dtype=float)
+
+    x = nodes[:, 0]
+    xmin = float(np.min(x))
+    xmax = float(np.max(x))
+
+    if n_bins < 2:
+        raise ValueError("n_bins must be at least 2.")
+
+    edges_x = np.linspace(xmin, xmax, int(n_bins) + 1)
+    centers = 0.5 * (edges_x[:-1] + edges_x[1:])
+    current_A = np.full(int(n_bins), np.nan, dtype=float)
+
+    for k in range(int(n_bins)):
+        if k == int(n_bins) - 1:
+            mask = (x >= edges_x[k]) & (x <= edges_x[k + 1])
+        else:
+            mask = (x >= edges_x[k]) & (x < edges_x[k + 1])
+
+        if np.any(mask):
+            current_A[k] = float(thickness_m * mesh.width_m * np.mean(jx[mask]))
+
+    return centers, current_A
+
 
 def terminal_voltage(nodes: np.ndarray, phi_V: np.ndarray, *, length_m: float) -> float:
     """Return <phi>_right - <phi>_left."""
