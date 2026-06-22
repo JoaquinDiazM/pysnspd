@@ -523,7 +523,7 @@ Implemented:
 
 OE5 is considered complete once the PRE-run produces all OE5 plots and tests pass.
 
-### OE6 ★ — SS-run analytic seed and stationary initialization
+### OE6 — SS-run analytic seed and stationary initialization
 
 Status: current.
 
@@ -540,7 +540,7 @@ Expected outputs:
 * compatibility with $I_{\rm bias}$;
 * validation plots for current conservation and boundary behavior.
 
-### OE7 — Stationary gTDGL relaxation
+### OE7 ★ — Stationary gTDGL relaxation
 
 Goal:
 
