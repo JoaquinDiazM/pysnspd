@@ -64,7 +64,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--jitter-fraction",
         type=float,
-        default=0.20,
+        default=0.10,
         help="Interior mesh jitter as fraction of nominal spacing.",
     )
     parser.add_argument(
@@ -92,7 +92,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--energy-max-factor",
         type=float,
-        default=6.0,
+        default=30.0,
         help="Maximum DOS energy as multiple of Delta0.",
     )
     parser.add_argument(
@@ -122,7 +122,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--phase-omega-max-meV",
         type=float,
-        default=None,
+        default=35.0,
         help=(
             "Maximum Omega axis for the OE4 phase-space catalogue in meV. "
             "If omitted, Omega_max defaults to the parent DOS E_max. "

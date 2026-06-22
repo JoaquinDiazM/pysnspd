@@ -1,6 +1,4 @@
-"""
-Kinetic electron-phonon tools for pySNSPD.
-"""
+"""Kinetic electron-phonon tools for pySNSPD."""
 
 from pysnspd.kinetic.phase_space import (
     PhaseSpaceCatalog,
@@ -14,6 +12,30 @@ from pysnspd.kinetic.phase_space import (
     scattering_phase_space_spectrum,
 )
 
+from pysnspd.kinetic.eliashberg import (
+    EliashbergSpectrum,
+    build_debye_reference_spectrum,
+    cumulative_fraction,
+    load_alpha2F,
+    load_phonon_dos,
+    load_simon_eliashberg_dat,
+    spectrum_summary,
+)
+
+from pysnspd.kinetic.powers import (
+    ProjectedPowerResult,
+    bose_difference,
+    bose_positive_energy,
+    compute_power_curve,
+    compute_projected_powers,
+    compute_recombination_power,
+    compute_scattering_power,
+    compute_total_electron_phonon_power,
+    compute_vodolazov_debye_power_density,
+    cumulative_spectral_support,
+    electronic_density_of_states_from_sigma_D,
+)
+
 __all__ = [
     "PhaseSpaceCatalog",
     "build_phase_space_catalog_from_usadel_catalog",
@@ -24,4 +46,22 @@ __all__ = [
     "recombination_phase_space_spectrum",
     "save_phase_space_catalog_npz",
     "scattering_phase_space_spectrum",
+    "EliashbergSpectrum",
+    "build_debye_reference_spectrum",
+    "cumulative_fraction",
+    "load_alpha2F",
+    "load_phonon_dos",
+    "load_simon_eliashberg_dat",
+    "spectrum_summary",
+    "ProjectedPowerResult",
+    "bose_difference",
+    "bose_positive_energy",
+    "compute_power_curve",
+    "compute_projected_powers",
+    "compute_recombination_power",
+    "compute_scattering_power",
+    "compute_total_electron_phonon_power",
+    "compute_vodolazov_debye_power_density",
+    "cumulative_spectral_support",
+    "electronic_density_of_states_from_sigma_D",
 ]
