@@ -94,17 +94,31 @@ def build_phase_space_catalog_from_usadel_catalog(
     n_omega: int | None = None,
     Te_min_K: float | None = None,
     Te_max_K: float | None = None,
+    omega_max_meV: float | None = None,
 ) -> PhaseSpaceCatalog:
     """
     Build a phase-space catalogue from a Usadel DOS catalogue.
 
-    For the first OE4 attempt, it is recommended to use moderate values such as
-    ``n_Te=6``, ``n_delta=6``, ``n_q=6`` and ``n_omega=160``. The full grid in
-    the YAML can be much heavier and should be reserved for later production
-    runs.
+    OE4-v1.3 separates two energy ranges:
+
+    1. The parent Usadel DOS range, E in [0, E_max^DOS].
+    2. The phonon-energy / transfer axis, Omega in [0, Omega_max].
+
+    This separation is essential because the scattering channel uses
+
+        E' = E + Omega,
+
+    so choosing Omega_max = E_max^DOS artificially forces J_S to lose
+    support near the upper edge. This is a numerical catalogue effect,
+    not a physical prediction of Appendix A.
+
+    NOTE [PDF Appendix A mismatch]:
+    Appendix A writes the scattering energy moment with an upper
+    quasiparticle-energy limit extending formally to infinity. OE4-v1.3
+    still uses a finite Usadel DOS catalogue. Therefore E_max^DOS must be
+    chosen larger than the physically relevant Omega range.
     """
     cfg = validate_config(config, require_big_data_root_exists=False)
-
     phase_cfg = cfg["catalogs"]["phase_space"]
 
     if n_Te is None:
@@ -121,21 +135,42 @@ def build_phase_space_catalog_from_usadel_catalog(
     if Te_max_K is None:
         Te_max_K = float(phase_cfg.get("Te_max_K", max(4.0 * cfg["material"]["Tc_K"], 30.0)))
 
+    if omega_max_meV is None and "omega_max_meV" in phase_cfg:
+        omega_max_meV = float(phase_cfg["omega_max_meV"])
+
     if n_Te <= 0 or n_delta <= 0 or n_q <= 0 or n_omega <= 1:
         raise ValueError("Phase-space grid sizes must be positive and n_omega > 1.")
-
     if Te_min_K <= 0.0 or Te_max_K <= Te_min_K:
         raise ValueError("Require 0 < Te_min_K < Te_max_K.")
+
+    meV_J = 1.602176634e-22
+
+    energy = usadel_catalog.energy_values_J
+    energy_max_J = float(np.max(energy))
+    energy_max_meV = J_to_meV(energy_max_J)
+
+    if omega_max_meV is None:
+        omega_max_J = energy_max_J
+        omega_axis_source = "parent_dos_energy_max"
+    else:
+        if omega_max_meV <= 0.0:
+            raise ValueError("omega_max_meV must be positive when provided.")
+        omega_max_J = float(omega_max_meV) * meV_J
+        omega_axis_source = "user_requested_meV"
+
+    if omega_max_J > energy_max_J:
+        raise ValueError(
+            "The requested phase-space Omega range exceeds the parent DOS range: "
+            f"omega_max_meV={J_to_meV(omega_max_J):.6g}, "
+            f"energy_max_meV={energy_max_meV:.6g}. "
+            "Increase --energy-max-factor or reduce --phase-omega-max-meV."
+        )
 
     delta_indices = _select_axis_indices(usadel_catalog.delta_values_J.size, n_delta)
     q_indices = _select_axis_indices(usadel_catalog.q_values_m_inv.size, n_q)
 
     Te_values_K = np.linspace(float(Te_min_K), float(Te_max_K), int(n_Te))
-    omega_values_J = np.linspace(
-        0.0,
-        float(np.max(usadel_catalog.energy_values_J)),
-        int(n_omega),
-    )
+    omega_values_J = np.linspace(0.0, omega_max_J, int(n_omega))
 
     delta_values_J = usadel_catalog.delta_values_J[delta_indices]
     gamma_values_J = usadel_catalog.gamma_values_J[q_indices]
@@ -150,8 +185,6 @@ def build_phase_space_catalog_from_usadel_catalog(
 
     J_S = np.empty(shape, dtype=float)
     J_R = np.empty(shape, dtype=float)
-
-    energy = usadel_catalog.energy_values_J
 
     for iT, Te_K in enumerate(Te_values_K):
         for id_local, id_parent in enumerate(delta_indices):
@@ -176,19 +209,19 @@ def build_phase_space_catalog_from_usadel_catalog(
                     delta_J=delta_J,
                 )
 
-    energy_max_J = float(energy[-1])
     energy_floor_J = max(float(energy[1]) * 0.5, 1.0e-300)
     js_lower_by_delta_J = np.maximum(delta_values_J, energy_floor_J)
     js_hard_cutoff_by_delta_J = np.maximum(0.0, energy_max_J - js_lower_by_delta_J)
     jr_threshold_by_delta_J = np.maximum(0.0, 2.0 * delta_values_J)
-    omega_max_J = float(omega_values_J[-1])
+
+    scattering_window_margin_J = float(np.min(js_hard_cutoff_by_delta_J)) - omega_max_J
 
     metadata = {
-        "backend": "phase_space_from_usadel_dos_oe4_v1_2",
+        "backend": "phase_space_from_usadel_dos_oe4_v1_3",
         "description": (
-            "OE4 first phase-space catalogue. It tabulates J_S and J_R from the "
+            "OE4 phase-space catalogue. It tabulates J_S and J_R from the "
             "Usadel DOS catalogue. It does not yet include alpha^2F(Omega), "
-            "phonon DOS, T_ph, escape, or power integrals."
+            "phonon DOS, T_ph, escape, or final power integrals."
         ),
         "units": {
             "Te_values_K": "K",
@@ -209,6 +242,7 @@ def build_phase_space_catalog_from_usadel_catalog(
         ),
         "Te_min_K": float(Te_values_K[0]),
         "Te_max_K": float(Te_values_K[-1]),
+        "omega_axis_source": omega_axis_source,
         "omega_max_J": float(omega_values_J[-1]),
         "omega_max_meV": J_to_meV(float(omega_values_J[-1])),
         "energy_max_J": energy_max_J,
@@ -222,20 +256,20 @@ def build_phase_space_catalog_from_usadel_catalog(
         "jr_threshold_by_delta_meV": [
             J_to_meV(float(v)) for v in jr_threshold_by_delta_J
         ],
-        "scattering_window_is_truncated": bool(
-            omega_max_J > float(np.min(js_hard_cutoff_by_delta_J))
-        ),
+        "scattering_window_margin_J": scattering_window_margin_J,
+        "scattering_window_margin_meV": J_to_meV(scattering_window_margin_J),
+        "scattering_window_is_truncated": bool(scattering_window_margin_J < 0.0),
         "energy_window_policy": (
             "PDF Appendix A writes the scattering energy moment with an upper "
-            "limit extending to infinity. The implemented OE4 catalogue uses a "
-            "finite Usadel DOS grid, so J_S is actually integrated only where "
+            "limit extending to infinity. OE4-v1.3 uses a finite Usadel DOS grid "
+            "and a separately configurable Omega axis. J_S is reliable only where "
             "both E and E+Omega lie inside the parent DOS catalogue. The value "
-            "js_hard_cutoff_by_delta marks the Omega where this numerical "
-            "support collapses for each Delta slice."
+            "js_hard_cutoff_by_delta marks the Omega where this numerical support "
+            "collapses for each Delta slice."
         ),
         "coherence_factor_policy": (
             "PDF Appendix A notes that the most general dirty-limit structure "
-            "would use N1(E)N1(E') +/- R2(E)R2(E'). OE4-v1.2 still follows the "
+            "would use N1(E)N1(E') +/- R2(E)R2(E'). OE4-v1.3 still follows the "
             "Simon/BCS reduced coherence factors rho(E)rho(E')[1 +/- "
             "Delta^2/(EE')], with rho supplied by the Usadel DOS catalogue."
         ),
@@ -243,7 +277,7 @@ def build_phase_space_catalog_from_usadel_catalog(
             "J_R(Omega)=0 for Omega <= 2 Delta, following the Simon/BCS "
             "integration limits in Appendix A. In a strongly depaired Usadel "
             "spectrum, the physical spectral onset may be closer to 2E_g, with "
-            "E_g <= Delta; OE4-v1.2 records this as a modelling limitation."
+            "E_g <= Delta; OE4-v1.3 records this as a modelling limitation."
         ),
         "normal_limit_policy": (
             "J_R is set to zero for Delta <= 0 because it is treated as a "
@@ -255,15 +289,6 @@ def build_phase_space_catalog_from_usadel_catalog(
             "OE4 assumes f(E)->f_FD(E,Te). The full kinetic equations evolve "
             "nonthermal f(E,t) and n(Omega,t); therefore equal electronic "
             "energy does not guarantee identical collision power."
-        ),
-        "normal_limit_policy": (
-            "J_R is set to zero for Delta <= 0 because it is treated as a "
-            "distinct superconducting recombination/pair-breaking channel. "
-            "Normal electron-phonon energy exchange belongs to J_S."
-        ),
-        "threshold_policy": (
-            "J_R(Omega)=0 for Omega <= 2 Delta because the recombination "
-            "interval has zero or negative width."
         ),
     }
 
@@ -279,7 +304,6 @@ def build_phase_space_catalog_from_usadel_catalog(
         q_indices=q_indices,
         metadata=metadata,
     )
-
 
 def scattering_phase_space_spectrum(
     energy_values_J: np.ndarray,
@@ -494,6 +518,9 @@ def phase_space_summary(catalog: PhaseSpaceCatalog) -> dict[str, Any]:
         "Te_max_K": float(np.max(catalog.Te_values_K)),
         "omega_max_J": float(np.max(catalog.omega_values_J)),
         "omega_max_meV": J_to_meV(float(np.max(catalog.omega_values_J))),
+        "omega_axis_source": str(catalog.metadata.get("omega_axis_source", "")),
+        "scattering_window_margin_J": float(catalog.metadata.get("scattering_window_margin_J", float("nan"))),
+        "scattering_window_margin_meV": float(catalog.metadata.get("scattering_window_margin_meV", float("nan"))),
         "delta_min_meV": J_to_meV(float(np.min(catalog.delta_values_J))),
         "delta_max_meV": J_to_meV(float(np.max(catalog.delta_values_J))),
         "gamma_min_meV": J_to_meV(float(np.min(catalog.gamma_values_J))),

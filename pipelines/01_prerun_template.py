@@ -120,6 +120,18 @@ def parse_args() -> argparse.Namespace:
         help="Number of Omega grid points for OE4 first-attempt phase-space catalogue.",
     )
     parser.add_argument(
+        "--phase-omega-max-meV",
+        type=float,
+        default=None,
+        help=(
+            "Maximum Omega axis for the OE4 phase-space catalogue in meV. "
+            "If omitted, Omega_max defaults to the parent DOS E_max. "
+            "For acoustic NbN tests, a typical value is 30 meV, while "
+            "--energy-max-factor should be large enough to keep E+Omega "
+            "inside the DOS catalogue."
+        ),
+    )
+    parser.add_argument(
         "--phase-Te-min-K",
         type=float,
         default=None,
@@ -236,6 +248,7 @@ def main() -> int:
         n_omega=args.phase_n_omega,
         Te_min_K=args.phase_Te_min_K,
         Te_max_K=args.phase_Te_max_K,
+        omega_max_meV=args.phase_omega_max_meV,
     )
 
     phase_npz = save_phase_space_catalog_npz(
@@ -270,7 +283,7 @@ def main() -> int:
         stage="pre",
         extra={
             "pipeline": "01_prerun_template.py",
-            "purpose": "OE2 mesh plus OE3 first Usadel/DOS catalogue",
+            "purpose": "OE2 mesh plus OE3 Usadel/DOS catalogue plus OE4 phase-space catalogue",
             "outputs": {
                 "mesh_npz": str(mesh_npz),
                 "edges_npz": str(edges_npz),

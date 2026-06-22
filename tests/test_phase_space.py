@@ -146,8 +146,7 @@ def test_build_save_load_phase_space_catalog(tmp_path):
     assert np.allclose(phase_catalog.omega_values_J, loaded.omega_values_J)
     assert np.allclose(phase_catalog.J_S_TdqO_J, loaded.J_S_TdqO_J)
     assert np.allclose(phase_catalog.J_R_TdqO_J, loaded.J_R_TdqO_J)
-    assert loaded.metadata["backend"] == "phase_space_from_usadel_dos_oe4_v1_2"
-
+    assert loaded.metadata["backend"] == "phase_space_from_usadel_dos_oe4_v1_3"
 
 def test_recombination_threshold_and_normal_limit_are_explicit():
     from pysnspd.kinetic.phase_space import recombination_phase_space_spectrum
@@ -268,3 +267,74 @@ def test_phase_space_source_documents_pdf_appendix_caveats():
     assert "N1(E)N1(E')" in source
     assert "f(E)->f_FD(E,Te)" in source
 
+def test_phase_space_omega_axis_can_be_shorter_than_parent_dos_axis(tmp_path):
+    cfg = validate_config(
+        _minimal_config(tmp_path),
+        require_big_data_root_exists=False,
+    )
+
+    usadel_catalog = build_usadel_catalog_from_config(
+        cfg,
+        gamma_max_fraction=0.80,
+        energy_max_factor=20.0,
+    )
+
+    phase_catalog = build_phase_space_catalog_from_usadel_catalog(
+        usadel_catalog,
+        cfg,
+        n_Te=2,
+        n_delta=3,
+        n_q=3,
+        n_omega=25,
+        Te_min_K=0.9,
+        Te_max_K=10.0,
+        omega_max_meV=10.0,
+    )
+
+    summary = phase_space_summary(phase_catalog)
+
+    assert phase_catalog.metadata["backend"] == "phase_space_from_usadel_dos_oe4_v1_3"
+    assert phase_catalog.metadata["omega_axis_source"] == "user_requested_meV"
+    assert np.isclose(summary["omega_max_meV"], 10.0)
+    assert summary["energy_max_meV"] > summary["omega_max_meV"]
+    assert summary["scattering_window_margin_meV"] > 0.0
+    assert summary["scattering_window_is_truncated"] is False
+
+
+def test_phase_space_rejects_omega_axis_beyond_parent_dos_axis(tmp_path):
+    cfg = validate_config(
+        _minimal_config(tmp_path),
+        require_big_data_root_exists=False,
+    )
+
+    usadel_catalog = build_usadel_catalog_from_config(
+        cfg,
+        gamma_max_fraction=0.80,
+        energy_max_factor=6.0,
+    )
+
+    try:
+        build_phase_space_catalog_from_usadel_catalog(
+            usadel_catalog,
+            cfg,
+            n_Te=2,
+            n_delta=2,
+            n_q=2,
+            n_omega=20,
+            Te_min_K=0.9,
+            Te_max_K=10.0,
+            omega_max_meV=30.0,
+        )
+    except ValueError as exc:
+        assert "requested phase-space Omega range exceeds the parent DOS range" in str(exc)
+    else:
+        raise AssertionError("Expected ValueError for Omega_max beyond parent DOS range.")
+
+
+def test_phase_space_source_documents_decoupled_omega_axis():
+    source = Path("pysnspd/kinetic/phase_space.py").read_text(encoding="utf-8")
+
+    assert "omega_max_meV" in source
+    assert "Omega axis" in source
+    assert "E + Omega" in source
+    assert "phase_space_from_usadel_dos_oe4_v1_3" in source
