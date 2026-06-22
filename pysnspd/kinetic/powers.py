@@ -20,6 +20,16 @@ The microscopic starting point is the kinetic formulation of Simon et al.,
 Physical Review B 112, 174512 (2025). The Vodolazov/Allmaras T^5 form is
 used only as a normal-state Debye consistency check, not as the microscopic
 starting point.
+
+Important convention
+--------------------
+The Vodolazov/Allmaras parameter tau0 is not the linear electron-phonon
+relaxation time at Tc. Linearizing the Debye T^5 power around T=Tc gives
+
+    tau0 = [720 zeta(5) / pi^2] tau_ep(Tc).
+
+Therefore a material value such as tau_ep(Tc)=24.7 ps must not be inserted
+directly as tau0 in the T^5 comparison.
 """
 
 from __future__ import annotations
@@ -36,6 +46,7 @@ HBAR_J_S = 1.054571817e-34
 KB_J_K = 1.380649e-23
 E_CHARGE_C = 1.602176634e-19
 ZETA_5 = 1.03692775514337
+TAU0_OVER_TAU_EP_TC = 720.0 * ZETA_5 / (np.pi**2)
 
 
 @dataclass(frozen=True)
@@ -58,6 +69,35 @@ class ProjectedPowerResult:
     integrand_S_J2: np.ndarray
     integrand_R_J2: np.ndarray
     metadata: dict[str, Any]
+
+
+def tau0_from_tau_ep_Tc(tau_ep_Tc_s: float) -> float:
+    """Convert the linear relaxation time at Tc into Vodolazov tau0.
+
+    The Debye/Vodolazov power is
+
+        P_D = 96 zeta(5) N(0) k_B^2/(tau0 Tc^3) * (Te^5 - Tph^5).
+
+    Linearizing this expression around T=Tc and using
+
+        C_e^N(T) = (2 pi^2/3) N(0) k_B^2 T
+
+    gives
+
+        tau_ep(Tc) = [pi^2/(720 zeta(5))] tau0.
+
+    Hence tau0 is approximately 75.6 times larger than tau_ep(Tc).
+    """
+    if tau_ep_Tc_s <= 0.0:
+        raise ValueError("tau_ep_Tc_s must be positive.")
+    return float(TAU0_OVER_TAU_EP_TC * tau_ep_Tc_s)
+
+
+def tau_ep_Tc_from_tau0(tau0_s: float) -> float:
+    """Inverse of :func:`tau0_from_tau_ep_Tc`."""
+    if tau0_s <= 0.0:
+        raise ValueError("tau0_s must be positive.")
+    return float(tau0_s / TAU0_OVER_TAU_EP_TC)
 
 
 def electronic_density_of_states_from_sigma_D(
@@ -112,6 +152,24 @@ def bose_positive_energy(omega_J: np.ndarray, T_K: float) -> np.ndarray:
 def bose_difference(omega_J: np.ndarray, Te_K: float, Tph_K: float) -> np.ndarray:
     """Return n_e(Omega,Te)-n_ph(Omega,Tph)."""
     return bose_positive_energy(omega_J, Te_K) - bose_positive_energy(omega_J, Tph_K)
+
+
+def diagnostic_bcs_gap_factor(Te_K: np.ndarray, Tc_K: float) -> np.ndarray:
+    """Return a BCS-like equilibrium gap factor Delta(T)/Delta(0).
+
+    This is a diagnostic closure only. It is not the final coupled gTDGL
+    prescription. It is used in OE5 to demonstrate that the large fixed-gap
+    recombination power at Te >> Tc is not a physically self-consistent state.
+    """
+    Te = np.asarray(Te_K, dtype=float)
+    if Tc_K <= 0.0:
+        raise ValueError("Tc_K must be positive.")
+
+    out = np.zeros_like(Te, dtype=float)
+    mask = (Te > 0.0) & (Te < Tc_K)
+    x = np.sqrt(np.maximum(Tc_K / Te[mask] - 1.0, 0.0))
+    out[mask] = np.tanh(1.74 * x)
+    return np.clip(out, 0.0, 1.0)
 
 
 def phase_space_spectra_at_state(
@@ -246,13 +304,11 @@ def compute_projected_powers(
     )
 
     metadata = {
-        "backend": "projected_powers_oe5_v1",
+        "backend": "projected_powers_oe5_v2",
         "sign_convention": (
             "Positive P_S/P_R means energy leaves electrons and enters phonons."
         ),
-        "source": (
-            "pySNSPD Appendix A based on Simon et al. 2025 kinetic equations."
-        ),
+        "source": "pySNSPD Appendix A based on Simon et al. 2025 kinetic equations.",
         "omega_max_meV_used": float(j_to_mev(omega_sel[-1])),
         "alpha2F_source": spectrum.metadata.get("source", ""),
         "alpha2F_path": spectrum.metadata.get("path", ""),
@@ -327,9 +383,32 @@ def compute_power_curve(
     tau0_s: float,
     Tc_K: float,
     omega_max_meV: float | None = None,
+    delta_values_J: np.ndarray | None = None,
+    q_values_m_inv: np.ndarray | None = None,
 ) -> dict[str, np.ndarray]:
-    """Compute projected powers as a function of Te for diagnostics."""
+    """Compute projected powers as a function of Te for diagnostics.
+
+    ``delta_values_J`` and ``q_values_m_inv`` may be supplied to evaluate a
+    non-fixed trajectory through the catalogue, for example a BCS-like
+    diagnostic Delta(Te) curve. This is only a 0D diagnostic; the final coupled
+    model will use Delta(r,t) and q(r,t) from gTDGL.
+    """
     Te_values = np.asarray(Te_values_K, dtype=float)
+    n = Te_values.size
+
+    if delta_values_J is None:
+        delta_curve = np.full(n, float(delta_J), dtype=float)
+    else:
+        delta_curve = np.asarray(delta_values_J, dtype=float)
+        if delta_curve.shape != Te_values.shape:
+            raise ValueError("delta_values_J must have the same shape as Te_values_K.")
+
+    if q_values_m_inv is None:
+        q_curve = np.full(n, float(q_m_inv), dtype=float)
+    else:
+        q_curve = np.asarray(q_values_m_inv, dtype=float)
+        if q_curve.shape != Te_values.shape:
+            raise ValueError("q_values_m_inv must have the same shape as Te_values_K.")
 
     P_S = np.zeros_like(Te_values)
     P_R = np.zeros_like(Te_values)
@@ -340,8 +419,8 @@ def compute_power_curve(
         result = compute_projected_powers(
             float(Te),
             float(Tph_K),
-            float(delta_J),
-            float(q_m_inv),
+            float(delta_curve[i]),
+            float(q_curve[i]),
             phase_space_catalog,
             spectrum,
             N0_J_m3=float(N0_J_m3),
@@ -360,6 +439,8 @@ def compute_power_curve(
 
     return {
         "Te_values_K": Te_values,
+        "delta_values_J": delta_curve,
+        "q_values_m_inv": q_curve,
         "P_S_W_m3": P_S,
         "P_R_W_m3": P_R,
         "P_total_W_m3": P_total,

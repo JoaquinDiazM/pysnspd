@@ -23,6 +23,7 @@ from pysnspd.kinetic.eliashberg import (
 )
 
 from pysnspd.kinetic.powers import (
+    TAU0_OVER_TAU_EP_TC,
     ProjectedPowerResult,
     bose_difference,
     bose_positive_energy,
@@ -33,7 +34,10 @@ from pysnspd.kinetic.powers import (
     compute_total_electron_phonon_power,
     compute_vodolazov_debye_power_density,
     cumulative_spectral_support,
+    diagnostic_bcs_gap_factor,
     electronic_density_of_states_from_sigma_D,
+    tau0_from_tau_ep_Tc,
+    tau_ep_Tc_from_tau0,
 )
 
 __all__ = [
@@ -53,6 +57,7 @@ __all__ = [
     "load_phonon_dos",
     "load_simon_eliashberg_dat",
     "spectrum_summary",
+    "TAU0_OVER_TAU_EP_TC",
     "ProjectedPowerResult",
     "bose_difference",
     "bose_positive_energy",
@@ -63,5 +68,8 @@ __all__ = [
     "compute_total_electron_phonon_power",
     "compute_vodolazov_debye_power_density",
     "cumulative_spectral_support",
+    "diagnostic_bcs_gap_factor",
     "electronic_density_of_states_from_sigma_D",
+    "tau0_from_tau_ep_Tc",
+    "tau_ep_Tc_from_tau0",
 ]

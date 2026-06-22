@@ -9,6 +9,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+MEV_J = 1.602176634e-22
+
+
 def plot_eliashberg_spectrum(spectrum, output_path: str | Path, *, dpi: int = 480) -> Path:
     """Plot normalized alpha^2F and PhDOS from a Simon/MIT material file."""
     output = Path(output_path)
@@ -41,6 +44,8 @@ def plot_power_curve(
     power_curve: Mapping[str, np.ndarray],
     output_path: str | Path,
     *,
+    tau_label: str = "",
+    title_suffix: str = "",
     dpi: int = 480,
 ) -> Path:
     """Plot projected electron-phonon powers versus Te."""
@@ -52,19 +57,104 @@ def plot_power_curve(
     fig, ax = plt.subplots(figsize=(7.5, 4.8))
     ax.plot(Te, power_curve["P_S_W_m3"], linewidth=1.3, label=r"$P_{ep}^{S}$")
     ax.plot(Te, power_curve["P_R_W_m3"], linewidth=1.3, label=r"$P_{ep}^{R}$")
-    ax.plot(Te, power_curve["P_total_W_m3"], linewidth=1.5, label=r"$P_{ep}^{S}+P_{ep}^{R}$")
+    ax.plot(
+        Te,
+        power_curve["P_total_W_m3"],
+        linewidth=1.5,
+        label=r"$P_{ep}^{S}+P_{ep}^{R}$",
+    )
+
+    debye_label = r"Vodolazov/Allmaras Debye $T^5$"
+    if tau_label:
+        debye_label += f" ({tau_label})"
+
     ax.plot(
         Te,
         power_curve["P_Debye_Vodolazov_W_m3"],
         linewidth=1.2,
         linestyle="--",
-        label=r"Vodolazov/Allmaras Debye $T^5$",
+        label=debye_label,
     )
 
     ax.axhline(0.0, linewidth=0.8)
-    ax.set_title("Projected electron-phonon power density")
+    title = "Projected electron-phonon power density"
+    if title_suffix:
+        title += f"\n{title_suffix}"
+    ax.set_title(title)
     ax.set_xlabel(r"$T_e$ [K]")
     ax.set_ylabel(r"power density [W m$^{-3}$]")
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(frameon=True)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return output
+
+
+def plot_gap_policy_power_curves(
+    curves: Mapping[str, Mapping[str, np.ndarray]],
+    output_path: str | Path,
+    *,
+    Tc_K: float,
+    dpi: int = 480,
+) -> Path:
+    """Plot fixed-gap, BCS-like-gap and normal diagnostic power curves.
+
+    This plot is intentionally a diagnostic rather than a final thermal model.
+    It shows how the large recombination channel is suppressed when Delta is
+    allowed to collapse above Tc.
+    """
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(7.8, 5.0))
+
+    for label, curve in curves.items():
+        Te = np.asarray(curve["Te_values_K"], dtype=float)
+        total = np.asarray(curve["P_total_W_m3"], dtype=float)
+        recomb = np.asarray(curve["P_R_W_m3"], dtype=float)
+
+        ax.plot(Te, total, linewidth=1.4, label=f"{label}: total")
+        ax.plot(Te, recomb, linewidth=1.0, linestyle="--", label=f"{label}: R")
+
+    ax.axvline(Tc_K, linewidth=1.0, linestyle=":", label=rf"$T_c={Tc_K:.2f}$ K")
+    ax.axhline(0.0, linewidth=0.8)
+
+    ax.set_title("Gap-policy diagnostic for projected powers")
+    ax.set_xlabel(r"$T_e$ [K]")
+    ax.set_ylabel(r"power density [W m$^{-3}$]")
+    ax.grid(True, linewidth=0.25, alpha=0.35)
+    ax.legend(frameon=True, fontsize=8)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return output
+
+
+def plot_gap_policy_delta_curves(
+    curves: Mapping[str, Mapping[str, np.ndarray]],
+    output_path: str | Path,
+    *,
+    Tc_K: float,
+    dpi: int = 480,
+) -> Path:
+    """Plot Delta(Te) trajectories used by gap-policy diagnostics."""
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(7.5, 4.5))
+
+    for label, curve in curves.items():
+        Te = np.asarray(curve["Te_values_K"], dtype=float)
+        delta_meV = np.asarray(curve["delta_values_J"], dtype=float) / MEV_J
+        ax.plot(Te, delta_meV, linewidth=1.3, label=label)
+
+    ax.axvline(Tc_K, linewidth=1.0, linestyle=":", label=rf"$T_c={Tc_K:.2f}$ K")
+    ax.set_title(r"Diagnostic $\Delta(T_e)$ trajectories")
+    ax.set_xlabel(r"$T_e$ [K]")
+    ax.set_ylabel(r"$|\Delta|$ [meV]")
     ax.grid(True, linewidth=0.25, alpha=0.35)
     ax.legend(frameon=True)
 
