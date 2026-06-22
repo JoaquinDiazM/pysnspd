@@ -131,6 +131,11 @@ def parse_args() -> argparse.Namespace:
         default=480,
         help="DPI for diagnostic plots.",
     )
+    parser.add_argument(
+        "--ss-progress",
+        action="store_true",
+        help="Show a progress bar during OE7 stationary relaxation.",
+    )
     return parser.parse_args()
 
 
@@ -187,6 +192,7 @@ def main() -> int:
         tolerance_current_residual=args.ss_tolerance_current_residual,
         adapt_dt=not args.ss_no_adapt_dt,
         lock_terminals=not args.ss_unlock_terminals,
+        progress=args.ss_progress,
     )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "ss_state_relaxed.npz")

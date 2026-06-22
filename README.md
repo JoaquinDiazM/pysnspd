@@ -404,15 +404,15 @@ python pipelines/01_prerun_template.py \
   --config configs/geminga_local.yaml \
   --run-name $RUN_NAME \
   --workers 16 \
-  --jitter-fraction 0.20 \
+  --jitter-fraction 0.05 \
   --boundary-guard-layers 1 \
   --eta-fraction 1.0e-3 \
   --gamma-max-fraction 0.80 \
   --energy-max-factor 30.0 \
   --phase-omega-max-meV 35.0 \
-  --phase-n-Te 6 \
-  --phase-n-delta 6 \
-  --phase-n-q 6 \
+  --phase-n-Te 12 \
+  --phase-n-delta 12 \
+  --phase-n-q 12 \
   --phase-n-omega 480 \
   --eliashberg-dat /home/jdiaz/scratch/big_data/catalogs/simon_2025/nbn-a2f-ph.dat \
   --oe5-Te-min-K 0.9 \

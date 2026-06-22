@@ -12,6 +12,10 @@ from typing import Any
 import math
 
 import numpy as np
+try:
+    from tqdm.auto import trange
+except Exception:  # pragma: no cover
+    trange = None
 
 from pysnspd.gtdgl.material import (
     E_CHARGE_C,
@@ -165,6 +169,7 @@ def solve_poisson_potential(
     ops: FVOperators,
     edge_data=None,
     target_current_A: float | None = None,
+    boundary_accum_A_m: np.ndarray | None = None,
 ) -> np.ndarray:
     """Solve Poisson with conservative terminal-current boundary terms.
 
@@ -186,7 +191,15 @@ def solve_poisson_potential(
     np.add.at(rhs, i, -edge_flux)
     np.add.at(rhs, j, edge_flux)
 
-    if target_current_A is not None:
+    if boundary_accum_A_m is not None:
+        boundary_accum = np.asarray(boundary_accum_A_m, dtype=float)
+        if boundary_accum.shape != rhs.shape:
+            raise ValueError(
+                "boundary_accum_A_m must have shape "
+                f"{rhs.shape}, got {boundary_accum.shape}."
+            )
+        rhs -= boundary_accum
+    elif target_current_A is not None:
         if edge_data is None:
             raise ValueError("edge_data is required when target_current_A is used.")
         boundary_accum = terminal_boundary_accum_A_m(
@@ -341,6 +354,7 @@ def relax_stationary_gtdgl(
     dt_max_s: float = 2.0e-15,
     lock_terminals: bool = True,
     target_current_A: float | None = None,
+    progress: bool = False,
 ) -> RelaxationResult:
     """Relax the OE6 seed with frozen temperatures and active gTDGL/Poisson.
 
@@ -368,11 +382,10 @@ def relax_stationary_gtdgl(
     Te = np.asarray(seed.node_Te_K, dtype=float).copy()
     Tph = np.asarray(seed.node_Tph_K, dtype=float).copy()
 
-    boundary_accum = terminal_boundary_accum_A_m(
-        edge_data,
-        n_nodes=ops.n_nodes,
-        target_current_A=target_current_A,
-        thickness_m=material.thickness_m,
+    boundary_accum = _seed_compatible_boundary_accum_A_m(
+        seed=seed,
+        material=material,
+        ops=ops,
     )
 
     t_s = 0.0
@@ -397,7 +410,11 @@ def relax_stationary_gtdgl(
         boundary_accum_A_m=boundary_accum,
     )
 
-    for _ in range(int(steps)):
+    iterator = range(int(steps))
+    if progress and trange is not None:
+        iterator = trange(int(steps), desc="OE7 SS gTDGL", leave=True)
+
+    for _ in iterator:
         forcing = gtdgl_forcing(
             psi_J=psi,
             Te_K=Te,
@@ -447,8 +464,7 @@ def relax_stationary_gtdgl(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
             material=material,
             ops=ops,
-            edge_data=edge_data,
-            target_current_A=target_current_A,
+            boundary_accum_A_m=boundary_accum,
         )
 
         trial_currents = compute_current_fields(
@@ -489,6 +505,14 @@ def relax_stationary_gtdgl(
             jy_A_m2=currents.node_jtot_y_A_m2,
             thickness_m=material.thickness_m,
         )
+
+        if progress and hasattr(iterator, "set_postfix") and accepted % 10 == 0:
+            iterator.set_postfix(
+                eta=f"{eta:.2e}",
+                eps=f"{residual:.2e}",
+                V=f"{voltage:.2e}",
+                dt_fs=f"{dt_s / 1.0e-15:.3g}",
+            )
 
         hist_t.append(t_s)
         hist_dt.append(dt_s)
@@ -688,3 +712,39 @@ def save_relaxation_history_npz(history: dict[str, np.ndarray], path: str | Path
     output.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(output, **history)
     return output
+
+def _seed_compatible_boundary_accum_A_m(
+    *,
+    seed,
+    material: GTDGLMaterial,
+    ops: FVOperators,
+) -> np.ndarray:
+    """Build a discrete terminal accumulator compatible with the OE6 seed.
+
+    This makes the analytic seed satisfy the same finite-volume continuity
+    equation used by OE7 with phi=0. It avoids generating a spurious linear
+    electrostatic potential just to compensate small mesh/operator mismatches.
+    """
+    psi0 = (
+        np.asarray(seed.node_psi_real_J, dtype=float)
+        + 1j * np.asarray(seed.node_psi_imag_J, dtype=float)
+    )
+    phi0 = np.zeros(ops.n_nodes, dtype=float)
+    Te0 = np.asarray(seed.node_Te_K, dtype=float)
+
+    seed_currents = compute_current_fields(
+        psi_J=psi0,
+        phi_V=phi0,
+        Te_K=Te0,
+        material=material,
+        ops=ops,
+        boundary_accum_A_m=None,
+    )
+
+    div_seed_no_boundary = divergence_from_edge_scalar(
+        seed_currents.edge_js_us_A_m2,
+        ops,
+        boundary_accum_A_m=None,
+    )
+
+    return -div_seed_no_boundary * ops.node_area_m2
