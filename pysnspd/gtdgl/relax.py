@@ -268,7 +268,7 @@ def solve_poisson_potential(
     edge_js_us_A_m2: np.ndarray,
     material: GTDGLMaterial,
     ops: FVOperators,
-    boundary_accum_A_m: np.ndarray,
+    boundary_accum_A_m: np.ndarray | None = None,
 ) -> np.ndarray:
     """Solve the conservative FV Poisson equation for phi.
 
@@ -288,12 +288,15 @@ def solve_poisson_potential(
     if js.shape != (ops.n_edges,):
         raise ValueError(f"edge_js_us_A_m2 must have shape ({ops.n_edges},).")
 
-    boundary = np.asarray(boundary_accum_A_m, dtype=float)
-    if boundary.shape != (ops.n_nodes,):
-        raise ValueError(
-            f"boundary_accum_A_m must have shape ({ops.n_nodes},), "
-            f"got {boundary.shape}."
-        )
+    if boundary_accum_A_m is None:
+        boundary = np.zeros(ops.n_nodes, dtype=float)
+    else:
+        boundary = np.asarray(boundary_accum_A_m, dtype=float)
+        if boundary.shape != (ops.n_nodes,):
+            raise ValueError(
+                f"boundary_accum_A_m must have shape ({ops.n_nodes},), "
+                f"got {boundary.shape}."
+            )
 
     source = edge_flux_accumulator_A_m(js, ops) + boundary
     source = project_source_to_zero_sum(source, ops)
@@ -515,7 +518,7 @@ def apply_stationary_boundary_conditions(
     psi = np.asarray(psi_trial_J, dtype=np.complex128)
     out = np.array(psi, dtype=np.complex128, copy=True)
 
-    out = np.nan_to_num(out, nan=0.0 + 0.0j, posinf=0.0 + 0.0j, neginf=0.0 + 0.0j)
+    out = (np.nan_to_num(np.real(out), nan=0.0, posinf=0.0, neginf=0.0) + 1j * np.nan_to_num(np.imag(out), nan=0.0, posinf=0.0, neginf=0.0))
     out = clip_gap_amplitude(out, material)
 
     if not enabled:
