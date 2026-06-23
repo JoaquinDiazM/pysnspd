@@ -1,28 +1,28 @@
 """Diagnostic plots for OE7 stationary gTDGL/Poisson runs."""
+
 from __future__ import annotations
 
 from pathlib import Path
+
 import numpy as np
+
+import matplotlib
+matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
-from pysnspd.gtdgl.operators import unwrap_phase_graph
 
 from pysnspd.gtdgl.operators import (
-    boundary_currents_from_edge_scalar_least_squares,
     boundary_currents_from_node_vectors,
-    edge_scalar_to_node_vector_least_squares,
     strip_transport_current_profile_from_node_vectors,
+    unwrap_phase_graph,
 )
 
 MEV_J = 1.602176634e-22
 
 
 def plot_ss_state_delta(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot the relaxed order-parameter amplitude in meV.
+    """Plot the relaxed order-parameter amplitude in meV."""
 
-    The color scale starts at zero to avoid visually amplifying tiny numerical
-    variations around the nearly uniform superconducting gap.
-    """
     delta_meV = np.abs(state.psi_J) / MEV_J
     vmax = max(float(np.nanmax(delta_meV)), 1.0e-30)
 
@@ -39,8 +39,15 @@ def plot_ss_state_delta(mesh, state, output_path: str | Path, *, dpi: int = 480)
 
 
 def plot_ss_state_phase(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot an x-sorted unwrapped phase diagnostic."""
-    theta = _unwrap_phase_by_x(mesh, np.angle(state.psi_J))
+    """Plot graph-unwrapped phase."""
+
+    theta = unwrap_phase_graph(
+        np.asarray(state.psi_J, dtype=np.complex128),
+        np.asarray(_mesh_edges_from_triangles(mesh), dtype=np.int64),
+        seed_index=_center_node_index(mesh),
+        subtract_mean=False,
+    )
+
     return _plot_node_scalar(
         mesh,
         theta,
@@ -52,7 +59,8 @@ def plot_ss_state_phase(mesh, state, output_path: str | Path, *, dpi: int = 480)
 
 
 def plot_ss_state_phi(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot electrostatic potential."""
+    """Plot final electrostatic potential."""
+
     return _plot_node_scalar(
         mesh,
         state.phi_V,
@@ -62,6 +70,7 @@ def plot_ss_state_phi(mesh, state, output_path: str | Path, *, dpi: int = 480) -
         dpi=dpi,
     )
 
+
 def plot_ss_phi_snapshots(
     mesh,
     history: dict,
@@ -70,12 +79,8 @@ def plot_ss_phi_snapshots(
     dpi: int = 480,
     ncols: int = 3,
 ) -> Path:
-    """Plot electrostatic-potential snapshots during OE7 relaxation.
+    """Plot electrostatic-potential snapshots during OE7 relaxation."""
 
-    Expects history keys:
-        phi_snapshot_t_s : shape [n_snapshots]
-        phi_snapshot_V   : shape [n_snapshots, n_nodes]
-    """
     if "phi_snapshot_V" not in history or "phi_snapshot_t_s" not in history:
         raise KeyError("history must contain phi_snapshot_V and phi_snapshot_t_s.")
 
@@ -110,7 +115,7 @@ def plot_ss_phi_snapshots(
     fig, axes = plt.subplots(
         nrows,
         ncols,
-        figsize=(3.4 * ncols, 2.7 * nrows),
+        figsize=(3.7 * ncols, 2.7 * nrows),
         constrained_layout=True,
         squeeze=False,
     )
@@ -129,7 +134,7 @@ def plot_ss_phi_snapshots(
             vmin=vmin,
             vmax=vmax,
         )
-        ax.set_title(f"t = {t_s[k] / 1.0e-12:.3g} ps")
+        ax.set_title(f"t = {t_s[k] / 1.0e-12:.4g} ps")
         ax.set_xlabel("x [nm]")
         ax.set_ylabel("y [nm]")
         ax.set_aspect("equal", adjustable="box")
@@ -142,13 +147,17 @@ def plot_ss_phi_snapshots(
     fig.suptitle("OE7 SS: electrostatic potential φ snapshots")
     fig.savefig(output, dpi=dpi)
     plt.close(fig)
+
     return output
+
 
 def plot_ss_state_divergence(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
     """Plot finite-volume current divergence."""
+
     div = np.asarray(state.currents.node_div_jtot_A_m3, dtype=float)
-    vmax = float(np.max(np.abs(div))) if div.size else 1.0
+    vmax = float(np.nanmax(np.abs(div))) if div.size else 1.0
     vmax = max(vmax, 1.0e-30)
+
     return _plot_node_scalar(
         mesh,
         div,
@@ -169,107 +178,257 @@ def plot_ss_state_current_density(
     ops=None,
     dpi: int = 480,
 ) -> Path:
-    """Plot total current-density magnitude and vectors.
+    """Plot total current-density magnitude and sparse vectors.
 
-    If FV operators are provided, reconstruct the node vector field from edge
-    current projections using local least squares. This matches the diagnostic
-    philosophy of the older notebook better than the simple node average.
+    This intentionally uses the node-vector fields stored in the state, which
+    are direct FV edge-to-node averages. It does not use the old LS
+    reconstruction, because that diagnostic was visually doubling the current
+    scale on this mesh.
     """
+
+    del ops
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
     nodes = np.asarray(mesh.nodes, dtype=float)
     x_nm = nodes[:, 0] * 1.0e9
     y_nm = nodes[:, 1] * 1.0e9
     triangles = np.asarray(mesh.triangles, dtype=np.int64)
 
-    if ops is not None:
-        jx, jy = edge_scalar_to_node_vector_least_squares(
-            state.currents.edge_jtot_A_m2,
-            ops,
-        )
-        title = "OE7 SS: total current density"
-    else:
-        jx = np.asarray(state.currents.node_jtot_x_A_m2, dtype=float)
-        jy = np.asarray(state.currents.node_jtot_y_A_m2, dtype=float)
-        title = "OE7 SS: total current density"
-
-    mag = np.sqrt(jx**2 + jy**2)
-    vmax = max(float(np.nanmax(mag)), 1.0e-30)
-
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    fig, ax = plt.subplots(figsize=(7.0, 3.2), constrained_layout=True)
     tri = mtri.Triangulation(x_nm, y_nm, triangles)
 
-    im = ax.tripcolor(tri, mag, shading="gouraud", vmin=0.0, vmax=vmax)
+    jx = np.asarray(state.currents.node_jtot_x_A_m2, dtype=float)
+    jy = np.asarray(state.currents.node_jtot_y_A_m2, dtype=float)
+    jmag = np.sqrt(jx * jx + jy * jy)
+
+    vmax = max(float(np.nanmax(jmag)), 1.0e-30)
+
+    fig, ax = plt.subplots(figsize=(8.0, 3.2))
+
+    im = ax.tripcolor(
+        tri,
+        jmag,
+        shading="gouraud",
+        vmin=0.0,
+        vmax=vmax,
+    )
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(r"$|\vec{j}|$ [A m$^{-2}$]")
 
-    n = max(1, mag.size // 120)
-    scale = np.nanmax(mag)
-    if np.isfinite(scale) and scale > 0.0:
-        ax.quiver(
-            x_nm[::n],
-            y_nm[::n],
-            jx[::n] / scale,
-            jy[::n] / scale,
-            angles="xy",
-            scale_units="xy",
-            scale=0.030,
-            width=0.002,
-        )
+    step = max(1, nodes.shape[0] // 150)
+    ax.quiver(
+        x_nm[::step],
+        y_nm[::step],
+        jx[::step],
+        jy[::step],
+        angles="xy",
+        scale_units="xy",
+        scale=None,
+        width=0.002,
+    )
 
-    ax.set_title(title)
+    ax.set_title("OE7 SS: total current density")
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
     ax.grid(False)
-    fig.savefig(output, dpi=dpi)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
+
     return output
 
 
-def plot_ss_boundary_currents(summary: dict, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot integrated terminal and transverse boundary currents."""
-    boundary = dict(summary["boundary_currents_A"])
-    labels = ["left", "right", "bottom", "top"]
-    values = [boundary.get(f"{name}_A", 0.0) for name in labels]
+def plot_ss_pairbreaking_ratio(
+    mesh,
+    state,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot chi_pb = xi^2 Q^2 / (1 - T/Tc).
+
+    chi_pb = 1 is the local GL pairbreaking threshold where the stationary
+    amplitude predicted by the local GL term goes to zero.
+    """
+
+    chi = np.asarray(state.currents.node_pairbreaking_ratio, dtype=float)
+
+    vmax = float(np.nanpercentile(chi[np.isfinite(chi)], 99.5)) if np.any(np.isfinite(chi)) else 1.0
+    vmax = max(vmax, 1.0)
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(6.2, 3.2), constrained_layout=True)
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x_nm = nodes[:, 0] * 1.0e9
+    y_nm = nodes[:, 1] * 1.0e9
+    tri = mtri.Triangulation(
+        x_nm,
+        y_nm,
+        np.asarray(mesh.triangles, dtype=np.int64),
+    )
+
+    fig, ax = plt.subplots(figsize=(8.0, 3.2))
+
+    im = ax.tripcolor(
+        tri,
+        chi,
+        shading="gouraud",
+        vmin=0.0,
+        vmax=vmax,
+    )
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label(r"$\chi_{\rm pb}=\xi^2Q^2/(1-T/T_c)$")
+
+    if np.nanmin(chi) <= 1.0 <= np.nanmax(chi):
+        ax.tricontour(tri, chi, levels=[1.0], linewidths=1.0)
+
+    ax.set_title("OE7 SS: pairbreaking diagnostic")
+    ax.set_xlabel("x [nm]")
+    ax.set_ylabel("y [nm]")
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(False)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return output
+
+
+def plot_ss_boundary_currents(
+    summary: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot integrated boundary currents from the final state summary."""
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    currents = summary["boundary_currents_A"]
+    labels = ["left", "right", "bottom", "top"]
+    values = [currents[f"{label}_A"] for label in labels]
+
+    fig, ax = plt.subplots(figsize=(6.0, 3.6))
     ax.bar(labels, values)
     ax.axhline(0.0, linewidth=0.8)
+
     ax.set_title("OE7 SS: integrated boundary currents")
     ax.set_ylabel("current [A]")
     ax.grid(False)
-    fig.savefig(output, dpi=dpi)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
+
     return output
 
 
-def plot_ss_relaxation_history(history: dict, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot stationary relaxation residual history."""
-    t_ps = np.asarray(history["t_s"], dtype=float) / 1.0e-12
-    eta = np.asarray(history["eta_R"], dtype=float)
-    residual = np.asarray(history["current_residual"], dtype=float)
-    voltage = np.abs(np.asarray(history["terminal_voltage_V"], dtype=float))
+def plot_ss_transport_current_profile(
+    *,
+    mesh,
+    ops,
+    state,
+    output_path: str | Path,
+    target_current_A: float,
+    thickness_m: float,
+    dpi: int = 480,
+    n_bins: int = 41,
+) -> Path:
+    """Plot longitudinal transport-current profile.
+
+    Uses the stored FV node-averaged jx field. This is a visualization
+    diagnostic, not a solver ingredient.
+    """
+
+    del ops
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(6.4, 3.4), constrained_layout=True)
+    x_m, current_A = strip_transport_current_profile_from_node_vectors(
+        mesh=mesh,
+        jx_A_m2=np.asarray(state.currents.node_jtot_x_A_m2, dtype=float),
+        thickness_m=float(thickness_m),
+        n_bins=int(n_bins),
+    )
+
+    fig, ax = plt.subplots(figsize=(8.0, 3.2))
+
+    ax.plot(x_m * 1.0e9, current_A, marker="o", label="node-avg profile")
+    ax.axhline(float(target_current_A), linestyle="--", label=r"$I_{\rm target}$")
+
+    ax.set_title("OE7 SS: transport-current profile")
+    ax.set_xlabel("x [nm]")
+    ax.set_ylabel("I(x) [A]")
+    ax.grid(False)
+    ax.legend()
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+
+    return output
+
+
+def plot_ss_relaxation_history(
+    history: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot compact relaxation diagnostics."""
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    t_ps = np.asarray(history.get("t_s", []), dtype=float) / 1.0e-12
+
+    fig, ax = plt.subplots(figsize=(8.0, 3.6))
+
     if t_ps.size:
-        ax.semilogy(t_ps, np.maximum(eta, 1.0e-300), label=r"$\eta_R$")
-        ax.semilogy(t_ps, np.maximum(residual, 1.0e-300), label=r"$\epsilon_{\nabla\cdot j}$")
-        ax.semilogy(t_ps, np.maximum(voltage, 1.0e-300), label=r"$|V_{\rm TDGL}|$ [V]")
+        if "eta_R" in history:
+            ax.semilogy(t_ps, np.asarray(history["eta_R"], dtype=float), label=r"$\eta_R$")
+        if "current_residual" in history:
+            ax.semilogy(
+                t_ps,
+                np.asarray(history["current_residual"], dtype=float),
+                label=r"$\epsilon_{\nabla\cdot j}$",
+            )
+        if "terminal_voltage_V" in history:
+            ax.semilogy(
+                t_ps,
+                np.maximum(np.abs(np.asarray(history["terminal_voltage_V"], dtype=float)), 1.0e-300),
+                label=r"$|V_{\rm TDGL}|$ [V]",
+            )
+        if "pairbreaking_max" in history:
+            ax.semilogy(
+                t_ps,
+                np.maximum(np.asarray(history["pairbreaking_max"], dtype=float), 1.0e-300),
+                label=r"$\max \chi_{\rm pb}$",
+            )
+        if "delta_min_over_delta0" in history:
+            ax.semilogy(
+                t_ps,
+                np.maximum(np.asarray(history["delta_min_over_delta0"], dtype=float), 1.0e-300),
+                label=r"$\min |\Delta|/\Delta_0$",
+            )
+
     ax.set_title("OE7 SS: relaxation diagnostics")
     ax.set_xlabel("t [ps]")
     ax.set_ylabel("diagnostic value")
     ax.grid(False)
-    ax.legend(frameon=False)
-    fig.savefig(output, dpi=dpi)
+    ax.legend()
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
+
     return output
 
 
@@ -284,225 +443,73 @@ def _plot_node_scalar(
     vmax=None,
     dpi: int = 480,
 ) -> Path:
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    x_nm = nodes[:, 0] * 1.0e9
-    y_nm = nodes[:, 1] * 1.0e9
-    triangles = np.asarray(mesh.triangles, dtype=np.int64)
-    z = np.asarray(values, dtype=float).reshape(-1)
+    """Common triangular node-scalar plot."""
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(7.0, 3.2), constrained_layout=True)
-    tri = mtri.Triangulation(x_nm, y_nm, triangles)
-    im = ax.tripcolor(tri, z, shading="gouraud", vmin=vmin, vmax=vmax)
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x_nm = nodes[:, 0] * 1.0e9
+    y_nm = nodes[:, 1] * 1.0e9
+
+    tri = mtri.Triangulation(
+        x_nm,
+        y_nm,
+        np.asarray(mesh.triangles, dtype=np.int64),
+    )
+
+    z = np.asarray(values, dtype=float).reshape(-1)
+
+    fig, ax = plt.subplots(figsize=(8.0, 3.2))
+
+    im = ax.tripcolor(
+        tri,
+        z,
+        shading="gouraud",
+        vmin=vmin,
+        vmax=vmax,
+    )
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(label)
+
     ax.set_title(title)
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
     ax.grid(False)
-    fig.savefig(output, dpi=dpi)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
+
     return output
 
 
-def _unwrap_phase_by_x(mesh, theta_wrapped: np.ndarray) -> np.ndarray:
-    psi = np.exp(1j * np.asarray(theta_wrapped, dtype=float))
-    edges = _edges_from_triangles(mesh.triangles)
-    return unwrap_phase_graph(psi, edges)
+def _center_node_index(mesh) -> int:
+    """Return node closest to the geometric center."""
 
-
-def _edges_from_triangles(triangles: np.ndarray) -> np.ndarray:
-    triangles = np.asarray(triangles, dtype=np.int64)
-    pairs = np.vstack(
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    center = np.array(
         [
-            triangles[:, [0, 1]],
-            triangles[:, [1, 2]],
-            triangles[:, [2, 0]],
+            0.5 * (float(np.min(nodes[:, 0])) + float(np.max(nodes[:, 0]))),
+            0.5 * (float(np.min(nodes[:, 1])) + float(np.max(nodes[:, 1]))),
         ]
     )
-    pairs.sort(axis=1)
-    return np.unique(pairs, axis=0)
+    dist2 = np.sum((nodes[:, :2] - center[None, :]) ** 2, axis=1)
+    return int(np.argmin(dist2))
 
-def plot_ss_boundary_current_reconstruction_comparison(
-    *,
-    mesh,
-    edge_data,
-    ops,
-    state,
-    output_path: str | Path,
-    target_current_A: float | None = None,
-    thickness_m: float,
-    dpi: int = 480,
-) -> Path:
-    """Compare terminal currents from different diagnostic reconstructions."""
-    node_avg = boundary_currents_from_node_vectors(
-        mesh=mesh,
-        edge_data=edge_data,
-        jx_A_m2=state.currents.node_jtot_x_A_m2,
-        jy_A_m2=state.currents.node_jtot_y_A_m2,
-        thickness_m=thickness_m,
+
+def _mesh_edges_from_triangles(mesh) -> np.ndarray:
+    """Build unique undirected edges from mesh triangles for phase unwrapping."""
+
+    tri = np.asarray(mesh.triangles, dtype=np.int64)
+    edges = np.vstack(
+        [
+            tri[:, [0, 1]],
+            tri[:, [1, 2]],
+            tri[:, [2, 0]],
+        ]
     )
-
-    ls = boundary_currents_from_edge_scalar_least_squares(
-        mesh=mesh,
-        edge_data=edge_data,
-        ops=ops,
-        edge_current_i_to_j=state.currents.edge_jtot_A_m2,
-        thickness_m=thickness_m,
-    )
-
-    labels = [
-        "left\nnode avg",
-        "left\nLS",
-        "right\nnode avg",
-        "right\nLS",
-    ]
-    values = [
-        node_avg.get("left_A", 0.0),
-        ls.get("left_A", 0.0),
-        node_avg.get("right_A", 0.0),
-        ls.get("right_A", 0.0),
-    ]
-
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    fig, ax = plt.subplots(figsize=(6.8, 3.4), constrained_layout=True)
-    ax.bar(labels, values)
-    ax.axhline(0.0, linewidth=0.8)
-
-    if target_current_A is not None:
-        I = float(target_current_A)
-        ax.axhline(+I, linestyle="--", linewidth=0.9, label=r"$+I_{\rm target}$")
-        ax.axhline(-I, linestyle="--", linewidth=0.9, label=r"$-I_{\rm target}$")
-        ax.legend(frameon=False)
-
-    ax.set_title("OE7 SS: boundary-current reconstruction")
-    ax.set_ylabel("current [A]")
-    ax.grid(False)
-    fig.savefig(output, dpi=dpi)
-    plt.close(fig)
-    return output
-
-def _strip_transport_current_profile_from_edges(
-    *,
-    mesh,
-    ops,
-    edge_current_i_to_j_A_m2: np.ndarray,
-    thickness_m: float,
-    target_current_A: float | None = None,
-    n_cuts: int = 41,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Notebook-style longitudinal current profile from edge currents.
-
-    For each vertical cut x=x_c, sum the x-projected edge current carried by
-    edges crossing that cut:
-
-        I(x_c) ~= d * sum_edges_crossing_cut j_e e_x s_e.
-
-    Endpoints are set to target_current_A when available, because the terminal
-    current is imposed as a boundary condition.
-    """
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    current = np.asarray(edge_current_i_to_j_A_m2, dtype=float)
-
-    if current.shape != (ops.n_edges,):
-        raise ValueError(
-            f"edge_current_i_to_j_A_m2 must have shape ({ops.n_edges},), "
-            f"got {current.shape}."
-        )
-
-    if n_cuts < 2:
-        raise ValueError("n_cuts must be at least 2.")
-
-    x = nodes[:, 0]
-    xmin = float(np.min(x))
-    xmax = float(np.max(x))
-
-    xs = np.linspace(xmin, xmax, int(n_cuts))
-    I_A = np.zeros_like(xs)
-
-    if target_current_A is not None and np.isfinite(float(target_current_A)):
-        I_A[0] = float(target_current_A)
-        I_A[-1] = float(target_current_A)
-    else:
-        I_A[0] = np.nan
-        I_A[-1] = np.nan
-
-    xi = x[ops.edge_i]
-    xj = x[ops.edge_j]
-
-    jx_edge = current * ops.edge_unit[:, 0]
-    face = ops.dual_face_length_m
-
-    eps = max(1.0e-30, 1.0e-12 * max(xmax - xmin, 1.0e-300))
-
-    for k, xc in enumerate(xs[1:-1], start=1):
-        crosses = ((xi - xc) * (xj - xc) <= 0.0) & (np.abs(xj - xi) > eps)
-
-        if np.any(crosses):
-            I_A[k] = float(
-                thickness_m * np.sum(jx_edge[crosses] * face[crosses])
-            )
-        else:
-            I_A[k] = np.nan
-
-    return xs, I_A
-
-
-def plot_ss_transport_current_profile(
-    *,
-    mesh,
-    ops,
-    state,
-    output_path: str | Path,
-    target_current_A: float | None = None,
-    thickness_m: float,
-    n_bins: int = 41,
-    dpi: int = 480,
-) -> Path:
-    """Plot notebook-style longitudinal transport-current profile."""
-    x_m, I_A = _strip_transport_current_profile_from_edges(
-        mesh=mesh,
-        ops=ops,
-        edge_current_i_to_j_A_m2=state.currents.edge_jtot_A_m2,
-        thickness_m=thickness_m,
-        target_current_A=target_current_A,
-        n_cuts=n_bins,
-    )
-
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    fig, ax = plt.subplots(figsize=(6.6, 3.4), constrained_layout=True)
-
-    ax.plot(
-        x_m * 1.0e9,
-        I_A,
-        marker="o",
-        markersize=2.5,
-        linewidth=1.0,
-        label="edge-cut profile",
-    )
-
-    if target_current_A is not None:
-        ax.axhline(
-            float(target_current_A),
-            linestyle="--",
-            linewidth=0.9,
-            label=r"$I_{\rm target}$",
-        )
-
-    ax.legend(frameon=False)
-    ax.set_title("OE7 SS: transport-current profile")
-    ax.set_xlabel("x [nm]")
-    ax.set_ylabel("I(x) [A]")
-    ax.grid(False)
-
-    fig.savefig(output, dpi=dpi)
-    plt.close(fig)
-
-    return output
+    edges = np.sort(edges, axis=1)
+    edges = np.unique(edges, axis=0)
+    return edges
