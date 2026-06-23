@@ -162,6 +162,123 @@ def compute_current_fields(
         node_jtot_y_A_m2=jt_y,
     )
 
+def _node_area_weights(ops: FVOperators) -> np.ndarray:
+    """Return positive nodal weights for compatibility/gauge projections."""
+    weights = np.asarray(getattr(ops, "node_area_m2", None), dtype=float)
+
+    if weights.shape != (ops.n_nodes,) or not np.all(np.isfinite(weights)):
+        weights = np.ones(ops.n_nodes, dtype=float)
+
+    weights = np.maximum(weights, 1.0e-300)
+    return weights
+
+
+def _project_rhs_to_neumann_range(rhs: np.ndarray, ops: FVOperators) -> np.ndarray:
+    """Project a Neumann-Poisson RHS onto the graph-Laplacian range.
+
+    The FV Laplacian has the constant vector as null mode, so solvability
+    requires sum(rhs)=0. The correction is distributed as a uniform divergence
+    offset, i.e. proportional to nodal control-volume area.
+    """
+    out = np.asarray(rhs, dtype=float).copy()
+
+    total = float(np.sum(out))
+    norm = float(np.sum(np.abs(out)))
+    if not np.isfinite(total):
+        raise FloatingPointError("Poisson RHS has non-finite total sum.")
+
+    if norm == 0.0 or abs(total) <= 1.0e-14 * max(norm, 1.0):
+        return out
+
+    weights = _node_area_weights(ops)
+    out -= total * weights / float(np.sum(weights))
+    return out
+
+
+def _project_boundary_accum_to_zero_net(
+    boundary_accum_A_m: np.ndarray,
+    ops: FVOperators,
+    *,
+    mask: np.ndarray | None = None,
+) -> np.ndarray:
+    """Make a boundary accumulator globally compatible.
+
+    The closed-domain FV continuity equation requires zero net boundary
+    accumulator. This projection is applied to the accumulator itself, not only
+    to the Poisson RHS, so diagnostics and the solve use the same equation.
+    """
+    out = np.asarray(boundary_accum_A_m, dtype=float).copy()
+    if out.shape != (ops.n_nodes,):
+        raise ValueError(
+            f"boundary_accum_A_m must have shape ({ops.n_nodes},), got {out.shape}."
+        )
+
+    total = float(np.sum(out))
+    norm = float(np.sum(np.abs(out)))
+    if not np.isfinite(total):
+        raise FloatingPointError("Boundary accumulator has non-finite total sum.")
+
+    if norm == 0.0 or abs(total) <= 1.0e-14 * max(norm, 1.0):
+        return out
+
+    weights = _node_area_weights(ops)
+
+    if mask is not None:
+        mask_arr = np.asarray(mask, dtype=bool)
+        if mask_arr.shape != (ops.n_nodes,):
+            raise ValueError(f"mask must have shape ({ops.n_nodes},), got {mask_arr.shape}.")
+        weights = np.where(mask_arr, weights, 0.0)
+
+        if float(np.sum(weights)) <= 0.0:
+            weights = _node_area_weights(ops)
+
+    out -= total * weights / float(np.sum(weights))
+    return out
+
+
+def _poisson_gauge_node(mesh, ops: FVOperators) -> int:
+    """Choose a robust interior gauge node near the geometric center.
+
+    This avoids sacrificing the continuity equation at a corner node.
+    """
+    nodes = getattr(mesh, "nodes", None)
+    if nodes is None:
+        return int(np.argmax(_node_area_weights(ops)))
+
+    nodes = np.asarray(nodes, dtype=float)
+    if nodes.ndim != 2 or nodes.shape[0] != ops.n_nodes or nodes.shape[1] < 2:
+        return int(np.argmax(_node_area_weights(ops)))
+
+    x = nodes[:, 0]
+    y = nodes[:, 1]
+
+    xmin = float(np.min(x))
+    xmax = float(np.max(x))
+    ymin = float(np.min(y))
+    ymax = float(np.max(y))
+
+    length_m = max(float(xmax - xmin), 1.0e-300)
+    width_m = max(float(ymax - ymin), 1.0e-300)
+    tol = max(1.0e-15, 1.0e-9 * max(length_m, width_m))
+
+    boundary = (
+        (np.abs(x - xmin) <= tol)
+        | (np.abs(x - xmax) <= tol)
+        | (np.abs(y - ymin) <= tol)
+        | (np.abs(y - ymax) <= tol)
+    )
+
+    candidates = np.where(~boundary)[0]
+    if candidates.size == 0:
+        candidates = np.arange(ops.n_nodes, dtype=np.int64)
+
+    center = np.array([0.5 * (xmin + xmax), 0.5 * (ymin + ymax)], dtype=float)
+    dx = (nodes[candidates, 0] - center[0]) / length_m
+    dy = (nodes[candidates, 1] - center[1]) / width_m
+
+    return int(candidates[int(np.argmin(dx * dx + dy * dy))])
+
+
 def solve_poisson_potential(
     *,
     edge_js_us_A_m2: np.ndarray,
@@ -170,20 +287,30 @@ def solve_poisson_potential(
     edge_data=None,
     target_current_A: float | None = None,
     boundary_accum_A_m: np.ndarray | None = None,
+    mesh=None,
+    gauge_node: int | None = None,
 ) -> np.ndarray:
-    """Solve Poisson with conservative terminal-current boundary terms.
+    """Solve Poisson for the electrostatic potential.
 
     The discrete condition is
 
-        div_edges(j_s + j_n) + div_boundary(j_terminal) = 0,
+        div_edges(j_s + j_n) + div_boundary = 0,
 
-    with j_n = -sigma_n grad(phi). This prevents Poisson from cancelling the
-    imposed transport current.
+    with
+
+        j_n = -sigma_n grad(phi).
+
+    The Neumann operator is singular. We enforce compatibility by projecting
+    the RHS to zero total sum, then fix the gauge at an interior node near the
+    center, instead of sacrificing a corner continuity equation.
     """
     js = np.asarray(edge_js_us_A_m2, dtype=float)
+    if js.shape != (ops.n_edges,):
+        raise ValueError(f"edge_js_us_A_m2 must have shape ({ops.n_edges},).")
+
     conductance = material.sigma_n_S_m * ops.dual_face_length_m / ops.edge_length_m
-    i = ops.edge_i
-    j = ops.edge_j
+    i = np.asarray(ops.edge_i, dtype=np.int64)
+    j = np.asarray(ops.edge_j, dtype=np.int64)
 
     rhs = np.zeros(ops.n_nodes, dtype=float)
 
@@ -208,34 +335,57 @@ def solve_poisson_potential(
             target_current_A=float(target_current_A),
             thickness_m=material.thickness_m,
         )
+        boundary_accum = _project_boundary_accum_to_zero_net(
+            boundary_accum,
+            ops,
+            mask=None,
+        )
         rhs -= boundary_accum
+
+    rhs = _project_rhs_to_neumann_range(rhs, ops)
+
+    if gauge_node is None:
+        gauge = _poisson_gauge_node(mesh, ops)
+    else:
+        gauge = int(gauge_node)
+
+    if not (0 <= gauge < ops.n_nodes):
+        raise ValueError(f"Invalid gauge_node={gauge}; expected 0 <= gauge < {ops.n_nodes}.")
 
     if coo_matrix is not None and spsolve is not None:
         rows = np.concatenate([i, i, j, j])
         cols = np.concatenate([i, j, j, i])
-        data = np.concatenate([conductance, -conductance, conductance, -conductance])
+        data = np.concatenate(
+            [conductance, -conductance, conductance, -conductance]
+        )
 
-        matrix = coo_matrix((data, (rows, cols)), shape=(ops.n_nodes, ops.n_nodes)).tolil()
-        matrix[0, :] = 0.0
-        matrix[0, 0] = 1.0
-        rhs[0] = 0.0
+        matrix = coo_matrix(
+            (data, (rows, cols)),
+            shape=(ops.n_nodes, ops.n_nodes),
+        ).tolil()
+
+        matrix[gauge, :] = 0.0
+        matrix[gauge, gauge] = 1.0
+        rhs[gauge] = 0.0
 
         phi = np.asarray(spsolve(matrix.tocsr(), rhs), dtype=float)
     else:
         matrix = np.zeros((ops.n_nodes, ops.n_nodes), dtype=float)
+
         for a, b, g in zip(i, j, conductance):
             matrix[a, a] += g
             matrix[a, b] -= g
             matrix[b, b] += g
             matrix[b, a] -= g
 
-        matrix[0, :] = 0.0
-        matrix[0, 0] = 1.0
-        rhs[0] = 0.0
+        matrix[gauge, :] = 0.0
+        matrix[gauge, gauge] = 1.0
+        rhs[gauge] = 0.0
 
         phi = np.linalg.solve(matrix, rhs)
 
-    phi -= float(np.mean(phi))
+    weights = _node_area_weights(ops)
+    phi -= float(np.sum(weights * phi) / np.sum(weights))
     return phi
 
 def gtdgl_forcing(
@@ -530,7 +680,7 @@ def _supercurrent_terminal_boundary_accum_A_m(
     *,
     edge_js_us_A_m2: np.ndarray,
     mesh,
-    edge_data,
+    #edge_data,
     ops: FVOperators,
     normal_alignment_min: float = 0.50,
 ) -> np.ndarray:
@@ -714,8 +864,13 @@ def relax_stationary_gtdgl(
     boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
         edge_js_us_A_m2=seed_currents_no_phi.edge_js_us_A_m2,
         mesh=mesh,
-        edge_data=edge_data,
         ops=ops,
+    )
+
+    boundary_accum = _project_boundary_accum_to_zero_net(
+        boundary_accum,
+        ops,
+        mask=terminal_node_mask(mesh),
     )
 
     t_s = 0.0
@@ -805,14 +960,20 @@ def relax_stationary_gtdgl(
         trial_boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
             mesh=mesh,
-            edge_data=edge_data,
             ops=ops,
+        )
+
+        trial_boundary_accum = _project_boundary_accum_to_zero_net(
+            trial_boundary_accum,
+            ops,
+            mask=terminal_node_mask(mesh),
         )
         phi_trial = solve_poisson_potential(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
             material=material,
             ops=ops,
             boundary_accum_A_m=trial_boundary_accum,
+            mesh=mesh,
         )
 
         trial_currents = compute_current_fields(
@@ -924,7 +1085,9 @@ def relax_stationary_gtdgl(
         "lock_terminals": bool(lock_terminals),
         "thermal_policy": "frozen_Te_Tph",
         "circuit_policy": "inactive",
-        "poisson_gauge": "mean_zero",
+        "poisson_gauge": "interior_center_pin_with_area_mean_zero_projection",
+        "poisson_rhs_policy": "zero_total_rhs_projection",
+        "boundary_accum_policy": "zero_net_terminal_projection",
         "poisson_boundary_policy": "segment_aware_supercurrent_terminal_flux",
         "terminal_order_parameter_policy": (
             "Neumann amplitude from immediate inward neighbour plus "
@@ -967,6 +1130,7 @@ def relax_stationary_gtdgl(
         history=history,
         summary=summary,
     )
+
 def _seed_target_current_A(seed) -> float:
     """Extract the imposed transport current from an OE6 seed object."""
     for name in ("I_bias_A", "target_current_A", "current_A"):
