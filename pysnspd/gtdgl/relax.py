@@ -534,19 +534,25 @@ def _supercurrent_terminal_boundary_accum_A_m(
     ops: FVOperators,
     normal_alignment_min: float = 0.50,
 ) -> np.ndarray:
-    """Build a segment-aware terminal accumulator for Option A.
+    """Build a direction-aware terminal accumulator for Option A.
 
     Option A imposes the transport current through the superconducting
     phase-gradient boundary condition on Psi. Poisson must not impose I_bias
     again.
 
-    The accumulator cancels only the discrete supercurrent flux through
-    terminal-to-interior FV edges whose direction is compatible with the bias
-    direction. It explicitly ignores physical boundary segments, including
-    bottom/top insulating edges and left/right tangential terminal edges.
+    The terminal accumulator cancels only the discrete supercurrent flux carried
+    by terminal-to-interior edges whose direction is compatible with the bias
+    direction. This is deliberately *not* a pure boundary-tag filter:
 
-    This prevents corner nodes from cancelling arbitrary fluxes associated with
-    insulating-boundary directions.
+        - a bottom/top edge at a corner can be x-directed, hence bias-compatible;
+        - a left/right edge can be y-directed, hence insulating/tangential and
+          should not inject/extract transport current;
+        - diagonal terminal-to-interior edges are allowed only if their
+          longitudinal component is sufficiently large.
+
+    This fixes the corner issue where the previous segment-aware attempt
+    rejected x-directed bottom/top corner edges merely because their tag was
+    "bottom" or "top".
     """
     current = np.asarray(edge_js_us_A_m2, dtype=float)
     if current.shape != (ops.n_edges,):
@@ -556,64 +562,79 @@ def _supercurrent_terminal_boundary_accum_A_m(
         raise ValueError("normal_alignment_min must be in [0, 1].")
 
     masks = _boundary_node_masks(mesh)
-    tag_lookup = _edge_tag_lookup(edge_data)
-
     left = masks["left"]
     right = masks["right"]
     terminal = left | right
-
-    out = np.zeros(ops.n_nodes, dtype=float)
 
     nodes = np.asarray(mesh.nodes, dtype=float)
     edge_i = np.asarray(ops.edge_i, dtype=np.int64)
     edge_j = np.asarray(ops.edge_j, dtype=np.int64)
 
-    dx = nodes[edge_j, 0] - nodes[edge_i, 0]
     length = np.maximum(np.asarray(ops.edge_length_m, dtype=float), 1.0e-300)
-    x_alignment = np.abs(dx) / length
+    dx_ij = nodes[edge_j, 0] - nodes[edge_i, 0]
+    x_alignment = np.abs(dx_ij) / length
 
-    for k, (i, j) in enumerate(zip(edge_i, edge_j)):
-        i = int(i)
-        j = int(j)
+    out = np.zeros(ops.n_nodes, dtype=float)
 
-        # Only edges with exactly one endpoint on a longitudinal terminal can
-        # represent terminal-to-interior transport flux.
+    for k, (i_raw, j_raw) in enumerate(zip(edge_i, edge_j)):
+        i = int(i_raw)
+        j = int(j_raw)
+
         i_terminal = bool(terminal[i])
         j_terminal = bool(terminal[j])
+
+        # Only one endpoint must be on a longitudinal terminal.
+        # terminal-terminal edges are tangential terminal-boundary segments;
+        # interior-interior edges are handled by the bulk FV operator.
         if i_terminal == j_terminal:
             continue
 
-        # Do not use physical boundary segments as terminal-through-flow.
-        # This is the key corner fix: bottom/top insulating segments are not
-        # allowed to act as bias injection/extraction segments.
-        if _is_physical_boundary_segment(
-            i,
-            j,
-            masks=masks,
-            tag_lookup=tag_lookup,
-        ):
+        # Reject edges that point mainly in the transverse direction. Those are
+        # the problematic "towards the insulator" directions. Do not reject an
+        # edge just because its boundary tag is bottom/top: if it is x-directed
+        # at a corner, it is bias-compatible.
+        if x_alignment[k] < normal_alignment_min:
             continue
 
-        # Keep only edges sufficiently aligned with the imposed bias direction.
-        # This keeps horizontal/diagonal terminal-to-interior FV links and
-        # rejects nearly vertical links associated with insulating directions.
-        if x_alignment[k] < normal_alignment_min:
+        if i_terminal:
+            terminal_node = i
+            other_node = j
+            terminal_is_edge_i = True
+        else:
+            terminal_node = j
+            other_node = i
+            terminal_is_edge_i = False
+
+        # Require the selected edge to point inward from the terminal:
+        #
+        # left terminal  : x_other > x_terminal
+        # right terminal : x_other < x_terminal
+        #
+        # This avoids allowing accidental outward or tangential segments.
+        x_terminal = float(nodes[terminal_node, 0])
+        x_other = float(nodes[other_node, 0])
+        inward_dx = x_other - x_terminal
+
+        if bool(left[terminal_node]) and inward_dx <= 0.0:
+            continue
+        if bool(right[terminal_node]) and inward_dx >= 0.0:
             continue
 
         flux = float(ops.dual_face_length_m[k] * current[k])
 
         # Raw FV accumulation convention:
+        #
         #   edge_i receives +flux
         #   edge_j receives -flux
         #
-        # The boundary accumulator must cancel only the terminal endpoint part.
-        if i_terminal:
-            out[i] -= flux
-        if j_terminal:
-            out[j] += flux
+        # The boundary accumulator cancels only the terminal endpoint
+        # contribution for this bias-compatible terminal-to-interior edge.
+        if terminal_is_edge_i:
+            out[terminal_node] -= flux
+        else:
+            out[terminal_node] += flux
 
     return out
-
 
 
 def apply_terminal_dirichlet(
@@ -885,9 +906,11 @@ def relax_stationary_gtdgl(
             "Frozen-temperature stationary gTDGL/Poisson relaxation from the OE6 "
             "analytic seed. The transport current is imposed through the "
             "superconducting terminal phase-gradient boundary condition. Poisson "
-            "uses a segment-aware terminal accumulator compatible with that discrete "
-            "supercurrent, excluding top/bottom insulating boundary segments at "
-            "corner nodes. External circuit and thermal evolution are inactive."
+            "uses a direction-aware terminal accumulator compatible with that "
+            "discrete supercurrent: terminal-to-interior edges are included only "
+            "when they point along the bias direction, while transverse insulating "
+            "directions are rejected. External circuit and thermal evolution are "
+            "inactive."
         ),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
