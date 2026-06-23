@@ -432,6 +432,50 @@ def apply_terminal_supercurrent_bc(
 
     return psi
 
+def _edge_flux_accumulator_A_m(
+    edge_current_i_to_j: np.ndarray,
+    ops: FVOperators,
+) -> np.ndarray:
+    """Return conservative edge-flux accumulator before division by node area.
+
+    Units are [A/m], i.e. current per film thickness. This is the numerator of
+    the finite-volume divergence used by divergence_from_edge_scalar().
+    """
+    current = np.asarray(edge_current_i_to_j, dtype=float)
+    if current.shape != (ops.n_edges,):
+        raise ValueError(f"edge_current_i_to_j must have shape ({ops.n_edges},).")
+
+    out = np.zeros(ops.n_nodes, dtype=float)
+    flux = ops.dual_face_length_m * current
+    np.add.at(out, ops.edge_i, flux)
+    np.add.at(out, ops.edge_j, -flux)
+    return out
+
+
+def _supercurrent_terminal_boundary_accum_A_m(
+    *,
+    edge_js_us_A_m2: np.ndarray,
+    mesh,
+    ops: FVOperators,
+) -> np.ndarray:
+    """Build Poisson boundary accumulator compatible with imposed j_s.
+
+    Option A: the transport current is imposed through the superconducting
+    phase-gradient condition on Psi. Poisson must not impose I_bias again.
+    Therefore the terminal boundary accumulator cancels only the discrete
+    edge-flux imbalance of the already-imposed supercurrent at left/right
+    terminal nodes.
+
+    Interior nodes are left untouched, so Poisson can still correct genuine
+    interior continuity errors through j_n = -sigma_n grad(phi).
+    """
+    raw = _edge_flux_accumulator_A_m(edge_js_us_A_m2, ops)
+    terminal = terminal_node_mask(mesh)
+
+    out = np.zeros(ops.n_nodes, dtype=float)
+    out[terminal] = -raw[terminal]
+    return out
+
 def apply_terminal_dirichlet(
     *,
     psi_trial_J: np.ndarray,
@@ -470,9 +514,12 @@ def relax_stationary_gtdgl(
 ) -> RelaxationResult:
     """Relax the OE6 seed with frozen temperatures and active gTDGL/Poisson.
 
-    The important OE7 point is that Poisson is solved with conservative
-    terminal-current boundary fluxes. Therefore the scalar potential enforces
-    div(j_s + j_n) = 0 without cancelling the imposed transport current.
+    Option A:
+    - The terminal transport current is imposed through the superconducting
+      phase-gradient boundary condition on Psi.
+    - Poisson does not impose I_bias a second time.
+    - Instead, Poisson uses a terminal accumulator compatible with the actual
+      discrete supercurrent after the boundary condition has been applied.
     """
     if steps <= 0:
         raise ValueError("steps must be positive.")
@@ -494,11 +541,19 @@ def relax_stationary_gtdgl(
     Te = np.asarray(seed.node_Te_K, dtype=float).copy()
     Tph = np.asarray(seed.node_Tph_K, dtype=float).copy()
 
-    boundary_accum = terminal_boundary_accum_A_m(
-        edge_data,
-        n_nodes=ops.n_nodes,
-        target_current_A=target_current_A,
-        thickness_m=material.thickness_m,
+    # Initial compatible boundary accumulator from the initial supercurrent.
+    seed_currents_no_phi = compute_current_fields(
+        psi_J=psi,
+        phi_V=np.zeros_like(phi),
+        Te_K=Te,
+        material=material,
+        ops=ops,
+        boundary_accum_A_m=None,
+    )
+    boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
+        edge_js_us_A_m2=seed_currents_no_phi.edge_js_us_A_m2,
+        mesh=mesh,
+        ops=ops,
     )
 
     t_s = 0.0
@@ -563,6 +618,7 @@ def relax_stationary_gtdgl(
                 f"KWT update failed; min discriminant={min_disc:.6e}"
             )
 
+        # Terminal BC: Neumann amplitude + imposed superconducting q_b.
         psi_trial = apply_terminal_supercurrent_bc(
             psi_trial_J=psi_trial,
             Te_K=Te,
@@ -572,23 +628,29 @@ def relax_stationary_gtdgl(
             enabled=lock_terminals,
         )
 
-        # First evaluate the superconducting current from the trial order
-        # parameter. The potential is then obtained from the conservative
-        # Poisson problem with imposed left/right terminal fluxes.
+        # First evaluate j_s from the trial order parameter.
         trial_currents_no_phi = compute_current_fields(
             psi_J=psi_trial,
             phi_V=np.zeros_like(phi),
             Te_K=Te,
             material=material,
             ops=ops,
-            boundary_accum_A_m=boundary_accum,
+            boundary_accum_A_m=None,
+        )
+
+        # Option A: boundary accumulator compatible with the already-imposed
+        # superconducting boundary current, not an independent I_bias source.
+        trial_boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
+            edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
+            mesh=mesh,
+            ops=ops,
         )
 
         phi_trial = solve_poisson_potential(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
             material=material,
             ops=ops,
-            boundary_accum_A_m=boundary_accum,
+            boundary_accum_A_m=trial_boundary_accum,
         )
 
         trial_currents = compute_current_fields(
@@ -597,7 +659,7 @@ def relax_stationary_gtdgl(
             Te_K=Te,
             material=material,
             ops=ops,
-            boundary_accum_A_m=boundary_accum,
+            boundary_accum_A_m=trial_boundary_accum,
         )
 
         eta = float(
@@ -613,6 +675,7 @@ def relax_stationary_gtdgl(
         psi = psi_trial
         phi = phi_trial
         currents = trial_currents
+        boundary_accum = trial_boundary_accum
         t_s += dt_s
         accepted += 1
 
@@ -630,14 +693,6 @@ def relax_stationary_gtdgl(
             thickness_m=material.thickness_m,
         )
 
-        if progress and hasattr(iterator, "set_postfix") and accepted % 10 == 0:
-            iterator.set_postfix(
-                eta=f"{eta:.2e}",
-                eps=f"{residual:.2e}",
-                V=f"{voltage:.2e}",
-                dt_fs=f"{dt_s / 1.0e-15:.3g}",
-            )
-
         hist_t.append(t_s)
         hist_dt.append(dt_s)
         hist_eta.append(eta)
@@ -645,9 +700,18 @@ def relax_stationary_gtdgl(
         hist_v.append(voltage)
         hist_ir.append(boundary["right_A"])
         hist_il.append(boundary["left_A"])
+
         if accepted in phi_snapshot_steps:
             phi_snapshot_t_s.append(t_s)
             phi_snapshot_V.append(phi.copy())
+
+        if progress and hasattr(iterator, "set_postfix") and accepted % 10 == 0:
+            iterator.set_postfix(
+                eta=f"{eta:.2e}",
+                eps=f"{residual:.2e}",
+                V=f"{voltage:.2e}",
+                dt_fs=f"{dt_s / 1.0e-15:.3g}",
+            )
 
         if (
             accepted >= min_steps
@@ -675,11 +739,14 @@ def relax_stationary_gtdgl(
         phi_snapshot_V = [phi_snapshot_V[int(i)] for i in keep]
 
     metadata = {
-        "backend": "oe7_stationary_gtdgl_poisson_v2_terminal_flux",
+        "backend": "oe7_stationary_gtdgl_poisson_v3_supercurrent_terminal_bc",
         "description": (
             "Frozen-temperature stationary gTDGL/Poisson relaxation from the OE6 "
-            "analytic seed. Poisson includes conservative left/right terminal "
-            "current fluxes. External circuit and thermal evolution are inactive."
+            "analytic seed. The transport current is imposed through the "
+            "superconducting terminal phase-gradient boundary condition. Poisson "
+            "uses a terminal accumulator compatible with that discrete supercurrent, "
+            "so I_bias is not imposed a second time. External circuit and thermal "
+            "evolution are inactive."
         ),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
@@ -694,7 +761,7 @@ def relax_stationary_gtdgl(
         "thermal_policy": "frozen_Te_Tph",
         "circuit_policy": "inactive",
         "poisson_gauge": "mean_zero",
-        "poisson_boundary_policy": "target_current_terminal_flux",
+        "poisson_boundary_policy": "supercurrent_compatible_terminal_flux",
         "terminal_order_parameter_policy": (
             "Neumann amplitude from immediate inward neighbour plus "
             "Usadel supercurrent phase-gradient condition"
@@ -736,8 +803,6 @@ def relax_stationary_gtdgl(
         history=history,
         summary=summary,
     )
-
-
 def _seed_target_current_A(seed) -> float:
     """Extract the imposed transport current from an OE6 seed object."""
     for name in ("I_bias_A", "target_current_A", "current_A"):
@@ -792,6 +857,44 @@ def stationary_summary(
     final_eta = float(history["eta_R"][-1]) if history["eta_R"].size else float("nan")
     final_res = float(history["current_residual"][-1]) if history["current_residual"].size else current_residual(state.currents, mesh)
 
+    jtot_rms = float(
+        np.sqrt(
+            np.mean(
+                state.currents.node_jtot_x_A_m2**2
+                + state.currents.node_jtot_y_A_m2**2
+            )
+        )
+    )
+    jn_rms = float(
+        np.sqrt(
+            np.mean(
+                state.currents.node_jn_x_A_m2**2
+                + state.currents.node_jn_y_A_m2**2
+            )
+        )
+    )
+    js_rms = float(
+        np.sqrt(
+            np.mean(
+                state.currents.node_js_us_x_A_m2**2
+                + state.currents.node_js_us_y_A_m2**2
+            )
+        )
+    )
+    normal_current_fraction_rms = jn_rms / max(jtot_rms, 1.0e-300)
+
+    target_current_A = float(state.metadata.get("target_current_A", np.nan))
+    normal_resistance_ohm = (
+        float(mesh.length_m)
+        / (material.sigma_n_S_m * material.width_m * material.thickness_m)
+    )
+    normal_ohmic_voltage_V = target_current_A * normal_resistance_ohm
+    terminal_voltage_over_normal = (
+        float(voltage) / normal_ohmic_voltage_V
+        if np.isfinite(normal_ohmic_voltage_V) and abs(normal_ohmic_voltage_V) > 0.0
+        else float("nan")
+    )
+
     return {
         "backend": state.metadata["backend"],
         "converged": bool(state.metadata["converged"]),
@@ -804,6 +907,9 @@ def stationary_summary(
         "tau_ee_Tc_effective_ps": float(material.tau_scale * material.tau_ee_Tc_s / 1.0e-12),
         "tau_ep_Tc_effective_ps": float(material.tau_scale * material.tau_ep_Tc_s / 1.0e-12),
         "terminal_voltage_V": float(voltage),
+        "normal_resistance_ohm": float(normal_resistance_ohm),
+        "normal_ohmic_voltage_V": float(normal_ohmic_voltage_V),
+        "terminal_voltage_over_normal": float(terminal_voltage_over_normal),
         "phi_min_V": float(np.min(state.phi_V)),
         "phi_max_V": float(np.max(state.phi_V)),
         "delta_min_meV": float(np.min(R) / 1.602176634e-22),
@@ -812,6 +918,10 @@ def stationary_summary(
         "theta_max_rad": float(np.max(theta)),
         "jx_mean_A_m2": float(np.mean(state.currents.node_jtot_x_A_m2)),
         "jy_mean_A_m2": float(np.mean(state.currents.node_jtot_y_A_m2)),
+        "js_us_rms_A_m2": float(js_rms),
+        "jn_rms_A_m2": float(jn_rms),
+        "jtot_rms_A_m2": float(jtot_rms),
+        "normal_current_fraction_rms": float(normal_current_fraction_rms),
         "divergence_rms_A_m3": float(np.sqrt(np.mean(div**2))),
         "current_residual": float(final_res),
         "eta_R_final": float(final_eta),
