@@ -451,30 +451,170 @@ def _edge_flux_accumulator_A_m(
     np.add.at(out, ops.edge_j, -flux)
     return out
 
+def _boundary_node_masks(mesh) -> dict[str, np.ndarray]:
+    """Return geometric boundary-node masks for the rectangular nanowire."""
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x = nodes[:, 0]
+    y = nodes[:, 1]
+
+    xmin = float(np.min(x))
+    xmax = float(np.max(x))
+    ymin = float(np.min(y))
+    ymax = float(np.max(y))
+
+    length_m = float(getattr(mesh, "length_m", xmax - xmin))
+    width_m = float(getattr(mesh, "width_m", ymax - ymin))
+    tol = max(1.0e-15, 1.0e-9 * max(length_m, width_m))
+
+    return {
+        "left": np.abs(x - xmin) <= tol,
+        "right": np.abs(x - xmax) <= tol,
+        "bottom": np.abs(y - ymin) <= tol,
+        "top": np.abs(y - ymax) <= tol,
+    }
+
+
+def _edge_tag_lookup(edge_data) -> dict[tuple[int, int], str]:
+    """Map undirected edge pairs to boundary/interior tags."""
+    if edge_data is None:
+        return {}
+
+    if not hasattr(edge_data, "edges") or not hasattr(edge_data, "tags"):
+        return {}
+
+    edges = np.asarray(edge_data.edges, dtype=np.int64)
+    tags = np.asarray(edge_data.tags)
+
+    lookup: dict[tuple[int, int], str] = {}
+    for edge, tag in zip(edges, tags):
+        i, j = int(edge[0]), int(edge[1])
+        key = (i, j) if i < j else (j, i)
+
+        if isinstance(tag, bytes):
+            tag_s = tag.decode()
+        else:
+            tag_s = str(tag)
+
+        lookup[key] = tag_s.lower()
+
+    return lookup
+
+
+def _is_physical_boundary_segment(
+    i: int,
+    j: int,
+    *,
+    masks: dict[str, np.ndarray],
+    tag_lookup: dict[tuple[int, int], str],
+) -> bool:
+    """Return True for top/bottom/left/right physical boundary segments.
+
+    These segments are real boundary edges. They should not be used as
+    terminal-through-flow segments in the Poisson accumulator.
+    """
+    key = (i, j) if i < j else (j, i)
+    tag = tag_lookup.get(key, "")
+
+    if tag in {"left", "right", "bottom", "top"}:
+        return True
+
+    # Geometry fallback when tags are missing or incomplete.
+    for side in ("left", "right", "bottom", "top"):
+        if bool(masks[side][i]) and bool(masks[side][j]):
+            return True
+
+    return False
+
 
 def _supercurrent_terminal_boundary_accum_A_m(
     *,
     edge_js_us_A_m2: np.ndarray,
     mesh,
+    edge_data,
     ops: FVOperators,
+    normal_alignment_min: float = 0.50,
 ) -> np.ndarray:
-    """Build Poisson boundary accumulator compatible with imposed j_s.
+    """Build a segment-aware terminal accumulator for Option A.
 
-    Option A: the transport current is imposed through the superconducting
-    phase-gradient condition on Psi. Poisson must not impose I_bias again.
-    Therefore the terminal boundary accumulator cancels only the discrete
-    edge-flux imbalance of the already-imposed supercurrent at left/right
-    terminal nodes.
+    Option A imposes the transport current through the superconducting
+    phase-gradient boundary condition on Psi. Poisson must not impose I_bias
+    again.
 
-    Interior nodes are left untouched, so Poisson can still correct genuine
-    interior continuity errors through j_n = -sigma_n grad(phi).
+    The accumulator cancels only the discrete supercurrent flux through
+    terminal-to-interior FV edges whose direction is compatible with the bias
+    direction. It explicitly ignores physical boundary segments, including
+    bottom/top insulating edges and left/right tangential terminal edges.
+
+    This prevents corner nodes from cancelling arbitrary fluxes associated with
+    insulating-boundary directions.
     """
-    raw = _edge_flux_accumulator_A_m(edge_js_us_A_m2, ops)
-    terminal = terminal_node_mask(mesh)
+    current = np.asarray(edge_js_us_A_m2, dtype=float)
+    if current.shape != (ops.n_edges,):
+        raise ValueError(f"edge_js_us_A_m2 must have shape ({ops.n_edges},).")
+
+    if not (0.0 <= normal_alignment_min <= 1.0):
+        raise ValueError("normal_alignment_min must be in [0, 1].")
+
+    masks = _boundary_node_masks(mesh)
+    tag_lookup = _edge_tag_lookup(edge_data)
+
+    left = masks["left"]
+    right = masks["right"]
+    terminal = left | right
 
     out = np.zeros(ops.n_nodes, dtype=float)
-    out[terminal] = -raw[terminal]
+
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    edge_i = np.asarray(ops.edge_i, dtype=np.int64)
+    edge_j = np.asarray(ops.edge_j, dtype=np.int64)
+
+    dx = nodes[edge_j, 0] - nodes[edge_i, 0]
+    length = np.maximum(np.asarray(ops.edge_length_m, dtype=float), 1.0e-300)
+    x_alignment = np.abs(dx) / length
+
+    for k, (i, j) in enumerate(zip(edge_i, edge_j)):
+        i = int(i)
+        j = int(j)
+
+        # Only edges with exactly one endpoint on a longitudinal terminal can
+        # represent terminal-to-interior transport flux.
+        i_terminal = bool(terminal[i])
+        j_terminal = bool(terminal[j])
+        if i_terminal == j_terminal:
+            continue
+
+        # Do not use physical boundary segments as terminal-through-flow.
+        # This is the key corner fix: bottom/top insulating segments are not
+        # allowed to act as bias injection/extraction segments.
+        if _is_physical_boundary_segment(
+            i,
+            j,
+            masks=masks,
+            tag_lookup=tag_lookup,
+        ):
+            continue
+
+        # Keep only edges sufficiently aligned with the imposed bias direction.
+        # This keeps horizontal/diagonal terminal-to-interior FV links and
+        # rejects nearly vertical links associated with insulating directions.
+        if x_alignment[k] < normal_alignment_min:
+            continue
+
+        flux = float(ops.dual_face_length_m[k] * current[k])
+
+        # Raw FV accumulation convention:
+        #   edge_i receives +flux
+        #   edge_j receives -flux
+        #
+        # The boundary accumulator must cancel only the terminal endpoint part.
+        if i_terminal:
+            out[i] -= flux
+        if j_terminal:
+            out[j] += flux
+
     return out
+
+
 
 def apply_terminal_dirichlet(
     *,
@@ -553,6 +693,7 @@ def relax_stationary_gtdgl(
     boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
         edge_js_us_A_m2=seed_currents_no_phi.edge_js_us_A_m2,
         mesh=mesh,
+        edge_data=edge_data,
         ops=ops,
     )
 
@@ -643,9 +784,9 @@ def relax_stationary_gtdgl(
         trial_boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
             mesh=mesh,
+            edge_data=edge_data,
             ops=ops,
         )
-
         phi_trial = solve_poisson_potential(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
             material=material,
@@ -744,9 +885,9 @@ def relax_stationary_gtdgl(
             "Frozen-temperature stationary gTDGL/Poisson relaxation from the OE6 "
             "analytic seed. The transport current is imposed through the "
             "superconducting terminal phase-gradient boundary condition. Poisson "
-            "uses a terminal accumulator compatible with that discrete supercurrent, "
-            "so I_bias is not imposed a second time. External circuit and thermal "
-            "evolution are inactive."
+            "uses a segment-aware terminal accumulator compatible with that discrete "
+            "supercurrent, excluding top/bottom insulating boundary segments at "
+            "corner nodes. External circuit and thermal evolution are inactive."
         ),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
@@ -761,7 +902,7 @@ def relax_stationary_gtdgl(
         "thermal_policy": "frozen_Te_Tph",
         "circuit_policy": "inactive",
         "poisson_gauge": "mean_zero",
-        "poisson_boundary_policy": "supercurrent_compatible_terminal_flux",
+        "poisson_boundary_policy": "segment_aware_supercurrent_terminal_flux",
         "terminal_order_parameter_policy": (
             "Neumann amplitude from immediate inward neighbour plus "
             "Usadel supercurrent phase-gradient condition"
