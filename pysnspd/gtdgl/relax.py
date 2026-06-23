@@ -40,10 +40,12 @@ from pysnspd.gtdgl.operators import (
 )
 
 try:
-    from scipy.sparse import coo_matrix
+    from scipy.sparse import coo_matrix, csr_matrix, bmat
     from scipy.sparse.linalg import spsolve
 except Exception:
     coo_matrix = None
+    csr_matrix = None
+    bmat = None
     spsolve = None
 
 
@@ -291,33 +293,47 @@ def solve_poisson_potential(
     mesh=None,
     gauge_node: int | None = None,
 ) -> np.ndarray:
-    """Solve Poisson for the electrostatic potential.
+    """Solve notebook-style FV Poisson equation for electric potential.
 
-    The discrete condition is
+    Discrete equation:
 
-        div_edges(j_s + j_n) + div_boundary = 0,
+        div_h(j_s + j_n) + b_h = 0,
 
     with
 
         j_n = -sigma_n grad(phi).
 
-    The Neumann operator is singular. We enforce compatibility by projecting
-    the RHS to zero total sum, then fix the gauge at an interior node near the
-    center, instead of sacrificing a corner continuity equation.
+    The linear system is solved with a mean-potential constraint,
+
+        sum_i phi_i = 0,
+
+    through a Lagrange multiplier.  This mirrors the notebook and avoids
+    sacrificing one physical node equation as a Dirichlet gauge point.
     """
+    del gauge_node  # kept only for API compatibility
+
     js = np.asarray(edge_js_us_A_m2, dtype=float)
     if js.shape != (ops.n_edges,):
         raise ValueError(f"edge_js_us_A_m2 must have shape ({ops.n_edges},).")
 
-    conductance = material.sigma_n_S_m * ops.dual_face_length_m / ops.edge_length_m
+    conductance = (
+        material.sigma_n_S_m
+        * ops.dual_face_length_m
+        / ops.edge_length_m
+    )
+
     i = np.asarray(ops.edge_i, dtype=np.int64)
     j = np.asarray(ops.edge_j, dtype=np.int64)
 
     rhs = np.zeros(ops.n_nodes, dtype=float)
 
     edge_flux = ops.dual_face_length_m * js
+
+    # Notebook convention:
+    # b_i += -s_ij j_s,ij
+    # b_j += +s_ij j_s,ij
     np.add.at(rhs, i, -edge_flux)
-    np.add.at(rhs, j, edge_flux)
+    np.add.at(rhs, j, +edge_flux)
 
     if boundary_accum_A_m is not None:
         boundary_accum = np.asarray(boundary_accum_A_m, dtype=float)
@@ -327,68 +343,75 @@ def solve_poisson_potential(
                 f"{rhs.shape}, got {boundary_accum.shape}."
             )
         rhs -= boundary_accum
+
     elif target_current_A is not None:
         if edge_data is None:
             raise ValueError("edge_data is required when target_current_A is used.")
-        boundary_accum = terminal_boundary_accum_A_m(
-            edge_data,
-            n_nodes=ops.n_nodes,
+
+        if mesh is None:
+            raise ValueError("mesh is required when target_current_A is used.")
+
+        boundary_accum = _target_terminal_boundary_accum_A_m(
+            mesh=mesh,
+            edge_data=edge_data,
+            material=material,
+            ops=ops,
             target_current_A=float(target_current_A),
-            thickness_m=material.thickness_m,
-        )
-        boundary_accum = _project_boundary_accum_to_zero_net(
-            boundary_accum,
-            ops,
-            mask=None,
         )
         rhs -= boundary_accum
 
-    rhs = _project_rhs_to_neumann_range(rhs, ops)
+    rows = np.concatenate([i, i, j, j])
+    cols = np.concatenate([i, j, j, i])
+    data = np.concatenate(
+        [
+            conductance,
+            -conductance,
+            conductance,
+            -conductance,
+        ]
+    )
 
-    if gauge_node is None:
-        gauge = _poisson_gauge_node(mesh, ops)
-    else:
-        gauge = int(gauge_node)
+    n = ops.n_nodes
 
-    if not (0 <= gauge < ops.n_nodes):
-        raise ValueError(f"Invalid gauge_node={gauge}; expected 0 <= gauge < {ops.n_nodes}.")
+    if coo_matrix is not None and csr_matrix is not None and bmat is not None and spsolve is not None:
+        A = coo_matrix((data, (rows, cols)), shape=(n, n)).tocsr()
 
-    if coo_matrix is not None and spsolve is not None:
-        rows = np.concatenate([i, i, j, j])
-        cols = np.concatenate([i, j, j, i])
-        data = np.concatenate(
-            [conductance, -conductance, conductance, -conductance]
+        ones_col = csr_matrix(np.ones((n, 1), dtype=float))
+        ones_row = csr_matrix(np.ones((1, n), dtype=float))
+        zero = csr_matrix((1, 1), dtype=float)
+
+        A_aug = bmat(
+            [
+                [A, ones_col],
+                [ones_row, zero],
+            ],
+            format="csr",
         )
 
-        matrix = coo_matrix(
-            (data, (rows, cols)),
-            shape=(ops.n_nodes, ops.n_nodes),
-        ).tolil()
+        rhs_aug = np.concatenate([rhs, [0.0]])
+        sol = np.asarray(spsolve(A_aug, rhs_aug), dtype=float)
+        phi = sol[:n]
 
-        matrix[gauge, :] = 0.0
-        matrix[gauge, gauge] = 1.0
-        rhs[gauge] = 0.0
-
-        phi = np.asarray(spsolve(matrix.tocsr(), rhs), dtype=float)
     else:
-        matrix = np.zeros((ops.n_nodes, ops.n_nodes), dtype=float)
+        A = np.zeros((n, n), dtype=float)
 
         for a, b, g in zip(i, j, conductance):
-            matrix[a, a] += g
-            matrix[a, b] -= g
-            matrix[b, b] += g
-            matrix[b, a] -= g
+            A[a, a] += g
+            A[a, b] -= g
+            A[b, b] += g
+            A[b, a] -= g
 
-        matrix[gauge, :] = 0.0
-        matrix[gauge, gauge] = 1.0
-        rhs[gauge] = 0.0
+        A_aug = np.zeros((n + 1, n + 1), dtype=float)
+        A_aug[:n, :n] = A
+        A_aug[:n, n] = 1.0
+        A_aug[n, :n] = 1.0
 
-        phi = np.linalg.solve(matrix, rhs)
+        rhs_aug = np.concatenate([rhs, [0.0]])
+        sol = np.linalg.solve(A_aug, rhs_aug)
+        phi = np.asarray(sol[:n], dtype=float)
 
-    weights = _node_area_weights(ops)
-    phi -= float(np.sum(weights * phi) / np.sum(weights))
+    phi -= float(np.mean(phi))
     return phi
-
 def gtdgl_forcing(
     *,
     psi_J: np.ndarray,
@@ -425,44 +448,77 @@ def kwt_local_update(
     material: GTDGLMaterial,
     discriminant_tol: float = 1.0e-12,
 ) -> tuple[np.ndarray, bool, float]:
-    """Advance Delta by one local semi-implicit KWT step."""
+    """Advance Delta by one local KWT step using the notebook algebra.
+
+    The local equation is written as
+
+        Delta^{n+1} + z |Delta^{n+1}|^2 = w,
+
+    with temporal gauge link
+
+        U = exp(+ i 2e phi dt / hbar),
+
+    and
+
+        z = alpha U^{-1} Delta^n,
+
+        w = U^{-1} [
+              Delta^n
+              + alpha Delta^n |Delta^n|^2
+              + (dt/tau_GL) rho F
+            ].
+
+    This intentionally differs from the previous implementation, which used
+    F/rho and then multiplied back by U, effectively cancelling the scalar
+    potential in the alpha -> 0 limit.
+    """
     psi = np.asarray(psi_J, dtype=np.complex128)
     phi = np.asarray(phi_V, dtype=float)
     Te = np.asarray(Te_K, dtype=float)
     F = np.asarray(forcing_J, dtype=np.complex128)
 
     R2_old = np.abs(psi) ** 2
+
     rho = material.rho_kwt(Te, np.sqrt(R2_old))
     alpha = material.alpha_kwt_J_inv2(Te)
 
-    U = np.exp(-1j * (2.0 * E_CHARGE_C / HBAR_J_S) * phi * dt_s)
-    U_conj = np.conjugate(U)
+    U = np.exp(1j * (2.0 * E_CHARGE_C / HBAR_J_S) * phi * dt_s)
+    U_inv = np.conjugate(U)
 
-    z = alpha * U_conj * psi
-    w = U_conj * (psi + alpha * psi * R2_old + dt_s * F / (material.tau0_GL_s * rho))
+    z = alpha * U_inv * psi
+
+    w = U_inv * (
+        psi
+        + alpha * psi * R2_old
+        + (dt_s / material.tau0_GL_s) * rho * F
+    )
 
     abs_z2 = np.abs(z) ** 2
     abs_w2 = np.abs(w) ** 2
+
     B = 1.0 + 2.0 * np.real(w * np.conjugate(z))
     disc = B**2 - 4.0 * abs_z2 * abs_w2
-    min_disc = float(np.min(disc))
 
+    min_disc = float(np.min(disc))
     scale = np.maximum(B**2 + 4.0 * abs_z2 * abs_w2, 1.0)
+
     bad = disc < -discriminant_tol * scale
     if np.any(bad):
         return psi.copy(), False, min_disc
 
     disc = np.maximum(disc, 0.0)
+
     denom = B + np.sqrt(disc)
     tiny = np.abs(denom) < 1.0e-300
-    r = np.empty_like(abs_w2, dtype=float)
-    r[~tiny] = 2.0 * abs_w2[~tiny] / denom[~tiny]
-    r[tiny] = abs_w2[tiny]
 
-    X = w - z * r
-    psi_new = U * X
+    amp2_new = np.empty_like(abs_w2, dtype=float)
+    amp2_new[~tiny] = 2.0 * abs_w2[~tiny] / denom[~tiny]
+    amp2_new[tiny] = abs_w2[tiny]
+    amp2_new = np.maximum(amp2_new, 0.0)
+
+    psi_new = w - z * amp2_new
+
     return psi_new, True, min_disc
-
 
 def terminal_node_mask(mesh) -> np.ndarray:
     """Return boolean mask for left and right terminal nodes."""
@@ -517,6 +573,231 @@ def terminal_inner_node_pairs(mesh) -> dict[str, tuple[np.ndarray, np.ndarray]]:
         "left": pair_one_side(left, side="left"),
         "right": pair_one_side(right, side="right"),
     }
+
+def _nearest_inward_boundary_pairs(mesh, side: str) -> tuple[np.ndarray, np.ndarray]:
+    """Pair top/bottom boundary nodes with immediate inward neighbours.
+
+    Used to impose the notebook-style vacuum Neumann condition on insulating
+    boundaries:
+
+        Delta_boundary = Delta_inward.
+
+    Terminal corner nodes are not excluded here; the terminal condition is
+    applied afterwards and therefore wins at the corners.
+    """
+    if side not in {"bottom", "top"}:
+        raise ValueError(f"side must be 'bottom' or 'top', got {side!r}.")
+
+    masks = _boundary_node_masks(mesh)
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x = nodes[:, 0]
+    y = nodes[:, 1]
+
+    h = float(getattr(mesh, "target_spacing_m", 1.0e-9))
+    tol = max(
+        1.0e-15,
+        1.0e-9 * max(
+            float(getattr(mesh, "length_m", np.ptp(x))),
+            float(getattr(mesh, "width_m", np.ptp(y))),
+        ),
+    )
+
+    boundary = np.where(masks[side])[0]
+    inner = np.empty_like(boundary, dtype=np.int64)
+
+    for k, b in enumerate(boundary):
+        if side == "bottom":
+            candidates = np.where(y > y[b] + tol)[0]
+            dy = y[candidates] - y[b]
+        else:
+            candidates = np.where(y < y[b] - tol)[0]
+            dy = y[b] - y[candidates]
+
+        if candidates.size == 0:
+            raise ValueError(f"No inward candidates found for {side} boundary node {b}.")
+
+        dx = x[candidates] - x[b]
+
+        # Prefer same-x immediate inward neighbours.
+        score = (dx / max(h, 1.0e-300)) ** 2 + 0.05 * (
+            dy / max(h, 1.0e-300)
+        ) ** 2
+        inner[k] = int(candidates[int(np.argmin(score))])
+
+    return boundary.astype(np.int64), inner
+
+
+def _stationary_amp_from_Q(
+    *,
+    material: GTDGLMaterial,
+    Q_m_inv: float,
+    T_K: float,
+) -> float:
+    """Stationary GL-compatible amplitude used by the notebook current BC."""
+    T = max(float(T_K), 1.0e-12)
+    a = 1.0 - T / material.Tc_K
+    if a <= 0.0:
+        return 0.0
+
+    xi2 = float(material.xi_mod_squared_m2(T))
+    delta_mod2 = float(material.delta_mod_squared_J2(T))
+    arg = a - xi2 * float(Q_m_inv) ** 2
+
+    if arg <= 0.0:
+        return 0.0
+
+    return float(np.sqrt(delta_mod2 * arg))
+
+
+def _usadel_like_current_from_Q(
+    *,
+    material: GTDGLMaterial,
+    Q_m_inv: float,
+    T_K: float,
+) -> float:
+    """Notebook-style Usadel-like current closure j_s(Q,T)."""
+    R = _stationary_amp_from_Q(material=material, Q_m_inv=Q_m_inv, T_K=T_K)
+    if R <= 0.0:
+        return 0.0
+
+    T = max(float(T_K), 1.0e-12)
+    pref = math.pi * material.sigma_n_S_m / (2.0 * E_CHARGE_C)
+
+    return float(
+        pref
+        * R
+        * np.tanh(R / (2.0 * K_B_J_K * T))
+        * float(Q_m_inv)
+    )
+
+
+def _solve_Q_from_usadel_like_current(
+    *,
+    material: GTDGLMaterial,
+    T_K: float,
+    target_current_A: float,
+) -> tuple[float, float]:
+    """Invert the stable branch j_s(Q,T)=I/(wd).
+
+    This mirrors the notebook's current_neumann terminal condition.  It is not
+    the OE3 Matsubara sweep; it is the local gTDGL/Allmaras-compatible terminal
+    closure used to make the stationary superconducting branch self-consistent.
+    """
+    j_target = float(target_current_A) / (
+        material.width_m * material.thickness_m
+    )
+
+    if abs(j_target) == 0.0:
+        R0 = _stationary_amp_from_Q(material=material, Q_m_inv=0.0, T_K=T_K)
+        return 0.0, R0
+
+    sign = float(np.sign(j_target))
+    j_abs = abs(j_target)
+
+    T = max(float(T_K), 1.0e-12)
+    a = 1.0 - T / material.Tc_K
+    if a <= 0.0:
+        return 0.0, 0.0
+
+    xi = float(np.sqrt(material.xi_mod_squared_m2(T)))
+    Q_dep = np.sqrt(a) / max(xi, 1.0e-300)
+
+    Q_grid = np.linspace(0.0, 0.999999 * Q_dep, 512)
+    j_grid = np.array(
+        [
+            _usadel_like_current_from_Q(material=material, Q_m_inv=Q, T_K=T)
+            for Q in Q_grid
+        ],
+        dtype=float,
+    )
+
+    idx_max = int(np.argmax(j_grid))
+    j_max = float(j_grid[idx_max])
+
+    if j_abs >= j_max:
+        Q = float(Q_grid[idx_max])
+        R = _stationary_amp_from_Q(material=material, Q_m_inv=Q, T_K=T)
+        return sign * Q, R
+
+    f_grid = j_grid[: idx_max + 1] - j_abs
+    cross = np.where(f_grid >= 0.0)[0]
+
+    if cross.size == 0:
+        Q = float(Q_grid[idx_max])
+        R = _stationary_amp_from_Q(material=material, Q_m_inv=Q, T_K=T)
+        return sign * Q, R
+
+    hi = int(cross[0])
+    lo = max(hi - 1, 0)
+
+    Q_lo = float(Q_grid[lo])
+    Q_hi = float(Q_grid[hi])
+
+    for _ in range(80):
+        Q_mid = 0.5 * (Q_lo + Q_hi)
+        j_mid = _usadel_like_current_from_Q(
+            material=material,
+            Q_m_inv=Q_mid,
+            T_K=T,
+        )
+        if j_mid < j_abs:
+            Q_lo = Q_mid
+        else:
+            Q_hi = Q_mid
+
+    Q = 0.5 * (Q_lo + Q_hi)
+    R = _stationary_amp_from_Q(material=material, Q_m_inv=Q, T_K=T)
+
+    return sign * Q, R
+
+
+def _target_terminal_boundary_accum_A_m(
+    *,
+    mesh,
+    edge_data,
+    material: GTDGLMaterial,
+    ops: FVOperators,
+    target_current_A: float,
+) -> np.ndarray:
+    """Notebook-style prescribed terminal flux accumulator.
+
+    This is the key difference from the last attempt: the Poisson boundary term
+    is the imposed external terminal current, not a reconstruction from the
+    current supercurrent edge field.
+    """
+    try:
+        return terminal_boundary_accum_A_m(
+            edge_data,
+            n_nodes=ops.n_nodes,
+            target_current_A=float(target_current_A),
+            thickness_m=material.thickness_m,
+        )
+    except Exception:
+        left_measure = _terminal_boundary_measure_m(
+            mesh=mesh,
+            edge_data=edge_data,
+            side="left",
+        )
+        right_measure = _terminal_boundary_measure_m(
+            mesh=mesh,
+            edge_data=edge_data,
+            side="right",
+        )
+
+        width_left = float(np.sum(left_measure))
+        width_right = float(np.sum(right_measure))
+
+        if width_left <= 0.0 or width_right <= 0.0:
+            raise ValueError("Left/right terminal measures must be positive.")
+
+        j_left = -float(target_current_A) / (material.thickness_m * width_left)
+        j_right = +float(target_current_A) / (material.thickness_m * width_right)
+
+        out = np.zeros(ops.n_nodes, dtype=float)
+        out += left_measure * j_left
+        out += right_measure * j_right
+        return out
+
 
 def _terminal_boundary_measure_m(
     *,
@@ -749,41 +1030,62 @@ def apply_terminal_supercurrent_bc(
     edge_data=None,
     enabled: bool = True,
 ) -> np.ndarray:
-    """Apply integrated superconducting terminal-current boundary condition.
+    """Notebook-style boundary constraints for stationary OE7.
 
-    Terminal amplitude is copied from the immediate inward neighbour,
+    1. Clamp non-finite values and keep |Delta| inside a safe range.
+    2. Apply vacuum Neumann on top/bottom:
 
-        R_boundary = R_inner,
+           Delta_boundary = Delta_inward.
 
-    but the phase gradient is not imposed pointwise from I/(wd).  Instead, one
-    q_side is chosen per terminal so that
+    3. Apply current_neumann on left/right terminals:
 
-        d * int_Gamma K_s(R,T) q_side ds = I_bias.
+           Delta_L = R_bc exp[i(theta_in - Q_bc dx)]
+           Delta_R = R_bc exp[i(theta_in + Q_bc dx)]
 
-    This keeps the terminal transport superconducting while avoiding the older
-    over-constrained condition j_s(y)=I/(wd) at every terminal node.
+       where Q_bc is obtained from the stable branch of the local
+       Usadel-like gTDGL current relation.
     """
-    psi = np.array(psi_trial_J, dtype=np.complex128, copy=True)
-    if not enabled:
-        return psi
+    psi = np.asarray(psi_trial_J, dtype=np.complex128)
+    out = np.nan_to_num(psi, nan=0.0, posinf=0.0, neginf=0.0).astype(
+        np.complex128,
+        copy=True,
+    )
 
-    data = _terminal_integrated_supercurrent_data(
-        psi_J=psi,
-        Te_K=Te_K,
-        mesh=mesh,
-        edge_data=edge_data,
+    amp = np.clip(np.abs(out), 0.0, 2.0 * material.delta0_J)
+    out = amp * np.exp(1j * np.angle(out))
+
+    if not enabled:
+        return out
+
+    # Insulating boundaries: Neumann copy from immediate inward neighbour.
+    for side in ("bottom", "top"):
+        boundary, inner = _nearest_inward_boundary_pairs(mesh, side)
+        out[boundary] = out[inner]
+
+    # Longitudinal terminals: notebook current_neumann closure.
+    Te_ref = float(np.mean(np.asarray(Te_K, dtype=float)))
+    Q_bc, R_bc = _solve_Q_from_usadel_like_current(
         material=material,
+        T_K=Te_ref,
         target_current_A=target_current_A,
     )
 
-    for side in ("left", "right"):
-        boundary = np.asarray(data[side]["boundary"], dtype=np.int64)
-        R_inner = np.asarray(data[side]["R_inner_J"], dtype=float)
-        theta_boundary = np.asarray(data[side]["theta_boundary_rad"], dtype=float)
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    pairs = terminal_inner_node_pairs(mesh)
 
-        psi[boundary] = R_inner * np.exp(1j * theta_boundary)
+    left_boundary, left_inner = pairs["left"]
+    dx_left = np.abs(nodes[left_inner, 0] - nodes[left_boundary, 0])
+    theta_left = np.angle(out[left_inner]) - Q_bc * dx_left
+    out[left_boundary] = R_bc * np.exp(1j * theta_left)
 
-    return psi
+    right_boundary, right_inner = pairs["right"]
+    dx_right = np.abs(nodes[right_boundary, 0] - nodes[right_inner, 0])
+    theta_right = np.angle(out[right_inner]) + Q_bc * dx_right
+    out[right_boundary] = R_bc * np.exp(1j * theta_right)
+
+    return out
+
+
 def _edge_flux_accumulator_A_m(
     edge_current_i_to_j: np.ndarray,
     ops: FVOperators,
@@ -1054,20 +1356,23 @@ def relax_stationary_gtdgl(
     Te = np.asarray(seed.node_Te_K, dtype=float).copy()
     Tph = np.asarray(seed.node_Tph_K, dtype=float).copy()
 
-    # Initial compatible boundary accumulator from the initial supercurrent.
-    boundary_accum = _integrated_terminal_supercurrent_boundary_accum_A_m(
-        psi_J=psi,
+    psi = apply_terminal_supercurrent_bc(
+        psi_trial_J=psi,
         Te_K=Te,
         mesh=mesh,
         edge_data=edge_data,
         material=material,
         target_current_A=target_current_A,
+        enabled=lock_terminals,
     )
 
-    boundary_accum = _project_boundary_accum_to_zero_net(
-        boundary_accum,
-        ops,
-        mask=terminal_node_mask(mesh),
+    # Initial compatible boundary accumulator from the initial supercurrent.
+    boundary_accum = _target_terminal_boundary_accum_A_m(
+        mesh=mesh,
+        edge_data=edge_data,
+        material=material,
+        ops=ops,
+        target_current_A=target_current_A,
     )
 
     t_s = 0.0
@@ -1152,21 +1457,14 @@ def relax_stationary_gtdgl(
             boundary_accum_A_m=None,
         )
 
-        # Option A: boundary accumulator compatible with the already-imposed
+        # Boundary accumulator compatible with the already-imposed
         # superconducting boundary current, not an independent I_bias source.
-        trial_boundary_accum = _integrated_terminal_supercurrent_boundary_accum_A_m(
-            psi_J=psi_trial,
-            Te_K=Te,
+        trial_boundary_accum = _target_terminal_boundary_accum_A_m(
             mesh=mesh,
             edge_data=edge_data,
             material=material,
+            ops=ops,
             target_current_A=target_current_A,
-        )
-
-        trial_boundary_accum = _project_boundary_accum_to_zero_net(
-            trial_boundary_accum,
-            ops,
-            mask=terminal_node_mask(mesh),
         )
         phi_trial = solve_poisson_potential(
             edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
@@ -1262,7 +1560,7 @@ def relax_stationary_gtdgl(
         phi_snapshot_V = [phi_snapshot_V[int(i)] for i in keep]
 
     metadata = {
-        "backend": "oe7_stationary_gtdgl_poisson_v4_integrated_supercurrent_terminal_bc",
+        "backend": "oe7_stationary_gtdgl_poisson_v5_notebook_matching",
         "description": (
             "Frozen-temperature stationary gTDGL/Poisson relaxation from the OE6 "
             "analytic seed. The transport current is imposed as an integrated "
@@ -1284,15 +1582,15 @@ def relax_stationary_gtdgl(
         "lock_terminals": bool(lock_terminals),
         "thermal_policy": "frozen_Te_Tph",
         "circuit_policy": "inactive",
-        "poisson_gauge": "interior_center_pin_with_area_mean_zero_projection",
-        "poisson_rhs_policy": "zero_total_rhs_projection",
-        "boundary_accum_policy": "zero_net_terminal_projection",
-        "poisson_boundary_policy": "integrated_supercurrent_terminal_flux",
+        "poisson_gauge": "notebook_mean_potential_lagrange_multiplier",
+        "poisson_rhs_policy": "notebook_no_rhs_projection",
+        "boundary_accum_policy": "notebook_prescribed_terminal_flux_from_target_current",
+        "poisson_boundary_policy": "target_current_left_right_flux_plus_active_bulk_poisson",
         "terminal_order_parameter_policy": (
-            "Neumann amplitude from immediate inward neighbour plus integrated "
-            "Usadel supercurrent condition: one q_side per terminal is chosen so "
-            "that d*int_Gamma j_s ds equals +/- I_bias. Poisson remains active on "
-            "interior, insulating boundaries, and corner-connected directions."
+            "Notebook current_neumann: top/bottom Neumann copy; left/right "
+            "terminal phase extrapolated with Q_bc from the stable local "
+            "Usadel-like gTDGL current branch; terminal amplitude set to "
+            "the corresponding stationary R_bc."
         ),
         "n_phi_snapshots": int(len(phi_snapshot_t_s)),
     }

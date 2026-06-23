@@ -387,6 +387,71 @@ def plot_ss_boundary_current_reconstruction_comparison(
     plt.close(fig)
     return output
 
+def _strip_transport_current_profile_from_edges(
+    *,
+    mesh,
+    ops,
+    edge_current_i_to_j_A_m2: np.ndarray,
+    thickness_m: float,
+    target_current_A: float | None = None,
+    n_cuts: int = 41,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Notebook-style longitudinal current profile from edge currents.
+
+    For each vertical cut x=x_c, sum the x-projected edge current carried by
+    edges crossing that cut:
+
+        I(x_c) ~= d * sum_edges_crossing_cut j_e e_x s_e.
+
+    Endpoints are set to target_current_A when available, because the terminal
+    current is imposed as a boundary condition.
+    """
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    current = np.asarray(edge_current_i_to_j_A_m2, dtype=float)
+
+    if current.shape != (ops.n_edges,):
+        raise ValueError(
+            f"edge_current_i_to_j_A_m2 must have shape ({ops.n_edges},), "
+            f"got {current.shape}."
+        )
+
+    if n_cuts < 2:
+        raise ValueError("n_cuts must be at least 2.")
+
+    x = nodes[:, 0]
+    xmin = float(np.min(x))
+    xmax = float(np.max(x))
+
+    xs = np.linspace(xmin, xmax, int(n_cuts))
+    I_A = np.zeros_like(xs)
+
+    if target_current_A is not None and np.isfinite(float(target_current_A)):
+        I_A[0] = float(target_current_A)
+        I_A[-1] = float(target_current_A)
+    else:
+        I_A[0] = np.nan
+        I_A[-1] = np.nan
+
+    xi = x[ops.edge_i]
+    xj = x[ops.edge_j]
+
+    jx_edge = current * ops.edge_unit[:, 0]
+    face = ops.dual_face_length_m
+
+    eps = max(1.0e-30, 1.0e-12 * max(xmax - xmin, 1.0e-300))
+
+    for k, xc in enumerate(xs[1:-1], start=1):
+        crosses = ((xi - xc) * (xj - xc) <= 0.0) & (np.abs(xj - xi) > eps)
+
+        if np.any(crosses):
+            I_A[k] = float(
+                thickness_m * np.sum(jx_edge[crosses] * face[crosses])
+            )
+        else:
+            I_A[k] = np.nan
+
+    return xs, I_A
+
 
 def plot_ss_transport_current_profile(
     *,
@@ -399,33 +464,45 @@ def plot_ss_transport_current_profile(
     n_bins: int = 41,
     dpi: int = 480,
 ) -> Path:
-    """Plot longitudinal transport-current profile from LS reconstructed jx."""
-    jx_ls, _ = edge_scalar_to_node_vector_least_squares(
-        state.currents.edge_jtot_A_m2,
-        ops,
-    )
-
-    x_m, I_A = strip_transport_current_profile_from_node_vectors(
+    """Plot notebook-style longitudinal transport-current profile."""
+    x_m, I_A = _strip_transport_current_profile_from_edges(
         mesh=mesh,
-        jx_A_m2=jx_ls,
+        ops=ops,
+        edge_current_i_to_j_A_m2=state.currents.edge_jtot_A_m2,
         thickness_m=thickness_m,
-        n_bins=n_bins,
+        target_current_A=target_current_A,
+        n_cuts=n_bins,
     )
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
     fig, ax = plt.subplots(figsize=(6.6, 3.4), constrained_layout=True)
-    ax.plot(x_m * 1.0e9, I_A, marker="o", markersize=2.5, linewidth=1.0)
+
+    ax.plot(
+        x_m * 1.0e9,
+        I_A,
+        marker="o",
+        markersize=2.5,
+        linewidth=1.0,
+        label="edge-cut profile",
+    )
 
     if target_current_A is not None:
-        ax.axhline(float(target_current_A), linestyle="--", linewidth=0.9, label=r"$I_{\rm target}$")
-        ax.legend(frameon=False)
+        ax.axhline(
+            float(target_current_A),
+            linestyle="--",
+            linewidth=0.9,
+            label=r"$I_{\rm target}$",
+        )
 
-    ax.set_title("OE7 SS: LS transport-current profile")
+    ax.legend(frameon=False)
+    ax.set_title("OE7 SS: transport-current profile")
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("I(x) [A]")
     ax.grid(False)
+
     fig.savefig(output, dpi=dpi)
     plt.close(fig)
+
     return output
