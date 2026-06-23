@@ -214,8 +214,8 @@ def plot_ss_state_current_density(
             jy[::n] / scale,
             angles="xy",
             scale_units="xy",
-            scale=0.040,
-            width=0.0025,
+            scale=0.030,
+            width=0.002,
         )
 
     ax.set_title(title)

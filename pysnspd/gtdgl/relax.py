@@ -27,6 +27,7 @@ from pysnspd.gtdgl.material import (
 from pysnspd.gtdgl.operators import (
     FVOperators,
     boundary_currents_from_node_vectors,
+    boundary_node_measure_m,
     divergence_from_edge_scalar,
     edge_average,
     edge_phase_gradient_from_psi,
@@ -517,41 +518,135 @@ def terminal_inner_node_pairs(mesh) -> dict[str, tuple[np.ndarray, np.ndarray]]:
         "right": pair_one_side(right, side="right"),
     }
 
-
-def apply_terminal_supercurrent_bc(
+def _terminal_boundary_measure_m(
     *,
-    psi_trial_J: np.ndarray,
+    mesh,
+    edge_data,
+    side: str,
+) -> np.ndarray:
+    """Return lumped terminal-boundary measure for left/right contacts.
+
+    The measure has units [m].  It is the line-element weight associated with
+    each terminal node.  Corner nodes naturally receive half-segment weights
+    from the boundary quadrature, so they participate in the imposed terminal
+    current without being treated as pure terminal-only nodes.
+
+    If edge_data provides tagged boundary lengths, use that.  Otherwise fall
+    back to a y-sorted trapezoidal lumping of the terminal nodes.
+    """
+    if side not in {"left", "right"}:
+        raise ValueError(f"side must be 'left' or 'right', got {side!r}.")
+
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    n_nodes = int(nodes.shape[0])
+
+    if edge_data is not None:
+        try:
+            measure = boundary_node_measure_m(
+                edge_data,
+                n_nodes=n_nodes,
+                tag=side,
+            )
+            measure = np.asarray(measure, dtype=float)
+            if measure.shape == (n_nodes,) and np.sum(measure) > 0.0:
+                return measure
+        except Exception:
+            pass
+
+    masks = _boundary_node_masks(mesh)
+    boundary = np.where(masks[side])[0]
+    if boundary.size == 0:
+        raise ValueError(f"No {side} terminal nodes found.")
+
+    y = nodes[boundary, 1]
+    order = np.argsort(y)
+    b = boundary[order]
+    yb = y[order]
+
+    weights = np.zeros(boundary.size, dtype=float)
+
+    if boundary.size == 1:
+        weights[0] = float(getattr(mesh, "width_m", 1.0))
+    else:
+        dy = np.diff(yb)
+        if np.any(dy <= 0.0):
+            raise ValueError(
+                f"{side} terminal nodes must have strictly increasing y after sorting."
+            )
+
+        weights[0] = 0.5 * dy[0]
+        weights[-1] = 0.5 * dy[-1]
+        if boundary.size > 2:
+            weights[1:-1] = 0.5 * (dy[:-1] + dy[1:])
+
+    measure = np.zeros(n_nodes, dtype=float)
+    measure[b] = weights
+    return measure
+
+
+def _terminal_integrated_supercurrent_data(
+    *,
+    psi_J: np.ndarray,
     Te_K: np.ndarray,
     mesh,
+    edge_data,
     material: GTDGLMaterial,
     target_current_A: float,
-    enabled: bool = True,
-) -> np.ndarray:
-    """Apply superconducting terminal boundary condition.
+) -> dict[str, dict[str, np.ndarray | float]]:
+    """Compute integrated-current terminal data for the superconducting BC.
 
-    Terminal amplitude is copied from the immediate inward neighbour,
+    Instead of imposing j_s = I/(wd) pointwise, impose only
 
-        R_boundary = R_inner,
+        int_Gamma j_s . n ds = +/- I/d.
 
-    while the terminal phase is chosen so that
+    With j_s = K_s(R,T) q, this gives one scalar q per terminal side:
 
-        j_s^Us(R_inner, T, q_b) = I_bias/(w d).
+        q_side = (I/d) / int_Gamma K_s(R,T) ds.
 
-    This replaces the older hard Dirichlet condition Psi_terminal=Psi_seed.
+    Local terminal current density is then K_s(y) q_side, so it is allowed to
+    adjust to the current order-parameter amplitude.
     """
-    psi = np.array(psi_trial_J, dtype=np.complex128, copy=True)
-    if not enabled:
-        return psi
+    psi = np.asarray(psi_J, dtype=np.complex128)
+    Te = np.asarray(Te_K, dtype=float)
+    nodes = np.asarray(mesh.nodes, dtype=float)
 
-    j_target = float(target_current_A) / (material.width_m * material.thickness_m)
+    target_per_thickness_A_m = float(target_current_A) / material.thickness_m
+    if not np.isfinite(target_per_thickness_A_m):
+        raise ValueError("target_current_A produced a non-finite current per thickness.")
+
     pairs = terminal_inner_node_pairs(mesh)
 
-    for side, sign in (("left", -1.0), ("right", +1.0)):
+    out: dict[str, dict[str, np.ndarray | float]] = {}
+
+    for side, phase_sign, outward_sign in (
+        ("left", -1.0, -1.0),
+        ("right", +1.0, +1.0),
+    ):
         boundary, inner = pairs[side]
+
+        measure_all = _terminal_boundary_measure_m(
+            mesh=mesh,
+            edge_data=edge_data,
+            side=side,
+        )
+        measure = np.asarray(measure_all[boundary], dtype=float)
+
+        if measure.shape != boundary.shape:
+            raise ValueError(
+                f"{side} terminal measure shape mismatch: "
+                f"{measure.shape} vs {boundary.shape}."
+            )
+
+        if np.any(measure < 0.0) or not np.all(np.isfinite(measure)):
+            raise ValueError(f"{side} terminal measure contains invalid values.")
+
+        width_eff = float(np.sum(measure))
+        if width_eff <= 0.0:
+            raise ValueError(f"{side} terminal has non-positive effective width.")
 
         R_inner = np.abs(psi[inner])
         theta_inner = np.angle(psi[inner])
-        Te_inner = np.maximum(np.asarray(Te_K, dtype=float)[inner], 1.0e-12)
+        Te_inner = np.maximum(Te[inner], 1.0e-12)
 
         coeff = (
             np.pi
@@ -563,25 +658,132 @@ def apply_terminal_supercurrent_bc(
 
         if np.any(coeff <= 0.0) or not np.all(np.isfinite(coeff)):
             raise FloatingPointError(
-                "Cannot impose superconducting terminal current because "
-                "the local Usadel current coefficient is non-positive or non-finite."
+                f"Cannot impose integrated superconducting current at {side}: "
+                "local Usadel current coefficient is non-positive or non-finite."
             )
 
-        q_b = j_target / coeff
+        denom = float(np.sum(measure * coeff))
+        if denom <= 0.0 or not np.isfinite(denom):
+            raise FloatingPointError(
+                f"Cannot impose integrated superconducting current at {side}: "
+                "terminal integral of K_s is invalid."
+            )
 
-        dx = np.abs(
-            np.asarray(mesh.nodes, dtype=float)[boundary, 0]
-            - np.asarray(mesh.nodes, dtype=float)[inner, 0]
-        )
+        q_side = target_per_thickness_A_m / denom
 
-        # left: theta_boundary = theta_inner - q dx
-        # right: theta_boundary = theta_inner + q dx
-        theta_boundary = theta_inner + sign * q_b * dx
+        dx = np.abs(nodes[boundary, 0] - nodes[inner, 0])
+        theta_boundary = theta_inner + phase_sign * q_side * dx
+
+        # Positive local_js means current density in +x direction.
+        local_js_A_m2 = coeff * q_side
+
+        # Outward flux density: left is negative, right is positive.
+        outward_js_A_m2 = outward_sign * local_js_A_m2
+
+        out[side] = {
+            "boundary": boundary.astype(np.int64),
+            "inner": inner.astype(np.int64),
+            "measure_m": measure,
+            "R_inner_J": R_inner,
+            "theta_boundary_rad": theta_boundary,
+            "q_side_m_inv": float(q_side),
+            "local_js_A_m2": local_js_A_m2,
+            "outward_js_A_m2": outward_js_A_m2,
+            "integrated_current_A": float(
+                material.thickness_m * np.sum(measure * local_js_A_m2)
+            ),
+            "width_eff_m": float(width_eff),
+        }
+
+    return out
+
+
+def _integrated_terminal_supercurrent_boundary_accum_A_m(
+    *,
+    psi_J: np.ndarray,
+    Te_K: np.ndarray,
+    mesh,
+    edge_data,
+    material: GTDGLMaterial,
+    target_current_A: float,
+) -> np.ndarray:
+    """Build boundary accumulator from the integrated superconducting BC.
+
+    This is the conservative boundary term b_i in
+
+        div_h(j_s + j_n) + b_i / A_i = 0.
+
+    It only represents the external left/right terminal flux.  It does not
+    disable Poisson inside the domain, on top/bottom, or on corner-connected
+    interior/insulating directions.
+    """
+    data = _terminal_integrated_supercurrent_data(
+        psi_J=psi_J,
+        Te_K=Te_K,
+        mesh=mesh,
+        edge_data=edge_data,
+        material=material,
+        target_current_A=target_current_A,
+    )
+
+    out = np.zeros(np.asarray(mesh.nodes).shape[0], dtype=float)
+
+    for side in ("left", "right"):
+        boundary = np.asarray(data[side]["boundary"], dtype=np.int64)
+        measure = np.asarray(data[side]["measure_m"], dtype=float)
+        outward_js = np.asarray(data[side]["outward_js_A_m2"], dtype=float)
+
+        # Units: [m] * [A/m^2] = [A/m], i.e. current per film thickness.
+        out[boundary] += measure * outward_js
+
+    return out
+
+
+def apply_terminal_supercurrent_bc(
+    *,
+    psi_trial_J: np.ndarray,
+    Te_K: np.ndarray,
+    mesh,
+    material: GTDGLMaterial,
+    target_current_A: float,
+    edge_data=None,
+    enabled: bool = True,
+) -> np.ndarray:
+    """Apply integrated superconducting terminal-current boundary condition.
+
+    Terminal amplitude is copied from the immediate inward neighbour,
+
+        R_boundary = R_inner,
+
+    but the phase gradient is not imposed pointwise from I/(wd).  Instead, one
+    q_side is chosen per terminal so that
+
+        d * int_Gamma K_s(R,T) q_side ds = I_bias.
+
+    This keeps the terminal transport superconducting while avoiding the older
+    over-constrained condition j_s(y)=I/(wd) at every terminal node.
+    """
+    psi = np.array(psi_trial_J, dtype=np.complex128, copy=True)
+    if not enabled:
+        return psi
+
+    data = _terminal_integrated_supercurrent_data(
+        psi_J=psi,
+        Te_K=Te_K,
+        mesh=mesh,
+        edge_data=edge_data,
+        material=material,
+        target_current_A=target_current_A,
+    )
+
+    for side in ("left", "right"):
+        boundary = np.asarray(data[side]["boundary"], dtype=np.int64)
+        R_inner = np.asarray(data[side]["R_inner_J"], dtype=float)
+        theta_boundary = np.asarray(data[side]["theta_boundary_rad"], dtype=float)
 
         psi[boundary] = R_inner * np.exp(1j * theta_boundary)
 
     return psi
-
 def _edge_flux_accumulator_A_m(
     edge_current_i_to_j: np.ndarray,
     ops: FVOperators,
@@ -853,18 +1055,13 @@ def relax_stationary_gtdgl(
     Tph = np.asarray(seed.node_Tph_K, dtype=float).copy()
 
     # Initial compatible boundary accumulator from the initial supercurrent.
-    seed_currents_no_phi = compute_current_fields(
+    boundary_accum = _integrated_terminal_supercurrent_boundary_accum_A_m(
         psi_J=psi,
-        phi_V=np.zeros_like(phi),
         Te_K=Te,
-        material=material,
-        ops=ops,
-        boundary_accum_A_m=None,
-    )
-    boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
-        edge_js_us_A_m2=seed_currents_no_phi.edge_js_us_A_m2,
         mesh=mesh,
-        ops=ops,
+        edge_data=edge_data,
+        material=material,
+        target_current_A=target_current_A,
     )
 
     boundary_accum = _project_boundary_accum_to_zero_net(
@@ -940,11 +1137,11 @@ def relax_stationary_gtdgl(
             psi_trial_J=psi_trial,
             Te_K=Te,
             mesh=mesh,
+            edge_data=edge_data,
             material=material,
             target_current_A=target_current_A,
             enabled=lock_terminals,
         )
-
         # First evaluate j_s from the trial order parameter.
         trial_currents_no_phi = compute_current_fields(
             psi_J=psi_trial,
@@ -957,10 +1154,13 @@ def relax_stationary_gtdgl(
 
         # Option A: boundary accumulator compatible with the already-imposed
         # superconducting boundary current, not an independent I_bias source.
-        trial_boundary_accum = _supercurrent_terminal_boundary_accum_A_m(
-            edge_js_us_A_m2=trial_currents_no_phi.edge_js_us_A_m2,
+        trial_boundary_accum = _integrated_terminal_supercurrent_boundary_accum_A_m(
+            psi_J=psi_trial,
+            Te_K=Te,
             mesh=mesh,
-            ops=ops,
+            edge_data=edge_data,
+            material=material,
+            target_current_A=target_current_A,
         )
 
         trial_boundary_accum = _project_boundary_accum_to_zero_net(
@@ -1062,16 +1262,15 @@ def relax_stationary_gtdgl(
         phi_snapshot_V = [phi_snapshot_V[int(i)] for i in keep]
 
     metadata = {
-        "backend": "oe7_stationary_gtdgl_poisson_v3_supercurrent_terminal_bc",
+        "backend": "oe7_stationary_gtdgl_poisson_v4_integrated_supercurrent_terminal_bc",
         "description": (
             "Frozen-temperature stationary gTDGL/Poisson relaxation from the OE6 "
-            "analytic seed. The transport current is imposed through the "
-            "superconducting terminal phase-gradient boundary condition. Poisson "
-            "uses a direction-aware terminal accumulator compatible with that "
-            "discrete supercurrent: terminal-to-interior edges are included only "
-            "when they point along the bias direction, while transverse insulating "
-            "directions are rejected. External circuit and thermal evolution are "
-            "inactive."
+            "analytic seed. The transport current is imposed as an integrated "
+            "superconducting terminal-current condition, not as a pointwise "
+            "j_s=I/(wd) constraint. Poisson remains active for the normal and "
+            "superconducting current balance inside the domain, on insulating "
+            "boundaries, and on corner-connected directions. External circuit and "
+            "thermal evolution are inactive."
         ),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
@@ -1088,10 +1287,12 @@ def relax_stationary_gtdgl(
         "poisson_gauge": "interior_center_pin_with_area_mean_zero_projection",
         "poisson_rhs_policy": "zero_total_rhs_projection",
         "boundary_accum_policy": "zero_net_terminal_projection",
-        "poisson_boundary_policy": "segment_aware_supercurrent_terminal_flux",
+        "poisson_boundary_policy": "integrated_supercurrent_terminal_flux",
         "terminal_order_parameter_policy": (
-            "Neumann amplitude from immediate inward neighbour plus "
-            "Usadel supercurrent phase-gradient condition"
+            "Neumann amplitude from immediate inward neighbour plus integrated "
+            "Usadel supercurrent condition: one q_side per terminal is chosen so "
+            "that d*int_Gamma j_s ds equals +/- I_bias. Poisson remains active on "
+            "interior, insulating boundaries, and corner-connected directions."
         ),
         "n_phi_snapshots": int(len(phi_snapshot_t_s)),
     }
