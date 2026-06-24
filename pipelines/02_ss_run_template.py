@@ -132,7 +132,7 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Alias for --ss-n-phi-snapshots. This controls the shared snapshot "
             "times used for phi, |Delta|, phase, current density, divergence, "
-            "and pair-breaking diagnostics."
+            "supercurrent, normal-current, divergence, and pair-breaking diagnostics."
         ),
     )
     parser.add_argument(

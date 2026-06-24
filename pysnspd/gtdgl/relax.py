@@ -885,7 +885,17 @@ def relax_stationary_gtdgl(
     delta_snapshot_meV: list[np.ndarray] = []
     phi_snapshot_V: list[np.ndarray] = []
     current_density_snapshot_A_m2: list[np.ndarray] = []
+    current_density_snapshot_x_A_m2: list[np.ndarray] = []
+    current_density_snapshot_y_A_m2: list[np.ndarray] = []
+
+    supercurrent_density_snapshot_A_m2: list[np.ndarray] = []
+    supercurrent_density_snapshot_x_A_m2: list[np.ndarray] = []
+    supercurrent_density_snapshot_y_A_m2: list[np.ndarray] = []
+
     normal_current_density_snapshot_A_m2: list[np.ndarray] = []
+    normal_current_density_snapshot_x_A_m2: list[np.ndarray] = []
+    normal_current_density_snapshot_y_A_m2: list[np.ndarray] = []
+
     divergence_snapshot_A_m3: list[np.ndarray] = []
     pairbreaking_ratio_snapshot: list[np.ndarray] = []
 
@@ -894,21 +904,38 @@ def relax_stationary_gtdgl(
             currents.node_jtot_x_A_m2**2
             + currents.node_jtot_y_A_m2**2
         )
+        js_mag = np.sqrt(
+            currents.node_js_us_x_A_m2**2
+            + currents.node_js_us_y_A_m2**2
+        )
         jn_mag = np.sqrt(
             currents.node_jn_x_A_m2**2
             + currents.node_jn_y_A_m2**2
         )
 
         snapshot_t_s.append(float(t_s))
+
         psi_snapshot_real_J.append(np.real(psi).copy())
         psi_snapshot_imag_J.append(np.imag(psi).copy())
         delta_snapshot_meV.append(np.abs(psi).copy() / 1.602176634e-22)
         phi_snapshot_V.append(phi.copy())
+
         current_density_snapshot_A_m2.append(jtot_mag.copy())
+        current_density_snapshot_x_A_m2.append(currents.node_jtot_x_A_m2.copy())
+        current_density_snapshot_y_A_m2.append(currents.node_jtot_y_A_m2.copy())
+
+        supercurrent_density_snapshot_A_m2.append(js_mag.copy())
+        supercurrent_density_snapshot_x_A_m2.append(currents.node_js_us_x_A_m2.copy())
+        supercurrent_density_snapshot_y_A_m2.append(currents.node_js_us_y_A_m2.copy())
+
         normal_current_density_snapshot_A_m2.append(jn_mag.copy())
+        normal_current_density_snapshot_x_A_m2.append(currents.node_jn_x_A_m2.copy())
+        normal_current_density_snapshot_y_A_m2.append(currents.node_jn_y_A_m2.copy())
+
         divergence_snapshot_A_m3.append(currents.node_div_jtot_A_m3.copy())
         pairbreaking_ratio_snapshot.append(currents.node_pairbreaking_ratio.copy())
-
+    
+    
     _append_field_snapshot()
 
     snapshot_steps = set(
@@ -1063,7 +1090,17 @@ def relax_stationary_gtdgl(
         delta_snapshot_meV = _keep_snapshots(delta_snapshot_meV)
         phi_snapshot_V = _keep_snapshots(phi_snapshot_V)
         current_density_snapshot_A_m2 = _keep_snapshots(current_density_snapshot_A_m2)
+        current_density_snapshot_x_A_m2 = _keep_snapshots(current_density_snapshot_x_A_m2)
+        current_density_snapshot_y_A_m2 = _keep_snapshots(current_density_snapshot_y_A_m2)
+
+        supercurrent_density_snapshot_A_m2 = _keep_snapshots(supercurrent_density_snapshot_A_m2)
+        supercurrent_density_snapshot_x_A_m2 = _keep_snapshots(supercurrent_density_snapshot_x_A_m2)
+        supercurrent_density_snapshot_y_A_m2 = _keep_snapshots(supercurrent_density_snapshot_y_A_m2)
+
         normal_current_density_snapshot_A_m2 = _keep_snapshots(normal_current_density_snapshot_A_m2)
+        normal_current_density_snapshot_x_A_m2 = _keep_snapshots(normal_current_density_snapshot_x_A_m2)
+        normal_current_density_snapshot_y_A_m2 = _keep_snapshots(normal_current_density_snapshot_y_A_m2)
+
         divergence_snapshot_A_m3 = _keep_snapshots(divergence_snapshot_A_m3)
         pairbreaking_ratio_snapshot = _keep_snapshots(pairbreaking_ratio_snapshot)
 
@@ -1190,8 +1227,34 @@ def relax_stationary_gtdgl(
 
         "current_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
         "current_density_snapshot_A_m2": np.asarray(current_density_snapshot_A_m2, dtype=float),
-        "normal_current_density_snapshot_A_m2": np.asarray(normal_current_density_snapshot_A_m2, dtype=float),
+        "current_density_snapshot_x_A_m2": np.asarray(current_density_snapshot_x_A_m2, dtype=float),
+        "current_density_snapshot_y_A_m2": np.asarray(current_density_snapshot_y_A_m2, dtype=float),
 
+        "jtot_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "jtot_snapshot_mag_A_m2": np.asarray(current_density_snapshot_A_m2, dtype=float),
+        "jtot_snapshot_x_A_m2": np.asarray(current_density_snapshot_x_A_m2, dtype=float),
+        "jtot_snapshot_y_A_m2": np.asarray(current_density_snapshot_y_A_m2, dtype=float),
+
+        "supercurrent_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "supercurrent_density_snapshot_A_m2": np.asarray(supercurrent_density_snapshot_A_m2, dtype=float),
+        "supercurrent_density_snapshot_x_A_m2": np.asarray(supercurrent_density_snapshot_x_A_m2, dtype=float),
+        "supercurrent_density_snapshot_y_A_m2": np.asarray(supercurrent_density_snapshot_y_A_m2, dtype=float),
+
+        "js_us_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "js_us_snapshot_mag_A_m2": np.asarray(supercurrent_density_snapshot_A_m2, dtype=float),
+        "js_us_snapshot_x_A_m2": np.asarray(supercurrent_density_snapshot_x_A_m2, dtype=float),
+        "js_us_snapshot_y_A_m2": np.asarray(supercurrent_density_snapshot_y_A_m2, dtype=float),
+
+        "normal_current_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "normal_current_density_snapshot_A_m2": np.asarray(normal_current_density_snapshot_A_m2, dtype=float),
+        "normal_current_density_snapshot_x_A_m2": np.asarray(normal_current_density_snapshot_x_A_m2, dtype=float),
+        "normal_current_density_snapshot_y_A_m2": np.asarray(normal_current_density_snapshot_y_A_m2, dtype=float),
+
+        "jn_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "jn_snapshot_mag_A_m2": np.asarray(normal_current_density_snapshot_A_m2, dtype=float),
+        "jn_snapshot_x_A_m2": np.asarray(normal_current_density_snapshot_x_A_m2, dtype=float),
+        "jn_snapshot_y_A_m2": np.asarray(normal_current_density_snapshot_y_A_m2, dtype=float),
+        
         "divergence_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
         "divergence_snapshot_A_m3": np.asarray(divergence_snapshot_A_m3, dtype=float),
 

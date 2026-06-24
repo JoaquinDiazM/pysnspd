@@ -48,7 +48,11 @@ def plot_ss_available_snapshots(
         ("phi", plot_ss_phi_snapshots, output_dir / "ss_phi_snapshots.png"),
         ("delta", plot_ss_delta_snapshots, output_dir / "ss_delta_snapshots.png"),
         ("phase", plot_ss_phase_snapshots, output_dir / "ss_phase_snapshots.png"),
+
         ("current_density", plot_ss_current_density_snapshots, output_dir / "ss_current_density_snapshots.png"),
+        ("supercurrent_density", plot_ss_supercurrent_density_snapshots, output_dir / "ss_supercurrent_density_snapshots.png"),
+        ("normal_current_density", plot_ss_normal_current_density_snapshots, output_dir / "ss_normal_current_density_snapshots.png"),
+
         ("divergence", plot_ss_divergence_snapshots, output_dir / "ss_divergence_snapshots.png"),
         ("pairbreaking", plot_ss_pairbreaking_snapshots, output_dir / "ss_pairbreaking_snapshots.png"),
     ]
@@ -161,21 +165,23 @@ def plot_ss_current_density_snapshots(
     dpi: int = 480,
     ncols: int = 3,
 ) -> Path:
-    """Plot |j| snapshots if current-density snapshots are present."""
+    """Plot |j_tot| snapshots with vector arrows if components are present."""
     jmag = _optional_history_array(
         history,
         ("jtot_snapshot_mag_A_m2", "jmag_snapshot_A_m2", "current_density_snapshot_A_m2"),
     )
+    jx = _optional_history_array(
+        history,
+        ("jtot_snapshot_x_A_m2", "current_density_snapshot_x_A_m2", "node_jtot_x_snapshot_A_m2", "jx_snapshot_A_m2"),
+    )
+    jy = _optional_history_array(
+        history,
+        ("jtot_snapshot_y_A_m2", "current_density_snapshot_y_A_m2", "node_jtot_y_snapshot_A_m2", "jy_snapshot_A_m2"),
+    )
 
     if jmag is None:
-        jx = _require_history_array(
-            history,
-            ("jtot_snapshot_x_A_m2", "node_jtot_x_snapshot_A_m2", "jx_snapshot_A_m2"),
-        )
-        jy = _require_history_array(
-            history,
-            ("jtot_snapshot_y_A_m2", "node_jtot_y_snapshot_A_m2", "jy_snapshot_A_m2"),
-        )
+        if jx is None or jy is None:
+            raise KeyError("history does not contain total-current snapshot magnitudes or vector components.")
         jmag = np.sqrt(jx * jx + jy * jy)
 
     t_s = _snapshot_times(
@@ -183,6 +189,21 @@ def plot_ss_current_density_snapshots(
         ("jtot_snapshot_t_s", "current_snapshot_t_s", "phi_snapshot_t_s"),
         jmag.shape[0],
     )
+
+    if jx is not None and jy is not None:
+        return _plot_vector_snapshot_grid(
+            mesh,
+            jmag,
+            jx,
+            jy,
+            t_s,
+            output_path,
+            title="OE7 SS: total current-density snapshots",
+            label=r"|j| [A m$^{-2}$]",
+            vmin=0.0,
+            dpi=dpi,
+            ncols=ncols,
+        )
 
     return _plot_snapshot_grid(
         mesh,
@@ -196,6 +217,126 @@ def plot_ss_current_density_snapshots(
         ncols=ncols,
     )
 
+def plot_ss_supercurrent_density_snapshots(
+    mesh,
+    history: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+    ncols: int = 3,
+) -> Path:
+    """Plot |j_s| snapshots with vector arrows."""
+    jmag = _optional_history_array(
+        history,
+        ("js_us_snapshot_mag_A_m2", "supercurrent_density_snapshot_A_m2"),
+    )
+    jx = _optional_history_array(
+        history,
+        ("js_us_snapshot_x_A_m2", "supercurrent_density_snapshot_x_A_m2"),
+    )
+    jy = _optional_history_array(
+        history,
+        ("js_us_snapshot_y_A_m2", "supercurrent_density_snapshot_y_A_m2"),
+    )
+
+    if jmag is None:
+        if jx is None or jy is None:
+            raise KeyError("history does not contain supercurrent snapshot magnitudes or vector components.")
+        jmag = np.sqrt(jx * jx + jy * jy)
+
+    t_s = _snapshot_times(
+        history,
+        ("js_us_snapshot_t_s", "supercurrent_snapshot_t_s", "current_snapshot_t_s", "phi_snapshot_t_s"),
+        jmag.shape[0],
+    )
+
+    if jx is None or jy is None:
+        return _plot_snapshot_grid(
+            mesh,
+            jmag,
+            t_s,
+            output_path,
+            title="OE7 SS: supercurrent-density snapshots",
+            label=r"|j_s| [A m$^{-2}$]",
+            vmin=0.0,
+            dpi=dpi,
+            ncols=ncols,
+        )
+
+    return _plot_vector_snapshot_grid(
+        mesh,
+        jmag,
+        jx,
+        jy,
+        t_s,
+        output_path,
+        title="OE7 SS: supercurrent-density snapshots",
+        label=r"|j_s| [A m$^{-2}$]",
+        vmin=0.0,
+        dpi=dpi,
+        ncols=ncols,
+    )
+
+
+def plot_ss_normal_current_density_snapshots(
+    mesh,
+    history: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+    ncols: int = 3,
+) -> Path:
+    """Plot |j_n| snapshots with vector arrows."""
+    jmag = _optional_history_array(
+        history,
+        ("jn_snapshot_mag_A_m2", "normal_current_density_snapshot_A_m2"),
+    )
+    jx = _optional_history_array(
+        history,
+        ("jn_snapshot_x_A_m2", "normal_current_density_snapshot_x_A_m2"),
+    )
+    jy = _optional_history_array(
+        history,
+        ("jn_snapshot_y_A_m2", "normal_current_density_snapshot_y_A_m2"),
+    )
+
+    if jmag is None:
+        if jx is None or jy is None:
+            raise KeyError("history does not contain normal-current snapshot magnitudes or vector components.")
+        jmag = np.sqrt(jx * jx + jy * jy)
+
+    t_s = _snapshot_times(
+        history,
+        ("jn_snapshot_t_s", "normal_current_snapshot_t_s", "current_snapshot_t_s", "phi_snapshot_t_s"),
+        jmag.shape[0],
+    )
+
+    if jx is None or jy is None:
+        return _plot_snapshot_grid(
+            mesh,
+            jmag,
+            t_s,
+            output_path,
+            title="OE7 SS: normal-current-density snapshots",
+            label=r"|j_n| [A m$^{-2}$]",
+            vmin=0.0,
+            dpi=dpi,
+            ncols=ncols,
+        )
+
+    return _plot_vector_snapshot_grid(
+        mesh,
+        jmag,
+        jx,
+        jy,
+        t_s,
+        output_path,
+        title="OE7 SS: normal-current-density snapshots",
+        label=r"|j_n| [A m$^{-2}$]",
+        vmin=0.0,
+        dpi=dpi,
+        ncols=ncols,
+    )
 
 def plot_ss_divergence_snapshots(
     mesh,
@@ -613,6 +754,194 @@ def plot_ss_relaxation_history(
 # Internal helpers
 # =============================================================================
 
+
+def _plot_vector_snapshot_grid(
+    mesh,
+    values,
+    vx,
+    vy,
+    t_s,
+    output_path: str | Path,
+    *,
+    title: str,
+    label: str,
+    symmetric: bool = False,
+    vmin: float | None = None,
+    vmax: float | None = None,
+    robust_percentile: float | None = None,
+    min_vmax: float | None = None,
+    dpi: int = 480,
+    ncols: int = 3,
+    max_arrows: int = 130,
+) -> Path:
+    """Plot node-scalar snapshots with fixed-length vector-direction arrows."""
+    arr = np.asarray(values, dtype=float)
+    ux_raw = np.asarray(vx, dtype=float)
+    uy_raw = np.asarray(vy, dtype=float)
+
+    if arr.ndim == 1:
+        arr = arr[None, :]
+    if ux_raw.ndim == 1:
+        ux_raw = ux_raw[None, :]
+    if uy_raw.ndim == 1:
+        uy_raw = uy_raw[None, :]
+
+    if arr.ndim != 2 or ux_raw.ndim != 2 or uy_raw.ndim != 2:
+        raise ValueError(
+            f"Vector snapshot arrays must be 2D, got {arr.shape}, {ux_raw.shape}, {uy_raw.shape}."
+        )
+
+    if arr.shape != ux_raw.shape or arr.shape != uy_raw.shape:
+        raise ValueError(
+            f"Vector snapshot arrays must have matching shapes, got {arr.shape}, {ux_raw.shape}, {uy_raw.shape}."
+        )
+
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    n_nodes = int(nodes.shape[0])
+    if arr.shape[1] != n_nodes:
+        raise ValueError(
+            f"Snapshot array has {arr.shape[1]} nodes, but mesh has {n_nodes} nodes."
+        )
+
+    t_s = np.asarray(t_s, dtype=float).reshape(-1)
+    if t_s.size != arr.shape[0]:
+        raise ValueError(
+            f"Snapshot time axis has {t_s.size} entries, but data has {arr.shape[0]} snapshots."
+        )
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    finite = arr[np.isfinite(arr)]
+    if finite.size == 0:
+        finite = np.array([0.0], dtype=float)
+
+    if vmin is None or vmax is None:
+        if symmetric:
+            if robust_percentile is None:
+                scale = float(np.nanmax(np.abs(finite)))
+            else:
+                scale = float(np.nanpercentile(np.abs(finite), robust_percentile))
+            scale = max(scale, 1.0e-30)
+            if min_vmax is not None:
+                scale = max(scale, float(min_vmax))
+            if vmin is None:
+                vmin = -scale
+            if vmax is None:
+                vmax = scale
+        else:
+            local_vmin = float(np.nanmin(finite))
+            if robust_percentile is None:
+                local_vmax = float(np.nanmax(finite))
+            else:
+                local_vmax = float(np.nanpercentile(finite, robust_percentile))
+            if min_vmax is not None:
+                local_vmax = max(local_vmax, float(min_vmax))
+            if local_vmax <= local_vmin:
+                pad = max(abs(local_vmax), 1.0) * 1.0e-12
+                local_vmin -= pad
+                local_vmax += pad
+            if vmin is None:
+                vmin = local_vmin
+            if vmax is None:
+                vmax = local_vmax
+
+    x_nm = nodes[:, 0] * 1.0e9
+    y_nm = nodes[:, 1] * 1.0e9
+    tri = mtri.Triangulation(
+        x_nm,
+        y_nm,
+        np.asarray(mesh.triangles, dtype=np.int64),
+    )
+
+    n_snap = int(arr.shape[0])
+    ncols = max(1, int(ncols))
+    nrows = int(np.ceil(n_snap / ncols))
+
+    fig_width = 4.35 * ncols + 1.10
+    fig_height = 3.25 * nrows + 0.65
+
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=(fig_width, fig_height),
+        squeeze=False,
+        constrained_layout=False,
+    )
+
+    fig.subplots_adjust(
+        left=0.070,
+        right=0.875,
+        bottom=0.080,
+        top=0.900,
+        wspace=0.48,
+        hspace=0.62,
+    )
+
+    x_span_nm = max(float(np.nanmax(x_nm) - np.nanmin(x_nm)), 1.0)
+    y_span_nm = max(float(np.nanmax(y_nm) - np.nanmin(y_nm)), 1.0)
+    arrow_len_nm = 0.055 * min(x_span_nm, y_span_nm)
+
+    step = max(1, int(np.ceil(n_nodes / max(1, int(max_arrows)))))
+    base_idx = np.arange(0, n_nodes, step, dtype=int)
+
+    last_im = None
+    for k in range(nrows * ncols):
+        ax = axes.flat[k]
+
+        if k >= n_snap:
+            ax.axis("off")
+            continue
+
+        last_im = ax.tripcolor(
+            tri,
+            arr[k],
+            shading="gouraud",
+            vmin=vmin,
+            vmax=vmax,
+        )
+
+        jx = ux_raw[k]
+        jy = uy_raw[k]
+        jmag = np.sqrt(jx * jx + jy * jy)
+        local_scale = float(np.nanmax(jmag)) if jmag.size else 0.0
+
+        if np.isfinite(local_scale) and local_scale > 0.0:
+            idx = base_idx[jmag[base_idx] > 1.0e-12 * local_scale]
+            if idx.size:
+                qx = arrow_len_nm * jx[idx] / np.maximum(jmag[idx], 1.0e-300)
+                qy = arrow_len_nm * jy[idx] / np.maximum(jmag[idx], 1.0e-300)
+
+                ax.quiver(
+                    x_nm[idx],
+                    y_nm[idx],
+                    qx,
+                    qy,
+                    angles="xy",
+                    scale_units="xy",
+                    scale=1.0,
+                    width=0.0022,
+                    headwidth=3.5,
+                    headlength=4.5,
+                    headaxislength=3.8,
+                    pivot="mid",
+                )
+
+        ax.set_title(f"t = {t_s[k] / 1.0e-12:.4g} ps", pad=8)
+        ax.set_xlabel("x [nm]", labelpad=4)
+        ax.set_ylabel("y [nm]", labelpad=6)
+        ax.set_aspect("equal", adjustable="box")
+        ax.grid(False)
+
+    if last_im is not None:
+        cax = fig.add_axes([0.910, 0.165, 0.020, 0.675])
+        cbar = fig.colorbar(last_im, cax=cax)
+        cbar.set_label(label, labelpad=10)
+
+    fig.suptitle(title, y=0.975)
+    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.12)
+    plt.close(fig)
+    return output
 
 def _plot_snapshot_grid(
     mesh,
