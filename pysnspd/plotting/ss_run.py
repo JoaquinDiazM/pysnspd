@@ -754,6 +754,74 @@ def plot_ss_relaxation_history(
 # Internal helpers
 # =============================================================================
 
+def _regular_arrow_indices(
+    x_nm: np.ndarray,
+    y_nm: np.ndarray,
+    weight: np.ndarray,
+    *,
+    nx: int = 18,
+    ny: int = 7,
+    min_relative_weight: float = 1.0e-10,
+) -> np.ndarray:
+    """Pick one representative mesh node per regular spatial bin.
+
+    This avoids the diagonal arrow pattern produced by selecting nodes using
+    raw mesh ordering.
+    """
+    x_nm = np.asarray(x_nm, dtype=float)
+    y_nm = np.asarray(y_nm, dtype=float)
+    weight = np.asarray(weight, dtype=float)
+
+    finite = (
+        np.isfinite(x_nm)
+        & np.isfinite(y_nm)
+        & np.isfinite(weight)
+    )
+
+    if not np.any(finite):
+        return np.array([], dtype=int)
+
+    wmax = float(np.nanmax(np.abs(weight[finite])))
+    if not np.isfinite(wmax) or wmax <= 0.0:
+        return np.array([], dtype=int)
+
+    finite &= np.abs(weight) > min_relative_weight * wmax
+
+    if not np.any(finite):
+        return np.array([], dtype=int)
+
+    xmin = float(np.nanmin(x_nm[finite]))
+    xmax = float(np.nanmax(x_nm[finite]))
+    ymin = float(np.nanmin(y_nm[finite]))
+    ymax = float(np.nanmax(y_nm[finite]))
+
+    if xmax <= xmin or ymax <= ymin:
+        return np.flatnonzero(finite)
+
+    gx = np.linspace(xmin, xmax, int(nx))
+    gy = np.linspace(ymin, ymax, int(ny))
+
+    valid_idx = np.flatnonzero(finite)
+    selected: list[int] = []
+
+    for yy in gy:
+        for xx in gx:
+            dx = x_nm[valid_idx] - xx
+            dy = y_nm[valid_idx] - yy
+
+            # Normalize distances so x/y aspect ratio does not bias selection.
+            d2 = (dx / max(xmax - xmin, 1.0e-30)) ** 2 + (
+                dy / max(ymax - ymin, 1.0e-30)
+            ) ** 2
+
+            local = int(valid_idx[int(np.argmin(d2))])
+            selected.append(local)
+
+    if not selected:
+        return np.array([], dtype=int)
+
+    return np.unique(np.asarray(selected, dtype=int))
+
 
 def _plot_vector_snapshot_grid(
     mesh,
@@ -859,7 +927,7 @@ def _plot_vector_snapshot_grid(
     nrows = int(np.ceil(n_snap / ncols))
 
     fig_width = 4.35 * ncols + 1.10
-    fig_height = 3.25 * nrows + 0.65
+    fig_height = 2.75 * nrows + 0.55
 
     fig, axes = plt.subplots(
         nrows,
@@ -872,18 +940,18 @@ def _plot_vector_snapshot_grid(
     fig.subplots_adjust(
         left=0.070,
         right=0.875,
-        bottom=0.080,
-        top=0.900,
-        wspace=0.48,
-        hspace=0.62,
+        bottom=0.085,
+        top=0.895,
+        wspace=0.42,
+        hspace=0.30,
     )
 
     x_span_nm = max(float(np.nanmax(x_nm) - np.nanmin(x_nm)), 1.0)
     y_span_nm = max(float(np.nanmax(y_nm) - np.nanmin(y_nm)), 1.0)
-    arrow_len_nm = 0.055 * min(x_span_nm, y_span_nm)
+    arrow_len_nm = 0.07 * min(x_span_nm, y_span_nm)
 
-    step = max(1, int(np.ceil(n_nodes / max(1, int(max_arrows)))))
-    base_idx = np.arange(0, n_nodes, step, dtype=int)
+    arrow_nx = 18
+    arrow_ny = 9
 
     last_im = None
     for k in range(nrows * ncols):
@@ -907,7 +975,15 @@ def _plot_vector_snapshot_grid(
         local_scale = float(np.nanmax(jmag)) if jmag.size else 0.0
 
         if np.isfinite(local_scale) and local_scale > 0.0:
-            idx = base_idx[jmag[base_idx] > 1.0e-12 * local_scale]
+            idx = _regular_arrow_indices(
+                x_nm,
+                y_nm,
+                jmag,
+                nx=arrow_nx,
+                ny=arrow_ny,
+                min_relative_weight=1.0e-10,
+            )
+
             if idx.size:
                 qx = arrow_len_nm * jx[idx] / np.maximum(jmag[idx], 1.0e-300)
                 qy = arrow_len_nm * jy[idx] / np.maximum(jmag[idx], 1.0e-300)
@@ -920,7 +996,7 @@ def _plot_vector_snapshot_grid(
                     angles="xy",
                     scale_units="xy",
                     scale=1.0,
-                    width=0.0022,
+                    width=0.0020,
                     headwidth=3.5,
                     headlength=4.5,
                     headaxislength=3.8,
@@ -1030,7 +1106,7 @@ def _plot_snapshot_grid(
     nrows = int(np.ceil(n_snap / ncols))
 
     fig_width = 4.35 * ncols + 1.10
-    fig_height = 3.25 * nrows + 0.65
+    fig_height = 2.75 * nrows + 0.55
 
     fig, axes = plt.subplots(
         nrows,
@@ -1043,10 +1119,10 @@ def _plot_snapshot_grid(
     fig.subplots_adjust(
         left=0.070,
         right=0.875,
-        bottom=0.080,
-        top=0.900,
-        wspace=0.48,
-        hspace=0.62,
+        bottom=0.085,
+        top=0.895,
+        wspace=0.42,
+        hspace=0.30,
     )
 
     last_im = None
