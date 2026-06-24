@@ -586,25 +586,31 @@ def apply_stationary_boundary_conditions(
     q_bias_m_inv: float,
     material: GTDGLMaterial,
     ops: FVOperators | None = None,
+    Te_K: np.ndarray | None = None,
+    target_current_A: float | None = None,
     enabled: bool = True,
 ) -> np.ndarray:
-    """Notebook current-Neumann/vacuum boundary constraints for Delta.
+    """Current-inverted boundary constraints for Delta.
 
-    The terminal phase itself is not fixed.  For each longitudinal boundary
-    node we find the actual first inward mesh edge, preferably the orthogonal
-    one guaranteed by the protected mesh, and impose only the phase drop on
-    that first edge,
+    Top/bottom keep the vacuum condition Delta_boundary = Delta_inner on the
+    first inward normal edge.
 
-        theta_boundary = theta_inner -/+ q_bias * dx_normal.
+    Left/right do not impose an absolute phase and do not impose q_bias
+    directly.  Instead, they invert the exact Usadel-like edge-current formula
+    used later by ``compute_formula_fields``:
 
-    Thus the terminal phase keeps the degree of freedom carried by the inner
-    node, while the first edge sees the imposed bias supermomentum.  The
-    terminal amplitude follows the current-biased stationary value from the
-    OE6/Usadel seed, as in the notebook current-Neumann contact.
+        j_s,e = K_e Q_e,
+        K_e = pi*sigma_n/(2e) * R_e * tanh(R_e/(2 kB Te_e)),
+        Q_e = (theta_inner - theta_boundary)/ell_e.
 
-    Top/bottom insulating boundaries use the same edge-aware idea: copy Delta
-    from the first inward normal edge.  Terminal constraints are applied after
-    top/bottom constraints so terminal physics wins at corners.
+    For the first inward normal edge b -> k, impose the laminar target
+    projection j_s,e = j_avg * d_x/ell_e.  Therefore
+
+        theta_boundary = theta_inner - (j_avg/K_e) * d_x.
+
+    The terminal amplitude is the predicted current-biased gap magnitude
+    R_bias from the OE6/Usadel seed.  The global phase remains free because the
+    boundary phase follows theta_inner.
     """
     psi = np.asarray(psi_trial_J, dtype=np.complex128)
     out = np.nan_to_num(psi, nan=0.0, posinf=0.0, neginf=0.0).astype(
@@ -622,22 +628,70 @@ def apply_stationary_boundary_conditions(
 
     nodes = np.asarray(mesh.nodes, dtype=float)
     R_bc = seed_delta_bias_J(seed, fallback=float(np.nanmedian(np.abs(out))))
+    R_bc = float(np.clip(R_bc, 0.0, 2.0 * material.delta0_J))
+
+    if target_current_A is None:
+        target_current_A = seed_target_current_A(seed)
+    javg = target_current_density_A_m2(material, float(target_current_A))
+
+    Te_nodes = _boundary_temperature_nodes(seed=seed, material=material, Te_K=Te_K, n_nodes=out.size)
     pairs = terminal_inner_node_pairs(mesh, ops=ops)
 
-    # Positive q_bias means current flows left -> right.
-    # Left contact: boundary phase is one normal-edge step behind the inner row.
-    left_boundary, left_inner = pairs["left"]
-    dx_left = np.abs(nodes[left_inner, 0] - nodes[left_boundary, 0])
-    theta_left = np.angle(out[left_inner]) - float(q_bias_m_inv) * dx_left
-    out[left_boundary] = R_bc * np.exp(1j * theta_left)
+    for side in ("left", "right"):
+        boundary, inner = pairs[side]
+        dx = nodes[inner, 0] - nodes[boundary, 0]
+        dy = nodes[inner, 1] - nodes[boundary, 1]
+        ell = np.maximum(np.sqrt(dx * dx + dy * dy), 1.0e-300)
 
-    # Right contact: boundary phase is one normal-edge step ahead of the inner row.
-    right_boundary, right_inner = pairs["right"]
-    dx_right = np.abs(nodes[right_boundary, 0] - nodes[right_inner, 0])
-    theta_right = np.angle(out[right_inner]) + float(q_bias_m_inv) * dx_right
-    out[right_boundary] = R_bc * np.exp(1j * theta_right)
+        R_inner = np.abs(out[inner])
+        R_edge = np.maximum(0.5 * (R_bc + R_inner), 1.0e-30 * material.delta0_J)
+        Te_edge = np.maximum(0.5 * (Te_nodes[boundary] + Te_nodes[inner]), 1.0e-12)
+
+        K_edge = (
+            np.pi
+            * material.sigma_n_S_m
+            / (2.0 * E_CHARGE_C)
+            * R_edge
+            * np.tanh(R_edge / (2.0 * K_B_J_K * Te_edge))
+        )
+        K_edge = np.maximum(K_edge, 1.0e-300)
+
+        # Reverse-engineered from the plotted edge current:
+        # j_s,e = K_e * (theta_inner - theta_boundary)/ell
+        # and j_s,e_target = javg * dx/ell.
+        theta_boundary = np.angle(out[inner]) - (javg / K_edge) * dx
+        out[boundary] = R_bc * np.exp(1j * theta_boundary)
 
     return clip_gap_amplitude(out, material)
+
+def _boundary_temperature_nodes(
+    *,
+    seed,
+    material: GTDGLMaterial,
+    Te_K: np.ndarray | None,
+    n_nodes: int,
+) -> np.ndarray:
+    """Return node temperatures for boundary-current inversion."""
+    if Te_K is not None:
+        arr = np.asarray(Te_K, dtype=float).reshape(-1)
+        if arr.size == n_nodes:
+            return np.maximum(arr, 1.0e-12)
+
+    if hasattr(seed, "node_Te_K"):
+        arr = np.asarray(seed.node_Te_K, dtype=float).reshape(-1)
+        if arr.size == n_nodes:
+            return np.maximum(arr, 1.0e-12)
+
+    metadata = getattr(seed, "metadata", None)
+    if isinstance(metadata, dict):
+        for name in ("T_bias_K", "Te_K", "temperature_K"):
+            if name in metadata:
+                value = float(metadata[name])
+                if np.isfinite(value) and value > 0.0:
+                    return np.full(n_nodes, value, dtype=float)
+
+    return np.full(n_nodes, max(1.0e-12, 0.1 * material.Tc_K), dtype=float)
+
 
 def clip_gap_amplitude(psi_J: np.ndarray, material: GTDGLMaterial) -> np.ndarray:
     """Clip only nonphysical overshoots; do not enforce a positive floor."""
@@ -1024,6 +1078,8 @@ def relax_stationary_gtdgl(
         q_bias_m_inv=q_bias,
         material=material,
         ops=ops,
+        Te_K=Te,
+        target_current_A=target_current_A,
         enabled=lock_terminals,
     )
     phi = phi0 - float(np.mean(phi0))
@@ -1163,6 +1219,8 @@ def relax_stationary_gtdgl(
             q_bias_m_inv=q_bias,
             material=material,
             ops=ops,
+            Te_K=Te,
+            target_current_A=target_current_A,
             enabled=lock_terminals,
         )
         defs_pre = compute_formula_fields(psi_J=psi_trial, Te_K=Te, material=material, ops=ops)
