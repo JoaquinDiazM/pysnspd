@@ -1,11 +1,19 @@
-"""Edge-based finite-volume operators for pySNSPD gTDGL.
+"""Notebook-style edge finite-volume operators for pySNSPD gTDGL.
 
-Scalar fields live on nodes. Phase gradients and edge currents live on mesh
-edges. Divergences are accumulated back to nodes in conservative form.
+This module keeps the public OE7 operator API, but changes the core geometry to
+match the notebook implementation more closely:
+
+* node control volumes are barycentric triangle areas;
+* edge dual lengths are circumcenter/Voronoi lengths ``edge_s``;
+* terminal boundary fluxes use lumped boundary-edge lengths;
+* edge scalar projections can be reconstructed to node vectors by local LS.
+
+Scalar fields live on nodes. Directed edge scalars are oriented edge_i -> edge_j.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
+
 import numpy as np
 
 
@@ -22,6 +30,17 @@ class FVOperators:
     dual_face_length_m: np.ndarray
     node_area_m2: np.ndarray
 
+    # Optional notebook-style auxiliary data. Tests that instantiate the old
+    # dataclass signature remain valid because these fields have defaults.
+    triangle_area_m2: np.ndarray | None = None
+    triangle_circumcenter_m: np.ndarray | None = None
+    edge_triangles: np.ndarray | None = None
+    left_nodes: np.ndarray | None = None
+    right_nodes: np.ndarray | None = None
+    left_boundary_measure_m: np.ndarray | None = None
+    right_boundary_measure_m: np.ndarray | None = None
+    xi_mesh_m: float | None = None
+
     @property
     def n_nodes(self) -> int:
         return int(self.node_area_m2.size)
@@ -32,42 +51,62 @@ class FVOperators:
 
 
 def build_fv_operators(mesh, edge_data) -> FVOperators:
-    """Construct positive barycentric-dual FV geometry factors."""
+    """Construct notebook-style Delaunay/Voronoi finite-volume factors.
+
+    The previous OE7 implementation used a positive barycentric dual
+    ``adjacent_area/(3*l_ij)``. The notebook uses a circumcenter dual length:
+
+    * interior edge: distance between the two adjacent triangle circumcenters;
+    * boundary edge: distance from the triangle circumcenter to the edge midpoint.
+
+    The fallback remains positive for degenerate/ill-conditioned edges.
+    """
     nodes = np.asarray(mesh.nodes, dtype=float)
     triangles = np.asarray(mesh.triangles, dtype=np.int64)
     edges = np.asarray(edge_data.edges, dtype=np.int64)
-    edge_triangles = np.asarray(edge_data.edge_triangles, dtype=np.int64)
+
+    if nodes.ndim != 2 or nodes.shape[1] < 2:
+        raise ValueError("mesh.nodes must have shape (n_nodes, >=2).")
+    if triangles.ndim != 2 or triangles.shape[1] != 3:
+        raise ValueError("mesh.triangles must have shape (n_triangles, 3).")
+    if edges.ndim != 2 or edges.shape[1] != 2:
+        raise ValueError("edge_data.edges must have shape (n_edges, 2).")
 
     n_nodes = int(nodes.shape[0])
     tri_area = triangle_areas(nodes, triangles)
-
     node_area = np.zeros(n_nodes, dtype=float)
     for local in range(3):
         np.add.at(node_area, triangles[:, local], tri_area / 3.0)
 
     edge_i = edges[:, 0].astype(np.int64, copy=True)
     edge_j = edges[:, 1].astype(np.int64, copy=True)
-    edge_vec = nodes[edge_j] - nodes[edge_i]
+    edge_vec = nodes[edge_j, :2] - nodes[edge_i, :2]
     edge_length = np.linalg.norm(edge_vec, axis=1)
     if np.any(edge_length <= 0.0):
         raise ValueError("All mesh edges must have positive length.")
-
     edge_unit = edge_vec / edge_length[:, None]
 
-    adjacent_area = np.zeros(edges.shape[0], dtype=float)
-    for k in range(edges.shape[0]):
-        tri_ids = edge_triangles[k]
-        valid = tri_ids[tri_ids >= 0]
-        adjacent_area[k] = float(np.sum(tri_area[valid]))
-
-    dual_face = adjacent_area / (3.0 * edge_length)
-    positive = dual_face > 0.0
-    if not np.all(positive):
-        replacement = float(np.min(dual_face[positive])) if np.any(positive) else 1.0
-        dual_face = np.where(positive, dual_face, replacement)
+    circum = triangle_circumcenters(nodes, triangles)
+    edge_triangles = _edge_triangles_from_edge_data_or_mesh(edge_data, triangles, edges)
+    dual_face = _circumcenter_dual_lengths(
+        nodes=nodes,
+        edges=edges,
+        edge_length=edge_length,
+        circumcenters=circum,
+        edge_triangles=edge_triangles,
+    )
 
     if np.any(node_area <= 0.0):
         raise ValueError("All mesh nodes must have positive dual area.")
+
+    left_measure_full = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="left")
+    right_measure_full = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="right")
+    left_nodes = np.flatnonzero(left_measure_full > 0.0).astype(np.int64)
+    right_nodes = np.flatnonzero(right_measure_full > 0.0).astype(np.int64)
+
+    xi_mesh = getattr(mesh, "target_spacing_m", None)
+    if xi_mesh is None:
+        xi_mesh = float(np.sqrt(np.nanmedian(node_area)))
 
     return FVOperators(
         edges=edges,
@@ -78,18 +117,108 @@ def build_fv_operators(mesh, edge_data) -> FVOperators:
         edge_unit=edge_unit,
         dual_face_length_m=dual_face,
         node_area_m2=node_area,
+        triangle_area_m2=tri_area,
+        triangle_circumcenter_m=circum,
+        edge_triangles=edge_triangles,
+        left_nodes=left_nodes,
+        right_nodes=right_nodes,
+        left_boundary_measure_m=left_measure_full[left_nodes],
+        right_boundary_measure_m=right_measure_full[right_nodes],
+        xi_mesh_m=float(xi_mesh),
     )
 
 
 def triangle_areas(nodes: np.ndarray, triangles: np.ndarray) -> np.ndarray:
     """Return triangle areas in square meters."""
-    p0 = nodes[triangles[:, 0]]
-    p1 = nodes[triangles[:, 1]]
-    p2 = nodes[triangles[:, 2]]
+    p0 = nodes[triangles[:, 0], :2]
+    p1 = nodes[triangles[:, 1], :2]
+    p2 = nodes[triangles[:, 2], :2]
     return 0.5 * np.abs(
         (p1[:, 0] - p0[:, 0]) * (p2[:, 1] - p0[:, 1])
         - (p1[:, 1] - p0[:, 1]) * (p2[:, 0] - p0[:, 0])
     )
+
+
+def triangle_circumcenters(nodes: np.ndarray, triangles: np.ndarray) -> np.ndarray:
+    """Return circumcenters for all triangles."""
+    pts = np.asarray(nodes, dtype=float)[:, :2]
+    circum = np.zeros((triangles.shape[0], 2), dtype=float)
+    for k, tri in enumerate(np.asarray(triangles, dtype=np.int64)):
+        circum[k] = _circumcenter(pts[tri])
+    return circum
+
+
+def _circumcenter(p: np.ndarray) -> np.ndarray:
+    A, B, C = p[0], p[1], p[2]
+    D = 2.0 * (
+        A[0] * (B[1] - C[1])
+        + B[0] * (C[1] - A[1])
+        + C[0] * (A[1] - B[1])
+    )
+    if abs(D) < 1.0e-300:
+        return np.mean(p, axis=0)
+    a2 = float(np.dot(A, A))
+    b2 = float(np.dot(B, B))
+    c2 = float(np.dot(C, C))
+    ux = (a2 * (B[1] - C[1]) + b2 * (C[1] - A[1]) + c2 * (A[1] - B[1])) / D
+    uy = (a2 * (C[0] - B[0]) + b2 * (A[0] - C[0]) + c2 * (B[0] - A[0])) / D
+    return np.array([ux, uy], dtype=float)
+
+
+def _edge_triangles_from_edge_data_or_mesh(edge_data, triangles: np.ndarray, edges: np.ndarray) -> np.ndarray:
+    if hasattr(edge_data, "edge_triangles"):
+        raw = np.asarray(edge_data.edge_triangles, dtype=np.int64)
+        if raw.shape[0] == edges.shape[0]:
+            if raw.ndim == 1:
+                out = -np.ones((edges.shape[0], 2), dtype=np.int64)
+                out[:, 0] = raw
+                return out
+            if raw.ndim == 2:
+                out = -np.ones((edges.shape[0], 2), dtype=np.int64)
+                cols = min(2, raw.shape[1])
+                out[:, :cols] = raw[:, :cols]
+                return out
+
+    edge_lookup = {tuple(sorted(map(int, e))): k for k, e in enumerate(edges)}
+    adj: list[list[int]] = [[] for _ in range(edges.shape[0])]
+    for t, tri in enumerate(np.asarray(triangles, dtype=np.int64)):
+        for u, v in ((tri[0], tri[1]), (tri[1], tri[2]), (tri[2], tri[0])):
+            key = tuple(sorted((int(u), int(v))))
+            k = edge_lookup.get(key)
+            if k is not None:
+                adj[k].append(int(t))
+
+    out = -np.ones((edges.shape[0], 2), dtype=np.int64)
+    for k, ts in enumerate(adj):
+        if ts:
+            out[k, : min(2, len(ts))] = ts[:2]
+    return out
+
+
+def _circumcenter_dual_lengths(
+    *,
+    nodes: np.ndarray,
+    edges: np.ndarray,
+    edge_length: np.ndarray,
+    circumcenters: np.ndarray,
+    edge_triangles: np.ndarray,
+) -> np.ndarray:
+    dual = np.zeros(edges.shape[0], dtype=float)
+    pts = np.asarray(nodes, dtype=float)[:, :2]
+    for k, (u, v) in enumerate(np.asarray(edges, dtype=np.int64)):
+        ts = np.asarray(edge_triangles[k], dtype=np.int64)
+        ts = ts[ts >= 0]
+        mid = 0.5 * (pts[int(u)] + pts[int(v)])
+        if ts.size == 1:
+            sij = float(np.linalg.norm(circumcenters[int(ts[0])] - mid))
+        elif ts.size >= 2:
+            sij = float(np.linalg.norm(circumcenters[int(ts[0])] - circumcenters[int(ts[1])]))
+        else:
+            sij = 0.5 * float(edge_length[k])
+        if not np.isfinite(sij) or sij <= 0.0:
+            sij = 0.5 * float(edge_length[k])
+        dual[k] = sij
+    return dual
 
 
 def edge_average(values: np.ndarray, ops: FVOperators) -> np.ndarray:
@@ -112,7 +241,7 @@ def edge_phase_gradient_from_psi(psi: np.ndarray, ops: FVOperators) -> np.ndarra
 
 
 def laplacian(values: np.ndarray, ops: FVOperators) -> np.ndarray:
-    """Graph finite-volume Laplacian of a node scalar or complex field."""
+    """Notebook-style graph FV Laplacian of a node scalar/complex field."""
     v = np.asarray(values)
     out = np.zeros(ops.n_nodes, dtype=np.result_type(v, np.complex128))
     flux = ops.dual_face_length_m * (v[ops.edge_j] - v[ops.edge_i]) / ops.edge_length_m
@@ -121,66 +250,46 @@ def laplacian(values: np.ndarray, ops: FVOperators) -> np.ndarray:
     return out / ops.node_area_m2
 
 
+def edge_flux_accumulator_A_m(edge_current_i_to_j_A_m2: np.ndarray, ops: FVOperators) -> np.ndarray:
+    """Return conservative edge-flux accumulator before division by area."""
+    current = np.asarray(edge_current_i_to_j_A_m2, dtype=float)
+    if current.shape != (ops.n_edges,):
+        raise ValueError(f"edge current must have shape ({ops.n_edges},), got {current.shape}.")
+    flux = ops.dual_face_length_m * current
+    out = np.zeros(ops.n_nodes, dtype=float)
+    np.add.at(out, ops.edge_i, flux)
+    np.add.at(out, ops.edge_j, -flux)
+    return out
+
+
 def divergence_from_edge_scalar(
     edge_current_i_to_j: np.ndarray,
     ops: FVOperators,
     *,
     boundary_accum_A_m: np.ndarray | None = None,
 ) -> np.ndarray:
-    """Finite-volume divergence of an edge current scalar.
-
-    The edge scalar is positive when current flows from edge_i to edge_j.
-
-    Parameters
-    ----------
-    edge_current_i_to_j:
-        Edge current density [A/m^2] projected along the oriented edge.
-    ops:
-        Finite-volume edge geometry.
-    boundary_accum_A_m:
-        Optional nodal boundary flux accumulator [A/m]. This is where
-        prescribed terminal currents enter the conservative divergence.
-    """
-    current = np.asarray(edge_current_i_to_j, dtype=float)
-    out = np.zeros(ops.n_nodes, dtype=float)
-
-    flux = ops.dual_face_length_m * current
-    np.add.at(out, ops.edge_i, flux)
-    np.add.at(out, ops.edge_j, -flux)
-
+    """Finite-volume divergence of an oriented edge-current density."""
+    out = edge_flux_accumulator_A_m(edge_current_i_to_j, ops)
     if boundary_accum_A_m is not None:
         boundary = np.asarray(boundary_accum_A_m, dtype=float)
         if boundary.shape != out.shape:
-            raise ValueError(
-                "boundary_accum_A_m must have shape "
-                f"{out.shape}, got {boundary.shape}."
-            )
+            raise ValueError(f"boundary_accum_A_m must have shape {out.shape}, got {boundary.shape}.")
         out += boundary
-
     return out / ops.node_area_m2
 
 
-def boundary_node_measure_m(
-    edge_data,
-    *,
-    n_nodes: int,
-    tag: str,
-) -> np.ndarray:
-    """Lump boundary-edge lengths onto boundary nodes.
-
-    The returned array has units of meters and sums to the geometric length of
-    the tagged boundary. Each boundary edge contributes half of its length to
-    each endpoint.
-    """
+def boundary_node_measure_m(edge_data, *, n_nodes: int, tag: str) -> np.ndarray:
+    """Lump tagged boundary-edge lengths onto boundary nodes."""
     tags = np.asarray(edge_data.tags).astype(str)
     edges = np.asarray(edge_data.edges, dtype=np.int64)
-    lengths = np.asarray(edge_data.lengths, dtype=float)
-
+    if hasattr(edge_data, "lengths"):
+        lengths = np.asarray(edge_data.lengths, dtype=float)
+    else:
+        raise ValueError("edge_data.lengths is required for boundary measures.")
     measure = np.zeros(int(n_nodes), dtype=float)
     mask = tags == str(tag)
     if not np.any(mask):
         return measure
-
     e = edges[mask]
     ell = lengths[mask]
     np.add.at(measure, e[:, 0], 0.5 * ell)
@@ -195,21 +304,15 @@ def terminal_outward_flux_densities_A_m2(
     target_current_A: float,
     thickness_m: float,
 ) -> dict[str, float]:
-    """Return prescribed outward current densities at left/right terminals.
-
-    Positive current flows from left to right. Therefore the outward flux is
-    negative at the left terminal and positive at the right terminal.
-    """
+    """Return prescribed outward current densities at left/right terminals."""
     left_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="left")
     right_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="right")
-
     width_left_m = float(np.sum(left_measure))
     width_right_m = float(np.sum(right_measure))
     if width_left_m <= 0.0 or width_right_m <= 0.0:
         raise ValueError("Left/right terminal boundary measures must be positive.")
     if thickness_m <= 0.0:
         raise ValueError("thickness_m must be positive.")
-
     I = float(target_current_A)
     return {
         "left_A_m2": -I / (float(thickness_m) * width_left_m),
@@ -226,11 +329,7 @@ def terminal_boundary_accum_A_m(
     target_current_A: float,
     thickness_m: float,
 ) -> np.ndarray:
-    """Build nodal terminal-flux accumulator for div(j)=0.
-
-    The accumulator has units [A/m], i.e. current per film thickness. It must be
-    added to the edge-flux accumulator before division by node area.
-    """
+    """Build nodal terminal-flux accumulator for div(j)=0."""
     left_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="left")
     right_measure = boundary_node_measure_m(edge_data, n_nodes=n_nodes, tag="right")
     flux = terminal_outward_flux_densities_A_m2(
@@ -239,7 +338,6 @@ def terminal_boundary_accum_A_m(
         target_current_A=target_current_A,
         thickness_m=thickness_m,
     )
-
     out = np.zeros(int(n_nodes), dtype=float)
     out += left_measure * flux["left_A_m2"]
     out += right_measure * flux["right_A_m2"]
@@ -253,22 +351,15 @@ def unwrap_phase_graph(
     seed_index: int | None = None,
     subtract_mean: bool = False,
 ) -> np.ndarray:
-    """Unwrap phase by walking the mesh graph.
-
-    This avoids the artificial 2*pi accumulation that appears when np.unwrap is
-    applied to a flattened 2D mesh.
-    """
+    """Unwrap phase by walking the mesh graph."""
     z = np.asarray(psi, dtype=np.complex128).reshape(-1)
     edges = np.asarray(edges, dtype=np.int64)
     n = int(z.size)
-
     if n == 0:
         return np.array([], dtype=float)
-
     if seed_index is None:
         seed_index = 0
     seed_index = int(seed_index)
-
     adj: list[list[tuple[int, float]]] = [[] for _ in range(n)]
     dtheta = np.angle(z[edges[:, 1]] * np.conjugate(z[edges[:, 0]]))
     for (i, j), dth in zip(edges, dtheta):
@@ -276,10 +367,8 @@ def unwrap_phase_graph(
         jj = int(j)
         adj[ii].append((jj, float(dth)))
         adj[jj].append((ii, -float(dth)))
-
     theta = np.full(n, np.nan, dtype=float)
     visited = np.zeros(n, dtype=bool)
-
     starts = [seed_index] + [i for i in range(n) if i != seed_index]
     for start in starts:
         if visited[start]:
@@ -287,7 +376,6 @@ def unwrap_phase_graph(
         theta[start] = float(np.angle(z[start]))
         visited[start] = True
         stack = [start]
-
         while stack:
             i = stack.pop()
             for j, dth in adj[i]:
@@ -295,31 +383,26 @@ def unwrap_phase_graph(
                     theta[j] = theta[i] + dth
                     visited[j] = True
                     stack.append(j)
-
     if subtract_mean:
         theta -= float(np.nanmean(theta))
-
     return theta
 
+
 def edge_scalar_to_node_vector(edge_current_i_to_j: np.ndarray, ops: FVOperators) -> tuple[np.ndarray, np.ndarray]:
-    """Average edge-oriented current scalars into node vector components."""
+    """Simple edge-to-node vector average, retained for backward compatibility."""
     current = np.asarray(edge_current_i_to_j, dtype=float)
     vec = current[:, None] * ops.edge_unit
-    wx = ops.dual_face_length_m
-    sum_w = np.zeros(ops.n_nodes, dtype=float)
+    cnt = np.zeros(ops.n_nodes, dtype=float)
     out = np.zeros((ops.n_nodes, 2), dtype=float)
-
     for comp in range(2):
-        contrib = wx * vec[:, comp]
-        np.add.at(out[:, comp], ops.edge_i, contrib)
-        np.add.at(out[:, comp], ops.edge_j, contrib)
-    np.add.at(sum_w, ops.edge_i, wx)
-    np.add.at(sum_w, ops.edge_j, wx)
-
-    safe = np.maximum(sum_w, 1.0e-300)
-    out[:, 0] /= safe
-    out[:, 1] /= safe
+        np.add.at(out[:, comp], ops.edge_i, vec[:, comp])
+        np.add.at(out[:, comp], ops.edge_j, vec[:, comp])
+    np.add.at(cnt, ops.edge_i, 1.0)
+    np.add.at(cnt, ops.edge_j, 1.0)
+    out[:, 0] /= np.maximum(cnt, 1.0)
+    out[:, 1] /= np.maximum(cnt, 1.0)
     return out[:, 0], out[:, 1]
+
 
 def edge_scalar_to_node_vector_least_squares(
     edge_current_i_to_j: np.ndarray,
@@ -327,67 +410,55 @@ def edge_scalar_to_node_vector_least_squares(
     *,
     ridge: float = 1.0e-30,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Least-squares reconstruction of a node vector field from edge projections.
+    """Notebook-style local LS reconstruction from edge projections.
 
-    Each edge stores the scalar projection
-
-        j_e = j . ehat_e
-
-    with ehat_e oriented from edge_i to edge_j. For each node, reconstruct
-    j=(jx,jy) by a local weighted least-squares fit over incident edges.
-
-    This is a diagnostic reconstruction. It does not modify the FV evolution.
+    The notebook uses weights ``edge_s/edge_len``. This is important for
+    unstructured Delaunay meshes; using raw ``edge_s`` changes the local LS
+    balance and can distort the reconstructed magnitude.
     """
-    current = np.asarray(edge_current_i_to_j, dtype=float)
-    if current.shape != (ops.n_edges,):
+    vals = np.asarray(edge_current_i_to_j, dtype=float)
+    if vals.shape != (ops.n_edges,):
         raise ValueError(f"edge_current_i_to_j must have shape ({ops.n_edges},).")
+    ex = ops.edge_unit[:, 0]
+    ey = ops.edge_unit[:, 1]
+    w = ops.dual_face_length_m / np.maximum(ops.edge_length_m, 1.0e-300)
+    w = np.maximum(w, 1.0e-300)
 
-    ux = ops.edge_unit[:, 0]
-    uy = ops.edge_unit[:, 1]
+    Axx = np.zeros(ops.n_nodes, dtype=float)
+    Axy = np.zeros(ops.n_nodes, dtype=float)
+    Ayy = np.zeros(ops.n_nodes, dtype=float)
+    bx = np.zeros(ops.n_nodes, dtype=float)
+    by = np.zeros(ops.n_nodes, dtype=float)
 
-    # Geometry weights. Only relative weights matter for the local LS fit.
-    w = np.maximum(ops.dual_face_length_m, 1.0e-300)
-
-    a11 = np.zeros(ops.n_nodes, dtype=float)
-    a12 = np.zeros(ops.n_nodes, dtype=float)
-    a22 = np.zeros(ops.n_nodes, dtype=float)
-    b1 = np.zeros(ops.n_nodes, dtype=float)
-    b2 = np.zeros(ops.n_nodes, dtype=float)
-
-    c11 = w * ux * ux
-    c12 = w * ux * uy
-    c22 = w * uy * uy
-    r1 = w * current * ux
-    r2 = w * current * uy
-
+    cxx = w * ex * ex
+    cxy = w * ex * ey
+    cyy = w * ey * ey
+    rx = w * vals * ex
+    ry = w * vals * ey
     for nodes in (ops.edge_i, ops.edge_j):
-        np.add.at(a11, nodes, c11)
-        np.add.at(a12, nodes, c12)
-        np.add.at(a22, nodes, c22)
-        np.add.at(b1, nodes, r1)
-        np.add.at(b2, nodes, r2)
+        np.add.at(Axx, nodes, cxx)
+        np.add.at(Axy, nodes, cxy)
+        np.add.at(Ayy, nodes, cyy)
+        np.add.at(bx, nodes, rx)
+        np.add.at(by, nodes, ry)
 
-    trace = a11 + a22
+    trace = Axx + Ayy
     reg = ridge * np.maximum(trace, 1.0)
-    a11 = a11 + reg
-    a22 = a22 + reg
+    Axx = Axx + reg
+    Ayy = Ayy + reg
+    det = Axx * Ayy - Axy * Axy
+    good = np.abs(det) > 1.0e-300
 
-    det = a11 * a22 - a12 * a12
-    safe = np.abs(det) > 1.0e-300
+    vx = np.zeros(ops.n_nodes, dtype=float)
+    vy = np.zeros(ops.n_nodes, dtype=float)
+    vx[good] = (Ayy[good] * bx[good] - Axy[good] * by[good]) / det[good]
+    vy[good] = (-Axy[good] * bx[good] + Axx[good] * by[good]) / det[good]
 
-    jx = np.zeros(ops.n_nodes, dtype=float)
-    jy = np.zeros(ops.n_nodes, dtype=float)
-
-    jx[safe] = (a22[safe] * b1[safe] - a12[safe] * b2[safe]) / det[safe]
-    jy[safe] = (-a12[safe] * b1[safe] + a11[safe] * b2[safe]) / det[safe]
-
-    # Fallback for pathological isolated/singular nodes.
-    if not np.all(safe):
-        jx_avg, jy_avg = edge_scalar_to_node_vector(current, ops)
-        jx[~safe] = jx_avg[~safe]
-        jy[~safe] = jy_avg[~safe]
-
-    return jx, jy
+    if not np.all(good):
+        fx, fy = edge_scalar_to_node_vector(vals, ops)
+        vx[~good] = fx[~good]
+        vy[~good] = fy[~good]
+    return vx, vy
 
 
 def boundary_currents_from_edge_scalar_least_squares(
@@ -416,40 +487,29 @@ def strip_transport_current_profile_from_node_vectors(
     thickness_m: float,
     n_bins: int = 41,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Estimate I(x)=d*w*<jx>_strip as a diagnostic profile.
-
-    This is not used by the solver. It is only a visualization/diagnostic
-    estimate of how much longitudinal current the reconstructed node field
-    carries across vertical strips.
-    """
+    """Estimate I(x)=d*w*<jx>_strip as a diagnostic profile."""
     nodes = np.asarray(mesh.nodes, dtype=float)
     jx = np.asarray(jx_A_m2, dtype=float)
-
     x = nodes[:, 0]
     xmin = float(np.min(x))
     xmax = float(np.max(x))
-
     if n_bins < 2:
         raise ValueError("n_bins must be at least 2.")
-
     edges_x = np.linspace(xmin, xmax, int(n_bins) + 1)
     centers = 0.5 * (edges_x[:-1] + edges_x[1:])
     current_A = np.full(int(n_bins), np.nan, dtype=float)
-
     for k in range(int(n_bins)):
         if k == int(n_bins) - 1:
             mask = (x >= edges_x[k]) & (x <= edges_x[k + 1])
         else:
             mask = (x >= edges_x[k]) & (x < edges_x[k + 1])
-
         if np.any(mask):
             current_A[k] = float(thickness_m * mesh.width_m * np.mean(jx[mask]))
-
     return centers, current_A
 
 
 def terminal_voltage(nodes: np.ndarray, phi_V: np.ndarray, *, length_m: float) -> float:
-    """Return <phi>_right - <phi>_left."""
+    """Return mean(phi_right)-mean(phi_left)."""
     nodes = np.asarray(nodes, dtype=float)
     phi = np.asarray(phi_V, dtype=float)
     x = nodes[:, 0]
@@ -473,17 +533,14 @@ def boundary_currents_from_node_vectors(
     tags = np.asarray(edge_data.tags).astype(str)
     edges = np.asarray(edge_data.edges, dtype=np.int64)
     lengths = np.asarray(edge_data.lengths, dtype=float)
-
     jx = np.asarray(jx_A_m2, dtype=float)
     jy = np.asarray(jy_A_m2, dtype=float)
-
     normals = {
         "left": (-1.0, 0.0),
         "right": (1.0, 0.0),
         "bottom": (0.0, -1.0),
         "top": (0.0, 1.0),
     }
-
     out: dict[str, float] = {}
     for tag, (nx, ny) in normals.items():
         mask = tags == tag
@@ -495,6 +552,5 @@ def boundary_currents_from_node_vectors(
         jy_edge = 0.5 * (jy[e[:, 0]] + jy[e[:, 1]])
         flux_density = jx_edge * nx + jy_edge * ny
         out[f"{tag}_A"] = float(thickness_m * np.sum(lengths[mask] * flux_density))
-
     out["net_boundary_current_A"] = float(sum(out.values()))
     return out
