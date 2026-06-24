@@ -447,25 +447,33 @@ def kwt_local_update(
     dt_s: float,
     material: GTDGLMaterial,
     max_phase_step_rad: float = 0.25,
+    use_phi_phase: bool = False,
 ) -> tuple[np.ndarray, bool, float]:
-    """Advance Delta by one explicit gauge-covariant KWT step.
+    """Advance Delta by one explicit KWT relaxation step.
 
-    The continuous form used here is
+    OE7 is a stationary fixed-bias relaxation problem, not a voltage-driven
+    time-domain detector simulation. Poisson is retained to compute the
+    normal-current correction
 
-        tau_GL rho (d_t + i 2e phi / hbar) Delta = F[Delta].
+        j_n = -sigma_n grad(phi),
 
-    Therefore
+    and to enforce the conservative FV condition
 
-        Delta^{n+1}
-        =
-        exp[-i 2e phi dt / hbar]
-        (Delta^n + dt F / (tau_GL rho)).
+        div_h(j_s + j_n) + b_h = 0.
 
-    This is intentionally conservative for OE7. The previous algebraic
-    variants made it too easy to inject a large effective phase evolution and
-    push Q above the local pairbreaking threshold.
+    However, the Poisson potential is not used by default as an additional
+    Josephson phase rotator during OE7. The superconducting momentum Q is
+    reconstructed from the phase of psi itself:
+
+        Q_ij = Arg(psi_j psi_i*) / l_ij.
+
+    Therefore applying exp[-i 2e phi dt / hbar] here would feed the Poisson
+    projection back into Q and can artificially drive pairbreaking in a
+    nominally stationary below-Ic state.
+
+    Set use_phi_phase=True only for a genuinely voltage-driven dynamic run,
+    not for the OE7 stationary branch.
     """
-
     psi = np.asarray(psi_J, dtype=np.complex128)
     phi = np.asarray(phi_V, dtype=float)
     Te = np.asarray(Te_K, dtype=float)
@@ -478,20 +486,27 @@ def kwt_local_update(
     rho = material.rho_kwt(Te, R)
     rho = np.maximum(rho, 1.0e-30)
 
-    phase_step = (2.0 * E_CHARGE_C / HBAR_J_S) * phi * dt_s
-    max_abs_phase = float(np.max(np.abs(phase_step))) if phase_step.size else 0.0
-
-    if max_abs_phase > max_phase_step_rad:
-        return psi.copy(), False, max_abs_phase
-
     psi_euler = psi + (dt_s / material.tau0_GL_s) * forcing / rho
-    psi_new = np.exp(-1j * phase_step) * psi_euler
 
-    if not np.all(np.isfinite(np.real(psi_new))) or not np.all(np.isfinite(np.imag(psi_new))):
+    if use_phi_phase:
+        phase_step = (2.0 * E_CHARGE_C / HBAR_J_S) * phi * dt_s
+        max_abs_phase = float(np.max(np.abs(phase_step))) if phase_step.size else 0.0
+
+        if max_abs_phase > max_phase_step_rad:
+            return psi.copy(), False, max_abs_phase
+
+        psi_new = np.exp(-1j * phase_step) * psi_euler
+    else:
+        max_abs_phase = 0.0
+        psi_new = psi_euler
+
+    if (
+        not np.all(np.isfinite(np.real(psi_new)))
+        or not np.all(np.isfinite(np.imag(psi_new)))
+    ):
         return psi.copy(), False, max_abs_phase
 
     return psi_new, True, max_abs_phase
-
 
 def apply_stationary_boundary_conditions(
     *,
@@ -773,6 +788,7 @@ def relax_stationary_gtdgl(
     target_current_A: float | None = None,
     progress: bool = False,
     n_phi_snapshots: int = 6,
+    use_phi_phase: bool = False,
 ) -> RelaxationResult:
     """Relax the OE6 seed with frozen temperatures and active Poisson."""
 
@@ -865,6 +881,7 @@ def relax_stationary_gtdgl(
             forcing_J=forcing,
             dt_s=dt_s,
             material=material,
+            use_phi_phase=use_phi_phase,
         )
 
         if not ok:
@@ -1014,7 +1031,9 @@ def relax_stationary_gtdgl(
     )
 
     summary = {
-        "backend": "oe7_stationary_gtdgl_poisson_clean_v1",
+        "backend": "oe7_stationary_gtdgl_poisson_fixed_phase_gauge_v2",
+        "gauge_policy": "poisson_retained_but_phi_not_used_as_stationary_phase_rotator",
+        "use_phi_phase": bool(use_phi_phase),
         "converged": bool(converged),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
@@ -1052,8 +1071,9 @@ def relax_stationary_gtdgl(
         "backend": summary["backend"],
         "description": (
             "Frozen-temperature stationary gTDGL/Poisson relaxation from the OE6 "
-            "analytic seed. Terminal BCs are phase-gradient continuation with "
-            "Neumann amplitude. Poisson uses only the fixed terminal accumulator."
+            "analytic seed. Poisson is retained for current conservation and "
+            "normal-current diagnostics, but the stationary OE7 branch does not "
+            "apply phi as an additional Josephson phase rotator."
         ),
         "thermal_policy": "frozen_Te_Tph",
         "circuit_policy": "inactive",

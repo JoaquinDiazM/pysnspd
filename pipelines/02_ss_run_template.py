@@ -1,5 +1,4 @@
 """SS-run template: OE6 analytic seed plus OE7 stationary gTDGL/Poisson."""
-
 from __future__ import annotations
 
 import argparse
@@ -34,15 +33,9 @@ from pysnspd.plotting.ss_seed import (
     plot_ss_seed_phase,
 )
 from pysnspd.plotting.ss_run import (
+    plot_ss_available_snapshots,
     plot_ss_boundary_currents,
-    plot_ss_pairbreaking_ratio,
-    plot_ss_phi_snapshots,
     plot_ss_relaxation_history,
-    plot_ss_state_current_density,
-    plot_ss_state_delta,
-    plot_ss_state_divergence,
-    plot_ss_state_phase,
-    plot_ss_state_phi,
     plot_ss_transport_current_profile,
 )
 
@@ -59,7 +52,6 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Run name containing PRE outputs. If omitted, use --run-name.",
     )
-
     parser.add_argument(
         "--I-bias-A",
         type=float,
@@ -78,7 +70,6 @@ def parse_args() -> argparse.Namespace:
         default="center",
         help="Origin used in theta=q*(x-x0) for the analytic seed.",
     )
-
     parser.add_argument(
         "--ss-steps",
         type=int,
@@ -135,6 +126,16 @@ def parse_args() -> argparse.Namespace:
         help="Number of electrostatic-potential snapshots to save and plot.",
     )
     parser.add_argument(
+        "--ss-n-snapshots",
+        type=int,
+        default=None,
+        help=(
+            "Alias for --ss-n-phi-snapshots. For now the solver stores phi "
+            "snapshots; extra snapshot fields will be plotted if they appear "
+            "in the history dictionary."
+        ),
+    )
+    parser.add_argument(
         "--ss-progress",
         action="store_true",
         help="Show a progress bar during OE7 stationary relaxation.",
@@ -148,9 +149,9 @@ def main() -> int:
     args = parse_args()
 
     cfg = validate_config(load_config(args.config))
-
     run_name = args.run_name
     pre_run_name = args.pre_run_name or run_name
+    n_phi_snapshots = args.ss_n_snapshots or args.ss_n_phi_snapshots
 
     layout = create_run_layout(cfg, run_name)
     raw_ss = Path(layout["raw_ss"])
@@ -203,7 +204,7 @@ def main() -> int:
         adapt_dt=not args.ss_no_adapt_dt,
         lock_terminals=not args.ss_unlock_terminals,
         progress=args.ss_progress,
-        n_phi_snapshots=args.ss_n_phi_snapshots,
+        n_phi_snapshots=n_phi_snapshots,
     )
 
     state_npz = save_stationary_state_npz(
@@ -223,7 +224,7 @@ def main() -> int:
         "seed": seed_sum,
         "stationary": result.summary,
         "metadata": {
-            "backend": "oe7_ss_run_template_clean_v1",
+            "backend": "oe7_ss_run_template_snapshot_diagnostics_v2",
             "description": (
                 "SS-run template with OE6 analytic seed followed by OE7 "
                 "frozen-temperature stationary gTDGL/Poisson relaxation."
@@ -231,6 +232,11 @@ def main() -> int:
             "thermal_policy": "frozen_Te_Tph",
             "circuit_policy": "inactive",
             "tau_policy": "tau_ee and tau_ep multiplied by --ss-tau-scale during SS only",
+            "diagnostic_plot_policy": (
+                "Seed diagnostics are still emitted. Relaxed final-field "
+                "colormaps are not emitted. Field diagnostics are emitted as "
+                "snapshot mosaics when the corresponding arrays exist in history."
+            ),
             "inputs": {
                 "mesh_npz": str(mesh_path),
                 "edges_npz": str(edges_path),
@@ -238,6 +244,7 @@ def main() -> int:
             },
         },
     }
+
     with summary_path.open("w", encoding="utf-8") as f:
         yaml.safe_dump(summary_doc, f, sort_keys=False, allow_unicode=True)
 
@@ -271,49 +278,20 @@ def main() -> int:
         dpi=args.dpi,
     )
 
-    relaxed_delta_plot = plot_ss_state_delta(
-        mesh,
-        result.state,
-        plots_diag / "ss_relaxed_delta.png",
-        dpi=args.dpi,
-    )
-    relaxed_phase_plot = plot_ss_state_phase(
-        mesh,
-        result.state,
-        plots_diag / "ss_relaxed_phase.png",
-        dpi=args.dpi,
-    )
-    relaxed_phi_plot = plot_ss_state_phi(
-        mesh,
-        result.state,
-        plots_diag / "ss_relaxed_phi.png",
-        dpi=args.dpi,
-    )
-    phi_snapshots_plot = plot_ss_phi_snapshots(
+    snapshot_plots = plot_ss_available_snapshots(
         mesh,
         result.history,
-        plots_diag / "ss_phi_snapshots.png",
+        plots_diag,
         dpi=args.dpi,
         ncols=3,
     )
-    relaxed_current_plot = plot_ss_state_current_density(
-        mesh,
-        result.state,
-        plots_diag / "ss_relaxed_current_density.png",
-        ops=fv_ops,
-        dpi=args.dpi,
-    )
-    relaxed_div_plot = plot_ss_state_divergence(
-        mesh,
-        result.state,
-        plots_diag / "ss_relaxed_divergence.png",
-        dpi=args.dpi,
-    )
+
     relaxed_boundary_plot = plot_ss_boundary_currents(
         result.summary,
         plots_diag / "ss_relaxed_boundary_currents.png",
         dpi=args.dpi,
     )
+
     transport_profile_plot = plot_ss_transport_current_profile(
         mesh=mesh,
         ops=fv_ops,
@@ -323,12 +301,7 @@ def main() -> int:
         thickness_m=material.thickness_m,
         dpi=args.dpi,
     )
-    pairbreaking_plot = plot_ss_pairbreaking_ratio(
-        mesh,
-        result.state,
-        plots_diag / "ss_pairbreaking_ratio.png",
-        dpi=args.dpi,
-    )
+
     history_plot = plot_ss_relaxation_history(
         result.history,
         plots_diag / "ss_relaxation_history.png",
@@ -358,15 +331,11 @@ def main() -> int:
                 "seed_current_plot": str(seed_current_plot),
                 "seed_divergence_plot": str(seed_div_plot),
                 "seed_boundary_currents_plot": str(seed_boundary_plot),
-                "relaxed_delta_plot": str(relaxed_delta_plot),
-                "relaxed_phase_plot": str(relaxed_phase_plot),
-                "relaxed_phi_plot": str(relaxed_phi_plot),
-                "phi_snapshots_plot": str(phi_snapshots_plot),
-                "relaxed_current_plot": str(relaxed_current_plot),
-                "relaxed_divergence_plot": str(relaxed_div_plot),
+                "snapshot_plots": {
+                    key: str(path) for key, path in snapshot_plots.items()
+                },
                 "relaxed_boundary_currents_plot": str(relaxed_boundary_plot),
                 "transport_profile_plot": str(transport_profile_plot),
-                "pairbreaking_plot": str(pairbreaking_plot),
                 "history_plot": str(history_plot),
             },
             "seed_summary": seed_sum,
@@ -393,8 +362,8 @@ def main() -> int:
         "terminal_voltage_V",
     ):
         print(f"  {key}: {seed_sum[key]}")
-    print()
 
+    print()
     print("Stationary relaxation")
     for key in (
         "converged",
@@ -418,13 +387,21 @@ def main() -> int:
         "edge_Q_max_m_inv",
     ):
         print(f"  {key}: {result.summary[key]}")
-    print()
 
+    print()
     print("Boundary currents [A]")
     for key, value in result.summary["boundary_currents_A"].items():
         print(f"  {key}: {value}")
-    print()
 
+    print()
+    print("Snapshot plots")
+    if snapshot_plots:
+        for key, path in snapshot_plots.items():
+            print(f"  {key}: {path}")
+    else:
+        print("  none")
+
+    print()
     print("Outputs")
     print(f"  seed_npz        : {seed_npz}")
     print(f"  state_npz       : {state_npz}")
