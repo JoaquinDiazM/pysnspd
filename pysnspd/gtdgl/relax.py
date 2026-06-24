@@ -721,6 +721,28 @@ def normal_current_fraction_rms(currents: CurrentFields) -> float:
 
     return num / max(den, 1.0e-300)
 
+def current_density_maxima_A_m2(currents: CurrentFields) -> tuple[float, float]:
+    """Return max |j_n| and max |j_tot| from node-vector diagnostics."""
+    jn_mag = np.sqrt(
+        currents.node_jn_x_A_m2**2
+        + currents.node_jn_y_A_m2**2
+    )
+    jt_mag = np.sqrt(
+        currents.node_jtot_x_A_m2**2
+        + currents.node_jtot_y_A_m2**2
+    )
+
+    jn_max = float(np.nanmax(jn_mag)) if jn_mag.size else 0.0
+    jt_max = float(np.nanmax(jt_mag)) if jt_mag.size else 0.0
+
+    return jn_max, jt_max
+
+
+def normal_current_fraction_max(currents: CurrentFields) -> float:
+    """Return max |j_n| normalized by max |j_tot|."""
+    jn_max, jt_max = current_density_maxima_A_m2(currents)
+    return jn_max / max(jt_max, 1.0e-300)
+
 
 def seed_target_current_A(seed) -> float:
     """Extract imposed transport current from an OE6 seed-like object."""
@@ -851,11 +873,45 @@ def relax_stationary_gtdgl(
     hist_pairbreaking_max: list[float] = []
     hist_delta_min_ratio: list[float] = []
     hist_normal_fraction: list[float] = []
+    hist_normal_max_fraction: list[float] = []
+    hist_normal_max_A_m2: list[float] = []
+    hist_total_max_A_m2: list[float] = []
 
     n_phi_snapshots = max(2, int(n_phi_snapshots))
-    phi_snapshot_t_s: list[float] = [0.0]
-    phi_snapshot_V: list[np.ndarray] = [phi.copy()]
-    phi_snapshot_steps = set(
+
+    snapshot_t_s: list[float] = []
+    psi_snapshot_real_J: list[np.ndarray] = []
+    psi_snapshot_imag_J: list[np.ndarray] = []
+    delta_snapshot_meV: list[np.ndarray] = []
+    phi_snapshot_V: list[np.ndarray] = []
+    current_density_snapshot_A_m2: list[np.ndarray] = []
+    normal_current_density_snapshot_A_m2: list[np.ndarray] = []
+    divergence_snapshot_A_m3: list[np.ndarray] = []
+    pairbreaking_ratio_snapshot: list[np.ndarray] = []
+
+    def _append_field_snapshot() -> None:
+        jtot_mag = np.sqrt(
+            currents.node_jtot_x_A_m2**2
+            + currents.node_jtot_y_A_m2**2
+        )
+        jn_mag = np.sqrt(
+            currents.node_jn_x_A_m2**2
+            + currents.node_jn_y_A_m2**2
+        )
+
+        snapshot_t_s.append(float(t_s))
+        psi_snapshot_real_J.append(np.real(psi).copy())
+        psi_snapshot_imag_J.append(np.imag(psi).copy())
+        delta_snapshot_meV.append(np.abs(psi).copy() / 1.602176634e-22)
+        phi_snapshot_V.append(phi.copy())
+        current_density_snapshot_A_m2.append(jtot_mag.copy())
+        normal_current_density_snapshot_A_m2.append(jn_mag.copy())
+        divergence_snapshot_A_m3.append(currents.node_div_jtot_A_m3.copy())
+        pairbreaking_ratio_snapshot.append(currents.node_pairbreaking_ratio.copy())
+
+    _append_field_snapshot()
+
+    snapshot_steps = set(
         np.unique(
             np.rint(np.linspace(1, int(steps), n_phi_snapshots - 1)).astype(int)
         ).tolist()
@@ -954,6 +1010,8 @@ def relax_stationary_gtdgl(
         pb_max = float(np.nanmax(currents.node_pairbreaking_ratio))
         delta_min_ratio = float(np.nanmin(np.abs(psi)) / material.delta0_J)
         normal_frac = normal_current_fraction_rms(currents)
+        normal_max_frac = normal_current_fraction_max(currents)
+        jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
 
         hist_t.append(t_s)
         hist_dt.append(dt_s)
@@ -963,10 +1021,12 @@ def relax_stationary_gtdgl(
         hist_pairbreaking_max.append(pb_max)
         hist_delta_min_ratio.append(delta_min_ratio)
         hist_normal_fraction.append(normal_frac)
+        hist_normal_max_fraction.append(normal_max_frac)
+        hist_normal_max_A_m2.append(jn_max_A_m2)
+        hist_total_max_A_m2.append(jt_max_A_m2)
 
-        if accepted in phi_snapshot_steps:
-            phi_snapshot_t_s.append(t_s)
-            phi_snapshot_V.append(phi.copy())
+        if accepted in snapshot_steps:
+            _append_field_snapshot()
 
         if progress and hasattr(iterator, "set_postfix") and accepted % 10 == 0:
             iterator.set_postfix(
@@ -984,21 +1044,28 @@ def relax_stationary_gtdgl(
         if adapt_dt and eta < 0.1 * tolerance_eta:
             dt_s = min(dt_max_s, 1.2 * dt_s)
 
-    if len(phi_snapshot_t_s) == 0 or phi_snapshot_t_s[-1] != t_s:
-        phi_snapshot_t_s.append(t_s)
-        phi_snapshot_V.append(phi.copy())
+    if len(snapshot_t_s) == 0 or snapshot_t_s[-1] != t_s:
+        _append_field_snapshot()
 
-    if len(phi_snapshot_t_s) > n_phi_snapshots:
+    if len(snapshot_t_s) > n_phi_snapshots:
         keep = np.unique(
-            np.rint(np.linspace(0, len(phi_snapshot_t_s) - 1, n_phi_snapshots)).astype(
-                int
-            )
+            np.rint(np.linspace(0, len(snapshot_t_s) - 1, n_phi_snapshots)).astype(int)
         )
-        if keep[-1] != len(phi_snapshot_t_s) - 1:
-            keep[-1] = len(phi_snapshot_t_s) - 1
+        if keep[-1] != len(snapshot_t_s) - 1:
+            keep[-1] = len(snapshot_t_s) - 1
 
-        phi_snapshot_t_s = [phi_snapshot_t_s[int(i)] for i in keep]
-        phi_snapshot_V = [phi_snapshot_V[int(i)] for i in keep]
+        def _keep_snapshots(seq):
+            return [seq[int(i)] for i in keep]
+
+        snapshot_t_s = _keep_snapshots(snapshot_t_s)
+        psi_snapshot_real_J = _keep_snapshots(psi_snapshot_real_J)
+        psi_snapshot_imag_J = _keep_snapshots(psi_snapshot_imag_J)
+        delta_snapshot_meV = _keep_snapshots(delta_snapshot_meV)
+        phi_snapshot_V = _keep_snapshots(phi_snapshot_V)
+        current_density_snapshot_A_m2 = _keep_snapshots(current_density_snapshot_A_m2)
+        normal_current_density_snapshot_A_m2 = _keep_snapshots(normal_current_density_snapshot_A_m2)
+        divergence_snapshot_A_m3 = _keep_snapshots(divergence_snapshot_A_m3)
+        pairbreaking_ratio_snapshot = _keep_snapshots(pairbreaking_ratio_snapshot)
 
     boundary = boundary_currents_from_node_vectors(
         mesh=mesh,
@@ -1021,14 +1088,13 @@ def relax_stationary_gtdgl(
         else float("nan")
     )
     normal_ohmic_voltage = (
-        float(target_current_A)
-        * float(mesh.length_m)
+        float(target_current_A) * float(mesh.length_m)
         / (
-            material.sigma_n_S_m
-            * material.width_m
-            * material.thickness_m
+            material.sigma_n_S_m * material.width_m * material.thickness_m
         )
     )
+
+    normal_max_A_m2, total_max_A_m2 = current_density_maxima_A_m2(currents)
 
     summary = {
         "backend": "oe7_stationary_gtdgl_poisson_fixed_phase_gauge_v2",
@@ -1052,6 +1118,11 @@ def relax_stationary_gtdgl(
             else float("nan")
         ),
         "normal_current_fraction_rms": float(normal_current_fraction_rms(currents)),
+        "normal_current_fraction_max": float(
+            normal_max_A_m2 / max(total_max_A_m2, 1.0e-300)
+        ),
+        "normal_current_max_A_m2": float(normal_max_A_m2),
+        "total_current_max_A_m2": float(total_max_A_m2),
         "current_residual": float(current_residual(currents, mesh)),
         "eta_R_final": float(hist_eta[-1]) if hist_eta else float("nan"),
         "divergence_rms_A_m3": float(
@@ -1100,9 +1171,33 @@ def relax_stationary_gtdgl(
         "pairbreaking_max": np.asarray(hist_pairbreaking_max, dtype=float),
         "delta_min_over_delta0": np.asarray(hist_delta_min_ratio, dtype=float),
         "normal_current_fraction_rms": np.asarray(hist_normal_fraction, dtype=float),
-        "phi_snapshot_t_s": np.asarray(phi_snapshot_t_s, dtype=float),
+        "normal_current_fraction_max": np.asarray(hist_normal_max_fraction, dtype=float),
+        "normal_current_max_A_m2": np.asarray(hist_normal_max_A_m2, dtype=float),
+        "total_current_max_A_m2": np.asarray(hist_total_max_A_m2, dtype=float),
+        "delta0_meV": np.asarray([material.delta0_J / 1.602176634e-22], dtype=float),
+
+        "snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+
+        "phi_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
         "phi_snapshot_V": np.asarray(phi_snapshot_V, dtype=float),
-    }
+
+        "psi_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "psi_snapshot_real_J": np.asarray(psi_snapshot_real_J, dtype=float),
+        "psi_snapshot_imag_J": np.asarray(psi_snapshot_imag_J, dtype=float),
+
+        "delta_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "delta_snapshot_meV": np.asarray(delta_snapshot_meV, dtype=float),
+
+        "current_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "current_density_snapshot_A_m2": np.asarray(current_density_snapshot_A_m2, dtype=float),
+        "normal_current_density_snapshot_A_m2": np.asarray(normal_current_density_snapshot_A_m2, dtype=float),
+
+        "divergence_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "divergence_snapshot_A_m3": np.asarray(divergence_snapshot_A_m3, dtype=float),
+
+        "pairbreaking_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
+        "pairbreaking_ratio_snapshot": np.asarray(pairbreaking_ratio_snapshot, dtype=float),
+            }
 
     return RelaxationResult(state=state, history=history, summary=summary)
 

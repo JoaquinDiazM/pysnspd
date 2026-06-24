@@ -130,9 +130,9 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=None,
         help=(
-            "Alias for --ss-n-phi-snapshots. For now the solver stores phi "
-            "snapshots; extra snapshot fields will be plotted if they appear "
-            "in the history dictionary."
+            "Alias for --ss-n-phi-snapshots. This controls the shared snapshot "
+            "times used for phi, |Delta|, phase, current density, divergence, "
+            "and pair-breaking diagnostics."
         ),
     )
     parser.add_argument(
@@ -377,6 +377,9 @@ def main() -> int:
         "normal_ohmic_voltage_V",
         "terminal_voltage_over_normal",
         "normal_current_fraction_rms",
+        "normal_current_fraction_max",
+        "normal_current_max_A_m2",
+        "total_current_max_A_m2",
         "current_residual",
         "eta_R_final",
         "divergence_rms_A_m3",

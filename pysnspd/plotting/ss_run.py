@@ -511,15 +511,7 @@ def plot_ss_relaxation_history(
     *,
     dpi: int = 480,
 ) -> Path:
-    """Plot compact relaxation diagnostics in two panels.
-
-    Panel 1:
-        log-scale stiff diagnostics: eta_R, current_residual, pairbreaking_max.
-
-    Panel 2:
-        normalized linear diagnostics in [0, 1]:
-        terminal voltage, min Delta/Delta0, and normal-current RMS fraction.
-    """
+    """Plot compact relaxation diagnostics in two panels."""
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
@@ -528,9 +520,18 @@ def plot_ss_relaxation_history(
     fig, axes = plt.subplots(
         2,
         1,
-        figsize=(8.4, 6.0),
+        figsize=(8.8, 6.2),
         sharex=True,
+        constrained_layout=False,
     )
+    fig.subplots_adjust(
+        left=0.105,
+        right=0.970,
+        bottom=0.090,
+        top=0.925,
+        hspace=0.42,
+    )
+
     ax_log, ax_lin = axes
 
     if t_ps.size:
@@ -565,23 +566,31 @@ def plot_ss_relaxation_history(
             unit="V",
             absolute=True,
         )
-        _plot_normalized_history_curve(
+
+        delta0_meV = _history_scalar(history, "delta0_meV")
+        if delta0_meV is None:
+            delta_label = r"$\min|\Delta|/\Delta_0$"
+        else:
+            delta_label = rf"$\min|\Delta|/\Delta_0$; $\Delta_0={delta0_meV:.4g}$ meV"
+
+        _plot_direct_history_curve(
             ax_lin,
             t_ps,
             history,
             "delta_min_over_delta0",
-            r"$\min|\Delta|/\Delta_0$",
-            unit="",
-            absolute=False,
+            delta_label,
         )
-        _plot_normalized_history_curve(
+
+        _plot_normalized_by_history_scale(
             ax_lin,
             t_ps,
             history,
-            "normal_current_fraction_rms",
-            r"$\mathrm{rms}(|j_n|)/\mathrm{rms}(|j|)$",
-            unit="",
-            absolute=False,
+            value_key="normal_current_max_A_m2",
+            scale_key="total_current_max_A_m2",
+            label=r"$\max |j_n|$",
+            scale_label=r"$\max |j|$",
+            unit=r"A m$^{-2}$",
+            absolute=True,
         )
 
     ax_log.set_title("OE7 SS: stiff relaxation diagnostics")
@@ -596,11 +605,9 @@ def plot_ss_relaxation_history(
     ax_lin.grid(False)
     ax_lin.legend(frameon=False)
 
-    fig.tight_layout()
-    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
     return output
-
 
 # =============================================================================
 # Internal helpers
@@ -693,11 +700,24 @@ def _plot_snapshot_grid(
     ncols = max(1, int(ncols))
     nrows = int(np.ceil(n_snap / ncols))
 
+    fig_width = 4.35 * ncols + 1.10
+    fig_height = 3.25 * nrows + 0.65
+
     fig, axes = plt.subplots(
         nrows,
         ncols,
-        figsize=(3.7 * ncols, 2.7 * nrows),
+        figsize=(fig_width, fig_height),
         squeeze=False,
+        constrained_layout=False,
+    )
+
+    fig.subplots_adjust(
+        left=0.070,
+        right=0.875,
+        bottom=0.080,
+        top=0.900,
+        wspace=0.48,
+        hspace=0.62,
     )
 
     last_im = None
@@ -715,21 +735,21 @@ def _plot_snapshot_grid(
             vmin=vmin,
             vmax=vmax,
         )
-        ax.set_title(f"t = {t_s[k] / 1.0e-12:.4g} ps")
-        ax.set_xlabel("x [nm]")
-        ax.set_ylabel("y [nm]")
+        ax.set_title(f"t = {t_s[k] / 1.0e-12:.4g} ps", pad=8)
+        ax.set_xlabel("x [nm]", labelpad=4)
+        ax.set_ylabel("y [nm]", labelpad=6)
         ax.set_aspect("equal", adjustable="box")
         ax.grid(False)
 
     if last_im is not None:
-        cbar = fig.colorbar(last_im, ax=axes.ravel().tolist())
-        cbar.set_label(label)
+        cax = fig.add_axes([0.910, 0.165, 0.020, 0.675])
+        cbar = fig.colorbar(last_im, cax=cax)
+        cbar.set_label(label, labelpad=10)
 
-    fig.suptitle(title)
-    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    fig.suptitle(title, y=0.975)
+    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.12)
     plt.close(fig)
     return output
-
 
 def _plot_node_scalar(
     mesh,
@@ -817,6 +837,85 @@ def _plot_normalized_history_curve(
     y_norm = np.clip(y_norm, 0.0, 1.0)
 
     ax.plot(t, y_norm, label=f"{label} / {_format_scale(scale, unit)}")
+
+def _plot_direct_history_curve(
+    ax,
+    t_ps: np.ndarray,
+    history: dict,
+    key: str,
+    label: str,
+) -> None:
+    """Plot an already-normalized scalar history without renormalizing it."""
+    if key not in history:
+        return
+
+    y = np.asarray(history[key], dtype=float).reshape(-1)
+    t, y = _match_time_and_series(t_ps, y)
+
+    if t.size == 0:
+        return
+
+    y_plot = np.clip(y, 0.0, 1.0)
+    ax.plot(t, y_plot, label=f"{label}, final={y[-1]:.4g}")
+
+
+def _plot_normalized_by_history_scale(
+    ax,
+    t_ps: np.ndarray,
+    history: dict,
+    *,
+    value_key: str,
+    scale_key: str,
+    label: str,
+    scale_label: str,
+    unit: str,
+    absolute: bool,
+) -> None:
+    """Plot value_key normalized by max(scale_key) over the same history."""
+    if value_key not in history or scale_key not in history:
+        return
+
+    y = np.asarray(history[value_key], dtype=float).reshape(-1)
+    scale_series = np.asarray(history[scale_key], dtype=float).reshape(-1)
+
+    t, y = _match_time_and_series(t_ps, y)
+    _, scale_series = _match_time_and_series(t_ps, scale_series)
+
+    n = min(t.size, y.size, scale_series.size)
+    if n <= 0:
+        return
+
+    t = t[:n]
+    y = y[:n]
+    scale_series = scale_series[:n]
+
+    if absolute:
+        y_real = np.abs(y)
+        scale_series = np.abs(scale_series)
+    else:
+        y_real = y
+
+    scale = _normalization_scale(scale_series)
+    y_norm = np.clip(y_real / scale, 0.0, 1.0)
+
+    ax.plot(
+        t,
+        y_norm,
+        label=f"{label} / {scale_label}={_format_scale(scale, unit)}",
+    )
+
+
+def _history_scalar(history: dict, key: str) -> float | None:
+    if key not in history:
+        return None
+
+    arr = np.asarray(history[key], dtype=float).reshape(-1)
+    finite = arr[np.isfinite(arr)]
+
+    if finite.size == 0:
+        return None
+
+    return float(finite[-1])
 
 
 def _match_time_and_series(t: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
