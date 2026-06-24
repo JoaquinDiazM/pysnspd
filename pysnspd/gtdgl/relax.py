@@ -1160,6 +1160,10 @@ def relax_stationary_gtdgl(
         "normal_current_density_snapshot_y_A_m2": [],
         "divergence_snapshot_A_m3": [],
         "pairbreaking_ratio_snapshot": [],
+        "edge_Q_snapshot_m_inv": [],
+        "edge_js_us_snapshot_A_m2": [],
+        "edge_jn_snapshot_A_m2": [],
+        "edge_jtot_snapshot_A_m2": [],
     }
 
     def append_snapshot() -> None:
@@ -1182,6 +1186,10 @@ def relax_stationary_gtdgl(
         snapshots["normal_current_density_snapshot_y_A_m2"].append(currents.node_jn_y_A_m2.copy())
         snapshots["divergence_snapshot_A_m3"].append(currents.node_div_jtot_A_m3.copy())
         snapshots["pairbreaking_ratio_snapshot"].append(currents.node_pairbreaking_ratio.copy())
+        snapshots["edge_Q_snapshot_m_inv"].append(currents.edge_Q_m_inv.copy())
+        snapshots["edge_js_us_snapshot_A_m2"].append(currents.edge_js_us_A_m2.copy())
+        snapshots["edge_jn_snapshot_A_m2"].append(currents.edge_jn_A_m2.copy())
+        snapshots["edge_jtot_snapshot_A_m2"].append(currents.edge_jtot_A_m2.copy())
 
     append_snapshot()
 
@@ -1442,6 +1450,24 @@ def relax_stationary_gtdgl(
             "divergence_snapshot_A_m3": np.asarray(snapshots["divergence_snapshot_A_m3"], dtype=float),
             "pairbreaking_snapshot_t_s": snapshot_t_s,
             "pairbreaking_ratio_snapshot": np.asarray(snapshots["pairbreaking_ratio_snapshot"], dtype=float),
+
+            # Exact edge topology used by the FV solver. These static arrays let
+            # plotting diagnostics inspect node-to-node edge currents without
+            # rebuilding/reordering edges from the triangulation.
+            "edge_i": np.asarray(ops.edge_i, dtype=np.int64),
+            "edge_j": np.asarray(ops.edge_j, dtype=np.int64),
+            "edge_length_m": np.asarray(ops.edge_length_m, dtype=float),
+            "edge_unit_x": np.asarray(ops.edge_unit[:, 0], dtype=float),
+            "edge_unit_y": np.asarray(ops.edge_unit[:, 1], dtype=float),
+            "dual_face_length_m": np.asarray(ops.dual_face_length_m, dtype=float),
+
+            # Edge-current snapshots. These are the literal edge projections
+            # that feed the node-vector reconstructions and the Poisson balance.
+            "edge_snapshot_t_s": snapshot_t_s,
+            "edge_Q_snapshot_m_inv": np.asarray(snapshots["edge_Q_snapshot_m_inv"], dtype=float),
+            "edge_js_us_snapshot_A_m2": np.asarray(snapshots["edge_js_us_snapshot_A_m2"], dtype=float),
+            "edge_jn_snapshot_A_m2": np.asarray(snapshots["edge_jn_snapshot_A_m2"], dtype=float),
+            "edge_jtot_snapshot_A_m2": np.asarray(snapshots["edge_jtot_snapshot_A_m2"], dtype=float),
         }
     )
 

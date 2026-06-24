@@ -398,13 +398,13 @@ A representative PRE-run command is:
 ```bash
 cd ~/pysnspd
 
-RUN_NAME=NbN_120nm_35uA_1064nm_LARGE
+RUN_NAME=NbN_120nm_35uA_1064nm
 
 python pipelines/01_prerun_template.py \
   --config configs/geminga_local.yaml \
   --run-name $RUN_NAME \
   --workers 16 \
-  --jitter-fraction 0.08 \
+  --jitter-fraction 0.1 \
   --boundary-guard-layers 1 \
   --eta-fraction 1.0e-3 \
   --gamma-max-fraction 0.80 \

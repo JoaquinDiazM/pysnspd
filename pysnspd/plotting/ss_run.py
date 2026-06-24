@@ -62,6 +62,21 @@ def plot_ss_available_snapshots(
             saved[name] = func(mesh, history, path, dpi=dpi, ncols=ncols)
         except (KeyError, ValueError):
             continue
+
+    # Extra edge-level zoom diagnostics. These do not replace the mesoscopic
+    # snapshots; they live in a dedicated subfolder and inspect the literal
+    # edge projections j_s,e and j_n,e between neighboring nodes.
+    try:
+        edge_saved = plot_ss_edge_current_zoom_snapshots(
+            mesh,
+            history,
+            output_dir / "edge_current_diagnostics",
+            dpi=dpi,
+        )
+        saved.update({f"edge_zoom_{key}": path for key, path in edge_saved.items()})
+    except (KeyError, ValueError):
+        pass
+
     return saved
 
 
@@ -237,6 +252,73 @@ def plot_ss_normal_current_density_snapshots(
         dpi=dpi,
         ncols=ncols,
     )
+
+
+def plot_ss_edge_current_zoom_snapshots(
+    mesh,
+    history: dict,
+    output_dir: str | Path,
+    *,
+    dpi: int = 480,
+) -> dict[str, Path]:
+    """Plot node-to-node edge currents in three diagnostic zoom windows.
+
+    One PNG is emitted per stored snapshot inside ``output_dir``. Each figure has
+    three columns: a top insulating-edge window, a left terminal-edge window,
+    and a bottom-right corner window. The upper row shows the signed
+    supercurrent edge projection ``j_s,e/j_avg``; the lower row shows the signed
+    normal-current edge projection ``j_n,e/j_avg``.
+
+    These plots intentionally use the exact solver edge ordering saved in the
+    relaxation history; they do not rebuild edges from triangles.
+    """
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    nodes_m = np.asarray(mesh.nodes, dtype=float)
+    x_nm = nodes_m[:, 0] * 1.0e9
+    y_nm = nodes_m[:, 1] * 1.0e9
+
+    edge_i = _require_history_array(history, ("edge_i",)).astype(np.int64)
+    edge_j = _require_history_array(history, ("edge_j",)).astype(np.int64)
+    js = _require_history_array(history, ("edge_js_us_snapshot_A_m2",))
+    jn = _require_history_array(history, ("edge_jn_snapshot_A_m2",))
+    t_s = _snapshot_times(history, ("edge_snapshot_t_s", "snapshot_t_s", "phi_snapshot_t_s"), js.shape[0])
+
+    if js.shape != jn.shape:
+        raise ValueError(f"edge current snapshots must have matching shapes, got {js.shape} and {jn.shape}.")
+    if js.ndim != 2:
+        raise ValueError(f"edge current snapshots must be 2D, got shape {js.shape}.")
+    if js.shape[1] != edge_i.size:
+        raise ValueError(
+            f"edge current snapshot has {js.shape[1]} edges, but edge_i has {edge_i.size}."
+        )
+
+    javg = _history_scalar(history, "javg_A_m2")
+    scale = abs(javg) if javg is not None and abs(javg) > 0.0 else 1.0
+    scale_label = r"/ $j_{\rm avg}$" if javg is not None and abs(javg) > 0.0 else r" [A m$^{-2}$]"
+
+    regions = _edge_zoom_regions(x_nm, y_nm, edge_i, edge_j)
+    paths: dict[str, Path] = {}
+
+    for k in range(js.shape[0]):
+        out = output_dir / f"edge_currents_snapshot_{k:03d}.png"
+        _plot_one_edge_current_zoom_snapshot(
+            x_nm=x_nm,
+            y_nm=y_nm,
+            edge_i=edge_i,
+            edge_j=edge_j,
+            js=js[k] / scale,
+            jn=jn[k] / scale,
+            t_s=float(t_s[k]),
+            regions=regions,
+            output_path=out,
+            scale_label=scale_label,
+            dpi=dpi,
+        )
+        paths[f"snapshot_{k:03d}"] = out
+
+    return paths
 
 
 def plot_ss_divergence_snapshots(
@@ -434,6 +516,314 @@ def plot_ss_relaxation_history(history: dict, output_path: str | Path, *, dpi: i
 # =============================================================================
 # Internal helpers
 # =============================================================================
+
+
+def _edge_zoom_regions(
+    x_nm: np.ndarray,
+    y_nm: np.ndarray,
+    edge_i: np.ndarray,
+    edge_j: np.ndarray,
+) -> list[dict[str, object]]:
+    """Return the three standard local edge-current diagnostic regions."""
+    xmin = float(np.nanmin(x_nm)); xmax = float(np.nanmax(x_nm))
+    ymin = float(np.nanmin(y_nm)); ymax = float(np.nanmax(y_nm))
+    lx = max(xmax - xmin, 1.0)
+    wy = max(ymax - ymin, 1.0)
+
+    specs = [
+        {
+            "name": "top edge",
+            "slug": "top_edge",
+            "center": (0.50 * (xmin + xmax), ymax),
+            "half_width": 0.115 * lx,
+            "half_height": 0.235 * wy,
+            "kind": "top",
+        },
+        {
+            "name": "left edge",
+            "slug": "left_edge",
+            "center": (xmin, 0.50 * (ymin + ymax)),
+            "half_width": 0.095 * lx,
+            "half_height": 0.300 * wy,
+            "kind": "left",
+        },
+        {
+            "name": "bottom-right corner",
+            "slug": "bottom_right_corner",
+            "center": (xmax, ymin),
+            "half_width": 0.115 * lx,
+            "half_height": 0.235 * wy,
+            "kind": "bottom_right",
+        },
+    ]
+
+    regions: list[dict[str, object]] = []
+    for spec in specs:
+        cx, cy = spec["center"]
+        hw = float(spec["half_width"])
+        hh = float(spec["half_height"])
+        xlo = cx - hw; xhi = cx + hw
+        ylo = cy - hh; yhi = cy + hh
+
+        xi = x_nm[edge_i]; xj = x_nm[edge_j]
+        yi = y_nm[edge_i]; yj = y_nm[edge_j]
+        mx = 0.5 * (xi + xj); my = 0.5 * (yi + yj)
+        in_box = (mx >= xlo) & (mx <= xhi) & (my >= ylo) & (my <= yhi)
+        in_box |= (
+            ((xi >= xlo) & (xi <= xhi) & (yi >= ylo) & (yi <= yhi))
+            | ((xj >= xlo) & (xj <= xhi) & (yj >= ylo) & (yj <= yhi))
+        )
+        idx = np.flatnonzero(in_box)
+        if idx.size == 0:
+            # Fallback to closest edge midpoint, so the diagnostic never silently
+            # disappears on very small test meshes.
+            d2 = (mx - cx) ** 2 + (my - cy) ** 2
+            idx = np.asarray([int(np.nanargmin(d2))], dtype=int)
+
+        highlight = _edge_zoom_highlight_edge(
+            kind=str(spec["kind"]),
+            x_nm=x_nm,
+            y_nm=y_nm,
+            edge_i=edge_i,
+            edge_j=edge_j,
+            edge_idx=idx,
+            center_x=float(cx),
+            center_y=float(cy),
+        )
+        regions.append(
+            {
+                "name": spec["name"],
+                "slug": spec["slug"],
+                "edge_idx": idx,
+                "highlight_edge": highlight,
+                "xlim": (xlo, xhi),
+                "ylim": (ylo, yhi),
+            }
+        )
+    return regions
+
+
+def _edge_zoom_highlight_edge(
+    *,
+    kind: str,
+    x_nm: np.ndarray,
+    y_nm: np.ndarray,
+    edge_i: np.ndarray,
+    edge_j: np.ndarray,
+    edge_idx: np.ndarray,
+    center_x: float,
+    center_y: float,
+) -> int | None:
+    """Pick the representative boundary-normal edge in a zoom region."""
+    if edge_idx.size == 0:
+        return None
+    xi = x_nm[edge_i[edge_idx]]; xj = x_nm[edge_j[edge_idx]]
+    yi = y_nm[edge_i[edge_idx]]; yj = y_nm[edge_j[edge_idx]]
+    dx = xj - xi; dy = yj - yi
+    ell = np.maximum(np.sqrt(dx * dx + dy * dy), 1.0e-300)
+    mx = 0.5 * (xi + xj); my = 0.5 * (yi + yj)
+
+    xmin = float(np.nanmin(x_nm)); xmax = float(np.nanmax(x_nm))
+    ymin = float(np.nanmin(y_nm)); ymax = float(np.nanmax(y_nm))
+    tol_x = max(1.0e-6, 0.02 * max(xmax - xmin, 1.0))
+    tol_y = max(1.0e-6, 0.02 * max(ymax - ymin, 1.0))
+
+    if kind == "top":
+        touches = (np.abs(yi - ymax) < tol_y) | (np.abs(yj - ymax) < tol_y)
+        score = touches.astype(float) * 10.0 + np.abs(dy) / ell - 0.02 * np.abs(mx - center_x)
+    elif kind == "left":
+        touches = (np.abs(xi - xmin) < tol_x) | (np.abs(xj - xmin) < tol_x)
+        score = touches.astype(float) * 10.0 + np.abs(dx) / ell - 0.02 * np.abs(my - center_y)
+    else:
+        touches_right = (np.abs(xi - xmax) < tol_x) | (np.abs(xj - xmax) < tol_x)
+        touches_bottom = (np.abs(yi - ymin) < tol_y) | (np.abs(yj - ymin) < tol_y)
+        score = (touches_right | touches_bottom).astype(float) * 10.0
+        score += 0.5 * (np.abs(dx) + np.abs(dy)) / ell
+        score -= 0.02 * ((mx - center_x) ** 2 + (my - center_y) ** 2) ** 0.5
+    return int(edge_idx[int(np.nanargmax(score))])
+
+
+def _plot_one_edge_current_zoom_snapshot(
+    *,
+    x_nm: np.ndarray,
+    y_nm: np.ndarray,
+    edge_i: np.ndarray,
+    edge_j: np.ndarray,
+    js: np.ndarray,
+    jn: np.ndarray,
+    t_s: float,
+    regions: list[dict[str, object]],
+    output_path: str | Path,
+    scale_label: str,
+    dpi: int,
+) -> Path:
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    fig, axes = plt.subplots(
+        2,
+        3,
+        figsize=(14.3, 6.4),
+        squeeze=False,
+        constrained_layout=False,
+    )
+    fig.subplots_adjust(left=0.055, right=0.925, bottom=0.090, top=0.875, wspace=0.25, hspace=0.30)
+    fig.suptitle(f"OE7 SS: edge-resolved currents, t = {t_s / 1.0e-12:.4g} ps", y=0.970)
+
+    js_lim = max(1.0, float(np.nanpercentile(np.abs(js[np.isfinite(js)]), 99.0)) if np.any(np.isfinite(js)) else 1.0)
+    jn_lim = max(0.05, float(np.nanpercentile(np.abs(jn[np.isfinite(jn)]), 99.0)) if np.any(np.isfinite(jn)) else 0.05)
+
+    first_js = None
+    first_jn = None
+    for col, region in enumerate(regions):
+        edge_idx = np.asarray(region["edge_idx"], dtype=int)
+        highlight = region["highlight_edge"]
+        for row, (field, clim, title, label) in enumerate(
+            [
+                (js, js_lim, r"signed $j_{s,e}$" + scale_label, r"$j_{s,e}$" + scale_label),
+                (jn, jn_lim, r"signed $j_{n,e}$" + scale_label, r"$j_{n,e}$" + scale_label),
+            ]
+        ):
+            ax = axes[row, col]
+            mappable = _draw_edge_zoom_panel(
+                ax=ax,
+                x_nm=x_nm,
+                y_nm=y_nm,
+                edge_i=edge_i,
+                edge_j=edge_j,
+                edge_idx=edge_idx,
+                values=field,
+                clim=clim,
+                region=region,
+                highlight_edge=highlight,
+            )
+            if row == 0:
+                ax.set_title(str(region["name"]), pad=9)
+            if col == 0:
+                ax.set_ylabel("y [nm]\n" + title)
+            else:
+                ax.set_ylabel("y [nm]")
+            ax.set_xlabel("x [nm]")
+            if row == 0 and first_js is None:
+                first_js = mappable
+            if row == 1 and first_jn is None:
+                first_jn = mappable
+
+    if first_js is not None:
+        cax = fig.add_axes([0.942, 0.545, 0.018, 0.300])
+        cb = fig.colorbar(first_js, cax=cax)
+        cb.set_label(r"$j_{s,e}$" + scale_label, labelpad=8)
+    if first_jn is not None:
+        cax = fig.add_axes([0.942, 0.145, 0.018, 0.300])
+        cb = fig.colorbar(first_jn, cax=cax)
+        cb.set_label(r"$j_{n,e}$" + scale_label, labelpad=8)
+
+    fig.savefig(output_path, dpi=dpi, bbox_inches="tight", pad_inches=0.10)
+    plt.close(fig)
+    return output_path
+
+
+def _draw_edge_zoom_panel(
+    *,
+    ax,
+    x_nm: np.ndarray,
+    y_nm: np.ndarray,
+    edge_i: np.ndarray,
+    edge_j: np.ndarray,
+    edge_idx: np.ndarray,
+    values: np.ndarray,
+    clim: float,
+    region: dict[str, object],
+    highlight_edge: int | None,
+):
+    import matplotlib as mpl
+    from matplotlib.collections import LineCollection
+
+    if edge_idx.size == 0:
+        ax.axis("off")
+        return mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(vmin=-clim, vmax=clim), cmap="coolwarm")
+
+    segs = np.stack(
+        [
+            np.column_stack([x_nm[edge_i[edge_idx]], y_nm[edge_i[edge_idx]]]),
+            np.column_stack([x_nm[edge_j[edge_idx]], y_nm[edge_j[edge_idx]]]),
+        ],
+        axis=1,
+    )
+    vals = np.asarray(values[edge_idx], dtype=float)
+    norm = mpl.colors.Normalize(vmin=-float(clim), vmax=float(clim))
+    lc = LineCollection(segs, array=vals, cmap="coolwarm", norm=norm, linewidths=2.1, alpha=0.95, zorder=2)
+    ax.add_collection(lc)
+
+    # Thin gray mesh skeleton below the current-carrying colored segments.
+    skel = LineCollection(segs, colors="0.78", linewidths=0.55, alpha=0.65, zorder=1)
+    ax.add_collection(skel)
+
+    xi = x_nm[edge_i[edge_idx]]; xj = x_nm[edge_j[edge_idx]]
+    yi = y_nm[edge_i[edge_idx]]; yj = y_nm[edge_j[edge_idx]]
+    dx = xj - xi; dy = yj - yi
+    ell = np.maximum(np.sqrt(dx * dx + dy * dy), 1.0e-300)
+    mx = 0.5 * (xi + xj); my = 0.5 * (yi + yj)
+    signed = vals
+    local_len = 0.20 * np.nanmedian(ell) if ell.size else 1.0
+    local_len = max(float(local_len), 0.25)
+    qx = local_len * np.sign(signed) * dx / ell
+    qy = local_len * np.sign(signed) * dy / ell
+    keep = np.isfinite(signed) & (np.abs(signed) > 1.0e-10 * max(float(clim), 1.0e-300))
+    if np.any(keep):
+        ax.quiver(
+            mx[keep],
+            my[keep],
+            qx[keep],
+            qy[keep],
+            np.clip(signed[keep], -clim, clim),
+            cmap="coolwarm",
+            norm=norm,
+            angles="xy",
+            scale_units="xy",
+            scale=1.0,
+            width=0.0042,
+            headwidth=3.8,
+            headlength=4.8,
+            headaxislength=4.1,
+            pivot="mid",
+            zorder=3,
+        )
+
+    node_idx = np.unique(np.concatenate([edge_i[edge_idx], edge_j[edge_idx]]))
+    ax.scatter(x_nm[node_idx], y_nm[node_idx], s=13, c="0.18", edgecolors="white", linewidths=0.35, zorder=4)
+
+    if highlight_edge is not None:
+        hi = int(highlight_edge)
+        ax.plot(
+            [x_nm[edge_i[hi]], x_nm[edge_j[hi]]],
+            [y_nm[edge_i[hi]], y_nm[edge_j[hi]]],
+            color="black",
+            linewidth=3.0,
+            alpha=0.90,
+            zorder=5,
+        )
+        val = float(values[hi])
+        hx = 0.5 * (x_nm[edge_i[hi]] + x_nm[edge_j[hi]])
+        hy = 0.5 * (y_nm[edge_i[hi]] + y_nm[edge_j[hi]])
+        ax.text(
+            hx,
+            hy,
+            f"  {val:+.3g}",
+            fontsize=8,
+            va="center",
+            ha="left",
+            bbox={"boxstyle": "round,pad=0.18", "facecolor": "white", "alpha": 0.78, "edgecolor": "0.70"},
+            zorder=6,
+        )
+
+    xlim = region["xlim"]; ylim = region["ylim"]
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(False)
+    ax.tick_params(labelsize=8)
+    return lc
 
 
 def _plot_current_family_snapshots(
