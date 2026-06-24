@@ -585,36 +585,59 @@ def apply_stationary_boundary_conditions(
     seed,
     q_bias_m_inv: float,
     material: GTDGLMaterial,
+    ops: FVOperators | None = None,
     enabled: bool = True,
 ) -> np.ndarray:
-    """Notebook current-Neumann/vacuum boundary constraints for Delta."""
+    """Notebook current-Neumann/vacuum boundary constraints for Delta.
+
+    The terminal phase itself is not fixed.  For each longitudinal boundary
+    node we find the actual first inward mesh edge, preferably the orthogonal
+    one guaranteed by the protected mesh, and impose only the phase drop on
+    that first edge,
+
+        theta_boundary = theta_inner -/+ q_bias * dx_normal.
+
+    Thus the terminal phase keeps the degree of freedom carried by the inner
+    node, while the first edge sees the imposed bias supermomentum.  The
+    terminal amplitude follows the current-biased stationary value from the
+    OE6/Usadel seed, as in the notebook current-Neumann contact.
+
+    Top/bottom insulating boundaries use the same edge-aware idea: copy Delta
+    from the first inward normal edge.  Terminal constraints are applied after
+    top/bottom constraints so terminal physics wins at corners.
+    """
     psi = np.asarray(psi_trial_J, dtype=np.complex128)
-    out = np.nan_to_num(psi, nan=0.0, posinf=0.0, neginf=0.0).astype(np.complex128, copy=True)
+    out = np.nan_to_num(psi, nan=0.0, posinf=0.0, neginf=0.0).astype(
+        np.complex128,
+        copy=True,
+    )
     out = clip_gap_amplitude(out, material)
     if not enabled:
         return out
 
-    # Vacuum Neumann top/bottom first.
+    # Vacuum Neumann top/bottom first, using actual inward mesh edges.
     for side in ("bottom", "top"):
-        boundary, inner = nearest_inward_boundary_pairs(mesh, side)
+        boundary, inner = nearest_inward_boundary_pairs(mesh, side, ops=ops)
         out[boundary] = out[inner]
 
     nodes = np.asarray(mesh.nodes, dtype=float)
     R_bc = seed_delta_bias_J(seed, fallback=float(np.nanmedian(np.abs(out))))
-    pairs = terminal_inner_node_pairs(mesh)
+    pairs = terminal_inner_node_pairs(mesh, ops=ops)
 
+    # Positive q_bias means current flows left -> right.
+    # Left contact: boundary phase is one normal-edge step behind the inner row.
     left_boundary, left_inner = pairs["left"]
     dx_left = np.abs(nodes[left_inner, 0] - nodes[left_boundary, 0])
     theta_left = np.angle(out[left_inner]) - float(q_bias_m_inv) * dx_left
     out[left_boundary] = R_bc * np.exp(1j * theta_left)
 
+    # Right contact: boundary phase is one normal-edge step ahead of the inner row.
     right_boundary, right_inner = pairs["right"]
     dx_right = np.abs(nodes[right_boundary, 0] - nodes[right_inner, 0])
     theta_right = np.angle(out[right_inner]) + float(q_bias_m_inv) * dx_right
     out[right_boundary] = R_bc * np.exp(1j * theta_right)
 
     return clip_gap_amplitude(out, material)
-
 
 def clip_gap_amplitude(psi_J: np.ndarray, material: GTDGLMaterial) -> np.ndarray:
     """Clip only nonphysical overshoots; do not enforce a positive floor."""
@@ -645,70 +668,153 @@ def boundary_node_masks(mesh) -> dict[str, np.ndarray]:
     }
 
 
-def terminal_inner_node_pairs(mesh) -> dict[str, tuple[np.ndarray, np.ndarray]]:
-    """Pair terminal boundary nodes with their nearest inward neighbours."""
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    x = nodes[:, 0]
-    y = nodes[:, 1]
-    masks = boundary_node_masks(mesh)
-    h = float(getattr(mesh, "target_spacing_m", 1.0e-9))
-    tol = max(1.0e-15, 1.0e-9 * float(getattr(mesh, "length_m", np.ptp(x))))
+def terminal_inner_node_pairs(
+    mesh,
+    ops: FVOperators | None = None,
+) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    """Pair left/right terminal nodes with their first inward normal-edge node.
 
-    def pair(side: str) -> tuple[np.ndarray, np.ndarray]:
-        boundary = np.where(masks[side])[0]
-        inner = np.empty_like(boundary, dtype=np.int64)
-        for k, b in enumerate(boundary):
-            if side == "left":
-                candidates = np.where(x > x[b] + tol)[0]
-                dx = x[candidates] - x[b]
-            elif side == "right":
-                candidates = np.where(x < x[b] - tol)[0]
-                dx = x[b] - x[candidates]
-            else:
-                raise ValueError(f"Invalid terminal side {side!r}.")
-            if candidates.size == 0:
-                raise ValueError(f"No inward candidates found for {side} node {b}.")
-            dy = y[candidates] - y[b]
-            score = (dy / max(h, 1.0e-300)) ** 2 + 0.05 * (dx / max(h, 1.0e-300)) ** 2
-            inner[k] = int(candidates[int(np.argmin(score))])
-        return boundary.astype(np.int64), inner
-
-    return {"left": pair("left"), "right": pair("right")}
+    The protected mesh has, for every terminal node, an actual edge that leaves
+    the terminal approximately orthogonally.  We use that edge instead of a
+    generic nearest-node search.  Diagonal and tangent terminal edges are still
+    part of the FV operator, but they no longer define the imposed boundary
+    phase drop.
+    """
+    return {
+        "left": _edge_aware_boundary_pairs(mesh, "left", ops=ops),
+        "right": _edge_aware_boundary_pairs(mesh, "right", ops=ops),
+    }
 
 
-def nearest_inward_boundary_pairs(mesh, side: str) -> tuple[np.ndarray, np.ndarray]:
-    """Pair top/bottom boundary nodes with their nearest inward neighbours."""
+def nearest_inward_boundary_pairs(
+    mesh,
+    side: str,
+    ops: FVOperators | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Pair top/bottom boundary nodes with their first inward normal-edge node."""
     if side not in {"bottom", "top"}:
         raise ValueError(f"side must be 'bottom' or 'top', got {side!r}.")
+    return _edge_aware_boundary_pairs(mesh, side, ops=ops)
+
+
+def _edge_aware_boundary_pairs(
+    mesh,
+    side: str,
+    ops: FVOperators | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return boundary -> inward pairs, preferring actual orthogonal edges.
+
+    If ``ops`` is available, candidates are restricted to true mesh neighbors
+    of the boundary node.  Among those, we choose the inward edge with the
+    smallest tangential displacement and shortest normal step.  This makes the
+    longitudinal current-Neumann condition act on the first normal edge rather
+    than on diagonal or tangent edges.
+
+    The fallback branch preserves the previous nearest-node behavior for unit
+    tests or legacy callers that do not pass ``ops``.
+    """
+    if side not in {"left", "right", "bottom", "top"}:
+        raise ValueError(f"Invalid boundary side {side!r}.")
+
     nodes = np.asarray(mesh.nodes, dtype=float)
     x = nodes[:, 0]
     y = nodes[:, 1]
     masks = boundary_node_masks(mesh)
-    h = float(getattr(mesh, "target_spacing_m", 1.0e-9))
-    tol = max(
-        1.0e-15,
-        1.0e-9
-        * max(
-            float(getattr(mesh, "length_m", np.ptp(x))),
-            float(getattr(mesh, "width_m", np.ptp(y))),
-        ),
-    )
-    boundary = np.where(masks[side])[0]
+    boundary = np.where(masks[side])[0].astype(np.int64)
     inner = np.empty_like(boundary, dtype=np.int64)
+
+    h = float(getattr(mesh, "target_spacing_m", 1.0e-9))
+    length_m = float(getattr(mesh, "length_m", np.ptp(x)))
+    width_m = float(getattr(mesh, "width_m", np.ptp(y)))
+    tol = max(1.0e-15, 1.0e-9 * max(length_m, width_m))
+
+    adjacency = _node_adjacency_from_ops_or_mesh(mesh, ops=ops)
+
     for k, b in enumerate(boundary):
-        if side == "bottom":
-            candidates = np.where(y > y[b] + tol)[0]
-            dy = y[candidates] - y[b]
+        if adjacency is not None:
+            candidates = np.asarray(sorted(adjacency.get(int(b), [])), dtype=np.int64)
         else:
-            candidates = np.where(y < y[b] - tol)[0]
-            dy = y[b] - y[candidates]
+            candidates = np.arange(nodes.shape[0], dtype=np.int64)
+
+        if side == "left":
+            candidates = candidates[x[candidates] > x[b] + tol]
+            normal = x[candidates] - x[b]
+            tangent = y[candidates] - y[b]
+        elif side == "right":
+            candidates = candidates[x[candidates] < x[b] - tol]
+            normal = x[b] - x[candidates]
+            tangent = y[candidates] - y[b]
+        elif side == "bottom":
+            candidates = candidates[y[candidates] > y[b] + tol]
+            normal = y[candidates] - y[b]
+            tangent = x[candidates] - x[b]
+        else:  # top
+            candidates = candidates[y[candidates] < y[b] - tol]
+            normal = y[b] - y[candidates]
+            tangent = x[candidates] - x[b]
+
+        if candidates.size == 0 and adjacency is not None:
+            # Robust fallback: if an externally supplied mesh lacks the expected
+            # normal edge in adjacency, retry with all nodes rather than failing.
+            candidates = np.arange(nodes.shape[0], dtype=np.int64)
+            if side == "left":
+                candidates = candidates[x[candidates] > x[b] + tol]
+                normal = x[candidates] - x[b]
+                tangent = y[candidates] - y[b]
+            elif side == "right":
+                candidates = candidates[x[candidates] < x[b] - tol]
+                normal = x[b] - x[candidates]
+                tangent = y[candidates] - y[b]
+            elif side == "bottom":
+                candidates = candidates[y[candidates] > y[b] + tol]
+                normal = y[candidates] - y[b]
+                tangent = x[candidates] - x[b]
+            else:
+                candidates = candidates[y[candidates] < y[b] - tol]
+                normal = y[b] - y[candidates]
+                tangent = x[candidates] - x[b]
+
         if candidates.size == 0:
             raise ValueError(f"No inward candidates found for {side} node {b}.")
-        dx = x[candidates] - x[b]
-        score = (dx / max(h, 1.0e-300)) ** 2 + 0.05 * (dy / max(h, 1.0e-300)) ** 2
-        inner[k] = int(candidates[int(np.argmin(score))])
-    return boundary.astype(np.int64), inner
 
+        # Lexicographic intent in one scalar: enforce near-zero tangential
+        # displacement first, then choose the nearest inward layer.
+        score = (
+            (tangent / max(h, 1.0e-300)) ** 2
+            + 1.0e-3 * (normal / max(h, 1.0e-300)) ** 2
+        )
+        inner[k] = int(candidates[int(np.argmin(score))])
+
+    return boundary, inner
+
+
+def _node_adjacency_from_ops_or_mesh(
+    mesh,
+    ops: FVOperators | None = None,
+) -> dict[int, set[int]] | None:
+    """Build node adjacency from FV operators or mesh triangles."""
+    n_nodes = int(np.asarray(mesh.nodes).shape[0])
+    adjacency: dict[int, set[int]] = {i: set() for i in range(n_nodes)}
+
+    if ops is not None:
+        for a, b in zip(np.asarray(ops.edge_i, dtype=np.int64), np.asarray(ops.edge_j, dtype=np.int64)):
+            adjacency[int(a)].add(int(b))
+            adjacency[int(b)].add(int(a))
+        return adjacency
+
+    triangles = getattr(mesh, "triangles", None)
+    if triangles is None:
+        return None
+
+    tri = np.asarray(triangles, dtype=np.int64)
+    if tri.ndim != 2 or tri.shape[1] != 3:
+        return None
+
+    for a, b, c in tri:
+        adjacency[int(a)].update((int(b), int(c)))
+        adjacency[int(b)].update((int(a), int(c)))
+        adjacency[int(c)].update((int(a), int(b)))
+    return adjacency
 
 def current_residual(
     currents: CurrentFields,
@@ -917,6 +1023,7 @@ def relax_stationary_gtdgl(
         seed=seed,
         q_bias_m_inv=q_bias,
         material=material,
+        ops=ops,
         enabled=lock_terminals,
     )
     phi = phi0 - float(np.mean(phi0))
@@ -1055,6 +1162,7 @@ def relax_stationary_gtdgl(
             seed=seed,
             q_bias_m_inv=q_bias,
             material=material,
+            ops=ops,
             enabled=lock_terminals,
         )
         defs_pre = compute_formula_fields(psi_J=psi_trial, Te_K=Te, material=material, ops=ops)
