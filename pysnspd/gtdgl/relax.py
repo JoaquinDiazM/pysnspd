@@ -71,7 +71,7 @@ from pysnspd.gtdgl.operators import (
     edge_average,
     edge_phase_gradient_from_psi,
     edge_scalar_gradient,
-    edge_scalar_to_node_vector,
+    edge_scalar_to_node_vector_least_squares,
     laplacian,
     terminal_boundary_accum_A_m,
     terminal_voltage,
@@ -136,8 +136,8 @@ def compute_current_fields(
 ) -> CurrentFields:
     """Evaluate Usadel-like, GL, normal and total current fields.
 
-    Currents live on oriented edges. Node vectors are diagnostics obtained by
-    direct edge-to-node averaging, not by a least-squares reconstruction.
+    Currents live on oriented edges. Node vectors are diagnostic
+    least-squares reconstructions from edge projections.
     """
 
     psi = np.asarray(psi_J, dtype=np.complex128)
@@ -186,9 +186,9 @@ def compute_current_fields(
         boundary_accum_A_m=boundary_accum_A_m,
     )
 
-    js_x, js_y = edge_scalar_to_node_vector(edge_js_us, ops)
-    jn_x, jn_y = edge_scalar_to_node_vector(edge_jn, ops)
-    jt_x, jt_y = edge_scalar_to_node_vector(edge_jtot, ops)
+    js_x, js_y = edge_scalar_to_node_vector_least_squares(edge_js_us, ops)
+    jn_x, jn_y = edge_scalar_to_node_vector_least_squares(edge_jn, ops)
+    jt_x, jt_y = edge_scalar_to_node_vector_least_squares(edge_jtot, ops)
 
     edge_pb = pairbreaking_ratio_edges(
         Q_edge_m_inv=Q_edge,
@@ -1254,7 +1254,7 @@ def relax_stationary_gtdgl(
         "jn_snapshot_mag_A_m2": np.asarray(normal_current_density_snapshot_A_m2, dtype=float),
         "jn_snapshot_x_A_m2": np.asarray(normal_current_density_snapshot_x_A_m2, dtype=float),
         "jn_snapshot_y_A_m2": np.asarray(normal_current_density_snapshot_y_A_m2, dtype=float),
-        
+
         "divergence_snapshot_t_s": np.asarray(snapshot_t_s, dtype=float),
         "divergence_snapshot_A_m3": np.asarray(divergence_snapshot_A_m3, dtype=float),
 
