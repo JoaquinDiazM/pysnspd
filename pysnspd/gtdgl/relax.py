@@ -438,6 +438,27 @@ def solve_varphi_poisson(
     )
 
 
+def solve_poisson_potential(
+    *,
+    edge_js_us_A_m2: np.ndarray,
+    material: GTDGLMaterial,
+    ops: FVOperators,
+    boundary_accum_A_m: np.ndarray | None = None,
+) -> np.ndarray:
+    """Backward-compatible wrapper returning only the mean-zero potential.
+
+    The notebook-port solver uses :func:`solve_varphi_poisson`, which returns
+    the full Poisson projection bundle. Older tests and scripts imported
+    ``solve_poisson_potential`` and expected just ``phi``.
+    """
+    return solve_varphi_poisson(
+        edge_js_us_A_m2=edge_js_us_A_m2,
+        material=material,
+        ops=ops,
+        boundary_accum_A_m=boundary_accum_A_m,
+    ).phi_V
+
+
 def target_terminal_boundary_accum_A_m(
     *,
     edge_data,
@@ -506,6 +527,55 @@ def kwt_delta_update_attempt(
     ):
         return None, discr_min
     return Delta_new, discr_min
+
+
+def kwt_local_update(
+    *,
+    psi_J: np.ndarray,
+    phi_V: np.ndarray,
+    Te_K: np.ndarray,
+    forcing_J: np.ndarray,
+    dt_s: float,
+    material: GTDGLMaterial,
+    max_phase_step_rad: float = 0.25,
+    use_phi_phase: bool = False,
+) -> tuple[np.ndarray, bool, float]:
+    """Backward-compatible local KWT update used by legacy tests.
+
+    The production OE7 notebook-port path uses ``kwt_delta_update_attempt``
+    because it needs the full notebook formula-field bundle. This wrapper keeps
+    the old public API available for tests and scripts that only pass an
+    externally computed forcing. With zero forcing and ``use_phi_phase=False``
+    it preserves the input state exactly, matching the old smoke-test contract.
+    """
+    psi = np.asarray(psi_J, dtype=np.complex128)
+    phi = np.asarray(phi_V, dtype=float)
+    Te = np.asarray(Te_K, dtype=float)
+    forcing = np.asarray(forcing_J, dtype=np.complex128)
+
+    if dt_s <= 0.0:
+        raise ValueError("dt_s must be positive.")
+    if psi.shape != forcing.shape:
+        raise ValueError("psi_J and forcing_J must have the same shape.")
+
+    rho = np.maximum(material.rho_kwt(Te, np.abs(psi)), 1.0e-30)
+    psi_new = psi + (float(dt_s) / material.tau0_GL_s) * forcing / rho
+
+    max_abs_phase = 0.0
+    if use_phi_phase:
+        phase_step = (2.0 * E_CHARGE_C / HBAR_J_S) * phi * float(dt_s)
+        max_abs_phase = float(np.max(np.abs(phase_step))) if phase_step.size else 0.0
+        if max_abs_phase > max_phase_step_rad:
+            return psi.copy(), False, max_abs_phase
+        psi_new = np.exp(1j * phase_step) * psi_new
+
+    if not (
+        np.all(np.isfinite(np.real(psi_new)))
+        and np.all(np.isfinite(np.imag(psi_new)))
+    ):
+        return psi.copy(), False, max_abs_phase
+
+    return psi_new, True, max_abs_phase
 
 
 def apply_stationary_boundary_conditions(
@@ -640,20 +710,54 @@ def nearest_inward_boundary_pairs(mesh, side: str) -> tuple[np.ndarray, np.ndarr
     return boundary.astype(np.int64), inner
 
 
-def current_residual(currents: CurrentFields, mesh, material: GTDGLMaterial, target_current_A: float) -> float:
-    """Dimensionless RMS residual of div(j_tot), notebook scaling."""
+def current_residual(
+    currents: CurrentFields,
+    mesh,
+    material: GTDGLMaterial | None = None,
+    target_current_A: float | None = None,
+) -> float:
+    """Dimensionless RMS residual of div(j_tot).
+
+    New notebook-order runs pass ``material`` and ``target_current_A`` so the
+    scale is the imposed average current density divided by the mesh spacing.
+    Older smoke tests called this with only ``(currents, mesh)``; in that case
+    we fall back to the reconstructed total-current RMS scale.
+    """
     div = np.asarray(currents.node_div_jtot_A_m3, dtype=float)
     h = float(getattr(mesh, "target_spacing_m", getattr(mesh, "xi_mesh_m", 1.0e-9)))
-    javg = target_current_density_A_m2(material, target_current_A)
-    scale = max(abs(javg) / max(h, 1.0e-300), 1.0)
+    if material is not None and target_current_A is not None:
+        jscale = abs(target_current_density_A_m2(material, float(target_current_A)))
+    else:
+        jscale = float(
+            np.sqrt(
+                np.nanmean(
+                    currents.node_jtot_x_A_m2**2 + currents.node_jtot_y_A_m2**2
+                )
+            )
+        )
+    scale = max(jscale / max(h, 1.0e-300), 1.0)
     return float(np.sqrt(np.nanmean(div * div)) / scale)
 
 
-def max_current_residual(currents: CurrentFields, mesh, material: GTDGLMaterial, target_current_A: float) -> float:
+def max_current_residual(
+    currents: CurrentFields,
+    mesh,
+    material: GTDGLMaterial | None = None,
+    target_current_A: float | None = None,
+) -> float:
     div = np.asarray(currents.node_div_jtot_A_m3, dtype=float)
     h = float(getattr(mesh, "target_spacing_m", getattr(mesh, "xi_mesh_m", 1.0e-9)))
-    javg = target_current_density_A_m2(material, target_current_A)
-    scale = max(abs(javg) / max(h, 1.0e-300), 1.0)
+    if material is not None and target_current_A is not None:
+        jscale = abs(target_current_density_A_m2(material, float(target_current_A)))
+    else:
+        jscale = float(
+            np.sqrt(
+                np.nanmean(
+                    currents.node_jtot_x_A_m2**2 + currents.node_jtot_y_A_m2**2
+                )
+            )
+        )
+    scale = max(jscale / max(h, 1.0e-300), 1.0)
     return float(np.nanmax(np.abs(div)) / scale)
 
 
