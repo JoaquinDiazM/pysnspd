@@ -380,25 +380,32 @@ def build_poisson_operator(
     ops: FVOperators,
     phi_bc: PhiBoundaryConditions | None = None,
 ) -> _PoissonOperator:
-    """Build the Poisson operator with optional electric boundary constraints.
+    """Build the pyTDGL-style sparse-LU Poisson operator.
 
-    Without ``phi_bc`` this is the notebook mean-zero Neumann projection.  With
-    ``phi_bc`` the rows associated with boundary nodes are replaced by the
-    discrete normal-edge electric constraints used to enforce the total-current
-    boundary condition on varphi.
+    This is the physical-units analogue of pyTDGL Eq. (17):
+
+        sum_j s_ij * (mu_j - mu_i) / e_ij = sum_j s_ij * J_s,ij
+
+    with ``mu`` replaced by the electric potential ``phi`` in volts and
+    ``J_n,ij = -sigma_n * (phi_j - phi_i) / e_ij``.  Equivalently,
+
+        sum_j sigma_n * s_ij/e_ij * (phi_i - phi_j)
+        = - sum_j s_ij * j_s,ij - F_i^ext.
+
+    The operator is pure Neumann and therefore singular up to a constant; we
+    append one gauge row/column enforcing mean(phi)=0.  The optional ``phi_bc``
+    argument is accepted only for backward compatibility with the previous
+    experimental branch; it is deliberately ignored here.
     """
-    if phi_bc is not None:
-        return _build_constrained_poisson_operator(
-            material=material,
-            ops=ops,
-            phi_bc=phi_bc,
-        )
+    del phi_bc
 
     sigma = material.sigma_n_S_m
-    g = sigma * ops.dual_face_length_m / ops.edge_length_m
+    g = sigma * ops.dual_face_length_m / np.maximum(ops.edge_length_m, 1.0e-300)
     i = ops.edge_i.astype(np.int64)
     j = ops.edge_j.astype(np.int64)
     n = int(ops.n_nodes)
+
+    # Row i gets +g*(phi_i - phi_j); row j gets +g*(phi_j - phi_i).
     rows = np.concatenate([i, i, j, j])
     cols = np.concatenate([i, j, j, i])
     data = np.concatenate([g, -g, g, -g])
@@ -431,78 +438,13 @@ def _build_constrained_poisson_operator(
     ops: FVOperators,
     phi_bc: PhiBoundaryConditions,
 ) -> _PoissonOperator:
-    """Build Poisson matrix with boundary rows replaced by phi constraints."""
-    sigma = material.sigma_n_S_m
-    g = sigma * ops.dual_face_length_m / np.maximum(ops.edge_length_m, 1.0e-300)
-    edge_i = ops.edge_i.astype(np.int64)
-    edge_j = ops.edge_j.astype(np.int64)
-    n = int(ops.n_nodes)
+    """Deprecated experimental constrained-Poisson builder.
 
-    bmask = np.asarray(phi_bc.boundary_mask, dtype=bool)
-    if bmask.shape != (n,):
-        raise ValueError(f"phi_bc.boundary_mask must have shape ({n},), got {bmask.shape}.")
-
-    if coo_matrix is not None:
-        rows: list[np.ndarray] = []
-        cols: list[np.ndarray] = []
-        data: list[np.ndarray] = []
-
-        keep_i = ~bmask[edge_i]
-        if np.any(keep_i):
-            ii = edge_i[keep_i]
-            jj = edge_j[keep_i]
-            gg = g[keep_i]
-            rows.extend([ii, ii])
-            cols.extend([ii, jj])
-            data.extend([gg, -gg])
-
-        keep_j = ~bmask[edge_j]
-        if np.any(keep_j):
-            ii = edge_i[keep_j]
-            jj = edge_j[keep_j]
-            gg = g[keep_j]
-            rows.extend([jj, jj])
-            cols.extend([jj, ii])
-            data.extend([gg, -gg])
-
-        boundary = np.asarray(phi_bc.boundary_nodes, dtype=np.int64)
-        inner = np.asarray(phi_bc.inner_nodes, dtype=np.int64)
-        rows.extend([boundary, boundary])
-        cols.extend([boundary, inner])
-        data.extend([np.ones(boundary.size), -np.ones(boundary.size)])
-
-        interior_rows = np.flatnonzero(~bmask).astype(np.int64)
-        if interior_rows.size:
-            rows.append(interior_rows)
-            cols.append(np.full(interior_rows.size, n, dtype=np.int64))
-            data.append(np.ones(interior_rows.size, dtype=float))
-
-        rows.append(np.full(n, n, dtype=np.int64))
-        cols.append(np.arange(n, dtype=np.int64))
-        data.append(np.ones(n, dtype=float))
-
-        row = np.concatenate(rows)
-        col = np.concatenate(cols)
-        val = np.concatenate(data).astype(float)
-        A_aug = coo_matrix((val, (row, col)), shape=(n + 1, n + 1)).tocsc()
-        solver = splu(A_aug) if splu is not None else None
-        return _PoissonOperator(A_aug=A_aug, solver=solver)
-
-    A_aug = np.zeros((n + 1, n + 1), dtype=float)  # pragma: no cover
-    for a, b, gg in zip(edge_i, edge_j, g):
-        if not bmask[a]:
-            A_aug[a, a] += gg
-            A_aug[a, b] -= gg
-        if not bmask[b]:
-            A_aug[b, b] += gg
-            A_aug[b, a] -= gg
-    for b, k in zip(phi_bc.boundary_nodes, phi_bc.inner_nodes):
-        A_aug[int(b), :] = 0.0
-        A_aug[int(b), int(b)] = 1.0
-        A_aug[int(b), int(k)] = -1.0
-    A_aug[np.flatnonzero(~bmask), n] = 1.0
-    A_aug[n, :n] = 1.0
-    return _PoissonOperator(A_aug=A_aug, solver=None)
+    Retained only so old imports do not break.  The OE7 production path now
+    follows pyTDGL Eq. (17) and no longer calls this function.
+    """
+    del phi_bc
+    return build_poisson_operator(material=material, ops=ops, phi_bc=None)
 
 
 def solve_varphi_poisson(
@@ -514,45 +456,44 @@ def solve_varphi_poisson(
     boundary_accum_A_m: np.ndarray | None = None,
     phi_bc: PhiBoundaryConditions | None = None,
 ) -> PoissonResult:
-    """Poisson projection for varphi and normal current.
+    """Solve the pyTDGL Eq. (17) Poisson projection for ``phi``.
 
-    If ``phi_bc`` is provided, boundary rows enforce the discrete total-current
-    condition on the first inward normal edge,
+    Given the already-updated supercurrent ``j_s^{n+1}``, solve the finite-
+    volume equation
 
-        phi_b - phi_k = ell/sigma_n * (j_target - j_s,bk),
+        sum_j sigma_n * s_ij/e_ij * (phi_i - phi_j)
+        = - sum_j s_ij * j_s,ij - F_i^ext,
 
-    while interior rows keep the conservative Poisson projection.
+    by sparse LU factorization of the mean-zero Neumann system.  The normal
+    current is then evaluated only after the solve as
+
+        j_n,ij = -sigma_n * (phi_j - phi_i) / e_ij.
+
+    This intentionally does not impose any first-edge electric constraint.
+    ``phi_bc`` is accepted for backward compatibility and ignored.
     """
+    del phi_bc
+
     js = np.asarray(edge_js_us_A_m2, dtype=float)
     if js.shape != (ops.n_edges,):
         raise ValueError(f"edge_js_us_A_m2 must have shape ({ops.n_edges},).")
+
     if poisson_op is None:
-        poisson_op = build_poisson_operator(material=material, ops=ops, phi_bc=phi_bc)
+        poisson_op = build_poisson_operator(material=material, ops=ops, phi_bc=None)
+
     if boundary_accum_A_m is None:
         boundary = np.zeros(ops.n_nodes, dtype=float)
     else:
         boundary = np.asarray(boundary_accum_A_m, dtype=float)
+        if boundary.shape != (ops.n_nodes,):
+            raise ValueError(
+                f"boundary_accum_A_m must have shape ({ops.n_nodes},), got {boundary.shape}."
+            )
 
-    # Interior RHS: b_i += -s_ij js_ij, b_j += +s_ij js_ij, plus
-    # b_boundary = - outward_boundary_accumulator for the unconstrained case.
+    # Eq. (17) in physical units.  ``edge_flux_accumulator_A_m(js, ops)``
+    # returns sum_j s_ij*j_s,ij with the edge orientation convention.
+    # ``boundary`` is the prescribed outward flux through true terminals.
     b = -edge_flux_accumulator_A_m(js, ops) - boundary
-
-    if phi_bc is not None:
-        # Constraint rows use edge current signed in the boundary -> inner
-        # orientation.  With j_n,bk = -sigma*(phi_k-phi_b)/ell,
-        # j_s,bk + j_n,bk = j_target gives
-        # phi_b - phi_k = ell/sigma*(j_target - j_s,bk).
-        js_b_to_k = (
-            np.asarray(phi_bc.edge_sign_b_to_inner, dtype=float)
-            * js[np.asarray(phi_bc.edge_index, dtype=np.int64)]
-        )
-        rhs_bc = (
-            np.asarray(phi_bc.edge_length_m, dtype=float)
-            / material.sigma_n_S_m
-            * (np.asarray(phi_bc.target_edge_A_m2, dtype=float) - js_b_to_k)
-        )
-        b = np.asarray(b, dtype=float).copy()
-        b[np.asarray(phi_bc.boundary_nodes, dtype=np.int64)] = rhs_bc
 
     rhs_aug = np.concatenate([b, [0.0]])
     if poisson_op.solver is not None:
@@ -1358,15 +1299,11 @@ def relax_stationary_gtdgl(
         material=material,
         target_current_A=target_current_A,
     )
-    phi_bc = build_phi_boundary_conditions(
-        mesh=mesh,
-        ops=ops,
-        material=material,
-        seed=seed,
-        target_current_A=target_current_A,
-        enabled=lock_terminals,
-    )
-    poisson_op = build_poisson_operator(material=material, ops=ops, phi_bc=phi_bc)
+    # pyTDGL Eq. (17) Poisson projection: no first-edge electric constraints.
+    # The terminal/outward flux enters only through ``boundary_accum`` in the
+    # RHS, and the mean-zero Neumann matrix is factorized once by sparse LU.
+    phi_bc = None
+    poisson_op = build_poisson_operator(material=material, ops=ops, phi_bc=None)
 
     # Notebook initial projection: compute defs, then Poisson, then recompute fields.
     defs0 = compute_formula_fields(psi_J=psi, Te_K=Te, material=material, ops=ops)
