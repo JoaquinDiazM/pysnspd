@@ -1223,14 +1223,56 @@ def suggest_next_dt(
     dt_min_s: float,
     dt_max_s: float,
 ) -> float:
-    """Notebook adaptive dt rule."""
+    """Notebook-style adaptive dt rule for accepted SS steps.
+
+    Hard failures are handled before a step is accepted.  This function only
+    chooses the next tentative step from the diagnostics of the accepted step.
+    """
     if not adaptive:
         return float(dt_s)
-    if retries > 0 or max_amp2_change_rel > 2.0 * target:
+    if retries > 0 or max_amp2_change_rel > 0.75 * target:
         return max(float(dt_s) * float(shrink_factor), float(dt_min_s))
-    if max_amp2_change_rel < 0.25 * target:
+    if max_amp2_change_rel < 0.20 * target:
         return min(float(dt_s) * float(grow_factor), float(dt_max_s))
     return min(float(dt_s), float(dt_max_s))
+
+
+def stationary_trial_rejection_reason(
+    *,
+    amp2_change_rel: float,
+    edge_pairbreaking_max: float,
+    edge_js_over_javg: float,
+    edge_jtot_over_javg: float,
+    eta_reject: float,
+    max_pairbreaking_accept: float,
+    max_js_over_javg_accept: float,
+    max_jtot_over_javg_accept: float,
+) -> str | None:
+    """Return a reason for rejecting a trial SS step, or ``None``.
+
+    OE7 is a stationary relaxation toward a superconducting branch.  A trial
+    that already contains a local depairing spike or a huge edge-current spike
+    is treated like a failed adaptive step, not as a physical event.  This is
+    intentionally stricter than the future photon dynamics, where such events
+    may be physical and should be handled by the photon solver instead.
+    """
+    vals = (
+        float(amp2_change_rel),
+        float(edge_pairbreaking_max),
+        float(edge_js_over_javg),
+        float(edge_jtot_over_javg),
+    )
+    if not all(np.isfinite(v) for v in vals):
+        return "nonfinite_trial_diagnostic"
+    if amp2_change_rel > float(eta_reject):
+        return f"amp2_change_rel>{eta_reject:.3e}"
+    if edge_pairbreaking_max > float(max_pairbreaking_accept):
+        return f"pairbreaking>{max_pairbreaking_accept:.3g}"
+    if edge_js_over_javg > float(max_js_over_javg_accept):
+        return f"js_over_javg>{max_js_over_javg_accept:.3g}"
+    if edge_jtot_over_javg > float(max_jtot_over_javg_accept):
+        return f"jtot_over_javg>{max_jtot_over_javg_accept:.3g}"
+    return None
 
 
 def relax_stationary_gtdgl(
@@ -1249,6 +1291,11 @@ def relax_stationary_gtdgl(
     adapt_dt: bool = True,
     dt_min_s: float = 1.0e-22,
     dt_max_s: float = 1.0e-13,
+    max_pairbreaking_accept: float = 0.95,
+    max_js_over_javg_accept: float = 2.0,
+    max_jtot_over_javg_accept: float = 2.5,
+    spike_shrink_factor: float = 0.35,
+    max_trial_retries: int = 40,
     lock_terminals: bool = True,
     target_current_A: float | None = None,
     progress: bool = False,
@@ -1328,6 +1375,8 @@ def relax_stationary_gtdgl(
     t_s = 0.0
     accepted = 0
     rejected = 0
+    spike_rejected = 0
+    last_rejection_reason = ""
     converged = False
 
     hist_keys = [
@@ -1352,6 +1401,9 @@ def relax_stationary_gtdgl(
         "max_Q_m_inv",
         "max_js_A_m2",
         "max_j_A_m2",
+        "edge_pairbreaking_max",
+        "edge_js_over_javg",
+        "edge_jtot_over_javg",
     ]
     hist: dict[str, list[float]] = {key: [] for key in hist_keys}
 
@@ -1469,6 +1521,41 @@ def relax_stationary_gtdgl(
             / material.delta0_J**2
         )
 
+        trial_edge_pb_max = float(np.nanmax(trial_currents.edge_pairbreaking_ratio))
+        trial_js_max_A_m2 = float(np.nanmax(np.abs(trial_currents.edge_js_us_A_m2)))
+        trial_jtot_max_A_m2 = float(np.nanmax(np.abs(trial_currents.edge_jtot_A_m2)))
+        javg_abs = max(abs(float(javg)), 1.0e-300)
+        trial_js_over_javg = trial_js_max_A_m2 / javg_abs
+        trial_jtot_over_javg = trial_jtot_max_A_m2 / javg_abs
+
+        rejection_reason = stationary_trial_rejection_reason(
+            amp2_change_rel=amp2_change_rel,
+            edge_pairbreaking_max=trial_edge_pb_max,
+            edge_js_over_javg=trial_js_over_javg,
+            edge_jtot_over_javg=trial_jtot_over_javg,
+            eta_reject=float(eta_reject),
+            max_pairbreaking_accept=float(max_pairbreaking_accept),
+            max_js_over_javg_accept=float(max_js_over_javg_accept),
+            max_jtot_over_javg_accept=float(max_jtot_over_javg_accept),
+        )
+        if adapt_dt and rejection_reason is not None and dt_eff > 1.01 * float(dt_min_s):
+            retries += 1
+            rejected += 1
+            spike_rejected += 1
+            last_rejection_reason = str(rejection_reason)
+            if retries > int(max_trial_retries):
+                raise RuntimeError(
+                    "Failed OE7 stationary step after adaptive trial rejections. "
+                    f"last_reason={last_rejection_reason}, "
+                    f"dt_eff_s={dt_eff:.3e}, "
+                    f"amp2_change_rel={amp2_change_rel:.3e}, "
+                    f"edge_pairbreaking_max={trial_edge_pb_max:.3e}, "
+                    f"edge_js_over_javg={trial_js_over_javg:.3e}, "
+                    f"edge_jtot_over_javg={trial_jtot_over_javg:.3e}"
+                )
+            dt_eff = max(float(dt_min_s), float(spike_shrink_factor) * dt_eff)
+            continue
+
         psi = psi_trial
         phi = phi_trial
         currents = trial_currents
@@ -1479,12 +1566,17 @@ def relax_stationary_gtdgl(
         residual_max = max_current_residual(currents, mesh, material, target_current_A)
         voltage = terminal_voltage(np.asarray(mesh.nodes, dtype=float), phi, length_m=float(mesh.length_m))
         pb_max = float(np.nanmax(currents.node_pairbreaking_ratio))
+        edge_pb_max = float(np.nanmax(currents.edge_pairbreaking_ratio))
         delta_min_ratio = float(np.nanmin(np.abs(psi)) / material.delta0_J)
         delta_max_ratio = float(np.nanmax(np.abs(psi)) / material.delta0_J)
         normal_frac = normal_current_fraction_rms(currents)
         normal_max_frac = normal_current_fraction_max(currents)
         jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
         Qabs = np.abs(currents.edge_Q_m_inv)
+        js_max_A_m2 = float(np.nanmax(np.abs(currents.edge_js_us_A_m2)))
+        jtot_max_A_m2 = float(np.nanmax(np.abs(currents.edge_jtot_A_m2)))
+        js_over_javg = js_max_A_m2 / max(abs(float(javg)), 1.0e-300)
+        jtot_over_javg = jtot_max_A_m2 / max(abs(float(javg)), 1.0e-300)
 
         values = {
             "t_s": t_s,
@@ -1506,8 +1598,11 @@ def relax_stationary_gtdgl(
             "median_Q_m_inv": float(np.nanmedian(Qabs)),
             "p95_Q_m_inv": float(np.nanpercentile(Qabs, 95.0)),
             "max_Q_m_inv": float(np.nanmax(Qabs)),
-            "max_js_A_m2": float(np.nanmax(np.abs(currents.edge_js_us_A_m2))),
-            "max_j_A_m2": float(np.nanmax(np.abs(currents.edge_jtot_A_m2))),
+            "max_js_A_m2": js_max_A_m2,
+            "max_j_A_m2": jtot_max_A_m2,
+            "edge_pairbreaking_max": edge_pb_max,
+            "edge_js_over_javg": js_over_javg,
+            "edge_jtot_over_javg": jtot_over_javg,
         }
         for key in hist_keys:
             hist[key].append(values[key])
@@ -1534,8 +1629,8 @@ def relax_stationary_gtdgl(
             retries=retries,
             adaptive=adapt_dt,
             target=float(eta_reject),
-            shrink_factor=0.7,
-            grow_factor=1.05,
+            shrink_factor=0.55,
+            grow_factor=1.03,
             dt_min_s=dt_min_s,
             dt_max_s=dt_max_s,
         )
@@ -1576,6 +1671,16 @@ def relax_stationary_gtdgl(
         "converged": bool(converged),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
+        "spike_rejected_steps": int(spike_rejected),
+        "last_rejection_reason": str(last_rejection_reason),
+        "stationary_acceptance_policy": {
+            "eta_reject": float(eta_reject),
+            "max_pairbreaking_accept": float(max_pairbreaking_accept),
+            "max_js_over_javg_accept": float(max_js_over_javg_accept),
+            "max_jtot_over_javg_accept": float(max_jtot_over_javg_accept),
+            "spike_shrink_factor": float(spike_shrink_factor),
+            "max_trial_retries": int(max_trial_retries),
+        },
         "final_time_ps": float(t_s / 1.0e-12),
         "tau_scale": float(material.tau_scale),
         "tau_ee_Tc_effective_ps": float(material.tau_scale * material.tau_ee_Tc_s / 1.0e-12),
@@ -1598,8 +1703,11 @@ def relax_stationary_gtdgl(
         "min_delta_over_delta0": float(np.nanmin(np.abs(psi)) / material.delta0_J),
         "mean_delta_over_delta0": float(np.nanmean(np.abs(psi)) / material.delta0_J),
         "max_pairbreaking_ratio": float(np.nanmax(currents.node_pairbreaking_ratio)),
+        "edge_pairbreaking_ratio_max": float(np.nanmax(currents.edge_pairbreaking_ratio)),
         "p99_pairbreaking_ratio": float(np.nanpercentile(currents.node_pairbreaking_ratio, 99.0)),
         "edge_Q_max_m_inv": float(np.nanmax(np.abs(currents.edge_Q_m_inv))),
+        "edge_js_over_javg_max": float(np.nanmax(np.abs(currents.edge_js_us_A_m2)) / max(abs(float(javg)), 1.0e-300)),
+        "edge_jtot_over_javg_max": float(np.nanmax(np.abs(currents.edge_jtot_A_m2)) / max(abs(float(javg)), 1.0e-300)),
         "boundary_currents_A": boundary,
     }
 
@@ -1611,6 +1719,7 @@ def relax_stationary_gtdgl(
         "boundary_policy": "current_neumann_from_seed_q_and_seed_delta",
         "poisson_policy": "notebook_conservative_FV_mean_zero_gauge",
         "pairbreaking_ratio": "xi^2 Q^2 / (1 - T/Tc)",
+        "adaptive_rejection_policy": "reject accepted-looking SS trials if eta, pairbreaking, js/javg, or jtot/javg exceed stationary ceilings",
     }
 
     state = GTDGLStationaryState(
@@ -1623,6 +1732,7 @@ def relax_stationary_gtdgl(
     )
 
     history: dict[str, np.ndarray] = {key: np.asarray(val, dtype=float) for key, val in hist.items()}
+    history["spike_rejected_steps"] = np.asarray([spike_rejected], dtype=float)
     snapshot_t_s = np.asarray(snapshots["snapshot_t_s"], dtype=float)
     history.update(
         {

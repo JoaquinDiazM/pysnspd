@@ -1,16 +1,19 @@
 """Diagnostic plots for OE7 stationary gTDGL/Poisson runs.
 
-The snapshot plotting keeps pySNSPD's one-figure-per-field design, but uses the
-notebook diagnostic conventions when the needed scales are present in history:
+This module is intentionally plotting-only.  The functions accept the light
+data containers used in the pySNSPD pipeline and save PNG diagnostics without
+opening interactive windows.
 
-* |Delta| is plotted as |Delta|/Delta0;
-* current-density snapshots are plotted as |j|/j_avg, |j_s|/j_avg, |j_n|/j_avg;
-* potential is plotted in mV;
-* arrows are sampled on a regular spatial grid, not by mesh-node ordering.
+OE7 note:
+    The edge-current zoom diagnostic now uses four columns:
+    top insulating edge, left terminal edge, bottom-right corner, and an
+    interior strip.  The fourth column is meant to separate true interior
+    current-distribution problems from boundary/corner artifacts.
 """
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any, Iterable
 
 import numpy as np
 
@@ -19,435 +22,592 @@ matplotlib.use("Agg", force=True)
 
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
+from matplotlib.collections import LineCollection
 
+from pysnspd.gtdgl.operators import unwrap_phase_graph
 from pysnspd.gtdgl.operators import (
+    boundary_currents_from_edge_scalar_least_squares,
+    boundary_currents_from_node_vectors,
+    edge_scalar_to_node_vector_least_squares,
     strip_transport_current_profile_from_node_vectors,
-    unwrap_phase_graph,
 )
 
 MEV_J = 1.602176634e-22
 
 
-# =============================================================================
-# Snapshot diagnostics
-# =============================================================================
+# ---------------------------------------------------------------------------
+# Final-state scalar/vector diagnostics
+# ---------------------------------------------------------------------------
 
+def plot_ss_state_delta(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
+    """Plot the relaxed order-parameter amplitude in meV.
 
-def plot_ss_available_snapshots(
-    mesh,
-    history: dict,
-    output_dir: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> dict[str, Path]:
-    """Plot all snapshot fields currently present in the relaxation history."""
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    The color scale starts at zero to avoid visually amplifying tiny numerical
+    variations around the nearly uniform superconducting gap.
+    """
+    delta_meV = np.abs(state.psi_J) / MEV_J
+    vmax = max(_safe_nanmax(delta_meV), 1.0e-30)
 
-    saved: dict[str, Path] = {}
-    maybe_plots = [
-        ("phi", plot_ss_phi_snapshots, output_dir / "ss_phi_snapshots.png"),
-        ("delta", plot_ss_delta_snapshots, output_dir / "ss_delta_snapshots.png"),
-        ("phase", plot_ss_phase_snapshots, output_dir / "ss_phase_snapshots.png"),
-        ("current_density", plot_ss_current_density_snapshots, output_dir / "ss_current_density_snapshots.png"),
-        ("supercurrent_density", plot_ss_supercurrent_density_snapshots, output_dir / "ss_supercurrent_density_snapshots.png"),
-        ("normal_current_density", plot_ss_normal_current_density_snapshots, output_dir / "ss_normal_current_density_snapshots.png"),
-        ("divergence", plot_ss_divergence_snapshots, output_dir / "ss_divergence_snapshots.png"),
-        ("pairbreaking", plot_ss_pairbreaking_snapshots, output_dir / "ss_pairbreaking_snapshots.png"),
-    ]
-
-    for name, func, path in maybe_plots:
-        try:
-            saved[name] = func(mesh, history, path, dpi=dpi, ncols=ncols)
-        except (KeyError, ValueError):
-            continue
-
-    # Extra edge-level zoom diagnostics. These do not replace the mesoscopic
-    # snapshots; they live in a dedicated subfolder and inspect the literal
-    # edge projections j_s,e and j_n,e between neighboring nodes.
-    try:
-        edge_saved = plot_ss_edge_current_zoom_snapshots(
-            mesh,
-            history,
-            output_dir / "edge_current_diagnostics",
-            dpi=dpi,
-        )
-        saved.update({f"edge_zoom_{key}": path for key, path in edge_saved.items()})
-    except (KeyError, ValueError):
-        pass
-
-    return saved
-
-
-def plot_ss_phi_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot electrostatic-potential snapshots in mV."""
-    phi = 1.0e3 * _require_history_array(history, ("phi_snapshot_V",))
-    t_s = _snapshot_times(history, ("phi_snapshot_t_s",), phi.shape[0])
-    return _plot_snapshot_grid(
+    return _plot_node_scalar(
         mesh,
-        phi,
-        t_s,
+        delta_meV,
         output_path,
-        title="OE7 SS: electrostatic-potential snapshots",
-        label="φ [mV]",
-        symmetric=True,
-        dpi=dpi,
-        ncols=ncols,
-    )
-
-
-def plot_ss_delta_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot |Delta|/Delta0 snapshots."""
-    if "delta_snapshot_meV" in history:
-        delta_meV = np.asarray(history["delta_snapshot_meV"], dtype=float)
-        t_s = _snapshot_times(history, ("delta_snapshot_t_s", "phi_snapshot_t_s"), delta_meV.shape[0])
-    else:
-        psi = _psi_snapshots_from_history(history)
-        delta_meV = np.abs(psi) / MEV_J
-        t_s = _snapshot_times(history, ("psi_snapshot_t_s", "delta_snapshot_t_s", "phi_snapshot_t_s"), delta_meV.shape[0])
-    delta0_meV = _history_scalar(history, "delta0_meV")
-    if delta0_meV is not None and delta0_meV > 0.0:
-        z = delta_meV / delta0_meV
-        label = r"$|\Delta|/\Delta_0$"
-        title = rf"OE7 SS: $|\Delta|/\Delta_0$ snapshots ($\Delta_0={delta0_meV:.4g}$ meV)"
-        vmax = max(1.05, float(np.nanmax(z)))
-    else:
-        z = delta_meV
-        label = "|Δ| [meV]"
-        title = "OE7 SS: |Δ| snapshots"
-        vmax = None
-    return _plot_snapshot_grid(
-        mesh,
-        z,
-        t_s,
-        output_path,
-        title=title,
-        label=label,
+        title="OE7 SS: relaxed Δ",
+        label="Δ [meV]",
         vmin=0.0,
         vmax=vmax,
         dpi=dpi,
-        ncols=ncols,
     )
-
-
-def plot_ss_phase_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot phase residual snapshots after removing best linear ramp."""
-    psi = _psi_snapshots_from_history(history)
-    t_s = _snapshot_times(history, ("psi_snapshot_t_s", "phase_snapshot_t_s", "phi_snapshot_t_s"), psi.shape[0])
-    edges = _mesh_edges_from_triangles(mesh)
-    theta = []
-    for k in range(psi.shape[0]):
-        th = _unwrap_phase_safe(psi[k], edges, seed_index=_center_node_index(mesh))
-        th = _remove_best_linear_ramp(mesh, th)
-        th -= float(np.nanmean(th))
-        theta.append(th)
-    theta = np.vstack(theta)
-    return _plot_snapshot_grid(
-        mesh,
-        theta,
-        t_s,
-        output_path,
-        title="OE7 SS: phase residual snapshots",
-        label="phase residual [rad]",
-        symmetric=True,
-        robust_percentile=99.5,
-        min_vmax=1.0e-12,
-        dpi=dpi,
-        ncols=ncols,
-    )
-
-
-def plot_ss_current_density_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot |j_tot|/j_avg snapshots with vector arrows."""
-    return _plot_current_family_snapshots(
-        mesh,
-        history,
-        output_path,
-        mag_names=("jtot_snapshot_mag_A_m2", "jmag_snapshot_A_m2", "current_density_snapshot_A_m2"),
-        x_names=("jtot_snapshot_x_A_m2", "current_density_snapshot_x_A_m2", "node_jtot_x_snapshot_A_m2", "jx_snapshot_A_m2"),
-        y_names=("jtot_snapshot_y_A_m2", "current_density_snapshot_y_A_m2", "node_jtot_y_snapshot_A_m2", "jy_snapshot_A_m2"),
-        t_names=("jtot_snapshot_t_s", "current_snapshot_t_s", "phi_snapshot_t_s"),
-        title="OE7 SS: total current-density snapshots",
-        abs_label=r"|j| [A m$^{-2}$]",
-        norm_label=r"$|j|/j_{\rm avg}$",
-        dpi=dpi,
-        ncols=ncols,
-    )
-
-
-def plot_ss_supercurrent_density_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot |j_s|/j_avg snapshots with vector arrows."""
-    return _plot_current_family_snapshots(
-        mesh,
-        history,
-        output_path,
-        mag_names=("js_us_snapshot_mag_A_m2", "supercurrent_density_snapshot_A_m2"),
-        x_names=("js_us_snapshot_x_A_m2", "supercurrent_density_snapshot_x_A_m2"),
-        y_names=("js_us_snapshot_y_A_m2", "supercurrent_density_snapshot_y_A_m2"),
-        t_names=("js_us_snapshot_t_s", "supercurrent_snapshot_t_s", "current_snapshot_t_s", "phi_snapshot_t_s"),
-        title="OE7 SS: supercurrent-density snapshots",
-        abs_label=r"|j_s| [A m$^{-2}$]",
-        norm_label=r"$|j_s|/j_{\rm avg}$",
-        dpi=dpi,
-        ncols=ncols,
-    )
-
-
-def plot_ss_normal_current_density_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot |j_n|/j_avg snapshots with vector arrows."""
-    return _plot_current_family_snapshots(
-        mesh,
-        history,
-        output_path,
-        mag_names=("jn_snapshot_mag_A_m2", "normal_current_density_snapshot_A_m2"),
-        x_names=("jn_snapshot_x_A_m2", "normal_current_density_snapshot_x_A_m2"),
-        y_names=("jn_snapshot_y_A_m2", "normal_current_density_snapshot_y_A_m2"),
-        t_names=("jn_snapshot_t_s", "normal_current_snapshot_t_s", "current_snapshot_t_s", "phi_snapshot_t_s"),
-        title="OE7 SS: normal-current-density snapshots",
-        abs_label=r"|j_n| [A m$^{-2}$]",
-        norm_label=r"$|j_n|/j_{\rm avg}$",
-        dpi=dpi,
-        ncols=ncols,
-    )
-
-
-def plot_ss_edge_current_zoom_snapshots(
-    mesh,
-    history: dict,
-    output_dir: str | Path,
-    *,
-    dpi: int = 480,
-) -> dict[str, Path]:
-    """Plot node-to-node edge currents in three diagnostic zoom windows.
-
-    One PNG is emitted per stored snapshot inside ``output_dir``. Each figure has
-    three columns: a top insulating-edge window, a left terminal-edge window,
-    and a bottom-right corner window. The upper row shows the signed
-    supercurrent edge projection ``j_s,e/j_avg``; the lower row shows the signed
-    normal-current edge projection ``j_n,e/j_avg``.
-
-    These plots intentionally use the exact solver edge ordering saved in the
-    relaxation history; they do not rebuild edges from triangles.
-    """
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    nodes_m = np.asarray(mesh.nodes, dtype=float)
-    x_nm = nodes_m[:, 0] * 1.0e9
-    y_nm = nodes_m[:, 1] * 1.0e9
-
-    edge_i = _require_history_array(history, ("edge_i",)).astype(np.int64)
-    edge_j = _require_history_array(history, ("edge_j",)).astype(np.int64)
-    js = _require_history_array(history, ("edge_js_us_snapshot_A_m2",))
-    jn = _require_history_array(history, ("edge_jn_snapshot_A_m2",))
-    t_s = _snapshot_times(history, ("edge_snapshot_t_s", "snapshot_t_s", "phi_snapshot_t_s"), js.shape[0])
-
-    if js.shape != jn.shape:
-        raise ValueError(f"edge current snapshots must have matching shapes, got {js.shape} and {jn.shape}.")
-    if js.ndim != 2:
-        raise ValueError(f"edge current snapshots must be 2D, got shape {js.shape}.")
-    if js.shape[1] != edge_i.size:
-        raise ValueError(
-            f"edge current snapshot has {js.shape[1]} edges, but edge_i has {edge_i.size}."
-        )
-
-    javg = _history_scalar(history, "javg_A_m2")
-    scale = abs(javg) if javg is not None and abs(javg) > 0.0 else 1.0
-    scale_label = r"/ $j_{\rm avg}$" if javg is not None and abs(javg) > 0.0 else r" [A m$^{-2}$]"
-
-    regions = _edge_zoom_regions(x_nm, y_nm, edge_i, edge_j)
-    paths: dict[str, Path] = {}
-
-    for k in range(js.shape[0]):
-        out = output_dir / f"edge_currents_snapshot_{k:03d}.png"
-        _plot_one_edge_current_zoom_snapshot(
-            x_nm=x_nm,
-            y_nm=y_nm,
-            edge_i=edge_i,
-            edge_j=edge_j,
-            js=js[k] / scale,
-            jn=jn[k] / scale,
-            t_s=float(t_s[k]),
-            regions=regions,
-            output_path=out,
-            scale_label=scale_label,
-            dpi=dpi,
-        )
-        paths[f"snapshot_{k:03d}"] = out
-
-    return paths
-
-
-def plot_ss_divergence_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot div(j) snapshots."""
-    div = _require_history_array(
-        history,
-        ("div_jtot_snapshot_A_m3", "node_div_jtot_snapshot_A_m3", "divergence_snapshot_A_m3"),
-    )
-    t_s = _snapshot_times(history, ("divergence_snapshot_t_s", "div_jtot_snapshot_t_s", "phi_snapshot_t_s"), div.shape[0])
-    scale = _history_scalar(history, "javg_A_m2")
-    if scale is not None and scale > 0.0:
-        h = float(getattr(mesh, "target_spacing_m", 1.0e-9))
-        z = div / max(scale / max(h, 1.0e-300), 1.0e-300)
-        label = r"div(j)/(j_avg/h)"
-    else:
-        z = div
-        label = r"div(j) [A m$^{-3}$]"
-    return _plot_snapshot_grid(
-        mesh,
-        z,
-        t_s,
-        output_path,
-        title="OE7 SS: finite-volume div(j) snapshots",
-        label=label,
-        symmetric=True,
-        robust_percentile=99.5,
-        dpi=dpi,
-        ncols=ncols,
-    )
-
-
-def plot_ss_pairbreaking_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    """Plot pair-breaking-ratio snapshots."""
-    chi = _require_history_array(
-        history,
-        ("pairbreaking_snapshot", "pairbreaking_ratio_snapshot", "node_pairbreaking_snapshot"),
-    )
-    t_s = _snapshot_times(history, ("pairbreaking_snapshot_t_s", "pairbreaking_ratio_snapshot_t_s", "phi_snapshot_t_s"), chi.shape[0])
-    return _plot_snapshot_grid(
-        mesh,
-        chi,
-        t_s,
-        output_path,
-        title="OE7 SS: pair-breaking ratio snapshots",
-        label=r"$\chi_{\rm pb}$",
-        vmin=0.0,
-        robust_percentile=99.5,
-        min_vmax=1.0,
-        dpi=dpi,
-        ncols=ncols,
-    )
-
-
-# =============================================================================
-# Backward-compatible final-field diagnostics
-# =============================================================================
-
-
-def plot_ss_state_delta(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    delta_meV = np.abs(state.psi_J) / MEV_J
-    vmax = max(float(np.nanmax(delta_meV)), 1.0e-30)
-    return _plot_node_scalar(mesh, delta_meV, output_path, title="OE7 SS: relaxed Δ", label="Δ [meV]", vmin=0.0, vmax=vmax, dpi=dpi)
 
 
 def plot_ss_state_phase(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    theta = _unwrap_phase_safe(np.asarray(state.psi_J, dtype=np.complex128), _mesh_edges_from_triangles(mesh), seed_index=_center_node_index(mesh))
-    theta = _remove_best_linear_ramp(mesh, theta)
-    return _plot_node_scalar(mesh, theta, output_path, title="OE7 SS: phase residual", label="phase residual [rad]", dpi=dpi)
+    """Plot an unwrapped phase diagnostic."""
+    theta = _unwrap_phase_by_x(mesh, np.angle(state.psi_J))
+    return _plot_node_scalar(
+        mesh,
+        theta,
+        output_path,
+        title="OE7 SS: unwrapped phase θ",
+        label="θ [rad]",
+        dpi=dpi,
+    )
 
 
 def plot_ss_state_phi(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    return _plot_node_scalar(mesh, 1.0e3 * state.phi_V, output_path, title="OE7 SS: electrostatic potential φ", label="φ [mV]", dpi=dpi)
+    """Plot electrostatic potential."""
+    return _plot_node_scalar(
+        mesh,
+        state.phi_V,
+        output_path,
+        title="OE7 SS: electrostatic potential φ",
+        label="φ [V]",
+        dpi=dpi,
+    )
 
 
 def plot_ss_state_divergence(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
+    """Plot finite-volume current divergence."""
     div = np.asarray(state.currents.node_div_jtot_A_m3, dtype=float)
-    vmax = max(float(np.nanmax(np.abs(div))) if div.size else 1.0, 1.0e-30)
-    return _plot_node_scalar(mesh, div, output_path, title="OE7 SS: finite-volume div(j)", label=r"div(j) [A m$^{-3}$]", vmin=-vmax, vmax=vmax, dpi=dpi)
+    vmax = max(_safe_nanmax(np.abs(div)), 1.0e-30)
+
+    return _plot_node_scalar(
+        mesh,
+        div,
+        output_path,
+        title="OE7 SS: finite-volume div(j)",
+        label="div(j) [A m$^{-3}$]",
+        vmin=-vmax,
+        vmax=vmax,
+        dpi=dpi,
+    )
 
 
-def plot_ss_state_current_density(mesh, state, output_path: str | Path, *, ops=None, dpi: int = 480) -> Path:
-    del ops
-    jx = np.asarray(state.currents.node_jtot_x_A_m2, dtype=float)
-    jy = np.asarray(state.currents.node_jtot_y_A_m2, dtype=float)
-    jmag = np.sqrt(jx * jx + jy * jy)
-    return _plot_vector_snapshot_grid(mesh, jmag[None, :], jx[None, :], jy[None, :], np.array([0.0]), output_path, title="OE7 SS: total current density", label=r"|j| [A m$^{-2}$]", vmin=0.0, dpi=dpi, ncols=1)
+def plot_ss_state_current_density(
+    mesh,
+    state,
+    output_path: str | Path,
+    *,
+    ops=None,
+    dpi: int = 480,
+) -> Path:
+    """Plot total current-density magnitude and vectors.
+
+    If FV operators are provided, reconstruct the node vector field from edge
+    current projections using local least squares.  This matches the diagnostic
+    philosophy of the older notebook better than the simple node average.
+    """
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x_nm = nodes[:, 0] * 1.0e9
+    y_nm = nodes[:, 1] * 1.0e9
+    triangles = np.asarray(mesh.triangles, dtype=np.int64)
+
+    if ops is not None:
+        jx, jy = edge_scalar_to_node_vector_least_squares(
+            state.currents.edge_jtot_A_m2,
+            ops,
+        )
+    else:
+        jx = np.asarray(state.currents.node_jtot_x_A_m2, dtype=float)
+        jy = np.asarray(state.currents.node_jtot_y_A_m2, dtype=float)
+
+    mag = np.sqrt(jx**2 + jy**2)
+    vmax = max(_safe_nanmax(mag), 1.0e-30)
+
+    output = _prepare_output(output_path)
+    fig, ax = plt.subplots(figsize=(7.0, 3.2), constrained_layout=True)
+    tri = mtri.Triangulation(x_nm, y_nm, triangles)
+
+    im = ax.tripcolor(tri, mag, shading="gouraud", vmin=0.0, vmax=vmax)
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label(r"$|\vec{j}|$ [A m$^{-2}$]")
+
+    step = max(1, mag.size // 120)
+    scale = _safe_nanmax(mag)
+    if np.isfinite(scale) and scale > 0.0:
+        ax.quiver(
+            x_nm[::step],
+            y_nm[::step],
+            jx[::step] / scale,
+            jy[::step] / scale,
+            angles="xy",
+            scale_units="xy",
+            scale=0.040,
+            width=0.0025,
+        )
+
+    ax.set_title("OE7 SS: total current density")
+    ax.set_xlabel("x [nm]")
+    ax.set_ylabel("y [nm]")
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(False)
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
 
 
-def plot_ss_pairbreaking_ratio(mesh, state, output_path: str | Path, *, dpi: int = 480) -> Path:
-    chi = np.asarray(state.currents.node_pairbreaking_ratio, dtype=float)
-    finite = chi[np.isfinite(chi)]
-    vmax = float(np.nanpercentile(finite, 99.5)) if finite.size else 1.0
-    vmax = max(vmax, 1.0)
-    return _plot_node_scalar(mesh, chi, output_path, title="OE7 SS: pairbreaking diagnostic", label=r"$\chi_{\rm pb}$", vmin=0.0, vmax=vmax, dpi=dpi)
+def _plot_node_scalar(
+    mesh,
+    values,
+    output_path: str | Path,
+    *,
+    title: str,
+    label: str,
+    vmin=None,
+    vmax=None,
+    dpi: int = 480,
+) -> Path:
+    """Plot a nodal scalar field on the Delaunay triangulation."""
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    x_nm = nodes[:, 0] * 1.0e9
+    y_nm = nodes[:, 1] * 1.0e9
+    triangles = np.asarray(mesh.triangles, dtype=np.int64)
+    z = np.asarray(values, dtype=float).reshape(-1)
+
+    output = _prepare_output(output_path)
+
+    fig, ax = plt.subplots(figsize=(7.0, 3.2), constrained_layout=True)
+    tri = mtri.Triangulation(x_nm, y_nm, triangles)
+    im = ax.tripcolor(tri, z, shading="gouraud", vmin=vmin, vmax=vmax)
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label(label)
+
+    ax.set_title(title)
+    ax.set_xlabel("x [nm]")
+    ax.set_ylabel("y [nm]")
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(False)
+
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
 
 
-# =============================================================================
-# Scalar diagnostics
-# =============================================================================
+# ---------------------------------------------------------------------------
+# Relaxation-history diagnostics
+# ---------------------------------------------------------------------------
 
-
-def plot_ss_boundary_currents(summary: dict, output_path: str | Path, *, dpi: int = 480) -> Path:
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    currents = summary["boundary_currents_A"]
+def plot_ss_boundary_currents(
+    summary: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot integrated terminal and transverse boundary currents."""
+    boundary = dict(summary["boundary_currents_A"])
     labels = ["left", "right", "bottom", "top"]
-    values = [currents[f"{label}_A"] for label in labels]
-    fig, ax = plt.subplots(figsize=(6.0, 3.6))
+    values = [boundary.get(f"{name}_A", 0.0) for name in labels]
+
+    output = _prepare_output(output_path)
+
+    fig, ax = plt.subplots(figsize=(6.2, 3.2), constrained_layout=True)
     ax.bar(labels, values)
     ax.axhline(0.0, linewidth=0.8)
     ax.set_title("OE7 SS: integrated boundary currents")
     ax.set_ylabel("current [A]")
     ax.grid(False)
-    fig.tight_layout()
-    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
+
+
+def plot_ss_relaxation_history(
+    history: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot stationary relaxation residual history."""
+    t_ps = _history_array(history, "t_s") / 1.0e-12
+    eta = _history_array(history, "eta_R")
+    residual = _history_array(history, "current_residual")
+    voltage = np.abs(_history_array(history, "terminal_voltage_V"))
+
+    output = _prepare_output(output_path)
+
+    fig, ax = plt.subplots(figsize=(6.4, 3.4), constrained_layout=True)
+    if t_ps.size:
+        ax.semilogy(t_ps, np.maximum(eta, 1.0e-300), label=r"$\eta_R$")
+        ax.semilogy(t_ps, np.maximum(residual, 1.0e-300), label=r"$\epsilon_{\nabla\cdot j}$")
+        ax.semilogy(t_ps, np.maximum(voltage, 1.0e-300), label=r"$|V_{\rm TDGL}|$ [V]")
+
+    ax.set_title("OE7 SS: relaxation diagnostics")
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel("diagnostic value")
+    ax.grid(False)
+    ax.legend(frameon=False)
+
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
+
+
+def plot_ss_relaxation_diagnostics(
+    history: dict,
+    output_path: str | Path,
+    *,
+    delta0_J: float | None = None,
+    voltage_scale_V: float | None = None,
+    j_scale_A_m2: float | None = None,
+    dpi: int = 480,
+) -> Path:
+    """Plot the two-panel stiff/physical monitor diagnostic used in OE7.
+
+    This is deliberately tolerant to missing keys, because not every SS run stores
+    the same history arrays while the OE7 backend is still evolving.
+    """
+    t_ps = _history_array(history, "t_s") / 1.0e-12
+    output = _prepare_output(output_path)
+
+    amp_rel = _history_first_available(
+        history,
+        [
+            "max_delta_abs2_rel",
+            "max_delta2_rel",
+            "max_abs_delta2_rel",
+            "maxΔ|Δ|2_over_delta0_2",
+        ],
+    )
+    div = _history_first_available(
+        history,
+        [
+            "current_residual",
+            "rms_div_j",
+            "rms_divj_rel",
+            "divergence_residual",
+        ],
+    )
+    xpb = _history_first_available(
+        history,
+        [
+            "max_pairbreaking_ratio",
+            "pairbreaking_ratio_max",
+            "max_x_pb",
+            "xpb_max",
+        ],
+    )
+
+    voltage = np.abs(_history_first_available(
+        history,
+        ["terminal_voltage_V", "V_TDGL_V", "Vtdgl_V", "voltage_V"],
+    ))
+    delta_min = _history_first_available(
+        history,
+        [
+            "min_delta_over_delta0",
+            "delta_min_over_delta0",
+            "min_abs_delta_over_delta0",
+        ],
+    )
+    normal_fraction = _history_first_available(
+        history,
+        [
+            "normal_current_fraction_max",
+            "max_normal_current_fraction",
+            "jn_over_j_max",
+            "max_jn_over_j",
+        ],
+    )
+
+    fig, axes = plt.subplots(2, 1, figsize=(12.5, 7.8), constrained_layout=True)
+
+    ax = axes[0]
+    if t_ps.size:
+        _plot_semilogy_if_present(ax, t_ps, amp_rel, r"max $\Delta|\Delta|^2/\Delta_0^2$")
+        _plot_semilogy_if_present(ax, t_ps, div, r"rms div(j)")
+        _plot_semilogy_if_present(ax, t_ps, xpb, r"max $x_{\rm pb}$")
+    ax.set_title("OE7 SS: stiff relaxation diagnostics")
+    ax.set_ylabel("diagnostic value")
+    ax.grid(False)
+    ax.legend(frameon=False, loc="best")
+
+    ax = axes[1]
+    if t_ps.size:
+        if voltage.size:
+            scale = voltage_scale_V if voltage_scale_V is not None else max(_safe_nanmax(voltage), 1.0e-30)
+            ax.plot(t_ps, voltage / scale, label=rf"$|V_{{\rm TDGL}}|$ / {scale * 1.0e3:.3g} mV")
+        _plot_if_present(ax, t_ps, delta_min, r"min $|\Delta|/\Delta_0$")
+        _plot_if_present(ax, t_ps, normal_fraction, r"max $|j_n|$/max $|j|$")
+    ax.set_title("OE7 SS: normalized physical monitors")
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel("normalized value")
+    ax.set_ylim(bottom=0.0)
+    ax.grid(False)
+    ax.legend(frameon=False, loc="best")
+
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
+
+
+# ---------------------------------------------------------------------------
+# Snapshot mosaic diagnostics
+# ---------------------------------------------------------------------------
+
+def plot_ss_normal_current_density_snapshots(
+    *,
+    mesh,
+    history: dict,
+    output_path: str | Path,
+    state=None,
+    ops=None,
+    max_snapshots: int = 3,
+    dpi: int = 480,
+) -> Path:
+    """Plot normal-current-density snapshots as field magnitude plus arrows.
+
+    The function accepts several possible history key names and falls back to the
+    final state if only the final current field exists.
+    """
+    jx_hist = _history_first_available(
+        history,
+        [
+            "node_jn_x_A_m2",
+            "jn_x_A_m2",
+            "snapshot_node_jn_x_A_m2",
+            "node_jn_x_snapshots_A_m2",
+        ],
+    )
+    jy_hist = _history_first_available(
+        history,
+        [
+            "node_jn_y_A_m2",
+            "jn_y_A_m2",
+            "snapshot_node_jn_y_A_m2",
+            "node_jn_y_snapshots_A_m2",
+        ],
+    )
+
+    if (not jx_hist.size or not jy_hist.size) and state is not None:
+        currents = getattr(state, "currents", state)
+        if hasattr(currents, "node_jn_x_A_m2") and hasattr(currents, "node_jn_y_A_m2"):
+            jx_hist = np.asarray(getattr(currents, "node_jn_x_A_m2"), dtype=float)[None, :]
+            jy_hist = np.asarray(getattr(currents, "node_jn_y_A_m2"), dtype=float)[None, :]
+
+    if not jx_hist.size or not jy_hist.size:
+        raise ValueError("No normal-current node-vector snapshots found in history/state.")
+
+    return _plot_node_vector_snapshots(
+        mesh=mesh,
+        vx_history=jx_hist,
+        vy_history=jy_hist,
+        t_s=_history_array(history, "snapshot_t_s", fallback=_history_array(history, "t_s")),
+        output_path=output_path,
+        title="OE7 SS: normal-current-density snapshots",
+        cbar_label=r"$|j_n|/j_{\rm avg}$",
+        max_snapshots=max_snapshots,
+        dpi=dpi,
+    )
+
+
+def plot_ss_total_current_density_snapshots(
+    *,
+    mesh,
+    history: dict,
+    output_path: str | Path,
+    state=None,
+    ops=None,
+    max_snapshots: int = 3,
+    dpi: int = 480,
+) -> Path:
+    """Plot total-current-density snapshots as field magnitude plus arrows."""
+    jx_hist = _history_first_available(
+        history,
+        [
+            "node_jtot_x_A_m2",
+            "jtot_x_A_m2",
+            "snapshot_node_jtot_x_A_m2",
+            "node_jtot_x_snapshots_A_m2",
+        ],
+    )
+    jy_hist = _history_first_available(
+        history,
+        [
+            "node_jtot_y_A_m2",
+            "jtot_y_A_m2",
+            "snapshot_node_jtot_y_A_m2",
+            "node_jtot_y_snapshots_A_m2",
+        ],
+    )
+
+    if (not jx_hist.size or not jy_hist.size) and state is not None:
+        currents = getattr(state, "currents", state)
+        if hasattr(currents, "node_jtot_x_A_m2") and hasattr(currents, "node_jtot_y_A_m2"):
+            jx_hist = np.asarray(getattr(currents, "node_jtot_x_A_m2"), dtype=float)[None, :]
+            jy_hist = np.asarray(getattr(currents, "node_jtot_y_A_m2"), dtype=float)[None, :]
+
+    if not jx_hist.size or not jy_hist.size:
+        raise ValueError("No total-current node-vector snapshots found in history/state.")
+
+    return _plot_node_vector_snapshots(
+        mesh=mesh,
+        vx_history=jx_hist,
+        vy_history=jy_hist,
+        t_s=_history_array(history, "snapshot_t_s", fallback=_history_array(history, "t_s")),
+        output_path=output_path,
+        title="OE7 SS: total-current-density snapshots",
+        cbar_label=r"$|j|/j_{\rm avg}$",
+        max_snapshots=max_snapshots,
+        dpi=dpi,
+    )
+
+
+def _plot_node_vector_snapshots(
+    *,
+    mesh,
+    vx_history,
+    vy_history,
+    t_s,
+    output_path: str | Path,
+    title: str,
+    cbar_label: str,
+    max_snapshots: int,
+    dpi: int,
+) -> Path:
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    triangles = np.asarray(mesh.triangles, dtype=np.int64)
+    x_nm = nodes[:, 0] * 1.0e9
+    y_nm = nodes[:, 1] * 1.0e9
+
+    vx = _as_snapshot_matrix(vx_history, nodes.shape[0])
+    vy = _as_snapshot_matrix(vy_history, nodes.shape[0])
+    idx = _snapshot_indices(vx.shape[0], max_snapshots)
+
+    t = np.asarray(t_s, dtype=float).reshape(-1)
+    if t.size != vx.shape[0]:
+        t = np.arange(vx.shape[0], dtype=float)
+
+    mag_all = np.sqrt(vx**2 + vy**2)
+    javg = max(float(np.nanmean(mag_all[np.isfinite(mag_all)])) if np.any(np.isfinite(mag_all)) else 0.0, 1.0e-30)
+
+    fig, axes = plt.subplots(
+        1,
+        len(idx),
+        figsize=(5.0 * len(idx) + 1.2, 3.6),
+        squeeze=False,
+        constrained_layout=True,
+    )
+    tri = mtri.Triangulation(x_nm, y_nm, triangles)
+
+    last_im = None
+    for ax, k in zip(axes[0], idx):
+        mag = np.sqrt(vx[k] ** 2 + vy[k] ** 2) / javg
+        vmax = max(_safe_nanmax(mag), 1.0e-30)
+        last_im = ax.tripcolor(tri, mag, shading="gouraud", vmin=0.0, vmax=vmax)
+
+        step = max(1, nodes.shape[0] // 130)
+        scale = _safe_nanmax(np.sqrt(vx[k] ** 2 + vy[k] ** 2))
+        if np.isfinite(scale) and scale > 0.0:
+            ax.quiver(
+                x_nm[::step],
+                y_nm[::step],
+                vx[k, ::step] / scale,
+                vy[k, ::step] / scale,
+                angles="xy",
+                scale_units="xy",
+                scale=0.040,
+                width=0.0024,
+            )
+
+        ax.set_title(f"t = {_format_ps(t[k])} ps")
+        ax.set_xlabel("x [nm]")
+        ax.set_ylabel("y [nm]")
+        ax.set_aspect("equal", adjustable="box")
+        ax.grid(False)
+
+    if last_im is not None:
+        cbar = fig.colorbar(last_im, ax=axes.ravel().tolist(), shrink=0.86)
+        cbar.set_label(cbar_label)
+
+    fig.suptitle(title)
+    output = _prepare_output(output_path)
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
+
+
+# ---------------------------------------------------------------------------
+# Boundary/current-reconstruction diagnostics
+# ---------------------------------------------------------------------------
+
+def plot_ss_boundary_current_reconstruction_comparison(
+    *,
+    mesh,
+    edge_data,
+    ops,
+    state,
+    output_path: str | Path,
+    target_current_A: float | None = None,
+    thickness_m: float,
+    dpi: int = 480,
+) -> Path:
+    """Compare terminal currents from different diagnostic reconstructions."""
+    node_avg = boundary_currents_from_node_vectors(
+        mesh=mesh,
+        edge_data=edge_data,
+        jx_A_m2=state.currents.node_jtot_x_A_m2,
+        jy_A_m2=state.currents.node_jtot_y_A_m2,
+        thickness_m=thickness_m,
+    )
+
+    ls = boundary_currents_from_edge_scalar_least_squares(
+        mesh=mesh,
+        edge_data=edge_data,
+        ops=ops,
+        edge_current_i_to_j=state.currents.edge_jtot_A_m2,
+        thickness_m=thickness_m,
+    )
+
+    labels = [
+        "left\nnode avg",
+        "left\nLS",
+        "right\nnode avg",
+        "right\nLS",
+    ]
+    values = [
+        node_avg.get("left_A", 0.0),
+        ls.get("left_A", 0.0),
+        node_avg.get("right_A", 0.0),
+        ls.get("right_A", 0.0),
+    ]
+
+    output = _prepare_output(output_path)
+
+    fig, ax = plt.subplots(figsize=(6.8, 3.4), constrained_layout=True)
+    ax.bar(labels, values)
+    ax.axhline(0.0, linewidth=0.8)
+
+    if target_current_A is not None:
+        target = float(target_current_A)
+        ax.axhline(+target, linestyle="--", linewidth=0.9, label=r"$+I_{\rm target}$")
+        ax.axhline(-target, linestyle="--", linewidth=0.9, label=r"$-I_{\rm target}$")
+        ax.legend(frameon=False)
+
+    ax.set_title("OE7 SS: boundary-current reconstruction")
+    ax.set_ylabel("current [A]")
+    ax.grid(False)
+
+    fig.savefig(output, dpi=dpi)
     plt.close(fig)
     return output
 
@@ -458,93 +618,266 @@ def plot_ss_transport_current_profile(
     ops,
     state,
     output_path: str | Path,
-    target_current_A: float,
+    target_current_A: float | None = None,
     thickness_m: float,
-    dpi: int = 480,
     n_bins: int = 41,
+    dpi: int = 480,
 ) -> Path:
-    del ops
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    x_m, current_A = strip_transport_current_profile_from_node_vectors(mesh=mesh, jx_A_m2=np.asarray(state.currents.node_jtot_x_A_m2, dtype=float), thickness_m=float(thickness_m), n_bins=int(n_bins))
-    fig, ax = plt.subplots(figsize=(8.0, 3.2))
-    ax.plot(x_m * 1.0e9, current_A, marker="o", label="node-LS profile")
-    ax.axhline(float(target_current_A), linestyle="--", label=r"$I_{\rm target}$")
-    ax.set_title("OE7 SS: transport-current profile")
+    """Plot longitudinal transport-current profile from LS reconstructed jx."""
+    jx_ls, _ = edge_scalar_to_node_vector_least_squares(
+        state.currents.edge_jtot_A_m2,
+        ops,
+    )
+
+    x_m, I_A = strip_transport_current_profile_from_node_vectors(
+        mesh=mesh,
+        jx_A_m2=jx_ls,
+        thickness_m=thickness_m,
+        n_bins=n_bins,
+    )
+
+    output = _prepare_output(output_path)
+
+    fig, ax = plt.subplots(figsize=(6.6, 3.4), constrained_layout=True)
+    ax.plot(x_m * 1.0e9, I_A, marker="o", markersize=2.5, linewidth=1.0)
+
+    if target_current_A is not None:
+        ax.axhline(float(target_current_A), linestyle="--", linewidth=0.9, label=r"$I_{\rm target}$")
+        ax.legend(frameon=False)
+
+    ax.set_title("OE7 SS: LS transport-current profile")
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("I(x) [A]")
     ax.grid(False)
-    ax.legend(frameon=False)
-    fig.tight_layout()
-    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+
+    fig.savefig(output, dpi=dpi)
     plt.close(fig)
     return output
 
 
-def plot_ss_relaxation_history(history: dict, output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot compact relaxation diagnostics in two panels."""
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    t_ps = np.asarray(history.get("t_s", []), dtype=float) / 1.0e-12
-    fig, axes = plt.subplots(2, 1, figsize=(8.8, 6.2), sharex=True, constrained_layout=False)
-    fig.subplots_adjust(left=0.105, right=0.970, bottom=0.090, top=0.925, hspace=0.42)
-    ax_log, ax_lin = axes
-    if t_ps.size:
-        _plot_log_history_curve(ax_log, t_ps, history, "eta_R", r"$\max\Delta |\Delta|^2/\Delta_0^2$")
-        _plot_log_history_curve(ax_log, t_ps, history, "current_residual", r"rms div(j)")
-        _plot_log_history_curve(ax_log, t_ps, history, "pairbreaking_max", r"$\max\chi_{\rm pb}$")
-        _plot_normalized_history_curve(ax_lin, t_ps, history, "terminal_voltage_V", r"$|V_{\rm TDGL}|$", unit="V", absolute=True)
-        delta0_meV = _history_scalar(history, "delta0_meV")
-        delta_label = r"$\min|\Delta|/\Delta_0$" if delta0_meV is None else rf"$\min|\Delta|/\Delta_0$; $\Delta_0={delta0_meV:.4g}$ meV"
-        _plot_direct_history_curve(ax_lin, t_ps, history, "delta_min_over_delta0", delta_label)
-        _plot_normalized_by_history_scale(ax_lin, t_ps, history, value_key="normal_current_max_A_m2", scale_key="total_current_max_A_m2", label=r"$\max |j_n|$", scale_label=r"$\max |j|$", unit=r"A m$^{-2}$", absolute=True)
-    ax_log.set_title("OE7 SS: stiff relaxation diagnostics")
-    ax_log.set_ylabel("diagnostic value")
-    ax_log.grid(False)
-    ax_log.legend(frameon=False)
-    ax_lin.set_title("OE7 SS: normalized physical monitors")
-    ax_lin.set_xlabel("t [ps]")
-    ax_lin.set_ylabel("normalized value")
-    ax_lin.set_ylim(0.0, 1.05)
-    ax_lin.grid(False)
-    ax_lin.legend(frameon=False)
-    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
+# ---------------------------------------------------------------------------
+# Edge-current zoom diagnostics
+# ---------------------------------------------------------------------------
+
+def plot_ss_edge_current_diagnostics(
+    mesh,
+    edge_data=None,
+    history: dict | None = None,
+    output_dir: str | Path | None = None,
+    *,
+    state=None,
+    ops=None,
+    output_path: str | Path | None = None,
+    edge_current_i_to_j=None,
+    max_snapshots: int = 3,
+    dpi: int = 480,
+) -> list[Path] | Path:
+    """Plot node-to-node edge currents in four diagnostic zoom windows.
+
+    This is the main diagnostic for the directory
+
+        diagnostics/edge_current_diagnostics
+
+    Each figure has four columns: a top insulating-edge window, a left
+    terminal-edge window, a bottom-right corner window, and an interior strip
+    window.  The upper row shows the signed current projection on the stored
+    edge orientation.  The lower row shows the same region in absolute value,
+    normalized by the global mean absolute edge current for that snapshot.
+
+    Parameters are permissive on purpose.  During OE7, the pipeline has stored
+    edge snapshots under a few different key names.  This routine first tries
+    the explicit `edge_current_i_to_j`, then history arrays, then final state.
+    """
+    edges = _edge_array_from_any(mesh, edge_data=edge_data, ops=ops)
+    edge_values, t_s = _extract_edge_current_snapshots(
+        mesh=mesh,
+        edges=edges,
+        history=history,
+        state=state,
+        explicit=edge_current_i_to_j,
+    )
+
+    edge_values = _as_snapshot_matrix(edge_values, edges.shape[0])
+    idx = _snapshot_indices(edge_values.shape[0], max_snapshots)
+
+    if output_path is not None:
+        k = int(idx[-1])
+        return plot_ss_edge_current_zoom_windows(
+            mesh=mesh,
+            edge_data=edge_data,
+            ops=ops,
+            edge_current_i_to_j=edge_values[k],
+            output_path=output_path,
+            t_s=float(t_s[k]) if t_s.size == edge_values.shape[0] else None,
+            dpi=dpi,
+        )
+
+    if output_dir is None:
+        raise ValueError("Either output_dir or output_path must be provided.")
+
+    out_dir = Path(output_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    outputs: list[Path] = []
+    for n, k in enumerate(idx):
+        t_val = float(t_s[k]) if t_s.size == edge_values.shape[0] else None
+        suffix = f"{n:02d}"
+        if t_val is not None:
+            suffix += f"_t_{t_val / 1.0e-12:.6g}ps"
+        out = out_dir / f"edge_current_zoom_{suffix}.png"
+        outputs.append(
+            plot_ss_edge_current_zoom_windows(
+                mesh=mesh,
+                edge_data=edge_data,
+                ops=ops,
+                edge_current_i_to_j=edge_values[k],
+                output_path=out,
+                t_s=t_val,
+                dpi=dpi,
+            )
+        )
+
+    return outputs
+
+
+def plot_ss_edge_current_zoom_windows(
+    *,
+    mesh,
+    edge_data=None,
+    ops=None,
+    edge_current_i_to_j,
+    output_path: str | Path,
+    t_s: float | None = None,
+    dpi: int = 480,
+) -> Path:
+    """Plot a single edge-current snapshot in four zoom windows."""
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    nodes_nm = nodes * 1.0e9
+    edges = _edge_array_from_any(mesh, edge_data=edge_data, ops=ops)
+    values = np.asarray(edge_current_i_to_j, dtype=float).reshape(-1)
+
+    if values.size != edges.shape[0]:
+        raise ValueError(
+            f"edge_current_i_to_j has length {values.size}, but {edges.shape[0]} edges were found."
+        )
+
+    regions = _edge_current_zoom_regions(mesh)
+    n_regions = max(1, len(regions))
+    fig_width = 4.45 * n_regions + 0.95
+
+    fig, axes = plt.subplots(
+        2,
+        n_regions,
+        figsize=(fig_width, 6.4),
+        squeeze=False,
+        constrained_layout=False,
+    )
+    fig.subplots_adjust(
+        left=0.047,
+        right=0.930,
+        bottom=0.090,
+        top=0.875,
+        wspace=0.23,
+        hspace=0.30,
+    )
+
+    abs_values = np.abs(values)
+    signed_vmax = max(_safe_nanmax(abs_values), 1.0e-30)
+    mean_abs = max(float(np.nanmean(abs_values[np.isfinite(abs_values)])) if np.any(np.isfinite(abs_values)) else 0.0, 1.0e-30)
+    normalized_abs = abs_values / mean_abs
+    abs_vmax = max(_safe_percentile(normalized_abs, 99.0), 1.0e-30)
+
+    signed_mappable = None
+    abs_mappable = None
+
+    for col, region in enumerate(regions):
+        mask = _edge_mask_for_region(nodes_nm, edges, region)
+        highlight_edge = _select_representative_edge(
+            nodes_nm=nodes_nm,
+            edges=edges,
+            mask=mask,
+            region=region,
+        )
+
+        ax = axes[0, col]
+        signed_mappable = _draw_edge_zoom(
+            ax=ax,
+            nodes_nm=nodes_nm,
+            edges=edges,
+            values=values,
+            mask=mask,
+            title=f"{region['name']}\nsigned edge current",
+            label="signed",
+            cmap="coolwarm",
+            vmin=-signed_vmax,
+            vmax=signed_vmax,
+            highlight_edge=highlight_edge,
+        )
+
+        ax = axes[1, col]
+        abs_mappable = _draw_edge_zoom(
+            ax=ax,
+            nodes_nm=nodes_nm,
+            edges=edges,
+            values=normalized_abs,
+            mask=mask,
+            title=f"{region['name']}\n|edge current| / mean",
+            label="absolute",
+            cmap="viridis",
+            vmin=0.0,
+            vmax=abs_vmax,
+            highlight_edge=highlight_edge,
+        )
+
+    if signed_mappable is not None:
+        cbar = fig.colorbar(signed_mappable, ax=axes[0, :].ravel().tolist(), shrink=0.82, pad=0.012)
+        cbar.set_label(r"$j_{ij}$ [A m$^{-2}$]")
+
+    if abs_mappable is not None:
+        cbar = fig.colorbar(abs_mappable, ax=axes[1, :].ravel().tolist(), shrink=0.82, pad=0.012)
+        cbar.set_label(r"$|j_{ij}|/\langle |j_{ij}| \rangle$")
+
+    if t_s is None:
+        fig.suptitle("OE7 SS: edge-current diagnostic zooms")
+    else:
+        fig.suptitle(f"OE7 SS: edge-current diagnostic zooms, t = {_format_ps(t_s)} ps")
+
+    output = _prepare_output(output_path)
+    fig.savefig(output, dpi=dpi)
     plt.close(fig)
     return output
 
 
-# =============================================================================
-# Internal helpers
-# =============================================================================
+# Backward-compatible aliases for pipeline/import experiments during OE7.
+plot_ss_edge_current_zoom_diagnostics = plot_ss_edge_current_diagnostics
+plot_ss_edge_current_snapshots = plot_ss_edge_current_diagnostics
 
 
-def _edge_zoom_regions(
-    x_nm: np.ndarray,
-    y_nm: np.ndarray,
-    edge_i: np.ndarray,
-    edge_j: np.ndarray,
-) -> list[dict[str, object]]:
-    """Return the three standard local edge-current diagnostic regions."""
-    xmin = float(np.nanmin(x_nm)); xmax = float(np.nanmax(x_nm))
-    ymin = float(np.nanmin(y_nm)); ymax = float(np.nanmax(y_nm))
-    lx = max(xmax - xmin, 1.0)
-    wy = max(ymax - ymin, 1.0)
+def _edge_current_zoom_regions(mesh) -> list[dict[str, Any]]:
+    nodes_nm = np.asarray(mesh.nodes, dtype=float) * 1.0e9
+    xmin = float(np.nanmin(nodes_nm[:, 0]))
+    xmax = float(np.nanmax(nodes_nm[:, 0]))
+    ymin = float(np.nanmin(nodes_nm[:, 1]))
+    ymax = float(np.nanmax(nodes_nm[:, 1]))
 
-    specs = [
+    lx = max(xmax - xmin, 1.0e-30)
+    wy = max(ymax - ymin, 1.0e-30)
+
+    return [
         {
-            "name": "top edge",
+            "name": "top insulating edge",
             "slug": "top_edge",
-            "center": (0.40 * (xmin + xmax), ymax),
-            "half_width": 0.045 * lx,
-            "half_height": 0.095 * wy,
+            "center": (0.50 * (xmin + xmax), ymax),
+            "half_width": 0.105 * lx,
+            "half_height": 0.115 * wy,
             "kind": "top",
         },
         {
-            "name": "left edge",
-            "slug": "left_edge",
-            "center": (xmin, 0.60 * ymax),
-            "half_width": 0.045 * lx,
-            "half_height": 0.095 * wy,
+            "name": "left terminal edge",
+            "slug": "left_terminal",
+            "center": (xmin, 0.50 * (ymin + ymax)),
+            "half_width": 0.055 * lx,
+            "half_height": 0.165 * wy,
             "kind": "left",
         },
         {
@@ -555,697 +888,368 @@ def _edge_zoom_regions(
             "half_height": 0.115 * wy,
             "kind": "bottom_right",
         },
+        {
+            "name": "interior strip",
+            "slug": "interior_strip",
+            "center": (0.50 * (xmin + xmax), 0.50 * (ymin + ymax)),
+            "half_width": 0.075 * lx,
+            "half_height": 0.120 * wy,
+            "kind": "interior",
+        },
     ]
 
-    regions: list[dict[str, object]] = []
-    for spec in specs:
-        cx, cy = spec["center"]
-        hw = float(spec["half_width"])
-        hh = float(spec["half_height"])
-        xlo = cx - hw; xhi = cx + hw
-        ylo = cy - hh; yhi = cy + hh
 
-        xi = x_nm[edge_i]; xj = x_nm[edge_j]
-        yi = y_nm[edge_i]; yj = y_nm[edge_j]
-        mx = 0.5 * (xi + xj); my = 0.5 * (yi + yj)
-        in_box = (mx >= xlo) & (mx <= xhi) & (my >= ylo) & (my <= yhi)
-        in_box |= (
-            ((xi >= xlo) & (xi <= xhi) & (yi >= ylo) & (yi <= yhi))
-            | ((xj >= xlo) & (xj <= xhi) & (yj >= ylo) & (yj <= yhi))
-        )
-        idx = np.flatnonzero(in_box)
-        if idx.size == 0:
-            # Fallback to closest edge midpoint, so the diagnostic never silently
-            # disappears on very small test meshes.
-            d2 = (mx - cx) ** 2 + (my - cy) ** 2
-            idx = np.asarray([int(np.nanargmin(d2))], dtype=int)
+def _edge_mask_for_region(nodes_nm: np.ndarray, edges: np.ndarray, region: dict[str, Any]) -> np.ndarray:
+    center_x, center_y = region["center"]
+    half_width = float(region["half_width"])
+    half_height = float(region["half_height"])
 
-        highlight = _edge_zoom_highlight_edge(
-            kind=str(spec["kind"]),
-            x_nm=x_nm,
-            y_nm=y_nm,
-            edge_i=edge_i,
-            edge_j=edge_j,
-            edge_idx=idx,
-            center_x=float(cx),
-            center_y=float(cy),
-        )
-        regions.append(
-            {
-                "name": spec["name"],
-                "slug": spec["slug"],
-                "edge_idx": idx,
-                "highlight_edge": highlight,
-                "xlim": (xlo, xhi),
-                "ylim": (ylo, yhi),
-            }
-        )
-    return regions
+    p0 = nodes_nm[edges[:, 0]]
+    p1 = nodes_nm[edges[:, 1]]
+    mx = 0.5 * (p0[:, 0] + p1[:, 0])
+    my = 0.5 * (p0[:, 1] + p1[:, 1])
+
+    mask = (
+        (np.abs(mx - center_x) <= half_width)
+        & (np.abs(my - center_y) <= half_height)
+    )
+
+    if np.any(mask):
+        return mask
+
+    # Robust fallback for very coarse meshes: choose nearest local edges.
+    dist = ((mx - center_x) ** 2 + (my - center_y) ** 2) ** 0.5
+    n_keep = min(max(8, edges.shape[0] // 120), edges.shape[0])
+    idx = np.argsort(dist)[:n_keep]
+    mask = np.zeros(edges.shape[0], dtype=bool)
+    mask[idx] = True
+    return mask
 
 
-def _edge_zoom_highlight_edge(
+def _select_representative_edge(
     *,
-    kind: str,
-    x_nm: np.ndarray,
-    y_nm: np.ndarray,
-    edge_i: np.ndarray,
-    edge_j: np.ndarray,
-    edge_idx: np.ndarray,
-    center_x: float,
-    center_y: float,
+    nodes_nm: np.ndarray,
+    edges: np.ndarray,
+    mask: np.ndarray,
+    region: dict[str, Any],
 ) -> int | None:
-    """Pick the representative boundary-normal edge in a zoom region."""
+    edge_idx = np.flatnonzero(mask)
     if edge_idx.size == 0:
         return None
-    xi = x_nm[edge_i[edge_idx]]; xj = x_nm[edge_j[edge_idx]]
-    yi = y_nm[edge_i[edge_idx]]; yj = y_nm[edge_j[edge_idx]]
-    dx = xj - xi; dy = yj - yi
-    ell = np.maximum(np.sqrt(dx * dx + dy * dy), 1.0e-300)
-    mx = 0.5 * (xi + xj); my = 0.5 * (yi + yj)
 
-    xmin = float(np.nanmin(x_nm)); xmax = float(np.nanmax(x_nm))
-    ymin = float(np.nanmin(y_nm)); ymax = float(np.nanmax(y_nm))
-    tol_x = max(1.0e-6, 0.02 * max(xmax - xmin, 1.0))
-    tol_y = max(1.0e-6, 0.02 * max(ymax - ymin, 1.0))
+    local_edges = edges[edge_idx]
+    p0 = nodes_nm[local_edges[:, 0]]
+    p1 = nodes_nm[local_edges[:, 1]]
+
+    xi = p0[:, 0]
+    yi = p0[:, 1]
+    xj = p1[:, 0]
+    yj = p1[:, 1]
+    mx = 0.5 * (xi + xj)
+    my = 0.5 * (yi + yj)
+    dx = xj - xi
+    dy = yj - yi
+
+    ell = np.sqrt(dx**2 + dy**2)
+    ell = np.maximum(ell, 1.0e-300)
+
+    xmin = float(np.nanmin(nodes_nm[:, 0]))
+    xmax = float(np.nanmax(nodes_nm[:, 0]))
+    ymin = float(np.nanmin(nodes_nm[:, 1]))
+    ymax = float(np.nanmax(nodes_nm[:, 1]))
+    lx = max(xmax - xmin, 1.0e-30)
+    wy = max(ymax - ymin, 1.0e-30)
+    tol_x = 0.020 * lx
+    tol_y = 0.020 * wy
+
+    center_x, center_y = region["center"]
+    kind = region.get("kind", "")
 
     if kind == "top":
-        touches = (np.abs(yi - ymax) < tol_y) | (np.abs(yj - ymax) < tol_y)
-        score = touches.astype(float) * 10.0 + np.abs(dy) / ell - 0.02 * np.abs(mx - center_x)
+        touches_top = (np.abs(yi - ymax) < tol_y) | (np.abs(yj - ymax) < tol_y)
+        score = touches_top.astype(float) * 10.0
+        score += 0.5 * np.abs(dx) / ell
+        score -= 0.02 * np.abs(mx - center_x)
     elif kind == "left":
-        touches = (np.abs(xi - xmin) < tol_x) | (np.abs(xj - xmin) < tol_x)
-        score = touches.astype(float) * 10.0 + np.abs(dx) / ell - 0.02 * np.abs(my - center_y)
-    else:
+        touches_left = (np.abs(xi - xmin) < tol_x) | (np.abs(xj - xmin) < tol_x)
+        score = touches_left.astype(float) * 10.0
+        score += 0.5 * np.abs(dy) / ell
+        score -= 0.02 * np.abs(my - center_y)
+    elif kind == "bottom_right":
         touches_right = (np.abs(xi - xmax) < tol_x) | (np.abs(xj - xmax) < tol_x)
         touches_bottom = (np.abs(yi - ymin) < tol_y) | (np.abs(yj - ymin) < tol_y)
         score = (touches_right | touches_bottom).astype(float) * 10.0
         score += 0.5 * (np.abs(dx) + np.abs(dy)) / ell
         score -= 0.02 * ((mx - center_x) ** 2 + (my - center_y) ** 2) ** 0.5
+    else:
+        # Interior diagnostic: pick a representative edge close to the middle
+        # of the strip, with a mild preference for transport-aligned edges.
+        # This avoids highlighting boundary artifacts in the fourth column.
+        d = ((mx - center_x) ** 2 + (my - center_y) ** 2) ** 0.5
+        d_scale = max(_safe_nanmax(d), 1.0e-300)
+        score = 0.35 * np.abs(dx) / ell - d / d_scale
+
     return int(edge_idx[int(np.nanargmax(score))])
 
 
-def _plot_one_edge_current_zoom_snapshot(
-    *,
-    x_nm: np.ndarray,
-    y_nm: np.ndarray,
-    edge_i: np.ndarray,
-    edge_j: np.ndarray,
-    js: np.ndarray,
-    jn: np.ndarray,
-    t_s: float,
-    regions: list[dict[str, object]],
-    output_path: str | Path,
-    scale_label: str,
-    dpi: int,
-) -> Path:
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    fig, axes = plt.subplots(
-        2,
-        3,
-        figsize=(14.3, 6.4),
-        squeeze=False,
-        constrained_layout=False,
-    )
-    fig.subplots_adjust(left=0.055, right=0.925, bottom=0.090, top=0.875, wspace=0.25, hspace=0.30)
-    fig.suptitle(f"OE7 SS: edge-resolved currents, t = {t_s / 1.0e-12:.4g} ps", y=0.970)
-
-    js_lim = max(1.0, float(np.nanpercentile(np.abs(js[np.isfinite(js)]), 99.0)) if np.any(np.isfinite(js)) else 1.0)
-    jn_lim = max(0.05, float(np.nanpercentile(np.abs(jn[np.isfinite(jn)]), 99.0)) if np.any(np.isfinite(jn)) else 0.05)
-
-    first_js = None
-    first_jn = None
-    for col, region in enumerate(regions):
-        edge_idx = np.asarray(region["edge_idx"], dtype=int)
-        highlight = region["highlight_edge"]
-        for row, (field, clim, title, label) in enumerate(
-            [
-                (js, js_lim, r"signed $j_{s,e}$" + scale_label, r"$j_{s,e}$" + scale_label),
-                (jn, jn_lim, r"signed $j_{n,e}$" + scale_label, r"$j_{n,e}$" + scale_label),
-            ]
-        ):
-            ax = axes[row, col]
-            mappable = _draw_edge_zoom_panel(
-                ax=ax,
-                x_nm=x_nm,
-                y_nm=y_nm,
-                edge_i=edge_i,
-                edge_j=edge_j,
-                edge_idx=edge_idx,
-                values=field,
-                clim=clim,
-                region=region,
-                highlight_edge=highlight,
-            )
-            if row == 0:
-                ax.set_title(str(region["name"]), pad=9)
-            if col == 0:
-                ax.set_ylabel("y [nm]\n" + title)
-            else:
-                ax.set_ylabel("y [nm]")
-            ax.set_xlabel("x [nm]")
-            if row == 0 and first_js is None:
-                first_js = mappable
-            if row == 1 and first_jn is None:
-                first_jn = mappable
-
-    if first_js is not None:
-        cax = fig.add_axes([0.942, 0.545, 0.018, 0.300])
-        cb = fig.colorbar(first_js, cax=cax)
-        cb.set_label(r"$j_{s,e}$" + scale_label, labelpad=8)
-    if first_jn is not None:
-        cax = fig.add_axes([0.942, 0.145, 0.018, 0.300])
-        cb = fig.colorbar(first_jn, cax=cax)
-        cb.set_label(r"$j_{n,e}$" + scale_label, labelpad=8)
-
-    fig.savefig(output_path, dpi=dpi, bbox_inches="tight", pad_inches=0.10)
-    plt.close(fig)
-    return output_path
-
-
-def _draw_edge_zoom_panel(
+def _draw_edge_zoom(
     *,
     ax,
-    x_nm: np.ndarray,
-    y_nm: np.ndarray,
-    edge_i: np.ndarray,
-    edge_j: np.ndarray,
-    edge_idx: np.ndarray,
+    nodes_nm: np.ndarray,
+    edges: np.ndarray,
     values: np.ndarray,
-    clim: float,
-    region: dict[str, object],
+    mask: np.ndarray,
+    title: str,
+    label: str,
+    cmap: str,
+    vmin: float,
+    vmax: float,
     highlight_edge: int | None,
 ):
-    import matplotlib as mpl
-    from matplotlib.collections import LineCollection
+    segments = nodes_nm[edges[mask]]
+    vals = np.asarray(values, dtype=float)[mask]
 
-    if edge_idx.size == 0:
-        ax.axis("off")
-        return mpl.cm.ScalarMappable(norm=mpl.colors.Normalize(vmin=-clim, vmax=clim), cmap="coolwarm")
-
-    segs = np.stack(
-        [
-            np.column_stack([x_nm[edge_i[edge_idx]], y_nm[edge_i[edge_idx]]]),
-            np.column_stack([x_nm[edge_j[edge_idx]], y_nm[edge_j[edge_idx]]]),
-        ],
-        axis=1,
+    collection = LineCollection(
+        segments,
+        array=vals,
+        cmap=cmap,
+        norm=plt.Normalize(vmin=vmin, vmax=vmax),
+        linewidths=1.7,
+        alpha=0.95,
     )
-    vals = np.asarray(values[edge_idx], dtype=float)
-    norm = mpl.colors.Normalize(vmin=-float(clim), vmax=float(clim))
-    lc = LineCollection(segs, array=vals, cmap="coolwarm", norm=norm, linewidths=2.1, alpha=0.95, zorder=2)
-    ax.add_collection(lc)
-
-    # Thin gray mesh skeleton below the current-carrying colored segments.
-    skel = LineCollection(segs, colors="0.78", linewidths=0.55, alpha=0.65, zorder=1)
-    ax.add_collection(skel)
-
-    xi = x_nm[edge_i[edge_idx]]; xj = x_nm[edge_j[edge_idx]]
-    yi = y_nm[edge_i[edge_idx]]; yj = y_nm[edge_j[edge_idx]]
-    dx = xj - xi; dy = yj - yi
-    ell = np.maximum(np.sqrt(dx * dx + dy * dy), 1.0e-300)
-    mx = 0.5 * (xi + xj); my = 0.5 * (yi + yj)
-    signed = vals
-    local_len = 0.20 * np.nanmedian(ell) if ell.size else 1.0
-    local_len = max(float(local_len), 0.25)
-    qx = local_len * np.sign(signed) * dx / ell
-    qy = local_len * np.sign(signed) * dy / ell
-    keep = np.isfinite(signed) & (np.abs(signed) > 1.0e-10 * max(float(clim), 1.0e-300))
-    if np.any(keep):
-        ax.quiver(
-            mx[keep],
-            my[keep],
-            qx[keep],
-            qy[keep],
-            np.clip(signed[keep], -clim, clim),
-            cmap="coolwarm",
-            norm=norm,
-            angles="xy",
-            scale_units="xy",
-            scale=1.0,
-            width=0.0042,
-            headwidth=3.8,
-            headlength=4.8,
-            headaxislength=4.1,
-            pivot="mid",
-            zorder=3,
-        )
-
-    node_idx = np.unique(np.concatenate([edge_i[edge_idx], edge_j[edge_idx]]))
-    ax.scatter(x_nm[node_idx], y_nm[node_idx], s=13, c="0.18", edgecolors="white", linewidths=0.35, zorder=4)
+    ax.add_collection(collection)
 
     if highlight_edge is not None:
-        hi = int(highlight_edge)
-        ax.plot(
-            [x_nm[edge_i[hi]], x_nm[edge_j[hi]]],
-            [y_nm[edge_i[hi]], y_nm[edge_j[hi]]],
-            color="black",
-            linewidth=3.0,
-            alpha=0.90,
-            zorder=5,
+        hseg = nodes_nm[edges[[highlight_edge]]]
+        hcollection = LineCollection(
+            hseg,
+            colors="black",
+            linewidths=3.0,
+            alpha=0.95,
         )
-        val = float(values[hi])
-        hx = 0.5 * (x_nm[edge_i[hi]] + x_nm[edge_j[hi]])
-        hy = 0.5 * (y_nm[edge_i[hi]] + y_nm[edge_j[hi]])
-        ax.text(
-            hx,
-            hy,
-            f"  {val:+.3g}",
-            fontsize=8,
-            va="center",
-            ha="left",
-            bbox={"boxstyle": "round,pad=0.18", "facecolor": "white", "alpha": 0.78, "edgecolor": "0.70"},
-            zorder=6,
-        )
+        ax.add_collection(hcollection)
 
-    xlim = region["xlim"]; ylim = region["ylim"]
-    ax.set_xlim(*xlim)
-    ax.set_ylim(*ylim)
-    ax.set_aspect("equal", adjustable="box")
-    ax.grid(False)
-    ax.tick_params(labelsize=8)
-    return lc
+    if segments.size:
+        x = segments[:, :, 0].reshape(-1)
+        y = segments[:, :, 1].reshape(-1)
+        dx = max(float(np.nanmax(x) - np.nanmin(x)), 1.0e-30)
+        dy = max(float(np.nanmax(y) - np.nanmin(y)), 1.0e-30)
+        ax.set_xlim(float(np.nanmin(x) - 0.12 * dx), float(np.nanmax(x) + 0.12 * dx))
+        ax.set_ylim(float(np.nanmin(y) - 0.18 * dy), float(np.nanmax(y) + 0.18 * dy))
 
-
-def _plot_current_family_snapshots(
-    mesh,
-    history: dict,
-    output_path: str | Path,
-    *,
-    mag_names: tuple[str, ...],
-    x_names: tuple[str, ...],
-    y_names: tuple[str, ...],
-    t_names: tuple[str, ...],
-    title: str,
-    abs_label: str,
-    norm_label: str,
-    dpi: int,
-    ncols: int,
-) -> Path:
-    jmag = _optional_history_array(history, mag_names)
-    jx = _optional_history_array(history, x_names)
-    jy = _optional_history_array(history, y_names)
-    if jmag is None:
-        if jx is None or jy is None:
-            raise KeyError("history does not contain current snapshot magnitudes or vector components.")
-        jmag = np.sqrt(jx * jx + jy * jy)
-    t_s = _snapshot_times(history, t_names, jmag.shape[0])
-    scale = _history_scalar(history, "javg_A_m2")
-    if scale is not None and abs(scale) > 0.0:
-        z = jmag / abs(scale)
-        ux = None if jx is None else jx / abs(scale)
-        uy = None if jy is None else jy / abs(scale)
-        label = norm_label
-    else:
-        z = jmag
-        ux = jx
-        uy = jy
-        label = abs_label
-    if ux is not None and uy is not None:
-        return _plot_vector_snapshot_grid(mesh, z, ux, uy, t_s, output_path, title=title, label=label, vmin=0.0, dpi=dpi, ncols=ncols)
-    return _plot_snapshot_grid(mesh, z, t_s, output_path, title=title, label=label, vmin=0.0, dpi=dpi, ncols=ncols)
-
-
-def _plot_snapshot_grid(
-    mesh,
-    values,
-    t_s,
-    output_path: str | Path,
-    *,
-    title: str,
-    label: str,
-    symmetric: bool = False,
-    vmin: float | None = None,
-    vmax: float | None = None,
-    robust_percentile: float | None = None,
-    min_vmax: float | None = None,
-    dpi: int = 480,
-    ncols: int = 3,
-) -> Path:
-    arr = np.asarray(values, dtype=float)
-    if arr.ndim == 1:
-        arr = arr[None, :]
-    if arr.ndim != 2:
-        raise ValueError(f"Snapshot array must be 2D, got shape {arr.shape}.")
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    if arr.shape[1] != nodes.shape[0]:
-        raise ValueError(f"Snapshot array has {arr.shape[1]} nodes, but mesh has {nodes.shape[0]} nodes.")
-    t_s = np.asarray(t_s, dtype=float).reshape(-1)
-    if t_s.size != arr.shape[0]:
-        raise ValueError(f"Snapshot time axis has {t_s.size} entries, but data has {arr.shape[0]} snapshots.")
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    vmin, vmax = _resolve_limits(arr, symmetric=symmetric, vmin=vmin, vmax=vmax, robust_percentile=robust_percentile, min_vmax=min_vmax)
-    x_nm = nodes[:, 0] * 1.0e9
-    y_nm = nodes[:, 1] * 1.0e9
-    tri = mtri.Triangulation(x_nm, y_nm, np.asarray(mesh.triangles, dtype=np.int64))
-    n_snap = int(arr.shape[0])
-    ncols = max(1, int(ncols))
-    nrows = int(np.ceil(n_snap / ncols))
-    fig, axes = _snapshot_figure(nrows=nrows, ncols=ncols)
-    last_im = None
-    for k in range(nrows * ncols):
-        ax = axes.flat[k]
-        if k >= n_snap:
-            ax.axis("off")
-            continue
-        last_im = ax.tripcolor(tri, arr[k], shading="gouraud", vmin=vmin, vmax=vmax)
-        _format_snapshot_axis(ax, t_s[k])
-    if last_im is not None:
-        cax = fig.add_axes([0.910, 0.165, 0.020, 0.675])
-        cbar = fig.colorbar(last_im, cax=cax)
-        cbar.set_label(label, labelpad=10)
-    fig.suptitle(title, y=0.975)
-    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.12)
-    plt.close(fig)
-    return output
-
-
-def _plot_vector_snapshot_grid(
-    mesh,
-    values,
-    vx,
-    vy,
-    t_s,
-    output_path: str | Path,
-    *,
-    title: str,
-    label: str,
-    symmetric: bool = False,
-    vmin: float | None = None,
-    vmax: float | None = None,
-    robust_percentile: float | None = None,
-    min_vmax: float | None = None,
-    dpi: int = 480,
-    ncols: int = 3,
-    arrow_nx: int = 18,
-    arrow_ny: int = 7,
-) -> Path:
-    arr = np.asarray(values, dtype=float)
-    ux_raw = np.asarray(vx, dtype=float)
-    uy_raw = np.asarray(vy, dtype=float)
-    if arr.ndim == 1:
-        arr = arr[None, :]
-    if ux_raw.ndim == 1:
-        ux_raw = ux_raw[None, :]
-    if uy_raw.ndim == 1:
-        uy_raw = uy_raw[None, :]
-    if arr.shape != ux_raw.shape or arr.shape != uy_raw.shape:
-        raise ValueError(f"Vector snapshot arrays must have matching shapes, got {arr.shape}, {ux_raw.shape}, {uy_raw.shape}.")
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    if arr.shape[1] != nodes.shape[0]:
-        raise ValueError(f"Snapshot array has {arr.shape[1]} nodes, but mesh has {nodes.shape[0]} nodes.")
-    t_s = np.asarray(t_s, dtype=float).reshape(-1)
-    if t_s.size != arr.shape[0]:
-        raise ValueError(f"Snapshot time axis has {t_s.size} entries, but data has {arr.shape[0]} snapshots.")
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    vmin, vmax = _resolve_limits(arr, symmetric=symmetric, vmin=vmin, vmax=vmax, robust_percentile=robust_percentile, min_vmax=min_vmax)
-    x_nm = nodes[:, 0] * 1.0e9
-    y_nm = nodes[:, 1] * 1.0e9
-    tri = mtri.Triangulation(x_nm, y_nm, np.asarray(mesh.triangles, dtype=np.int64))
-    n_snap = int(arr.shape[0])
-    ncols = max(1, int(ncols))
-    nrows = int(np.ceil(n_snap / ncols))
-    fig, axes = _snapshot_figure(nrows=nrows, ncols=ncols)
-    x_span_nm = max(float(np.nanmax(x_nm) - np.nanmin(x_nm)), 1.0)
-    y_span_nm = max(float(np.nanmax(y_nm) - np.nanmin(y_nm)), 1.0)
-    arrow_len_nm = 0.050 * min(x_span_nm, y_span_nm)
-    last_im = None
-    for k in range(nrows * ncols):
-        ax = axes.flat[k]
-        if k >= n_snap:
-            ax.axis("off")
-            continue
-        last_im = ax.tripcolor(tri, arr[k], shading="gouraud", vmin=vmin, vmax=vmax)
-        jx = ux_raw[k]
-        jy = uy_raw[k]
-        jmag = np.sqrt(jx * jx + jy * jy)
-        idx = _regular_arrow_indices(x_nm, y_nm, jmag, nx=arrow_nx, ny=arrow_ny, min_relative_weight=1.0e-10)
-        if idx.size:
-            qx = arrow_len_nm * jx[idx] / np.maximum(jmag[idx], 1.0e-300)
-            qy = arrow_len_nm * jy[idx] / np.maximum(jmag[idx], 1.0e-300)
-            ax.quiver(x_nm[idx], y_nm[idx], qx, qy, angles="xy", scale_units="xy", scale=1.0, width=0.0020, headwidth=3.5, headlength=4.5, headaxislength=3.8, pivot="mid")
-        _format_snapshot_axis(ax, t_s[k])
-    if last_im is not None:
-        cax = fig.add_axes([0.910, 0.165, 0.020, 0.675])
-        cbar = fig.colorbar(last_im, cax=cax)
-        cbar.set_label(label, labelpad=10)
-    fig.suptitle(title, y=0.975)
-    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.12)
-    plt.close(fig)
-    return output
-
-
-def _snapshot_figure(*, nrows: int, ncols: int):
-    fig_width = 4.35 * ncols + 1.10
-    fig_height = 2.75 * nrows + 0.55
-    fig, axes = plt.subplots(nrows, ncols, figsize=(fig_width, fig_height), squeeze=False, constrained_layout=False)
-    fig.subplots_adjust(left=0.070, right=0.875, bottom=0.085, top=0.895, wspace=0.42, hspace=0.30)
-    return fig, axes
-
-
-def _format_snapshot_axis(ax, t_s: float) -> None:
-    ax.set_title(f"t = {t_s / 1.0e-12:.4g} ps", pad=8)
-    ax.set_xlabel("x [nm]", labelpad=4)
-    ax.set_ylabel("y [nm]", labelpad=6)
-    ax.set_aspect("equal", adjustable="box")
-    ax.grid(False)
-
-
-def _regular_arrow_indices(x_nm: np.ndarray, y_nm: np.ndarray, weight: np.ndarray, *, nx: int = 18, ny: int = 7, min_relative_weight: float = 1.0e-10) -> np.ndarray:
-    x_nm = np.asarray(x_nm, dtype=float)
-    y_nm = np.asarray(y_nm, dtype=float)
-    weight = np.asarray(weight, dtype=float)
-    finite = np.isfinite(x_nm) & np.isfinite(y_nm) & np.isfinite(weight)
-    if not np.any(finite):
-        return np.array([], dtype=int)
-    wmax = float(np.nanmax(np.abs(weight[finite])))
-    if not np.isfinite(wmax) or wmax <= 0.0:
-        return np.array([], dtype=int)
-    finite &= np.abs(weight) > min_relative_weight * wmax
-    if not np.any(finite):
-        return np.array([], dtype=int)
-    xmin = float(np.nanmin(x_nm[finite])); xmax = float(np.nanmax(x_nm[finite]))
-    ymin = float(np.nanmin(y_nm[finite])); ymax = float(np.nanmax(y_nm[finite]))
-    if xmax <= xmin or ymax <= ymin:
-        return np.flatnonzero(finite)
-    gx = np.linspace(xmin, xmax, int(nx))
-    gy = np.linspace(ymin, ymax, int(ny))
-    valid_idx = np.flatnonzero(finite)
-    selected: list[int] = []
-    for yy in gy:
-        for xx in gx:
-            dx = x_nm[valid_idx] - xx
-            dy = y_nm[valid_idx] - yy
-            d2 = (dx / max(xmax - xmin, 1.0e-30)) ** 2 + (dy / max(ymax - ymin, 1.0e-30)) ** 2
-            selected.append(int(valid_idx[int(np.argmin(d2))]))
-    return np.unique(np.asarray(selected, dtype=int))
-
-
-def _resolve_limits(arr, *, symmetric, vmin, vmax, robust_percentile, min_vmax):
-    finite = np.asarray(arr, dtype=float)
-    finite = finite[np.isfinite(finite)]
-    if finite.size == 0:
-        finite = np.array([0.0], dtype=float)
-    if vmin is not None and vmax is not None:
-        return vmin, vmax
-    if symmetric:
-        scale = float(np.nanmax(np.abs(finite))) if robust_percentile is None else float(np.nanpercentile(np.abs(finite), robust_percentile))
-        scale = max(scale, 1.0e-30)
-        if min_vmax is not None:
-            scale = max(scale, float(min_vmax))
-        return (-scale if vmin is None else vmin, scale if vmax is None else vmax)
-    local_vmin = float(np.nanmin(finite))
-    local_vmax = float(np.nanmax(finite)) if robust_percentile is None else float(np.nanpercentile(finite, robust_percentile))
-    if min_vmax is not None:
-        local_vmax = max(local_vmax, float(min_vmax))
-    if local_vmax <= local_vmin:
-        pad = max(abs(local_vmax), 1.0) * 1.0e-12
-        local_vmin -= pad
-        local_vmax += pad
-    return (local_vmin if vmin is None else vmin, local_vmax if vmax is None else vmax)
-
-
-def _plot_node_scalar(mesh, values, output_path: str | Path, *, title: str, label: str, vmin=None, vmax=None, dpi: int = 480) -> Path:
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    x_nm = nodes[:, 0] * 1.0e9
-    y_nm = nodes[:, 1] * 1.0e9
-    tri = mtri.Triangulation(x_nm, y_nm, np.asarray(mesh.triangles, dtype=np.int64))
-    z = np.asarray(values, dtype=float).reshape(-1)
-    fig, ax = plt.subplots(figsize=(8.0, 3.2))
-    im = ax.tripcolor(tri, z, shading="gouraud", vmin=vmin, vmax=vmax)
-    cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label(label)
     ax.set_title(title)
     ax.set_xlabel("x [nm]")
     ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
     ax.grid(False)
-    fig.tight_layout()
-    fig.savefig(output, dpi=dpi, bbox_inches="tight")
-    plt.close(fig)
+
+    return collection
+
+
+# ---------------------------------------------------------------------------
+# Phase/mesh helpers
+# ---------------------------------------------------------------------------
+
+def _unwrap_phase_by_x(mesh, theta_wrapped: np.ndarray) -> np.ndarray:
+    psi = np.exp(1j * np.asarray(theta_wrapped, dtype=float))
+    edges = _edges_from_triangles(mesh.triangles)
+    return unwrap_phase_graph(psi, edges)
+
+
+def _edges_from_triangles(triangles: np.ndarray) -> np.ndarray:
+    triangles = np.asarray(triangles, dtype=np.int64)
+    pairs = np.vstack(
+        [
+            triangles[:, [0, 1]],
+            triangles[:, [1, 2]],
+            triangles[:, [2, 0]],
+        ]
+    )
+    pairs.sort(axis=1)
+    return np.unique(pairs, axis=0)
+
+
+def _edge_array_from_any(mesh, *, edge_data=None, ops=None) -> np.ndarray:
+    if edge_data is not None and hasattr(edge_data, "edges"):
+        return np.asarray(edge_data.edges, dtype=np.int64)
+
+    if ops is not None:
+        for name in ("edges", "edge_nodes", "edge_node_indices"):
+            if hasattr(ops, name):
+                return np.asarray(getattr(ops, name), dtype=np.int64)
+
+    if hasattr(mesh, "edges"):
+        return np.asarray(mesh.edges, dtype=np.int64)
+
+    return _edges_from_triangles(np.asarray(mesh.triangles, dtype=np.int64))
+
+
+# ---------------------------------------------------------------------------
+# Data extraction helpers
+# ---------------------------------------------------------------------------
+
+def _extract_edge_current_snapshots(
+    *,
+    mesh,
+    edges: np.ndarray,
+    history: dict | None,
+    state,
+    explicit,
+) -> tuple[np.ndarray, np.ndarray]:
+    n_edges = edges.shape[0]
+
+    if explicit is not None:
+        arr = np.asarray(explicit, dtype=float)
+        t = _history_array(history or {}, "snapshot_t_s", fallback=_history_array(history or {}, "t_s"))
+        if t.size == 0:
+            t = np.arange(arr.shape[0] if arr.ndim == 2 else 1, dtype=float)
+        return arr, t
+
+    if history is not None:
+        candidates = [
+            "edge_jtot_A_m2",
+            "edge_current_A_m2",
+            "snapshot_edge_jtot_A_m2",
+            "edge_jtot_snapshots_A_m2",
+            "edge_jtot_A_m2_snapshots",
+            "edge_current_i_to_j_A_m2",
+            "edge_current_i_to_j",
+        ]
+        for key in candidates:
+            if key not in history:
+                continue
+            arr = np.asarray(history[key], dtype=float)
+            if arr.size == 0:
+                continue
+            if arr.ndim == 1 and arr.size == n_edges:
+                t = _history_array(history, "snapshot_t_s", fallback=_history_array(history, "t_s"))
+                return arr[None, :], t[:1] if t.size else np.array([0.0])
+            if arr.ndim == 2 and n_edges in arr.shape:
+                if arr.shape[1] != n_edges and arr.shape[0] == n_edges:
+                    arr = arr.T
+                t = _history_array(history, "snapshot_t_s", fallback=_history_array(history, "t_s"))
+                if t.size != arr.shape[0]:
+                    t = np.arange(arr.shape[0], dtype=float)
+                return arr, t
+
+    if state is not None:
+        currents = getattr(state, "currents", state)
+        for key in ("edge_jtot_A_m2", "edge_current_A_m2", "edge_current_i_to_j"):
+            if hasattr(currents, key):
+                arr = np.asarray(getattr(currents, key), dtype=float)
+                if arr.size == n_edges:
+                    return arr[None, :], np.array([0.0])
+
+    raise ValueError("No edge current snapshots found in explicit/history/state inputs.")
+
+
+def _history_array(history: dict | None, key: str, fallback=None) -> np.ndarray:
+    if history is not None and key in history:
+        return np.asarray(history[key], dtype=float)
+    if fallback is None:
+        return np.asarray([], dtype=float)
+    return np.asarray(fallback, dtype=float)
+
+
+def _history_first_available(history: dict | None, keys: Iterable[str]) -> np.ndarray:
+    if history is None:
+        return np.asarray([], dtype=float)
+
+    for key in keys:
+        if key in history:
+            arr = np.asarray(history[key], dtype=float)
+            if arr.size:
+                return arr
+
+    return np.asarray([], dtype=float)
+
+
+def _as_snapshot_matrix(arr, n_values: int) -> np.ndarray:
+    out = np.asarray(arr, dtype=float)
+
+    if out.ndim == 1:
+        if out.size != n_values:
+            raise ValueError(f"Expected {n_values} values, got {out.size}.")
+        return out[None, :]
+
+    if out.ndim != 2:
+        raise ValueError(f"Expected 1D or 2D snapshot array, got shape {out.shape}.")
+
+    if out.shape[1] == n_values:
+        return out
+
+    if out.shape[0] == n_values:
+        return out.T
+
+    raise ValueError(f"Could not orient snapshot matrix with shape {out.shape} and n_values={n_values}.")
+
+
+def _snapshot_indices(n_snapshots: int, max_snapshots: int) -> np.ndarray:
+    n = int(max(1, n_snapshots))
+    m = int(max(1, min(max_snapshots, n)))
+    if m == 1:
+        return np.asarray([n - 1], dtype=int)
+    return np.unique(np.linspace(0, n - 1, m).round().astype(int))
+
+
+# ---------------------------------------------------------------------------
+# Small plotting helpers
+# ---------------------------------------------------------------------------
+
+def _plot_semilogy_if_present(ax, x: np.ndarray, y: np.ndarray, label: str) -> None:
+    y = np.asarray(y, dtype=float)
+    if not y.size:
+        return
+    if y.size != x.size:
+        y = _resample_like(y, x.size)
+    final = y[-1] if y.size else np.nan
+    ax.semilogy(x, np.maximum(np.abs(y), 1.0e-300), label=f"{label}, final={final:.3e}")
+
+
+def _plot_if_present(ax, x: np.ndarray, y: np.ndarray, label: str) -> None:
+    y = np.asarray(y, dtype=float)
+    if not y.size:
+        return
+    if y.size != x.size:
+        y = _resample_like(y, x.size)
+    final = y[-1] if y.size else np.nan
+    ax.plot(x, y, label=f"{label}, final={final:.4g}")
+
+
+def _resample_like(y: np.ndarray, n: int) -> np.ndarray:
+    y = np.asarray(y, dtype=float).reshape(-1)
+    if y.size == n:
+        return y
+    if y.size == 1:
+        return np.full(n, y[0], dtype=float)
+    xp = np.linspace(0.0, 1.0, y.size)
+    x = np.linspace(0.0, 1.0, n)
+    return np.interp(x, xp, y)
+
+
+def _format_ps(t_s: float) -> str:
+    return f"{float(t_s) / 1.0e-12:.6g}"
+
+
+def _prepare_output(output_path: str | Path) -> Path:
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
     return output
 
 
-def _plot_log_history_curve(ax, t_ps: np.ndarray, history: dict, key: str, label: str) -> None:
-    if key not in history:
-        return
-    y = np.asarray(history[key], dtype=float).reshape(-1)
-    t, y = _match_time_and_series(t_ps, y)
-    if t.size == 0:
-        return
-    y_plot = np.maximum(np.abs(y), 1.0e-300)
-    ax.semilogy(t, y_plot, label=f"{label}, final={y[-1]:.3e}")
-
-
-def _plot_normalized_history_curve(ax, t_ps: np.ndarray, history: dict, key: str, label: str, *, unit: str, absolute: bool) -> None:
-    if key not in history:
-        return
-    y = np.asarray(history[key], dtype=float).reshape(-1)
-    t, y = _match_time_and_series(t_ps, y)
-    if t.size == 0:
-        return
-    y_real = np.abs(y) if absolute else y
-    scale = _normalization_scale(y_real)
-    ax.plot(t, np.clip(y_real / scale, 0.0, 1.0), label=f"{label} / {_format_scale(scale, unit)}")
-
-
-def _plot_direct_history_curve(ax, t_ps: np.ndarray, history: dict, key: str, label: str) -> None:
-    if key not in history:
-        return
-    y = np.asarray(history[key], dtype=float).reshape(-1)
-    t, y = _match_time_and_series(t_ps, y)
-    if t.size == 0:
-        return
-    ax.plot(t, np.clip(y, 0.0, 1.0), label=f"{label}, final={y[-1]:.4g}")
-
-
-def _plot_normalized_by_history_scale(ax, t_ps: np.ndarray, history: dict, *, value_key: str, scale_key: str, label: str, scale_label: str, unit: str, absolute: bool) -> None:
-    if value_key not in history or scale_key not in history:
-        return
-    y = np.asarray(history[value_key], dtype=float).reshape(-1)
-    scale_series = np.asarray(history[scale_key], dtype=float).reshape(-1)
-    t, y = _match_time_and_series(t_ps, y)
-    _, scale_series = _match_time_and_series(t_ps, scale_series)
-    n = min(t.size, y.size, scale_series.size)
-    if n <= 0:
-        return
-    y_real = np.abs(y[:n]) if absolute else y[:n]
-    scale = _normalization_scale(np.abs(scale_series[:n]) if absolute else scale_series[:n])
-    ax.plot(t[:n], np.clip(y_real / scale, 0.0, 1.0), label=f"{label} / {scale_label}={_format_scale(scale, unit)}")
-
-
-def _match_time_and_series(t: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    n = min(int(t.size), int(y.size))
-    if n <= 0:
-        return np.array([], dtype=float), np.array([], dtype=float)
-    return t[:n], y[:n]
-
-
-def _normalization_scale(y: np.ndarray) -> float:
-    finite = np.asarray(y, dtype=float)
-    finite = finite[np.isfinite(finite)]
-    if finite.size == 0:
-        return 1.0
-    scale = float(np.nanmax(np.abs(finite)))
-    if not np.isfinite(scale) or scale <= 0.0:
-        return 1.0
-    return scale
-
-
-def _format_scale(value: float, unit: str) -> str:
-    value = float(value)
-    if unit == "V":
-        av = abs(value)
-        if av >= 1.0:
-            return f"{value:.3g} V"
-        if av >= 1.0e-3:
-            return f"{value * 1.0e3:.3g} mV"
-        if av >= 1.0e-6:
-            return f"{value * 1.0e6:.3g} µV"
-        if av >= 1.0e-9:
-            return f"{value * 1.0e9:.3g} nV"
-        return f"{value:.3e} V"
-    if unit:
-        return f"{value:.3g} {unit}"
-    return f"{value:.3g}"
-
-
-def _optional_history_array(history: dict, names: tuple[str, ...]) -> np.ndarray | None:
-    for name in names:
-        if name in history:
-            return np.asarray(history[name])
-    return None
-
-
-def _require_history_array(history: dict, names: tuple[str, ...]) -> np.ndarray:
-    out = _optional_history_array(history, names)
-    if out is None:
-        raise KeyError(f"history does not contain any of these keys: {names}")
-    return out
-
-
-def _psi_snapshots_from_history(history: dict) -> np.ndarray:
-    if "psi_snapshot_J" in history:
-        psi = np.asarray(history["psi_snapshot_J"], dtype=np.complex128)
-    else:
-        real = _require_history_array(history, ("psi_snapshot_real_J", "psi_real_snapshot_J", "snapshot_psi_real_J"))
-        imag = _require_history_array(history, ("psi_snapshot_imag_J", "psi_imag_snapshot_J", "snapshot_psi_imag_J"))
-        psi = np.asarray(real, dtype=float) + 1j * np.asarray(imag, dtype=float)
-    if psi.ndim != 2:
-        raise ValueError(f"psi snapshots must be 2D, got shape {psi.shape}.")
-    return psi
-
-
-def _snapshot_times(history: dict, names: tuple[str, ...], n_snap: int) -> np.ndarray:
-    for key in names:
-        if key in history:
-            t_s = np.asarray(history[key], dtype=float).reshape(-1)
-            if t_s.size == n_snap:
-                return t_s
-    raise KeyError(f"No compatible snapshot time axis found. Tried {names}; expected {n_snap} entries.")
-
-
-def _unwrap_phase_safe(psi: np.ndarray, edges: np.ndarray, *, seed_index: int) -> np.ndarray:
-    try:
-        return unwrap_phase_graph(np.asarray(psi, dtype=np.complex128), np.asarray(edges, dtype=np.int64), seed_index=int(seed_index), subtract_mean=False)
-    except TypeError:
-        return unwrap_phase_graph(np.asarray(psi, dtype=np.complex128), np.asarray(edges, dtype=np.int64))
-
-
-def _center_node_index(mesh) -> int:
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    center = np.array([0.5 * (float(np.min(nodes[:, 0])) + float(np.max(nodes[:, 0]))), 0.5 * (float(np.min(nodes[:, 1])) + float(np.max(nodes[:, 1])))], dtype=float)
-    dist2 = np.sum((nodes[:, :2] - center[None, :]) ** 2, axis=1)
-    return int(np.argmin(dist2))
-
-
-def _mesh_edges_from_triangles(mesh) -> np.ndarray:
-    tri = np.asarray(mesh.triangles, dtype=np.int64)
-    edges = np.vstack([tri[:, [0, 1]], tri[:, [1, 2]], tri[:, [2, 0]]])
-    edges = np.sort(edges, axis=1)
-    return np.unique(edges, axis=0)
-
-
-def _remove_best_linear_ramp(mesh, phase: np.ndarray) -> np.ndarray:
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    x = nodes[:, 0]
-    y = nodes[:, 1]
-    A = np.column_stack([x, y, np.ones_like(x)])
-    good = np.isfinite(phase)
-    if np.count_nonzero(good) < 3:
-        return np.asarray(phase, dtype=float)
-    coeff, *_ = np.linalg.lstsq(A[good], np.asarray(phase, dtype=float)[good], rcond=None)
-    return np.asarray(phase, dtype=float) - A @ coeff
-
-
-def _history_scalar(history: dict, key: str) -> float | None:
-    if key not in history:
-        return None
-    arr = np.asarray(history[key], dtype=float).reshape(-1)
+def _safe_nanmax(x) -> float:
+    arr = np.asarray(x, dtype=float)
+    if arr.size == 0:
+        return 0.0
     finite = arr[np.isfinite(arr)]
     if finite.size == 0:
-        return None
-    return float(finite[-1])
+        return 0.0
+    return float(np.max(finite))
+
+
+def _safe_percentile(x, q: float) -> float:
+    arr = np.asarray(x, dtype=float)
+    finite = arr[np.isfinite(arr)]
+    if finite.size == 0:
+        return 0.0
+    return float(np.percentile(finite, q))
