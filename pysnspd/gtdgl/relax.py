@@ -162,6 +162,27 @@ class _PoissonOperator:
     solver: Any
 
 
+@dataclass(frozen=True)
+class PhiBoundaryConditions:
+    """Discrete electric boundary constraints for varphi.
+
+    Each row enforces, on the first inward normal edge b -> k,
+
+        phi_b - phi_k = ell/sigma_n * (j_target - j_s,bk).
+
+    Here ``edge_sign_b_to_inner`` converts the solver edge orientation into the
+    boundary-to-inner orientation used by the constraint.
+    """
+
+    boundary_nodes: np.ndarray
+    inner_nodes: np.ndarray
+    edge_index: np.ndarray
+    edge_sign_b_to_inner: np.ndarray
+    target_edge_A_m2: np.ndarray
+    edge_length_m: np.ndarray
+    boundary_mask: np.ndarray
+
+
 def compute_current_fields(
     *,
     psi_J: np.ndarray,
@@ -353,8 +374,26 @@ def edge_to_node_weighted_average(edge_values: np.ndarray, ops: FVOperators) -> 
     return out / np.maximum(wsum, 1.0e-300)
 
 
-def build_poisson_operator(*, material: GTDGLMaterial, ops: FVOperators) -> _PoissonOperator:
-    """Build the notebook Poisson operator with mean-zero gauge row."""
+def build_poisson_operator(
+    *,
+    material: GTDGLMaterial,
+    ops: FVOperators,
+    phi_bc: PhiBoundaryConditions | None = None,
+) -> _PoissonOperator:
+    """Build the Poisson operator with optional electric boundary constraints.
+
+    Without ``phi_bc`` this is the notebook mean-zero Neumann projection.  With
+    ``phi_bc`` the rows associated with boundary nodes are replaced by the
+    discrete normal-edge electric constraints used to enforce the total-current
+    boundary condition on varphi.
+    """
+    if phi_bc is not None:
+        return _build_constrained_poisson_operator(
+            material=material,
+            ops=ops,
+            phi_bc=phi_bc,
+        )
+
     sigma = material.sigma_n_S_m
     g = sigma * ops.dual_face_length_m / ops.edge_length_m
     i = ops.edge_i.astype(np.int64)
@@ -386,6 +425,86 @@ def build_poisson_operator(*, material: GTDGLMaterial, ops: FVOperators) -> _Poi
     return _PoissonOperator(A_aug=A_aug, solver=None)
 
 
+def _build_constrained_poisson_operator(
+    *,
+    material: GTDGLMaterial,
+    ops: FVOperators,
+    phi_bc: PhiBoundaryConditions,
+) -> _PoissonOperator:
+    """Build Poisson matrix with boundary rows replaced by phi constraints."""
+    sigma = material.sigma_n_S_m
+    g = sigma * ops.dual_face_length_m / np.maximum(ops.edge_length_m, 1.0e-300)
+    edge_i = ops.edge_i.astype(np.int64)
+    edge_j = ops.edge_j.astype(np.int64)
+    n = int(ops.n_nodes)
+
+    bmask = np.asarray(phi_bc.boundary_mask, dtype=bool)
+    if bmask.shape != (n,):
+        raise ValueError(f"phi_bc.boundary_mask must have shape ({n},), got {bmask.shape}.")
+
+    if coo_matrix is not None:
+        rows: list[np.ndarray] = []
+        cols: list[np.ndarray] = []
+        data: list[np.ndarray] = []
+
+        keep_i = ~bmask[edge_i]
+        if np.any(keep_i):
+            ii = edge_i[keep_i]
+            jj = edge_j[keep_i]
+            gg = g[keep_i]
+            rows.extend([ii, ii])
+            cols.extend([ii, jj])
+            data.extend([gg, -gg])
+
+        keep_j = ~bmask[edge_j]
+        if np.any(keep_j):
+            ii = edge_i[keep_j]
+            jj = edge_j[keep_j]
+            gg = g[keep_j]
+            rows.extend([jj, jj])
+            cols.extend([jj, ii])
+            data.extend([gg, -gg])
+
+        boundary = np.asarray(phi_bc.boundary_nodes, dtype=np.int64)
+        inner = np.asarray(phi_bc.inner_nodes, dtype=np.int64)
+        rows.extend([boundary, boundary])
+        cols.extend([boundary, inner])
+        data.extend([np.ones(boundary.size), -np.ones(boundary.size)])
+
+        interior_rows = np.flatnonzero(~bmask).astype(np.int64)
+        if interior_rows.size:
+            rows.append(interior_rows)
+            cols.append(np.full(interior_rows.size, n, dtype=np.int64))
+            data.append(np.ones(interior_rows.size, dtype=float))
+
+        rows.append(np.full(n, n, dtype=np.int64))
+        cols.append(np.arange(n, dtype=np.int64))
+        data.append(np.ones(n, dtype=float))
+
+        row = np.concatenate(rows)
+        col = np.concatenate(cols)
+        val = np.concatenate(data).astype(float)
+        A_aug = coo_matrix((val, (row, col)), shape=(n + 1, n + 1)).tocsc()
+        solver = splu(A_aug) if splu is not None else None
+        return _PoissonOperator(A_aug=A_aug, solver=solver)
+
+    A_aug = np.zeros((n + 1, n + 1), dtype=float)  # pragma: no cover
+    for a, b, gg in zip(edge_i, edge_j, g):
+        if not bmask[a]:
+            A_aug[a, a] += gg
+            A_aug[a, b] -= gg
+        if not bmask[b]:
+            A_aug[b, b] += gg
+            A_aug[b, a] -= gg
+    for b, k in zip(phi_bc.boundary_nodes, phi_bc.inner_nodes):
+        A_aug[int(b), :] = 0.0
+        A_aug[int(b), int(b)] = 1.0
+        A_aug[int(b), int(k)] = -1.0
+    A_aug[np.flatnonzero(~bmask), n] = 1.0
+    A_aug[n, :n] = 1.0
+    return _PoissonOperator(A_aug=A_aug, solver=None)
+
+
 def solve_varphi_poisson(
     *,
     edge_js_us_A_m2: np.ndarray,
@@ -393,21 +512,47 @@ def solve_varphi_poisson(
     ops: FVOperators,
     poisson_op: _PoissonOperator | None = None,
     boundary_accum_A_m: np.ndarray | None = None,
+    phi_bc: PhiBoundaryConditions | None = None,
 ) -> PoissonResult:
-    """Notebook Poisson projection for varphi and normal current."""
+    """Poisson projection for varphi and normal current.
+
+    If ``phi_bc`` is provided, boundary rows enforce the discrete total-current
+    condition on the first inward normal edge,
+
+        phi_b - phi_k = ell/sigma_n * (j_target - j_s,bk),
+
+    while interior rows keep the conservative Poisson projection.
+    """
     js = np.asarray(edge_js_us_A_m2, dtype=float)
     if js.shape != (ops.n_edges,):
         raise ValueError(f"edge_js_us_A_m2 must have shape ({ops.n_edges},).")
     if poisson_op is None:
-        poisson_op = build_poisson_operator(material=material, ops=ops)
+        poisson_op = build_poisson_operator(material=material, ops=ops, phi_bc=phi_bc)
     if boundary_accum_A_m is None:
         boundary = np.zeros(ops.n_nodes, dtype=float)
     else:
         boundary = np.asarray(boundary_accum_A_m, dtype=float)
 
-    # Notebook RHS: b_i += -s_ij js_ij, b_j += +s_ij js_ij, plus
-    # b_boundary = - outward_boundary_accumulator.
+    # Interior RHS: b_i += -s_ij js_ij, b_j += +s_ij js_ij, plus
+    # b_boundary = - outward_boundary_accumulator for the unconstrained case.
     b = -edge_flux_accumulator_A_m(js, ops) - boundary
+
+    if phi_bc is not None:
+        # Constraint rows use edge current signed in the boundary -> inner
+        # orientation.  With j_n,bk = -sigma*(phi_k-phi_b)/ell,
+        # j_s,bk + j_n,bk = j_target gives
+        # phi_b - phi_k = ell/sigma*(j_target - j_s,bk).
+        js_b_to_k = (
+            np.asarray(phi_bc.edge_sign_b_to_inner, dtype=float)
+            * js[np.asarray(phi_bc.edge_index, dtype=np.int64)]
+        )
+        rhs_bc = (
+            np.asarray(phi_bc.edge_length_m, dtype=float)
+            / material.sigma_n_S_m
+            * (np.asarray(phi_bc.target_edge_A_m2, dtype=float) - js_b_to_k)
+        )
+        b = np.asarray(b, dtype=float).copy()
+        b[np.asarray(phi_bc.boundary_nodes, dtype=np.int64)] = rhs_bc
 
     rhs_aug = np.concatenate([b, [0.0]])
     if poisson_op.solver is not None:
@@ -444,6 +589,7 @@ def solve_poisson_potential(
     material: GTDGLMaterial,
     ops: FVOperators,
     boundary_accum_A_m: np.ndarray | None = None,
+    phi_bc: PhiBoundaryConditions | None = None,
 ) -> np.ndarray:
     """Backward-compatible wrapper returning only the mean-zero potential.
 
@@ -456,6 +602,7 @@ def solve_poisson_potential(
         material=material,
         ops=ops,
         boundary_accum_A_m=boundary_accum_A_m,
+        phi_bc=phi_bc,
     ).phi_V
 
 
@@ -473,6 +620,127 @@ def target_terminal_boundary_accum_A_m(
         target_current_A=float(target_current_A),
         thickness_m=material.thickness_m,
     )
+
+
+def build_phi_boundary_conditions(
+    *,
+    mesh,
+    ops: FVOperators,
+    material: GTDGLMaterial,
+    seed,
+    target_current_A: float,
+    enabled: bool = True,
+) -> PhiBoundaryConditions | None:
+    """Build first-normal-edge electric BCs for varphi.
+
+    The constraints enforce the total current on the same inward normal edges
+    used by the Delta boundary condition:
+
+    * left/right: j_tot,bk = j_avg * (dx/ell), laminar longitudinal injection;
+    * top/bottom: j_tot,bk = 0, insulating boundary.
+
+    Corners are assigned to the longitudinal terminals first; top/bottom
+    constraints exclude left/right nodes to avoid over-constraining a corner.
+    """
+    if not enabled:
+        return None
+
+    nodes = np.asarray(mesh.nodes, dtype=float)
+    n_nodes = int(nodes.shape[0])
+    masks = boundary_node_masks(mesh)
+    terminal_mask = masks["left"] | masks["right"]
+    javg = target_current_density_A_m2(material, float(target_current_A))
+
+    boundary_parts: list[np.ndarray] = []
+    inner_parts: list[np.ndarray] = []
+    target_parts: list[np.ndarray] = []
+
+    terminal_pairs = terminal_inner_node_pairs(mesh, ops=ops)
+    for side in ("left", "right"):
+        b, k = terminal_pairs[side]
+        dx = nodes[k, 0] - nodes[b, 0]
+        dy = nodes[k, 1] - nodes[b, 1]
+        ell = np.maximum(np.sqrt(dx * dx + dy * dy), 1.0e-300)
+        boundary_parts.append(np.asarray(b, dtype=np.int64))
+        inner_parts.append(np.asarray(k, dtype=np.int64))
+        target_parts.append(javg * dx / ell)
+
+    for side in ("bottom", "top"):
+        b, k = nearest_inward_boundary_pairs(mesh, side, ops=ops)
+        keep = ~terminal_mask[b]
+        if np.any(keep):
+            boundary_parts.append(np.asarray(b[keep], dtype=np.int64))
+            inner_parts.append(np.asarray(k[keep], dtype=np.int64))
+            target_parts.append(np.zeros(int(np.count_nonzero(keep)), dtype=float))
+
+    if not boundary_parts:
+        return None
+
+    boundary = np.concatenate(boundary_parts).astype(np.int64)
+    inner = np.concatenate(inner_parts).astype(np.int64)
+    target = np.concatenate(target_parts).astype(float)
+
+    # Keep the first constraint for each boundary node.  This preserves the
+    # terminal priority at corners and avoids duplicate matrix rows.
+    seen: set[int] = set()
+    keep_idx: list[int] = []
+    for idx, b in enumerate(boundary.tolist()):
+        if b in seen:
+            continue
+        seen.add(b)
+        keep_idx.append(idx)
+    keep_arr = np.asarray(keep_idx, dtype=np.int64)
+    boundary = boundary[keep_arr]
+    inner = inner[keep_arr]
+    target = target[keep_arr]
+
+    edge_index, edge_sign = _edge_indices_and_signs_for_pairs(
+        ops=ops,
+        boundary=boundary,
+        inner=inner,
+    )
+    edge_length = np.asarray(ops.edge_length_m, dtype=float)[edge_index]
+    boundary_mask = np.zeros(n_nodes, dtype=bool)
+    boundary_mask[boundary] = True
+
+    return PhiBoundaryConditions(
+        boundary_nodes=boundary,
+        inner_nodes=inner,
+        edge_index=edge_index,
+        edge_sign_b_to_inner=edge_sign,
+        target_edge_A_m2=target,
+        edge_length_m=edge_length,
+        boundary_mask=boundary_mask,
+    )
+
+
+def _edge_indices_and_signs_for_pairs(
+    *,
+    ops: FVOperators,
+    boundary: np.ndarray,
+    inner: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return edge index and orientation sign for boundary -> inner pairs."""
+    edge_i = np.asarray(ops.edge_i, dtype=np.int64)
+    edge_j = np.asarray(ops.edge_j, dtype=np.int64)
+    lookup: dict[tuple[int, int], tuple[int, float]] = {}
+    for idx, (a, b) in enumerate(zip(edge_i.tolist(), edge_j.tolist())):
+        lookup[(int(a), int(b))] = (idx, +1.0)
+        lookup[(int(b), int(a))] = (idx, -1.0)
+
+    edge_index = np.empty(boundary.size, dtype=np.int64)
+    edge_sign = np.empty(boundary.size, dtype=float)
+    for m, (b, k) in enumerate(zip(boundary.tolist(), inner.tolist())):
+        key = (int(b), int(k))
+        if key not in lookup:
+            raise ValueError(
+                "Phi boundary pair is not an FV edge: "
+                f"boundary={b}, inner={k}."
+            )
+        idx, sign = lookup[key]
+        edge_index[m] = int(idx)
+        edge_sign[m] = float(sign)
+    return edge_index, edge_sign
 
 
 def kwt_delta_update_attempt(
@@ -1090,7 +1358,15 @@ def relax_stationary_gtdgl(
         material=material,
         target_current_A=target_current_A,
     )
-    poisson_op = build_poisson_operator(material=material, ops=ops)
+    phi_bc = build_phi_boundary_conditions(
+        mesh=mesh,
+        ops=ops,
+        material=material,
+        seed=seed,
+        target_current_A=target_current_A,
+        enabled=lock_terminals,
+    )
+    poisson_op = build_poisson_operator(material=material, ops=ops, phi_bc=phi_bc)
 
     # Notebook initial projection: compute defs, then Poisson, then recompute fields.
     defs0 = compute_formula_fields(psi_J=psi, Te_K=Te, material=material, ops=ops)
@@ -1100,6 +1376,7 @@ def relax_stationary_gtdgl(
         ops=ops,
         poisson_op=poisson_op,
         boundary_accum_A_m=boundary_accum,
+        phi_bc=phi_bc,
     )
     phi = poisson0.phi_V
     currents = compute_current_fields(
@@ -1238,6 +1515,7 @@ def relax_stationary_gtdgl(
             ops=ops,
             poisson_op=poisson_op,
             boundary_accum_A_m=boundary_accum,
+            phi_bc=phi_bc,
         )
         phi_trial = poisson.phi_V
         trial_currents = compute_current_fields(
