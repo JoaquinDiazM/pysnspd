@@ -120,6 +120,26 @@ def parse_args() -> argparse.Namespace:
         help="Do not impose stationary terminal boundary conditions.",
     )
     parser.add_argument(
+        "--ss-delta-boundary-policy",
+        choices=["current_inversion", "vacuum_only", "normal_terminal", "none"],
+        default="current_inversion",
+        help=(
+            "Delta boundary policy for OE7 diagnostics. current_inversion is "
+            "the current OE7 behavior; vacuum_only removes terminal Delta "
+            "forcing; normal_terminal imposes psi=0 on left/right, closer "
+            "to pyTDGL terminal diagnostics."
+        ),
+    )
+    parser.add_argument(
+        "--ss-poisson-terminal-policy",
+        choices=["target_flux", "zero_flux"],
+        default="target_flux",
+        help=(
+            "Poisson terminal-current policy. target_flux is the current OE7 "
+            "behavior; zero_flux removes the external terminal RHS flux."
+        ),
+    )
+    parser.add_argument(
         "--ss-n-phi-snapshots",
         type=int,
         default=6,
@@ -203,6 +223,8 @@ def main() -> int:
         tolerance_current_residual=args.ss_tolerance_current_residual,
         adapt_dt=not args.ss_no_adapt_dt,
         lock_terminals=not args.ss_unlock_terminals,
+        delta_boundary_policy=args.ss_delta_boundary_policy,
+        poisson_terminal_policy=args.ss_poisson_terminal_policy,
         progress=args.ss_progress,
         n_phi_snapshots=n_phi_snapshots,
     )
@@ -232,6 +254,8 @@ def main() -> int:
             "thermal_policy": "frozen_Te_Tph",
             "circuit_policy": "inactive",
             "tau_policy": "tau_ee and tau_ep multiplied by --ss-tau-scale during SS only",
+            "boundary_policy": args.ss_delta_boundary_policy,
+            "poisson_terminal_policy": args.ss_poisson_terminal_policy,
             "diagnostic_plot_policy": (
                 "Seed diagnostics are still emitted. Relaxed final-field "
                 "colormaps are not emitted. Field diagnostics are emitted as "

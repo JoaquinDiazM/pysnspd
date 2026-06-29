@@ -1,7 +1,12 @@
-"""OE7 smoke tests for stationary gTDGL/Poisson relaxation."""
+"""OE7 smoke tests for stationary gTDGL/Poisson relaxation.
+
+These tests intentionally exercise the refactored public API through
+``pysnspd.gtdgl.relax`` so old downstream imports remain covered.
+"""
 from __future__ import annotations
 
 from types import SimpleNamespace
+
 import numpy as np
 
 from pysnspd.mesh.delaunay import MeshData
@@ -74,6 +79,17 @@ def _material():
     )
 
 
+def _seed(mesh, mat):
+    psi = np.full(mesh.n_nodes, 0.7 * mat.delta0_J, dtype=np.complex128)
+    return SimpleNamespace(
+        node_psi_real_J=np.real(psi),
+        node_psi_imag_J=np.imag(psi),
+        node_phi_electric_V=np.zeros(mesh.n_nodes),
+        node_Te_K=np.full(mesh.n_nodes, 0.9),
+        node_Tph_K=np.full(mesh.n_nodes, 0.9),
+    )
+
+
 def test_tau_scale_changes_effective_relaxation_times():
     mat = _material()
     assert np.isclose(mat.tau_ee_s(8.65), 0.5e-12)
@@ -91,7 +107,7 @@ def test_kwt_local_update_preserves_state_for_zero_forcing():
     Te = np.full(mesh.n_nodes, 0.9)
     forcing = np.zeros(mesh.n_nodes, dtype=np.complex128)
 
-    updated, ok, _ = kwt_local_update(
+    updated, ok, discr_min = kwt_local_update(
         psi_J=psi,
         phi_V=phi,
         Te_K=Te,
@@ -101,6 +117,7 @@ def test_kwt_local_update_preserves_state_for_zero_forcing():
     )
 
     assert ok
+    assert np.isfinite(discr_min)
     assert np.allclose(updated, psi, rtol=1.0e-12, atol=1.0e-30)
     assert ops.n_edges > 0
 
@@ -121,19 +138,11 @@ def test_poisson_zero_supercurrent_returns_zero_potential():
     assert np.max(np.abs(phi)) < 1.0e-15
 
 
-def test_stationary_relaxation_smoke_zero_current_seed():
+def test_stationary_relaxation_smoke_zero_current_seed_default_policies():
     mesh, edge_data = _small_mesh()
     ops = build_fv_operators(mesh, edge_data)
     mat = _material()
-
-    psi = np.full(mesh.n_nodes, 0.7 * mat.delta0_J, dtype=np.complex128)
-    seed = SimpleNamespace(
-        node_psi_real_J=np.real(psi),
-        node_psi_imag_J=np.imag(psi),
-        node_phi_electric_V=np.zeros(mesh.n_nodes),
-        node_Te_K=np.full(mesh.n_nodes, 0.9),
-        node_Tph_K=np.full(mesh.n_nodes, 0.9),
-    )
+    seed = _seed(mesh, mat)
 
     result = relax_stationary_gtdgl(
         mesh=mesh,
@@ -150,6 +159,8 @@ def test_stationary_relaxation_smoke_zero_current_seed():
     )
 
     assert result.summary["accepted_steps"] >= 1
+    assert result.summary["delta_boundary_policy"] == "current_inversion"
+    assert result.summary["poisson_terminal_policy"] == "target_flux"
     assert np.isfinite(result.summary["terminal_voltage_V"])
     assert np.isfinite(result.summary["current_residual"])
 
