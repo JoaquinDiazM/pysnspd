@@ -9,13 +9,13 @@ import numpy as np
 from pysnspd.gtdgl.material import GTDGLMaterial
 from pysnspd.gtdgl.operators import FVOperators, terminal_voltage
 from pysnspd.gtdgl.state import GTDGLStationaryState, RelaxationResult
-from pysnspd.gtdgl.fields import compute_current_fields
 from pysnspd.gtdgl.diagnostics import (
     current_residual,
     current_density_maxima_A_m2,
     seed_target_current_A,
     target_current_density_A_m2,
 )
+from .currents import native_edge_currents_to_current_fields
 from .device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
 from .solver import TDGLSolver
@@ -155,17 +155,23 @@ def solve_stationary_pytdgl_like(
     phi_final_V = mu_final * device.voltage_scale_V
     phi_final_V = phi_final_V - float(np.mean(phi_final_V))
 
-    currents = compute_current_fields(
-        psi_J=psi_final_J,
-        phi_V=phi_final_V,
-        Te_K=Te,
-        material=material,
+    currents, native_diag = native_edge_currents_to_current_fields(
+        psi_dimensionless=psi_final,
+        native_supercurrent=solution.tdgl_data.supercurrent,
+        native_normal_current=solution.tdgl_data.normal_current,
+        device=device,
+        mesh=mesh,
+        edge_data=edge_data,
         ops=ops,
+        material=material,
+        Te_K=Te,
+        target_current_A=target_current_A,
     )
 
     history = _build_history(
         solution=solution,
         mesh=mesh,
+        edge_data=edge_data,
         ops=ops,
         material=material,
         Te=Te,
@@ -191,7 +197,13 @@ def solve_stationary_pytdgl_like(
         "terminal_psi": None if terminal_psi is None else str(terminal_psi),
         "target_current_A": target_current_A,
         "terminal_voltage_V": terminal_voltage(mesh.nodes, phi_final_V, length_m=mesh.length_m),
-        "current_residual": float(current_residual(currents, mesh)),
+        "current_residual": float(current_residual(currents, mesh, material, target_current_A)),
+        "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
+        "native_si_residual_no_boundary_rms_A_m3": float(native_diag.residual_no_boundary_rms_A_m3),
+        "native_si_residual_plus_boundary_rms_A_m3": float(native_diag.residual_plus_boundary_rms_A_m3),
+        "native_si_residual_minus_boundary_rms_A_m3": float(native_diag.residual_minus_boundary_rms_A_m3),
+        "native_si_selected_boundary_sign": float(native_diag.selected_boundary_sign),
+        "native_si_boundary_currents_from_total_A": native_diag.boundary_currents_from_total_A,
         "eta_R_final": float(history["eta_R"][-1]) if history["eta_R"].size else float("nan"),
         "min_delta_over_delta0": float(np.min(np.abs(psi_final_J)) / material.delta0_J),
         "mean_delta_over_delta0": float(np.mean(np.abs(psi_final_J)) / material.delta0_J),
@@ -225,6 +237,7 @@ def solve_stationary_pytdgl_like(
             "voltage_scale_V": float(device.voltage_scale_V),
             "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
             "current_scale_A": float(device.current_scale_A),
+            "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
         },
     )
@@ -235,6 +248,7 @@ def _build_history(
     *,
     solution,
     mesh,
+    edge_data,
     ops: FVOperators,
     material: GTDGLMaterial,
     Te: np.ndarray,
@@ -259,7 +273,7 @@ def _build_history(
     delta_abs = np.abs(psi_final_J)
     javg = abs(target_current_density_A_m2(material, target_current_A))
     jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
-    residual = float(current_residual(currents, mesh))
+    residual = float(current_residual(currents, mesh, material, target_current_A))
 
     hist: dict[str, np.ndarray] = {
         "t_s": t_s,
@@ -316,16 +330,30 @@ def _build_history(
             phi_snap_V = np.tile(phi_final_V, (ns, 1))
 
     delta_mev = np.abs(psi_snap_J) / MEV_J
-    current_frames = [
-        compute_current_fields(
-            psi_J=psi_snap_J[k],
-            phi_V=phi_snap_V[k],
-            Te_K=Te,
-            material=material,
+    def _native_snap(arr: np.ndarray, ncols: int) -> np.ndarray:
+        if arr.ndim == 2 and arr.shape[0] >= ns and arr.shape[1] == ncols:
+            return arr[:ns]
+        return np.zeros((ns, ncols), dtype=float)
+
+    native_super_si = _native_snap(native_super_snap, ops.n_edges)
+    native_normal_si = _native_snap(native_normal_snap, ops.n_edges)
+    current_frames = []
+    native_diags = []
+    for k in range(psi_snap_J.shape[0]):
+        c, d = native_edge_currents_to_current_fields(
+            psi_dimensionless=psi_snap_J[k] / material.delta0_J,
+            native_supercurrent=native_super_si[k],
+            native_normal_current=native_normal_si[k],
+            device=solution.device,
+            mesh=mesh,
+            edge_data=edge_data,
             ops=ops,
+            material=material,
+            Te_K=Te,
+            target_current_A=target_current_A,
         )
-        for k in range(psi_snap_J.shape[0])
-    ]
+        current_frames.append(c)
+        native_diags.append(d)
 
     jtot_x = np.vstack([c.node_jtot_x_A_m2 for c in current_frames])
     jtot_y = np.vstack([c.node_jtot_y_A_m2 for c in current_frames])
@@ -400,13 +428,8 @@ def _build_history(
     # Native pyTDGL-like solver snapshots, kept in the internal operator units.
     # These are for debugging the sparse Poisson system and should not be
     # interpreted as SI currents without an explicit adapter conversion.
-    def _native_snap(arr: np.ndarray, ncols: int) -> np.ndarray:
-        if arr.ndim == 2 and arr.shape[0] >= ns and arr.shape[1] == ncols:
-            return arr[:ns]
-        return np.zeros((ns, ncols), dtype=float)
-
-    hist["pytdgl_like_native_supercurrent_snapshot"] = _native_snap(native_super_snap, ops.n_edges)
-    hist["pytdgl_like_native_normal_current_snapshot"] = _native_snap(native_normal_snap, ops.n_edges)
+    hist["pytdgl_like_native_supercurrent_snapshot"] = native_super_si
+    hist["pytdgl_like_native_normal_current_snapshot"] = native_normal_si
     hist["pytdgl_like_native_total_current_snapshot"] = (
         hist["pytdgl_like_native_supercurrent_snapshot"]
         + hist["pytdgl_like_native_normal_current_snapshot"]
@@ -417,4 +440,16 @@ def _build_history(
     hist["pytdgl_like_div_supercurrent_snapshot"] = _native_snap(native_divs_snap, mesh.n_nodes)
     hist["pytdgl_like_boundary_rhs_snapshot"] = _native_snap(native_brhs_snap, mesh.n_nodes)
     hist["pytdgl_like_snapshot_t_s"] = snap_t
+    hist["pytdgl_like_native_si_current_scale_A_m2"] = np.array(
+        [float(native_diags[-1].current_scale_A_m2) if native_diags else 0.0]
+    )
+    hist["pytdgl_like_native_si_residual_plus_boundary_rms_A_m3"] = np.asarray(
+        [d.residual_plus_boundary_rms_A_m3 for d in native_diags], dtype=float
+    )
+    hist["pytdgl_like_native_si_residual_minus_boundary_rms_A_m3"] = np.asarray(
+        [d.residual_minus_boundary_rms_A_m3 for d in native_diags], dtype=float
+    )
+    hist["pytdgl_like_native_si_residual_no_boundary_rms_A_m3"] = np.asarray(
+        [d.residual_no_boundary_rms_A_m3 for d in native_diags], dtype=float
+    )
     return hist

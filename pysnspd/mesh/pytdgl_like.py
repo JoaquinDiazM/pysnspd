@@ -1,203 +1,244 @@
-"""pyTDGL-like rectangular Delaunay mesh generation for pySNSPD.
+"""pyTDGL-faithful rectangular PRE mesh generation in SI units.
 
-This module intentionally follows the finite-volume mesh idea used by
-``pyTDGL``: a triangular Delaunay mesh whose vertices carry scalar fields and
-whose dual Voronoi cells define the finite-volume control volumes.  pySNSPD
-continues to store coordinates in SI meters and to use its existing PRE-run
-file formats.
+This module replaces the earlier jittered/staggered rectangular point cloud with
+the same meshing path used by pyTDGL:
 
-The generator below replaces the previous protected structured grid for the
-pyTDGL-like branch.  It keeps the rectangle and current terminals explicit, but
-uses an unstructured Delaunay point cloud plus optional Laplacian smoothing of
-interior sites, analogous to ``tdgl.finite_volume.Mesh.smooth``.
+    polygon boundary -> meshpy.triangle.build -> Mesh.from_triangulation ->
+    optional Mesh.smooth -> EdgeMesh + Voronoi control volumes.
+
+The only deliberate difference from pyTDGL is units: every coordinate remains in
+meters.  No pyTDGL coherence-length scaling is performed here.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass
-import math
+from pathlib import Path
 from typing import Any, Mapping
 
 import numpy as np
-from scipy.spatial import Delaunay
 
+from pysnspd.gtdgl.pytdgl_like.finite_volume import Mesh
+from pysnspd.gtdgl.pytdgl_like.finite_volume.meshing import generate_mesh
 from pysnspd.mesh.delaunay import MeshData, orient_triangles_counterclockwise
 
 
 @dataclass(frozen=True)
 class PyTDGLLikeMeshParameters:
-    """Parameters used by the pyTDGL-like rectangular mesh generator."""
+    """Parameters for pyTDGL-style rectangular meshing in SI meters."""
 
     length_m: float
     width_m: float
     target_spacing_m: float
     seed: int
-    boundary_spacing_factor: float = 1.0
-    interior_jitter_fraction: float = 0.20
-    smoothing_iterations: int = 2
+    max_edge_length_m: float
+    min_angle_deg: float = 32.5
+    smooth: int = 100
+    min_points: int | None = None
     terminal_contact_mode: str = "normal_left_right"
 
 
 def parameters_from_config(
     config: Mapping[str, Any],
     *,
-    jitter_fraction: float = 0.20,
+    jitter_fraction: float = 0.0,
     boundary_guard_layers: int = 1,
-    boundary_spacing_factor: float = 1.0,
-    smoothing_iterations: int | None = None,
+    max_edge_length_m: float | None = None,
+    min_angle_deg: float = 32.5,
+    smooth: int | None = None,
+    min_points: int | None = None,
 ) -> PyTDGLLikeMeshParameters:
-    """Resolve pyTDGL-like mesh parameters from the pySNSPD config.
+    """Resolve pyTDGL-like meshing parameters from a full or minimal config.
 
-    ``boundary_guard_layers`` is accepted for compatibility with the old
-    PRE-run CLI.  In this unstructured backend it controls the default number
-    of Laplacian smoothing iterations when ``smoothing_iterations`` is not
-    supplied: more protected layers in the old mesh correspond to a smoother
-    interior mesh here.
+    ``jitter_fraction`` is accepted only for CLI compatibility with old
+    pySNSPD PRE-runs; pyTDGL-style meshing does not jitter a pre-structured
+    lattice.  If ``smooth`` is not provided, ``boundary_guard_layers`` is mapped
+    to a conservative smoothing count so old CLI calls remain meaningful.
     """
+    del jitter_fraction
+    material = config.get("material", {})
+    mesh_cfg = config.get("mesh", {})
+    geometry = config.get("geometry", {}) if isinstance(config.get("geometry", {}), Mapping) else {}
 
-    # Mesh generation must not validate the full pySNSPD runtime config.
-    # Unit tests and small mesh experiments often provide only the sections
-    # needed here.  The full PRE-run pipeline is still responsible for loading
-    # and validating the complete config before it reaches this helper.
-    cfg = dict(config)
-    if "material" not in cfg:
-        raise KeyError("config must contain a 'material' section")
-    if "mesh" not in cfg:
-        raise KeyError("config must contain a 'mesh' section")
-
-    material = cfg["material"]
-    mesh_cfg = cfg["mesh"]
-
-    width_m = float(material["width_m"])
-    spacing_m = float(mesh_cfg["target_spacing_m"])
-    seed = int(mesh_cfg.get("seed", 0))
+    width_m = float(material.get("width_m", mesh_cfg.get("width_m", 0.0)))
+    spacing_m = float(mesh_cfg.get("target_spacing_m", material.get("target_spacing_m", 0.0)))
+    seed = int(mesh_cfg.get("seed", 12345))
     if "length_m" in mesh_cfg:
         length_m = float(mesh_cfg["length_m"])
-    elif "geometry" in cfg and isinstance(cfg["geometry"], Mapping) and "length_m" in cfg["geometry"]:
-        length_m = float(cfg["geometry"]["length_m"])
+    elif "length_m" in geometry:
+        length_m = float(geometry["length_m"])
     else:
         length_m = 2.0 * width_m
+    if max_edge_length_m is None:
+        max_edge_length_m = spacing_m
+    if smooth is None:
+        # pyTDGL examples use smooth=100 for high-quality plots.  Keep the old
+        # boundary_guard_layers flag meaningful, but do not let it silently
+        # remove smoothing entirely.
+        smooth = max(20, 50 * int(max(1, boundary_guard_layers)))
 
-    if smoothing_iterations is None:
-        smoothing_iterations = max(0, int(boundary_guard_layers))
-
-    return PyTDGLLikeMeshParameters(
+    params = PyTDGLLikeMeshParameters(
         length_m=length_m,
         width_m=width_m,
         target_spacing_m=spacing_m,
         seed=seed,
-        boundary_spacing_factor=float(boundary_spacing_factor),
-        interior_jitter_fraction=float(jitter_fraction),
-        smoothing_iterations=int(smoothing_iterations),
+        max_edge_length_m=float(max_edge_length_m),
+        min_angle_deg=float(min_angle_deg),
+        smooth=int(smooth),
+        min_points=min_points,
     )
+    _validate_parameters(params)
+    return params
 
 
 def generate_rectangular_pytdgl_like_mesh(
     config: Mapping[str, Any],
     *,
-    jitter_fraction: float = 0.20,
+    jitter_fraction: float = 0.0,
     boundary_guard_layers: int = 1,
-    boundary_spacing_factor: float = 1.0,
-    smoothing_iterations: int | None = None,
+    max_edge_length_m: float | None = None,
+    min_angle_deg: float = 32.5,
+    smooth: int | None = None,
+    min_points: int | None = None,
 ) -> MeshData:
-    """Generate an unstructured pyTDGL-like Delaunay mesh in SI meters.
-
-    The rectangle is ``x in [0, L]`` and ``y in [-W/2, W/2]``.  Boundary
-    vertices are placed exactly on the four physical boundaries so the normal
-    contacts at ``left`` and ``right`` remain explicit.  Interior vertices are
-    generated from a slightly jittered triangular lattice and triangulated with
-    SciPy/Qhull Delaunay.
-    """
-
+    """Generate a rectangular pyTDGL-style mesh and return pySNSPD MeshData."""
     params = parameters_from_config(
         config,
         jitter_fraction=jitter_fraction,
         boundary_guard_layers=boundary_guard_layers,
-        boundary_spacing_factor=boundary_spacing_factor,
-        smoothing_iterations=smoothing_iterations,
+        max_edge_length_m=max_edge_length_m,
+        min_angle_deg=min_angle_deg,
+        smooth=smooth,
+        min_points=min_points,
     )
-    return generate_rectangular_pytdgl_like_mesh_from_parameters(params)
-
-
-def generate_rectangular_pytdgl_like_mesh_from_parameters(
-    params: PyTDGLLikeMeshParameters,
-) -> MeshData:
-    """Generate a pyTDGL-like mesh from resolved parameters."""
-
-    _validate_parameters(params)
-    rng = np.random.default_rng(int(params.seed))
-
-    boundary = _rectangular_boundary_points(
-        params.length_m,
-        params.width_m,
-        params.target_spacing_m * params.boundary_spacing_factor,
-    )
-    interior = _triangular_lattice_interior_points(
-        params.length_m,
-        params.width_m,
-        params.target_spacing_m,
-        jitter_fraction=params.interior_jitter_fraction,
-        rng=rng,
-    )
-    nodes = np.vstack([boundary, interior]) if interior.size else boundary.copy()
-    nodes = _unique_rows_with_tolerance(nodes, tol=1.0e-15)
-    triangles = _delaunay_triangles_inside_rectangle(nodes, params.length_m, params.width_m)
-    nodes, triangles = _compact_used_nodes(nodes, triangles)
-    triangles = orient_triangles_counterclockwise(nodes, triangles)
-
-    boundary_mask = _boundary_node_mask(nodes, params.length_m, params.width_m)
-    if params.smoothing_iterations > 0:
-        nodes = laplacian_smooth_interior_nodes(
-            nodes,
-            triangles,
-            boundary_mask=boundary_mask,
-            iterations=params.smoothing_iterations,
-        )
-        nodes = _snap_rectangular_boundary(nodes, params.length_m, params.width_m)
-        triangles = orient_triangles_counterclockwise(nodes, triangles)
-
+    mesh = generate_rectangular_pytdgl_fvm_mesh_from_parameters(params)
     return MeshData(
-        nodes=np.asarray(nodes, dtype=float),
-        triangles=np.asarray(triangles, dtype=np.int64),
+        nodes=np.asarray(mesh.sites, dtype=float),
+        triangles=orient_triangles_counterclockwise(mesh.sites, mesh.elements),
         length_m=float(params.length_m),
         width_m=float(params.width_m),
         target_spacing_m=float(params.target_spacing_m),
         seed=int(params.seed),
-        triangulation_method="pytdgl_like_unstructured_delaunay_v1",
-        boundary_guard_layers=int(params.smoothing_iterations),
+        triangulation_method="pytdgl_generate_mesh_meshpy_triangle_v1",
+        boundary_guard_layers=int(params.smooth),
     )
 
 
-def laplacian_smooth_interior_nodes(
-    nodes: np.ndarray,
-    triangles: np.ndarray,
-    *,
-    boundary_mask: np.ndarray,
-    iterations: int,
-) -> np.ndarray:
-    """Laplacian-smooth interior nodes while holding boundary nodes fixed.
+def generate_rectangular_pytdgl_fvm_mesh_from_parameters(
+    params: PyTDGLLikeMeshParameters,
+) -> Mesh:
+    """Generate the full pyTDGL-like finite-volume Mesh for a rectangle."""
+    _validate_parameters(params)
+    # meshpy/triangle itself is deterministic for fixed input.  The seed is kept
+    # in the summary for reproducibility compatibility with pySNSPD.
+    poly_coords = rectangular_boundary_points(
+        params.length_m,
+        params.width_m,
+        params.target_spacing_m,
+    )
+    points, triangles = generate_mesh(
+        poly_coords=poly_coords,
+        hole_coords=None,
+        min_points=params.min_points,
+        max_edge_length=params.max_edge_length_m,
+        convex_hull=False,
+        boundary=poly_coords,
+        min_angle=params.min_angle_deg,
+    )
+    # Follow pyTDGL's Device.make_mesh ordering exactly: build the primary
+    # triangulation first, smooth it without constructing the dual submesh at
+    # intermediate iterations, and only then build the final Mesh with EdgeMesh
+    # and Voronoi control volumes.  Building the Voronoi submesh before
+    # smoothing can fail for valid meshpy triangulations near the boundary.
+    primary_mesh = Mesh.from_triangulation(points, triangles, create_submesh=False)
+    if params.smooth > 0:
+        primary_mesh = primary_mesh.smooth(params.smooth, create_submesh=False)
+    return Mesh.from_triangulation(
+        primary_mesh.sites,
+        primary_mesh.elements,
+        create_submesh=True,
+    )
 
-    This mirrors pyTDGL's ``Mesh.smooth`` behavior: each interior site moves to
-    the arithmetic average of its neighboring sites, then boundary sites are
-    restored exactly.
+
+def rectangular_boundary_points(length_m: float, width_m: float, spacing_m: float) -> np.ndarray:
+    """Return the rectangular film polygon vertices in meters.
+
+    This intentionally follows pyTDGL's meshing path: the polygon supplies only
+    its geometric vertices, while ``meshpy.triangle.build`` is responsible for
+    inserting boundary and interior mesh sites during refinement.  A dense,
+    pre-resampled boundary over-constrains Triangle and can produce malformed
+    Voronoi control cells near the first interior row.
+
+    The curve is open: the first point is not repeated at the end.  This matches
+    the input convention accepted by shapely/pyTDGL Polygon construction after
+    duplicate endpoints are removed.
     """
+    del spacing_m  # Kept in the signature for compatibility with old callers.
+    length = float(length_m)
+    half_w = 0.5 * float(width_m)
+    return np.array(
+        [
+            [0.0, -half_w],
+            [length, -half_w],
+            [length, half_w],
+            [0.0, half_w],
+        ],
+        dtype=float,
+    )
 
-    out = np.asarray(nodes, dtype=float).copy()
-    boundary_mask = np.asarray(boundary_mask, dtype=bool)
-    edges = _unique_triangle_edges(np.asarray(triangles, dtype=np.int64))
-    n = out.shape[0]
-    boundary_values = out[boundary_mask].copy()
 
-    for _ in range(max(0, int(iterations))):
-        num_neighbors = np.bincount(edges.ravel(), minlength=n).astype(float)
-        new_sites = np.zeros_like(out)
-        for dim in (0, 1):
-            vals = out[:, dim]
-            accum = np.bincount(edges[:, 0], weights=vals[edges[:, 1]], minlength=n)
-            accum += np.bincount(edges[:, 1], weights=vals[edges[:, 0]], minlength=n)
-            new_sites[:, dim] = accum / np.maximum(num_neighbors, 1.0)
-        out[~boundary_mask] = new_sites[~boundary_mask]
-        out[boundary_mask] = boundary_values
-    return out
+def save_pytdgl_like_mesh_npz(mesh: Mesh, path: str | Path) -> Path:
+    """Save full pyTDGL-like finite-volume mesh arrays to ``.npz``."""
+    output = Path(path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    polygons = mesh.voronoi_polygons or []
+    if polygons:
+        split_indices = np.cumsum([len(p) for p in polygons[:-1]])
+        polygons_flat = np.concatenate(polygons, axis=0)
+    else:
+        split_indices = np.array([], dtype=np.int64)
+        polygons_flat = np.empty((0, 2), dtype=float)
+    edge_mesh = mesh.edge_mesh
+    if edge_mesh is None:
+        raise ValueError("Mesh must have edge_mesh to save pyTDGL-like full mesh.")
+    np.savez_compressed(
+        output,
+        sites=mesh.sites,
+        elements=mesh.elements,
+        boundary_indices=mesh.boundary_indices,
+        areas=mesh.areas,
+        dual_sites=mesh.dual_sites,
+        voronoi_polygons_flat=polygons_flat,
+        voronoi_split_indices=split_indices,
+        edge_centers=edge_mesh.centers,
+        edge_edges=edge_mesh.edges,
+        edge_boundary_edge_indices=edge_mesh.boundary_edge_indices,
+        edge_directions=edge_mesh.directions,
+        edge_lengths=edge_mesh.edge_lengths,
+        edge_dual_edge_lengths=edge_mesh.dual_edge_lengths,
+    )
+    return output
+
+
+def build_pytdgl_like_mesh_summary(mesh: Mesh) -> dict[str, Any]:
+    """Summary for the full pyTDGL-like finite-volume mesh."""
+    edge_mesh = mesh.edge_mesh
+    if edge_mesh is None:
+        raise ValueError("Mesh must include an EdgeMesh.")
+    return {
+        "backend": "pytdgl_like_meshpy_triangle_fvm_v1",
+        "n_sites": int(len(mesh.sites)),
+        "n_elements": int(len(mesh.elements)),
+        "n_boundary_sites": int(len(mesh.boundary_indices)),
+        "n_edges": int(len(edge_mesh.edges)),
+        "n_boundary_edges": int(len(edge_mesh.boundary_edge_indices)),
+        "area_sum_m2": float(np.sum(mesh.areas)),
+        "area_min_m2": float(np.min(mesh.areas)),
+        "area_max_m2": float(np.max(mesh.areas)),
+        "edge_length_min_m": float(np.min(edge_mesh.edge_lengths)),
+        "edge_length_max_m": float(np.max(edge_mesh.edge_lengths)),
+        "dual_edge_length_min_m": float(np.min(edge_mesh.dual_edge_lengths)),
+        "dual_edge_length_max_m": float(np.max(edge_mesh.dual_edge_lengths)),
+    }
 
 
 def _validate_parameters(params: PyTDGLLikeMeshParameters) -> None:
@@ -207,126 +248,9 @@ def _validate_parameters(params: PyTDGLLikeMeshParameters) -> None:
         raise ValueError("width_m must be positive.")
     if params.target_spacing_m <= 0.0:
         raise ValueError("target_spacing_m must be positive.")
-    if params.boundary_spacing_factor <= 0.0:
-        raise ValueError("boundary_spacing_factor must be positive.")
-    if not (0.0 <= params.interior_jitter_fraction < 0.5):
-        raise ValueError("interior_jitter_fraction must satisfy 0 <= f < 0.5.")
-
-
-def _rectangular_boundary_points(length_m: float, width_m: float, spacing_m: float) -> np.ndarray:
-    half_w = 0.5 * width_m
-    nx = max(2, int(math.ceil(length_m / spacing_m)))
-    ny = max(2, int(math.ceil(width_m / spacing_m)))
-
-    xs = np.linspace(0.0, length_m, nx + 1)
-    ys = np.linspace(-half_w, half_w, ny + 1)
-
-    bottom = np.column_stack([xs, np.full_like(xs, -half_w)])
-    right = np.column_stack([np.full_like(ys[1:-1], length_m), ys[1:-1]])
-    top = np.column_stack([xs[::-1], np.full_like(xs, half_w)])
-    left = np.column_stack([np.full_like(ys[-2:0:-1], 0.0), ys[-2:0:-1]])
-    return np.vstack([bottom, right, top, left])
-
-
-def _triangular_lattice_interior_points(
-    length_m: float,
-    width_m: float,
-    spacing_m: float,
-    *,
-    jitter_fraction: float,
-    rng: np.random.Generator,
-) -> np.ndarray:
-    half_w = 0.5 * width_m
-    dy = 0.5 * math.sqrt(3.0) * spacing_m
-    xs_base = np.arange(spacing_m, length_m, spacing_m)
-    ys = np.arange(-half_w + dy, half_w, dy)
-    pts: list[np.ndarray] = []
-    margin = 0.35 * spacing_m
-    jitter = jitter_fraction * spacing_m
-
-    for row, y in enumerate(ys):
-        offset = 0.5 * spacing_m if row % 2 else 0.0
-        xs = xs_base + offset
-        xs = xs[(xs > margin) & (xs < length_m - margin)]
-        if xs.size == 0:
-            continue
-        row_pts = np.column_stack([xs, np.full_like(xs, y)])
-        if jitter > 0:
-            row_pts += rng.uniform(-jitter, jitter, size=row_pts.shape)
-        keep = (
-            (row_pts[:, 0] > margin)
-            & (row_pts[:, 0] < length_m - margin)
-            & (row_pts[:, 1] > -half_w + margin)
-            & (row_pts[:, 1] < half_w - margin)
-        )
-        if np.any(keep):
-            pts.append(row_pts[keep])
-    if not pts:
-        return np.empty((0, 2), dtype=float)
-    return np.vstack(pts)
-
-
-def _delaunay_triangles_inside_rectangle(nodes: np.ndarray, length_m: float, width_m: float) -> np.ndarray:
-    tri = Delaunay(nodes)
-    triangles = np.asarray(tri.simplices, dtype=np.int64)
-    centroids = nodes[triangles].mean(axis=1)
-    half_w = 0.5 * width_m
-    keep = (
-        (centroids[:, 0] >= -1.0e-15)
-        & (centroids[:, 0] <= length_m + 1.0e-15)
-        & (centroids[:, 1] >= -half_w - 1.0e-15)
-        & (centroids[:, 1] <= half_w + 1.0e-15)
-    )
-    triangles = triangles[keep]
-    if triangles.size == 0:
-        raise RuntimeError("Delaunay triangulation produced no in-domain triangles.")
-    return triangles
-
-
-def _compact_used_nodes(nodes: np.ndarray, triangles: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    used = np.unique(triangles.ravel())
-    remap = -np.ones(nodes.shape[0], dtype=np.int64)
-    remap[used] = np.arange(used.size, dtype=np.int64)
-    return nodes[used], remap[triangles]
-
-
-def _boundary_node_mask(nodes: np.ndarray, length_m: float, width_m: float) -> np.ndarray:
-    half_w = 0.5 * width_m
-    tol = max(1.0e-15, 1.0e-8 * min(length_m, width_m))
-    return (
-        np.isclose(nodes[:, 0], 0.0, atol=tol)
-        | np.isclose(nodes[:, 0], length_m, atol=tol)
-        | np.isclose(nodes[:, 1], -half_w, atol=tol)
-        | np.isclose(nodes[:, 1], half_w, atol=tol)
-    )
-
-
-def _snap_rectangular_boundary(nodes: np.ndarray, length_m: float, width_m: float) -> np.ndarray:
-    out = np.asarray(nodes, dtype=float).copy()
-    half_w = 0.5 * width_m
-    tol = max(1.0e-15, 1.0e-8 * min(length_m, width_m))
-    out[np.isclose(out[:, 0], 0.0, atol=tol), 0] = 0.0
-    out[np.isclose(out[:, 0], length_m, atol=tol), 0] = length_m
-    out[np.isclose(out[:, 1], -half_w, atol=tol), 1] = -half_w
-    out[np.isclose(out[:, 1], half_w, atol=tol), 1] = half_w
-    return out
-
-
-def _unique_triangle_edges(triangles: np.ndarray) -> np.ndarray:
-    edges = np.vstack(
-        [
-            triangles[:, [0, 1]],
-            triangles[:, [1, 2]],
-            triangles[:, [2, 0]],
-        ]
-    )
-    edges = np.sort(edges, axis=1)
-    return np.unique(edges, axis=0)
-
-
-def _unique_rows_with_tolerance(points: np.ndarray, *, tol: float) -> np.ndarray:
-    if points.size == 0:
-        return points.reshape(0, 2)
-    scaled = np.round(points / tol).astype(np.int64)
-    _, idx = np.unique(scaled, axis=0, return_index=True)
-    return points[np.sort(idx)]
+    if params.max_edge_length_m <= 0.0:
+        raise ValueError("max_edge_length_m must be positive.")
+    if params.min_angle_deg <= 0.0:
+        raise ValueError("min_angle_deg must be positive.")
+    if params.smooth < 0:
+        raise ValueError("smooth must be non-negative.")

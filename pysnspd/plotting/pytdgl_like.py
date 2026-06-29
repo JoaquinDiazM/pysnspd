@@ -40,7 +40,7 @@ def plot_pytdgl_like_native_history(history: dict, output_path: str | Path, *, d
             arr = np.resize(arr, t_ps.size)
         return arr
 
-    fig, axes = plt.subplots(2, 1, figsize=(12, 7), constrained_layout=True)
+    fig, axes = plt.subplots(3, 1, figsize=(12, 10), constrained_layout=True)
     ax = axes[0]
     ax.semilogy(t_ps, np.maximum(y("pytdgl_like_poisson_residual_rel"), 1.0e-300), label="||Lμ-rhs|| / ||rhs||")
     ax.semilogy(t_ps, np.maximum(y("pytdgl_like_poisson_residual_max_abs"), 1.0e-300), label="max |Lμ-rhs|")
@@ -57,6 +57,15 @@ def plot_pytdgl_like_native_history(history: dict, output_path: str | Path, *, d
     ax.set_title("native RHS balance")
     ax.set_xlabel("t [ps]")
     ax.set_ylabel("native norm")
+    ax.legend(loc="best")
+
+    ax = axes[2]
+    ax.semilogy(t_ps, np.maximum(y("pytdgl_like_native_si_residual_no_boundary_rms_A_m3"), 1.0e-300), label="SI rms div(j), no boundary")
+    ax.semilogy(t_ps, np.maximum(y("pytdgl_like_native_si_residual_plus_boundary_rms_A_m3"), 1.0e-300), label="SI rms div(j)+boundary")
+    ax.semilogy(t_ps, np.maximum(y("pytdgl_like_native_si_residual_minus_boundary_rms_A_m3"), 1.0e-300), label="SI rms div(j)-boundary")
+    ax.set_title("native currents converted back to SI")
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel("rms residual [A m$^{-3}$]")
     ax.legend(loc="best")
 
     fig.savefig(output_path, dpi=dpi)
