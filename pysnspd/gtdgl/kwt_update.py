@@ -6,6 +6,8 @@ import numpy as np
 from pysnspd.gtdgl.material import E_CHARGE_C, HBAR_J_S, GTDGLMaterial
 from pysnspd.gtdgl.state import FormulaFields
 
+VALID_PHI_PHASE_POLICIES = {"plus", "none", "minus"}
+
 
 def kwt_delta_update_attempt(
     *,
@@ -14,20 +16,40 @@ def kwt_delta_update_attempt(
     defs: FormulaFields,
     dt_s: float,
     material: GTDGLMaterial,
+    phi_phase_policy: str = "plus",
 ) -> tuple[np.ndarray | None, float]:
     """Notebook local semi-implicit KWT update attempt.
 
     Solves locally
         Delta^{n+1} + z |Delta^{n+1}|^2 = w
-    with temporal gauge link U = exp(i 2e varphi dt / hbar).
+    with a selectable temporal gauge link. The default ``plus`` preserves the
+    previous OE7 convention,
+
+        U = exp(+i 2e varphi dt / hbar),
+
+    and the local algebra uses ``Uinv = conj(U)``. The diagnostic policies are
+    ``none`` for no electrostatic phase link and ``minus`` for the opposite
+    sign convention.
     """
     tau0 = material.tau0_GL_s
     Delta_n = np.asarray(psi_J, dtype=np.complex128)
     phi = np.asarray(phi_V, dtype=float)
     amp2_n = np.abs(Delta_n) ** 2
 
-    U = np.exp(1j * (2.0 * E_CHARGE_C / HBAR_J_S) * phi * float(dt_s))
-    Uinv = np.conjugate(U)
+    phi_phase_policy = str(phi_phase_policy)
+    if phi_phase_policy not in VALID_PHI_PHASE_POLICIES:
+        raise ValueError(
+            "phi_phase_policy must be one of "
+            f"{sorted(VALID_PHI_PHASE_POLICIES)}, got {phi_phase_policy!r}."
+        )
+
+    phase = (2.0 * E_CHARGE_C / HBAR_J_S) * phi * float(dt_s)
+    if phi_phase_policy == "plus":
+        Uinv = np.exp(-1j * phase)
+    elif phi_phase_policy == "minus":
+        Uinv = np.exp(+1j * phase)
+    else:  # phi_phase_policy == "none"
+        Uinv = np.ones_like(phi, dtype=np.complex128)
 
     alpha = defs.alpha_kwt_J_inv2
     z = alpha * Uinv * Delta_n

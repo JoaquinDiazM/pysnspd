@@ -48,7 +48,11 @@ from pysnspd.gtdgl.poisson_projection import (
     build_phi_boundary_conditions,
     _edge_indices_and_signs_for_pairs,
 )
-from pysnspd.gtdgl.kwt_update import kwt_delta_update_attempt, kwt_local_update
+from pysnspd.gtdgl.kwt_update import (
+    VALID_PHI_PHASE_POLICIES,
+    kwt_delta_update_attempt,
+    kwt_local_update,
+)
 from pysnspd.gtdgl.stationary_boundary import (
     VALID_DELTA_BOUNDARY_POLICIES,
     apply_delta_boundary_policy,
@@ -104,10 +108,20 @@ def relax_stationary_gtdgl(
     target_current_A: float | None = None,
     progress: bool = False,
     n_phi_snapshots: int = 6,
+    phi_phase_policy: str = "plus",
     use_phi_phase: bool = True,
 ) -> RelaxationResult:
     """Relax the OE6 seed with frozen temperatures and notebook solver ordering."""
-    del use_phi_phase  # Notebook always uses the temporal gauge link in KWT.
+    if not use_phi_phase and str(phi_phase_policy) == "plus":
+        # Backward-compatible legacy knob. New diagnostics should prefer the
+        # explicit ``phi_phase_policy`` argument.
+        phi_phase_policy = "none"
+
+    if phi_phase_policy not in VALID_PHI_PHASE_POLICIES:
+        raise ValueError(
+            "phi_phase_policy must be one of "
+            f"{sorted(VALID_PHI_PHASE_POLICIES)}, got {phi_phase_policy!r}."
+        )
 
     if delta_boundary_policy not in VALID_DELTA_BOUNDARY_POLICIES:
         raise ValueError(
@@ -295,6 +309,7 @@ def relax_stationary_gtdgl(
                 defs=defs_n,
                 dt_s=dt_eff,
                 material=material,
+                phi_phase_policy=phi_phase_policy,
             )
             if psi_new is not None:
                 break
@@ -488,7 +503,8 @@ def relax_stationary_gtdgl(
 
     summary = {
         "backend": "oe7_notebook_order_kwt_poisson_v1",
-        "gauge_policy": "notebook_temporal_gauge_link_in_kwt",
+        "gauge_policy": "selectable_temporal_gauge_link_in_kwt",
+        "phi_phase_policy": str(phi_phase_policy),
         "converged": bool(converged),
         "accepted_steps": int(accepted),
         "rejected_steps": int(rejected),
@@ -541,6 +557,7 @@ def relax_stationary_gtdgl(
         "circuit_policy": "inactive",
         "boundary_policy": str(delta_boundary_policy),
         "poisson_terminal_policy": str(poisson_terminal_policy),
+        "phi_phase_policy": str(phi_phase_policy),
         "poisson_policy": "notebook_conservative_FV_mean_zero_gauge",
         "pairbreaking_ratio": "xi^2 Q^2 / (1 - T/Tc)",
         "adaptive_rejection_policy": "reject accepted-looking SS trials if eta, pairbreaking, js/javg, or jtot/javg exceed stationary ceilings",

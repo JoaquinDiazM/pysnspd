@@ -140,6 +140,16 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--ss-phi-phase-policy",
+        choices=["plus", "none", "minus"],
+        default="plus",
+        help=(
+            "Temporal gauge-link policy used inside the local KWT update. "
+            "plus preserves the current OE7 convention; none disables the "
+            "phi-induced phase link; minus flips the sign convention."
+        ),
+    )
+    parser.add_argument(
         "--ss-n-phi-snapshots",
         type=int,
         default=6,
@@ -225,6 +235,7 @@ def main() -> int:
         lock_terminals=not args.ss_unlock_terminals,
         delta_boundary_policy=args.ss_delta_boundary_policy,
         poisson_terminal_policy=args.ss_poisson_terminal_policy,
+        phi_phase_policy=args.ss_phi_phase_policy,
         progress=args.ss_progress,
         n_phi_snapshots=n_phi_snapshots,
     )
