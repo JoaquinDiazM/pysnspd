@@ -150,3 +150,31 @@ def test_solve_stationary_pytdgl_like_returns_relaxation_result():
     assert "edge_j" in result.history
     assert result.history["psi_snapshot_real_J"].shape == (2, mesh.n_nodes)
     assert result.history["edge_js_us_snapshot_A_m2"].shape == (2, ops.n_edges)
+
+
+def test_pytdgl_like_adapter_keeps_terminal_currents_in_amperes():
+    mesh, edge_data = _small_mesh()
+    mat = _material()
+    ops = build_fv_operators(mesh, edge_data)
+    seed = _seed(mesh, mat)
+    target_current_A = 3.5e-6
+
+    result = solve_stationary_pytdgl_like(
+        mesh=mesh,
+        edge_data=edge_data,
+        seed=seed,
+        material=mat,
+        ops=ops,
+        steps=2,
+        dt_s=1.0e-18,
+        target_current_A=target_current_A,
+        terminal_psi=None,
+        adaptive=False,
+        n_snapshots=2,
+    )
+
+    bc = result.summary["boundary_currents_A"]
+    assert np.isclose(bc["left_A"], -target_current_A)
+    assert np.isclose(bc["right_A"], target_current_A)
+    assert np.isclose(bc["net_A"], 0.0)
+    assert result.summary["terminal_neumann_current_unit_A"] > 0

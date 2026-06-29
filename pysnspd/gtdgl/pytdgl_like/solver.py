@@ -192,25 +192,31 @@ class TDGLSolver:
         self.dt_max = options.dt_max if options.adaptive else options.dt_init
 
     def update_mu_boundary(self, time: float) -> None:
-        """Computes terminal current density and updates scalar-potential BCs."""
+        """Compute terminal Neumann values for the scalar-potential solve.
 
-        currents = self.current_func(time)
+        ``self.current_func`` returns pySNSPD terminal currents in SI amperes.
+        The device adapter converts those physical currents to the internal
+        dimensionless boundary derivative used by the pyTDGL-like Poisson
+        operator.  This keeps the solver API comparable to pyTDGL while avoiding
+        the previous artificial ``I_norm = 1`` current normalization.
+        """
+
+        currents_A = {name: float(value) for name, value in self.current_func(time).items()}
         terminal_current_densities = self.terminal_current_densities
         for terminal in self.terminal_info:
-            current_density = (-1 / terminal.length) * sum(
-                currents.get(name, 0.0)
-                for name in self.terminal_names
-                if name != terminal.name
+            mu_boundary_value = self.device.terminal_mu_boundary_value(
+                terminal=terminal,
+                terminal_currents_A=currents_A,
             )
-            if current_density != terminal_current_densities[terminal.name]:
-                terminal_current_densities[terminal.name] = current_density
+            if mu_boundary_value != terminal_current_densities[terminal.name]:
+                terminal_current_densities[terminal.name] = mu_boundary_value
                 # ``mu_boundary`` is indexed by the compact boundary-edge vector.
                 bmap = self.device.mesh.edge_mesh.boundary_edge_indices
                 pos = {int(edge): k for k, edge in enumerate(np.asarray(bmap, dtype=int))}
                 for edge in terminal.boundary_edge_indices:
                     k = pos.get(int(edge))
                     if k is not None:
-                        self.mu_boundary[k] = current_density
+                        self.mu_boundary[k] = mu_boundary_value
 
     def update_applied_vector_potential(self, time: float) -> np.ndarray:
         """Evaluates the time-dependent vector potential."""
@@ -322,6 +328,9 @@ class TDGLSolver:
         )
         mu = operators.mu_laplacian_lu(rhs)
         normal_current = -(operators.mu_gradient @ mu) - dA_dt
+        mu = np.real_if_close(mu, tol=1000)
+        supercurrent = np.real_if_close(supercurrent, tol=1000)
+        normal_current = np.real_if_close(normal_current, tol=1000)
         return np.asarray(mu, dtype=float), np.asarray(supercurrent, dtype=float), np.asarray(normal_current, dtype=float)
 
     def get_induced_vector_potential(

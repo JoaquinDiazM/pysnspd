@@ -42,9 +42,10 @@ def solve_stationary_pytdgl_like(
 ) -> RelaxationResult:
     """Run the essential pyTDGL-like stationary solver on a pySNSPD seed.
 
-    The state evolved internally is dimensionless, as in pyTDGL.  The returned
-    ``RelaxationResult`` is converted back to pySNSPD physical units so existing
-    diagnostics and plotting code can consume it.
+    The public adapter keeps pySNSPD inputs and outputs in SI units.  The
+    pyTDGL-shaped core may use scaled coordinates/potentials internally, but
+    terminal currents are passed in amperes and converted only inside the
+    Poisson boundary operator.
     """
 
     if steps <= 0:
@@ -104,8 +105,11 @@ def solve_stationary_pytdgl_like(
     device.layer.u = u
     device.layer.gamma = gamma
 
-    I_norm = 0.0 if target_current_A == 0 else 1.0
-    terminal_currents = {"left": -I_norm, "right": I_norm}
+    # pySNSPD policy: terminal currents are always SI amperes.  The
+    # pyTDGL-like solver converts these physical currents to the internal
+    # Neumann value needed by its Poisson operator using sigma_n, film
+    # thickness and the Josephson voltage scale.
+    terminal_currents_A = {"left": -target_current_A, "right": target_current_A}
 
     psi0 = psi0_J / material.delta0_J
     mu0 = (phi0_V - float(np.mean(phi0_V))) / device.voltage_scale_V
@@ -136,7 +140,7 @@ def solve_stationary_pytdgl_like(
         device=device,
         options=options,
         applied_vector_potential=0.0,
-        terminal_currents=terminal_currents,
+        terminal_currents=terminal_currents_A,
         disorder_epsilon=disorder_epsilon,
         seed_solution=seed_solution,
     )
@@ -195,7 +199,12 @@ def solve_stationary_pytdgl_like(
         "total_current_max_A_m2": float(jt_max_A_m2),
         "normal_current_fraction_max": float(jn_max_A_m2 / max(jt_max_A_m2, 1.0e-300)),
         "delta0_meV": float(material.delta0_J / MEV_J),
-        "boundary_currents_A": {},
+        "boundary_currents_A": {
+            "left_A": float(terminal_currents_A.get("left", 0.0)),
+            "right_A": float(terminal_currents_A.get("right", 0.0)),
+            "net_A": float(sum(terminal_currents_A.values())),
+        },
+        "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
     }
 
     state = GTDGLStationaryState(
@@ -208,6 +217,7 @@ def solve_stationary_pytdgl_like(
             "backend": "pytdgl_like_minimal_no_screening",
             "length_scale_m": float(device.length_scale_m),
             "voltage_scale_V": float(device.voltage_scale_V),
+            "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
             "current_scale_A": float(device.current_scale_A),
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
         },

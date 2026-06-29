@@ -72,6 +72,50 @@ class PySNSPDTDGLDevice:
     def terminal_info(self) -> Sequence[TerminalInfo]:
         return list(self.terminal_infos)
 
+    @property
+    def terminal_neumann_current_unit_A(self) -> float:
+        """Physical current corresponding to one dimensionless terminal flux.
+
+        The pyTDGL-shaped algebra uses dimensionless coordinates ``x' = x/L0``
+        and dimensionless potential ``mu = phi/V0`` internally.  pySNSPD still
+        passes terminal currents in amperes.  For a film of thickness ``d``,
+        the physical Neumann condition
+
+            n · grad(phi) = -I / (sigma_n d L_terminal)
+
+        becomes, in the internal coordinate,
+
+            n · grad'(mu) = -I / (sigma_n d V0 L'_terminal).
+
+        Therefore ``sigma_n * d * V0`` is the SI conversion factor from an
+        integrated terminal current in amperes to the dimensionless Neumann
+        value used by the pyTDGL-style Poisson operator.  This is only an
+        internal operator conversion; user-facing inputs and outputs remain SI.
+        """
+
+        return float(self.material.sigma_n_S_m * self.material.thickness_m * self.voltage_scale_V)
+
+    def terminal_mu_boundary_value(
+        self,
+        *,
+        terminal: TerminalInfo,
+        terminal_currents_A: dict[str, float],
+    ) -> float:
+        """Convert SI terminal currents to the internal Neumann value for mu.
+
+        ``terminal_currents_A`` is always interpreted in amperes.  The returned
+        value is the dimensionless boundary derivative required by the
+        pyTDGL-like sparse Poisson operator.
+        """
+
+        current_A_per_dimless_length = (-1.0 / terminal.length) * sum(
+            float(terminal_currents_A.get(name, 0.0))
+            for name in terminal_currents_A
+            if name != terminal.name
+        )
+        unit_A = max(self.terminal_neumann_current_unit_A, 1.0e-300)
+        return float(current_A_per_dimless_length / unit_A)
+
 
 def build_pytdgl_like_device(
     *,
@@ -110,7 +154,12 @@ def build_pytdgl_like_device(
         raise ValueError("voltage_scale_V must be positive.")
 
     if current_scale_A is None:
-        current_scale_A = abs(float(target_current_A)) if abs(float(target_current_A)) > 0 else 1.0
+        # This is not a user-facing normalization of the bias current.  It is
+        # the physical SI conversion factor that maps one dimensionless
+        # pyTDGL-style terminal Neumann value to an integrated terminal current
+        # in amperes: I_unit = sigma_n * d * V0.  The adapter still passes
+        # terminal currents in amperes.
+        current_scale_A = material.sigma_n_S_m * material.thickness_m * voltage_scale_V
     current_scale_A = float(current_scale_A)
     if current_scale_A <= 0:
         raise ValueError("current_scale_A must be positive.")
