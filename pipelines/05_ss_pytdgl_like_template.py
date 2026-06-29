@@ -29,6 +29,17 @@ except Exception:  # pragma: no cover
     plot_ss_available_snapshots = None
     plot_ss_relaxation_history = None
 
+try:
+    from pysnspd.plotting.pytdgl_like import (
+        plot_pytdgl_like_native_history,
+        plot_pytdgl_like_native_edge_currents,
+        plot_pytdgl_like_poisson_snapshots,
+    )
+except Exception:  # pragma: no cover
+    plot_pytdgl_like_native_history = None
+    plot_pytdgl_like_native_edge_currents = None
+    plot_pytdgl_like_poisson_snapshots = None
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -143,6 +154,29 @@ def main() -> int:
             dpi=args.dpi,
         )
 
+    native_plots = {}
+    if plot_pytdgl_like_native_history is not None:
+        native_plots["native_history"] = plot_pytdgl_like_native_history(
+            result.history,
+            plots_diag / "pytdgl_like_native_history.png",
+            dpi=args.dpi,
+        )
+    if plot_pytdgl_like_poisson_snapshots is not None:
+        native_plots["poisson_snapshots"] = plot_pytdgl_like_poisson_snapshots(
+            mesh,
+            result.history,
+            plots_diag / "pytdgl_like_poisson_terms_snapshots.png",
+            dpi=args.dpi,
+            ncols=3,
+        )
+    if plot_pytdgl_like_native_edge_currents is not None:
+        native_plots["native_edge_currents"] = plot_pytdgl_like_native_edge_currents(
+            mesh,
+            result.history,
+            plots_diag / "pytdgl_like_native_edge_currents.png",
+            dpi=args.dpi,
+        )
+
     manifest = write_manifest(
         cfg,
         run_name,
@@ -158,6 +192,7 @@ def main() -> int:
                 "summary_yaml": str(summary_path),
                 "history_plot": None if history_plot is None else str(history_plot),
                 "snapshot_plots": {k: str(v) for k, v in snapshot_plots.items()},
+                "native_plots": {k: str(v) for k, v in native_plots.items()},
             },
             "seed_summary": seed_sum,
             "stationary_summary": result.summary,
@@ -183,6 +218,8 @@ def main() -> int:
         "mean_delta_over_delta0",
         "max_pairbreaking_ratio",
         "normal_current_fraction_max",
+        "native_poisson_residual_rel_final",
+        "native_boundary_rhs_norm_final",
         "pytdgl_u",
         "pytdgl_gamma",
     ):

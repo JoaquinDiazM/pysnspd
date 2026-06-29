@@ -319,15 +319,36 @@ class TDGLSolver:
         psi: np.ndarray,
         dA_dt: Union[float, np.ndarray],
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """Solves for mu, supercurrent and normal current."""
+        """Solves for mu, supercurrent and normal current.
+
+        This follows the pyTDGL no-screening CPU order and also stores the
+        native Poisson terms used internally by the solver.  These diagnostics
+        are deliberately kept in the same dimensionless operator space as the
+        pyTDGL-like sparse system so we can distinguish a true solver residual
+        from a pySNSPD adapter/plotting convention mismatch.
+        """
 
         operators = self.operators
         supercurrent = operators.get_supercurrent(psi)
-        rhs = (operators.divergence @ (supercurrent - dA_dt)) - (
-            operators.mu_boundary_laplacian @ self.mu_boundary
-        )
+        div_supercurrent = operators.divergence @ (supercurrent - dA_dt)
+        boundary_rhs = operators.mu_boundary_laplacian @ self.mu_boundary
+        rhs = div_supercurrent - boundary_rhs
         mu = operators.mu_laplacian_lu(rhs)
+        lhs = operators.mu_laplacian @ mu
+        poisson_residual = lhs - rhs
         normal_current = -(operators.mu_gradient @ mu) - dA_dt
+
+        # Native pyTDGL-like diagnostics.  These arrays are not converted to SI;
+        # they live in the exact linear system solved above.
+        self.last_supercurrent = np.asarray(np.real_if_close(supercurrent, tol=1000), dtype=float)
+        self.last_normal_current = np.asarray(np.real_if_close(normal_current, tol=1000), dtype=float)
+        self.last_div_supercurrent = np.asarray(np.real_if_close(div_supercurrent, tol=1000), dtype=float)
+        self.last_boundary_rhs = np.asarray(np.real_if_close(boundary_rhs, tol=1000), dtype=float)
+        self.last_poisson_rhs = np.asarray(np.real_if_close(rhs, tol=1000), dtype=float)
+        self.last_poisson_lhs = np.asarray(np.real_if_close(lhs, tol=1000), dtype=float)
+        self.last_poisson_residual = np.asarray(np.real_if_close(poisson_residual, tol=1000), dtype=float)
+        self.last_mu_boundary = np.asarray(self.mu_boundary, dtype=float).copy()
+
         mu = np.real_if_close(mu, tol=1000)
         supercurrent = np.real_if_close(supercurrent, tol=1000)
         normal_current = np.real_if_close(normal_current, tol=1000)
@@ -387,6 +408,20 @@ class TDGLSolver:
         running_state.append("mu_ptp", float(np.ptp(mu)))
         running_state.append("max_supercurrent", float(np.max(np.abs(supercurrent))) if supercurrent.size else 0.0)
         running_state.append("max_normal_current", float(np.max(np.abs(normal_current))) if normal_current.size else 0.0)
+        rhs = getattr(self, "last_poisson_rhs", np.array([], dtype=float))
+        residual = getattr(self, "last_poisson_residual", np.array([], dtype=float))
+        div_s = getattr(self, "last_div_supercurrent", np.array([], dtype=float))
+        b_rhs = getattr(self, "last_boundary_rhs", np.array([], dtype=float))
+        mu_b = getattr(self, "last_mu_boundary", np.array([], dtype=float))
+        rhs_norm = float(np.linalg.norm(rhs)) if rhs.size else 0.0
+        res_norm = float(np.linalg.norm(residual)) if residual.size else 0.0
+        running_state.append("poisson_rhs_norm", rhs_norm)
+        running_state.append("poisson_residual_norm", res_norm)
+        running_state.append("poisson_residual_rel", res_norm / max(rhs_norm, 1.0e-300))
+        running_state.append("poisson_residual_max_abs", float(np.max(np.abs(residual))) if residual.size else 0.0)
+        running_state.append("div_supercurrent_norm", float(np.linalg.norm(div_s)) if div_s.size else 0.0)
+        running_state.append("boundary_rhs_norm", float(np.linalg.norm(b_rhs)) if b_rhs.size else 0.0)
+        running_state.append("mu_boundary_max_abs", float(np.max(np.abs(mu_b))) if mu_b.size else 0.0)
 
         if options.adaptive:
             self.d_psi_sq_vals.append(float(np.absolute(abs_sq_psi - old_sq_psi).max()))
@@ -432,12 +467,14 @@ class TDGLSolver:
         running_state = RunningState()
         state: dict[str, numbers.Real] = {"step": 0, "time": 0.0}
         dt = float(options.dt_init)
+        self.update_mu_boundary(0.0)
+        mu0, supercurrent0, normal_current0 = self.solve_for_observables(parameters["psi"], 0.0)
         result = SolverResult(
             dt,
             parameters["psi"],
-            parameters["mu"],
-            parameters["supercurrent"],
-            parameters["normal_current"],
+            mu0,
+            supercurrent0,
+            normal_current0,
             parameters["induced_vector_potential"],
         )
 
@@ -455,6 +492,12 @@ class TDGLSolver:
             running_state.append("mu_snapshot", frame.mu)
             running_state.append("supercurrent_snapshot", frame.supercurrent)
             running_state.append("normal_current_snapshot", frame.normal_current)
+            running_state.append("poisson_rhs_snapshot", getattr(self, "last_poisson_rhs", np.zeros(len(self.sites))))
+            running_state.append("poisson_lhs_snapshot", getattr(self, "last_poisson_lhs", np.zeros(len(self.sites))))
+            running_state.append("poisson_residual_snapshot", getattr(self, "last_poisson_residual", np.zeros(len(self.sites))))
+            running_state.append("div_supercurrent_snapshot", getattr(self, "last_div_supercurrent", np.zeros(len(self.sites))))
+            running_state.append("boundary_rhs_snapshot", getattr(self, "last_boundary_rhs", np.zeros(len(self.sites))))
+            running_state.append("mu_boundary_snapshot", getattr(self, "last_mu_boundary", np.zeros(len(self.device.mesh.edge_mesh.boundary_edge_indices))))
 
         append_snapshot(0.0, result)
         next_snapshot = 1

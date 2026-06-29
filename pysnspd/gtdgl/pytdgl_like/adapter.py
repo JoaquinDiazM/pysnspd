@@ -144,6 +144,7 @@ def solve_stationary_pytdgl_like(
         disorder_epsilon=disorder_epsilon,
         seed_solution=seed_solution,
     )
+    solver.snapshot_count = max(2, int(n_snapshots))
     solution = solver.solve()
     if solution is None:
         raise RuntimeError("pytdgl_like solver returned None.")
@@ -205,6 +206,11 @@ def solve_stationary_pytdgl_like(
             "net_A": float(sum(terminal_currents_A.values())),
         },
         "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
+        "native_poisson_residual_rel_final": float(history.get("pytdgl_like_poisson_residual_rel", np.array([float("nan")]))[-1]),
+        "native_poisson_residual_norm_final": float(history.get("pytdgl_like_poisson_residual_norm", np.array([float("nan")]))[-1]),
+        "native_poisson_rhs_norm_final": float(history.get("pytdgl_like_poisson_rhs_norm", np.array([float("nan")]))[-1]),
+        "native_boundary_rhs_norm_final": float(history.get("pytdgl_like_boundary_rhs_norm", np.array([float("nan")]))[-1]),
+        "native_mu_boundary_max_abs_final": float(history.get("pytdgl_like_mu_boundary_max_abs", np.array([float("nan")]))[-1]),
     }
 
     state = GTDGLStationaryState(
@@ -269,6 +275,13 @@ def _build_history(
         "total_current_max_A_m2": np.full(t_s.shape, float(jt_max_A_m2)),
         "delta0_meV": np.array([float(material.delta0_J / MEV_J)]),
         "javg_A_m2": np.array([javg]),
+        "pytdgl_like_poisson_rhs_norm": np.asarray(raw.get("poisson_rhs_norm", np.zeros_like(t_s)), dtype=float),
+        "pytdgl_like_poisson_residual_norm": np.asarray(raw.get("poisson_residual_norm", np.zeros_like(t_s)), dtype=float),
+        "pytdgl_like_poisson_residual_rel": np.asarray(raw.get("poisson_residual_rel", np.zeros_like(t_s)), dtype=float),
+        "pytdgl_like_poisson_residual_max_abs": np.asarray(raw.get("poisson_residual_max_abs", np.zeros_like(t_s)), dtype=float),
+        "pytdgl_like_div_supercurrent_norm": np.asarray(raw.get("div_supercurrent_norm", np.zeros_like(t_s)), dtype=float),
+        "pytdgl_like_boundary_rhs_norm": np.asarray(raw.get("boundary_rhs_norm", np.zeros_like(t_s)), dtype=float),
+        "pytdgl_like_mu_boundary_max_abs": np.asarray(raw.get("mu_boundary_max_abs", np.zeros_like(t_s)), dtype=float),
     }
 
     # Store actual lightweight trajectory snapshots captured by TDGLSolver.
@@ -277,6 +290,13 @@ def _build_history(
     raw_snap_t = np.asarray(raw.get("snapshot_t", []), dtype=float).reshape(-1)
     psi_snap = np.asarray(raw.get("psi_snapshot", []), dtype=np.complex128)
     mu_snap = np.asarray(raw.get("mu_snapshot", []), dtype=float)
+    native_super_snap = np.asarray(raw.get("supercurrent_snapshot", []), dtype=float)
+    native_normal_snap = np.asarray(raw.get("normal_current_snapshot", []), dtype=float)
+    native_rhs_snap = np.asarray(raw.get("poisson_rhs_snapshot", []), dtype=float)
+    native_lhs_snap = np.asarray(raw.get("poisson_lhs_snapshot", []), dtype=float)
+    native_res_snap = np.asarray(raw.get("poisson_residual_snapshot", []), dtype=float)
+    native_divs_snap = np.asarray(raw.get("div_supercurrent_snapshot", []), dtype=float)
+    native_brhs_snap = np.asarray(raw.get("boundary_rhs_snapshot", []), dtype=float)
 
     if psi_snap.ndim != 2 or psi_snap.shape[1] != mesh.n_nodes or raw_snap_t.size == 0:
         ns = max(2, int(n_snapshots))
@@ -376,4 +396,25 @@ def _build_history(
         "edge_j": np.asarray(ops.edge_j, dtype=np.int64),
     }.items():
         hist[key] = np.asarray(arr)
+
+    # Native pyTDGL-like solver snapshots, kept in the internal operator units.
+    # These are for debugging the sparse Poisson system and should not be
+    # interpreted as SI currents without an explicit adapter conversion.
+    def _native_snap(arr: np.ndarray, ncols: int) -> np.ndarray:
+        if arr.ndim == 2 and arr.shape[0] >= ns and arr.shape[1] == ncols:
+            return arr[:ns]
+        return np.zeros((ns, ncols), dtype=float)
+
+    hist["pytdgl_like_native_supercurrent_snapshot"] = _native_snap(native_super_snap, ops.n_edges)
+    hist["pytdgl_like_native_normal_current_snapshot"] = _native_snap(native_normal_snap, ops.n_edges)
+    hist["pytdgl_like_native_total_current_snapshot"] = (
+        hist["pytdgl_like_native_supercurrent_snapshot"]
+        + hist["pytdgl_like_native_normal_current_snapshot"]
+    )
+    hist["pytdgl_like_poisson_rhs_snapshot"] = _native_snap(native_rhs_snap, mesh.n_nodes)
+    hist["pytdgl_like_poisson_lhs_snapshot"] = _native_snap(native_lhs_snap, mesh.n_nodes)
+    hist["pytdgl_like_poisson_residual_snapshot"] = _native_snap(native_res_snap, mesh.n_nodes)
+    hist["pytdgl_like_div_supercurrent_snapshot"] = _native_snap(native_divs_snap, mesh.n_nodes)
+    hist["pytdgl_like_boundary_rhs_snapshot"] = _native_snap(native_brhs_snap, mesh.n_nodes)
+    hist["pytdgl_like_snapshot_t_s"] = snap_t
     return hist

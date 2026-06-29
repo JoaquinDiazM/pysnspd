@@ -148,8 +148,14 @@ def test_solve_stationary_pytdgl_like_returns_relaxation_result():
     assert "normal_current_density_snapshot_A_m2" in result.history
     assert "edge_i" in result.history
     assert "edge_j" in result.history
+    assert "pytdgl_like_poisson_residual_rel" in result.history
+    assert "pytdgl_like_poisson_residual_snapshot" in result.history
+    assert "pytdgl_like_native_supercurrent_snapshot" in result.history
     assert result.history["psi_snapshot_real_J"].shape == (2, mesh.n_nodes)
     assert result.history["edge_js_us_snapshot_A_m2"].shape == (2, ops.n_edges)
+    assert result.history["pytdgl_like_poisson_residual_snapshot"].shape == (2, mesh.n_nodes)
+    assert result.history["pytdgl_like_native_supercurrent_snapshot"].shape == (2, ops.n_edges)
+    assert np.isfinite(result.summary["native_poisson_residual_rel_final"])
 
 
 def test_pytdgl_like_adapter_keeps_terminal_currents_in_amperes():
