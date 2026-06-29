@@ -321,7 +321,10 @@ class TDGLSolver:
             operators.mu_boundary_laplacian @ self.mu_boundary
         )
         mu = operators.mu_laplacian_lu(rhs)
+        mu = np.real_if_close(mu, tol=1000)
         normal_current = -(operators.mu_gradient @ mu) - dA_dt
+        normal_current = np.real_if_close(normal_current, tol=1000)
+        supercurrent = np.real_if_close(supercurrent, tol=1000)
         return np.asarray(mu, dtype=float), np.asarray(supercurrent, dtype=float), np.asarray(normal_current, dtype=float)
 
     def get_induced_vector_potential(

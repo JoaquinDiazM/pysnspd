@@ -116,12 +116,28 @@ def solve_stationary_pytdgl_like(
         "normal_current": np.zeros(ops.n_edges, dtype=float),
     }
 
+    def disorder_epsilon(r, *, t=None, vectorized=True):
+        """Return the pySNSPD epsilon field using pyTDGL's vectorized callable API.
+
+        pyTDGL detects vectorized disorder callables through the keyword-only
+        default ``vectorized=True``.  Without this marker the solver evaluates
+        the callable one site at a time and expects a scalar, which is not what
+        the pySNSPD adapter wants here.
+        """
+        del t
+        arr = np.asarray(r)
+        if vectorized and arr.ndim >= 2:
+            if arr.shape[0] != epsilon.size:
+                return np.full(arr.shape[0], float(np.nanmedian(epsilon)), dtype=float)
+            return np.asarray(epsilon, dtype=float).copy()
+        return float(np.nanmedian(epsilon))
+
     solver = TDGLSolver(
         device=device,
         options=options,
         applied_vector_potential=0.0,
         terminal_currents=terminal_currents,
-        disorder_epsilon=lambda r: epsilon,
+        disorder_epsilon=disorder_epsilon,
         seed_solution=seed_solution,
     )
     solution = solver.solve()
