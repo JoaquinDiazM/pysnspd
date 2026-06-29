@@ -146,7 +146,7 @@ def main() -> int:
     manifest = write_manifest(
         cfg,
         run_name,
-        stage="ss_pytdgl_like",
+        stage="ss",
         extra={
             "pipeline": "05_ss_pytdgl_like_template.py",
             "purpose": "pyTDGL-like stationary solver comparison backend.",
