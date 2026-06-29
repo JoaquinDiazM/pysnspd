@@ -9,6 +9,7 @@ import numpy as np
 MEV_J = 1.602176634e-22
 
 
+@dataclass
 class CurrentFields:
     """Edge and node current diagnostics."""
 
@@ -30,6 +31,7 @@ class CurrentFields:
     node_pairbreaking_ratio: np.ndarray
 
 
+@dataclass
 class FormulaFields:
     """Notebook formula-field bundle evaluated from Delta, varphi and Te."""
 
@@ -50,6 +52,7 @@ class FormulaFields:
     forcing_J: np.ndarray
 
 
+@dataclass
 class PoissonResult:
     """Poisson projection result, following the notebook naming."""
 
@@ -62,6 +65,7 @@ class PoissonResult:
     lambda_mean: float
 
 
+@dataclass
 class StepInfo:
     """One accepted KWT/Poisson step diagnostic."""
 
@@ -81,6 +85,7 @@ class StepInfo:
     phi_ptp_V: float
 
 
+@dataclass
 class GTDGLStationaryState:
     """Node-based stationary gTDGL state."""
 
@@ -92,6 +97,7 @@ class GTDGLStationaryState:
     metadata: dict[str, Any]
 
 
+@dataclass
 class RelaxationResult:
     """Final state and compact history for one stationary relaxation run."""
 
@@ -100,11 +106,13 @@ class RelaxationResult:
     summary: dict[str, Any]
 
 
+@dataclass
 class _PoissonOperator:
     A_aug: Any
     solver: Any
 
 
+@dataclass
 class PhiBoundaryConditions:
     """Discrete electric boundary constraints for varphi.
 
