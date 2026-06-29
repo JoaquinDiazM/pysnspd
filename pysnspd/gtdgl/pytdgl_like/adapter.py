@@ -172,7 +172,7 @@ def solve_stationary_pytdgl_like(
         n_snapshots=n_snapshots,
     )
 
-    jmax = current_density_maxima_A_m2(currents)
+    jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
     summary: dict[str, Any] = {
         "backend": "pytdgl_like_minimal_no_screening",
         "converged": False,
@@ -191,9 +191,9 @@ def solve_stationary_pytdgl_like(
         "min_delta_over_delta0": float(np.min(np.abs(psi_final_J)) / material.delta0_J),
         "mean_delta_over_delta0": float(np.mean(np.abs(psi_final_J)) / material.delta0_J),
         "max_pairbreaking_ratio": float(np.nanmax(currents.node_pairbreaking_ratio)),
-        "normal_current_max_A_m2": jmax["normal_current_max_A_m2"],
-        "total_current_max_A_m2": jmax["total_current_max_A_m2"],
-        "normal_current_fraction_max": float(jmax["normal_current_max_A_m2"] / max(jmax["total_current_max_A_m2"], 1.0e-300)),
+        "normal_current_max_A_m2": float(jn_max_A_m2),
+        "total_current_max_A_m2": float(jt_max_A_m2),
+        "normal_current_fraction_max": float(jn_max_A_m2 / max(jt_max_A_m2, 1.0e-300)),
         "delta0_meV": float(material.delta0_J / MEV_J),
         "boundary_currents_A": {},
     }
@@ -242,7 +242,7 @@ def _build_history(
 
     delta_abs = np.abs(psi_final_J)
     javg = abs(target_current_density_A_m2(material, target_current_A))
-    jmax = current_density_maxima_A_m2(currents)
+    jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
     residual = float(current_residual(currents, mesh))
 
     hist: dict[str, np.ndarray] = {
@@ -255,8 +255,8 @@ def _build_history(
         "terminal_voltage_V": mu_ptp,
         "delta_min_over_delta0": np.full(t_s.shape, float(np.min(delta_abs) / material.delta0_J)),
         "delta_max_over_delta0": np.full(t_s.shape, float(np.max(delta_abs) / material.delta0_J)),
-        "normal_current_max_A_m2": np.full(t_s.shape, jmax["normal_current_max_A_m2"]),
-        "total_current_max_A_m2": np.full(t_s.shape, jmax["total_current_max_A_m2"]),
+        "normal_current_max_A_m2": np.full(t_s.shape, float(jn_max_A_m2)),
+        "total_current_max_A_m2": np.full(t_s.shape, float(jt_max_A_m2)),
         "delta0_meV": np.array([float(material.delta0_J / MEV_J)]),
         "javg_A_m2": np.array([javg]),
     }
