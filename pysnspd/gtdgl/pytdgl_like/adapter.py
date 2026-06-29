@@ -261,36 +261,109 @@ def _build_history(
         "javg_A_m2": np.array([javg]),
     }
 
-    # Store final-state snapshots repeatedly at representative times.  This is
-    # enough for existing plotting utilities and avoids pretending we have a full
-    # HDF5 pyTDGL trajectory in this first comparison backend.
-    ns = max(2, int(n_snapshots))
-    snap_t = np.linspace(0.0, float(t_s[-1]) if t_s.size else 0.0, ns)
-    delta_mev = np.abs(psi_final_J) / MEV_J
-    jtot_mag = np.sqrt(currents.node_jtot_x_A_m2**2 + currents.node_jtot_y_A_m2**2)
-    js_mag = np.sqrt(currents.node_js_us_x_A_m2**2 + currents.node_js_us_y_A_m2**2)
-    jn_mag = np.sqrt(currents.node_jn_x_A_m2**2 + currents.node_jn_y_A_m2**2)
-    for key, arr in {
+    # Store actual lightweight trajectory snapshots captured by TDGLSolver.
+    # If the solver did not capture frames for any reason, fall back to the
+    # final state so plotting remains robust.
+    raw_snap_t = np.asarray(raw.get("snapshot_t", []), dtype=float).reshape(-1)
+    psi_snap = np.asarray(raw.get("psi_snapshot", []), dtype=np.complex128)
+    mu_snap = np.asarray(raw.get("mu_snapshot", []), dtype=float)
+
+    if psi_snap.ndim != 2 or psi_snap.shape[1] != mesh.n_nodes or raw_snap_t.size == 0:
+        ns = max(2, int(n_snapshots))
+        snap_t = np.linspace(0.0, float(t_s[-1]) if t_s.size else 0.0, ns)
+        psi_snap_J = np.tile(psi_final_J, (ns, 1))
+        phi_snap_V = np.tile(phi_final_V, (ns, 1))
+    else:
+        ns = min(int(n_snapshots), raw_snap_t.size, psi_snap.shape[0])
+        if ns < 2:
+            ns = min(raw_snap_t.size, psi_snap.shape[0])
+        snap_t = raw_snap_t[:ns] * tau0
+        psi_snap_J = psi_snap[:ns] * material.delta0_J
+        if mu_snap.ndim == 2 and mu_snap.shape[0] >= ns and mu_snap.shape[1] == mesh.n_nodes:
+            phi_snap_V = mu_snap[:ns] * solution.device.voltage_scale_V
+            phi_snap_V = phi_snap_V - np.mean(phi_snap_V, axis=1, keepdims=True)
+        else:
+            phi_snap_V = np.tile(phi_final_V, (ns, 1))
+
+    delta_mev = np.abs(psi_snap_J) / MEV_J
+    current_frames = [
+        compute_current_fields(
+            psi_J=psi_snap_J[k],
+            phi_V=phi_snap_V[k],
+            Te_K=Te,
+            material=material,
+            ops=ops,
+        )
+        for k in range(psi_snap_J.shape[0])
+    ]
+
+    jtot_x = np.vstack([c.node_jtot_x_A_m2 for c in current_frames])
+    jtot_y = np.vstack([c.node_jtot_y_A_m2 for c in current_frames])
+    js_x = np.vstack([c.node_js_us_x_A_m2 for c in current_frames])
+    js_y = np.vstack([c.node_js_us_y_A_m2 for c in current_frames])
+    jn_x = np.vstack([c.node_jn_x_A_m2 for c in current_frames])
+    jn_y = np.vstack([c.node_jn_y_A_m2 for c in current_frames])
+
+    jtot_mag = np.sqrt(jtot_x**2 + jtot_y**2)
+    js_mag = np.sqrt(js_x**2 + js_y**2)
+    jn_mag = np.sqrt(jn_x**2 + jn_y**2)
+
+    div = np.vstack([c.node_div_jtot_A_m3 for c in current_frames])
+    pairbreaking = np.vstack([c.node_pairbreaking_ratio for c in current_frames])
+    edge_q = np.vstack([c.edge_Q_m_inv for c in current_frames])
+    edge_js = np.vstack([c.edge_js_us_A_m2 for c in current_frames])
+    edge_jn = np.vstack([c.edge_jn_A_m2 for c in current_frames])
+    edge_jtot = np.vstack([c.edge_jtot_A_m2 for c in current_frames])
+
+    time_aliases = {
         "snapshot_t_s": snap_t,
-        "psi_snapshot_real_J": np.tile(np.real(psi_final_J), (ns, 1)),
-        "psi_snapshot_imag_J": np.tile(np.imag(psi_final_J), (ns, 1)),
-        "delta_snapshot_meV": np.tile(delta_mev, (ns, 1)),
-        "phi_snapshot_V": np.tile(phi_final_V, (ns, 1)),
-        "current_density_snapshot_A_m2": np.tile(jtot_mag, (ns, 1)),
-        "current_density_snapshot_x_A_m2": np.tile(currents.node_jtot_x_A_m2, (ns, 1)),
-        "current_density_snapshot_y_A_m2": np.tile(currents.node_jtot_y_A_m2, (ns, 1)),
-        "supercurrent_density_snapshot_A_m2": np.tile(js_mag, (ns, 1)),
-        "supercurrent_density_snapshot_x_A_m2": np.tile(currents.node_js_us_x_A_m2, (ns, 1)),
-        "supercurrent_density_snapshot_y_A_m2": np.tile(currents.node_js_us_y_A_m2, (ns, 1)),
-        "normal_current_density_snapshot_A_m2": np.tile(jn_mag, (ns, 1)),
-        "normal_current_density_snapshot_x_A_m2": np.tile(currents.node_jn_x_A_m2, (ns, 1)),
-        "normal_current_density_snapshot_y_A_m2": np.tile(currents.node_jn_y_A_m2, (ns, 1)),
-        "divergence_snapshot_A_m3": np.tile(currents.node_div_jtot_A_m3, (ns, 1)),
-        "pairbreaking_ratio_snapshot": np.tile(currents.node_pairbreaking_ratio, (ns, 1)),
-        "edge_Q_snapshot_m_inv": np.tile(currents.edge_Q_m_inv, (ns, 1)),
-        "edge_js_us_snapshot_A_m2": np.tile(currents.edge_js_us_A_m2, (ns, 1)),
-        "edge_jn_snapshot_A_m2": np.tile(currents.edge_jn_A_m2, (ns, 1)),
-        "edge_jtot_snapshot_A_m2": np.tile(currents.edge_jtot_A_m2, (ns, 1)),
+        "psi_snapshot_t_s": snap_t,
+        "delta_snapshot_t_s": snap_t,
+        "phase_snapshot_t_s": snap_t,
+        "phi_snapshot_t_s": snap_t,
+        "current_snapshot_t_s": snap_t,
+        "jtot_snapshot_t_s": snap_t,
+        "supercurrent_snapshot_t_s": snap_t,
+        "normal_current_snapshot_t_s": snap_t,
+        "divergence_snapshot_t_s": snap_t,
+        "div_jtot_snapshot_t_s": snap_t,
+        "pairbreaking_snapshot_t_s": snap_t,
+        "edge_snapshot_t_s": snap_t,
+    }
+    hist.update({key: np.asarray(value) for key, value in time_aliases.items()})
+
+    for key, arr in {
+        "psi_snapshot_real_J": np.real(psi_snap_J),
+        "psi_snapshot_imag_J": np.imag(psi_snap_J),
+        "delta_snapshot_meV": delta_mev,
+        "phi_snapshot_V": phi_snap_V,
+        "current_density_snapshot_A_m2": jtot_mag,
+        "jtot_snapshot_mag_A_m2": jtot_mag,
+        "current_density_snapshot_x_A_m2": jtot_x,
+        "current_density_snapshot_y_A_m2": jtot_y,
+        "jtot_snapshot_x_A_m2": jtot_x,
+        "jtot_snapshot_y_A_m2": jtot_y,
+        "supercurrent_density_snapshot_A_m2": js_mag,
+        "js_us_snapshot_mag_A_m2": js_mag,
+        "supercurrent_density_snapshot_x_A_m2": js_x,
+        "supercurrent_density_snapshot_y_A_m2": js_y,
+        "js_us_snapshot_x_A_m2": js_x,
+        "js_us_snapshot_y_A_m2": js_y,
+        "normal_current_density_snapshot_A_m2": jn_mag,
+        "jn_snapshot_mag_A_m2": jn_mag,
+        "normal_current_density_snapshot_x_A_m2": jn_x,
+        "normal_current_density_snapshot_y_A_m2": jn_y,
+        "jn_snapshot_x_A_m2": jn_x,
+        "jn_snapshot_y_A_m2": jn_y,
+        "divergence_snapshot_A_m3": div,
+        "div_jtot_snapshot_A_m3": div,
+        "pairbreaking_ratio_snapshot": pairbreaking,
+        "edge_Q_snapshot_m_inv": edge_q,
+        "edge_js_us_snapshot_A_m2": edge_js,
+        "edge_jn_snapshot_A_m2": edge_jn,
+        "edge_jtot_snapshot_A_m2": edge_jtot,
+        "edge_i": np.asarray(ops.edge_i, dtype=np.int64),
+        "edge_j": np.asarray(ops.edge_j, dtype=np.int64),
     }.items():
         hist[key] = np.asarray(arr)
     return hist

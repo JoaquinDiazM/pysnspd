@@ -143,3 +143,10 @@ def test_solve_stationary_pytdgl_like_returns_relaxation_result():
     assert np.all(np.isfinite(result.state.psi_J))
     assert np.all(np.isfinite(result.state.phi_V))
     assert "snapshot_t_s" in result.history
+    assert "phi_snapshot_t_s" in result.history
+    assert "supercurrent_density_snapshot_A_m2" in result.history
+    assert "normal_current_density_snapshot_A_m2" in result.history
+    assert "edge_i" in result.history
+    assert "edge_j" in result.history
+    assert result.history["psi_snapshot_real_J"].shape == (2, mesh.n_nodes)
+    assert result.history["edge_js_us_snapshot_A_m2"].shape == (2, ops.n_edges)

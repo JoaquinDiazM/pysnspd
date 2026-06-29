@@ -321,10 +321,7 @@ class TDGLSolver:
             operators.mu_boundary_laplacian @ self.mu_boundary
         )
         mu = operators.mu_laplacian_lu(rhs)
-        mu = np.real_if_close(mu, tol=1000)
         normal_current = -(operators.mu_gradient @ mu) - dA_dt
-        normal_current = np.real_if_close(normal_current, tol=1000)
-        supercurrent = np.real_if_close(supercurrent, tol=1000)
         return np.asarray(mu, dtype=float), np.asarray(supercurrent, dtype=float), np.asarray(normal_current, dtype=float)
 
     def get_induced_vector_potential(
@@ -434,6 +431,25 @@ class TDGLSolver:
             parameters["normal_current"],
             parameters["induced_vector_potential"],
         )
+
+        # Minimal trajectory snapshots for pySNSPD diagnostics.  pyTDGL writes
+        # full HDF5 frames; this lightweight backend only stores a small fixed
+        # number of in-memory frames so the existing OE7 plotting utilities can
+        # inspect the actual evolution instead of repeated final states.
+        snapshot_count = max(2, int(getattr(self, "snapshot_count", 2)))
+        snapshot_times = np.linspace(0.0, float(options.solve_time), snapshot_count)
+        next_snapshot = 0
+
+        def append_snapshot(time_value: float, frame: SolverResult) -> None:
+            running_state.append("snapshot_t", float(time_value))
+            running_state.append("psi_snapshot", frame.psi)
+            running_state.append("mu_snapshot", frame.mu)
+            running_state.append("supercurrent_snapshot", frame.supercurrent)
+            running_state.append("normal_current_snapshot", frame.normal_current)
+
+        append_snapshot(0.0, result)
+        next_snapshot = 1
+
         while float(state["time"]) < options.solve_time:
             result = self.update(
                 state,
@@ -448,8 +464,16 @@ class TDGLSolver:
             dt = float(result.dt)
             state["time"] = float(state["time"]) + dt
             state["step"] = int(state["step"]) + 1
+
+            while next_snapshot < snapshot_times.size and float(state["time"]) >= float(snapshot_times[next_snapshot]):
+                append_snapshot(float(state["time"]), result)
+                next_snapshot += 1
+
             if int(state["step"]) > 10_000_000:
                 raise RuntimeError("pytdgl_like solve exceeded 10,000,000 steps.")
+
+        if next_snapshot < snapshot_times.size:
+            append_snapshot(float(state["time"]), result)
 
         end_time = datetime.now()
         hist = {key: np.asarray(vals) for key, vals in running_state.data.items()}
