@@ -558,7 +558,7 @@ def _edge_zoom_regions(
         {
             "name": "interior strip",
             "slug": "interior_strip",
-            "center": (0.87 * xmax, 0.50 * ymax),
+            "center": (0.84 * xmax, 0.50 * ymax),
             "half_width": 0.075 * lx,
             "half_height": 0.120 * wy,
             "kind": "interior",
