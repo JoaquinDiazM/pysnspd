@@ -51,7 +51,8 @@ def plot_ss_available_snapshots(
         ("delta", plot_ss_delta_snapshots, output_dir / "ss_delta_snapshots.png"),
         ("phase", plot_ss_phase_snapshots, output_dir / "ss_phase_snapshots.png"),
         ("current_density", plot_ss_current_density_snapshots, output_dir / "ss_current_density_snapshots.png"),
-        ("supercurrent_density", plot_ss_supercurrent_density_snapshots, output_dir / "ss_supercurrent_density_snapshots.png"),
+        ("supercurrent_GL_density", plot_ss_supercurrent_density_snapshots, output_dir / "ss_supercurrent_GL_density_snapshots.png"),
+        ("supercurrent_Usadel_density", plot_ss_usadel_supercurrent_density_snapshots, output_dir / "ss_supercurrent_Usadel_density_snapshots.png"),
         ("normal_current_density", plot_ss_normal_current_density_snapshots, output_dir / "ss_normal_current_density_snapshots.png"),
         ("divergence", plot_ss_divergence_snapshots, output_dir / "ss_divergence_snapshots.png"),
         ("pairbreaking", plot_ss_pairbreaking_snapshots, output_dir / "ss_pairbreaking_snapshots.png"),
@@ -212,18 +213,67 @@ def plot_ss_supercurrent_density_snapshots(
     dpi: int = 480,
     ncols: int = 3,
 ) -> Path:
-    """Plot |j_s|/j_avg snapshots with vector arrows."""
+    """Plot native GL-like |j_s|/j_avg snapshots with vector arrows."""
     return _plot_current_family_snapshots(
         mesh,
         history,
         output_path,
-        mag_names=("js_us_snapshot_mag_A_m2", "supercurrent_density_snapshot_A_m2"),
-        x_names=("js_us_snapshot_x_A_m2", "supercurrent_density_snapshot_x_A_m2"),
-        y_names=("js_us_snapshot_y_A_m2", "supercurrent_density_snapshot_y_A_m2"),
-        t_names=("js_us_snapshot_t_s", "supercurrent_snapshot_t_s", "current_snapshot_t_s", "phi_snapshot_t_s"),
-        title="OE7 SS: supercurrent-density snapshots",
-        abs_label=r"|j_s| [A m$^{-2}$]",
-        norm_label=r"$|j_s|/j_{\rm avg}$",
+        mag_names=(
+            "supercurrent_GL_density_snapshot_A_m2",
+            "js_gl_snapshot_mag_A_m2",
+            "supercurrent_density_snapshot_A_m2",
+        ),
+        x_names=(
+            "supercurrent_GL_density_snapshot_x_A_m2",
+            "js_gl_snapshot_x_A_m2",
+            "supercurrent_density_snapshot_x_A_m2",
+        ),
+        y_names=(
+            "supercurrent_GL_density_snapshot_y_A_m2",
+            "js_gl_snapshot_y_A_m2",
+            "supercurrent_density_snapshot_y_A_m2",
+        ),
+        t_names=(
+            "supercurrent_GL_snapshot_t_s",
+            "js_gl_snapshot_t_s",
+            "supercurrent_snapshot_t_s",
+            "current_snapshot_t_s",
+            "phi_snapshot_t_s",
+        ),
+        title="OE7 SS: GL supercurrent-density snapshots",
+        abs_label=r"|j_s^{GL}| [A m$^{-2}$]",
+        norm_label=r"$|j_s^{GL}|/j_{\rm avg}$",
+        dpi=dpi,
+        ncols=ncols,
+    )
+
+
+def plot_ss_usadel_supercurrent_density_snapshots(
+    mesh,
+    history: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+    ncols: int = 3,
+) -> Path:
+    """Plot diagnostic Usadel |j_s|/j_avg snapshots with vector arrows."""
+    return _plot_current_family_snapshots(
+        mesh,
+        history,
+        output_path,
+        mag_names=("supercurrent_Usadel_density_snapshot_A_m2", "js_usadel_snapshot_mag_A_m2"),
+        x_names=("supercurrent_Usadel_density_snapshot_x_A_m2", "js_usadel_snapshot_x_A_m2"),
+        y_names=("supercurrent_Usadel_density_snapshot_y_A_m2", "js_usadel_snapshot_y_A_m2"),
+        t_names=(
+            "supercurrent_Usadel_snapshot_t_s",
+            "js_us_snapshot_t_s",
+            "supercurrent_snapshot_t_s",
+            "current_snapshot_t_s",
+            "phi_snapshot_t_s",
+        ),
+        title="OE7 SS: Usadel supercurrent-density diagnostic snapshots",
+        abs_label=r"|j_s^{Usadel}| [A m$^{-2}$]",
+        norm_label=r"$|j_s^{Usadel}|/j_{\rm avg}$",
         dpi=dpi,
         ncols=ncols,
     )
@@ -558,7 +608,7 @@ def _edge_zoom_regions(
         {
             "name": "interior strip",
             "slug": "interior_strip",
-            "center": (0.84 * xmax, 0.50 * ymax),
+            "center": (0.50 * (xmin + xmax), 0.50 * (ymin + ymax)),
             "half_width": 0.075 * lx,
             "half_height": 0.120 * wy,
             "kind": "interior",
