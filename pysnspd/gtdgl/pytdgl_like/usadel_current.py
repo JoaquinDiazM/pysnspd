@@ -443,21 +443,93 @@ def _interpolate_current_table(
 
 
 def _interp_nd_axiswise(table: np.ndarray, dim_specs: list[tuple[str, np.ndarray, np.ndarray]]) -> np.ndarray:
-    n = dim_specs[0][2].size
-    out = np.empty(n, dtype=float)
-    for k in range(n):
-        arr = np.asarray(table, dtype=float)
-        for axis_index, (name, axis, points) in reversed(list(enumerate(dim_specs))):
-            point = float(points[k])
-            if name == "q":
-                # q is odd in the usual depairing relation if the catalogue is
-                # tabulated only for q>=0.
-                point_arr = np.array([point], dtype=float)
-                arr = np.apply_along_axis(lambda col: _interp_signed_q(axis, col, point_arr)[0], axis_index, arr)
+    """Vectorized multilinear interpolation on q/delta/Te table axes.
+
+    The first Usadel-Poisson implementation used a Python loop over edges and
+    ``np.apply_along_axis`` for every interpolation point.  On a realistic FV
+    mesh this made the SS run scale like
+
+        n_steps * n_edges * Python-call-overhead.
+
+    This implementation keeps the same clipping and odd-in-q convention, but
+    evaluates all edge points at once.  It supports the layouts used in the PRE
+    catalogue, especially ``js_A_m2[delta, q]``.
+    """
+    table = np.asarray(table, dtype=float)
+    if table.ndim != len(dim_specs):
+        raise ValueError(
+            f"table has {table.ndim} dimensions but {len(dim_specs)} interpolation axes were supplied"
+        )
+    if not dim_specs:
+        raise ValueError("at least one interpolation axis is required")
+
+    n = int(np.asarray(dim_specs[0][2]).size)
+    axes: list[np.ndarray] = []
+    lo: list[np.ndarray] = []
+    hi: list[np.ndarray] = []
+    weights: list[np.ndarray] = []
+    q_sign = np.ones(n, dtype=float)
+
+    arr = table
+    for axis_index, (name, axis_raw, points_raw) in enumerate(dim_specs):
+        axis = np.asarray(axis_raw, dtype=float).reshape(-1)
+        points = np.asarray(points_raw, dtype=float).reshape(-1)
+        if points.size != n:
+            raise ValueError(f"axis {name!r} points have length {points.size}, expected {n}")
+        if axis.size < 1:
+            raise ValueError(f"axis {name!r} is empty")
+        if arr.shape[axis_index] != axis.size:
+            raise ValueError(
+                f"table dimension {axis_index} has length {arr.shape[axis_index]}, "
+                f"but axis {name!r} has length {axis.size}"
+            )
+
+        order = np.argsort(axis)
+        axis = axis[order]
+        arr = np.take(arr, order, axis=axis_index)
+
+        if name == "q" and axis[0] >= 0.0:
+            q_sign = np.sign(points)
+            points = np.abs(points)
+
+        i0, i1, w = _axis_brackets_vectorized(axis, points)
+        axes.append(axis)
+        lo.append(i0)
+        hi.append(i1)
+        weights.append(w)
+
+    out = np.zeros(n, dtype=float)
+    ndim = len(dim_specs)
+    for corner in range(1 << ndim):
+        idx = []
+        weight = np.ones(n, dtype=float)
+        for dim in range(ndim):
+            if (corner >> dim) & 1:
+                idx.append(hi[dim])
+                weight *= weights[dim]
             else:
-                arr = np.apply_along_axis(lambda col: _interp_clipped(axis, col, point), axis_index, arr)
-        out[k] = float(arr)
-    return out
+                idx.append(lo[dim])
+                weight *= 1.0 - weights[dim]
+        out += weight * arr[tuple(idx)]
+
+    return q_sign * out
+
+
+def _axis_brackets_vectorized(axis: np.ndarray, points: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Return lower/upper indices and interpolation weights for all points."""
+    axis = np.asarray(axis, dtype=float).reshape(-1)
+    points = np.asarray(points, dtype=float).reshape(-1)
+    if axis.size == 1:
+        z = np.zeros(points.size, dtype=np.int64)
+        return z, z, np.zeros(points.size, dtype=float)
+    x = np.clip(points, axis[0], axis[-1])
+    hi = np.searchsorted(axis, x, side="right")
+    hi = np.clip(hi, 1, axis.size - 1).astype(np.int64, copy=False)
+    lo = hi - 1
+    denom = axis[hi] - axis[lo]
+    denom = np.where(np.abs(denom) > 0.0, denom, 1.0)
+    w = (x - axis[lo]) / denom
+    return lo, hi, np.clip(w, 0.0, 1.0)
 
 
 def _interp_clipped(axis: np.ndarray, values: np.ndarray, x: float) -> float:
@@ -476,6 +548,10 @@ def _interp_signed_q(q_axis: np.ndarray, values: np.ndarray, q: np.ndarray) -> n
     order = np.argsort(q_axis)
     q_axis = q_axis[order]
     values = values[order]
+    if q_axis.size == 1:
+        if q_axis[0] >= 0.0:
+            return np.sign(q) * abs(float(values[0]))
+        return np.full_like(q, float(values[0]), dtype=float)
     if q_axis[0] >= 0.0:
         q_abs = np.abs(q)
         interp = np.interp(np.clip(q_abs, q_axis[0], q_axis[-1]), q_axis, values)
@@ -488,7 +564,7 @@ def _clean_axis(axis: np.ndarray | None) -> np.ndarray | None:
         return None
     arr = np.asarray(axis, dtype=float).reshape(-1)
     arr = arr[np.isfinite(arr)]
-    if arr.size < 2:
+    if arr.size < 1:
         return None
     return arr
 

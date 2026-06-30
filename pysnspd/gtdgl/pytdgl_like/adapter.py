@@ -7,7 +7,7 @@ from typing import Any
 import numpy as np
 
 from pysnspd.gtdgl.material import GTDGLMaterial
-from pysnspd.gtdgl.operators import FVOperators, terminal_voltage
+from pysnspd.gtdgl.operators import FVOperators, terminal_voltage, edge_scalar_to_node_vector_least_squares
 from pysnspd.gtdgl.state import GTDGLStationaryState, RelaxationResult
 from pysnspd.gtdgl.diagnostics import (
     current_residual,
@@ -15,7 +15,7 @@ from pysnspd.gtdgl.diagnostics import (
     seed_target_current_A,
     target_current_density_A_m2,
 )
-from .currents import native_edge_currents_to_current_fields
+from .currents import native_edge_currents_to_current_fields, native_current_scale_A_m2
 from .usadel_current import compute_usadel_supercurrent_diagnostic
 from .device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
@@ -41,7 +41,8 @@ def solve_stationary_pytdgl_like(
     max_solve_retries: int = 10,
     adaptive_time_step_multiplier: float = 0.25,
     n_snapshots: int = 6,
-    progress_callback=None,
+    progress: bool = False,
+    supercurrent_law: str = "gl",
 ) -> RelaxationResult:
     """Run the essential pyTDGL-like stationary solver on a pySNSPD seed.
 
@@ -58,6 +59,7 @@ def solve_stationary_pytdgl_like(
     if target_current_A is None:
         target_current_A = seed_target_current_A(seed)
     target_current_A = float(target_current_A)
+    supercurrent_law = _normalize_supercurrent_law(supercurrent_law)
 
     psi0_J = (
         np.asarray(seed.node_psi_real_J, dtype=float)
@@ -139,6 +141,16 @@ def solve_stationary_pytdgl_like(
             return np.asarray(epsilon, dtype=float).copy()
         return float(np.nanmedian(epsilon))
 
+    supercurrent_override = None
+    if supercurrent_law == "usadel_poisson":
+        supercurrent_override = _build_usadel_poisson_supercurrent_override(
+            usadel_catalog=usadel_catalog,
+            device=device,
+            material=material,
+            Te_K=Te,
+            ops=ops,
+        )
+
     solver = TDGLSolver(
         device=device,
         options=options,
@@ -146,9 +158,11 @@ def solve_stationary_pytdgl_like(
         terminal_currents=terminal_currents_A,
         disorder_epsilon=disorder_epsilon,
         seed_solution=seed_solution,
+        progress=progress,
+        supercurrent_override=supercurrent_override,
+        supercurrent_law=supercurrent_law,
     )
     solver.snapshot_count = max(2, int(n_snapshots))
-    solver.progress_callback = progress_callback
     solution = solver.solve()
     if solution is None:
         raise RuntimeError("pytdgl_like solver returned None.")
@@ -191,6 +205,7 @@ def solve_stationary_pytdgl_like(
     jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
     summary: dict[str, Any] = {
         "backend": "pytdgl_like_minimal_no_screening",
+        "supercurrent_law": supercurrent_law,
         "converged": False,
         "accepted_steps": int(solution.history.get("final_step", np.array([0]))[0]),
         "rejected_steps": 0,
@@ -245,6 +260,7 @@ def solve_stationary_pytdgl_like(
         currents=currents,
         metadata={
             "backend": "pytdgl_like_minimal_no_screening",
+            "supercurrent_law": supercurrent_law,
             "length_scale_m": float(device.length_scale_m),
             "voltage_scale_V": float(device.voltage_scale_V),
             "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
@@ -255,6 +271,53 @@ def solve_stationary_pytdgl_like(
     )
     return RelaxationResult(state=state, history=history, summary=summary)
 
+
+
+def _normalize_supercurrent_law(value: str) -> str:
+    law = str(value).strip().lower().replace("-", "_")
+    aliases = {
+        "gl": "gl",
+        "pytdgl": "gl",
+        "native_gl": "gl",
+        "usadel": "usadel_poisson",
+        "usadel_poisson": "usadel_poisson",
+        "poisson_usadel": "usadel_poisson",
+    }
+    if law not in aliases:
+        raise ValueError(
+            "supercurrent_law must be one of gl or usadel_poisson "
+            f"(got {value!r})."
+        )
+    return aliases[law]
+
+
+def _build_usadel_poisson_supercurrent_override(
+    *,
+    usadel_catalog: Any | None,
+    device,
+    material: GTDGLMaterial,
+    Te_K: np.ndarray,
+    ops: FVOperators,
+):
+    scale = native_current_scale_A_m2(device)
+
+    def usadel_poisson_supercurrent(psi_dimensionless: np.ndarray, gl_supercurrent_native: np.ndarray) -> np.ndarray:
+        del gl_supercurrent_native
+        diag = compute_usadel_supercurrent_diagnostic(
+            usadel_catalog=usadel_catalog,
+            psi_dimensionless=psi_dimensionless,
+            material=material,
+            Te_K=Te_K,
+            ops=ops,
+        )
+        if not diag.available:
+            raise RuntimeError(
+                "--ss-supercurrent-law usadel-poisson requires a PRE Usadel "
+                f"supercurrent table. Diagnostic reason: {diag.reason}"
+            )
+        return np.asarray(diag.edge_js_usadel_A_m2, dtype=float) / max(scale, 1.0e-300)
+
+    return usadel_poisson_supercurrent
 
 def _build_history(
     *,
@@ -318,6 +381,7 @@ def _build_history(
     psi_snap = np.asarray(raw.get("psi_snapshot", []), dtype=np.complex128)
     mu_snap = np.asarray(raw.get("mu_snapshot", []), dtype=float)
     native_super_snap = np.asarray(raw.get("supercurrent_snapshot", []), dtype=float)
+    native_gl_super_snap = np.asarray(raw.get("gl_supercurrent_snapshot", []), dtype=float)
     native_normal_snap = np.asarray(raw.get("normal_current_snapshot", []), dtype=float)
     native_rhs_snap = np.asarray(raw.get("poisson_rhs_snapshot", []), dtype=float)
     native_lhs_snap = np.asarray(raw.get("poisson_lhs_snapshot", []), dtype=float)
@@ -349,6 +413,9 @@ def _build_history(
         return np.zeros((ns, ncols), dtype=float)
 
     native_super_si = _native_snap(native_super_snap, ops.n_edges)
+    native_gl_si = _native_snap(native_gl_super_snap, ops.n_edges)
+    if not np.any(native_gl_si) and np.any(native_super_si):
+        native_gl_si = native_super_si.copy()
     native_normal_si = _native_snap(native_normal_snap, ops.n_edges)
     current_frames = []
     native_diags = []
@@ -380,8 +447,11 @@ def _build_history(
 
     jtot_x = np.vstack([c.node_jtot_x_A_m2 for c in current_frames])
     jtot_y = np.vstack([c.node_jtot_y_A_m2 for c in current_frames])
-    js_gl_x = np.vstack([c.node_js_us_x_A_m2 for c in current_frames])
-    js_gl_y = np.vstack([c.node_js_us_y_A_m2 for c in current_frames])
+    scale = native_current_scale_A_m2(solution.device)
+    edge_js_gl_from_psi = scale * native_gl_si
+    gl_node_vectors = [edge_scalar_to_node_vector_least_squares(edge_js_gl_from_psi[k], ops) for k in range(edge_js_gl_from_psi.shape[0])]
+    js_gl_x = np.vstack([v[0] for v in gl_node_vectors])
+    js_gl_y = np.vstack([v[1] for v in gl_node_vectors])
     js_us_x = np.vstack([d.node_js_usadel_x_A_m2 for d in usadel_diags])
     js_us_y = np.vstack([d.node_js_usadel_y_A_m2 for d in usadel_diags])
     jn_x = np.vstack([c.node_jn_x_A_m2 for c in current_frames])
@@ -395,7 +465,8 @@ def _build_history(
     div = np.vstack([c.node_div_jtot_A_m3 for c in current_frames])
     pairbreaking = np.vstack([c.node_pairbreaking_ratio for c in current_frames])
     edge_q = np.vstack([c.edge_Q_m_inv for c in current_frames])
-    edge_js_gl = np.vstack([c.edge_js_us_A_m2 for c in current_frames])
+    edge_js_actual = np.vstack([c.edge_js_us_A_m2 for c in current_frames])
+    edge_js_gl = edge_js_gl_from_psi
     edge_js_us = np.vstack([d.edge_js_usadel_A_m2 for d in usadel_diags])
     div_js_us = np.vstack([d.node_div_js_usadel_A_m3 for d in usadel_diags])
     edge_jn = np.vstack([c.edge_jn_A_m2 for c in current_frames])
@@ -458,6 +529,7 @@ def _build_history(
         "div_jtot_snapshot_A_m3": div,
         "pairbreaking_ratio_snapshot": pairbreaking,
         "edge_Q_snapshot_m_inv": edge_q,
+        "edge_js_actual_snapshot_A_m2": edge_js_actual,
         "edge_js_gl_snapshot_A_m2": edge_js_gl,
         "edge_js_us_snapshot_A_m2": edge_js_us,
         "edge_js_usadel_snapshot_A_m2": edge_js_us,

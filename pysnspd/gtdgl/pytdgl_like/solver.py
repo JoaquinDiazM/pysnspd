@@ -12,6 +12,7 @@ import inspect
 import itertools
 import logging
 import numbers
+import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Callable, Dict, List, NamedTuple, Optional, Sequence, Tuple, Union
@@ -94,12 +95,18 @@ class TDGLSolver:
         terminal_currents: Union[Callable, Dict[str, float], None] = None,
         disorder_epsilon: Union[Callable, float] = 1.0,
         seed_solution: Optional[object] = None,
+        progress: bool = False,
+        supercurrent_override: Optional[Callable[[np.ndarray, np.ndarray], np.ndarray]] = None,
+        supercurrent_law: str = "gl",
     ):
         self.device = device
         self.options = options
         self.options.validate()
         self.terminal_currents = terminal_currents
         self.seed_solution = seed_solution
+        self.progress = bool(progress)
+        self.supercurrent_override = supercurrent_override
+        self.supercurrent_law = str(supercurrent_law)
         self.xp = np
         self.use_cupy = False
 
@@ -185,7 +192,6 @@ class TDGLSolver:
         self.epsilon = np.asarray(epsilon, dtype=float)
         self.mu_boundary = mu_boundary
         self.current_A_applied = current_A_applied
-        self.progress_callback = None
         self.new_A_induced = None
         self.areas = None
         self.d_psi_sq_vals: list[float] = []
@@ -330,7 +336,19 @@ class TDGLSolver:
         """
 
         operators = self.operators
-        supercurrent = operators.get_supercurrent(psi)
+        gl_supercurrent = operators.get_supercurrent(psi)
+        supercurrent = gl_supercurrent
+        if self.supercurrent_override is not None:
+            supercurrent = self.supercurrent_override(psi, gl_supercurrent)
+            supercurrent = np.asarray(supercurrent, dtype=float)
+            if supercurrent.shape != gl_supercurrent.shape:
+                raise ValueError(
+                    "supercurrent_override returned shape "
+                    f"{supercurrent.shape}, expected {gl_supercurrent.shape}."
+                )
+            if not np.all(np.isfinite(supercurrent)):
+                raise ValueError("supercurrent_override returned non-finite values.")
+
         div_supercurrent = operators.divergence @ (supercurrent - dA_dt)
         boundary_rhs = operators.mu_boundary_laplacian @ self.mu_boundary
         rhs = div_supercurrent - boundary_rhs
@@ -340,7 +358,10 @@ class TDGLSolver:
         normal_current = -(operators.mu_gradient @ mu) - dA_dt
 
         # Native pyTDGL-like diagnostics.  These arrays are not converted to SI;
-        # they live in the exact linear system solved above.
+        # they live in the exact linear system solved above.  ``last_supercurrent``
+        # is the current actually used in Poisson.  ``last_gl_supercurrent`` is
+        # always the native pyTDGL/GL current reconstructed from psi.
+        self.last_gl_supercurrent = np.asarray(np.real_if_close(gl_supercurrent, tol=1000), dtype=float)
         self.last_supercurrent = np.asarray(np.real_if_close(supercurrent, tol=1000), dtype=float)
         self.last_normal_current = np.asarray(np.real_if_close(normal_current, tol=1000), dtype=float)
         self.last_div_supercurrent = np.asarray(np.real_if_close(div_supercurrent, tol=1000), dtype=float)
@@ -492,6 +513,7 @@ class TDGLSolver:
             running_state.append("psi_snapshot", frame.psi)
             running_state.append("mu_snapshot", frame.mu)
             running_state.append("supercurrent_snapshot", frame.supercurrent)
+            running_state.append("gl_supercurrent_snapshot", getattr(self, "last_gl_supercurrent", frame.supercurrent))
             running_state.append("normal_current_snapshot", frame.normal_current)
             running_state.append("poisson_rhs_snapshot", getattr(self, "last_poisson_rhs", np.zeros(len(self.sites))))
             running_state.append("poisson_lhs_snapshot", getattr(self, "last_poisson_lhs", np.zeros(len(self.sites))))
@@ -502,8 +524,36 @@ class TDGLSolver:
 
         append_snapshot(0.0, result)
         next_snapshot = 1
-        if callable(self.progress_callback):
-            self.progress_callback(int(state["step"]), float(state["time"]), float(options.solve_time))
+
+        progress_next_fraction = 0.0
+
+        def emit_progress(final: bool = False) -> None:
+            nonlocal progress_next_fraction
+            if not self.progress:
+                return
+            total = max(float(options.solve_time), 1.0e-300)
+            frac = min(1.0, max(0.0, float(state["time"]) / total))
+            if (not final) and frac < progress_next_fraction:
+                return
+            width = 32
+            filled = int(round(width * frac))
+            bar = "#" * filled + "-" * (width - filled)
+            try:
+                tau0 = float(getattr(self.device.material, "tau0_GL_s", 1.0))
+            except Exception:
+                tau0 = 1.0
+            t_ps = float(state["time"]) * tau0 / 1.0e-12
+            sys.stderr.write(
+                f"\rSS pyTDGL-like [{bar}] {100.0 * frac:6.2f}% "
+                f"step={int(state['step'])} t={t_ps:.4g} ps"
+            )
+            sys.stderr.flush()
+            progress_next_fraction = min(1.0, frac + 0.01)
+            if final:
+                sys.stderr.write("\n")
+                sys.stderr.flush()
+
+        emit_progress()
 
         while float(state["time"]) < options.solve_time:
             result = self.update(
@@ -520,25 +570,25 @@ class TDGLSolver:
             state["time"] = float(state["time"]) + dt
             state["step"] = int(state["step"]) + 1
 
-            if callable(self.progress_callback):
-                self.progress_callback(int(state["step"]), float(state["time"]), float(options.solve_time))
-
             while next_snapshot < snapshot_times.size and float(state["time"]) >= float(snapshot_times[next_snapshot]):
                 append_snapshot(float(state["time"]), result)
                 next_snapshot += 1
 
+            emit_progress()
+
             if int(state["step"]) > 10_000_000:
                 raise RuntimeError("pytdgl_like solve exceeded 10,000,000 steps.")
 
+        emit_progress(final=True)
+
         if next_snapshot < snapshot_times.size:
             append_snapshot(float(state["time"]), result)
-        if callable(self.progress_callback):
-            self.progress_callback(int(state["step"]), float(options.solve_time), float(options.solve_time))
 
         end_time = datetime.now()
         hist = {key: np.asarray(vals) for key, vals in running_state.data.items()}
         hist["final_step"] = np.array([int(state["step"])], dtype=int)
         hist["final_time"] = np.array([float(state["time"])], dtype=float)
+        hist["supercurrent_law"] = np.array([self.supercurrent_law], dtype=object)
         return PyTDGLLikeSolution(
             device=self.device,
             options=options,
