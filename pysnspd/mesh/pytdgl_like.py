@@ -3,12 +3,16 @@
 This module replaces the earlier jittered/staggered rectangular point cloud with
 the same meshing path used by pyTDGL:
 
-    polygon boundary -> meshpy.triangle.build -> Mesh.from_triangulation ->
-    optional Mesh.smooth -> EdgeMesh + Voronoi control volumes.
+    polygon boundary
+    -> meshpy.triangle.build
+    -> Mesh.from_triangulation
+    -> optional Mesh.smooth
+    -> EdgeMesh + Voronoi control volumes.
 
 The only deliberate difference from pyTDGL is units: every coordinate remains in
-meters.  No pyTDGL coherence-length scaling is performed here.
+meters. No pyTDGL coherence-length scaling is performed here.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,8 +21,8 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from pysnspd.gtdgl.pytdgl_like.finite_volume import Mesh
-from pysnspd.gtdgl.pytdgl_like.finite_volume.meshing import generate_mesh
+from pysnspd.gtdgl.finite_volume import Mesh
+from pysnspd.gtdgl.finite_volume.meshing import generate_mesh
 from pysnspd.mesh.delaunay import MeshData, orient_triangles_counterclockwise
 
 
@@ -61,7 +65,9 @@ def parameters_from_config(
 
     Coordinates remain in SI meters.
     """
+
     del jitter_fraction, boundary_guard_layers
+
     material = config.get("material", {})
     mesh_cfg = config.get("mesh", {})
     geometry = config.get("geometry", {}) if isinstance(config.get("geometry", {}), Mapping) else {}
@@ -69,6 +75,7 @@ def parameters_from_config(
     width_m = float(material.get("width_m", mesh_cfg.get("width_m", 0.0)))
     spacing_m = float(mesh_cfg.get("target_spacing_m", material.get("target_spacing_m", 0.0)))
     seed = int(mesh_cfg.get("seed", 12345))
+
     if "length_m" in mesh_cfg:
         length_m = float(mesh_cfg["length_m"])
     elif "length_m" in geometry:
@@ -77,11 +84,20 @@ def parameters_from_config(
         length_m = 2.0 * width_m
 
     if max_edge_length_m is None:
-        max_edge_length_m = mesh_cfg.get("pytdgl_max_edge_length_m", mesh_cfg.get("max_edge_length_m", spacing_m))
+        max_edge_length_m = mesh_cfg.get(
+            "pytdgl_max_edge_length_m",
+            mesh_cfg.get("max_edge_length_m", spacing_m),
+        )
+
     if min_angle_deg is None:
-        min_angle_deg = mesh_cfg.get("pytdgl_min_angle_deg", mesh_cfg.get("min_angle_deg", 32.5))
+        min_angle_deg = mesh_cfg.get(
+            "pytdgl_min_angle_deg",
+            mesh_cfg.get("min_angle_deg", 32.5),
+        )
+
     if smooth is None:
         smooth = mesh_cfg.get("pytdgl_smooth", mesh_cfg.get("smooth", 0))
+
     if min_points is None and "pytdgl_min_points" in mesh_cfg:
         value = mesh_cfg.get("pytdgl_min_points")
         min_points = None if value is None else int(value)
@@ -111,6 +127,7 @@ def generate_rectangular_pytdgl_like_mesh(
     min_points: int | None = None,
 ) -> MeshData:
     """Generate a rectangular pyTDGL-style mesh and return pySNSPD MeshData."""
+
     params = parameters_from_config(
         config,
         jitter_fraction=jitter_fraction,
@@ -121,6 +138,7 @@ def generate_rectangular_pytdgl_like_mesh(
         min_points=min_points,
     )
     mesh = generate_rectangular_pytdgl_fvm_mesh_from_parameters(params)
+
     return MeshData(
         nodes=np.asarray(mesh.sites, dtype=float),
         triangles=orient_triangles_counterclockwise(mesh.sites, mesh.elements),
@@ -137,14 +155,15 @@ def generate_rectangular_pytdgl_fvm_mesh_from_parameters(
     params: PyTDGLLikeMeshParameters,
 ) -> Mesh:
     """Generate the full pyTDGL-like finite-volume Mesh for a rectangle."""
+
     _validate_parameters(params)
-    # meshpy/triangle itself is deterministic for fixed input.  The seed is kept
-    # in the summary for reproducibility compatibility with pySNSPD.
+
     poly_coords = rectangular_boundary_points(
         params.length_m,
         params.width_m,
         params.target_spacing_m,
     )
+
     points, triangles = generate_mesh(
         poly_coords=poly_coords,
         hole_coords=None,
@@ -154,14 +173,19 @@ def generate_rectangular_pytdgl_fvm_mesh_from_parameters(
         boundary=poly_coords,
         min_angle=params.min_angle_deg,
     )
-    # Follow pyTDGL's Device.make_mesh ordering exactly: build the primary
-    # triangulation first, smooth it without constructing the dual submesh at
-    # intermediate iterations, and only then build the final Mesh with EdgeMesh
-    # and Voronoi control volumes.  Building the Voronoi submesh before
-    # smoothing can fail for valid meshpy triangulations near the boundary.
-    primary_mesh = Mesh.from_triangulation(points, triangles, create_submesh=False)
+
+    primary_mesh = Mesh.from_triangulation(
+        points,
+        triangles,
+        create_submesh=False,
+    )
+
     if params.smooth > 0:
-        primary_mesh = primary_mesh.smooth(params.smooth, create_submesh=False)
+        primary_mesh = primary_mesh.smooth(
+            params.smooth,
+            create_submesh=False,
+        )
+
     return Mesh.from_triangulation(
         primary_mesh.sites,
         primary_mesh.elements,
@@ -169,22 +193,26 @@ def generate_rectangular_pytdgl_fvm_mesh_from_parameters(
     )
 
 
-def rectangular_boundary_points(length_m: float, width_m: float, spacing_m: float) -> np.ndarray:
+def rectangular_boundary_points(
+    length_m: float,
+    width_m: float,
+    spacing_m: float,
+) -> np.ndarray:
     """Return the rectangular film polygon vertices in meters.
 
-    This intentionally follows pyTDGL's meshing path: the polygon supplies only
-    its geometric vertices, while ``meshpy.triangle.build`` is responsible for
-    inserting boundary and interior mesh sites during refinement.  A dense,
-    pre-resampled boundary over-constrains Triangle and can produce malformed
-    Voronoi control cells near the first interior row.
+    The polygon supplies only its geometric vertices, while ``meshpy.triangle``
+    is responsible for inserting boundary and interior mesh sites during
+    refinement. A dense, pre-resampled boundary can over-constrain Triangle and
+    produce malformed Voronoi control cells near the first interior row.
 
-    The curve is open: the first point is not repeated at the end.  This matches
-    the input convention accepted by shapely/pyTDGL Polygon construction after
-    duplicate endpoints are removed.
+    The curve is open: the first point is not repeated at the end.
     """
-    del spacing_m  # Kept in the signature for compatibility with old callers.
+
+    del spacing_m
+
     length = float(length_m)
     half_w = 0.5 * float(width_m)
+
     return np.array(
         [
             [0.0, -half_w],
@@ -198,8 +226,10 @@ def rectangular_boundary_points(length_m: float, width_m: float, spacing_m: floa
 
 def save_pytdgl_like_mesh_npz(mesh: Mesh, path: str | Path) -> Path:
     """Save full pyTDGL-like finite-volume mesh arrays to ``.npz``."""
+
     output = Path(path)
     output.parent.mkdir(parents=True, exist_ok=True)
+
     polygons = mesh.voronoi_polygons or []
     if polygons:
         split_indices = np.cumsum([len(p) for p in polygons[:-1]])
@@ -207,9 +237,11 @@ def save_pytdgl_like_mesh_npz(mesh: Mesh, path: str | Path) -> Path:
     else:
         split_indices = np.array([], dtype=np.int64)
         polygons_flat = np.empty((0, 2), dtype=float)
+
     edge_mesh = mesh.edge_mesh
     if edge_mesh is None:
         raise ValueError("Mesh must have edge_mesh to save pyTDGL-like full mesh.")
+
     np.savez_compressed(
         output,
         sites=mesh.sites,
@@ -226,14 +258,17 @@ def save_pytdgl_like_mesh_npz(mesh: Mesh, path: str | Path) -> Path:
         edge_lengths=edge_mesh.edge_lengths,
         edge_dual_edge_lengths=edge_mesh.dual_edge_lengths,
     )
+
     return output
 
 
 def build_pytdgl_like_mesh_summary(mesh: Mesh) -> dict[str, Any]:
     """Summary for the full pyTDGL-like finite-volume mesh."""
+
     edge_mesh = mesh.edge_mesh
     if edge_mesh is None:
         raise ValueError("Mesh must include an EdgeMesh.")
+
     return {
         "backend": "pytdgl_like_meshpy_triangle_fvm_v1",
         "n_sites": int(len(mesh.sites)),
