@@ -41,6 +41,7 @@ def solve_stationary_pytdgl_like(
     max_solve_retries: int = 10,
     adaptive_time_step_multiplier: float = 0.25,
     n_snapshots: int = 6,
+    progress_callback=None,
 ) -> RelaxationResult:
     """Run the essential pyTDGL-like stationary solver on a pySNSPD seed.
 
@@ -147,6 +148,7 @@ def solve_stationary_pytdgl_like(
         seed_solution=seed_solution,
     )
     solver.snapshot_count = max(2, int(n_snapshots))
+    solver.progress_callback = progress_callback
     solution = solver.solve()
     if solution is None:
         raise RuntimeError("pytdgl_like solver returned None.")

@@ -302,6 +302,21 @@ def _interpolate_current_table(
             raise ValueError(f"1D current table length {table.shape[0]} does not match q axis {q_axis.size}")
         return _interp_signed_q(q_axis, table, q), "table:q"
 
+    # PRE-run Usadel diagnostics write js_A_m2[delta, q].  Handle this
+    # canonical layout explicitly so we do not rely on ambiguous dimension
+    # matching when two axes happen to have the same length.
+    if table.ndim == 2 and delta_axis is not None:
+        if table.shape == (delta_axis.size, q_axis.size):
+            return _interp_nd_axiswise(
+                table,
+                [("delta", delta_axis, delta), ("q", q_axis, q)],
+            ), "table:delta,q"
+        if table.shape == (q_axis.size, delta_axis.size):
+            return _interp_nd_axiswise(
+                table,
+                [("q", q_axis, q), ("delta", delta_axis, delta)],
+            ), "table:q,delta"
+
     # Identify each table dimension by matching unique axis lengths.  This is
     # intentionally conservative: if a dimension cannot be matched, fail loudly
     # and record an unavailable diagnostic instead of pretending to know the

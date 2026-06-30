@@ -35,6 +35,7 @@ from pysnspd.mesh.pytdgl_like import (
     save_pytdgl_like_mesh_npz,
 )
 from pysnspd.plotting.pytdgl_mesh import plot_pytdgl_fvm_mesh
+from pysnspd.usadel.supercurrent_table import append_usadel_supercurrent_table_to_npz
 
 
 def _parse_wrapper_args(argv: list[str]) -> tuple[argparse.Namespace, list[str]]:
@@ -271,10 +272,25 @@ def main() -> int:
         yaml.safe_dump(summary, f, sort_keys=False)
     plot_path = plot_pytdgl_fvm_mesh(fvm_mesh, plots_mesh / "pytdgl_fvm_mesh.png")
 
+    usadel_npz = raw_pre / "usadel_dos_catalog.npz"
+    usadel_summary_yaml = raw_pre / "usadel_dos_summary.yaml"
+    usadel_current_summary_yaml = raw_pre / "usadel_supercurrent_table_summary.yaml"
+    usadel_current_summary = append_usadel_supercurrent_table_to_npz(
+        usadel_npz,
+        config=cfg,
+        summary_yaml=usadel_summary_yaml,
+        output_summary_yaml=usadel_current_summary_yaml,
+    )
+
     print("pyTDGL-like finite-volume sidecar")
     print(f"  pytdgl_fvm_mesh_npz    : {sidecar}")
     print(f"  pytdgl_fvm_mesh_summary: {summary_path}")
     print(f"  pytdgl_fvm_mesh_plot   : {plot_path}")
+    print("Usadel supercurrent table")
+    print(f"  usadel_npz             : {usadel_npz}")
+    print(f"  current_table_summary  : {usadel_current_summary_yaml}")
+    print(f"  table_shape            : {list(usadel_current_summary.table_shape)}")
+    print(f"  js_abs_max_A_m2        : {usadel_current_summary.js_abs_max_A_m2:.6e}")
     return 0
 
 

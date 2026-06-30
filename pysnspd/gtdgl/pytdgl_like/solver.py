@@ -185,6 +185,7 @@ class TDGLSolver:
         self.epsilon = np.asarray(epsilon, dtype=float)
         self.mu_boundary = mu_boundary
         self.current_A_applied = current_A_applied
+        self.progress_callback = None
         self.new_A_induced = None
         self.areas = None
         self.d_psi_sq_vals: list[float] = []
@@ -501,6 +502,8 @@ class TDGLSolver:
 
         append_snapshot(0.0, result)
         next_snapshot = 1
+        if callable(self.progress_callback):
+            self.progress_callback(int(state["step"]), float(state["time"]), float(options.solve_time))
 
         while float(state["time"]) < options.solve_time:
             result = self.update(
@@ -517,6 +520,9 @@ class TDGLSolver:
             state["time"] = float(state["time"]) + dt
             state["step"] = int(state["step"]) + 1
 
+            if callable(self.progress_callback):
+                self.progress_callback(int(state["step"]), float(state["time"]), float(options.solve_time))
+
             while next_snapshot < snapshot_times.size and float(state["time"]) >= float(snapshot_times[next_snapshot]):
                 append_snapshot(float(state["time"]), result)
                 next_snapshot += 1
@@ -526,6 +532,8 @@ class TDGLSolver:
 
         if next_snapshot < snapshot_times.size:
             append_snapshot(float(state["time"]), result)
+        if callable(self.progress_callback):
+            self.progress_callback(int(state["step"]), float(options.solve_time), float(options.solve_time))
 
         end_time = datetime.now()
         hist = {key: np.asarray(vals) for key, vals in running_state.data.items()}

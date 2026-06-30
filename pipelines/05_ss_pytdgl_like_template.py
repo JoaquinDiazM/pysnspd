@@ -17,6 +17,7 @@ from pysnspd.io.manager import create_run_layout, write_manifest
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.mesh.edges import load_edges_npz
 from pysnspd.usadel.catalog import load_usadel_catalog_npz
+from pysnspd.usadel.supercurrent_table import load_usadel_current_diagnostic_catalog
 from pysnspd.gtdgl.seed import build_stationary_seed, save_stationary_seed_npz, seed_summary
 from pysnspd.gtdgl.material import build_gtdgl_material
 from pysnspd.gtdgl.operators import build_fv_operators
@@ -68,6 +69,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--ss-no-adapt-dt", action="store_true", help="Disable pyTDGL adaptive dt.")
     parser.add_argument("--ss-n-snapshots", type=int, default=6, help="Number of final-state snapshots to emit.")
+    parser.add_argument("--ss-progress", action="store_true", help="Show a tqdm progress bar for the pyTDGL-like physical-time solve.")
     parser.add_argument("--dpi", type=int, default=480, help="DPI for optional diagnostic plots.")
     return parser.parse_args()
 
@@ -93,6 +95,7 @@ def main() -> int:
     mesh = load_mesh_npz(mesh_path)
     edge_data = load_edges_npz(edges_path)
     usadel_catalog = load_usadel_catalog_npz(usadel_path)
+    usadel_current_catalog = load_usadel_current_diagnostic_catalog(usadel_path)
     seed = build_stationary_seed(
         mesh=mesh,
         edge_data=edge_data,
@@ -107,20 +110,27 @@ def main() -> int:
     ops = build_fv_operators(mesh, edge_data)
 
     terminal_psi = _parse_terminal_psi(args.ss_terminal_psi)
-    result = solve_stationary_pytdgl_like(
-        mesh=mesh,
-        edge_data=edge_data,
-        seed=seed,
-        material=material,
-        ops=ops,
-        steps=args.ss_steps,
-        dt_s=args.ss_dt_fs * 1.0e-15,
-        target_current_A=seed_sum["I_bias_A"],
-        usadel_catalog=usadel_catalog,
-        terminal_psi=terminal_psi,
-        adaptive=not args.ss_no_adapt_dt,
-        n_snapshots=args.ss_n_snapshots,
-    )
+    progress_callback = _make_progress_callback(args.ss_progress, args.ss_steps)
+    try:
+        result = solve_stationary_pytdgl_like(
+            mesh=mesh,
+            edge_data=edge_data,
+            seed=seed,
+            material=material,
+            ops=ops,
+            steps=args.ss_steps,
+            dt_s=args.ss_dt_fs * 1.0e-15,
+            target_current_A=seed_sum["I_bias_A"],
+            usadel_catalog=usadel_current_catalog,
+            terminal_psi=terminal_psi,
+            adaptive=not args.ss_no_adapt_dt,
+            n_snapshots=args.ss_n_snapshots,
+            progress_callback=progress_callback,
+        )
+    finally:
+        close = getattr(progress_callback, "close", None)
+        if callable(close):
+            close()
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "ss_state_pytdgl_like.npz")
     history_npz = save_relaxation_history_npz(result.history, raw_ss / "ss_pytdgl_like_history.npz")
@@ -249,6 +259,32 @@ def _parse_terminal_psi(text: str):
         return 0.0
     return complex(text)
 
+
+def _make_progress_callback(enabled: bool, nominal_steps: int):
+    if not enabled:
+        return None
+    from tqdm.auto import tqdm
+
+    bar = tqdm(total=int(max(1, nominal_steps)), desc="SS pyTDGL-like", unit="step")
+    state = {"last": 0}
+
+    def callback(step: int, time_dimless: float, solve_time_dimless: float) -> None:
+        del step
+        frac = 0.0 if solve_time_dimless <= 0 else min(1.0, max(0.0, time_dimless / solve_time_dimless))
+        current = int(round(frac * bar.total))
+        delta = current - state["last"]
+        if delta > 0:
+            bar.update(delta)
+            state["last"] = current
+
+    def close() -> None:
+        if state["last"] < bar.total:
+            bar.update(bar.total - state["last"])
+            state["last"] = bar.total
+        bar.close()
+
+    callback.close = close  # type: ignore[attr-defined]
+    return callback
 
 def _require_existing(path: Path) -> None:
     if not path.exists() or not path.is_file():
