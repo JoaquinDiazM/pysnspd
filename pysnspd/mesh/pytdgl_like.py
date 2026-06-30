@@ -1,16 +1,15 @@
 """pyTDGL-faithful rectangular PRE mesh generation in SI units.
 
-This module replaces the earlier jittered/staggered rectangular point cloud with
-the same meshing path used by pyTDGL:
+This module builds the PRE mesh through the same pyTDGL-style path used by the
+flat gTDGL backend:
 
-    polygon boundary
+    resampled polygon boundary
     -> meshpy.triangle.build
     -> Mesh.from_triangulation
-    -> optional Mesh.smooth
     -> EdgeMesh + Voronoi control volumes.
 
-The only deliberate difference from pyTDGL is units: every coordinate remains in
-meters. No pyTDGL coherence-length scaling is performed here.
+The only deliberate difference from pyTDGL is units: all coordinates remain in
+meters. No coherence-length nondimensionalization is performed at PRE time.
 """
 
 from __future__ import annotations
@@ -36,7 +35,7 @@ class PyTDGLLikeMeshParameters:
     seed: int
     max_edge_length_m: float
     min_angle_deg: float = 32.5
-    smooth: int = 100
+    smooth: int = 0
     min_points: int | None = None
     terminal_contact_mode: str = "normal_left_right"
 
@@ -53,17 +52,15 @@ def parameters_from_config(
 ) -> PyTDGLLikeMeshParameters:
     """Resolve pyTDGL-like meshing parameters from a full or minimal config.
 
-    This follows pyTDGL's public ``Device.make_mesh`` contract as closely as the
-    rectangular pySNSPD PRE stage allows:
+    ``jitter_fraction`` and ``boundary_guard_layers`` are accepted only for
+    compatibility with the older pipeline CLI. They do not modify the pyTDGL
+    mesh, because the restructured repo uses a single meshing route here:
+    meshpy/triangle + pyTDGL-like finite-volume data structures.
 
-    * ``max_edge_length`` controls Triangle refinement.
-    * ``min_angle`` is passed to ``meshpy.triangle.build``.
-    * ``smooth`` is an explicit Laplacian-smoothing iteration count.
-    * the old pySNSPD ``jitter_fraction`` and ``boundary_guard_layers`` are
-      accepted for CLI compatibility, but they do not silently change the
-      pyTDGL meshing controls.
-
-    Coordinates remain in SI meters.
+    Important detail: the generic ``mesh.smooth`` key is intentionally ignored.
+    Smoothing can move sites while keeping the same triangulation, which may
+    create non-Delaunay cells and malformed Voronoi control volumes. To request
+    smoothing explicitly for this backend, use ``mesh.pytdgl_smooth``.
     """
 
     del jitter_fraction, boundary_guard_layers
@@ -96,17 +93,17 @@ def parameters_from_config(
         )
 
     if smooth is None:
-        smooth = mesh_cfg.get("pytdgl_smooth", mesh_cfg.get("smooth", 0))
+        smooth = mesh_cfg.get("pytdgl_smooth", 0)
 
     if min_points is None and "pytdgl_min_points" in mesh_cfg:
         value = mesh_cfg.get("pytdgl_min_points")
         min_points = None if value is None else int(value)
 
     params = PyTDGLLikeMeshParameters(
-        length_m=length_m,
-        width_m=width_m,
-        target_spacing_m=spacing_m,
-        seed=seed,
+        length_m=float(length_m),
+        width_m=float(width_m),
+        target_spacing_m=float(spacing_m),
+        seed=int(seed),
         max_edge_length_m=float(max_edge_length_m),
         min_angle_deg=float(min_angle_deg),
         smooth=int(smooth),
@@ -146,7 +143,7 @@ def generate_rectangular_pytdgl_like_mesh(
         width_m=float(params.width_m),
         target_spacing_m=float(params.target_spacing_m),
         seed=int(params.seed),
-        triangulation_method="pytdgl_generate_mesh_meshpy_triangle_v1",
+        triangulation_method="pytdgl_generate_mesh_meshpy_triangle_resampled_boundary_v1",
         boundary_guard_layers=int(params.smooth),
     )
 
@@ -198,30 +195,50 @@ def rectangular_boundary_points(
     width_m: float,
     spacing_m: float,
 ) -> np.ndarray:
-    """Return the rectangular film polygon vertices in meters.
-
-    The polygon supplies only its geometric vertices, while ``meshpy.triangle``
-    is responsible for inserting boundary and interior mesh sites during
-    refinement. A dense, pre-resampled boundary can over-constrain Triangle and
-    produce malformed Voronoi control cells near the first interior row.
+    """Return a resampled rectangular boundary curve in meters.
 
     The curve is open: the first point is not repeated at the end.
+
+    This is the safest pyTDGL-style input for this rectangular nanowire:
+    boundary sites are explicitly controlled by the PRE spacing instead of being
+    inserted implicitly by Triangle from only four corner vertices.
     """
 
-    del spacing_m
-
     length = float(length_m)
-    half_w = 0.5 * float(width_m)
+    width = float(width_m)
+    spacing = float(spacing_m)
 
-    return np.array(
-        [
-            [0.0, -half_w],
-            [length, -half_w],
-            [length, half_w],
-            [0.0, half_w],
-        ],
-        dtype=float,
-    )
+    if length <= 0.0:
+        raise ValueError("length_m must be positive.")
+    if width <= 0.0:
+        raise ValueError("width_m must be positive.")
+    if spacing <= 0.0:
+        raise ValueError("spacing_m must be positive.")
+
+    half_w = 0.5 * width
+
+    n_x = max(1, int(np.ceil(length / spacing)))
+    n_y = max(1, int(np.ceil(width / spacing)))
+
+    bottom_x = np.linspace(0.0, length, n_x + 1, endpoint=True)[:-1]
+    right_y = np.linspace(-half_w, half_w, n_y + 1, endpoint=True)[:-1]
+    top_x = np.linspace(length, 0.0, n_x + 1, endpoint=True)[:-1]
+    left_y = np.linspace(half_w, -half_w, n_y + 1, endpoint=True)[:-1]
+
+    bottom = np.column_stack([bottom_x, np.full_like(bottom_x, -half_w)])
+    right = np.column_stack([np.full_like(right_y, length), right_y])
+    top = np.column_stack([top_x, np.full_like(top_x, half_w)])
+    left = np.column_stack([np.full_like(left_y, 0.0), left_y])
+
+    points = np.vstack([bottom, right, top, left])
+
+    # Remove any accidental repeated coordinate while preserving order. The
+    # curve must remain open for the pyTDGL/meshpy boundary convention used here.
+    rounded = np.round(points, decimals=14)
+    _, keep = np.unique(rounded, axis=0, return_index=True)
+    keep = np.sort(keep)
+
+    return points[keep]
 
 
 def save_pytdgl_like_mesh_npz(mesh: Mesh, path: str | Path) -> Path:
@@ -270,7 +287,7 @@ def build_pytdgl_like_mesh_summary(mesh: Mesh) -> dict[str, Any]:
         raise ValueError("Mesh must include an EdgeMesh.")
 
     return {
-        "backend": "pytdgl_like_meshpy_triangle_fvm_v1",
+        "backend": "pytdgl_like_meshpy_triangle_fvm_resampled_boundary_v1",
         "n_sites": int(len(mesh.sites)),
         "n_elements": int(len(mesh.elements)),
         "n_boundary_sites": int(len(mesh.boundary_indices)),
