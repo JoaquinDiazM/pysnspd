@@ -44,6 +44,105 @@ class UsadelSupercurrentDiagnostics:
     node_js_usadel_y_A_m2: np.ndarray
     node_div_js_usadel_A_m3: np.ndarray
 
+class UsadelCatalogWithSupercurrentTable:
+    """Thin adapter that preserves PRE supercurrent-table arrays.
+
+    ``load_usadel_catalog_npz(...)`` intentionally constructs the historical
+    Usadel DOS catalogue object and may ignore newer sidecar arrays stored in
+    the same ``.npz`` file.  This wrapper delegates every old attribute/key to
+    that base catalogue and exposes only the numeric supercurrent-table arrays
+    needed by the pyTDGL-like SS diagnostics.
+    """
+
+    def __init__(self, base: Any, arrays: Mapping[str, np.ndarray]):
+        self.base = base
+        self.arrays = dict(arrays)
+
+    @property
+    def files(self) -> list[str]:
+        names: list[str] = []
+        try:
+            names.extend(list(self.base.files))  # type: ignore[attr-defined]
+        except Exception:
+            pass
+        names.extend(self.arrays.keys())
+        return list(dict.fromkeys(names))
+
+    def __getitem__(self, key: str) -> Any:
+        if key in self.arrays:
+            return self.arrays[key]
+        return self.base[key]
+
+    def __getattr__(self, name: str) -> Any:
+        if name in self.arrays:
+            return self.arrays[name]
+        return getattr(self.base, name)
+
+
+def attach_usadel_supercurrent_table_from_npz(catalog: Any, npz_path: str | bytes | "Path") -> Any:
+    """Attach PRE-tabulated ``j_s^Usadel`` arrays to a loaded catalogue.
+
+    The function is strict about physics and permissive only about catalogue
+    plumbing: it never manufactures a current table.  It only exposes arrays
+    that are already present in the PRE ``usadel_dos_catalog.npz``.  Known keys
+    are loaded individually so unrelated object metadata in the same NPZ cannot
+    trigger ``allow_pickle=False`` failures.
+    """
+    arrays = load_usadel_supercurrent_table_arrays_npz(npz_path)
+    if not arrays:
+        return catalog
+    return UsadelCatalogWithSupercurrentTable(catalog, arrays)
+
+
+def load_usadel_supercurrent_table_arrays_npz(npz_path: str | bytes | "Path") -> dict[str, np.ndarray]:
+    """Load only numeric PRE Usadel supercurrent-table arrays from an NPZ."""
+    wanted = (
+        "js_A_m2",
+        "j_s_A_m2",
+        "supercurrent_density_A_m2",
+        "q_axis_m_inv",
+        "q_values_m_inv",
+        "q_grid_m_inv",
+        "delta_axis_J",
+        "delta_values_J",
+        "Delta_axis_J",
+        "Delta_values_J",
+        "Te_axis_K",
+        "T_axis_K",
+        "js_table_T_K",
+        "js_table_n_matsubara",
+    )
+    out: dict[str, np.ndarray] = {}
+    with np.load(npz_path, allow_pickle=False) as data:
+        keys = set(data.files)
+        for key in wanted:
+            if key not in keys:
+                continue
+            arr = np.asarray(data[key])
+            if arr.dtype.kind in "OUS":
+                # This should not happen for the table, but keep the SS loader
+                # numeric-only and let diagnostics fail explicitly if the table
+                # itself is malformed.
+                continue
+            out[key] = arr
+    # Canonical aliases used by the interpolator.
+    if "js_A_m2" not in out:
+        for key in ("j_s_A_m2", "supercurrent_density_A_m2"):
+            if key in out:
+                out["js_A_m2"] = out[key]
+                break
+    if "q_axis_m_inv" not in out:
+        for key in ("q_values_m_inv", "q_grid_m_inv"):
+            if key in out:
+                out["q_axis_m_inv"] = out[key]
+                break
+    if "delta_axis_J" not in out:
+        for key in ("delta_values_J", "Delta_axis_J", "Delta_values_J"):
+            if key in out:
+                out["delta_axis_J"] = out[key]
+                break
+    return out
+
 
 def compute_usadel_supercurrent_diagnostic(
     *,
