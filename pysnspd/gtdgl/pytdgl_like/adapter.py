@@ -17,6 +17,12 @@ from pysnspd.gtdgl.diagnostics import (
 )
 from .currents import native_edge_currents_to_current_fields, native_current_scale_A_m2
 from .usadel_current import compute_usadel_supercurrent_diagnostic
+from .allmaras import (
+    allmaras_coefficients,
+    compute_allmaras_appendix_b_diagnostic,
+    rms as _allmaras_rms,
+    max_abs as _allmaras_max_abs,
+)
 from .device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
 from .solver import TDGLSolver
@@ -95,20 +101,32 @@ def solve_stationary_pytdgl_like(
         include_screening=False,
     )
 
-    # pySNSPD modified coefficients inside the pyTDGL algebra.
-    delta_mod2 = material.delta_mod_squared_J2(Te)
-    epsilon = np.clip(delta_mod2 / (material.delta0_J**2), 0.0, 1.0)
-    tau_sc = material.tau_sc_s(Te)
-    gamma = float(np.nanmedian(2.0 * material.delta0_J * tau_sc / 1.054571817e-34))
-    if not np.isfinite(gamma) or gamma < 0:
-        gamma = 0.0
-    # Keep u scalar to preserve pyTDGL's method signature.
-    rho0 = material.rho_kwt(Te, np.maximum(np.abs(psi0_J), 1.0e-12 * material.delta0_J))
-    u = float(np.nanmedian(np.maximum(rho0, 1.0e-12)))
-    if not np.isfinite(u) or u <= 0:
-        u = 1.0
+    # Appendix-B Allmaras/KWT coefficients inside the unchanged pyTDGL
+    # algebraic update.  The local solver still uses its existing
+    # ``X_i + z_i |X_i|^2 = w_i`` form; only the coefficient fields are now
+    # constructed from Appendix B:
+    #
+    #   rho_KWT = sqrt(1 + gamma_i^2 |psi_i|^2),
+    #   gamma_i = 2 Delta0 tau_sc(Te_i) / hbar,
+    #   epsilon_i = Delta_mod^2(Te_i) / Delta0^2.
+    #
+    # Setting u=1 makes the existing ``dt/u * rho_KWT`` factor match the
+    # Appendix-B tau0-scaled form.  The missing non-unit cubic denominator
+    # Delta0^2/Delta_mod^2 is intentionally not introduced here because that
+    # would change the local w/z algebra.
+    psi0 = psi0_J / material.delta0_J
+    allmaras0 = allmaras_coefficients(
+        psi_dimensionless=psi0,
+        material=material,
+        Te_K=Te,
+    )
+    epsilon = np.clip(allmaras0.solver_epsilon, 0.0, 1.0)
+    gamma = np.asarray(allmaras0.gamma_kwt_dimensionless, dtype=float)
+    gamma = np.where(np.isfinite(gamma) & (gamma >= 0.0), gamma, 0.0)
+    u = 1.0
     device.layer.u = u
     device.layer.gamma = gamma
+    gamma_report = float(np.nanmedian(gamma)) if gamma.size else 0.0
 
     # pySNSPD policy: terminal currents are always SI amperes.  The
     # pyTDGL-like solver converts these physical currents to the internal
@@ -214,7 +232,18 @@ def solve_stationary_pytdgl_like(
         "dt_init_s": float(dt_s),
         "tau0_GL_s": tau0,
         "pytdgl_u": u,
-        "pytdgl_gamma": gamma,
+        "pytdgl_gamma": gamma_report,
+        "allmaras_coefficients_backend": "appendix_b_coefficients_v1_without_wz_rewrite",
+        "allmaras_solver_u": float(u),
+        "allmaras_gamma_min": float(np.nanmin(gamma)) if gamma.size else float("nan"),
+        "allmaras_gamma_median": gamma_report,
+        "allmaras_gamma_max": float(np.nanmax(gamma)) if gamma.size else float("nan"),
+        "allmaras_rho_seed_min": float(np.nanmin(allmaras0.rho_kwt)),
+        "allmaras_rho_seed_median": float(np.nanmedian(allmaras0.rho_kwt)),
+        "allmaras_rho_seed_max": float(np.nanmax(allmaras0.rho_kwt)),
+        "allmaras_delta_mod_seed_min_over_delta0": float(np.nanmin(allmaras0.delta_mod_over_delta0)),
+        "allmaras_delta_mod_seed_median_over_delta0": float(np.nanmedian(allmaras0.delta_mod_over_delta0)),
+        "allmaras_delta_mod_seed_max_over_delta0": float(np.nanmax(allmaras0.delta_mod_over_delta0)),
         "terminal_psi": None if terminal_psi is None else str(terminal_psi),
         "normal_terminal_enforced": bool(terminal_psi is not None and np.any(terminal_site_mask)),
         "normal_terminal_n_nodes": int(np.count_nonzero(terminal_site_mask)),
@@ -259,6 +288,16 @@ def solve_stationary_pytdgl_like(
         "native_poisson_rhs_norm_final": float(history.get("pytdgl_like_poisson_rhs_norm", np.array([float("nan")]))[-1]),
         "native_boundary_rhs_norm_final": float(history.get("pytdgl_like_boundary_rhs_norm", np.array([float("nan")]))[-1]),
         "native_mu_boundary_max_abs_final": float(history.get("pytdgl_like_mu_boundary_max_abs", np.array([float("nan")]))[-1]),
+        "allmaras_bulk_guard_layers": int(history.get("allmaras_bulk_guard_layers", np.array([1]))[0]),
+        "allmaras_bulk_n_nodes": int(np.count_nonzero(history.get("allmaras_bulk_node_mask", np.zeros(mesh.n_nodes, dtype=bool)))),
+        "allmaras_mismatch_div_rms_A_m3_final": float(history.get("allmaras_mismatch_div_rms_A_m3", np.array([float("nan")]))[-1]),
+        "allmaras_mismatch_div_bulk_rms_A_m3_final": float(history.get("allmaras_mismatch_div_bulk_rms_A_m3", np.array([float("nan")]))[-1]),
+        "allmaras_mismatch_div_max_abs_A_m3_final": float(history.get("allmaras_mismatch_div_max_abs_A_m3", np.array([float("nan")]))[-1]),
+        "allmaras_mismatch_div_bulk_max_abs_A_m3_final": float(history.get("allmaras_mismatch_div_bulk_max_abs_A_m3", np.array([float("nan")]))[-1]),
+        "allmaras_phase_drive_rms_over_delta0_final": float(history.get("allmaras_phase_drive_rms_over_delta0", np.array([float("nan")]))[-1]),
+        "allmaras_phase_drive_bulk_rms_over_delta0_final": float(history.get("allmaras_phase_drive_bulk_rms_over_delta0", np.array([float("nan")]))[-1]),
+        "allmaras_phase_drive_max_over_delta0_final": float(history.get("allmaras_phase_drive_max_over_delta0", np.array([float("nan")]))[-1]),
+        "allmaras_phase_drive_bulk_max_over_delta0_final": float(history.get("allmaras_phase_drive_bulk_max_over_delta0", np.array([float("nan")]))[-1]),
     }
 
     state = GTDGLStationaryState(
@@ -275,6 +314,7 @@ def solve_stationary_pytdgl_like(
             "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
             "current_scale_A": float(device.current_scale_A),
             "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
+            "allmaras_coefficients_backend": "appendix_b_coefficients_v1_without_wz_rewrite",
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
         },
     )
@@ -462,6 +502,7 @@ def _build_history(
     current_frames = []
     native_diags = []
     usadel_diags = []
+    allmaras_diags = []
     for k in range(psi_snap_J.shape[0]):
         psi_dim = psi_snap_J[k] / material.delta0_J
         c, d = native_edge_currents_to_current_fields(
@@ -482,10 +523,21 @@ def _build_history(
             material=material,
             Te_K=Te,
             ops=ops,
+            blocked_edge_mask=blocked_edge_mask,
+        )
+        adiag = compute_allmaras_appendix_b_diagnostic(
+            psi_dimensionless=psi_dim,
+            material=material,
+            Te_K=Te,
+            ops=ops,
+            terminal_node_mask=terminal_site_mask,
+            blocked_edge_mask=blocked_edge_mask,
+            bulk_guard_layers=1,
         )
         current_frames.append(c)
         native_diags.append(d)
         usadel_diags.append(udiag)
+        allmaras_diags.append(adiag)
 
     jtot_x = np.vstack([c.node_jtot_x_A_m2 for c in current_frames])
     jtot_y = np.vstack([c.node_jtot_y_A_m2 for c in current_frames])
@@ -514,6 +566,19 @@ def _build_history(
     edge_jn = np.vstack([c.edge_jn_A_m2 for c in current_frames])
     edge_jtot = np.vstack([c.edge_jtot_A_m2 for c in current_frames])
 
+    allmaras_bulk_mask = allmaras_diags[-1].bulk_node_mask if allmaras_diags else np.ones(mesh.n_nodes, dtype=bool)
+    allmaras_edge_js_us = np.vstack([d.edge_js_us_allmaras_A_m2 for d in allmaras_diags])
+    allmaras_edge_js_gl = np.vstack([d.edge_js_gl_allmaras_A_m2 for d in allmaras_diags])
+    allmaras_div_us = np.vstack([d.node_div_js_us_allmaras_A_m3 for d in allmaras_diags])
+    allmaras_div_gl = np.vstack([d.node_div_js_gl_allmaras_A_m3 for d in allmaras_diags])
+    allmaras_mismatch_div = np.vstack([d.node_mismatch_divergence_A_m3 for d in allmaras_diags])
+    allmaras_phase_drive_abs_J = np.vstack([d.node_phase_drive_abs_J for d in allmaras_diags])
+    allmaras_phase_drive_abs_over_delta0 = np.vstack([d.node_phase_drive_abs_over_delta0 for d in allmaras_diags])
+    allmaras_delta_mod_over_delta0 = np.vstack([d.coefficients.delta_mod_over_delta0 for d in allmaras_diags])
+    allmaras_rho_kwt = np.vstack([d.coefficients.rho_kwt for d in allmaras_diags])
+    allmaras_xi_mod2_m2 = np.vstack([d.coefficients.xi_mod2_m2 for d in allmaras_diags])
+    allmaras_C = np.vstack([d.coefficients.correction_C_J_m3_A for d in allmaras_diags])
+
     time_aliases = {
         "snapshot_t_s": snap_t,
         "psi_snapshot_t_s": snap_t,
@@ -532,6 +597,9 @@ def _build_history(
         "div_jtot_snapshot_t_s": snap_t,
         "pairbreaking_snapshot_t_s": snap_t,
         "edge_snapshot_t_s": snap_t,
+        "allmaras_snapshot_t_s": snap_t,
+        "allmaras_mismatch_snapshot_t_s": snap_t,
+        "allmaras_phase_drive_snapshot_t_s": snap_t,
     }
     hist.update({key: np.asarray(value) for key, value in time_aliases.items()})
 
@@ -578,6 +646,19 @@ def _build_history(
         "div_js_usadel_snapshot_A_m3": div_js_us,
         "edge_jn_snapshot_A_m2": edge_jn,
         "edge_jtot_snapshot_A_m2": edge_jtot,
+        "allmaras_edge_js_us_snapshot_A_m2": allmaras_edge_js_us,
+        "allmaras_edge_js_gl_snapshot_A_m2": allmaras_edge_js_gl,
+        "allmaras_div_js_us_snapshot_A_m3": allmaras_div_us,
+        "allmaras_div_js_gl_snapshot_A_m3": allmaras_div_gl,
+        "allmaras_mismatch_divergence_snapshot_A_m3": allmaras_mismatch_div,
+        "allmaras_phase_drive_abs_snapshot_J": allmaras_phase_drive_abs_J,
+        "allmaras_phase_drive_abs_over_delta0_snapshot": allmaras_phase_drive_abs_over_delta0,
+        "allmaras_delta_mod_over_delta0_snapshot": allmaras_delta_mod_over_delta0,
+        "allmaras_rho_kwt_snapshot": allmaras_rho_kwt,
+        "allmaras_xi_mod2_snapshot_m2": allmaras_xi_mod2_m2,
+        "allmaras_correction_C_snapshot_J_m3_A": allmaras_C,
+        "allmaras_bulk_node_mask": allmaras_bulk_mask.astype(bool),
+        "allmaras_bulk_guard_layers": np.array([1], dtype=np.int64),
         "edge_i": np.asarray(ops.edge_i, dtype=np.int64),
         "edge_j": np.asarray(ops.edge_j, dtype=np.int64),
     }.items():
@@ -631,4 +712,44 @@ def _build_history(
         hist["usadel_vs_gl_edge_usadel_norm_A_m2"] = np.full(edge_js_gl.shape[0], np.nan)
     hist["gl_supercurrent_max_A_m2"] = np.nanmax(np.abs(edge_js_gl), axis=1)
     hist["usadel_vs_gl_edge_gl_norm_A_m2"] = gl_norm
+
+    bulk_mask = np.asarray(hist["allmaras_bulk_node_mask"], dtype=bool)
+    hist["allmaras_mismatch_div_rms_A_m3"] = np.asarray(
+        [_allmaras_rms(row) for row in allmaras_mismatch_div],
+        dtype=float,
+    )
+    hist["allmaras_mismatch_div_bulk_rms_A_m3"] = np.asarray(
+        [_allmaras_rms(row, bulk_mask) for row in allmaras_mismatch_div],
+        dtype=float,
+    )
+    hist["allmaras_mismatch_div_max_abs_A_m3"] = np.asarray(
+        [_allmaras_max_abs(row) for row in allmaras_mismatch_div],
+        dtype=float,
+    )
+    hist["allmaras_mismatch_div_bulk_max_abs_A_m3"] = np.asarray(
+        [_allmaras_max_abs(row, bulk_mask) for row in allmaras_mismatch_div],
+        dtype=float,
+    )
+    hist["allmaras_phase_drive_rms_over_delta0"] = np.asarray(
+        [_allmaras_rms(row) for row in allmaras_phase_drive_abs_over_delta0],
+        dtype=float,
+    )
+    hist["allmaras_phase_drive_bulk_rms_over_delta0"] = np.asarray(
+        [_allmaras_rms(row, bulk_mask) for row in allmaras_phase_drive_abs_over_delta0],
+        dtype=float,
+    )
+    hist["allmaras_phase_drive_max_over_delta0"] = np.asarray(
+        [_allmaras_max_abs(row) for row in allmaras_phase_drive_abs_over_delta0],
+        dtype=float,
+    )
+    hist["allmaras_phase_drive_bulk_max_over_delta0"] = np.asarray(
+        [_allmaras_max_abs(row, bulk_mask) for row in allmaras_phase_drive_abs_over_delta0],
+        dtype=float,
+    )
+    hist["allmaras_delta_mod_min_over_delta0"] = np.nanmin(allmaras_delta_mod_over_delta0, axis=1)
+    hist["allmaras_delta_mod_median_over_delta0"] = np.nanmedian(allmaras_delta_mod_over_delta0, axis=1)
+    hist["allmaras_delta_mod_max_over_delta0"] = np.nanmax(allmaras_delta_mod_over_delta0, axis=1)
+    hist["allmaras_rho_kwt_min"] = np.nanmin(allmaras_rho_kwt, axis=1)
+    hist["allmaras_rho_kwt_median"] = np.nanmedian(allmaras_rho_kwt, axis=1)
+    hist["allmaras_rho_kwt_max"] = np.nanmax(allmaras_rho_kwt, axis=1)
     return hist

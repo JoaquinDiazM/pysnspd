@@ -31,6 +31,11 @@ except Exception:  # pragma: no cover
     plot_ss_relaxation_history = None
 
 try:
+    from pysnspd.plotting.allmaras import plot_allmaras_appendix_b_diagnostics
+except Exception:  # pragma: no cover
+    plot_allmaras_appendix_b_diagnostics = None
+
+try:
     from pysnspd.plotting.pytdgl_like import (
         plot_pytdgl_like_native_history,
         plot_pytdgl_like_native_edge_currents,
@@ -199,6 +204,18 @@ def main() -> int:
             plots_diag / "pytdgl_like_usadel_GL_comparison.png",
             dpi=args.dpi,
         )
+    if plot_allmaras_appendix_b_diagnostics is not None:
+        try:
+            allmaras_plots = plot_allmaras_appendix_b_diagnostics(
+                mesh,
+                result.history,
+                plots_diag / "allmaras_appendix_b",
+                dpi=args.dpi,
+                ncols=3,
+            )
+            native_plots.update({f"allmaras_{k}": v for k, v in allmaras_plots.items()})
+        except (KeyError, ValueError):
+            pass
 
     manifest = write_manifest(
         cfg,
