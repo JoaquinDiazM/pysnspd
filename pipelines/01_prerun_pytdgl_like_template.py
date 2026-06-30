@@ -18,6 +18,7 @@ applied here.
 from __future__ import annotations
 
 import argparse
+import os
 import runpy
 import sys
 import tempfile
@@ -98,28 +99,102 @@ def _write_mesh_override_config(config_path: str | Path, args: argparse.Namespac
     return Path(tmp.name)
 
 
-def _run_dirs_from_config(config: Mapping[str, Any], run_name: str) -> tuple[Path, Path]:
-    """Resolve PRE output directories using the same config normalization as PRE.
+def _iter_path_values(config: Mapping[str, Any]) -> list[Path]:
+    """Collect plausible data-root paths from an arbitrary config mapping."""
+    out: list[Path] = []
 
-    The wrapper writes a temporary YAML carrying pyTDGL-only mesh controls, but
-    path defaults and environment expansion must still come from
-    ``pysnspd.config.load_config``.  That avoids failing after the standard PRE
-    stage has already completed successfully.
+    def visit(obj: Any, key: str = "") -> None:
+        if isinstance(obj, Mapping):
+            for k, v in obj.items():
+                visit(v, str(k))
+            return
+        if not isinstance(obj, (str, os.PathLike)):
+            return
+        key_l = key.lower()
+        value = str(obj)
+        if (
+            "big_data" in key_l
+            or "data_root" in key_l
+            or "root" == key_l
+            or "big_data" in value
+        ):
+            out.append(Path(value).expanduser())
+
+    visit(config)
+    return out
+
+
+def _run_dirs_from_config(config: Mapping[str, Any], run_name: str) -> tuple[Path, Path]:
+    """Resolve PRE output directories robustly after the delegated PRE stage.
+
+    The standard PRE pipeline has already written ``raw/<run_name>/pre`` before
+    this wrapper writes the pyTDGL-like sidecar.  Therefore this resolver first
+    honors explicit config roots, then falls back to the same practical roots
+    used throughout the local pySNSPD workflow.  This avoids failing after a
+    successful PRE-run merely because the temporary wrapper config does not
+    expose ``paths.big_data_root`` under that exact key.
     """
-    paths = _config_section(config, "paths")
-    root_value = (
-        paths.get("big_data_root")
-        or paths.get("big_data_root_path")
-        or paths.get("data_root")
+    candidates: list[Path] = []
+    paths = config.get("paths", {})
+    if isinstance(paths, Mapping):
+        for key in (
+            "big_data_root",
+            "big_data_root_path",
+            "data_root",
+            "root",
+            "base_dir",
+        ):
+            value = paths.get(key)
+            if value is not None:
+                candidates.append(Path(str(value)).expanduser())
+
+    candidates.extend(_iter_path_values(config))
+
+    for env_key in (
+        "PYSNSPD_BIG_DATA_ROOT",
+        "PYSNSPD_DATA_ROOT",
+        "BIG_DATA_ROOT",
+        "SCRATCH_BIG_DATA_ROOT",
+    ):
+        value = os.environ.get(env_key)
+        if value:
+            candidates.append(Path(value).expanduser())
+
+    candidates.extend(
+        [
+            Path.home() / "scratch" / "big_data",
+            Path("/home/jdiaz/scratch/big_data"),
+        ]
     )
-    if root_value is None:
-        raise KeyError("Missing resolved config paths.big_data_root.")
-    root = Path(str(root_value)).expanduser()
-    raw_pre = root / "raw" / run_name / "pre"
-    plots_mesh = root / "plots" / run_name / "mesh"
-    raw_pre.mkdir(parents=True, exist_ok=True)
-    plots_mesh.mkdir(parents=True, exist_ok=True)
-    return raw_pre, plots_mesh
+
+    unique: list[Path] = []
+    seen: set[str] = set()
+    for root in candidates:
+        root = root.expanduser()
+        marker = str(root)
+        if marker not in seen:
+            unique.append(root)
+            seen.add(marker)
+
+    for root in unique:
+        raw_pre = root / "raw" / run_name / "pre"
+        if raw_pre.exists():
+            plots_mesh = root / "plots" / run_name / "mesh"
+            plots_mesh.mkdir(parents=True, exist_ok=True)
+            return raw_pre, plots_mesh
+
+    if unique:
+        root = unique[0]
+        raw_pre = root / "raw" / run_name / "pre"
+        plots_mesh = root / "plots" / run_name / "mesh"
+        raw_pre.mkdir(parents=True, exist_ok=True)
+        plots_mesh.mkdir(parents=True, exist_ok=True)
+        return raw_pre, plots_mesh
+
+    raise KeyError(
+        "Could not resolve big-data root. Expected an existing "
+        f"raw/{run_name}/pre directory or a config/env data root."
+    )
 
 
 def _run_standard_prerun(
