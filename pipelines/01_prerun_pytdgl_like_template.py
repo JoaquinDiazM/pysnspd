@@ -51,6 +51,24 @@ def _parse_wrapper_args(argv: list[str]) -> tuple[argparse.Namespace, list[str]]
     return parser.parse_known_args(argv)
 
 
+
+
+def _passthrough_int_option(passthrough: list[str], name: str, *, default: int) -> int:
+    for i, token in enumerate(passthrough):
+        if token == name and i + 1 < len(passthrough):
+            try:
+                return int(passthrough[i + 1])
+            except ValueError:
+                return int(default)
+        prefix = f"{name}="
+        if token.startswith(prefix):
+            try:
+                return int(token[len(prefix):])
+            except ValueError:
+                return int(default)
+    return int(default)
+
+
 def _config_section(config: Mapping[str, Any], name: str) -> Mapping[str, Any]:
     section = config.get(name, {})
     if not isinstance(section, Mapping):
@@ -232,6 +250,7 @@ def _run_standard_prerun(
 def main() -> int:
     args, passthrough = _parse_wrapper_args(sys.argv[1:])
     standard_pipeline = Path(__file__).with_name("01_prerun_template.py")
+    usadel_workers = max(1, _passthrough_int_option(passthrough, "--workers", default=1))
 
     effective_config = _write_mesh_override_config(args.config, args)
     args_for_standard = argparse.Namespace(**vars(args))
@@ -280,6 +299,8 @@ def main() -> int:
         config=cfg,
         summary_yaml=usadel_summary_yaml,
         output_summary_yaml=usadel_current_summary_yaml,
+        workers=usadel_workers,
+        progress=True,
     )
 
     print("pyTDGL-like finite-volume sidecar")
@@ -291,6 +312,7 @@ def main() -> int:
     print(f"  current_table_summary  : {usadel_current_summary_yaml}")
     print(f"  table_shape            : {list(usadel_current_summary.table_shape)}")
     print(f"  js_abs_max_A_m2        : {usadel_current_summary.js_abs_max_A_m2:.6e}")
+    print(f"  workers                : {usadel_current_summary.workers}")
     return 0
 
 
