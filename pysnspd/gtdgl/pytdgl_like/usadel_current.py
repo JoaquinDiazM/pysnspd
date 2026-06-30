@@ -151,6 +151,7 @@ def compute_usadel_supercurrent_diagnostic(
     material: GTDGLMaterial,
     Te_K: np.ndarray,
     ops: FVOperators,
+    blocked_edge_mask: np.ndarray | None = None,
 ) -> UsadelSupercurrentDiagnostics:
     """Evaluate a diagnostic Usadel supercurrent on FV edges.
 
@@ -160,6 +161,11 @@ def compute_usadel_supercurrent_diagnostic(
     * edge-averaged amplitude and temperature;
     * edge-to-node vector reconstruction;
     * FV divergence.
+
+    If ``blocked_edge_mask`` is supplied, the Usadel current is set to zero on
+    those edges before node-vector reconstruction and divergence.  This is used
+    for metallic normal terminals, where the order parameter is clamped to zero
+    and no supercurrent should be injected through the contact.
 
     The evolution is untouched.  If the catalogue does not expose a usable
     supercurrent table/callable, the returned diagnostic is marked unavailable
@@ -200,7 +206,7 @@ def compute_usadel_supercurrent_diagnostic(
             edge_q=edge_q,
             edge_delta=edge_delta,
             edge_Te=edge_Te,
-            edge_js=edge_js,
+            edge_js=_apply_blocked_edges(edge_js, blocked_edge_mask),
             ops=ops,
         )
 
@@ -249,9 +255,25 @@ def compute_usadel_supercurrent_diagnostic(
         edge_q=edge_q,
         edge_delta=edge_delta,
         edge_Te=edge_Te,
-        edge_js=edge_js,
+        edge_js=_apply_blocked_edges(edge_js, blocked_edge_mask),
         ops=ops,
     )
+
+
+def _apply_blocked_edges(edge_js: np.ndarray, blocked_edge_mask: np.ndarray | None) -> np.ndarray:
+    """Set selected edge currents to zero without modifying the input array."""
+    out = np.asarray(edge_js, dtype=float)
+    if blocked_edge_mask is None:
+        return out
+    mask = np.asarray(blocked_edge_mask, dtype=bool).reshape(-1)
+    if mask.size != out.size:
+        raise ValueError(
+            f"blocked_edge_mask has length {mask.size}, expected {out.size}."
+        )
+    if np.any(mask):
+        out = out.copy()
+        out[mask] = 0.0
+    return out
 
 
 def _finish_available(

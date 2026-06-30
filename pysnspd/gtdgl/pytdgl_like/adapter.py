@@ -149,6 +149,7 @@ def solve_stationary_pytdgl_like(
             material=material,
             Te_K=Te,
             ops=ops,
+            blocked_edge_mask=blocked_edge_mask,
         )
 
     solver = TDGLSolver(
@@ -169,6 +170,7 @@ def solve_stationary_pytdgl_like(
 
     psi_final = solution.tdgl_data.psi
     mu_final = solution.tdgl_data.mu
+    terminal_site_mask = _terminal_site_mask_from_device(device, mesh.n_nodes)
     psi_final_J = psi_final * material.delta0_J
     phi_final_V = mu_final * device.voltage_scale_V
     phi_final_V = phi_final_V - float(np.mean(phi_final_V))
@@ -215,6 +217,14 @@ def solve_stationary_pytdgl_like(
         "pytdgl_u": u,
         "pytdgl_gamma": gamma,
         "terminal_psi": None if terminal_psi is None else str(terminal_psi),
+        "normal_terminal_enforced": bool(terminal_psi is not None and np.any(terminal_site_mask)),
+        "normal_terminal_n_nodes": int(np.count_nonzero(terminal_site_mask)),
+        "normal_terminal_delta_max_over_delta0": (
+            float(np.max(np.abs(psi_final[terminal_site_mask]))) if np.any(terminal_site_mask) else float("nan")
+        ),
+        "normal_terminal_delta_rms_over_delta0": (
+            float(np.sqrt(np.mean(np.abs(psi_final[terminal_site_mask]) ** 2))) if np.any(terminal_site_mask) else float("nan")
+        ),
         "target_current_A": target_current_A,
         "terminal_voltage_V": terminal_voltage(mesh.nodes, phi_final_V, length_m=mesh.length_m),
         "current_residual": float(current_residual(currents, mesh, material, target_current_A)),
@@ -273,6 +283,33 @@ def solve_stationary_pytdgl_like(
 
 
 
+def _terminal_site_mask_from_device(device, n_nodes: int) -> np.ndarray:
+    """Return a boolean mask for metallic normal-terminal sites."""
+    mask = np.zeros(int(n_nodes), dtype=bool)
+    try:
+        terminal_info = device.terminal_info()
+    except Exception:
+        terminal_info = []
+    for terminal in terminal_info:
+        idx = np.asarray(getattr(terminal, "site_indices", []), dtype=np.int64)
+        idx = idx[(idx >= 0) & (idx < mask.size)]
+        if idx.size:
+            mask[idx] = True
+    return mask
+
+
+def _terminal_edge_mask_from_device(device, ops: FVOperators) -> np.ndarray:
+    """Return edges incident on normal-terminal sites.
+
+    The GL current is automatically zero on these edges when terminal psi is
+    clamped to zero.  Usadel-Poisson uses an external constitutive table, so we
+    explicitly block the same contact edges to keep the metallic terminal
+    condition consistent.
+    """
+    node_mask = _terminal_site_mask_from_device(device, ops.n_nodes)
+    return node_mask[np.asarray(ops.edge_i, dtype=np.int64)] | node_mask[np.asarray(ops.edge_j, dtype=np.int64)]
+
+
 def _normalize_supercurrent_law(value: str) -> str:
     law = str(value).strip().lower().replace("-", "_")
     aliases = {
@@ -300,6 +337,7 @@ def _build_usadel_poisson_supercurrent_override(
     ops: FVOperators,
 ):
     scale = native_current_scale_A_m2(device)
+    blocked_edge_mask = _terminal_edge_mask_from_device(device, ops)
 
     def usadel_poisson_supercurrent(psi_dimensionless: np.ndarray, gl_supercurrent_native: np.ndarray) -> np.ndarray:
         del gl_supercurrent_native
@@ -309,6 +347,7 @@ def _build_usadel_poisson_supercurrent_override(
             material=material,
             Te_K=Te_K,
             ops=ops,
+            blocked_edge_mask=blocked_edge_mask,
         )
         if not diag.available:
             raise RuntimeError(
@@ -336,6 +375,8 @@ def _build_history(
     n_snapshots: int,
 ) -> dict[str, np.ndarray]:
     raw = solution.history
+    terminal_site_mask = _terminal_site_mask_from_device(solution.device, mesh.n_nodes)
+    blocked_edge_mask = _terminal_edge_mask_from_device(solution.device, ops)
     tau0 = float(material.tau0_GL_s)
     dt_dimless = np.asarray(raw.get("dt", []), dtype=float)
     t_s = np.cumsum(dt_dimless) * tau0 if dt_dimless.size else np.array([0.0])
@@ -372,6 +413,8 @@ def _build_history(
         "pytdgl_like_div_supercurrent_norm": np.asarray(raw.get("div_supercurrent_norm", np.zeros_like(t_s)), dtype=float),
         "pytdgl_like_boundary_rhs_norm": np.asarray(raw.get("boundary_rhs_norm", np.zeros_like(t_s)), dtype=float),
         "pytdgl_like_mu_boundary_max_abs": np.asarray(raw.get("mu_boundary_max_abs", np.zeros_like(t_s)), dtype=float),
+        "normal_terminal_node_mask": terminal_site_mask.astype(bool),
+        "normal_terminal_edge_mask": blocked_edge_mask.astype(bool),
     }
 
     # Store actual lightweight trajectory snapshots captured by TDGLSolver.

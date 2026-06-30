@@ -167,9 +167,12 @@ class TDGLSolver:
             normal_boundary_index = np.concatenate(terminal_indices).astype(np.int64, copy=False)
         else:
             normal_boundary_index = np.array([], dtype=np.int64)
+        normal_boundary_index = np.unique(normal_boundary_index).astype(np.int64, copy=False)
+        self.normal_boundary_index = normal_boundary_index
         self.terminal_current_densities = {name: 0.0 for name in self.terminal_names}
 
         terminal_psi = options.terminal_psi
+        self.terminal_psi_value = None if terminal_psi is None else complex(terminal_psi)
         operators = MeshOperators(
             mesh,
             options.sparse_solver,
@@ -182,8 +185,7 @@ class TDGLSolver:
         self.operators = operators
 
         psi_init = np.ones(len(mesh.sites), dtype=np.complex128)
-        if terminal_psi is not None and normal_boundary_index.size:
-            psi_init[normal_boundary_index] = terminal_psi
+        psi_init = self.apply_terminal_psi(psi_init)
         mu_init = np.zeros(len(mesh.sites), dtype=float)
         mu_boundary = np.zeros_like(mesh.edge_mesh.boundary_edge_indices, dtype=float)
 
@@ -197,6 +199,27 @@ class TDGLSolver:
         self.d_psi_sq_vals: list[float] = []
         self.tentative_dt = options.dt_init
         self.dt_max = options.dt_max if options.adaptive else options.dt_init
+
+    def apply_terminal_psi(self, psi: np.ndarray) -> np.ndarray:
+        """Apply the metallic-normal-terminal Dirichlet condition to psi.
+
+        For pySNSPD SNSPD windows the left/right terminals represent normal
+        metallic contacts.  The scalar-potential problem still injects the
+        imposed current through a Neumann condition, but the superconducting
+        order parameter must be clamped on the terminal sites,
+
+            psi_i = terminal_psi,  i in Gamma_N.
+
+        With the default ``terminal_psi=0`` this enforces Delta=0 at the
+        metallic terminals.  The operation is intentionally repeated on the
+        initial seed and after every local nonlinear update because externally
+        supplied seeds are not guaranteed to satisfy the terminal constraint.
+        """
+
+        arr = np.asarray(psi, dtype=np.complex128)
+        if self.terminal_psi_value is not None and self.normal_boundary_index.size:
+            arr[self.normal_boundary_index] = self.terminal_psi_value
+        return arr
 
     def update_mu_boundary(self, time: float) -> None:
         """Compute terminal Neumann values for the scalar-potential solve.
@@ -319,6 +342,10 @@ class TDGLSolver:
             kwargs["dt"] = dt = dt * options.adaptive_time_step_multiplier
             result = self.solve_for_psi_squared(**kwargs)
         psi, new_sq_psi = result
+        psi = self.apply_terminal_psi(psi)
+        if self.terminal_psi_value is not None and self.normal_boundary_index.size:
+            new_sq_psi = np.asarray(new_sq_psi, dtype=float)
+            new_sq_psi[self.normal_boundary_index] = np.abs(self.terminal_psi_value) ** 2
         return psi, new_sq_psi, dt
 
     def solve_for_observables(
@@ -336,6 +363,7 @@ class TDGLSolver:
         """
 
         operators = self.operators
+        psi = self.apply_terminal_psi(np.asarray(psi, dtype=np.complex128).copy())
         gl_supercurrent = operators.get_supercurrent(psi)
         supercurrent = gl_supercurrent
         if self.supercurrent_override is not None:
@@ -485,6 +513,8 @@ class TDGLSolver:
                 "normal_current": np.asarray(_seed_get("normal_current", np.zeros(num_edges)), dtype=float).copy(),
                 "induced_vector_potential": np.zeros((num_edges, 2), dtype=float),
             }
+
+        parameters["psi"] = self.apply_terminal_psi(parameters["psi"])
 
         running_state = RunningState()
         state: dict[str, numbers.Real] = {"step": 0, "time": 0.0}
