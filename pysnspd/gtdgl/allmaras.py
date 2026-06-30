@@ -1,11 +1,11 @@
 """Appendix-B Allmaras diagnostics for the pyTDGL-like backend.
 
-This module implements the coefficient and diagnostic quantities derived in
-Appendix B of the thesis draft without changing the pyTDGL-like local algebraic
-update.  In particular, it does not alter the ``X_i + z_i |X_i|^2 = w_i``
-solver structure; it only provides the Appendix-B coefficients and the
-current-divergence correction terms needed to validate the next implementation
-step.
+This module implements Appendix-B coefficient fields and a diagnostic analytic
+Allmaras current-divergence reference.  The active solver path is the
+pyTDGL-like backend; the microscopic Usadel/Matsubara current catalogue is
+handled by ``usadel_current.py`` and by the adapter-level diagnostics.  This
+module still does not alter the ``X_i + z_i |X_i|^2 = w_i`` local algebraic
+update.
 """
 from __future__ import annotations
 

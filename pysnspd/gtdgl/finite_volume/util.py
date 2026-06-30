@@ -18,7 +18,7 @@ from scipy.spatial import ConvexHull, Delaunay, QhullError
 from shapely.geometry import MultiLineString
 from shapely.ops import orient, polygonize
 
-logger = logging.getLogger("pysnspd.gtdgl.pytdgl_like.finite_volume")
+logger = logging.getLogger("pysnspd.gtdgl.finite_volume")
 
 
 def close_curve(points: np.ndarray) -> np.ndarray:

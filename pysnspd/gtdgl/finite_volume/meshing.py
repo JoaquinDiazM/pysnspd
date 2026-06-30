@@ -16,7 +16,7 @@ from shapely.geometry.polygon import Polygon
 
 from .util import ensure_unique, get_max_edge_length
 
-logger = logging.getLogger("pysnspd.gtdgl.pytdgl_like.device")
+logger = logging.getLogger("pysnspd.gtdgl.device")
 
 
 def generate_mesh(
