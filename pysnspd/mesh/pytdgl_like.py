@@ -43,18 +43,25 @@ def parameters_from_config(
     jitter_fraction: float = 0.0,
     boundary_guard_layers: int = 1,
     max_edge_length_m: float | None = None,
-    min_angle_deg: float = 32.5,
+    min_angle_deg: float | None = None,
     smooth: int | None = None,
     min_points: int | None = None,
 ) -> PyTDGLLikeMeshParameters:
     """Resolve pyTDGL-like meshing parameters from a full or minimal config.
 
-    ``jitter_fraction`` is accepted only for CLI compatibility with old
-    pySNSPD PRE-runs; pyTDGL-style meshing does not jitter a pre-structured
-    lattice.  If ``smooth`` is not provided, ``boundary_guard_layers`` is mapped
-    to a conservative smoothing count so old CLI calls remain meaningful.
+    This follows pyTDGL's public ``Device.make_mesh`` contract as closely as the
+    rectangular pySNSPD PRE stage allows:
+
+    * ``max_edge_length`` controls Triangle refinement.
+    * ``min_angle`` is passed to ``meshpy.triangle.build``.
+    * ``smooth`` is an explicit Laplacian-smoothing iteration count.
+    * the old pySNSPD ``jitter_fraction`` and ``boundary_guard_layers`` are
+      accepted for CLI compatibility, but they do not silently change the
+      pyTDGL meshing controls.
+
+    Coordinates remain in SI meters.
     """
-    del jitter_fraction
+    del jitter_fraction, boundary_guard_layers
     material = config.get("material", {})
     mesh_cfg = config.get("mesh", {})
     geometry = config.get("geometry", {}) if isinstance(config.get("geometry", {}), Mapping) else {}
@@ -68,13 +75,16 @@ def parameters_from_config(
         length_m = float(geometry["length_m"])
     else:
         length_m = 2.0 * width_m
+
     if max_edge_length_m is None:
-        max_edge_length_m = spacing_m
+        max_edge_length_m = mesh_cfg.get("pytdgl_max_edge_length_m", mesh_cfg.get("max_edge_length_m", spacing_m))
+    if min_angle_deg is None:
+        min_angle_deg = mesh_cfg.get("pytdgl_min_angle_deg", mesh_cfg.get("min_angle_deg", 32.5))
     if smooth is None:
-        # pyTDGL examples use smooth=100 for high-quality plots.  Keep the old
-        # boundary_guard_layers flag meaningful, but do not let it silently
-        # remove smoothing entirely.
-        smooth = max(20, 50 * int(max(1, boundary_guard_layers)))
+        smooth = mesh_cfg.get("pytdgl_smooth", mesh_cfg.get("smooth", 0))
+    if min_points is None and "pytdgl_min_points" in mesh_cfg:
+        value = mesh_cfg.get("pytdgl_min_points")
+        min_points = None if value is None else int(value)
 
     params = PyTDGLLikeMeshParameters(
         length_m=length_m,
@@ -96,7 +106,7 @@ def generate_rectangular_pytdgl_like_mesh(
     jitter_fraction: float = 0.0,
     boundary_guard_layers: int = 1,
     max_edge_length_m: float | None = None,
-    min_angle_deg: float = 32.5,
+    min_angle_deg: float | None = None,
     smooth: int | None = None,
     min_points: int | None = None,
 ) -> MeshData:

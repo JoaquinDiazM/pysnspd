@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import runpy
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -44,6 +45,7 @@ def _parse_wrapper_args(argv: list[str]) -> tuple[argparse.Namespace, list[str]]
     parser.add_argument("--pytdgl-min-angle", type=float, default=32.5)
     parser.add_argument("--pytdgl-smooth", type=int, default=None)
     parser.add_argument("--pytdgl-max-edge-length-m", type=float, default=None)
+    parser.add_argument("--pytdgl-min-points", type=int, default=None)
     return parser.parse_known_args(argv)
 
 
@@ -54,11 +56,64 @@ def _config_section(config: Mapping[str, Any], name: str) -> Mapping[str, Any]:
     return section
 
 
+def _load_raw_yaml_config(path: str | Path) -> dict[str, Any]:
+    data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
+    if data is None:
+        return {}
+    if not isinstance(data, dict):
+        raise TypeError(f"Expected a YAML mapping in {path!s}.")
+    return data
+
+
+def _write_mesh_override_config(config_path: str | Path, args: argparse.Namespace) -> Path:
+    """Write a temporary config carrying pyTDGL mesh controls.
+
+    The standard PRE pipeline only knows the old pySNSPD CLI.  Passing a
+    temporary config keeps its mesh generation and this wrapper's sidecar on the
+    same pyTDGL parameters without changing the standard pipeline parser.
+    """
+    cfg = _load_raw_yaml_config(config_path)
+    mesh_cfg = dict(cfg.get("mesh", {}) or {})
+    if args.pytdgl_max_edge_length_m is not None:
+        mesh_cfg["pytdgl_max_edge_length_m"] = float(args.pytdgl_max_edge_length_m)
+    else:
+        mesh_cfg.pop("pytdgl_max_edge_length_m", None)
+    if args.pytdgl_min_angle is not None:
+        mesh_cfg["pytdgl_min_angle_deg"] = float(args.pytdgl_min_angle)
+    if args.pytdgl_smooth is not None:
+        mesh_cfg["pytdgl_smooth"] = int(args.pytdgl_smooth)
+    if args.pytdgl_min_points is not None:
+        mesh_cfg["pytdgl_min_points"] = int(args.pytdgl_min_points)
+    cfg["mesh"] = mesh_cfg
+
+    tmp = tempfile.NamedTemporaryFile(
+        mode="w",
+        suffix=".yaml",
+        prefix="pysnspd_pytdgl_mesh_",
+        delete=False,
+        encoding="utf-8",
+    )
+    with tmp:
+        yaml.safe_dump(cfg, tmp, sort_keys=False)
+    return Path(tmp.name)
+
+
 def _run_dirs_from_config(config: Mapping[str, Any], run_name: str) -> tuple[Path, Path]:
+    """Resolve PRE output directories using the same config normalization as PRE.
+
+    The wrapper writes a temporary YAML carrying pyTDGL-only mesh controls, but
+    path defaults and environment expansion must still come from
+    ``pysnspd.config.load_config``.  That avoids failing after the standard PRE
+    stage has already completed successfully.
+    """
     paths = _config_section(config, "paths")
-    root_value = paths.get("big_data_root")
+    root_value = (
+        paths.get("big_data_root")
+        or paths.get("big_data_root_path")
+        or paths.get("data_root")
+    )
     if root_value is None:
-        raise KeyError("Missing config paths.big_data_root.")
+        raise KeyError("Missing resolved config paths.big_data_root.")
     root = Path(str(root_value)).expanduser()
     raw_pre = root / "raw" / run_name / "pre"
     plots_mesh = root / "plots" / run_name / "mesh"
@@ -102,13 +157,17 @@ def main() -> int:
     args, passthrough = _parse_wrapper_args(sys.argv[1:])
     standard_pipeline = Path(__file__).with_name("01_prerun_template.py")
 
+    effective_config = _write_mesh_override_config(args.config, args)
+    args_for_standard = argparse.Namespace(**vars(args))
+    args_for_standard.config = str(effective_config)
+
     _run_standard_prerun(
         standard_pipeline=standard_pipeline,
-        args=args,
+        args=args_for_standard,
         passthrough=passthrough,
     )
 
-    cfg = load_config(args.config)
+    cfg = load_config(effective_config)
     raw_pre, plots_mesh = _run_dirs_from_config(cfg, args.run_name)
 
     params = parameters_from_config(
@@ -118,6 +177,7 @@ def main() -> int:
         max_edge_length_m=args.pytdgl_max_edge_length_m,
         min_angle_deg=args.pytdgl_min_angle,
         smooth=args.pytdgl_smooth,
+        min_points=args.pytdgl_min_points,
     )
     fvm_mesh = generate_rectangular_pytdgl_fvm_mesh_from_parameters(params)
     sidecar = save_pytdgl_like_mesh_npz(fvm_mesh, raw_pre / "pytdgl_fvm_mesh.npz")
@@ -127,6 +187,7 @@ def main() -> int:
             "max_edge_length_m": float(params.max_edge_length_m),
             "min_angle_deg": float(params.min_angle_deg),
             "smooth": int(params.smooth),
+            "min_points": None if params.min_points is None else int(params.min_points),
             "units_policy": "SI meters; no pyTDGL coherence-length normalization in PRE mesh.",
         }
     )
