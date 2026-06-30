@@ -112,8 +112,18 @@ def append_usadel_supercurrent_table_to_npz(
     )
 
     T_K = _bias_temperature_K(config, summary)
-    D_m2_s = _material_value(config, summary, "D_m2_s")
-    sigma_n_S_m = _material_value(config, summary, "sigma_n_S_m", aliases=("sigma_n", "sigma_S_m"))
+    D_m2_s = _material_value(
+        config,
+        summary,
+        "D_m2_s",
+        aliases=("diffusion_constant_m2_s", "diffusion_D_m2_s", "D"),
+    )
+    sigma_n_S_m = _material_value(
+        config,
+        summary,
+        "sigma_n_S_m",
+        aliases=("sigma_n", "sigma_S_m", "normal_conductivity_S_m", "conductivity_S_m"),
+    )
     nmats = int(n_matsubara or _summary_int(summary, "n_matsubara", default=500))
     nworkers = max(1, int(workers or 1))
 
@@ -378,12 +388,10 @@ def _axis_from_arrays_or_summary(
 
 
 def _bias_temperature_K(config: Mapping[str, Any], summary: Mapping[str, Any]) -> float:
-    bias = config.get("bias", {}) if isinstance(config.get("bias", {}), Mapping) else {}
-    if "T_bias_K" in bias:
-        return float(bias["T_bias_K"])
-    for key in ("T_bias_K", "Te_min_K"):
-        if key in summary:
-            return float(summary[key])
+    for source in (config, summary):
+        found = _find_first_scalar_by_key(source, ("T_bias_K", "Te_min_K", "T_K"))
+        if found is not None:
+            return float(found)
     raise KeyError("Could not resolve bias temperature T_bias_K for Usadel current table.")
 
 
@@ -394,17 +402,53 @@ def _material_value(
     *,
     aliases: tuple[str, ...] = (),
 ) -> float:
-    material = config.get("material", {}) if isinstance(config.get("material", {}), Mapping) else {}
-    for name in (key, *aliases):
-        if name in summary:
-            return float(summary[name])
-        if name in material:
-            return float(material[name])
-    raise KeyError(f"Could not resolve material parameter {key}.")
+    """Resolve a scalar material parameter from PRE config/summary mappings.
+
+    The pyTDGL-like PRE wrapper may pass either the original config, a temporary
+    mesh-override config, a Usadel summary, or a manifest-like mapping depending
+    on which stage wrote the file.  Treat the canonical PRE summary and the
+    original material section as equivalent sources and search nested mappings
+    deterministically before failing.
+    """
+    names = (key, *aliases)
+    for source in (summary, config):
+        found = _find_first_scalar_by_key(source, names)
+        if found is not None:
+            return float(found)
+    raise KeyError(
+        f"Could not resolve material parameter {key}. Looked for keys {names} "
+        "recursively in PRE config and Usadel summary."
+    )
+
+
+def _find_first_scalar_by_key(obj: Any, keys: tuple[str, ...]) -> float | int | str | None:
+    """Return the first scalar value whose mapping key matches ``keys``."""
+    if isinstance(obj, Mapping):
+        for key in keys:
+            if key in obj and _is_scalar_like(obj[key]):
+                return obj[key]
+        for value in obj.values():
+            found = _find_first_scalar_by_key(value, keys)
+            if found is not None:
+                return found
+    elif isinstance(obj, (list, tuple)):
+        for value in obj:
+            found = _find_first_scalar_by_key(value, keys)
+            if found is not None:
+                return found
+    return None
+
+
+def _is_scalar_like(value: Any) -> bool:
+    if isinstance(value, (str, int, float, np.integer, np.floating)):
+        return True
+    arr = np.asarray(value)
+    return arr.shape == () and arr.dtype.kind in "biuf"
 
 
 def _summary_int(summary: Mapping[str, Any], key: str, *, default: int) -> int:
     try:
-        return int(summary.get(key, default))
+        found = _find_first_scalar_by_key(summary, (key,))
+        return int(default if found is None else found)
     except Exception:
         return int(default)

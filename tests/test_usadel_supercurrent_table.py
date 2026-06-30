@@ -108,3 +108,25 @@ def test_append_usadel_supercurrent_table_preserves_object_arrays(tmp_path: Path
         assert "metadata" in data.files
         assert "js_A_m2" in data.files
         assert data["js_A_m2"].shape == (2, 3)
+
+
+
+def test_material_resolution_accepts_nested_pre_summary():
+    from pysnspd.usadel.supercurrent_table import _material_value, _bias_temperature_K
+
+    config = {
+        "material": {"sigma_n_S_m": 4.2e5},
+        "bias": {"T_bias_K": 0.9},
+    }
+    nested_summary = {
+        "usadel": {
+            "backend": "summary",
+            "D_m2_s": 1.58e-4,
+        }
+    }
+    assert np.isclose(_material_value(config, nested_summary, "D_m2_s"), 1.58e-4)
+    assert np.isclose(
+        _material_value(config, nested_summary, "sigma_n_S_m", aliases=("sigma_n", "sigma_S_m")),
+        4.2e5,
+    )
+    assert np.isclose(_bias_temperature_K(config, nested_summary), 0.9)
