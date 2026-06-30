@@ -16,6 +16,7 @@ from pysnspd.gtdgl.diagnostics import (
     target_current_density_A_m2,
 )
 from .currents import native_edge_currents_to_current_fields
+from .usadel_current import compute_usadel_supercurrent_diagnostic
 from .device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
 from .solver import TDGLSolver
@@ -33,6 +34,7 @@ def solve_stationary_pytdgl_like(
     steps: int = 2000,
     dt_s: float = 1.0e-17,
     target_current_A: float | None = None,
+    usadel_catalog: Any | None = None,
     terminal_psi: complex | float | None = 0.0,
     adaptive: bool = True,
     adaptive_window: int = 10,
@@ -180,6 +182,7 @@ def solve_stationary_pytdgl_like(
         phi_final_V=phi_final_V,
         currents=currents,
         target_current_A=target_current_A,
+        usadel_catalog=usadel_catalog,
         n_snapshots=n_snapshots,
     )
 
@@ -204,6 +207,13 @@ def solve_stationary_pytdgl_like(
         "native_si_residual_minus_boundary_rms_A_m3": float(native_diag.residual_minus_boundary_rms_A_m3),
         "native_si_selected_boundary_sign": float(native_diag.selected_boundary_sign),
         "native_si_boundary_currents_from_total_A": native_diag.boundary_currents_from_total_A,
+        "usadel_current_available": bool(history.get("usadel_current_available", np.array([False], dtype=bool))[0]),
+        "usadel_current_backend": str(history.get("usadel_current_backend", np.array(["unavailable"], dtype=object))[0]),
+        "usadel_current_reason": str(history.get("usadel_current_reason", np.array(["not computed"], dtype=object))[0]),
+        "usadel_vs_gl_edge_relative_l2_final": float(history.get("usadel_vs_gl_edge_relative_l2", np.array([float("nan")]))[-1]),
+        "usadel_vs_gl_edge_max_abs_diff_A_m2_final": float(history.get("usadel_vs_gl_edge_max_abs_diff_A_m2", np.array([float("nan")]))[-1]),
+        "usadel_supercurrent_max_A_m2_final": float(history.get("usadel_supercurrent_max_A_m2", np.array([float("nan")]))[-1]),
+        "gl_supercurrent_max_A_m2_final": float(history.get("gl_supercurrent_max_A_m2", np.array([float("nan")]))[-1]),
         "eta_R_final": float(history["eta_R"][-1]) if history["eta_R"].size else float("nan"),
         "min_delta_over_delta0": float(np.min(np.abs(psi_final_J)) / material.delta0_J),
         "mean_delta_over_delta0": float(np.mean(np.abs(psi_final_J)) / material.delta0_J),
@@ -257,6 +267,7 @@ def _build_history(
     phi_final_V: np.ndarray,
     currents,
     target_current_A: float,
+    usadel_catalog: Any | None,
     n_snapshots: int,
 ) -> dict[str, np.ndarray]:
     raw = solution.history
@@ -339,9 +350,11 @@ def _build_history(
     native_normal_si = _native_snap(native_normal_snap, ops.n_edges)
     current_frames = []
     native_diags = []
+    usadel_diags = []
     for k in range(psi_snap_J.shape[0]):
+        psi_dim = psi_snap_J[k] / material.delta0_J
         c, d = native_edge_currents_to_current_fields(
-            psi_dimensionless=psi_snap_J[k] / material.delta0_J,
+            psi_dimensionless=psi_dim,
             native_supercurrent=native_super_si[k],
             native_normal_current=native_normal_si[k],
             device=solution.device,
@@ -352,24 +365,37 @@ def _build_history(
             Te_K=Te,
             target_current_A=target_current_A,
         )
+        udiag = compute_usadel_supercurrent_diagnostic(
+            usadel_catalog=usadel_catalog,
+            psi_dimensionless=psi_dim,
+            material=material,
+            Te_K=Te,
+            ops=ops,
+        )
         current_frames.append(c)
         native_diags.append(d)
+        usadel_diags.append(udiag)
 
     jtot_x = np.vstack([c.node_jtot_x_A_m2 for c in current_frames])
     jtot_y = np.vstack([c.node_jtot_y_A_m2 for c in current_frames])
-    js_x = np.vstack([c.node_js_us_x_A_m2 for c in current_frames])
-    js_y = np.vstack([c.node_js_us_y_A_m2 for c in current_frames])
+    js_gl_x = np.vstack([c.node_js_us_x_A_m2 for c in current_frames])
+    js_gl_y = np.vstack([c.node_js_us_y_A_m2 for c in current_frames])
+    js_us_x = np.vstack([d.node_js_usadel_x_A_m2 for d in usadel_diags])
+    js_us_y = np.vstack([d.node_js_usadel_y_A_m2 for d in usadel_diags])
     jn_x = np.vstack([c.node_jn_x_A_m2 for c in current_frames])
     jn_y = np.vstack([c.node_jn_y_A_m2 for c in current_frames])
 
     jtot_mag = np.sqrt(jtot_x**2 + jtot_y**2)
-    js_mag = np.sqrt(js_x**2 + js_y**2)
+    js_gl_mag = np.sqrt(js_gl_x**2 + js_gl_y**2)
+    js_us_mag = np.sqrt(js_us_x**2 + js_us_y**2)
     jn_mag = np.sqrt(jn_x**2 + jn_y**2)
 
     div = np.vstack([c.node_div_jtot_A_m3 for c in current_frames])
     pairbreaking = np.vstack([c.node_pairbreaking_ratio for c in current_frames])
     edge_q = np.vstack([c.edge_Q_m_inv for c in current_frames])
-    edge_js = np.vstack([c.edge_js_us_A_m2 for c in current_frames])
+    edge_js_gl = np.vstack([c.edge_js_us_A_m2 for c in current_frames])
+    edge_js_us = np.vstack([d.edge_js_usadel_A_m2 for d in usadel_diags])
+    div_js_us = np.vstack([d.node_div_js_usadel_A_m3 for d in usadel_diags])
     edge_jn = np.vstack([c.edge_jn_A_m2 for c in current_frames])
     edge_jtot = np.vstack([c.edge_jtot_A_m2 for c in current_frames])
 
@@ -382,6 +408,10 @@ def _build_history(
         "current_snapshot_t_s": snap_t,
         "jtot_snapshot_t_s": snap_t,
         "supercurrent_snapshot_t_s": snap_t,
+        "supercurrent_GL_snapshot_t_s": snap_t,
+        "supercurrent_Usadel_snapshot_t_s": snap_t,
+        "js_gl_snapshot_t_s": snap_t,
+        "js_us_snapshot_t_s": snap_t,
         "normal_current_snapshot_t_s": snap_t,
         "divergence_snapshot_t_s": snap_t,
         "div_jtot_snapshot_t_s": snap_t,
@@ -401,12 +431,21 @@ def _build_history(
         "current_density_snapshot_y_A_m2": jtot_y,
         "jtot_snapshot_x_A_m2": jtot_x,
         "jtot_snapshot_y_A_m2": jtot_y,
-        "supercurrent_density_snapshot_A_m2": js_mag,
-        "js_us_snapshot_mag_A_m2": js_mag,
-        "supercurrent_density_snapshot_x_A_m2": js_x,
-        "supercurrent_density_snapshot_y_A_m2": js_y,
-        "js_us_snapshot_x_A_m2": js_x,
-        "js_us_snapshot_y_A_m2": js_y,
+        "supercurrent_density_snapshot_A_m2": js_gl_mag,
+        "supercurrent_GL_density_snapshot_A_m2": js_gl_mag,
+        "supercurrent_density_snapshot_x_A_m2": js_gl_x,
+        "supercurrent_density_snapshot_y_A_m2": js_gl_y,
+        "supercurrent_GL_density_snapshot_x_A_m2": js_gl_x,
+        "supercurrent_GL_density_snapshot_y_A_m2": js_gl_y,
+        "js_gl_snapshot_mag_A_m2": js_gl_mag,
+        "js_gl_snapshot_x_A_m2": js_gl_x,
+        "js_gl_snapshot_y_A_m2": js_gl_y,
+        "supercurrent_Usadel_density_snapshot_A_m2": js_us_mag,
+        "supercurrent_Usadel_density_snapshot_x_A_m2": js_us_x,
+        "supercurrent_Usadel_density_snapshot_y_A_m2": js_us_y,
+        "js_us_snapshot_mag_A_m2": js_us_mag,
+        "js_us_snapshot_x_A_m2": js_us_x,
+        "js_us_snapshot_y_A_m2": js_us_y,
         "normal_current_density_snapshot_A_m2": jn_mag,
         "jn_snapshot_mag_A_m2": jn_mag,
         "normal_current_density_snapshot_x_A_m2": jn_x,
@@ -417,7 +456,10 @@ def _build_history(
         "div_jtot_snapshot_A_m3": div,
         "pairbreaking_ratio_snapshot": pairbreaking,
         "edge_Q_snapshot_m_inv": edge_q,
-        "edge_js_us_snapshot_A_m2": edge_js,
+        "edge_js_gl_snapshot_A_m2": edge_js_gl,
+        "edge_js_us_snapshot_A_m2": edge_js_us,
+        "edge_js_usadel_snapshot_A_m2": edge_js_us,
+        "div_js_usadel_snapshot_A_m3": div_js_us,
         "edge_jn_snapshot_A_m2": edge_jn,
         "edge_jtot_snapshot_A_m2": edge_jtot,
         "edge_i": np.asarray(ops.edge_i, dtype=np.int64),
@@ -452,4 +494,25 @@ def _build_history(
     hist["pytdgl_like_native_si_residual_no_boundary_rms_A_m3"] = np.asarray(
         [d.residual_no_boundary_rms_A_m3 for d in native_diags], dtype=float
     )
+
+    us_available = bool(usadel_diags and all(d.available for d in usadel_diags))
+    hist["usadel_current_available"] = np.array([us_available], dtype=bool)
+    hist["usadel_current_backend"] = np.array([usadel_diags[-1].backend if usadel_diags else "unavailable"], dtype=object)
+    hist["usadel_current_reason"] = np.array([usadel_diags[-1].reason if usadel_diags else "not computed"], dtype=object)
+    gl_norm = np.sqrt(np.nansum(edge_js_gl * edge_js_gl, axis=1))
+    if us_available:
+        diff = edge_js_us - edge_js_gl
+        diff_norm = np.sqrt(np.nansum(diff * diff, axis=1))
+        us_norm = np.sqrt(np.nansum(edge_js_us * edge_js_us, axis=1))
+        hist["usadel_vs_gl_edge_relative_l2"] = diff_norm / np.maximum(us_norm, 1.0e-300)
+        hist["usadel_vs_gl_edge_max_abs_diff_A_m2"] = np.nanmax(np.abs(diff), axis=1)
+        hist["usadel_supercurrent_max_A_m2"] = np.nanmax(np.abs(edge_js_us), axis=1)
+        hist["usadel_vs_gl_edge_usadel_norm_A_m2"] = us_norm
+    else:
+        hist["usadel_vs_gl_edge_relative_l2"] = np.full(edge_js_gl.shape[0], np.nan)
+        hist["usadel_vs_gl_edge_max_abs_diff_A_m2"] = np.full(edge_js_gl.shape[0], np.nan)
+        hist["usadel_supercurrent_max_A_m2"] = np.full(edge_js_gl.shape[0], np.nan)
+        hist["usadel_vs_gl_edge_usadel_norm_A_m2"] = np.full(edge_js_gl.shape[0], np.nan)
+    hist["gl_supercurrent_max_A_m2"] = np.nanmax(np.abs(edge_js_gl), axis=1)
+    hist["usadel_vs_gl_edge_gl_norm_A_m2"] = gl_norm
     return hist

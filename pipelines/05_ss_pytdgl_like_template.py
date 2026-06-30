@@ -34,11 +34,13 @@ try:
         plot_pytdgl_like_native_history,
         plot_pytdgl_like_native_edge_currents,
         plot_pytdgl_like_poisson_snapshots,
+        plot_pytdgl_like_usadel_gl_comparison,
     )
 except Exception:  # pragma: no cover
     plot_pytdgl_like_native_history = None
     plot_pytdgl_like_native_edge_currents = None
     plot_pytdgl_like_poisson_snapshots = None
+    plot_pytdgl_like_usadel_gl_comparison = None
 
 
 def parse_args() -> argparse.Namespace:
@@ -114,6 +116,7 @@ def main() -> int:
         steps=args.ss_steps,
         dt_s=args.ss_dt_fs * 1.0e-15,
         target_current_A=seed_sum["I_bias_A"],
+        usadel_catalog=usadel_catalog,
         terminal_psi=terminal_psi,
         adaptive=not args.ss_no_adapt_dt,
         n_snapshots=args.ss_n_snapshots,
@@ -176,6 +179,12 @@ def main() -> int:
             plots_diag / "pytdgl_like_native_edge_currents.png",
             dpi=args.dpi,
         )
+    if plot_pytdgl_like_usadel_gl_comparison is not None:
+        native_plots["usadel_gl_comparison"] = plot_pytdgl_like_usadel_gl_comparison(
+            result.history,
+            plots_diag / "pytdgl_like_usadel_GL_comparison.png",
+            dpi=args.dpi,
+        )
 
     manifest = write_manifest(
         cfg,
@@ -218,6 +227,10 @@ def main() -> int:
         "mean_delta_over_delta0",
         "max_pairbreaking_ratio",
         "normal_current_fraction_max",
+        "usadel_current_available",
+        "usadel_vs_gl_edge_relative_l2_final",
+        "usadel_supercurrent_max_A_m2_final",
+        "gl_supercurrent_max_A_m2_final",
         "native_poisson_residual_rel_final",
         "native_boundary_rhs_norm_final",
         "pytdgl_u",

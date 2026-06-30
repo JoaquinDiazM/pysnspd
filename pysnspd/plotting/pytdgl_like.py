@@ -172,3 +172,47 @@ def plot_pytdgl_like_native_edge_currents(mesh, history: dict, output_path: str 
     fig.savefig(output_path, dpi=dpi)
     plt.close(fig)
     return output_path
+
+
+def plot_pytdgl_like_usadel_gl_comparison(history: dict, output_path: str | Path, *, dpi: int = 480) -> Path:
+    """Plot diagnostic Usadel-vs-GL supercurrent mismatch histories."""
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    if plt is None:
+        output_path.touch()
+        return output_path
+
+    available = np.asarray(history.get("usadel_current_available", [False]), dtype=bool).reshape(-1)
+    if available.size and not bool(available[0]):
+        output_path.touch()
+        return output_path
+
+    t_ps = np.asarray(history.get("snapshot_t_s", history.get("t_s", [])), dtype=float) / 1.0e-12
+    rel = np.asarray(history.get("usadel_vs_gl_edge_relative_l2", []), dtype=float).reshape(-1)
+    diff = np.asarray(history.get("usadel_vs_gl_edge_max_abs_diff_A_m2", []), dtype=float).reshape(-1)
+    usmax = np.asarray(history.get("usadel_supercurrent_max_A_m2", []), dtype=float).reshape(-1)
+    glmax = np.asarray(history.get("gl_supercurrent_max_A_m2", []), dtype=float).reshape(-1)
+    if rel.size == 0:
+        output_path.touch()
+        return output_path
+    if t_ps.size != rel.size:
+        t_ps = np.linspace(0.0, float(t_ps[-1]) if t_ps.size else 0.0, rel.size)
+
+    fig, axes = plt.subplots(2, 1, figsize=(10, 7), constrained_layout=True)
+    axes[0].semilogy(t_ps, np.maximum(rel, 1.0e-300), label=r"$||j_s^{Us}-j_s^{GL}||/||j_s^{Us}||$")
+    axes[0].set_title("Usadel vs GL supercurrent diagnostic")
+    axes[0].set_xlabel("t [ps]")
+    axes[0].set_ylabel("relative value")
+    axes[0].legend(loc="best")
+
+    axes[1].semilogy(t_ps, np.maximum(usmax, 1.0e-300), label=r"max $|j_s^{Usadel}|$")
+    axes[1].semilogy(t_ps, np.maximum(glmax, 1.0e-300), label=r"max $|j_s^{GL}|$")
+    axes[1].semilogy(t_ps, np.maximum(diff, 1.0e-300), label=r"max $|j_s^{Usadel}-j_s^{GL}|$")
+    axes[1].set_xlabel("t [ps]")
+    axes[1].set_ylabel(r"current density [A m$^{-2}$]")
+    axes[1].legend(loc="best")
+
+    fig.savefig(output_path, dpi=dpi)
+    plt.close(fig)
+    return output_path
