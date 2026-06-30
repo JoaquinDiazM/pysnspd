@@ -43,8 +43,6 @@ class PyTDGLLikeMeshParameters:
 def parameters_from_config(
     config: Mapping[str, Any],
     *,
-    jitter_fraction: float = 0.0,
-    boundary_guard_layers: int = 1,
     max_edge_length_m: float | None = None,
     min_angle_deg: float | None = None,
     smooth: int | None = None,
@@ -52,18 +50,20 @@ def parameters_from_config(
 ) -> PyTDGLLikeMeshParameters:
     """Resolve pyTDGL-like meshing parameters from a full or minimal config.
 
-    ``jitter_fraction`` and ``boundary_guard_layers`` are accepted only for
-    compatibility with the older pipeline CLI. They do not modify the pyTDGL
-    mesh, because the restructured repo uses a single meshing route here:
-    meshpy/triangle + pyTDGL-like finite-volume data structures.
+    The mesh is generated only through the pyTDGL-style route used by the flat
+    gTDGL backend: meshpy/triangle followed by pyTDGL-like finite-volume data
+    structures.
+
+    There is intentionally no ``jitter_fraction`` control here. pyTDGL does not
+    jitter the point cloud when constructing the mesh. The stochastic irregularity
+    comes from Triangle's refinement of the constrained polygon, not from adding
+    random displacements to nodes.
 
     Important detail: the generic ``mesh.smooth`` key is intentionally ignored.
     Smoothing can move sites while keeping the same triangulation, which may
     create non-Delaunay cells and malformed Voronoi control volumes. To request
     smoothing explicitly for this backend, use ``mesh.pytdgl_smooth``.
     """
-
-    del jitter_fraction, boundary_guard_layers
 
     material = config.get("material", {})
     mesh_cfg = config.get("mesh", {})
@@ -116,8 +116,6 @@ def parameters_from_config(
 def generate_rectangular_pytdgl_like_mesh(
     config: Mapping[str, Any],
     *,
-    jitter_fraction: float = 0.0,
-    boundary_guard_layers: int = 1,
     max_edge_length_m: float | None = None,
     min_angle_deg: float | None = None,
     smooth: int | None = None,
@@ -127,8 +125,6 @@ def generate_rectangular_pytdgl_like_mesh(
 
     params = parameters_from_config(
         config,
-        jitter_fraction=jitter_fraction,
-        boundary_guard_layers=boundary_guard_layers,
         max_edge_length_m=max_edge_length_m,
         min_angle_deg=min_angle_deg,
         smooth=smooth,

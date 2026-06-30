@@ -1,4 +1,5 @@
 """pyTDGL-like rectangular triangulation compatibility layer for pySNSPD."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -19,7 +20,7 @@ class MeshData:
     target_spacing_m: float
     seed: int
     triangulation_method: str = "pytdgl_generate_mesh_meshpy_triangle_v1"
-    boundary_guard_layers: int = 1
+    boundary_guard_layers: int = 0
 
     @property
     def n_nodes(self) -> int:
@@ -36,24 +37,29 @@ class MeshData:
 
 def geometry_from_config(config: Mapping[str, Any]) -> dict[str, float]:
     """Resolve the rectangular nanowire geometry from a full or minimal config."""
+
     material = config.get("material", {})
     mesh_cfg = config.get("mesh", {})
     geometry = config.get("geometry", {}) if isinstance(config.get("geometry", {}), Mapping) else {}
+
     width_m = float(material.get("width_m", mesh_cfg.get("width_m", 0.0)))
     spacing_m = float(mesh_cfg.get("target_spacing_m", material.get("target_spacing_m", 0.0)))
     seed = int(mesh_cfg.get("seed", 12345))
+
     if "length_m" in mesh_cfg:
         length_m = float(mesh_cfg["length_m"])
     elif "length_m" in geometry:
         length_m = float(geometry["length_m"])
     else:
         length_m = 2.0 * width_m
+
     if length_m <= 0.0:
         raise ValueError("Nanowire length_m must be positive.")
     if width_m <= 0.0:
         raise ValueError("Nanowire width_m must be positive.")
     if spacing_m <= 0.0:
         raise ValueError("mesh.target_spacing_m must be positive.")
+
     return {
         "length_m": length_m,
         "width_m": width_m,
@@ -64,18 +70,18 @@ def geometry_from_config(config: Mapping[str, Any]) -> dict[str, float]:
 
 def generate_rectangular_delaunay_mesh(
     config: Mapping[str, Any],
-    *,
-    jitter_fraction: float = 0.0,
-    boundary_guard_layers: int = 1,
 ) -> MeshData:
-    """Generate a pyTDGL-style mesh while preserving the old public name."""
+    """Generate the official pyTDGL-style rectangular mesh.
+
+    The historical function name is kept so older PRE-stage code can keep using
+    ``generate_rectangular_delaunay_mesh``. The implementation is no longer the
+    old jittered Delaunay point cloud. It delegates to the pyTDGL-style meshpy
+    finite-volume path and does not expose a ``jitter_fraction`` argument.
+    """
+
     from pysnspd.mesh.pytdgl_like import generate_rectangular_pytdgl_like_mesh
 
-    return generate_rectangular_pytdgl_like_mesh(
-        config,
-        jitter_fraction=jitter_fraction,
-        boundary_guard_layers=boundary_guard_layers,
-    )
+    return generate_rectangular_pytdgl_like_mesh(config)
 
 
 def orient_triangles_counterclockwise(nodes: np.ndarray, triangles: np.ndarray) -> np.ndarray:
@@ -110,6 +116,7 @@ def mesh_summary(mesh: MeshData) -> dict[str, Any]:
     area_rectangle = float(mesh.length_m * mesh.width_m)
     area_total = float(np.sum(areas))
     relative_area_error = abs(area_total - area_rectangle) / area_rectangle if area_rectangle > 0 else float("nan")
+
     return {
         "n_nodes": mesh.n_nodes,
         "n_used_nodes": int(used_nodes.size),

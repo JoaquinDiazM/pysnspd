@@ -1,7 +1,7 @@
 """Official PRE-run pipeline for pySNSPD.
 
-This stage builds the reusable, expensive objects needed by later stationary
-and photon runs:
+This stage builds the reusable, expensive objects needed by later stationary and
+photon runs:
 
 1. the 2D nanowire mesh and boundary edge table;
 2. the dirty-limit Usadel/DOS catalogue;
@@ -11,6 +11,7 @@ and photon runs:
 The PRE-run is the only pipeline that should spend time building catalogues.
 Later SS/PHOTON stages load these objects instead of recomputing them.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -61,10 +62,11 @@ def parse_args() -> argparse.Namespace:
         default=1,
         help="Reserved for catalogue-building workflows; recorded in the manifest.",
     )
-
-    # Mesh / OE2.
-    parser.add_argument("--jitter-fraction", type=float, default=0.10)
-    parser.add_argument("--boundary-guard-layers", type=int, default=1)
+    parser.add_argument(
+        "--no-progress",
+        action="store_true",
+        help="Disable the PRE-run stage progress bar.",
+    )
 
     # Usadel / OE3.
     parser.add_argument("--eta-fraction", type=float, default=1.0e-3)
@@ -80,6 +82,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--phase-omega-max-meV", type=float, default=35.0)
     parser.add_argument("--phase-Te-min-K", type=float, default=None)
     parser.add_argument("--phase-Te-max-K", type=float, default=None)
+
     return parser.parse_args()
 
 
@@ -88,18 +91,16 @@ def main() -> int:
     cfg = validate_config(load_config(args.config))
     layout = create_run_layout(cfg, args.run_name)
     run_name = layout["run_name"]
-
     raw_pre = Path(layout["raw_pre"])
     raw_pre.mkdir(parents=True, exist_ok=True)
 
+    progress = _ProgressBar(total=4, enabled=not args.no_progress)
+
     # ------------------------------------------------------------------
-    # OE2: mesh and boundary edges.
+    # OE2: pyTDGL-style mesh and boundary edges.
     # ------------------------------------------------------------------
-    mesh = generate_rectangular_delaunay_mesh(
-        cfg,
-        jitter_fraction=args.jitter_fraction,
-        boundary_guard_layers=args.boundary_guard_layers,
-    )
+    progress.begin("building pyTDGL-style mesh and edge table")
+    mesh = generate_rectangular_delaunay_mesh(cfg)
     edge_data = build_edge_data(
         mesh.nodes,
         mesh.triangles,
@@ -110,6 +111,7 @@ def main() -> int:
 
     mesh_npz = save_mesh_npz(mesh, raw_pre / "mesh.npz")
     edges_npz = save_edges_npz(edge_data, raw_pre / "edges.npz")
+
     mesh_edge_summary = {
         "run_name": run_name,
         "mesh": mesh_summary(mesh),
@@ -117,10 +119,12 @@ def main() -> int:
     }
     mesh_summary_path = raw_pre / "mesh_summary.yaml"
     _write_yaml(mesh_summary_path, mesh_edge_summary)
+    progress.advance("mesh and edge table ready")
 
     # ------------------------------------------------------------------
     # OE3: dirty-limit Usadel/DOS catalogue.
     # ------------------------------------------------------------------
+    progress.begin("building dirty-limit Usadel catalogue")
     usadel_catalog = build_usadel_catalog_from_config(
         cfg,
         eta_fraction=args.eta_fraction,
@@ -147,6 +151,7 @@ def main() -> int:
             "metadata": usadel_catalog.metadata,
         },
     )
+    progress.advance("Usadel catalogue and Matsubara current table ready")
 
     outputs: dict[str, str] = {
         "mesh_npz": str(mesh_npz),
@@ -160,7 +165,10 @@ def main() -> int:
     # ------------------------------------------------------------------
     # OE4: phase-space catalogue.
     # ------------------------------------------------------------------
-    if not args.skip_phase_space:
+    if args.skip_phase_space:
+        progress.advance("phase-space catalogue skipped")
+    else:
+        progress.begin("building superconducting phase-space catalogue")
         phase_catalog = build_phase_space_catalog_from_usadel_catalog(
             usadel_catalog,
             cfg,
@@ -192,14 +200,16 @@ def main() -> int:
                 "phase_space_summary": str(phase_summary_path),
             }
         )
+        progress.advance("phase-space catalogue ready")
 
+    progress.begin("writing PRE manifest and summary")
     manifest_path = write_manifest(
         cfg,
         run_name,
         stage="pre",
         extra={
             "pipeline": "01_prerun_template.py",
-            "purpose": "Official PRE-run: mesh, dirty-limit Usadel, Matsubara current table, phase-space catalogue.",
+            "purpose": "Official PRE-run: pyTDGL-style mesh, dirty-limit Usadel, Matsubara current table, phase-space catalogue.",
             "workers": int(args.workers),
             "outputs": outputs,
             "mesh_edge_summary": mesh_edge_summary,
@@ -207,7 +217,9 @@ def main() -> int:
             "phase_space_summary": phase_summary_data,
         },
     )
+    progress.advance("PRE manifest written")
 
+    print()
     print("PRE-run generation")
     print(f"  run_name: {run_name}")
     print(f"  raw_pre:  {raw_pre}")
@@ -232,20 +244,22 @@ def main() -> int:
         print(f"  {key}: {value}")
     print(f"  pre_manifest: {manifest_path}")
     print("Status: OK")
+
     return 0
 
 
 def _append_matsubara_supercurrent_table(npz_path: str | Path, usadel_catalog: Any) -> None:
     """Add the Matsubara Usadel supercurrent table to the PRE NPZ.
 
-    The gTDGL Appendix-B current closure is now obtained from a precalculated
-    table.  The current table saved here is the stable calibration sweep
+    The gTDGL Appendix-B current closure is obtained from a precalculated table.
+    The current table saved here is the stable calibration sweep
 
         j_s(q, T_bias) = (2 pi k_B T_bias / |e| hbar) sigma_n q sum_n s_n^2,
 
-    already computed by the Usadel layer.  The flat gTDGL backend can use this
+    already computed by the Usadel layer. The flat gTDGL backend can use this
     one-dimensional table directly for stationary/frozen-temperature tests.
     """
+
     path = Path(npz_path)
     with np.load(path, allow_pickle=True) as data:
         arrays = {key: data[key] for key in data.files}
@@ -264,6 +278,7 @@ def _append_matsubara_supercurrent_table(npz_path: str | Path, usadel_catalog: A
         int(usadel_catalog.metadata.get("n_matsubara_configured", -1)),
         dtype=np.int64,
     )
+
     np.savez_compressed(path, **arrays)
 
 
@@ -277,6 +292,31 @@ def _write_yaml(path: str | Path, data: MappingLike) -> None:
 def _print_dict(data: dict[str, Any]) -> None:
     for key, value in data.items():
         print(f"  {key}: {value}")
+
+
+class _ProgressBar:
+    """Small dependency-free stage progress bar for PRE smoke tests."""
+
+    def __init__(self, *, total: int, enabled: bool = True, width: int = 28) -> None:
+        self.total = int(total)
+        self.enabled = bool(enabled)
+        self.width = int(width)
+        self.current = 0
+
+    def begin(self, label: str) -> None:
+        if not self.enabled:
+            return
+        print(f"PRE-run: {label} ...", flush=True)
+
+    def advance(self, label: str) -> None:
+        if not self.enabled:
+            return
+        self.current = min(self.current + 1, self.total)
+        frac = self.current / self.total if self.total > 0 else 1.0
+        filled = int(round(self.width * frac))
+        bar = "#" * filled + "-" * (self.width - filled)
+        percent = int(round(100.0 * frac))
+        print(f"PRE-run [{bar}] {percent:3d}%  {label}", flush=True)
 
 
 MappingLike = dict[str, Any]
