@@ -149,7 +149,6 @@ def solve_stationary_pytdgl_like(
             material=material,
             Te_K=Te,
             ops=ops,
-            blocked_edge_mask=blocked_edge_mask,
         )
 
     solver = TDGLSolver(

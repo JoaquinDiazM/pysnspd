@@ -83,7 +83,11 @@ def _seed(mesh, mat):
 
 def _terminal_nodes(mesh):
     x = mesh.nodes[:, 0]
-    return np.flatnonzero((np.isclose(x, x.min())) | (np.isclose(x, x.max())))
+    atol = max(float(mesh.length_m), 1.0) * 1.0e-12
+    return np.flatnonzero(
+        (np.isclose(x, x.min(), rtol=0.0, atol=atol))
+        | (np.isclose(x, x.max(), rtol=0.0, atol=atol))
+    )
 
 
 def _terminal_edges(ops, terminal_nodes):
