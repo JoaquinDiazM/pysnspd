@@ -98,7 +98,7 @@ def test_stationarity_diagnostics_uses_gradients_not_global_fields():
 
     assert diag.passes
     assert diag.phase_gradient_rel_change == 0.0
-    assert diag.phi_gradient_rel_change < 1.0e-8
+    assert diag.phi_gradient_rel_change < 1.0e-12
     assert diag.eta_R_window_max > 1.0e-3
 
 
@@ -161,3 +161,57 @@ def test_stationarity_diagnostics_excludes_zero_delta_terminal_edges():
 
     assert diag.passes
     assert diag.active_edge_count == 1
+
+
+
+def test_stationarity_diagnostics_excludes_contact_conversion_region():
+    material = _material()
+    delta0 = material.delta0_J
+    # Edge 0 is inside the metallic-contact conversion region and changes a lot.
+    # Edges 1 and 2 are bulk edges and remain stationary.
+    history = {
+        "psi_snapshot_real_J": np.ones((2, 4)) * delta0,
+        "psi_snapshot_imag_J": np.zeros((2, 4)),
+        "phi_snapshot_V": np.zeros((2, 4)),
+        "edge_Q_snapshot_m_inv": np.vstack([
+            np.array([1.0e7, 1.0e7, 1.0e7]),
+            np.array([5.0e8, 1.0e7, 1.0e7]),
+        ]),
+        "edge_phi_gradient_snapshot_V_m": np.vstack([
+            np.array([0.0, 10.0, 12.0]),
+            np.array([2.0e5, 10.0, 12.0]),
+        ]),
+        "edge_i": np.array([0, 1, 2], dtype=np.int64),
+        "edge_j": np.array([1, 2, 3], dtype=np.int64),
+        "edge_length_m": np.full(3, 1.0e-9),
+        "edge_distance_from_contact_m": np.array([5.0e-9, 50.0e-9, 60.0e-9]),
+        "stationarity_xi_m": np.array([10.0e-9]),
+        "eta_R": np.array([1.0e-8, 1.0e-8]),
+    }
+
+    bulk_diag = stationarity_diagnostics(
+        history=history,
+        material=material,
+        phase_gradient_rel_tol=1.0e-6,
+        phi_gradient_rel_tol=1.0e-6,
+        phase_gradient_abs_tol_m_inv=1.0e3,
+        phi_gradient_abs_tol_V_m=1.0,
+        bulk_exclusion_xi=4.0,
+    )
+
+    assert bulk_diag.passes
+    assert bulk_diag.active_edge_count == 2
+    assert np.isclose(bulk_diag.bulk_exclusion_length_m, 40.0e-9)
+
+    full_domain_diag = stationarity_diagnostics(
+        history=history,
+        material=material,
+        phase_gradient_rel_tol=1.0e-6,
+        phi_gradient_rel_tol=1.0e-6,
+        phase_gradient_abs_tol_m_inv=1.0e3,
+        phi_gradient_abs_tol_V_m=1.0,
+        bulk_exclusion_xi=0.0,
+    )
+
+    assert not full_domain_diag.passes
+    assert full_domain_diag.active_edge_count == 3

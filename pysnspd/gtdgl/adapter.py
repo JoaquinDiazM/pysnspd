@@ -64,6 +64,7 @@ def solve_stationary_pytdgl_like(
     stationarity_q_abs_m_inv: float = 1.0e3,
     stationarity_phi_gradient_abs_V_m: float = 1.0e2,
     stationarity_edge_active_threshold: float = 0.05,
+    stationarity_bulk_exclusion_xi: float = 4.0,
     # Deprecated aliases from the pre-gauge-gradient diagnostic.  If the new
     # tolerances are not provided, these values are used as compatibility
     # aliases for phase-gradient and phi-gradient relative tolerances.
@@ -269,6 +270,7 @@ def solve_stationary_pytdgl_like(
         target_current_A=target_current_A,
         usadel_catalog=usadel_catalog,
         n_snapshots=n_snapshots,
+        stationarity_bulk_exclusion_xi=float(stationarity_bulk_exclusion_xi),
     )
 
     phase_gradient_rel_tol = (
@@ -289,6 +291,7 @@ def solve_stationary_pytdgl_like(
         phase_gradient_abs_tol_m_inv=float(stationarity_q_abs_m_inv),
         phi_gradient_abs_tol_V_m=float(stationarity_phi_gradient_abs_V_m),
         edge_active_threshold=float(stationarity_edge_active_threshold),
+        bulk_exclusion_xi=float(stationarity_bulk_exclusion_xi),
         eta_tol=float(stationarity_eta),
     )
     recovery_diag = contact_recovery_diagnostics(
@@ -330,6 +333,7 @@ def solve_stationary_pytdgl_like(
         "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
         "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded",
         "allmaras_contact_correction_guard_layers": int(allmaras_contact_guard_layers),
+        "stationarity_bulk_exclusion_xi": float(stationarity_bulk_exclusion_xi),
         "allmaras_solver_u": float(u),
         "allmaras_gamma_min": float(np.nanmin(gamma)) if gamma.size else float("nan"),
         "allmaras_gamma_median": gamma_report,
@@ -607,6 +611,7 @@ def _build_history(
     target_current_A: float,
     usadel_catalog: Any | None,
     n_snapshots: int,
+    stationarity_bulk_exclusion_xi: float = 4.0,
 ) -> dict[str, np.ndarray]:
     raw = solution.history
     terminal_site_mask = _terminal_site_mask_from_device(solution.device, mesh.n_nodes)
@@ -802,12 +807,23 @@ def _build_history(
 
     edge_i = np.asarray(ops.edge_i, dtype=np.int64)
     edge_j = np.asarray(ops.edge_j, dtype=np.int64)
+    nodes_xy = np.asarray(mesh.nodes, dtype=float)[:, :2]
     edge_length_m = np.linalg.norm(
-        np.asarray(mesh.nodes, dtype=float)[edge_j, :2]
-        - np.asarray(mesh.nodes, dtype=float)[edge_i, :2],
+        nodes_xy[edge_j] - nodes_xy[edge_i],
         axis=1,
     )
     edge_length_m = np.maximum(edge_length_m, 1.0e-300)
+    edge_center_x_m = 0.5 * (nodes_xy[edge_i, 0] + nodes_xy[edge_j, 0])
+    xmin = float(np.nanmin(nodes_xy[:, 0]))
+    xmax = float(np.nanmax(nodes_xy[:, 0]))
+    edge_distance_from_contact_m = np.minimum(
+        np.maximum(edge_center_x_m - xmin, 0.0),
+        np.maximum(xmax - edge_center_x_m, 0.0),
+    )
+    xi2 = np.asarray(material.xi_mod_squared_m2(Te), dtype=float)
+    stationarity_xi_m = float(np.sqrt(np.nanmedian(np.maximum(xi2, 1.0e-300))))
+    bulk_exclusion_m = max(0.0, float(stationarity_bulk_exclusion_xi)) * max(stationarity_xi_m, 1.0e-300)
+    stationarity_bulk_edge_mask = edge_distance_from_contact_m >= bulk_exclusion_m
     edge_phi_grad = (phi_snap_V[:, edge_j] - phi_snap_V[:, edge_i]) / edge_length_m[None, :]
     edge_amp_over_delta0 = 0.5 * (
         np.abs(psi_snap_J[:, edge_i]) + np.abs(psi_snap_J[:, edge_j])
@@ -819,7 +835,11 @@ def _build_history(
         stationarity_active_edge_mask = final_edge_amp >= 0.05 * max(bulk_edge_amp, 1.0e-300)
     else:
         stationarity_active_edge_mask = np.ones(ops.n_edges, dtype=bool)
-    stationarity_active_edge_mask = stationarity_active_edge_mask & ~blocked_edge_mask
+    stationarity_active_edge_mask = (
+        stationarity_active_edge_mask
+        & stationarity_bulk_edge_mask
+        & ~blocked_edge_mask
+    )
 
     for key, arr in {
         "psi_snapshot_real_J": np.real(psi_snap_J),
@@ -860,6 +880,12 @@ def _build_history(
         "edge_phase_gradient_snapshot_m_inv": edge_q,
         "edge_phi_gradient_snapshot_V_m": edge_phi_grad,
         "edge_length_m": edge_length_m,
+        "edge_center_x_m": edge_center_x_m,
+        "edge_distance_from_contact_m": edge_distance_from_contact_m,
+        "stationarity_xi_m": np.array([stationarity_xi_m], dtype=float),
+        "stationarity_bulk_exclusion_xi": np.array([float(stationarity_bulk_exclusion_xi)], dtype=float),
+        "stationarity_bulk_exclusion_m": np.array([bulk_exclusion_m], dtype=float),
+        "stationarity_bulk_edge_mask": stationarity_bulk_edge_mask.astype(bool),
         "edge_delta_amp_over_delta0_snapshot": edge_amp_over_delta0,
         "stationarity_active_edge_mask": stationarity_active_edge_mask,
         "edge_js_actual_snapshot_A_m2": edge_js_actual,

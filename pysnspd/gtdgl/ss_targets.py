@@ -4,8 +4,8 @@ The routines in this module are deliberately lightweight: they do not decide
 new physics, they only build a smooth metallic-contact seed and quantify the
 three checks needed before moving to photon dynamics:
 
-1. gauge-fixed physical stationarity of the phase gradient and electric-potential
-   gradient,
+1. bulk gauge-fixed physical stationarity of the phase gradient and
+   electric-potential gradient, excluding the normal-contact conversion region,
 2. a contact-healing length of order a few physical coherence lengths,
 3. finite-volume current continuity.
 
@@ -13,7 +13,8 @@ For the present no-screening A=0 backend the physical phase-gradient diagnostic
 is the edge superfluid momentum ``Q = grad(arg(Delta))`` stored by the current
 adapter.  This is invariant under constant phase shifts.  The electrostatic
 diagnostic is the edge gradient of ``phi``; it is invariant under constant
-potential offsets.  In a fully electromagnetic gauge treatment these would be
+potential offsets.  Metallic contacts are allowed to have conversion fields, so
+the stationarity gate is evaluated on a bulk-edge mask away from the contacts.  In a fully electromagnetic gauge treatment these would be
 replaced by the gauge-covariant combinations involving A.
 """
 from __future__ import annotations
@@ -102,6 +103,9 @@ class StationarityDiagnostics:
     active_edge_fraction: float
     active_edge_count: int
     total_edge_count: int
+    bulk_exclusion_xi: float
+    bulk_exclusion_length_m: float
+    bulk_edge_fraction: float
     eta_R_final: float
     eta_R_window_max: float
     tolerance_phase_gradient_rel: float
@@ -114,7 +118,7 @@ class StationarityDiagnostics:
 
     def as_dict(self) -> dict[str, Any]:
         return {
-            "diagnostic": "gauge_fixed_edge_gradients_A_eq_0_v1",
+            "diagnostic": "bulk_gauge_fixed_edge_gradients_A_eq_0_v1",
             "phase_gradient_rel_change": float(self.phase_gradient_rel_change),
             "phi_gradient_rel_change": float(self.phi_gradient_rel_change),
             "phase_gradient_abs_change_m_inv": float(self.phase_gradient_abs_change_m_inv),
@@ -124,6 +128,9 @@ class StationarityDiagnostics:
             "active_edge_fraction": float(self.active_edge_fraction),
             "active_edge_count": int(self.active_edge_count),
             "total_edge_count": int(self.total_edge_count),
+            "bulk_exclusion_xi": float(self.bulk_exclusion_xi),
+            "bulk_exclusion_length_m": float(self.bulk_exclusion_length_m),
+            "bulk_edge_fraction": float(self.bulk_edge_fraction),
             "eta_R_final_info_only": float(self.eta_R_final),
             "eta_R_window_max_info_only": float(self.eta_R_window_max),
             "tolerance_phase_gradient_rel": float(self.tolerance_phase_gradient_rel),
@@ -318,6 +325,7 @@ def stationarity_diagnostics(
     phase_gradient_abs_tol_m_inv: float = 1.0e3,
     phi_gradient_abs_tol_V_m: float = 1.0e2,
     edge_active_threshold: float = 0.05,
+    bulk_exclusion_xi: float = 4.0,
     eta_window: int = 20,
     # Deprecated aliases kept so older tests/calls fail softly instead of
     # changing semantics silently.  They are ignored for the pass/fail gate.
@@ -340,6 +348,11 @@ def stationarity_diagnostics(
     Edges whose final |Delta| is close to zero are excluded because the phase of
     Delta is undefined there.  This matters for metallic contacts where terminal
     sites are intentionally clamped to |Delta| = 0.
+
+    The pass/fail gate is additionally restricted to a bulk-edge mask if the
+    history contains ``edge_distance_from_contact_m`` and ``stationarity_xi_m``.
+    By default this excludes edges within ``4 xi`` of either metallic contact,
+    where a physical conversion field and normal current are expected.
     """
 
     del material, delta_rel_tol, phi_rel_tol, eta_tol
@@ -348,7 +361,11 @@ def stationarity_diagnostics(
         history.get("edge_phase_gradient_snapshot_m_inv", history.get("edge_Q_snapshot_m_inv", []))
     )
     phi_grad = _edge_phi_gradient_snapshots(history)
-    active = _active_phase_edges(history, edge_active_threshold=edge_active_threshold)
+    active = _active_phase_edges(
+        history,
+        edge_active_threshold=edge_active_threshold,
+        bulk_exclusion_xi=bulk_exclusion_xi,
+    )
 
     q_diag = _edge_field_change_metrics(q_edge, active, abs_tol=float(phase_gradient_abs_tol_m_inv))
     phi_diag = _edge_field_change_metrics(phi_grad, active, abs_tol=float(phi_gradient_abs_tol_V_m))
@@ -357,6 +374,12 @@ def stationarity_diagnostics(
     eta_final = float(eta[-1]) if eta.size else float("nan")
     w = max(1, int(eta_window))
     eta_window_max = float(np.nanmax(eta[-w:])) if eta.size else float("nan")
+
+    xi_hist = np.asarray(history.get("stationarity_xi_m", []), dtype=float).reshape(-1)
+    xi_m = float(xi_hist[0]) if xi_hist.size and np.isfinite(xi_hist[0]) else float("nan")
+    bulk_excl = max(0.0, float(bulk_exclusion_xi))
+    bulk_excl_m = bulk_excl * xi_m if np.isfinite(xi_m) else float("nan")
+    bulk_frac = float(q_diag["active_fraction"])
 
     q_pass = bool(
         np.isfinite(q_diag["rel_change"])
@@ -388,6 +411,9 @@ def stationarity_diagnostics(
         active_edge_fraction=float(q_diag["active_fraction"]),
         active_edge_count=int(q_diag["active_count"]),
         total_edge_count=int(q_diag["total_count"]),
+        bulk_exclusion_xi=bulk_excl,
+        bulk_exclusion_length_m=float(bulk_excl_m),
+        bulk_edge_fraction=bulk_frac,
         eta_R_final=eta_final,
         eta_R_window_max=eta_window_max,
         tolerance_phase_gradient_rel=float(phase_gradient_rel_tol),
@@ -468,7 +494,12 @@ def _edge_phi_gradient_snapshots(history: dict[str, np.ndarray]) -> np.ndarray:
     return (phi[:, edge_j] - phi[:, edge_i]) / length[None, :]
 
 
-def _active_phase_edges(history: dict[str, np.ndarray], *, edge_active_threshold: float) -> np.ndarray | None:
+def _active_phase_edges(
+    history: dict[str, np.ndarray],
+    *,
+    edge_active_threshold: float,
+    bulk_exclusion_xi: float = 0.0,
+) -> np.ndarray | None:
     explicit = history.get("stationarity_active_edge_mask")
     if explicit is not None:
         mask = np.asarray(explicit, dtype=bool).reshape(-1)
@@ -495,6 +526,18 @@ def _active_phase_edges(history: dict[str, np.ndarray], *, edge_active_threshold
         term = np.asarray(terminal_edges, dtype=bool).reshape(-1)
         if term.size == mask.size:
             mask = mask & ~term
+
+    d_contact = np.asarray(history.get("edge_distance_from_contact_m", []), dtype=float).reshape(-1)
+    xi_hist = np.asarray(history.get("stationarity_xi_m", []), dtype=float).reshape(-1)
+    if (
+        d_contact.size == mask.size
+        and xi_hist.size
+        and np.isfinite(xi_hist[0])
+        and float(bulk_exclusion_xi) > 0.0
+    ):
+        min_distance = float(bulk_exclusion_xi) * max(float(xi_hist[0]), 1.0e-300)
+        mask = mask & np.isfinite(d_contact) & (d_contact >= min_distance)
+
     if not np.any(mask):
         return None
     return mask

@@ -99,6 +99,15 @@ def parse_args() -> argparse.Namespace:
         help="Exclude edges whose final |Delta| is below this fraction of bulk, because phase is undefined near |Delta|=0.",
     )
     parser.add_argument(
+        "--ss-stationarity-bulk-exclusion-xi",
+        type=float,
+        default=4.0,
+        help=(
+            "Evaluate Q and grad(phi) stationarity only on bulk edges at least "
+            "this many physical coherence lengths away from metallic contacts."
+        ),
+    )
+    parser.add_argument(
         "--ss-stationarity-delta-rel",
         type=float,
         default=None,
@@ -220,6 +229,7 @@ def main() -> int:
         stationarity_q_abs_m_inv=float(args.ss_stationarity_q_abs_m_inv),
         stationarity_phi_gradient_abs_V_m=float(args.ss_stationarity_phi_gradient_abs_V_m),
         stationarity_edge_active_threshold=float(args.ss_stationarity_edge_active_threshold),
+        stationarity_bulk_exclusion_xi=float(args.ss_stationarity_bulk_exclusion_xi),
         stationarity_delta_rel=args.ss_stationarity_delta_rel,
         stationarity_phi_rel=args.ss_stationarity_phi_rel,
         convergence_min_steps=int(args.ss_convergence_min_steps),
