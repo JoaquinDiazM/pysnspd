@@ -1,6 +1,6 @@
 """pyTDGL-identical rectangular PRE mesh generation in SI units.
 
-This module now builds the rectangular nanowire through the same geometry and
+This module builds the rectangular nanowire through the same geometry and
 mesh-generation path used by pyTDGL:
 
     tdgl.geometry.box
@@ -9,9 +9,9 @@ mesh-generation path used by pyTDGL:
     -> tdgl.device.meshing.generate_mesh
     -> Mesh.from_triangulation
 
-Only the unit convention differs: pySNSPD keeps coordinates in SI meters.  The
-compatibility Device therefore uses coherence_length = 1.0 so the dimensionless
-mesh stored by the pyTDGL-style Device is numerically equal to the SI mesh.
+Only the unit convention differs: pySNSPD keeps coordinates in SI meters. The
+compatibility Device therefore uses ``coherence_length = 1.0`` so the
+pyTDGL-style dimensionless mesh is numerically equal to the SI mesh.
 """
 
 from __future__ import annotations
@@ -53,12 +53,7 @@ def parameters_from_config(
     min_points: int | None = None,
     boundary_points: int | None = None,
 ) -> PyTDGLLikeMeshParameters:
-    """Resolve pyTDGL meshing parameters from a full or minimal config.
-
-    The historical pySNSPD jitter and boundary-guard controls are no longer part
-    of this meshing path.  The boundary is generated with ``tdgl.geometry.box``
-    and the mesh is generated with ``Device.make_mesh`` logic.
-    """
+    """Resolve pyTDGL meshing parameters from a full or minimal config."""
 
     material = config.get("material", {})
     mesh_cfg = config.get("mesh", {})
@@ -88,9 +83,8 @@ def parameters_from_config(
         )
 
     if smooth is None:
-        # Match pyTDGL's Device.make_mesh default.  We intentionally do not read
-        # a generic mesh.smooth key because smoothing should be explicit for this
-        # backend: mesh.pytdgl_smooth.
+        # Match pyTDGL's Device.make_mesh default. Smoothing should be explicit
+        # for this backend via mesh.pytdgl_smooth.
         smooth = mesh_cfg.get("pytdgl_smooth", 0)
 
     if min_points is None and "pytdgl_min_points" in mesh_cfg:
@@ -143,7 +137,7 @@ def generate_rectangular_pytdgl_like_mesh(
         width_m=float(params.width_m),
         target_spacing_m=float(params.target_spacing_m),
         seed=int(params.seed),
-        triangulation_method="pytdgl_device_make_mesh_box_generate_mesh_v1",
+        triangulation_method="pytdgl_device_make_mesh_box_generate_mesh_exact_fv_v1",
         boundary_guard_layers=int(params.smooth),
     )
 
@@ -163,6 +157,7 @@ def generate_rectangular_pytdgl_fvm_mesh_from_parameters(
             points=params.boundary_points,
         ),
     )
+
     # coherence_length=1 keeps Device._create_dimensionless_mesh numerically in
     # meters, while preserving the exact pyTDGL Device.make_mesh sequence.
     layer = Layer(
@@ -199,11 +194,7 @@ def rectangular_boundary_points(
     *,
     points: int = 101,
 ) -> np.ndarray:
-    """Return the pyTDGL ``box`` boundary for the rectangular film.
-
-    The returned coordinates are centered at ``(length_m/2, 0)`` so the domain
-    is ``0 <= x <= length_m`` and ``-width_m/2 <= y <= width_m/2``.
-    """
+    """Return the pyTDGL ``box`` boundary for the rectangular film."""
 
     length = float(length_m)
     width = float(width_m)
@@ -269,7 +260,7 @@ def build_pytdgl_like_mesh_summary(mesh: Mesh) -> dict[str, Any]:
         raise ValueError("Mesh must include an EdgeMesh.")
 
     return {
-        "backend": "pytdgl_device_make_mesh_box_generate_mesh_v1",
+        "backend": "pytdgl_device_make_mesh_box_generate_mesh_exact_fv_v1",
         "n_sites": int(len(mesh.sites)),
         "n_elements": int(len(mesh.elements)),
         "n_boundary_sites": int(len(mesh.boundary_indices)),

@@ -1,4 +1,4 @@
-"""Tests for the exact pyTDGL geometry/meshing compatibility path."""
+"""Tests for the pyTDGL geometry/device/finite-volume compatibility path."""
 
 from __future__ import annotations
 
@@ -43,10 +43,6 @@ def test_rectangular_boundary_points_uses_pytdgl_box_coordinate_convention():
     )
 
     assert np.allclose(coords, expected)
-
-    # pyTDGL's box() convention can repeat the first coordinate at the end for
-    # rectangular boundaries because the side linspace calls include endpoints.
-    # That is fine: generate_mesh() calls ensure_unique() before building facets.
     assert np.allclose(coords[0], coords[-1])
     assert ensure_unique(coords).shape[0] < coords.shape[0]
 

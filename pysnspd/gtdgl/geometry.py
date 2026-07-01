@@ -1,13 +1,11 @@
 """pyTDGL-compatible geometry helpers used by pySNSPD meshing.
 
-This module intentionally mirrors the small geometry subset used by pyTDGL for
-constructing polygonal device boundaries.  It is kept in pySNSPD so the PRE mesh
-can be generated from the same rectangular boundary construction as pyTDGL while
-leaving all coordinates in SI meters.
+This module mirrors the geometry subset used by pyTDGL for constructing
+polygonal device boundaries. Coordinates remain in SI meters in pySNSPD.
 
 Source compatibility target:
-    tdgl.geometry, pyTDGL, MIT License, Copyright (c) 2022-2026
-    Logan Bishop-Van Horn.
+    loganbvh/py-tdgl, ``tdgl/geometry.py``
+    MIT License, Copyright (c) 2022-2026 Logan Bishop-Van Horn.
 """
 
 from __future__ import annotations
@@ -79,10 +77,11 @@ def box(
 ) -> np.ndarray:
     """Returns the coordinates for a rectangle with a given width and height.
 
-    This is the pyTDGL rectangle helper.  The first point is not repeated at the
-    end.  The actual number of returned points can differ slightly from
-    ``points`` because the requested point count is distributed over horizontal
-    and vertical sides in proportion to their lengths.
+    This follows pyTDGL's ``tdgl.geometry.box`` convention. Depending on the
+    point allocation and endpoint handling, the first coordinate can also appear
+    at the end of the returned boundary. Downstream pyTDGL meshing removes
+    repeated coordinates with ``ensure_unique`` before constructing Triangle
+    facets.
     """
 
     width = abs(width)
