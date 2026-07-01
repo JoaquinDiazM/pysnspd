@@ -1,15 +1,17 @@
-"""pyTDGL-faithful rectangular PRE mesh generation in SI units.
+"""pyTDGL-identical rectangular PRE mesh generation in SI units.
 
-This module builds the PRE mesh through the same pyTDGL-style path used by the
-flat gTDGL backend:
+This module now builds the rectangular nanowire through the same geometry and
+mesh-generation path used by pyTDGL:
 
-    resampled polygon boundary
-    -> meshpy.triangle.build
+    tdgl.geometry.box
+    -> tdgl.device.Polygon
+    -> tdgl.device.Device.make_mesh
+    -> tdgl.device.meshing.generate_mesh
     -> Mesh.from_triangulation
-    -> EdgeMesh + Voronoi control volumes.
 
-The only deliberate difference from pyTDGL is units: all coordinates remain in
-meters. No coherence-length nondimensionalization is performed at PRE time.
+Only the unit convention differs: pySNSPD keeps coordinates in SI meters.  The
+compatibility Device therefore uses coherence_length = 1.0 so the dimensionless
+mesh stored by the pyTDGL-style Device is numerically equal to the SI mesh.
 """
 
 from __future__ import annotations
@@ -21,7 +23,8 @@ from typing import Any, Mapping
 import numpy as np
 
 from pysnspd.gtdgl.finite_volume import Mesh
-from pysnspd.gtdgl.finite_volume.meshing import generate_mesh
+from pysnspd.gtdgl.geometry import box
+from pysnspd.gtdgl.tdgl_compat import Device, Layer, Polygon
 from pysnspd.mesh.delaunay import MeshData, orient_triangles_counterclockwise
 
 
@@ -37,6 +40,7 @@ class PyTDGLLikeMeshParameters:
     min_angle_deg: float = 32.5
     smooth: int = 0
     min_points: int | None = None
+    boundary_points: int = 101
     terminal_contact_mode: str = "normal_left_right"
 
 
@@ -47,22 +51,13 @@ def parameters_from_config(
     min_angle_deg: float | None = None,
     smooth: int | None = None,
     min_points: int | None = None,
+    boundary_points: int | None = None,
 ) -> PyTDGLLikeMeshParameters:
-    """Resolve pyTDGL-like meshing parameters from a full or minimal config.
+    """Resolve pyTDGL meshing parameters from a full or minimal config.
 
-    The mesh is generated only through the pyTDGL-style route used by the flat
-    gTDGL backend: meshpy/triangle followed by pyTDGL-like finite-volume data
-    structures.
-
-    There is intentionally no ``jitter_fraction`` control here. pyTDGL does not
-    jitter the point cloud when constructing the mesh. The stochastic irregularity
-    comes from Triangle's refinement of the constrained polygon, not from adding
-    random displacements to nodes.
-
-    Important detail: the generic ``mesh.smooth`` key is intentionally ignored.
-    Smoothing can move sites while keeping the same triangulation, which may
-    create non-Delaunay cells and malformed Voronoi control volumes. To request
-    smoothing explicitly for this backend, use ``mesh.pytdgl_smooth``.
+    The historical pySNSPD jitter and boundary-guard controls are no longer part
+    of this meshing path.  The boundary is generated with ``tdgl.geometry.box``
+    and the mesh is generated with ``Device.make_mesh`` logic.
     """
 
     material = config.get("material", {})
@@ -93,11 +88,17 @@ def parameters_from_config(
         )
 
     if smooth is None:
+        # Match pyTDGL's Device.make_mesh default.  We intentionally do not read
+        # a generic mesh.smooth key because smoothing should be explicit for this
+        # backend: mesh.pytdgl_smooth.
         smooth = mesh_cfg.get("pytdgl_smooth", 0)
 
     if min_points is None and "pytdgl_min_points" in mesh_cfg:
         value = mesh_cfg.get("pytdgl_min_points")
         min_points = None if value is None else int(value)
+
+    if boundary_points is None:
+        boundary_points = int(mesh_cfg.get("pytdgl_boundary_points", 101))
 
     params = PyTDGLLikeMeshParameters(
         length_m=float(length_m),
@@ -108,6 +109,7 @@ def parameters_from_config(
         min_angle_deg=float(min_angle_deg),
         smooth=int(smooth),
         min_points=min_points,
+        boundary_points=int(boundary_points),
     )
     _validate_parameters(params)
     return params
@@ -120,6 +122,7 @@ def generate_rectangular_pytdgl_like_mesh(
     min_angle_deg: float | None = None,
     smooth: int | None = None,
     min_points: int | None = None,
+    boundary_points: int | None = None,
 ) -> MeshData:
     """Generate a rectangular pyTDGL-style mesh and return pySNSPD MeshData."""
 
@@ -129,6 +132,7 @@ def generate_rectangular_pytdgl_like_mesh(
         min_angle_deg=min_angle_deg,
         smooth=smooth,
         min_points=min_points,
+        boundary_points=boundary_points,
     )
     mesh = generate_rectangular_pytdgl_fvm_mesh_from_parameters(params)
 
@@ -139,7 +143,7 @@ def generate_rectangular_pytdgl_like_mesh(
         width_m=float(params.width_m),
         target_spacing_m=float(params.target_spacing_m),
         seed=int(params.seed),
-        triangulation_method="pytdgl_generate_mesh_meshpy_triangle_resampled_boundary_v1",
+        triangulation_method="pytdgl_device_make_mesh_box_generate_mesh_v1",
         boundary_guard_layers=int(params.smooth),
     )
 
@@ -147,94 +151,76 @@ def generate_rectangular_pytdgl_like_mesh(
 def generate_rectangular_pytdgl_fvm_mesh_from_parameters(
     params: PyTDGLLikeMeshParameters,
 ) -> Mesh:
-    """Generate the full pyTDGL-like finite-volume Mesh for a rectangle."""
+    """Generate the full finite-volume mesh through pyTDGL Device.make_mesh."""
 
     _validate_parameters(params)
 
-    poly_coords = rectangular_boundary_points(
-        params.length_m,
-        params.width_m,
-        params.target_spacing_m,
+    film = Polygon(
+        "film",
+        points=rectangular_boundary_points(
+            params.length_m,
+            params.width_m,
+            points=params.boundary_points,
+        ),
     )
-
-    points, triangles = generate_mesh(
-        poly_coords=poly_coords,
-        hole_coords=None,
-        min_points=params.min_points,
+    # coherence_length=1 keeps Device._create_dimensionless_mesh numerically in
+    # meters, while preserving the exact pyTDGL Device.make_mesh sequence.
+    layer = Layer(
+        london_lambda=1.0,
+        coherence_length=1.0,
+        thickness=1.0,
+        conductivity=None,
+        u=5.79,
+        gamma=10.0,
+        z0=0.0,
+    )
+    device = Device(
+        "rectangular_nanowire",
+        layer=layer,
+        film=film,
+        holes=None,
+        terminals=None,
+        length_units="m",
+    )
+    device.make_mesh(
         max_edge_length=params.max_edge_length_m,
-        convex_hull=False,
-        boundary=poly_coords,
+        min_points=params.min_points,
+        smooth=params.smooth,
         min_angle=params.min_angle_deg,
     )
-
-    primary_mesh = Mesh.from_triangulation(
-        points,
-        triangles,
-        create_submesh=False,
-    )
-
-    if params.smooth > 0:
-        primary_mesh = primary_mesh.smooth(
-            params.smooth,
-            create_submesh=False,
-        )
-
-    return Mesh.from_triangulation(
-        primary_mesh.sites,
-        primary_mesh.elements,
-        create_submesh=True,
-    )
+    if device.mesh is None:
+        raise RuntimeError("pyTDGL Device.make_mesh did not create a mesh.")
+    return device.mesh
 
 
 def rectangular_boundary_points(
     length_m: float,
     width_m: float,
-    spacing_m: float,
+    *,
+    points: int = 101,
 ) -> np.ndarray:
-    """Return a resampled rectangular boundary curve in meters.
+    """Return the pyTDGL ``box`` boundary for the rectangular film.
 
-    The curve is open: the first point is not repeated at the end.
-
-    This is the safest pyTDGL-style input for this rectangular nanowire:
-    boundary sites are explicitly controlled by the PRE spacing instead of being
-    inserted implicitly by Triangle from only four corner vertices.
+    The returned coordinates are centered at ``(length_m/2, 0)`` so the domain
+    is ``0 <= x <= length_m`` and ``-width_m/2 <= y <= width_m/2``.
     """
 
     length = float(length_m)
     width = float(width_m)
-    spacing = float(spacing_m)
-
     if length <= 0.0:
         raise ValueError("length_m must be positive.")
     if width <= 0.0:
         raise ValueError("width_m must be positive.")
-    if spacing <= 0.0:
-        raise ValueError("spacing_m must be positive.")
+    if int(points) < 4:
+        raise ValueError("points must be at least 4.")
 
-    half_w = 0.5 * width
-
-    n_x = max(1, int(np.ceil(length / spacing)))
-    n_y = max(1, int(np.ceil(width / spacing)))
-
-    bottom_x = np.linspace(0.0, length, n_x + 1, endpoint=True)[:-1]
-    right_y = np.linspace(-half_w, half_w, n_y + 1, endpoint=True)[:-1]
-    top_x = np.linspace(length, 0.0, n_x + 1, endpoint=True)[:-1]
-    left_y = np.linspace(half_w, -half_w, n_y + 1, endpoint=True)[:-1]
-
-    bottom = np.column_stack([bottom_x, np.full_like(bottom_x, -half_w)])
-    right = np.column_stack([np.full_like(right_y, length), right_y])
-    top = np.column_stack([top_x, np.full_like(top_x, half_w)])
-    left = np.column_stack([np.full_like(left_y, 0.0), left_y])
-
-    points = np.vstack([bottom, right, top, left])
-
-    # Remove any accidental repeated coordinate while preserving order. The
-    # curve must remain open for the pyTDGL/meshpy boundary convention used here.
-    rounded = np.round(points, decimals=14)
-    _, keep = np.unique(rounded, axis=0, return_index=True)
-    keep = np.sort(keep)
-
-    return points[keep]
+    return box(
+        width=length,
+        height=width,
+        points=int(points),
+        center=(0.5 * length, 0.0),
+        angle=0,
+    )
 
 
 def save_pytdgl_like_mesh_npz(mesh: Mesh, path: str | Path) -> Path:
@@ -283,7 +269,7 @@ def build_pytdgl_like_mesh_summary(mesh: Mesh) -> dict[str, Any]:
         raise ValueError("Mesh must include an EdgeMesh.")
 
     return {
-        "backend": "pytdgl_like_meshpy_triangle_fvm_resampled_boundary_v1",
+        "backend": "pytdgl_device_make_mesh_box_generate_mesh_v1",
         "n_sites": int(len(mesh.sites)),
         "n_elements": int(len(mesh.elements)),
         "n_boundary_sites": int(len(mesh.boundary_indices)),
@@ -312,3 +298,5 @@ def _validate_parameters(params: PyTDGLLikeMeshParameters) -> None:
         raise ValueError("min_angle_deg must be positive.")
     if params.smooth < 0:
         raise ValueError("smooth must be non-negative.")
+    if params.boundary_points < 4:
+        raise ValueError("boundary_points must be at least 4.")

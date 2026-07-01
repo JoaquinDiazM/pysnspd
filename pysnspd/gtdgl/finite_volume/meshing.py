@@ -1,22 +1,30 @@
 """pyTDGL mesh generator wrapper in SI units.
 
-The public function ``generate_mesh`` intentionally keeps pyTDGL's signature.
-It uses ``meshpy.triangle.build`` just as pyTDGL does.  pySNSPD supplies
-coordinates in meters and receives coordinates in meters; no nondimensional
-length conversion is performed here.
+The public function ``generate_mesh`` intentionally mirrors
+``tdgl.device.meshing.generate_mesh`` from pyTDGL.  pySNSPD supplies coordinates
+in meters and receives coordinates in meters; no nondimensional length
+conversion is performed in this wrapper.
+
+Source compatibility target:
+    tdgl.device.meshing, pyTDGL, MIT License, Copyright (c) 2022-2026
+    Logan Bishop-Van Horn.
 """
+
 from __future__ import annotations
 
 import logging
 from typing import List, Tuple, Union
 
 import numpy as np
+from meshpy import triangle
 from scipy import spatial
 from shapely.geometry.polygon import Polygon
 
-from .util import ensure_unique, get_max_edge_length
+from pysnspd.gtdgl.geometry import ensure_unique
 
-logger = logging.getLogger("pysnspd.gtdgl.device")
+from .util import get_max_edge_length
+
+logger = logging.getLogger("tdgl.device")
 
 
 def generate_mesh(
@@ -29,25 +37,20 @@ def generate_mesh(
     min_angle: float = 32.5,
     **kwargs,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Generates a Delaunay mesh for a given polygon.
+    """Generates a Delaunay mesh for a given set of polygon vertices.
 
-    This follows ``tdgl.device.meshing.generate_mesh``.  Additional keyword
-    arguments are passed to ``meshpy.triangle.build``.
+    Additional keyword arguments are passed to ``triangle.build()``.  This
+    follows pyTDGL's meshing routine, with SI coordinates kept unchanged.
     """
-    try:
-        from meshpy import triangle
-    except ImportError as exc:
-        raise ImportError(
-            "pyTDGL-like meshing requires meshpy. Install it in the snspd "
-            "environment, e.g. `python -m pip install meshpy` or "
-            "`conda install -c conda-forge meshpy`."
-        ) from exc
 
     poly_coords = ensure_unique(poly_coords)
     if hole_coords is None:
         hole_coords = []
     hole_coords = [ensure_unique(coords) for coords in hole_coords]
 
+    # Facets is a shape (m, 2) array of edge indices.
+    # coords[facets] is a shape (m, 2, 2) array of edge coordinates:
+    # [(x0, y0), (x1, y1)]
     coords = np.concatenate([poly_coords] + hole_coords, axis=0)
     xmin = coords[:, 0].min()
     dx = np.ptp(coords[:, 0])
@@ -55,20 +58,28 @@ def generate_mesh(
     dy = np.ptp(coords[:, 1])
     r0 = np.array([[xmin, ymin]]) + np.array([[dx, dy]]) / 2
 
+    # Center the coordinates at (0, 0) to avoid floating point issues.
     coords = coords - r0
     indices = np.arange(len(poly_coords), dtype=int)
     if convex_hull:
         if boundary is not None:
-            raise ValueError("Cannot have both boundary is not None and convex_hull = True.")
+            raise ValueError(
+                "Cannot have both boundary is not None and convex_hull = True."
+            )
         facets = spatial.ConvexHull(coords).simplices
     else:
         if boundary is not None:
             boundary = list(map(tuple, ensure_unique(boundary - r0)))
-            indices = np.array([i for i in indices if tuple(coords[i]) in boundary], dtype=int)
+            indices = [i for i in indices if tuple(coords[i]) in boundary]
         facets = np.array([indices, np.roll(indices, -1)]).T
 
+    # Create facets for the holes.
     for hole in hole_coords:
-        hole_indices = np.arange(indices[-1] + 1, indices[-1] + 1 + len(hole), dtype=int)
+        hole_indices = np.arange(
+            indices[-1] + 1,
+            indices[-1] + 1 + len(hole),
+            dtype=int,
+        )
         hole_facets = np.array([hole_indices, np.roll(hole_indices, -1)]).T
         indices = np.concatenate([indices, hole_indices], axis=0)
         facets = np.concatenate([facets, hole_facets], axis=0)
@@ -77,14 +88,20 @@ def generate_mesh(
     mesh_info.set_points(coords)
     mesh_info.set_facets(facets)
     if hole_coords:
-        holes = [np.array(Polygon(hole).centroid.coords[0]) - r0.squeeze() for hole in hole_coords]
+        # Triangle allows you to set holes by specifying a single point
+        # that lies in each hole. Here we use the centroid of the hole.
+        holes = [
+            np.array(Polygon(hole).centroid.coords[0]) - r0.squeeze()
+            for hole in hole_coords
+        ]
         mesh_info.set_holes(holes)
 
     kwargs = kwargs.copy()
     kwargs["min_angle"] = min_angle
+
     mesh = triangle.build(mesh_info=mesh_info, **kwargs)
     points = np.array(mesh.points) + r0
-    triangles = np.array(mesh.elements, dtype=np.int64)
+    triangles = np.array(mesh.elements)
     if min_points is None and (max_edge_length is None or max_edge_length <= 0):
         return points, triangles
 
@@ -98,11 +115,11 @@ def generate_mesh(
     while (len(points) < min_points) or (max_length > max_edge_length):
         mesh = triangle.build(mesh_info=mesh_info, **kwargs)
         points = np.array(mesh.points) + r0
-        triangles = np.array(mesh.elements, dtype=np.int64)
+        triangles = np.array(mesh.elements)
         max_length = get_max_edge_length(points, triangles)
         logger.info(
-            f"Iteration {i}: {len(points)} points, {len(triangles)} triangles, "
-            f"max_edge_length: {max_length:.2e} (target: {max_edge_length:.2e})."
+            f"Iteration {i}: {len(points)} points, {len(triangles)} triangles,"
+            f" max_edge_length: {max_length:.2e} (target: {max_edge_length:.2e})."
         )
         if np.isfinite(max_edge_length):
             kwargs["max_volume"] *= min(0.98, np.sqrt(max_edge_length / max_length))
