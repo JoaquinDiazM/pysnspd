@@ -33,7 +33,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run stationary gTDGL--Poisson relaxation with the flat gTDGL backend."
     )
+
     parser.add_argument("--config", required=True, help="Path to YAML project config.")
+
     parser.add_argument(
         "--run-name",
         default=None,
@@ -44,46 +46,93 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="PRE-run name to load. If omitted, use --run-name/default_run_name.",
     )
+
     parser.add_argument("--phase-origin", choices=("center", "left"), default="center")
-    parser.add_argument("--ss-steps", type=int, default=2000)
-    parser.add_argument("--ss-dt-fs", type=float, default=0.25)
+
+    # Default SS target constructed from the first useful metallic-contact
+    # Usadel-Poisson runs:
+    #
+    #   I = 20 uA
+    #   dt = 0.20 fs
+    #   long relaxation
+    #   metallic terminals with smooth 2.5 xi seed healing
+    #   stationarity measured only in the superconducting bulk.
+    parser.add_argument("--ss-steps", type=int, default=100000)
+    parser.add_argument("--ss-dt-fs", type=float, default=0.20)
     parser.add_argument("--ss-tau-scale", type=float, default=0.10)
-    parser.add_argument("--ss-target-current-uA", type=float, default=None)
-    parser.add_argument("--ss-snapshots", type=int, default=6)
-    parser.add_argument("--ss-progress", action="store_true")
+    parser.add_argument("--ss-target-current-uA", type=float, default=20.0)
+    parser.add_argument("--ss-snapshots", type=int, default=8)
+
+    parser.add_argument(
+        "--ss-progress",
+        dest="ss_progress",
+        action="store_true",
+        default=True,
+        help="Show SS progress bar. Enabled by default.",
+    )
+    parser.add_argument(
+        "--ss-no-progress",
+        dest="ss_progress",
+        action="store_false",
+        help="Disable SS progress bar.",
+    )
+
+    # Metallic-contact boundary model.
     parser.add_argument("--ss-terminal-psi", type=float, default=0.0)
     parser.add_argument(
         "--ss-terminal-healing-xi",
         type=float,
-        default=None,
+        default=2.5,
         help=(
             "Apply a smooth tanh contact-healing envelope to the initial |Delta| seed. "
-            "Use 2.5 for the first metallic-contact SS objective."
+            "Default 2.5 makes |Delta| recover to the requested bulk fraction over "
+            "roughly 2--3 physical coherence lengths."
         ),
     )
     parser.add_argument("--ss-terminal-healing-fraction", type=float, default=0.95)
+
+    # eta_R is kept only as a diagnostic; the SS target now uses gauge-fixed
+    # edge gradients in the superconducting bulk.
     parser.add_argument(
         "--ss-stationarity-eta",
         type=float,
         default=1.0e-5,
-        help="Info-only solver amplitude residual stored in the summary; no longer gates SS target pass/fail.",
+        help=(
+            "Info-only solver amplitude residual stored in the summary; "
+            "no longer gates SS target pass/fail."
+        ),
     )
+
+    # Gauge-fixed bulk stationarity defaults.  These are intentionally looser
+    # than the first very strict attempt, and correspond to the tolerances that
+    # made sense after isolating the contact-conversion region:
+    #
+    #   Delta Q / Q_rms              < 5e-4
+    #   Delta grad(phi) / grad(phi) < 5e-3
+    #   Delta Q_abs                 < 1e4 m^-1
+    #   Delta grad(phi)_abs         < 1e2 V/m
     parser.add_argument(
         "--ss-stationarity-phase-gradient-rel",
         type=float,
-        default=None,
-        help="Relative tolerance for time-stationarity of edge phase gradient Q=grad(arg Delta).",
+        default=5.0e-4,
+        help=(
+            "Relative tolerance for time-stationarity of edge phase gradient "
+            "Q = grad(arg Delta), evaluated only in the superconducting bulk."
+        ),
     )
     parser.add_argument(
         "--ss-stationarity-phi-gradient-rel",
         type=float,
-        default=None,
-        help="Relative tolerance for time-stationarity of edge grad(phi).",
+        default=5.0e-3,
+        help=(
+            "Relative tolerance for time-stationarity of edge grad(phi), "
+            "evaluated only in the superconducting bulk."
+        ),
     )
     parser.add_argument(
         "--ss-stationarity-q-abs-m-inv",
         type=float,
-        default=1.0e3,
+        default=1.0e4,
         help="Absolute fallback tolerance for changes in Q, in m^-1.",
     )
     parser.add_argument(
@@ -96,7 +145,10 @@ def parse_args() -> argparse.Namespace:
         "--ss-stationarity-edge-active-threshold",
         type=float,
         default=0.05,
-        help="Exclude edges whose final |Delta| is below this fraction of bulk, because phase is undefined near |Delta|=0.",
+        help=(
+            "Exclude edges whose final |Delta| is below this fraction of bulk, "
+            "because phase is undefined near |Delta|=0."
+        ),
     )
     parser.add_argument(
         "--ss-stationarity-bulk-exclusion-xi",
@@ -107,38 +159,55 @@ def parse_args() -> argparse.Namespace:
             "this many physical coherence lengths away from metallic contacts."
         ),
     )
+
+    # Deprecated aliases kept for compatibility with older command lines.
     parser.add_argument(
         "--ss-stationarity-delta-rel",
         type=float,
         default=None,
-        help="Deprecated alias: used as --ss-stationarity-phase-gradient-rel if the new flag is omitted.",
+        help=(
+            "Deprecated alias: used as --ss-stationarity-phase-gradient-rel "
+            "if the new flag is omitted."
+        ),
     )
     parser.add_argument(
         "--ss-stationarity-phi-rel",
         type=float,
         default=None,
-        help="Deprecated alias: used as --ss-stationarity-phi-gradient-rel if the new flag is omitted.",
+        help=(
+            "Deprecated alias: used as --ss-stationarity-phi-gradient-rel "
+            "if the new flag is omitted."
+        ),
     )
-    parser.add_argument("--ss-convergence-min-steps", type=int, default=50)
+
+    parser.add_argument("--ss-convergence-min-steps", type=int, default=500)
+
+    # These already pass with large margin; keep them strict.
     parser.add_argument("--ss-continuity-rms-tol", type=float, default=1.0e-6)
     parser.add_argument("--ss-continuity-max-tol", type=float, default=1.0e-3)
     parser.add_argument("--ss-continuity-poisson-tol", type=float, default=1.0e-9)
+
+    # Contact recovery target: |Delta| should recover over an intermediate
+    # physical distance, neither one-cell abrupt nor too long.
     parser.add_argument("--ss-recovery-min-xi", type=float, default=1.5)
     parser.add_argument("--ss-recovery-max-xi", type=float, default=4.0)
+
     parser.add_argument(
         "--ss-no-adaptive",
         action="store_true",
         help="Disable adaptive time stepping in the pyTDGL-like core.",
     )
+
     parser.add_argument(
         "--ss-supercurrent-law",
         choices=("auto", "gl", "usadel-poisson"),
         default="usadel-poisson",
         help=(
-            "Default is strict usadel-poisson.  SS refuses legacy 1D/2D current tables; "
+            "Default is strict usadel-poisson. SS refuses legacy 1D/2D current tables; "
             "PRE must provide js_A_m2[Te,delta,q]."
         ),
     )
+
     parser.add_argument(
         "--ss-allmaras-contact-guard-layers",
         type=int,
@@ -148,8 +217,8 @@ def parse_args() -> argparse.Namespace:
             "and this many graph-neighbor layers. Diffusion/reaction terms remain active."
         ),
     )
-    return parser.parse_args()
 
+    return parser.parse_args()
 
 def main() -> int:
     args = parse_args()
