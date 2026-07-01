@@ -208,6 +208,17 @@ class TDGLSolver:
         self.d_psi_sq_vals: list[float] = []
         self.tentative_dt = options.dt_init
         self.dt_max = options.dt_max if options.adaptive else options.dt_init
+        # Adaptive-Euler diagnostics. pyTDGL shrinks the tentative step when
+        # the local algebraic |psi|^2 solve fails; these fields expose that
+        # retry logic without changing the public adaptive_euler_step return
+        # signature.
+        self.last_adaptive_dt_attempt = float(options.dt_init)
+        self.last_adaptive_dt_accepted = float(options.dt_init)
+        self.last_adaptive_retries = 0
+        self.last_adaptive_rejected_attempts = 0
+        self.last_adaptive_target_dt = float("nan")
+        self.last_adaptive_next_dt = float(options.dt_init)
+        self.last_adaptive_window_mean_d_abs_sq = float("nan")
 
     def apply_terminal_psi(self, psi: np.ndarray) -> np.ndarray:
         """Apply the metallic-normal-terminal Dirichlet condition to psi.
@@ -366,9 +377,16 @@ class TDGLSolver:
             psi_laplacian=self.operators.psi_laplacian,
             forcing_dimensionless=forcing_dimensionless,
         )
+        self.last_adaptive_dt_attempt = float(dt)
+        self.last_adaptive_dt_accepted = float(dt)
+        self.last_adaptive_retries = 0
+        self.last_adaptive_rejected_attempts = 0
+
         result = self.solve_for_psi_squared(**kwargs)
+        retries_used = 0
         for retries in itertools.count():
             if result is not None:
+                retries_used = int(retries)
                 break
             if not options.adaptive or retries > options.max_solve_retries:
                 raise RuntimeError(
@@ -377,6 +395,10 @@ class TDGLSolver:
                 )
             kwargs["dt"] = dt = dt * options.adaptive_time_step_multiplier
             result = self.solve_for_psi_squared(**kwargs)
+
+        self.last_adaptive_dt_accepted = float(dt)
+        self.last_adaptive_retries = int(retries_used)
+        self.last_adaptive_rejected_attempts = int(retries_used)
         psi, new_sq_psi = result
         psi = self.apply_terminal_psi(psi)
         if self.terminal_psi_value is not None and self.normal_boundary_index.size:
@@ -515,11 +537,33 @@ class TDGLSolver:
         running_state.append("mu_boundary_max_abs", float(np.max(np.abs(mu_b))) if mu_b.size else 0.0)
 
         if options.adaptive:
-            self.d_psi_sq_vals.append(float(np.absolute(abs_sq_psi - old_sq_psi).max()))
+            d_abs_sq = float(np.absolute(abs_sq_psi - old_sq_psi).max())
+            self.d_psi_sq_vals.append(d_abs_sq)
             window = max(1, int(options.adaptive_window))
             if step > window:
-                new_dt = options.dt_init / max(1e-10, np.mean(self.d_psi_sq_vals[-window:]))
-                self.tentative_dt = float(np.clip(0.5 * (new_dt + dt), 0, self.dt_max))
+                mean_d_abs_sq = float(np.mean(self.d_psi_sq_vals[-window:]))
+                target_dt = float(options.dt_init / max(1e-10, mean_d_abs_sq))
+                next_dt = float(np.clip(0.5 * (target_dt + dt), 0.0, self.dt_max))
+            else:
+                mean_d_abs_sq = float(np.mean(self.d_psi_sq_vals[-window:]))
+                target_dt = float("nan")
+                next_dt = float(dt)
+            self.last_adaptive_window_mean_d_abs_sq = mean_d_abs_sq
+            self.last_adaptive_target_dt = target_dt
+            self.last_adaptive_next_dt = next_dt
+            self.tentative_dt = next_dt
+        else:
+            self.last_adaptive_window_mean_d_abs_sq = float("nan")
+            self.last_adaptive_target_dt = float("nan")
+            self.last_adaptive_next_dt = float(dt)
+
+        running_state.append("dt_attempt", float(self.last_adaptive_dt_attempt))
+        running_state.append("dt_accepted", float(self.last_adaptive_dt_accepted))
+        running_state.append("dt_next", float(self.last_adaptive_next_dt))
+        running_state.append("adaptive_retries", int(self.last_adaptive_retries))
+        running_state.append("adaptive_rejected_attempts", int(self.last_adaptive_rejected_attempts))
+        running_state.append("adaptive_window_mean_d_abs_sq", float(self.last_adaptive_window_mean_d_abs_sq))
+        running_state.append("adaptive_target_dt", float(self.last_adaptive_target_dt))
 
         return SolverResult(dt, psi, mu, supercurrent, normal_current, induced_vector_potential)
 
@@ -671,6 +715,15 @@ class TDGLSolver:
         hist["convergence_reason"] = np.array([self.convergence_reason], dtype=object)
         hist["stop_eta"] = np.array([float(self.stop_eta) if self.stop_eta is not None else np.nan], dtype=float)
         hist["stop_min_steps"] = np.array([int(self.stop_min_steps)], dtype=int)
+        hist["adaptive_enabled"] = np.array([bool(options.adaptive)], dtype=bool)
+        hist["adaptive_window"] = np.array([int(options.adaptive_window)], dtype=int)
+        hist["adaptive_time_step_multiplier"] = np.array([float(options.adaptive_time_step_multiplier)], dtype=float)
+        hist["dt_init"] = np.array([float(options.dt_init)], dtype=float)
+        hist["dt_max"] = np.array([float(options.dt_max)], dtype=float)
+        rejected = np.asarray(hist.get("adaptive_rejected_attempts", []), dtype=float)
+        hist["total_rejected_attempts"] = np.array([int(np.nansum(rejected))], dtype=int)
+        retries = np.asarray(hist.get("adaptive_retries", []), dtype=float)
+        hist["max_adaptive_retries_per_step"] = np.array([int(np.nanmax(retries)) if retries.size else 0], dtype=int)
         return PyTDGLLikeSolution(
             device=self.device,
             options=options,

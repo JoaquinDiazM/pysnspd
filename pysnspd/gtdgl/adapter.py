@@ -53,6 +53,7 @@ def solve_stationary_pytdgl_like(
     adaptive_window: int = 10,
     max_solve_retries: int = 10,
     adaptive_time_step_multiplier: float = 0.25,
+    dt_max_factor: float = 100.0,
     n_snapshots: int = 6,
     progress: bool = False,
     supercurrent_law: str = "gl",
@@ -119,7 +120,7 @@ def solve_stationary_pytdgl_like(
     options = SolverOptions(
         solve_time=solve_time,
         dt_init=dt_dimless,
-        dt_max=dt_dimless if not adaptive else max(dt_dimless, 100.0 * dt_dimless),
+        dt_max=dt_dimless if not adaptive else max(dt_dimless, float(dt_max_factor) * dt_dimless),
         adaptive=bool(adaptive),
         adaptive_window=int(adaptive_window),
         max_solve_retries=int(max_solve_retries),
@@ -324,9 +325,19 @@ def solve_stationary_pytdgl_like(
         "convergence_reason": str(solution.history.get("convergence_reason", np.array(["not_reported"], dtype=object))[0]),
         "first_magic_ready": magic_ready,
         "accepted_steps": int(solution.history.get("final_step", np.array([0]))[0]),
-        "rejected_steps": 0,
+        "rejected_steps": int(solution.history.get("total_rejected_attempts", np.array([0]))[0]),
         "final_time_ps": float(solution.history.get("final_time", np.array([0.0]))[0] * tau0 / 1.0e-12),
         "dt_init_s": float(dt_s),
+        "adaptive_enabled": bool(solution.history.get("adaptive_enabled", np.array([False], dtype=bool))[0]),
+        "adaptive_window": int(solution.history.get("adaptive_window", np.array([0], dtype=int))[0]),
+        "adaptive_time_step_multiplier": float(solution.history.get("adaptive_time_step_multiplier", np.array([float("nan")]))[0]),
+        "adaptive_dt_max_factor": float(dt_max_factor),
+        "adaptive_max_retries_per_step": int(solution.history.get("max_adaptive_retries_per_step", np.array([0], dtype=int))[0]),
+        "adaptive_total_rejected_attempts": int(solution.history.get("total_rejected_attempts", np.array([0], dtype=int))[0]),
+        "dt_final_s": float(history.get("dt_s", np.array([float("nan")]))[-1]) if history.get("dt_s", np.array([])).size else float("nan"),
+        "dt_min_s": float(np.nanmin(history.get("dt_s", np.array([float("nan")])))),
+        "dt_max_used_s": float(np.nanmax(history.get("dt_s", np.array([float("nan")])))),
+        "dt_mean_s": float(np.nanmean(history.get("dt_s", np.array([float("nan")])))),
         "tau0_GL_s": tau0,
         "pytdgl_u": u,
         "pytdgl_gamma": gamma_report,
@@ -626,6 +637,20 @@ def _build_history(
     if mu_ptp.size != t_s.size:
         mu_ptp = np.resize(mu_ptp, t_s.size)
 
+    def _raw_series(name: str, default_value: float = 0.0) -> np.ndarray:
+        arr = np.asarray(raw.get(name, np.full(t_s.shape, default_value)), dtype=float)
+        if arr.size != t_s.size:
+            arr = np.resize(arr, t_s.size)
+        return arr
+
+    dt_attempt_dimless = _raw_series("dt_attempt", np.nan)
+    dt_accepted_dimless = _raw_series("dt_accepted", np.nan)
+    dt_next_dimless = _raw_series("dt_next", np.nan)
+    adaptive_target_dt_dimless = _raw_series("adaptive_target_dt", np.nan)
+    adaptive_retries = _raw_series("adaptive_retries", 0.0)
+    adaptive_rejected_attempts = _raw_series("adaptive_rejected_attempts", 0.0)
+    adaptive_window_mean_d_abs_sq = _raw_series("adaptive_window_mean_d_abs_sq", np.nan)
+
     delta_abs = np.abs(psi_final_J)
     javg = abs(target_current_density_A_m2(material, target_current_A))
     jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
@@ -634,6 +659,18 @@ def _build_history(
     hist: dict[str, np.ndarray] = {
         "t_s": t_s,
         "dt_s": dt_dimless * tau0,
+        "dt_attempt_s": dt_attempt_dimless * tau0,
+        "dt_accepted_s": dt_accepted_dimless * tau0,
+        "dt_next_s": dt_next_dimless * tau0,
+        "adaptive_target_dt_s": adaptive_target_dt_dimless * tau0,
+        "adaptive_retries": adaptive_retries.astype(np.int64, copy=False),
+        "adaptive_rejected_attempts": adaptive_rejected_attempts.astype(np.int64, copy=False),
+        "adaptive_window_mean_d_abs_sq": adaptive_window_mean_d_abs_sq,
+        "adaptive_enabled": np.array([bool(raw.get("adaptive_enabled", np.array([False], dtype=bool))[0])], dtype=bool),
+        "adaptive_window": np.array([int(raw.get("adaptive_window", np.array([0], dtype=int))[0])], dtype=np.int64),
+        "adaptive_time_step_multiplier": np.array([float(raw.get("adaptive_time_step_multiplier", np.array([np.nan]))[0])], dtype=float),
+        "adaptive_total_rejected_attempts": np.array([int(raw.get("total_rejected_attempts", np.array([0], dtype=int))[0])], dtype=np.int64),
+        "adaptive_max_retries_per_step": np.array([int(raw.get("max_adaptive_retries_per_step", np.array([0], dtype=int))[0])], dtype=np.int64),
         "eta_R": max_d,
         "max_amp2_change_rel": max_d,
         "current_residual": np.full(t_s.shape, residual),

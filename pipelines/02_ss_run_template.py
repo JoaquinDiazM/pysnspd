@@ -27,6 +27,7 @@ from pysnspd.gtdgl.usadel_current import (
     attach_usadel_supercurrent_table_from_npz,
     validate_strict_usadel_supercurrent_table_npz,
 )
+from pysnspd.plotting.ss_run import plot_ss_adaptive_timestep_history
 
 
 def parse_args() -> argparse.Namespace:
@@ -197,6 +198,30 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Disable adaptive time stepping in the pyTDGL-like core.",
     )
+    parser.add_argument(
+        "--ss-adaptive-window",
+        type=int,
+        default=10,
+        help="Moving-window length used to choose the next adaptive Euler time step.",
+    )
+    parser.add_argument(
+        "--ss-max-solve-retries",
+        type=int,
+        default=10,
+        help="Maximum pyTDGL-style retry/shrink attempts for one Euler update.",
+    )
+    parser.add_argument(
+        "--ss-adaptive-time-step-multiplier",
+        type=float,
+        default=0.25,
+        help="Multiplier applied to dt after a failed local |psi|^2 solve.",
+    )
+    parser.add_argument(
+        "--ss-dt-max-factor",
+        type=float,
+        default=100.0,
+        help="Adaptive dt upper bound as a multiple of --ss-dt-fs.",
+    )
 
     parser.add_argument(
         "--ss-supercurrent-law",
@@ -217,6 +242,8 @@ def parse_args() -> argparse.Namespace:
             "and this many graph-neighbor layers. Diffusion/reaction terms remain active."
         ),
     )
+
+    parser.add_argument("--dpi", type=int, default=480, help="DPI for SS diagnostic plots.")
 
     return parser.parse_args()
 
@@ -287,6 +314,10 @@ def main() -> int:
         usadel_catalog=usadel_catalog,
         terminal_psi=float(args.ss_terminal_psi),
         adaptive=not bool(args.ss_no_adaptive),
+        adaptive_window=int(args.ss_adaptive_window),
+        max_solve_retries=int(args.ss_max_solve_retries),
+        adaptive_time_step_multiplier=float(args.ss_adaptive_time_step_multiplier),
+        dt_max_factor=float(args.ss_dt_max_factor),
         n_snapshots=int(args.ss_snapshots),
         progress=bool(args.ss_progress),
         supercurrent_law=supercurrent_law,
@@ -313,6 +344,13 @@ def main() -> int:
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")
     history_npz = save_relaxation_history_npz(result.history, raw_ss / "relaxation_history.npz")
 
+    plots_dir = raw_ss / "plots_diagnostics"
+    adaptive_timestep_png = plot_ss_adaptive_timestep_history(
+        result.history,
+        plots_dir / "adaptive_timestep_history.png",
+        dpi=int(args.dpi),
+    )
+
     ss_summary = {
         "run_name": run_name,
         "pre_run_name": pre_name,
@@ -325,6 +363,7 @@ def main() -> int:
             "seed_npz": str(seed_npz),
             "stationary_state_npz": str(state_npz),
             "relaxation_history_npz": str(history_npz),
+            "adaptive_timestep_history_png": str(adaptive_timestep_png),
         },
     }
     summary_path = raw_ss / "ss_summary.yaml"
@@ -360,6 +399,7 @@ def main() -> int:
     print(f"  seed_npz:              {seed_npz}")
     print(f"  stationary_state_npz:  {state_npz}")
     print(f"  relaxation_history_npz:{history_npz}")
+    print(f"  adaptive_timestep_png: {adaptive_timestep_png}")
     print(f"  ss_summary:            {summary_path}")
     print(f"  ss_manifest:           {manifest_path}")
     print("Status: OK")
