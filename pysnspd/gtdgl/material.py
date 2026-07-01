@@ -179,10 +179,30 @@ def _read_time_seconds(
     names_ps: tuple[str, ...],
     default_s: float,
 ) -> float:
+    """Read one time parameter from seconds or picoseconds aliases.
+
+    The YAML validator normally catches invalid values first, but this helper is
+    intentionally defensive because :func:`build_gtdgl_material` is also used in
+    tests with small dictionaries.
+    """
+    found: list[tuple[str, float]] = []
+
     for name in names_s:
         if name in mapping:
-            return float(mapping[name])
+            found.append((name, float(mapping[name])))
+
     for name in names_ps:
         if name in mapping:
-            return float(mapping[name]) * 1.0e-12
-    return float(default_s)
+            found.append((name, float(mapping[name]) * 1.0e-12))
+
+    if len(found) > 1:
+        names = ", ".join(name for name, _ in found)
+        raise ValueError(
+            f"Multiple aliases were supplied for one relaxation time ({names}). "
+            "Use exactly one seconds or picoseconds key."
+        )
+
+    value = float(found[0][1]) if found else float(default_s)
+    if not math.isfinite(value) or value <= 0.0:
+        raise ValueError(f"Relaxation time must be finite and positive, got {value!r}.")
+    return value

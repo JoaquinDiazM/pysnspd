@@ -164,6 +164,27 @@ def validate_config(
     if "D_m2_s" in material:
         _require_positive_number(material, "D_m2_s", "material")
 
+    # gTDGL/KWT relaxation times at Tc.  These are optional for backward
+    # compatibility, but when present they are validated here instead of being
+    # silently accepted by the solver.  Values may be supplied either in seconds
+    # or picoseconds; use exactly one alias per physical parameter.
+    _validate_optional_time_parameter(
+        material,
+        section="material",
+        label="tau_ee_Tc",
+        names_s=("tau_ee_Tc_s", "tau_ee_s", "tau_ee_at_Tc_s"),
+        names_ps=("tau_ee_Tc_ps", "tau_ee_ps", "tau_ee_at_Tc_ps"),
+        default_s=5.0e-12,
+    )
+    _validate_optional_time_parameter(
+        material,
+        section="material",
+        label="tau_ep_Tc",
+        names_s=("tau_ep_Tc_s", "tau_ep_s", "tau_ep_at_Tc_s"),
+        names_ps=("tau_ep_Tc_ps", "tau_ep_ps", "tau_ep_at_Tc_ps"),
+        default_s=24.7e-12,
+    )
+
     calibration = _require_section(cfg, "calibration")
     _require_positive_number(calibration, "Ic_target_A", "calibration")
 
@@ -231,6 +252,23 @@ def summarize_config(config: Mapping[str, Any]) -> str:
     """
     cfg = validate_config(config, require_big_data_root_exists=False)
 
+    material_tau_ee_Tc_s = _validate_optional_time_parameter(
+        cfg["material"],
+        section="material",
+        label="tau_ee_Tc",
+        names_s=("tau_ee_Tc_s", "tau_ee_s", "tau_ee_at_Tc_s"),
+        names_ps=("tau_ee_Tc_ps", "tau_ee_ps", "tau_ee_at_Tc_ps"),
+        default_s=5.0e-12,
+    )
+    material_tau_ep_Tc_s = _validate_optional_time_parameter(
+        cfg["material"],
+        section="material",
+        label="tau_ep_Tc",
+        names_s=("tau_ep_Tc_s", "tau_ep_s", "tau_ep_at_Tc_s"),
+        names_ps=("tau_ep_Tc_ps", "tau_ep_ps", "tau_ep_at_Tc_ps"),
+        default_s=24.7e-12,
+    )
+
     lines = [
         "pySNSPD project configuration",
         f"project.name             : {cfg['project']['name']}",
@@ -243,6 +281,8 @@ def summarize_config(config: Mapping[str, Any]) -> str:
         f"material.Tc_K            : {cfg['material']['Tc_K']}",
         f"material.width_m         : {cfg['material']['width_m']}",
         f"material.thickness_m     : {cfg['material']['thickness_m']}",
+        f"material.tau_ee_Tc_ps    : {material_tau_ee_Tc_s / 1.0e-12}",
+        f"material.tau_ep_Tc_ps    : {material_tau_ep_Tc_s / 1.0e-12}",
         f"bias.T_bias_K            : {cfg['bias']['T_bias_K']}",
         f"bias.I_bias_A            : {cfg['bias']['I_bias_A']}",
         f"calibration.Ic_target_A : {cfg['calibration']['Ic_target_A']}",
@@ -280,6 +320,45 @@ def get_default_run_name(config: Mapping[str, Any]) -> str:
     cfg = validate_config(config, require_big_data_root_exists=False)
     return str(cfg["project"]["default_run_name"])
 
+
+
+def _validate_optional_time_parameter(
+    config: Mapping[str, Any],
+    *,
+    section: str,
+    label: str,
+    names_s: tuple[str, ...],
+    names_ps: tuple[str, ...],
+    default_s: float,
+) -> float:
+    """Validate one optional time parameter and return its value in seconds.
+
+    The config supports both seconds and picoseconds aliases for convenience,
+    but accepting multiple aliases for the same physical time is ambiguous.
+    """
+    found: list[tuple[str, float]] = []
+
+    for name in names_s:
+        if name in config:
+            found.append((name, _require_positive_number(config, name, section)))
+
+    for name in names_ps:
+        if name in config:
+            found.append((name, _require_positive_number(config, name, section) * 1.0e-12))
+
+    if len(found) > 1:
+        names = ", ".join(name for name, _ in found)
+        raise ConfigError(
+            f"{section}.{label} has multiple aliases configured ({names}). "
+            f"Use exactly one of {names_s + names_ps}."
+        )
+
+    if found:
+        return float(found[0][1])
+
+    if default_s <= 0.0:
+        raise ConfigError(f"Internal default for {section}.{label} must be positive.")
+    return float(default_s)
 
 def _require_section(config: Mapping[str, Any], section: str) -> dict[str, Any]:
     if section not in config:
