@@ -11,6 +11,8 @@ from pysnspd.gtdgl.allmaras import (
     compute_allmaras_appendix_b_diagnostic,
 )
 
+ALLMARAS_UPDATE_BACKEND = "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded"
+
 
 def test_allmaras_coefficients_are_appendix_b_shapes_and_positive(
     small_strip_mesh_bundle,
@@ -92,7 +94,7 @@ def test_solver_history_contains_appendix_b_diagnostics(
     )
 
     assert result.summary["allmaras_coefficients_backend"] == "appendix_b_allmaras_wz_update_v1"
-    assert result.summary["allmaras_update_backend"] == "appendix_b_explicit_forcing_rho_kwt_wz_v1"
+    assert result.summary["allmaras_update_backend"] == ALLMARAS_UPDATE_BACKEND
     assert result.summary["allmaras_solver_u"] == 1.0
     assert "allmaras_mismatch_divergence_snapshot_A_m3" in result.history
     assert "allmaras_phase_drive_abs_over_delta0_snapshot" in result.history
