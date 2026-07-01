@@ -20,6 +20,7 @@ from .usadel_current import compute_usadel_supercurrent_diagnostic
 from .allmaras import (
     allmaras_coefficients,
     compute_allmaras_appendix_b_diagnostic,
+    compute_allmaras_forcing_dimensionless,
     rms as _allmaras_rms,
     max_abs as _allmaras_max_abs,
 )
@@ -169,6 +170,16 @@ def solve_stationary_pytdgl_like(
             ops=ops,
         )
 
+    allmaras_forcing_callback = _build_allmaras_forcing_callback(
+        usadel_catalog=usadel_catalog,
+        device=device,
+        material=material,
+        Te_K=Te,
+        ops=ops,
+        blocked_edge_mask=_terminal_edge_mask_from_device(device, ops),
+        require_usadel=(supercurrent_law == "usadel_poisson"),
+    )
+
     solver = TDGLSolver(
         device=device,
         options=options,
@@ -179,6 +190,7 @@ def solve_stationary_pytdgl_like(
         progress=progress,
         supercurrent_override=supercurrent_override,
         supercurrent_law=supercurrent_law,
+        allmaras_forcing_callback=allmaras_forcing_callback,
     )
     solver.snapshot_count = max(2, int(n_snapshots))
     solution = solver.solve()
@@ -233,7 +245,8 @@ def solve_stationary_pytdgl_like(
         "tau0_GL_s": tau0,
         "pytdgl_u": u,
         "pytdgl_gamma": gamma_report,
-        "allmaras_coefficients_backend": "appendix_b_coefficients_v1_without_wz_rewrite",
+        "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
+        "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1",
         "allmaras_solver_u": float(u),
         "allmaras_gamma_min": float(np.nanmin(gamma)) if gamma.size else float("nan"),
         "allmaras_gamma_median": gamma_report,
@@ -298,6 +311,7 @@ def solve_stationary_pytdgl_like(
         "allmaras_phase_drive_bulk_rms_over_delta0_final": float(history.get("allmaras_phase_drive_bulk_rms_over_delta0", np.array([float("nan")]))[-1]),
         "allmaras_phase_drive_max_over_delta0_final": float(history.get("allmaras_phase_drive_max_over_delta0", np.array([float("nan")]))[-1]),
         "allmaras_phase_drive_bulk_max_over_delta0_final": float(history.get("allmaras_phase_drive_bulk_max_over_delta0", np.array([float("nan")]))[-1]),
+        "allmaras_update_forcing_max_abs_final": float(history.get("allmaras_update_forcing_max_abs", np.array([float("nan")]))[-1]),
     }
 
     state = GTDGLStationaryState(
@@ -314,7 +328,8 @@ def solve_stationary_pytdgl_like(
             "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
             "current_scale_A": float(device.current_scale_A),
             "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
-            "allmaras_coefficients_backend": "appendix_b_coefficients_v1_without_wz_rewrite",
+            "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
+            "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1",
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
         },
     )
@@ -397,6 +412,61 @@ def _build_usadel_poisson_supercurrent_override(
 
     return usadel_poisson_supercurrent
 
+
+def _build_allmaras_forcing_callback(
+    *,
+    usadel_catalog: Any | None,
+    device,
+    material: GTDGLMaterial,
+    Te_K: np.ndarray,
+    ops: FVOperators,
+    blocked_edge_mask: np.ndarray,
+    require_usadel: bool,
+):
+    """Build the Appendix-B forcing callback used by ``TDGLSolver``.
+
+    The callback is explicit in the current order parameter.  For the official
+    ``usadel_poisson`` path it uses the PRE Matsubara/Usadel supercurrent table
+    for both Poisson and the Allmaras current-divergence correction.
+    """
+
+    Te = np.asarray(Te_K, dtype=float).copy()
+    L0 = float(device.length_scale_m)
+
+    def callback(psi_dimensionless: np.ndarray, psi_laplacian) -> np.ndarray:
+        psi = np.asarray(psi_dimensionless, dtype=np.complex128)
+        edge_js = None
+        if require_usadel:
+            diag = compute_usadel_supercurrent_diagnostic(
+                usadel_catalog=usadel_catalog,
+                psi_dimensionless=psi,
+                material=material,
+                Te_K=Te,
+                ops=ops,
+                blocked_edge_mask=blocked_edge_mask,
+            )
+            if not diag.available:
+                raise RuntimeError(
+                    "Appendix-B Allmaras update with usadel_poisson requires a PRE "
+                    f"Matsubara supercurrent table. Diagnostic reason: {diag.reason}"
+                )
+            edge_js = diag.edge_js_usadel_A_m2
+
+        forcing = compute_allmaras_forcing_dimensionless(
+            psi_dimensionless=psi,
+            psi_laplacian_dimensionless=psi_laplacian @ psi,
+            material=material,
+            Te_K=Te,
+            ops=ops,
+            length_scale_m=L0,
+            edge_js_usadel_A_m2=edge_js,
+            blocked_edge_mask=blocked_edge_mask,
+        )
+        return forcing.forcing_dimensionless
+
+    return callback
+
+
 def _build_history(
     *,
     solution,
@@ -452,6 +522,7 @@ def _build_history(
         "pytdgl_like_div_supercurrent_norm": np.asarray(raw.get("div_supercurrent_norm", np.zeros_like(t_s)), dtype=float),
         "pytdgl_like_boundary_rhs_norm": np.asarray(raw.get("boundary_rhs_norm", np.zeros_like(t_s)), dtype=float),
         "pytdgl_like_mu_boundary_max_abs": np.asarray(raw.get("mu_boundary_max_abs", np.zeros_like(t_s)), dtype=float),
+        "allmaras_update_forcing_max_abs": np.asarray(raw.get("allmaras_update_forcing_max_abs", np.zeros_like(t_s)), dtype=float),
         "normal_terminal_node_mask": terminal_site_mask.astype(bool),
         "normal_terminal_edge_mask": blocked_edge_mask.astype(bool),
     }
@@ -532,6 +603,7 @@ def _build_history(
             ops=ops,
             terminal_node_mask=terminal_site_mask,
             blocked_edge_mask=blocked_edge_mask,
+            edge_js_usadel_A_m2=(udiag.edge_js_usadel_A_m2 if udiag.available else None),
             bulk_guard_layers=1,
         )
         current_frames.append(c)

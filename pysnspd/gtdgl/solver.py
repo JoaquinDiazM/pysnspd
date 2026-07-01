@@ -98,6 +98,7 @@ class TDGLSolver:
         progress: bool = False,
         supercurrent_override: Optional[Callable[[np.ndarray, np.ndarray], np.ndarray]] = None,
         supercurrent_law: str = "gl",
+        allmaras_forcing_callback: Optional[Callable[[np.ndarray, sp.spmatrix], np.ndarray]] = None,
     ):
         self.device = device
         self.options = options
@@ -107,6 +108,8 @@ class TDGLSolver:
         self.progress = bool(progress)
         self.supercurrent_override = supercurrent_override
         self.supercurrent_law = str(supercurrent_law)
+        self.allmaras_forcing_callback = allmaras_forcing_callback
+        self.last_allmaras_forcing_dimensionless = None
         self.xp = np
         self.use_cupy = False
 
@@ -273,12 +276,15 @@ class TDGLSolver:
         u: float,
         dt: float,
         psi_laplacian: sp.spmatrix,
+        forcing_dimensionless: Optional[np.ndarray] = None,
     ) -> Union[Tuple[np.ndarray, np.ndarray], None]:
         """Solves for psi^{n+1} and |psi^{n+1}|^2.
 
         This is the pyTDGL local algebraic solve with the same public arguments.
-        In this comparison backend, ``epsilon``, ``gamma`` and ``u`` are supplied
-        by the pySNSPD adapter and encode the modified KWT/Allmaras coefficients.
+        In this backend, ``epsilon``, ``gamma`` and ``u`` are supplied by the
+        pySNSPD adapter.  If ``forcing_dimensionless`` is supplied, it replaces
+        the native GL bracket and injects the Appendix-B Allmaras functional
+        directly into the same local ``w_i, z_i`` solve.
         """
 
         xp = np
@@ -286,11 +292,20 @@ class TDGLSolver:
         z = U * gamma**2 / 2 * psi
         with np.errstate(all="raise"):
             try:
+                if forcing_dimensionless is None:
+                    forcing = (epsilon - abs_sq_psi) * psi + psi_laplacian @ psi
+                else:
+                    forcing = xp.asarray(forcing_dimensionless, dtype=xp.complex128)
+                    if forcing.shape != psi.shape:
+                        raise ValueError(
+                            "forcing_dimensionless must have the same shape as psi, "
+                            f"got {forcing.shape} and {psi.shape}."
+                        )
                 w = z * abs_sq_psi + U * (
                     psi
                     + (dt / u)
                     * xp.sqrt(1 + gamma**2 * abs_sq_psi)
-                    * ((epsilon - abs_sq_psi) * psi + psi_laplacian @ psi)
+                    * forcing
                 )
                 c = w.real * z.real + w.imag * z.imag
                 two_c_1 = 2 * c + 1
@@ -320,6 +335,20 @@ class TDGLSolver:
         """Updates the order parameter and time step in an adaptive Euler step."""
 
         options = self.options
+        forcing_dimensionless = None
+        if self.allmaras_forcing_callback is not None:
+            forcing_dimensionless = self.allmaras_forcing_callback(
+                np.asarray(psi, dtype=np.complex128),
+                self.operators.psi_laplacian,
+            )
+            forcing_dimensionless = np.asarray(forcing_dimensionless, dtype=np.complex128)
+            if forcing_dimensionless.shape != psi.shape:
+                raise ValueError(
+                    "allmaras_forcing_callback returned shape "
+                    f"{forcing_dimensionless.shape}, expected {psi.shape}."
+                )
+            self.last_allmaras_forcing_dimensionless = forcing_dimensionless.copy()
+
         kwargs = dict(
             psi=psi,
             abs_sq_psi=abs_sq_psi,
@@ -329,6 +358,7 @@ class TDGLSolver:
             u=self.device.layer.u,
             dt=dt,
             psi_laplacian=self.operators.psi_laplacian,
+            forcing_dimensionless=forcing_dimensionless,
         )
         result = self.solve_for_psi_squared(**kwargs)
         for retries in itertools.count():
@@ -458,6 +488,11 @@ class TDGLSolver:
         running_state.append("mu_ptp", float(np.ptp(mu)))
         running_state.append("max_supercurrent", float(np.max(np.abs(supercurrent))) if supercurrent.size else 0.0)
         running_state.append("max_normal_current", float(np.max(np.abs(normal_current))) if normal_current.size else 0.0)
+        forcing = getattr(self, "last_allmaras_forcing_dimensionless", None)
+        running_state.append(
+            "allmaras_update_forcing_max_abs",
+            float(np.max(np.abs(forcing))) if forcing is not None and np.size(forcing) else 0.0,
+        )
         rhs = getattr(self, "last_poisson_rhs", np.array([], dtype=float))
         residual = getattr(self, "last_poisson_residual", np.array([], dtype=float))
         div_s = getattr(self, "last_div_supercurrent", np.array([], dtype=float))

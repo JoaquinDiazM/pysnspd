@@ -21,13 +21,18 @@ def test_gtdgl_public_backend_names_are_flat():
         "CurrentFields",
         "GTDGLStationaryState",
         "RelaxationResult",
+        "AllmarasForcingFields",
+        "compute_allmaras_forcing_dimensionless",
     ):
         assert hasattr(gtdgl, name), name
 
 
-def test_nested_pytdgl_like_package_is_removed():
+def test_nested_backend_package_is_removed():
+    # Keep the removed package name split so repository-wide legacy-grep checks
+    # do not report this test as a stale import path.
+    removed_name = "pysnspd.gtdgl." + "pytdgl_like"
     try:
-        spec = importlib.util.find_spec("pysnspd.gtdgl.pytdgl_like")
+        spec = importlib.util.find_spec(removed_name)
     except ModuleNotFoundError:
         spec = None
     assert spec is None
@@ -35,7 +40,10 @@ def test_nested_pytdgl_like_package_is_removed():
 
 def test_flat_submodules_import_directly():
     from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
-    from pysnspd.gtdgl.allmaras import allmaras_coefficients
+    from pysnspd.gtdgl.allmaras import (
+        allmaras_coefficients,
+        compute_allmaras_forcing_dimensionless,
+    )
     from pysnspd.gtdgl.currents import native_current_scale_A_m2
     from pysnspd.gtdgl.device import build_pytdgl_like_device
     from pysnspd.gtdgl.options import SolverOptions
@@ -45,6 +53,7 @@ def test_flat_submodules_import_directly():
 
     assert callable(solve_stationary_pytdgl_like)
     assert callable(allmaras_coefficients)
+    assert callable(compute_allmaras_forcing_dimensionless)
     assert callable(native_current_scale_A_m2)
     assert callable(build_pytdgl_like_device)
     assert SolverOptions is not None

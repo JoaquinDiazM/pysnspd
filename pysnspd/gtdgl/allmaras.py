@@ -1,11 +1,11 @@
 """Appendix-B Allmaras diagnostics for the pyTDGL-like backend.
 
-This module implements Appendix-B coefficient fields and a diagnostic analytic
-Allmaras current-divergence reference.  The active solver path is the
-pyTDGL-like backend; the microscopic Usadel/Matsubara current catalogue is
-handled by ``usadel_current.py`` and by the adapter-level diagnostics.  This
-module still does not alter the ``X_i + z_i |X_i|^2 = w_i`` local algebraic
-update.
+This module implements Appendix-B coefficient fields, the
+current-divergence correction, and the dimensionless forcing injected into the
+promoted flat gTDGL solver.  The physical Usadel/Matsubara current catalogue is
+owned by ``usadel_current.py``; when available, its edge current is supplied to
+this module so the Allmaras correction uses the same supercurrent closure as the
+Poisson projection.
 """
 from __future__ import annotations
 
@@ -63,6 +63,32 @@ class AllmarasDiagnosticFields:
     node_phase_drive_abs_J: np.ndarray
     node_phase_drive_abs_over_delta0: np.ndarray
     bulk_node_mask: np.ndarray
+
+
+
+@dataclass(frozen=True)
+class AllmarasForcingFields:
+    """Appendix-B forcing fields used by the local KWT update.
+
+    ``forcing_dimensionless`` is the complete bracket in Eq. (139), divided by
+    ``Delta0`` and written in the dimensionless coordinates of the promoted
+    pyTDGL-like solver.  The local solver then multiplies it by
+    ``rho_KWT * dt/tau0`` through the existing ``w_i, z_i`` algebra.
+    """
+
+    coefficients: AllmarasCoefficientFields
+    forcing_dimensionless: np.ndarray
+    diffusion_dimensionless: np.ndarray
+    reaction_dimensionless: np.ndarray
+    phase_drive_dimensionless: np.ndarray
+    edge_Q_m_inv: np.ndarray
+    edge_R_J: np.ndarray
+    edge_Te_K: np.ndarray
+    edge_js_us_A_m2: np.ndarray
+    edge_js_gl_A_m2: np.ndarray
+    node_div_js_us_A_m3: np.ndarray
+    node_div_js_gl_A_m3: np.ndarray
+    node_mismatch_divergence_A_m3: np.ndarray
 
 
 def allmaras_coefficients(
@@ -144,6 +170,7 @@ def compute_allmaras_appendix_b_diagnostic(
     ops: FVOperators,
     terminal_node_mask: np.ndarray | None = None,
     blocked_edge_mask: np.ndarray | None = None,
+    edge_js_usadel_A_m2: np.ndarray | None = None,
     bulk_guard_layers: int = 1,
     r_epsilon_fraction: float = 1.0e-6,
 ) -> AllmarasDiagnosticFields:
@@ -163,21 +190,24 @@ def compute_allmaras_appendix_b_diagnostic(
     R_edge_J = edge_average(R_node_J, ops)
     Te_edge = np.maximum(edge_average(Te, ops), 1.0e-12)
 
-    js_us = (
-        np.pi
-        * float(material.sigma_n_S_m)
-        / (2.0 * E_ABS_C)
-        * R_edge_J
-        * np.tanh(R_edge_J / (2.0 * K_B_J_K * Te_edge))
-        * Q
-    )
-    js_gl = (
-        np.pi
-        * float(material.sigma_n_S_m)
-        * R_edge_J
-        * R_edge_J
-        / (4.0 * E_ABS_C * K_B_J_K * float(material.Tc_K))
-        * Q
+    if edge_js_usadel_A_m2 is None:
+        # Analytic Allmaras fallback retained for diagnostics and tests.  The
+        # production usadel_poisson path supplies the Matsubara-table current
+        # through ``edge_js_usadel_A_m2``.
+        js_us = analytic_allmaras_usadel_current_edges(
+            edge_Q_m_inv=Q,
+            edge_R_J=R_edge_J,
+            edge_Te_K=Te_edge,
+            material=material,
+        )
+    else:
+        js_us = np.asarray(edge_js_usadel_A_m2, dtype=float).reshape(-1)
+        if js_us.shape != (ops.n_edges,):
+            raise ValueError(f"edge_js_usadel_A_m2 must have shape ({ops.n_edges},), got {js_us.shape}.")
+    js_gl = gl_supercurrent_edges(
+        edge_Q_m_inv=Q,
+        edge_R_J=R_edge_J,
+        material=material,
     )
 
     if blocked_edge_mask is not None:
@@ -231,6 +261,163 @@ def compute_allmaras_appendix_b_diagnostic(
         node_phase_drive_abs_J=np.asarray(drive_abs, dtype=float),
         node_phase_drive_abs_over_delta0=np.asarray(drive_abs / max(float(material.delta0_J), 1.0e-300), dtype=float),
         bulk_node_mask=bulk_mask,
+    )
+
+
+
+def analytic_allmaras_usadel_current_edges(
+    *,
+    edge_Q_m_inv: np.ndarray,
+    edge_R_J: np.ndarray,
+    edge_Te_K: np.ndarray,
+    material: GTDGLMaterial,
+) -> np.ndarray:
+    """Analytic Allmaras current closure on edges.
+
+    This is kept as a fallback diagnostic.  The production path for the present
+    thesis uses the PRE Matsubara/Usadel table instead.
+    """
+
+    Q = np.asarray(edge_Q_m_inv, dtype=float)
+    R = np.asarray(edge_R_J, dtype=float)
+    Te = np.maximum(np.asarray(edge_Te_K, dtype=float), 1.0e-12)
+    return (
+        np.pi
+        * float(material.sigma_n_S_m)
+        / (2.0 * E_ABS_C)
+        * R
+        * np.tanh(R / (2.0 * K_B_J_K * Te))
+        * Q
+    )
+
+
+def gl_supercurrent_edges(
+    *,
+    edge_Q_m_inv: np.ndarray,
+    edge_R_J: np.ndarray,
+    material: GTDGLMaterial,
+) -> np.ndarray:
+    """Auxiliary GL supercurrent used only in the Allmaras mismatch."""
+
+    Q = np.asarray(edge_Q_m_inv, dtype=float)
+    R = np.asarray(edge_R_J, dtype=float)
+    return (
+        np.pi
+        * float(material.sigma_n_S_m)
+        * R
+        * R
+        / (4.0 * E_ABS_C * K_B_J_K * float(material.Tc_K))
+        * Q
+    )
+
+
+def compute_allmaras_forcing_dimensionless(
+    *,
+    psi_dimensionless: np.ndarray,
+    psi_laplacian_dimensionless: np.ndarray,
+    material: GTDGLMaterial,
+    Te_K: np.ndarray,
+    ops: FVOperators,
+    length_scale_m: float,
+    edge_js_usadel_A_m2: np.ndarray | None = None,
+    blocked_edge_mask: np.ndarray | None = None,
+    r_epsilon_fraction: float = 1.0e-6,
+) -> AllmarasForcingFields:
+    """Return the Appendix-B forcing injected into the local KWT update.
+
+    The continuous equation used here is
+
+        tau0 [D_t Delta + alpha_KWT d_t |Delta|^2 Delta]
+        = rho_KWT F[Delta],
+
+    with
+
+        F/Delta0 = (xi_mod^2/L0^2) L' psi
+                 + [1 - Te/Tc - |Delta|^2/Delta_mod^2] psi
+                 + i C (div j_s^Us - div j_s^GL) Delta/(R_eps^2 Delta0).
+
+    ``L'`` is the promoted pyTDGL-like Laplacian in dimensionless coordinates
+    x' = x/L0.  The returned array is dimensionless; the solver multiplies it by
+    ``rho_KWT * dt`` because its time variable is already scaled by ``tau0``.
+    """
+
+    psi = np.asarray(psi_dimensionless, dtype=np.complex128).reshape(-1)
+    lap = np.asarray(psi_laplacian_dimensionless, dtype=np.complex128).reshape(-1)
+    Te = np.asarray(Te_K, dtype=float).reshape(-1)
+    if psi.shape != (ops.n_nodes,):
+        raise ValueError(f"psi_dimensionless must have shape ({ops.n_nodes},), got {psi.shape}.")
+    if lap.shape != (ops.n_nodes,):
+        raise ValueError(f"psi_laplacian_dimensionless must have shape ({ops.n_nodes},), got {lap.shape}.")
+    if Te.shape != (ops.n_nodes,):
+        raise ValueError(f"Te_K must have shape ({ops.n_nodes},), got {Te.shape}.")
+
+    L0 = float(length_scale_m)
+    if not np.isfinite(L0) or L0 <= 0.0:
+        raise ValueError("length_scale_m must be positive and finite.")
+
+    coeff = allmaras_coefficients(psi_dimensionless=psi, material=material, Te_K=Te)
+    Q = edge_phase_gradient_from_psi(psi, ops)
+    Delta_J = psi * float(material.delta0_J)
+    R_node_J = np.abs(Delta_J)
+    R_edge_J = edge_average(R_node_J, ops)
+    Te_edge = np.maximum(edge_average(Te, ops), 1.0e-12)
+
+    if edge_js_usadel_A_m2 is None:
+        js_us = analytic_allmaras_usadel_current_edges(
+            edge_Q_m_inv=Q,
+            edge_R_J=R_edge_J,
+            edge_Te_K=Te_edge,
+            material=material,
+        )
+    else:
+        js_us = np.asarray(edge_js_usadel_A_m2, dtype=float).reshape(-1)
+        if js_us.shape != (ops.n_edges,):
+            raise ValueError(f"edge_js_usadel_A_m2 must have shape ({ops.n_edges},), got {js_us.shape}.")
+    js_gl = gl_supercurrent_edges(edge_Q_m_inv=Q, edge_R_J=R_edge_J, material=material)
+
+    if blocked_edge_mask is not None:
+        mask = np.asarray(blocked_edge_mask, dtype=bool).reshape(-1)
+        if mask.size != ops.n_edges:
+            raise ValueError(f"blocked_edge_mask has length {mask.size}, expected {ops.n_edges}.")
+        if np.any(mask):
+            js_us = js_us.copy()
+            js_gl = js_gl.copy()
+            js_us[mask] = 0.0
+            js_gl[mask] = 0.0
+
+    div_us = divergence_from_edge_scalar(js_us, ops)
+    div_gl = divergence_from_edge_scalar(js_gl, ops)
+    mismatch = div_us - div_gl
+
+    diffusion = (coeff.xi_mod2_m2 / (L0 * L0)) * lap
+
+    delta_mod2 = np.asarray(coeff.delta_mod2_J2, dtype=float)
+    delta0 = float(material.delta0_J)
+    delta_mod_floor2 = (float(r_epsilon_fraction) * delta0) ** 2
+    denom = np.maximum(delta_mod2, delta_mod_floor2)
+    reaction = (1.0 - Te / float(material.Tc_K) - (np.abs(Delta_J) ** 2) / denom) * psi
+
+    r_eps2 = np.maximum(np.abs(Delta_J) ** 2, delta_mod_floor2)
+    phase_drive = 1j * coeff.correction_C_J_m3_A * mismatch * Delta_J / r_eps2
+
+    forcing = diffusion + reaction + phase_drive
+    forcing = np.asarray(forcing, dtype=np.complex128)
+    forcing[~np.isfinite(forcing)] = 0.0
+
+    return AllmarasForcingFields(
+        coefficients=coeff,
+        forcing_dimensionless=forcing,
+        diffusion_dimensionless=np.asarray(diffusion, dtype=np.complex128),
+        reaction_dimensionless=np.asarray(reaction, dtype=np.complex128),
+        phase_drive_dimensionless=np.asarray(phase_drive, dtype=np.complex128),
+        edge_Q_m_inv=Q,
+        edge_R_J=R_edge_J,
+        edge_Te_K=Te_edge,
+        edge_js_us_A_m2=np.asarray(js_us, dtype=float),
+        edge_js_gl_A_m2=np.asarray(js_gl, dtype=float),
+        node_div_js_us_A_m3=np.asarray(div_us, dtype=float),
+        node_div_js_gl_A_m3=np.asarray(div_gl, dtype=float),
+        node_mismatch_divergence_A_m3=np.asarray(mismatch, dtype=float),
     )
 
 

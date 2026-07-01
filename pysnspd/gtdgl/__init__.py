@@ -12,6 +12,7 @@ from .operators import FVOperators, build_fv_operators
 from .options import SolverOptions, SolverOptionsError, SparseSolver
 from .solver import SolverResult, TDGLSolver, validate_terminal_currents
 from .adapter import solve_stationary_pytdgl_like
+from .allmaras import AllmarasForcingFields, compute_allmaras_forcing_dimensionless
 from .state import CurrentFields, GTDGLStationaryState, RelaxationResult
 
 __all__ = [
@@ -29,4 +30,6 @@ __all__ = [
     "TDGLSolver",
     "validate_terminal_currents",
     "solve_stationary_pytdgl_like",
+    "AllmarasForcingFields",
+    "compute_allmaras_forcing_dimensionless",
 ]
