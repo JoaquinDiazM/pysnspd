@@ -77,7 +77,6 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--ss-dt-fs", type=float, default=0.30)
-    parser.add_argument("--ss-tau-scale", type=float, default=0.10)
     parser.add_argument("--ss-target-current-uA", type=float, default=20.0)
     parser.add_argument("--ss-snapshots", type=int, default=8)
 
@@ -323,7 +322,6 @@ def main() -> int:
     material = build_gtdgl_material(
         cfg,
         base_usadel_catalog,
-        tau_scale=float(args.ss_tau_scale),
     )
     if target_current_A is None:
         target_current_A = float(seed.metadata["target_current_A"])

@@ -46,7 +46,6 @@ def test_material_relaxation_times_are_validated_from_yaml_ps():
     material = build_gtdgl_material(
         cfg,
         SimpleNamespace(metadata={"D_m2_s": 1.58e-4}),
-        tau_scale=0.10,
     )
 
     assert material.tau_ee_Tc_s == pytest.approx(6.0e-12)
@@ -59,3 +58,15 @@ def test_material_relaxation_time_duplicate_aliases_are_rejected():
             _minimal_config({"tau_ee_Tc_ps": 5.0, "tau_ee_Tc_s": 5.0e-12}),
             require_big_data_root_exists=False,
         )
+
+
+def test_material_relaxation_times_are_used_without_hidden_multiplier():
+    cfg = validate_config(
+        _minimal_config({"tau_ee_Tc_ps": 0.5, "tau_ep_Tc_ps": 2.47}),
+        require_big_data_root_exists=False,
+    )
+    material = build_gtdgl_material(cfg, SimpleNamespace(metadata={"D_m2_s": 1.58e-4}))
+
+    assert "tau_" + "scale" not in getattr(material, "__dataclass_fields__", {})
+    assert material.tau_ee_s(8.65) == pytest.approx(0.5e-12)
+    assert material.tau_ep_s(8.65) == pytest.approx(2.47e-12)

@@ -29,22 +29,20 @@ class GTDGLMaterial:
     width_m: float
     tau_ee_Tc_s: float
     tau_ep_Tc_s: float
-    tau_scale: float = 0.10
-
     @property
     def tau0_GL_s(self) -> float:
         """Return the GL time scale pi*hbar/(8*kB*Tc)."""
         return math.pi * HBAR_J_S / (8.0 * K_B_J_K * self.Tc_K)
 
     def tau_ee_s(self, Te_K: np.ndarray | float) -> np.ndarray:
-        """Electron-electron relaxation time, scaled for the SS run."""
+        """Electron-electron relaxation time from the YAML value at Tc."""
         Te = _positive_temperature(Te_K)
-        return self.tau_scale * self.tau_ee_Tc_s * (self.Tc_K / Te)
+        return self.tau_ee_Tc_s * (self.Tc_K / Te)
 
     def tau_ep_s(self, Te_K: np.ndarray | float) -> np.ndarray:
-        """Electron-phonon relaxation time, scaled for the SS run."""
+        """Electron-phonon relaxation time from the YAML value at Tc."""
         Te = _positive_temperature(Te_K)
-        return self.tau_scale * self.tau_ep_Tc_s * (self.Tc_K / Te) ** 3
+        return self.tau_ep_Tc_s * (self.Tc_K / Te) ** 3
 
     def tau_sc_s(self, Te_K: np.ndarray | float) -> np.ndarray:
         """Combined superconducting relaxation time."""
@@ -98,12 +96,8 @@ class GTDGLMaterial:
 def build_gtdgl_material(
     config: Mapping[str, Any],
     usadel_catalog: Any,
-    *,
-    tau_scale: float = 0.10,
 ) -> GTDGLMaterial:
     """Build gTDGL material parameters from the project config and OE3 catalogue."""
-    if not (tau_scale > 0.0):
-        raise ValueError("tau_scale must be positive.")
 
     material_cfg = dict(config.get("material", {}))
     metadata = dict(getattr(usadel_catalog, "metadata", {}) or {})
@@ -151,7 +145,6 @@ def build_gtdgl_material(
         width_m=width_m,
         tau_ee_Tc_s=tau_ee_Tc_s,
         tau_ep_Tc_s=tau_ep_Tc_s,
-        tau_scale=float(tau_scale),
     )
 
 

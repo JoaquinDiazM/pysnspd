@@ -359,7 +359,6 @@ def solve_stationary_pytdgl_like(
         "material_tau_ep_Tc_s": float(material.tau_ep_Tc_s),
         "material_tau_ee_Tc_ps": float(material.tau_ee_Tc_s / 1.0e-12),
         "material_tau_ep_Tc_ps": float(material.tau_ep_Tc_s / 1.0e-12),
-        "material_tau_scale": float(material.tau_scale),
         "material_tau_ee_median_s": float(np.nanmedian(material.tau_ee_s(Te))),
         "material_tau_ep_median_s": float(np.nanmedian(material.tau_ep_s(Te))),
         "material_tau_sc_median_s": float(np.nanmedian(material.tau_sc_s(Te))),
