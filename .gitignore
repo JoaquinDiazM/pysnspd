@@ -23,6 +23,11 @@ outputs/
 *.pkl
 *.pickle
 
-# Local machine configs
+# Local / temporary machine configs.
+# Keep the official Geminga baseline tracked because it now encodes the
+# pyTDGL boundary resampling that removes Voronoi warnings for the PRE mesh.
 configs/*local*.yaml
-configs/geminga_local.yaml
+!configs/geminga_local.yaml
+configs/*smoke*.yaml
+configs/*tmp*.yaml
+configs/*scratch*.yaml

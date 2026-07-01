@@ -44,6 +44,7 @@ from pysnspd.kinetic.phase_space import (
     phase_space_summary,
     save_phase_space_catalog_npz,
 )
+from pysnspd.plotting.pre_diagnostics import write_pre_diagnostic_plots
 
 
 def parse_args() -> argparse.Namespace:
@@ -66,6 +67,17 @@ def parse_args() -> argparse.Namespace:
         "--no-progress",
         action="store_true",
         help="Disable the PRE-run stage progress bar.",
+    )
+    parser.add_argument(
+        "--no-diagnostic-plots",
+        action="store_true",
+        help="Do not write PRE diagnostic plots.",
+    )
+    parser.add_argument(
+        "--dpi",
+        type=int,
+        default=480,
+        help="Resolution for PRE diagnostic plots.",
     )
 
     # Usadel / OE3.
@@ -94,7 +106,7 @@ def main() -> int:
     raw_pre = Path(layout["raw_pre"])
     raw_pre.mkdir(parents=True, exist_ok=True)
 
-    progress = _ProgressBar(total=4, enabled=not args.no_progress)
+    progress = _ProgressBar(total=5, enabled=not args.no_progress)
 
     # ------------------------------------------------------------------
     # OE2: pyTDGL-style mesh and boundary edges.
@@ -202,6 +214,24 @@ def main() -> int:
         )
         progress.advance("phase-space catalogue ready")
 
+    # ------------------------------------------------------------------
+    # PRE diagnostic plots.
+    # ------------------------------------------------------------------
+    diagnostic_plot_outputs: dict[str, str] = {}
+    if args.no_diagnostic_plots:
+        progress.advance("PRE diagnostic plots skipped")
+    else:
+        progress.begin("writing PRE diagnostic plots")
+        diagnostic_plot_outputs = write_pre_diagnostic_plots(
+            mesh=mesh,
+            edge_data=edge_data,
+            usadel_catalog=usadel_catalog,
+            output_dir=raw_pre / "plots_diagnostics",
+            dpi=int(args.dpi),
+        )
+        outputs.update(diagnostic_plot_outputs)
+        progress.advance("PRE diagnostic plots written")
+
     progress.begin("writing PRE manifest and summary")
     manifest_path = write_manifest(
         cfg,
@@ -215,6 +245,7 @@ def main() -> int:
             "mesh_edge_summary": mesh_edge_summary,
             "usadel_summary": usadel_summary,
             "phase_space_summary": phase_summary_data,
+            "diagnostic_plots": diagnostic_plot_outputs,
         },
     )
     progress.advance("PRE manifest written")

@@ -29,8 +29,10 @@ bias:
 
 mesh:
   type: delaunay
-  target_spacing_m: 10.0e-9
+  target_spacing_m: 4.0e-9
   seed: 12345
+  pytdgl_boundary_points: 181
+  pytdgl_smooth: 0
 
 catalogs:
   dos:
