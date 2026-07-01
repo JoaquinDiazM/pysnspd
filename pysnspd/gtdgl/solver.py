@@ -101,6 +101,7 @@ class TDGLSolver:
         allmaras_forcing_callback: Optional[Callable[[np.ndarray, sp.spmatrix], np.ndarray]] = None,
         stop_eta: Optional[float] = None,
         stop_min_steps: int = 0,
+        stop_on_convergence: bool = False,
     ):
         self.device = device
         self.options = options
@@ -114,8 +115,13 @@ class TDGLSolver:
         self.last_allmaras_forcing_dimensionless = None
         self.stop_eta = None if stop_eta is None else float(stop_eta)
         self.stop_min_steps = max(0, int(stop_min_steps))
+        self.stop_on_convergence = bool(stop_on_convergence)
         self.converged = False
         self.convergence_reason = "not_evaluated"
+        self.eta_converged = False
+        self.eta_convergence_step = -1
+        self.eta_convergence_time = float("nan")
+        self.stop_reason = "not_started"
         self.xp = np
         self.use_cupy = False
 
@@ -705,12 +711,25 @@ class TDGLSolver:
             if self.stop_eta is not None and int(state["step"]) >= self.stop_min_steps:
                 eta_step = float(running_state.data.get("max_d_abs_sq_psi", [float("inf")])[-1])
                 if np.isfinite(eta_step) and eta_step <= float(self.stop_eta):
+                    if not self.eta_converged:
+                        self.eta_converged = True
+                        self.eta_convergence_step = int(state["step"])
+                        self.eta_convergence_time = float(state["time"])
                     self.converged = True
                     self.convergence_reason = f"max_d_abs_sq_psi<={float(self.stop_eta):.3e}"
-                    break
+                    if self.stop_on_convergence:
+                        self.stop_reason = "eta_stop"
+                        break
 
             if int(state["step"]) > 10_000_000:
+                self.stop_reason = "safety_step_limit"
                 raise RuntimeError("pytdgl_like solve exceeded 10,000,000 steps.")
+
+        if self.stop_reason == "not_started":
+            if float(state["time"]) >= float(options.solve_time):
+                self.stop_reason = "requested_time_reached"
+            else:
+                self.stop_reason = "loop_exited_before_requested_time"
 
         emit_progress(final=True)
 
@@ -724,6 +743,11 @@ class TDGLSolver:
         hist["supercurrent_law"] = np.array([self.supercurrent_law], dtype=object)
         hist["converged"] = np.array([bool(self.converged)], dtype=bool)
         hist["convergence_reason"] = np.array([self.convergence_reason], dtype=object)
+        hist["eta_converged"] = np.array([bool(self.eta_converged)], dtype=bool)
+        hist["eta_convergence_step"] = np.array([int(self.eta_convergence_step)], dtype=int)
+        hist["eta_convergence_time"] = np.array([float(self.eta_convergence_time)], dtype=float)
+        hist["stop_reason"] = np.array([self.stop_reason], dtype=object)
+        hist["stop_on_convergence"] = np.array([bool(self.stop_on_convergence)], dtype=bool)
         hist["stop_eta"] = np.array([float(self.stop_eta) if self.stop_eta is not None else np.nan], dtype=float)
         hist["stop_min_steps"] = np.array([int(self.stop_min_steps)], dtype=int)
         hist["adaptive_enabled"] = np.array([bool(options.adaptive)], dtype=bool)

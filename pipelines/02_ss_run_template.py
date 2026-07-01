@@ -198,6 +198,15 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument("--ss-convergence-min-steps", type=int, default=500)
+    parser.add_argument(
+        "--ss-stop-on-convergence",
+        action="store_true",
+        help=(
+            "Stop early when the info-only max_d_abs_sq_psi threshold is reached. "
+            "By default the solver now always runs until --ss-time-ps and only "
+            "records eta convergence as a diagnostic."
+        ),
+    )
 
     # These already pass with large margin; keep them strict.
     parser.add_argument("--ss-continuity-rms-tol", type=float, default=1.0e-6)
@@ -368,6 +377,7 @@ def main() -> int:
         stationarity_delta_rel=args.ss_stationarity_delta_rel,
         stationarity_phi_rel=args.ss_stationarity_phi_rel,
         convergence_min_steps=int(args.ss_convergence_min_steps),
+        stop_on_convergence=bool(args.ss_stop_on_convergence),
         continuity_rms_tol=float(args.ss_continuity_rms_tol),
         continuity_max_tol=float(args.ss_continuity_max_tol),
         continuity_poisson_tol=float(args.ss_continuity_poisson_tol),

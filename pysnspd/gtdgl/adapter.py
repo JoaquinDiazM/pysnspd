@@ -74,6 +74,7 @@ def solve_stationary_pytdgl_like(
     stationarity_delta_rel: float | None = None,
     stationarity_phi_rel: float | None = None,
     convergence_min_steps: int = 50,
+    stop_on_convergence: bool = False,
     continuity_rms_tol: float = 1.0e-6,
     continuity_max_tol: float = 1.0e-3,
     continuity_poisson_tol: float = 1.0e-9,
@@ -244,6 +245,7 @@ def solve_stationary_pytdgl_like(
         allmaras_forcing_callback=allmaras_forcing_callback,
         stop_eta=float(stationarity_eta) if stationarity_eta is not None and stationarity_eta > 0.0 else None,
         stop_min_steps=int(convergence_min_steps),
+        stop_on_convergence=bool(stop_on_convergence),
     )
     solver.snapshot_count = max(2, int(n_snapshots))
     solution = solver.solve()
@@ -336,12 +338,21 @@ def solve_stationary_pytdgl_like(
         "supercurrent_law": supercurrent_law,
         "converged": bool(solution.history.get("converged", np.array([False], dtype=bool))[0]),
         "convergence_reason": str(solution.history.get("convergence_reason", np.array(["not_reported"], dtype=object))[0]),
+        "stop_reason": str(solution.history.get("stop_reason", np.array(["not_reported"], dtype=object))[0]),
+        "stop_on_convergence": bool(solution.history.get("stop_on_convergence", np.array([False], dtype=bool))[0]),
+        "eta_converged": bool(solution.history.get("eta_converged", np.array([False], dtype=bool))[0]),
+        "eta_convergence_step": int(solution.history.get("eta_convergence_step", np.array([-1], dtype=int))[0]),
+        "eta_convergence_time_ps": float(solution.history.get("eta_convergence_time", np.array([float("nan")]))[0] * tau0 / 1.0e-12),
         "first_magic_ready": magic_ready,
         "accepted_steps": int(solution.history.get("final_step", np.array([0]))[0]),
         "rejected_steps": int(solution.history.get("total_rejected_attempts", np.array([0]))[0]),
         "requested_time_ps": float(total_time_s) / 1.0e-12,
         "requested_steps_equivalent_at_dt_init": int(requested_steps_equivalent),
         "final_time_ps": float(solution.history.get("final_time", np.array([0.0]))[0] * tau0 / 1.0e-12),
+        "requested_time_reached": bool(
+            float(solution.history.get("final_time", np.array([0.0]))[0] * tau0)
+            >= 0.999999 * float(total_time_s)
+        ),
         "dt_init_s": float(dt_s),
         "adaptive_enabled": bool(solution.history.get("adaptive_enabled", np.array([False], dtype=bool))[0]),
         "adaptive_window": int(solution.history.get("adaptive_window", np.array([0], dtype=int))[0]),
