@@ -38,7 +38,19 @@ def make_ss_run_figures(
     saved["masks"] = plot_ss_region_masks(mesh, dataset, out / "ss_region_masks.png", dpi=dpi)
     return saved
 
+def _legend_if_labels(ax, *, frameon: bool = False, loc: str = "best") -> None:
+    """Draw legend only when the axis has visible labeled artists."""
+    handles, labels = ax.get_legend_handles_labels()
+    filtered = [
+        (handle, label)
+        for handle, label in zip(handles, labels)
+        if label and not label.startswith("_")
+    ]
+    if filtered:
+        handles, labels = zip(*filtered)
+        ax.legend(handles, labels, frameon=frameon, loc=loc)
 
+        
 def plot_ss_final_overview(mesh: Any, dataset: Mapping[str, Any], output_path: str | Path, *, dpi: int = 480) -> Path:
     """Plot final SS fields in a compact six-panel overview."""
 
@@ -169,8 +181,8 @@ def plot_ss_adaptive_summary(dataset: Mapping[str, Any], output_path: str | Path
     axes[1].set_xlabel("t [ps]")
     axes[1].set_ylabel("retry count")
     axes2.set_ylabel(r"window mean $\Delta|\psi|^2$")
-    axes[1].legend(frameon=False, loc="upper left")
-    axes2.legend(frameon=False, loc="upper right")
+    _legend_if_labels(axes[1], frameon=False, loc="upper left")
+    _legend_if_labels(axes2, frameon=False, loc="upper right")
     axes[1].grid(False)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
