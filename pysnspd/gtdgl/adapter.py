@@ -59,8 +59,16 @@ def solve_stationary_pytdgl_like(
     terminal_healing_xi: float | None = None,
     terminal_healing_fraction: float = 0.95,
     stationarity_eta: float = 1.0e-5,
-    stationarity_delta_rel: float = 1.0e-4,
-    stationarity_phi_rel: float = 1.0e-4,
+    stationarity_phase_gradient_rel: float | None = None,
+    stationarity_phi_gradient_rel: float | None = None,
+    stationarity_q_abs_m_inv: float = 1.0e3,
+    stationarity_phi_gradient_abs_V_m: float = 1.0e2,
+    stationarity_edge_active_threshold: float = 0.05,
+    # Deprecated aliases from the pre-gauge-gradient diagnostic.  If the new
+    # tolerances are not provided, these values are used as compatibility
+    # aliases for phase-gradient and phi-gradient relative tolerances.
+    stationarity_delta_rel: float | None = None,
+    stationarity_phi_rel: float | None = None,
     convergence_min_steps: int = 50,
     continuity_rms_tol: float = 1.0e-6,
     continuity_max_tol: float = 1.0e-3,
@@ -261,11 +269,24 @@ def solve_stationary_pytdgl_like(
         n_snapshots=n_snapshots,
     )
 
+    phase_gradient_rel_tol = (
+        float(stationarity_phase_gradient_rel)
+        if stationarity_phase_gradient_rel is not None
+        else (float(stationarity_delta_rel) if stationarity_delta_rel is not None else 1.0e-4)
+    )
+    phi_gradient_rel_tol = (
+        float(stationarity_phi_gradient_rel)
+        if stationarity_phi_gradient_rel is not None
+        else (float(stationarity_phi_rel) if stationarity_phi_rel is not None else 1.0e-4)
+    )
     stationarity_diag = stationarity_diagnostics(
         history=history,
         material=material,
-        delta_rel_tol=float(stationarity_delta_rel),
-        phi_rel_tol=float(stationarity_phi_rel),
+        phase_gradient_rel_tol=phase_gradient_rel_tol,
+        phi_gradient_rel_tol=phi_gradient_rel_tol,
+        phase_gradient_abs_tol_m_inv=float(stationarity_q_abs_m_inv),
+        phi_gradient_abs_tol_V_m=float(stationarity_phi_gradient_abs_V_m),
+        edge_active_threshold=float(stationarity_edge_active_threshold),
         eta_tol=float(stationarity_eta),
     )
     recovery_diag = contact_recovery_diagnostics(
@@ -742,6 +763,27 @@ def _build_history(
     }
     hist.update({key: np.asarray(value) for key, value in time_aliases.items()})
 
+    edge_i = np.asarray(ops.edge_i, dtype=np.int64)
+    edge_j = np.asarray(ops.edge_j, dtype=np.int64)
+    edge_length_m = np.linalg.norm(
+        np.asarray(mesh.nodes, dtype=float)[edge_j, :2]
+        - np.asarray(mesh.nodes, dtype=float)[edge_i, :2],
+        axis=1,
+    )
+    edge_length_m = np.maximum(edge_length_m, 1.0e-300)
+    edge_phi_grad = (phi_snap_V[:, edge_j] - phi_snap_V[:, edge_i]) / edge_length_m[None, :]
+    edge_amp_over_delta0 = 0.5 * (
+        np.abs(psi_snap_J[:, edge_i]) + np.abs(psi_snap_J[:, edge_j])
+    ) / max(float(material.delta0_J), 1.0e-300)
+    final_edge_amp = edge_amp_over_delta0[-1]
+    finite_edge_amp = final_edge_amp[np.isfinite(final_edge_amp)]
+    if finite_edge_amp.size:
+        bulk_edge_amp = float(np.nanpercentile(finite_edge_amp, 90.0))
+        stationarity_active_edge_mask = final_edge_amp >= 0.05 * max(bulk_edge_amp, 1.0e-300)
+    else:
+        stationarity_active_edge_mask = np.ones(ops.n_edges, dtype=bool)
+    stationarity_active_edge_mask = stationarity_active_edge_mask & ~blocked_edge_mask
+
     for key, arr in {
         "psi_snapshot_real_J": np.real(psi_snap_J),
         "psi_snapshot_imag_J": np.imag(psi_snap_J),
@@ -778,6 +820,11 @@ def _build_history(
         "div_jtot_snapshot_A_m3": div,
         "pairbreaking_ratio_snapshot": pairbreaking,
         "edge_Q_snapshot_m_inv": edge_q,
+        "edge_phase_gradient_snapshot_m_inv": edge_q,
+        "edge_phi_gradient_snapshot_V_m": edge_phi_grad,
+        "edge_length_m": edge_length_m,
+        "edge_delta_amp_over_delta0_snapshot": edge_amp_over_delta0,
+        "stationarity_active_edge_mask": stationarity_active_edge_mask,
         "edge_js_actual_snapshot_A_m2": edge_js_actual,
         "edge_js_gl_snapshot_A_m2": edge_js_gl,
         "edge_js_us_snapshot_A_m2": edge_js_us,
@@ -798,8 +845,8 @@ def _build_history(
         "allmaras_correction_C_snapshot_J_m3_A": allmaras_C,
         "allmaras_bulk_node_mask": allmaras_bulk_mask.astype(bool),
         "allmaras_bulk_guard_layers": np.array([1], dtype=np.int64),
-        "edge_i": np.asarray(ops.edge_i, dtype=np.int64),
-        "edge_j": np.asarray(ops.edge_j, dtype=np.int64),
+        "edge_i": edge_i,
+        "edge_j": edge_j,
     }.items():
         hist[key] = np.asarray(arr)
 

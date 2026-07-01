@@ -59,9 +59,54 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--ss-terminal-healing-fraction", type=float, default=0.95)
-    parser.add_argument("--ss-stationarity-eta", type=float, default=1.0e-5)
-    parser.add_argument("--ss-stationarity-delta-rel", type=float, default=1.0e-4)
-    parser.add_argument("--ss-stationarity-phi-rel", type=float, default=1.0e-4)
+    parser.add_argument(
+        "--ss-stationarity-eta",
+        type=float,
+        default=1.0e-5,
+        help="Info-only solver amplitude residual stored in the summary; no longer gates SS target pass/fail.",
+    )
+    parser.add_argument(
+        "--ss-stationarity-phase-gradient-rel",
+        type=float,
+        default=None,
+        help="Relative tolerance for time-stationarity of edge phase gradient Q=grad(arg Delta).",
+    )
+    parser.add_argument(
+        "--ss-stationarity-phi-gradient-rel",
+        type=float,
+        default=None,
+        help="Relative tolerance for time-stationarity of edge grad(phi).",
+    )
+    parser.add_argument(
+        "--ss-stationarity-q-abs-m-inv",
+        type=float,
+        default=1.0e3,
+        help="Absolute fallback tolerance for changes in Q, in m^-1.",
+    )
+    parser.add_argument(
+        "--ss-stationarity-phi-gradient-abs-V-m",
+        type=float,
+        default=1.0e2,
+        help="Absolute fallback tolerance for changes in grad(phi), in V/m.",
+    )
+    parser.add_argument(
+        "--ss-stationarity-edge-active-threshold",
+        type=float,
+        default=0.05,
+        help="Exclude edges whose final |Delta| is below this fraction of bulk, because phase is undefined near |Delta|=0.",
+    )
+    parser.add_argument(
+        "--ss-stationarity-delta-rel",
+        type=float,
+        default=None,
+        help="Deprecated alias: used as --ss-stationarity-phase-gradient-rel if the new flag is omitted.",
+    )
+    parser.add_argument(
+        "--ss-stationarity-phi-rel",
+        type=float,
+        default=None,
+        help="Deprecated alias: used as --ss-stationarity-phi-gradient-rel if the new flag is omitted.",
+    )
     parser.add_argument("--ss-convergence-min-steps", type=int, default=50)
     parser.add_argument("--ss-continuity-rms-tol", type=float, default=1.0e-6)
     parser.add_argument("--ss-continuity-max-tol", type=float, default=1.0e-3)
@@ -157,8 +202,13 @@ def main() -> int:
         terminal_healing_xi=args.ss_terminal_healing_xi,
         terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
         stationarity_eta=float(args.ss_stationarity_eta),
-        stationarity_delta_rel=float(args.ss_stationarity_delta_rel),
-        stationarity_phi_rel=float(args.ss_stationarity_phi_rel),
+        stationarity_phase_gradient_rel=args.ss_stationarity_phase_gradient_rel,
+        stationarity_phi_gradient_rel=args.ss_stationarity_phi_gradient_rel,
+        stationarity_q_abs_m_inv=float(args.ss_stationarity_q_abs_m_inv),
+        stationarity_phi_gradient_abs_V_m=float(args.ss_stationarity_phi_gradient_abs_V_m),
+        stationarity_edge_active_threshold=float(args.ss_stationarity_edge_active_threshold),
+        stationarity_delta_rel=args.ss_stationarity_delta_rel,
+        stationarity_phi_rel=args.ss_stationarity_phi_rel,
         convergence_min_steps=int(args.ss_convergence_min_steps),
         continuity_rms_tol=float(args.ss_continuity_rms_tol),
         continuity_max_tol=float(args.ss_continuity_max_tol),

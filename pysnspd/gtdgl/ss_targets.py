@@ -4,9 +4,17 @@ The routines in this module are deliberately lightweight: they do not decide
 new physics, they only build a smooth metallic-contact seed and quantify the
 three checks needed before moving to photon dynamics:
 
-1. temporal stationarity of Delta and phi,
+1. gauge-fixed physical stationarity of the phase gradient and electric-potential
+   gradient,
 2. a contact-healing length of order a few physical coherence lengths,
 3. finite-volume current continuity.
+
+For the present no-screening A=0 backend the physical phase-gradient diagnostic
+is the edge superfluid momentum ``Q = grad(arg(Delta))`` stored by the current
+adapter.  This is invariant under constant phase shifts.  The electrostatic
+diagnostic is the edge gradient of ``phi``; it is invariant under constant
+potential offsets.  In a fully electromagnetic gauge treatment these would be
+replaced by the gauge-covariant combinations involving A.
 """
 from __future__ import annotations
 
@@ -83,31 +91,46 @@ class ContactRecoveryDiagnostics:
 
 @dataclass(frozen=True)
 class StationarityDiagnostics:
-    """Temporal stationarity measured from the last two stored snapshots."""
+    """Gauge-fixed stationarity of edge phase-gradient and phi-gradient fields."""
 
-    delta_rel_change: float
-    phi_rel_change: float
-    delta_abs_change_over_delta0: float
-    phi_abs_change_V: float
+    phase_gradient_rel_change: float
+    phi_gradient_rel_change: float
+    phase_gradient_abs_change_m_inv: float
+    phi_gradient_abs_change_V_m: float
+    phase_gradient_rms_final_m_inv: float
+    phi_gradient_rms_final_V_m: float
+    active_edge_fraction: float
+    active_edge_count: int
+    total_edge_count: int
     eta_R_final: float
     eta_R_window_max: float
-    tolerance_delta_rel: float
-    tolerance_phi_rel: float
-    tolerance_eta: float
+    tolerance_phase_gradient_rel: float
+    tolerance_phi_gradient_rel: float
+    tolerance_phase_gradient_abs_m_inv: float
+    tolerance_phi_gradient_abs_V_m: float
+    edge_active_threshold_over_bulk: float
     passes: bool
     reason: str
 
     def as_dict(self) -> dict[str, Any]:
         return {
-            "delta_rel_change": float(self.delta_rel_change),
-            "phi_rel_change": float(self.phi_rel_change),
-            "delta_abs_change_over_delta0": float(self.delta_abs_change_over_delta0),
-            "phi_abs_change_V": float(self.phi_abs_change_V),
-            "eta_R_final": float(self.eta_R_final),
-            "eta_R_window_max": float(self.eta_R_window_max),
-            "tolerance_delta_rel": float(self.tolerance_delta_rel),
-            "tolerance_phi_rel": float(self.tolerance_phi_rel),
-            "tolerance_eta": float(self.tolerance_eta),
+            "diagnostic": "gauge_fixed_edge_gradients_A_eq_0_v1",
+            "phase_gradient_rel_change": float(self.phase_gradient_rel_change),
+            "phi_gradient_rel_change": float(self.phi_gradient_rel_change),
+            "phase_gradient_abs_change_m_inv": float(self.phase_gradient_abs_change_m_inv),
+            "phi_gradient_abs_change_V_m": float(self.phi_gradient_abs_change_V_m),
+            "phase_gradient_rms_final_m_inv": float(self.phase_gradient_rms_final_m_inv),
+            "phi_gradient_rms_final_V_m": float(self.phi_gradient_rms_final_V_m),
+            "active_edge_fraction": float(self.active_edge_fraction),
+            "active_edge_count": int(self.active_edge_count),
+            "total_edge_count": int(self.total_edge_count),
+            "eta_R_final_info_only": float(self.eta_R_final),
+            "eta_R_window_max_info_only": float(self.eta_R_window_max),
+            "tolerance_phase_gradient_rel": float(self.tolerance_phase_gradient_rel),
+            "tolerance_phi_gradient_rel": float(self.tolerance_phi_gradient_rel),
+            "tolerance_phase_gradient_abs_m_inv": float(self.tolerance_phase_gradient_abs_m_inv),
+            "tolerance_phi_gradient_abs_V_m": float(self.tolerance_phi_gradient_abs_V_m),
+            "edge_active_threshold_over_bulk": float(self.edge_active_threshold_over_bulk),
             "passes": bool(self.passes),
             "reason": str(self.reason),
         }
@@ -290,64 +313,88 @@ def stationarity_diagnostics(
     *,
     history: dict[str, np.ndarray],
     material: GTDGLMaterial,
-    delta_rel_tol: float = 1.0e-4,
-    phi_rel_tol: float = 1.0e-4,
-    eta_tol: float = 1.0e-5,
+    phase_gradient_rel_tol: float = 1.0e-4,
+    phi_gradient_rel_tol: float = 1.0e-4,
+    phase_gradient_abs_tol_m_inv: float = 1.0e3,
+    phi_gradient_abs_tol_V_m: float = 1.0e2,
+    edge_active_threshold: float = 0.05,
     eta_window: int = 20,
+    # Deprecated aliases kept so older tests/calls fail softly instead of
+    # changing semantics silently.  They are ignored for the pass/fail gate.
+    delta_rel_tol: float | None = None,
+    phi_rel_tol: float | None = None,
+    eta_tol: float | None = None,
 ) -> StationarityDiagnostics:
-    """Evaluate temporal stationarity from final snapshots and eta history."""
+    """Evaluate gauge-fixed temporal stationarity from final snapshots.
 
-    psi_r = np.asarray(history.get("psi_snapshot_real_J", []), dtype=float)
-    psi_i = np.asarray(history.get("psi_snapshot_imag_J", []), dtype=float)
-    phi = np.asarray(history.get("phi_snapshot_V", []), dtype=float)
-    delta0 = max(float(material.delta0_J), 1.0e-300)
+    The previous smoke diagnostic compared ``Delta`` and ``phi`` themselves.
+    That is too gauge-sensitive for the present objective: a global phase shift
+    or a constant electrostatic offset should not make a stationary state fail.
 
-    if psi_r.ndim == 2 and psi_i.shape == psi_r.shape and psi_r.shape[0] >= 2:
-        psi = psi_r + 1j * psi_i
-        dpsi = psi[-1] - psi[-2]
-        psi_scale = max(float(np.sqrt(np.nanmean(np.abs(psi[-1]) ** 2))), delta0)
-        delta_abs_change_over_delta0 = float(np.nanmax(np.abs(dpsi)) / delta0)
-        delta_rel_change = float(np.sqrt(np.nanmean(np.abs(dpsi) ** 2)) / max(psi_scale, 1.0e-300))
-    else:
-        delta_abs_change_over_delta0 = float("nan")
-        delta_rel_change = float("nan")
+    This diagnostic therefore compares edge fields between the last two stored
+    snapshots:
 
-    if phi.ndim == 2 and phi.shape[0] >= 2:
-        dphi = phi[-1] - phi[-2]
-        phi_abs_change = float(np.nanmax(np.abs(dphi)))
-        phi_scale = max(float(np.ptp(phi[-1])), 1.0e-12)
-        phi_rel_change = phi_abs_change / phi_scale
-    else:
-        phi_abs_change = float("nan")
-        phi_rel_change = float("nan")
+    * ``Q_edge = grad(arg(Delta))`` in m^-1, taken from the current adapter.
+    * ``grad(phi)_edge`` in V/m, built from node phi snapshots and edge lengths.
+
+    Edges whose final |Delta| is close to zero are excluded because the phase of
+    Delta is undefined there.  This matters for metallic contacts where terminal
+    sites are intentionally clamped to |Delta| = 0.
+    """
+
+    del material, delta_rel_tol, phi_rel_tol, eta_tol
+
+    q_edge = _snapshot_2d(
+        history.get("edge_phase_gradient_snapshot_m_inv", history.get("edge_Q_snapshot_m_inv", []))
+    )
+    phi_grad = _edge_phi_gradient_snapshots(history)
+    active = _active_phase_edges(history, edge_active_threshold=edge_active_threshold)
+
+    q_diag = _edge_field_change_metrics(q_edge, active, abs_tol=float(phase_gradient_abs_tol_m_inv))
+    phi_diag = _edge_field_change_metrics(phi_grad, active, abs_tol=float(phi_gradient_abs_tol_V_m))
 
     eta = np.asarray(history.get("eta_R", []), dtype=float).reshape(-1)
     eta_final = float(eta[-1]) if eta.size else float("nan")
     w = max(1, int(eta_window))
     eta_window_max = float(np.nanmax(eta[-w:])) if eta.size else float("nan")
-    passes = bool(
-        np.isfinite(delta_rel_change)
-        and np.isfinite(phi_rel_change)
-        and np.isfinite(eta_window_max)
-        and delta_rel_change <= float(delta_rel_tol)
-        and phi_rel_change <= float(phi_rel_tol)
-        and eta_window_max <= float(eta_tol)
+
+    q_pass = bool(
+        np.isfinite(q_diag["rel_change"])
+        and (
+            q_diag["rel_change"] <= float(phase_gradient_rel_tol)
+            or q_diag["abs_change"] <= float(phase_gradient_abs_tol_m_inv)
+        )
     )
+    phi_pass = bool(
+        np.isfinite(phi_diag["rel_change"])
+        and (
+            phi_diag["rel_change"] <= float(phi_gradient_rel_tol)
+            or phi_diag["abs_change"] <= float(phi_gradient_abs_tol_V_m)
+        )
+    )
+    passes = bool(q_pass and phi_pass)
     if passes:
-        reason = "Delta and phi are stationary within requested tolerances"
+        reason = "phase-gradient and phi-gradient are stationary within requested tolerances"
     else:
-        reason = "stationarity tolerances were not all satisfied"
+        reason = "gauge-fixed gradient stationarity tolerances were not all satisfied"
 
     return StationarityDiagnostics(
-        delta_rel_change=delta_rel_change,
-        phi_rel_change=phi_rel_change,
-        delta_abs_change_over_delta0=delta_abs_change_over_delta0,
-        phi_abs_change_V=phi_abs_change,
+        phase_gradient_rel_change=float(q_diag["rel_change"]),
+        phi_gradient_rel_change=float(phi_diag["rel_change"]),
+        phase_gradient_abs_change_m_inv=float(q_diag["abs_change"]),
+        phi_gradient_abs_change_V_m=float(phi_diag["abs_change"]),
+        phase_gradient_rms_final_m_inv=float(q_diag["rms_final"]),
+        phi_gradient_rms_final_V_m=float(phi_diag["rms_final"]),
+        active_edge_fraction=float(q_diag["active_fraction"]),
+        active_edge_count=int(q_diag["active_count"]),
+        total_edge_count=int(q_diag["total_count"]),
         eta_R_final=eta_final,
         eta_R_window_max=eta_window_max,
-        tolerance_delta_rel=float(delta_rel_tol),
-        tolerance_phi_rel=float(phi_rel_tol),
-        tolerance_eta=float(eta_tol),
+        tolerance_phase_gradient_rel=float(phase_gradient_rel_tol),
+        tolerance_phi_gradient_rel=float(phi_gradient_rel_tol),
+        tolerance_phase_gradient_abs_m_inv=float(phase_gradient_abs_tol_m_inv),
+        tolerance_phi_gradient_abs_V_m=float(phi_gradient_abs_tol_V_m),
+        edge_active_threshold_over_bulk=float(edge_active_threshold),
         passes=passes,
         reason=reason,
     )
@@ -393,6 +440,108 @@ def continuity_diagnostics(
         passes=passes,
         reason=reason,
     )
+
+
+def _snapshot_2d(value: Any) -> np.ndarray:
+    arr = np.asarray(value, dtype=float)
+    if arr.ndim == 1:
+        arr = arr.reshape(1, -1)
+    return arr
+
+
+def _edge_phi_gradient_snapshots(history: dict[str, np.ndarray]) -> np.ndarray:
+    direct = history.get("edge_phi_gradient_snapshot_V_m")
+    if direct is not None:
+        arr = _snapshot_2d(direct)
+        if arr.shape[0] >= 2:
+            return arr
+
+    phi = _snapshot_2d(history.get("phi_snapshot_V", []))
+    edge_i = np.asarray(history.get("edge_i", []), dtype=np.int64).reshape(-1)
+    edge_j = np.asarray(history.get("edge_j", []), dtype=np.int64).reshape(-1)
+    edge_length = np.asarray(history.get("edge_length_m", []), dtype=float).reshape(-1)
+    if phi.shape[0] < 2 or edge_i.size == 0 or edge_j.size != edge_i.size or edge_length.size != edge_i.size:
+        return np.empty((0, 0), dtype=float)
+    if int(np.max(edge_i, initial=-1)) >= phi.shape[1] or int(np.max(edge_j, initial=-1)) >= phi.shape[1]:
+        return np.empty((0, 0), dtype=float)
+    length = np.maximum(edge_length, 1.0e-300)
+    return (phi[:, edge_j] - phi[:, edge_i]) / length[None, :]
+
+
+def _active_phase_edges(history: dict[str, np.ndarray], *, edge_active_threshold: float) -> np.ndarray | None:
+    explicit = history.get("stationarity_active_edge_mask")
+    if explicit is not None:
+        mask = np.asarray(explicit, dtype=bool).reshape(-1)
+    else:
+        psi_r = _snapshot_2d(history.get("psi_snapshot_real_J", []))
+        psi_i = _snapshot_2d(history.get("psi_snapshot_imag_J", []))
+        edge_i = np.asarray(history.get("edge_i", []), dtype=np.int64).reshape(-1)
+        edge_j = np.asarray(history.get("edge_j", []), dtype=np.int64).reshape(-1)
+        if psi_r.shape[0] < 1 or psi_i.shape != psi_r.shape or edge_i.size == 0 or edge_j.size != edge_i.size:
+            return None
+        if int(np.max(edge_i, initial=-1)) >= psi_r.shape[1] or int(np.max(edge_j, initial=-1)) >= psi_r.shape[1]:
+            return None
+        psi = psi_r[-1] + 1j * psi_i[-1]
+        amp_edge = 0.5 * (np.abs(psi[edge_i]) + np.abs(psi[edge_j]))
+        finite_amp = amp_edge[np.isfinite(amp_edge)]
+        if finite_amp.size == 0:
+            return None
+        bulk = float(np.nanpercentile(finite_amp, 90.0))
+        threshold = float(np.clip(edge_active_threshold, 0.0, 0.95)) * max(bulk, 1.0e-300)
+        mask = amp_edge >= threshold
+
+    terminal_edges = history.get("normal_terminal_edge_mask")
+    if terminal_edges is not None:
+        term = np.asarray(terminal_edges, dtype=bool).reshape(-1)
+        if term.size == mask.size:
+            mask = mask & ~term
+    if not np.any(mask):
+        return None
+    return mask
+
+
+def _edge_field_change_metrics(field: np.ndarray, mask: np.ndarray | None, *, abs_tol: float) -> dict[str, float | int]:
+    arr = _snapshot_2d(field)
+    total = int(arr.shape[1]) if arr.ndim == 2 else 0
+    if arr.ndim != 2 or arr.shape[0] < 2 or total == 0:
+        return {
+            "rel_change": float("nan"),
+            "abs_change": float("nan"),
+            "rms_final": float("nan"),
+            "active_fraction": 0.0,
+            "active_count": 0,
+            "total_count": total,
+        }
+    if mask is None:
+        active = np.ones(total, dtype=bool)
+    else:
+        active = np.asarray(mask, dtype=bool).reshape(-1)
+        if active.size != total:
+            active = np.ones(total, dtype=bool)
+    finite = np.isfinite(arr[-1]) & np.isfinite(arr[-2]) & active
+    if np.count_nonzero(finite) == 0:
+        return {
+            "rel_change": float("nan"),
+            "abs_change": float("nan"),
+            "rms_final": float("nan"),
+            "active_fraction": 0.0,
+            "active_count": 0,
+            "total_count": total,
+        }
+    final = arr[-1, finite]
+    prev = arr[-2, finite]
+    diff = final - prev
+    rms_final = float(np.sqrt(np.nanmean(final * final)))
+    rms_diff = float(np.sqrt(np.nanmean(diff * diff)))
+    scale = max(rms_final, float(abs_tol), 1.0e-300)
+    return {
+        "rel_change": rms_diff / scale,
+        "abs_change": rms_diff,
+        "rms_final": rms_final,
+        "active_fraction": float(np.count_nonzero(finite) / max(total, 1)),
+        "active_count": int(np.count_nonzero(finite)),
+        "total_count": total,
+    }
 
 
 def _first_binned_crossing_distance(

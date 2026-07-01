@@ -1,4 +1,4 @@
-"""Tests for the first stationary-state target diagnostics."""
+"""Tests for stationary-state target diagnostics."""
 from __future__ import annotations
 
 import numpy as np
@@ -59,28 +59,105 @@ def test_terminal_proximity_seed_reaches_bulk_after_few_xi():
     assert 1.5 <= rec.right_recovery_length_xi <= 4.0
 
 
-def test_stationarity_diagnostics_detects_steady_snapshots():
+def test_stationarity_diagnostics_uses_gradients_not_global_fields():
     material = _material()
-    psi0 = np.ones((3, 5), dtype=np.complex128) * material.delta0_J
-    psi0[-1] *= 1.0 + 1.0e-7
-    phi = np.zeros((3, 5), dtype=float)
-    phi[-1] = 1.0e-12
+    delta0 = material.delta0_J
+    edge_i = np.array([0, 1, 2], dtype=np.int64)
+    edge_j = np.array([1, 2, 3], dtype=np.int64)
+    edge_length_m = np.full(3, 1.0e-9)
+
+    # Same physical edge Q and same grad(phi), but different global phase and
+    # constant potential offset.  This must pass because those offsets are gauge
+    # choices in the present A=0 gauge-fixed backend.
+    psi0 = np.ones(4, dtype=np.complex128) * delta0
+    psi1 = psi0 * np.exp(1j * 0.7)
+    phi0 = np.array([0.0, 1.0e-6, 2.0e-6, 3.0e-6])
+    phi1 = phi0 + 123.0
     history = {
-        "psi_snapshot_real_J": np.real(psi0),
-        "psi_snapshot_imag_J": np.imag(psi0),
-        "phi_snapshot_V": phi,
-        "eta_R": np.array([1.0e-3, 1.0e-6, 1.0e-6]),
+        "psi_snapshot_real_J": np.vstack([np.real(psi0), np.real(psi1)]),
+        "psi_snapshot_imag_J": np.vstack([np.imag(psi0), np.imag(psi1)]),
+        "phi_snapshot_V": np.vstack([phi0, phi1]),
+        "edge_Q_snapshot_m_inv": np.vstack([
+            np.array([1.0e7, 1.1e7, 1.2e7]),
+            np.array([1.0e7, 1.1e7, 1.2e7]),
+        ]),
+        "edge_i": edge_i,
+        "edge_j": edge_j,
+        "edge_length_m": edge_length_m,
+        "eta_R": np.array([1.0e-3, 1.0e-2]),  # info-only now
     }
 
     diag = stationarity_diagnostics(
         history=history,
         material=material,
-        delta_rel_tol=1.0e-4,
-        phi_rel_tol=2.0,
-        eta_tol=1.0e-5,
-        eta_window=2,
+        phase_gradient_rel_tol=1.0e-6,
+        phi_gradient_rel_tol=1.0e-6,
+        phase_gradient_abs_tol_m_inv=1.0,
+        phi_gradient_abs_tol_V_m=1.0,
     )
 
     assert diag.passes
-    assert diag.delta_rel_change < 1.0e-4
-    assert diag.eta_R_final < 1.0e-5
+    assert diag.phase_gradient_rel_change == 0.0
+    assert diag.phi_gradient_rel_change < 1.0e-8
+    assert diag.eta_R_window_max > 1.0e-3
+
+
+def test_stationarity_diagnostics_detects_changing_phase_gradient():
+    material = _material()
+    delta0 = material.delta0_J
+    history = {
+        "psi_snapshot_real_J": np.ones((2, 4)) * delta0,
+        "psi_snapshot_imag_J": np.zeros((2, 4)),
+        "phi_snapshot_V": np.zeros((2, 4)),
+        "edge_Q_snapshot_m_inv": np.vstack([
+            np.array([1.0e7, 1.0e7, 1.0e7]),
+            np.array([1.2e7, 1.0e7, 0.8e7]),
+        ]),
+        "edge_i": np.array([0, 1, 2], dtype=np.int64),
+        "edge_j": np.array([1, 2, 3], dtype=np.int64),
+        "edge_length_m": np.full(3, 1.0e-9),
+        "eta_R": np.array([1.0e-8, 1.0e-8]),
+    }
+
+    diag = stationarity_diagnostics(
+        history=history,
+        material=material,
+        phase_gradient_rel_tol=1.0e-4,
+        phi_gradient_rel_tol=1.0e-4,
+        phase_gradient_abs_tol_m_inv=1.0e3,
+        phi_gradient_abs_tol_V_m=1.0,
+    )
+
+    assert not diag.passes
+    assert diag.phase_gradient_abs_change_m_inv > 1.0e6
+
+
+def test_stationarity_diagnostics_excludes_zero_delta_terminal_edges():
+    material = _material()
+    delta0 = material.delta0_J
+    psi0 = np.array([0.0, 0.0, 1.0, 1.0], dtype=np.complex128) * delta0
+    psi1 = psi0.copy()
+    history = {
+        "psi_snapshot_real_J": np.vstack([np.real(psi0), np.real(psi1)]),
+        "psi_snapshot_imag_J": np.vstack([np.imag(psi0), np.imag(psi1)]),
+        "phi_snapshot_V": np.zeros((2, 4)),
+        "edge_Q_snapshot_m_inv": np.vstack([
+            np.array([9.0e99, 1.0e7, 1.0e7]),
+            np.array([-9.0e99, 1.0e7, 1.0e7]),
+        ]),
+        "edge_i": np.array([0, 1, 2], dtype=np.int64),
+        "edge_j": np.array([1, 2, 3], dtype=np.int64),
+        "edge_length_m": np.full(3, 1.0e-9),
+        "normal_terminal_edge_mask": np.array([True, True, False]),
+        "eta_R": np.array([1.0e-8, 1.0e-8]),
+    }
+
+    diag = stationarity_diagnostics(
+        history=history,
+        material=material,
+        phase_gradient_rel_tol=1.0e-6,
+        phi_gradient_rel_tol=1.0e-6,
+    )
+
+    assert diag.passes
+    assert diag.active_edge_count == 1
