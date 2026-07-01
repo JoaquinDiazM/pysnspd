@@ -44,16 +44,18 @@ def solve_stationary_pytdgl_like(
     seed,
     material: GTDGLMaterial,
     ops: FVOperators,
-    steps: int = 2000,
+    steps: int | None = None,
+    total_time_s: float | None = None,
     dt_s: float = 1.0e-17,
     target_current_A: float | None = None,
     usadel_catalog: Any | None = None,
     terminal_psi: complex | float | None = 0.0,
     adaptive: bool = True,
-    adaptive_window: int = 10,
-    max_solve_retries: int = 10,
-    adaptive_time_step_multiplier: float = 0.25,
-    dt_max_factor: float = 100.0,
+    adaptive_window: int = 6,
+    max_solve_retries: int = 8,
+    adaptive_time_step_multiplier: float = 0.5,
+    adaptive_growth_factor: float = 1.5,
+    dt_max_factor: float = 6.0,
     n_snapshots: int = 6,
     progress: bool = False,
     supercurrent_law: str = "gl",
@@ -87,10 +89,16 @@ def solve_stationary_pytdgl_like(
     Poisson boundary operator.
     """
 
-    if steps <= 0:
-        raise ValueError("steps must be positive.")
     if dt_s <= 0:
         raise ValueError("dt_s must be positive.")
+    if total_time_s is None:
+        if steps is None:
+            steps = 2000
+        if int(steps) <= 0:
+            raise ValueError("steps must be positive when total_time_s is not provided.")
+        total_time_s = int(steps) * float(dt_s)
+    if float(total_time_s) <= 0:
+        raise ValueError("total_time_s must be positive.")
     if target_current_A is None:
         target_current_A = seed_target_current_A(seed)
     target_current_A = float(target_current_A)
@@ -115,7 +123,8 @@ def solve_stationary_pytdgl_like(
 
     tau0 = float(material.tau0_GL_s)
     dt_dimless = float(dt_s) / tau0
-    solve_time = max(1, int(steps)) * dt_dimless
+    solve_time = float(total_time_s) / tau0
+    requested_steps_equivalent = int(np.ceil(float(total_time_s) / float(dt_s)))
 
     options = SolverOptions(
         solve_time=solve_time,
@@ -129,6 +138,10 @@ def solve_stationary_pytdgl_like(
         sparse_solver=SparseSolver.SUPERLU,
         include_screening=False,
     )
+    # Additional pySNSPD adaptive controller knob.  SolverOptions intentionally
+    # mirrors pyTDGL, so this is attached dynamically and consumed with getattr
+    # inside TDGLSolver.
+    options.adaptive_growth_factor = float(adaptive_growth_factor)
 
     # Appendix-B Allmaras/KWT coefficients inside the unchanged pyTDGL
     # algebraic update.  The local solver still uses its existing
@@ -326,11 +339,14 @@ def solve_stationary_pytdgl_like(
         "first_magic_ready": magic_ready,
         "accepted_steps": int(solution.history.get("final_step", np.array([0]))[0]),
         "rejected_steps": int(solution.history.get("total_rejected_attempts", np.array([0]))[0]),
+        "requested_time_ps": float(total_time_s) / 1.0e-12,
+        "requested_steps_equivalent_at_dt_init": int(requested_steps_equivalent),
         "final_time_ps": float(solution.history.get("final_time", np.array([0.0]))[0] * tau0 / 1.0e-12),
         "dt_init_s": float(dt_s),
         "adaptive_enabled": bool(solution.history.get("adaptive_enabled", np.array([False], dtype=bool))[0]),
         "adaptive_window": int(solution.history.get("adaptive_window", np.array([0], dtype=int))[0]),
         "adaptive_time_step_multiplier": float(solution.history.get("adaptive_time_step_multiplier", np.array([float("nan")]))[0]),
+        "adaptive_growth_factor": float(solution.history.get("adaptive_growth_factor", np.array([float("nan")]))[0]),
         "adaptive_dt_max_factor": float(dt_max_factor),
         "adaptive_max_retries_per_step": int(solution.history.get("max_adaptive_retries_per_step", np.array([0], dtype=int))[0]),
         "adaptive_total_rejected_attempts": int(solution.history.get("total_rejected_attempts", np.array([0], dtype=int))[0]),
@@ -669,6 +685,7 @@ def _build_history(
         "adaptive_enabled": np.array([bool(raw.get("adaptive_enabled", np.array([False], dtype=bool))[0])], dtype=bool),
         "adaptive_window": np.array([int(raw.get("adaptive_window", np.array([0], dtype=int))[0])], dtype=np.int64),
         "adaptive_time_step_multiplier": np.array([float(raw.get("adaptive_time_step_multiplier", np.array([np.nan]))[0])], dtype=float),
+        "adaptive_growth_factor": np.array([float(raw.get("adaptive_growth_factor", np.array([np.nan]))[0])], dtype=float),
         "adaptive_total_rejected_attempts": np.array([int(raw.get("total_rejected_attempts", np.array([0], dtype=int))[0])], dtype=np.int64),
         "adaptive_max_retries_per_step": np.array([int(raw.get("max_adaptive_retries_per_step", np.array([0], dtype=int))[0])], dtype=np.int64),
         "eta_R": max_d,

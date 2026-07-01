@@ -540,14 +540,25 @@ class TDGLSolver:
             d_abs_sq = float(np.absolute(abs_sq_psi - old_sq_psi).max())
             self.d_psi_sq_vals.append(d_abs_sq)
             window = max(1, int(options.adaptive_window))
+            mean_d_abs_sq = float(np.mean(self.d_psi_sq_vals[-window:]))
+
             if step > window:
-                mean_d_abs_sq = float(np.mean(self.d_psi_sq_vals[-window:]))
                 target_dt = float(options.dt_init / max(1e-10, mean_d_abs_sq))
-                next_dt = float(np.clip(0.5 * (target_dt + dt), 0.0, self.dt_max))
             else:
-                mean_d_abs_sq = float(np.mean(self.d_psi_sq_vals[-window:]))
                 target_dt = float("nan")
-                next_dt = float(dt)
+
+            # The first adaptive diagnostic version let a tiny mean change push
+            # the tentative step directly to dt_max after every accepted step.
+            # For this SS problem that wasted time: the local cubic solve then
+            # rejected the same oversized step on essentially every iteration.
+            # Grow toward the pyTDGL window target, but cap per-step growth so
+            # the next tentative dt stays close to recently accepted values.
+            growth_factor = float(getattr(options, "adaptive_growth_factor", 1.5))
+            growth_factor = max(1.0, growth_factor)
+            desired_dt = self.dt_max if not np.isfinite(target_dt) else min(float(target_dt), self.dt_max)
+            next_dt = float(min(desired_dt, max(float(dt), float(dt) * growth_factor)))
+            next_dt = float(np.clip(next_dt, options.dt_init, self.dt_max))
+
             self.last_adaptive_window_mean_d_abs_sq = mean_d_abs_sq
             self.last_adaptive_target_dt = target_dt
             self.last_adaptive_next_dt = next_dt
@@ -718,6 +729,7 @@ class TDGLSolver:
         hist["adaptive_enabled"] = np.array([bool(options.adaptive)], dtype=bool)
         hist["adaptive_window"] = np.array([int(options.adaptive_window)], dtype=int)
         hist["adaptive_time_step_multiplier"] = np.array([float(options.adaptive_time_step_multiplier)], dtype=float)
+        hist["adaptive_growth_factor"] = np.array([float(getattr(options, "adaptive_growth_factor", np.nan))], dtype=float)
         hist["dt_init"] = np.array([float(options.dt_init)], dtype=float)
         hist["dt_max"] = np.array([float(options.dt_max)], dtype=float)
         rejected = np.asarray(hist.get("adaptive_rejected_attempts", []), dtype=float)

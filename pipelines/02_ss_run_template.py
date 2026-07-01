@@ -54,12 +54,29 @@ def parse_args() -> argparse.Namespace:
     # Usadel-Poisson runs:
     #
     #   I = 20 uA
-    #   dt = 0.20 fs
-    #   long relaxation
+    #   physical run time = 20 ps
+    #   dt_init = 0.30 fs
     #   metallic terminals with smooth 2.5 xi seed healing
     #   stationarity measured only in the superconducting bulk.
-    parser.add_argument("--ss-steps", type=int, default=100000)
-    parser.add_argument("--ss-dt-fs", type=float, default=0.20)
+    parser.add_argument(
+        "--ss-time-ps",
+        type=float,
+        default=None,
+        help=(
+            "Physical SS relaxation time in ps. Default is 20 ps. "
+            "This replaces the old --ss-steps control."
+        ),
+    )
+    parser.add_argument(
+        "--ss-steps",
+        type=int,
+        default=None,
+        help=(
+            "Deprecated compatibility input. If --ss-time-ps is omitted, "
+            "the physical time is computed as ss_steps * ss_dt_fs."
+        ),
+    )
+    parser.add_argument("--ss-dt-fs", type=float, default=0.30)
     parser.add_argument("--ss-tau-scale", type=float, default=0.10)
     parser.add_argument("--ss-target-current-uA", type=float, default=20.0)
     parser.add_argument("--ss-snapshots", type=int, default=8)
@@ -201,25 +218,34 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ss-adaptive-window",
         type=int,
-        default=10,
+        default=6,
         help="Moving-window length used to choose the next adaptive Euler time step.",
     )
     parser.add_argument(
         "--ss-max-solve-retries",
         type=int,
-        default=10,
+        default=8,
         help="Maximum pyTDGL-style retry/shrink attempts for one Euler update.",
     )
     parser.add_argument(
         "--ss-adaptive-time-step-multiplier",
         type=float,
-        default=0.25,
+        default=0.5,
         help="Multiplier applied to dt after a failed local |psi|^2 solve.",
+    )
+    parser.add_argument(
+        "--ss-adaptive-growth-factor",
+        type=float,
+        default=1.5,
+        help=(
+            "Maximum multiplicative growth of the next tentative dt after an accepted step. "
+            "This avoids repeatedly jumping straight to dt_max and then shrinking."
+        ),
     )
     parser.add_argument(
         "--ss-dt-max-factor",
         type=float,
-        default=100.0,
+        default=6.0,
         help="Adaptive dt upper bound as a multiple of --ss-dt-fs.",
     )
 
@@ -302,13 +328,23 @@ def main() -> int:
     if target_current_A is None:
         target_current_A = float(seed.metadata["target_current_A"])
 
+    if args.ss_time_ps is not None:
+        total_time_ps = float(args.ss_time_ps)
+    elif args.ss_steps is not None:
+        total_time_ps = float(args.ss_steps) * float(args.ss_dt_fs) * 1.0e-3
+    else:
+        total_time_ps = 20.0
+    if total_time_ps <= 0.0:
+        raise ValueError("--ss-time-ps must be positive.")
+
     result = solve_stationary_pytdgl_like(
         mesh=mesh,
         edge_data=edge_data,
         seed=seed,
         material=material,
         ops=ops,
-        steps=int(args.ss_steps),
+        steps=None if args.ss_steps is None else int(args.ss_steps),
+        total_time_s=float(total_time_ps) * 1.0e-12,
         dt_s=float(args.ss_dt_fs) * 1.0e-15,
         target_current_A=target_current_A,
         usadel_catalog=usadel_catalog,
@@ -317,6 +353,7 @@ def main() -> int:
         adaptive_window=int(args.ss_adaptive_window),
         max_solve_retries=int(args.ss_max_solve_retries),
         adaptive_time_step_multiplier=float(args.ss_adaptive_time_step_multiplier),
+        adaptive_growth_factor=float(args.ss_adaptive_growth_factor),
         dt_max_factor=float(args.ss_dt_max_factor),
         n_snapshots=int(args.ss_snapshots),
         progress=bool(args.ss_progress),
