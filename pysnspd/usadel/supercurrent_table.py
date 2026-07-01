@@ -8,12 +8,15 @@ instead of the older calibration-only one-dimensional relation J(q, T_bias).
 This module builds that table from the same Matsubara dirty-limit equation used
 by the critical-current calibration.  The table is deliberately independent of
 BCS self-consistency: |Delta| is an axis supplied by the local gTDGL field.
+
+All table rows ``(T_e, |Delta|)`` are independent and are therefore evaluated in
+parallel when ``workers > 1``.
 """
 from __future__ import annotations
 
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from dataclasses import dataclass
-from concurrent.futures import ProcessPoolExecutor
-from typing import Any, Iterable, Mapping
+from typing import Any, Iterable
 
 import numpy as np
 
@@ -28,12 +31,12 @@ from pysnspd.usadel.parameters import E_CHARGE_C, HBAR_J_S, K_B_J_K
 class SupercurrentTable3D:
     """Container for a strict 3D Usadel/Matsubara supercurrent table.
 
-    The canonical storage layout is
+    Canonical storage layout:
 
-        js_T_delta_q_A_m2[iT, iDelta, iq].
+        js_T_delta_q_A_m2[iT, iDelta, iq]
 
     The q-axis is nonnegative.  Interpolators recover odd-in-q behavior by
-    interpolating |q| and multiplying by sign(q).
+    interpolating ``|q|`` and multiplying by ``sign(q)``.
     """
 
     Te_axis_K: np.ndarray
@@ -56,6 +59,7 @@ def build_matsubara_supercurrent_table_3d(
     sigma_n_S_m: float,
     n_matsubara: int,
     workers: int = 1,
+    backend: str = "process",
 ) -> SupercurrentTable3D:
     """Build ``J(q, |Delta|, T)`` from the Matsubara Usadel equation.
 
@@ -63,14 +67,11 @@ def build_matsubara_supercurrent_table_3d(
 
         Delta sqrt(1 - s_n^2) = (eps_n + Gamma_q sqrt(1 - s_n^2)) s_n,
 
-    then evaluate the same current density convention used by the calibration
-    layer,
+    then evaluate
 
         j_s = (2*pi*k_B*T/|e|) sigma_n q sum_n s_n^2.
 
-    This is intentionally a local closure table.  It does not solve the BCS
-    self-consistency equation for Delta because in the gTDGL sector Delta is the
-    evolved local field.
+    ``|Delta|`` is a local-field axis, not a self-consistent BCS solution.
     """
 
     Te_axis = _clean_axis_1d(Te_axis_K, name="Te_axis_K", positive=True)
@@ -87,15 +88,25 @@ def build_matsubara_supercurrent_table_3d(
     if n_m <= 0:
         raise ValueError("n_matsubara must be positive.")
 
-    tasks = [(float(T), delta_axis, q_axis, D, sigma, n_m) for T in Te_axis]
     n_workers = max(1, int(workers))
-    if n_workers == 1 or len(tasks) <= 1:
-        planes = [_compute_temperature_plane(task) for task in tasks]
-    else:
-        with ProcessPoolExecutor(max_workers=n_workers) as pool:
-            planes = list(pool.map(_compute_temperature_plane, tasks))
+    mode = str(backend or "process").lower()
+    if mode not in {"process", "thread", "serial"}:
+        mode = "process"
+    if mode == "serial":
+        n_workers = 1
 
-    table = np.stack(planes, axis=0).astype(float, copy=False)
+    table = np.zeros((Te_axis.size, delta_axis.size, q_axis.size), dtype=float)
+    tasks = list(_current_row_tasks(Te_axis, delta_axis, q_axis, D, sigma, n_m))
+
+    if n_workers == 1 or len(tasks) <= 1:
+        rows = [_compute_current_row(task) for task in tasks]
+    else:
+        executor_cls = ThreadPoolExecutor if mode == "thread" else ProcessPoolExecutor
+        with executor_cls(max_workers=n_workers) as pool:
+            rows = list(pool.map(_compute_current_row, tasks))
+
+    for iT, iD, row in rows:
+        table[iT, iD, :] = row
     table[~np.isfinite(table)] = 0.0
 
     metadata = {
@@ -109,6 +120,8 @@ def build_matsubara_supercurrent_table_3d(
         "n_q": int(q_axis.size),
         "n_matsubara": int(n_m),
         "workers": int(n_workers),
+        "parallel_backend": mode,
+        "parallel_tasks": int(len(tasks)),
         "Te_min_K": float(np.min(Te_axis)),
         "Te_max_K": float(np.max(Te_axis)),
         "delta_min_J": float(np.min(delta_axis)),
@@ -143,6 +156,8 @@ def append_supercurrent_table_3d_to_npz(npz_path: str, table: SupercurrentTable3
     arrays["js_table_n_Te"] = np.array(int(table.metadata["n_Te"]), dtype=np.int64)
     arrays["js_table_n_delta"] = np.array(int(table.metadata["n_delta"]), dtype=np.int64)
     arrays["js_table_n_q"] = np.array(int(table.metadata["n_q"]), dtype=np.int64)
+    arrays["js_table_parallel_workers"] = np.array(int(table.metadata["workers"]), dtype=np.int64)
+    arrays["js_table_parallel_tasks"] = np.array(int(table.metadata["parallel_tasks"]), dtype=np.int64)
 
     np.savez_compressed(npz_path, **arrays)
 
@@ -164,25 +179,40 @@ def supercurrent_table_summary(table: SupercurrentTable3D) -> dict[str, Any]:
     }
 
 
-def _compute_temperature_plane(task: tuple[float, np.ndarray, np.ndarray, float, float, int]) -> np.ndarray:
-    T, delta_axis, q_axis, D, sigma, n_m = task
+def _current_row_tasks(
+    Te_axis: np.ndarray,
+    delta_axis: np.ndarray,
+    q_axis: np.ndarray,
+    D: float,
+    sigma: float,
+    n_m: int,
+) -> Iterable[tuple[int, int, float, float, np.ndarray, float, float, int]]:
+    for iT, T in enumerate(Te_axis):
+        for iD, delta in enumerate(delta_axis):
+            yield (int(iT), int(iD), float(T), float(delta), q_axis, float(D), float(sigma), int(n_m))
+
+
+def _compute_current_row(
+    task: tuple[int, int, float, float, np.ndarray, float, float, int],
+) -> tuple[int, int, np.ndarray]:
+    iT, iD, T, delta, q_axis, D, sigma, n_m = task
+    row = np.zeros(q_axis.size, dtype=float)
+    if delta <= 0.0:
+        return iT, iD, row
+
     eps = matsubara_energy_axis_J(T_K=float(T), n_matsubara=int(n_m))
     gamma_axis = 0.5 * HBAR_J_S * D * q_axis * q_axis
-    plane = np.zeros((delta_axis.size, q_axis.size), dtype=float)
     prefactor = 2.0 * np.pi * K_B_J_K * float(T) * sigma / E_CHARGE_C
-    for i, delta in enumerate(delta_axis):
-        if delta <= 0.0:
+    for j, (q, gamma) in enumerate(zip(q_axis, gamma_axis)):
+        if q <= 0.0:
             continue
-        for j, (q, gamma) in enumerate(zip(q_axis, gamma_axis)):
-            if q <= 0.0:
-                continue
-            s = solve_matsubara_s_values(
-                delta_J=float(delta),
-                gamma_J=float(gamma),
-                eps_n_J=eps,
-            )
-            plane[i, j] = prefactor * float(q) * float(np.sum(s * s))
-    return plane
+        s = solve_matsubara_s_values(
+            delta_J=float(delta),
+            gamma_J=float(gamma),
+            eps_n_J=eps,
+        )
+        row[j] = prefactor * float(q) * float(np.sum(s * s))
+    return iT, iD, row
 
 
 def _clean_axis_1d(

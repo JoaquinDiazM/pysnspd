@@ -1,12 +1,14 @@
-"""
-Usadel/DOS catalogue construction for pySNSPD.
+"""Usadel/DOS catalogue construction for pySNSPD.
 
-OE3:
-- Calibrate D from the user-provided critical current.
-- Build a quasistatic spectral catalogue over |Delta| and depairing energy.
-- Use the real-axis uniform dirty-limit Usadel quartic for the DOS.
-"""
+OE3 builds:
+- the quasistatic real-axis dirty-limit DOS catalogue over independent
+  ``(|Delta|, Gamma_q, E)`` axes;
+- the calibration metadata used by PRE/SS diagnostics.
 
+The ``(|Delta|, Gamma_q)`` DOS cells are independent, so official PRE-runs can
+parallelize the real-axis catalogue construction with the same worker policy
+used by the strict 3D Matsubara current table.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -32,6 +34,7 @@ from pysnspd.usadel.solver import compute_dos_grid, dos_diagnostics
 @dataclass(frozen=True)
 class UsadelCatalog:
     """Container for the OE3 quasistatic spectral catalogue."""
+
     energy_values_J: np.ndarray
     delta_values_J: np.ndarray
     gamma_values_J: np.ndarray
@@ -50,6 +53,7 @@ class UsadelCatalog:
     @property
     def shape(self) -> tuple[int, int, int]:
         """Return catalogue shape ``(n_delta, n_gamma, n_energy)``."""
+
         return tuple(int(v) for v in self.rho_delta_gamma_E.shape)
 
 
@@ -59,15 +63,21 @@ def build_usadel_catalog_from_config(
     eta_fraction: float = 1.0e-3,
     gamma_max_fraction: float = 0.80,
     energy_max_factor: float = 6.0,
+    workers: int | None = None,
+    parallel_backend: str | None = None,
 ) -> UsadelCatalog:
+    """Build the OE3 DOS catalogue from the project config.
+
+    ``workers`` and ``parallel_backend`` only control embarrassingly parallel
+    catalogue cells.  The returned arrays and metadata are identical to the
+    serial path up to floating-point roundoff.
     """
-    Build the OE3 DOS catalogue from the project config.
-    """
+
     cfg = validate_config(config, require_big_data_root_exists=False)
+    n_workers, backend = _resolve_parallel(cfg, workers, parallel_backend)
 
     calibration = calibrate_diffusion_from_config(cfg)
     mat = material_parameters_from_config(cfg)
-
     dos_cfg = cfg["catalogs"]["dos"]
     n_delta = int(dos_cfg["n_delta"])
     n_q = int(dos_cfg["n_q"])
@@ -76,26 +86,21 @@ def build_usadel_catalog_from_config(
 
     delta_ref_J = mat.delta0_J
     delta_bias_J = mat.delta_bias_J
-
     delta_values_J = np.linspace(0.0, delta_ref_J, n_delta)
-
     gamma_values_J = depairing_energy_grid_J(
         delta_ref_J=delta_ref_J,
         n_q=n_q,
         gamma_max_fraction=gamma_max_fraction,
     )
-
     q_values_m_inv = q_axis_from_depairing_energy_m_inv(
         gamma_values_J,
         D_m2_s=mat.D_m2_s,
     )
-
     energy_values = energy_axis_J(
         delta_ref_J=delta_ref_J,
         n_energy=n_energy,
         energy_max_factor=energy_max_factor,
     )
-
     eta_J = eta_fraction * delta_ref_J
 
     rho, anomalous = compute_dos_grid(
@@ -103,10 +108,11 @@ def build_usadel_catalog_from_config(
         delta_values_J,
         gamma_values_J,
         eta_J=eta_J,
+        workers=n_workers,
+        backend=backend,
     )
 
     cal_summary = calibration_summary(calibration)
-
     metadata = {
         "backend": "uniform_dirty_usadel_quartic_with_Ic_calibrated_D_oe3",
         "description": (
@@ -143,6 +149,9 @@ def build_usadel_catalog_from_config(
         "n_q": n_q,
         "n_energy": n_energy,
         "n_matsubara_configured": n_matsubara,
+        "dos_parallel_workers": int(n_workers),
+        "dos_parallel_backend": str(backend),
+        "dos_parallel_tasks": int(n_delta),
     }
 
     return UsadelCatalog(
@@ -164,16 +173,10 @@ def build_usadel_catalog_from_config(
 
 
 def catalog_summary(catalog: UsadelCatalog) -> dict[str, Any]:
-    """
-    Build a compact summary for manifests and console output.
-    """
-    diag = dos_diagnostics(
-        catalog.rho_delta_gamma_E,
-        catalog.energy_values_J,
-    )
+    """Build a compact summary for manifests and console output."""
 
+    diag = dos_diagnostics(catalog.rho_delta_gamma_E, catalog.energy_values_J)
     cal = catalog.metadata["calibration"]
-
     summary = {
         "backend": str(catalog.metadata.get("backend", "unknown")),
         "shape": list(catalog.shape),
@@ -202,19 +205,19 @@ def catalog_summary(catalog: UsadelCatalog) -> dict[str, Any]:
         "energy_max_meV": J_to_meV(float(np.max(catalog.energy_values_J))),
         "eta_J": float(catalog.eta_J),
         "eta_meV": J_to_meV(float(catalog.eta_J)),
+        "parallel_workers": int(catalog.metadata.get("dos_parallel_workers", 1)),
+        "parallel_backend": str(catalog.metadata.get("dos_parallel_backend", "serial")),
+        "parallel_tasks": int(catalog.metadata.get("dos_parallel_tasks", catalog.delta_values_J.size)),
     }
     summary.update(diag)
-
     return summary
 
 
 def save_usadel_catalog_npz(catalog: UsadelCatalog, path: str | Path) -> Path:
-    """
-    Save a Usadel catalogue to compressed ``.npz``.
-    """
+    """Save a Usadel catalogue to compressed ``.npz``."""
+
     output = Path(path)
     output.parent.mkdir(parents=True, exist_ok=True)
-
     np.savez_compressed(
         output,
         energy_values_J=catalog.energy_values_J,
@@ -232,16 +235,13 @@ def save_usadel_catalog_npz(catalog: UsadelCatalog, path: str | Path) -> Path:
         calibration_sum_s2_values=catalog.calibration_sum_s2_values,
         metadata=np.array(catalog.metadata, dtype=object),
     )
-
     return output
 
 
 def load_usadel_catalog_npz(path: str | Path) -> UsadelCatalog:
-    """
-    Load a catalogue saved by :func:`save_usadel_catalog_npz`.
-    """
-    source = Path(path)
+    """Load a catalogue saved by :func:`save_usadel_catalog_npz`."""
 
+    source = Path(path)
     with np.load(source, allow_pickle=True) as data:
         metadata = data["metadata"].item()
         return UsadelCatalog(
@@ -266,14 +266,33 @@ def load_usadel_catalog_npz(path: str | Path) -> UsadelCatalog:
 
 
 def J_to_meV(value_J: float) -> float:
-    """
-    Convert Joules to meV.
-    """
+    """Convert Joules to meV."""
+
     return float(value_J / 1.602176634e-22)
 
 
 def meV_axis(values_J: np.ndarray) -> np.ndarray:
-    """
-    Convert a Joule energy axis to meV.
-    """
+    """Convert a Joule energy axis to meV."""
+
     return np.asarray(values_J, dtype=float) / 1.602176634e-22
+
+
+def _resolve_parallel(
+    cfg: Mapping[str, Any],
+    workers: int | None,
+    backend: str | None,
+) -> tuple[int, str]:
+    parallel = cfg.get("parallel", {}) if isinstance(cfg, Mapping) else {}
+    resolved_backend = str(backend or parallel.get("backend", "process")).lower()
+    if resolved_backend not in {"process", "thread", "serial"}:
+        resolved_backend = "process"
+    if workers is None:
+        if bool(parallel.get("enabled", False)):
+            resolved_workers = int(parallel.get("workers", 1))
+        else:
+            resolved_workers = 1
+    else:
+        resolved_workers = int(workers)
+    if resolved_backend == "serial":
+        resolved_workers = 1
+    return max(1, resolved_workers), resolved_backend

@@ -140,7 +140,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     cfg = validate_config(load_config(args.config))
-    workers = _resolve_workers(cfg, args.workers)
+    workers, parallel_backend = _resolve_parallel(cfg, args.workers)
     layout = create_run_layout(cfg, args.run_name)
     run_name = layout["run_name"]
     raw_pre = Path(layout["raw_pre"])
@@ -182,6 +182,8 @@ def main() -> int:
         eta_fraction=args.eta_fraction,
         gamma_max_fraction=args.gamma_max_fraction,
         energy_max_factor=args.energy_max_factor,
+        workers=workers,
+        parallel_backend=parallel_backend,
     )
     usadel_npz = save_usadel_catalog_npz(usadel_catalog, raw_pre / "usadel_dos_catalog.npz")
 
@@ -204,6 +206,7 @@ def main() -> int:
         sigma_n_S_m=float(usadel_catalog.metadata["sigma_n_S_m"]),
         n_matsubara=int(usadel_catalog.metadata.get("n_matsubara_configured", 500)),
         workers=workers,
+        backend=parallel_backend,
     )
     append_supercurrent_table_3d_to_npz(str(usadel_npz), js_table)
     js_summary = supercurrent_table_summary(js_table)
@@ -303,8 +306,9 @@ def main() -> int:
         stage="pre",
         extra={
             "pipeline": "01_prerun_template.py",
-            "purpose": "Official PRE-run: pyTDGL-style mesh, dirty-limit Usadel, Matsubara current table, phase-space catalogue.",
+            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, phase-space catalogue.",
             "workers": int(workers),
+            "parallel_backend": str(parallel_backend),
             "outputs": outputs,
             "mesh_edge_summary": mesh_edge_summary,
             "usadel_summary": usadel_summary,
@@ -343,13 +347,26 @@ def main() -> int:
     return 0
 
 
-def _resolve_workers(cfg: dict[str, Any], requested: int | None) -> int:
-    if requested is not None:
-        return max(1, int(requested))
+def _resolve_parallel(cfg: dict[str, Any], requested_workers: int | None) -> tuple[int, str]:
+    """Resolve PRE-run parallel settings from CLI/config.
+
+    ``--workers`` overrides only the worker count. The backend still comes from
+    ``parallel.backend`` in the YAML so Geminga can use ``process`` by default.
+    """
+
     parallel = cfg.get("parallel", {}) if isinstance(cfg, dict) else {}
-    if bool(parallel.get("enabled", False)):
-        return max(1, int(parallel.get("workers", 1)))
-    return 1
+    backend = str(parallel.get("backend", "process")).lower()
+    if backend not in {"process", "thread", "serial"}:
+        backend = "process"
+    if requested_workers is not None:
+        workers = max(1, int(requested_workers))
+    elif bool(parallel.get("enabled", False)):
+        workers = max(1, int(parallel.get("workers", 1)))
+    else:
+        workers = 1
+    if backend == "serial":
+        workers = 1
+    return workers, backend
 
 
 def _write_yaml(path: str | Path, data: MappingLike) -> None:
