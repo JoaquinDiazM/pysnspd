@@ -1,0 +1,70 @@
+project:
+  name: pysnspd_template_project
+  big_data_root: /home/jdiaz/scratch/big_data
+  default_run_name: NbN_120nm_35uA_1064nm_test001
+
+parallel:
+  enabled: true
+  workers: 16
+  backend: process
+
+material:
+  name: NbN
+  Tc_K: 8.65
+  sigma_n_S_m: 4.2e5
+  lambda_L_m: 5.4e-7
+  thickness_m: 7.0e-9
+  width_m: 120.0e-9
+
+  # gTDGL/KWT relaxation times at Tc. These values are used directly.
+  # v2 keeps the fast relaxation regime that was previously obtained with
+  # the old 0.10 multiplier, but now encoded explicitly in the YAML.
+  tau_ee_Tc_ps: 0.5
+  tau_ep_Tc_ps: 2.47
+
+calibration:
+  Ic_target_A: 38.8e-6
+  n_gamma_sweep: 160
+  gamma_max_fraction: 0.80
+  D_warn_min_m2_s: 5.0e-5
+  D_warn_max_m2_s: 5.0e-4
+
+bias:
+  T_bias_K: 0.9
+  I_bias_A: 35.0e-6
+
+mesh:
+  type: delaunay
+  target_spacing_m: 4.0e-9
+  seed: 12345
+  pytdgl_boundary_points: 181
+  pytdgl_smooth: 0
+
+catalogs:
+  dos:
+    n_delta: 21
+    n_q: 26
+    n_energy: 2000
+    n_matsubara: 500
+  phase_space:
+    n_Te: 40
+    n_Tph: 40
+    n_delta: 21
+    n_q: 26
+    n_omega: 1200
+
+ss_run:
+  max_steps: 10000
+  dt_s: 1.0e-15
+  convergence_tol: 1.0e-7
+
+photon_run:
+  photon_wavelength_m: 1064.0e-9
+  max_steps: 20000
+  dt_s: 1.0e-15
+  bubble_radius_m: 10.0e-9
+
+circuit:
+  R_load_ohm: 50.0
+  L_bias_H: 1.0e-6
+  C_rf_F: 1.0e-12

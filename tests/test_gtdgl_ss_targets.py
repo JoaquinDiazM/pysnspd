@@ -19,9 +19,8 @@ def _material() -> GTDGLMaterial:
         delta0_J=2.10667708314e-22,
         thickness_m=7e-9,
         width_m=120e-9,
-        tau_ee_Tc_s=5.0e-12,
-        tau_ep_Tc_s=24.7e-12,
-        tau_scale=0.10,
+        tau_ee_Tc_s=0.5e-12,
+        tau_ep_Tc_s=2.47e-12,
     )
 
 
@@ -67,7 +66,7 @@ def test_stationarity_diagnostics_uses_gradients_not_global_fields():
     edge_length_m = np.full(3, 1.0e-9)
 
     # Same physical edge Q and same grad(phi), but different global phase and
-    # constant potential offset.  This must pass because those offsets are gauge
+    # constant potential offset. This must pass because those offsets are gauge
     # choices in the present A=0 gauge-fixed backend.
     psi0 = np.ones(4, dtype=np.complex128) * delta0
     psi1 = psi0 * np.exp(1j * 0.7)
@@ -77,10 +76,12 @@ def test_stationarity_diagnostics_uses_gradients_not_global_fields():
         "psi_snapshot_real_J": np.vstack([np.real(psi0), np.real(psi1)]),
         "psi_snapshot_imag_J": np.vstack([np.imag(psi0), np.imag(psi1)]),
         "phi_snapshot_V": np.vstack([phi0, phi1]),
-        "edge_Q_snapshot_m_inv": np.vstack([
-            np.array([1.0e7, 1.1e7, 1.2e7]),
-            np.array([1.0e7, 1.1e7, 1.2e7]),
-        ]),
+        "edge_Q_snapshot_m_inv": np.vstack(
+            [
+                np.array([1.0e7, 1.1e7, 1.2e7]),
+                np.array([1.0e7, 1.1e7, 1.2e7]),
+            ]
+        ),
         "edge_i": edge_i,
         "edge_j": edge_j,
         "edge_length_m": edge_length_m,
@@ -109,10 +110,12 @@ def test_stationarity_diagnostics_detects_changing_phase_gradient():
         "psi_snapshot_real_J": np.ones((2, 4)) * delta0,
         "psi_snapshot_imag_J": np.zeros((2, 4)),
         "phi_snapshot_V": np.zeros((2, 4)),
-        "edge_Q_snapshot_m_inv": np.vstack([
-            np.array([1.0e7, 1.0e7, 1.0e7]),
-            np.array([1.2e7, 1.0e7, 0.8e7]),
-        ]),
+        "edge_Q_snapshot_m_inv": np.vstack(
+            [
+                np.array([1.0e7, 1.0e7, 1.0e7]),
+                np.array([1.2e7, 1.0e7, 0.8e7]),
+            ]
+        ),
         "edge_i": np.array([0, 1, 2], dtype=np.int64),
         "edge_j": np.array([1, 2, 3], dtype=np.int64),
         "edge_length_m": np.full(3, 1.0e-9),
@@ -141,10 +144,12 @@ def test_stationarity_diagnostics_excludes_zero_delta_terminal_edges():
         "psi_snapshot_real_J": np.vstack([np.real(psi0), np.real(psi1)]),
         "psi_snapshot_imag_J": np.vstack([np.imag(psi0), np.imag(psi1)]),
         "phi_snapshot_V": np.zeros((2, 4)),
-        "edge_Q_snapshot_m_inv": np.vstack([
-            np.array([9.0e99, 1.0e7, 1.0e7]),
-            np.array([-9.0e99, 1.0e7, 1.0e7]),
-        ]),
+        "edge_Q_snapshot_m_inv": np.vstack(
+            [
+                np.array([9.0e99, 1.0e7, 1.0e7]),
+                np.array([-9.0e99, 1.0e7, 1.0e7]),
+            ]
+        ),
         "edge_i": np.array([0, 1, 2], dtype=np.int64),
         "edge_j": np.array([1, 2, 3], dtype=np.int64),
         "edge_length_m": np.full(3, 1.0e-9),
@@ -163,24 +168,28 @@ def test_stationarity_diagnostics_excludes_zero_delta_terminal_edges():
     assert diag.active_edge_count == 1
 
 
-
 def test_stationarity_diagnostics_excludes_contact_conversion_region():
     material = _material()
     delta0 = material.delta0_J
+
     # Edge 0 is inside the metallic-contact conversion region and changes a lot.
     # Edges 1 and 2 are bulk edges and remain stationary.
     history = {
         "psi_snapshot_real_J": np.ones((2, 4)) * delta0,
         "psi_snapshot_imag_J": np.zeros((2, 4)),
         "phi_snapshot_V": np.zeros((2, 4)),
-        "edge_Q_snapshot_m_inv": np.vstack([
-            np.array([1.0e7, 1.0e7, 1.0e7]),
-            np.array([5.0e8, 1.0e7, 1.0e7]),
-        ]),
-        "edge_phi_gradient_snapshot_V_m": np.vstack([
-            np.array([0.0, 10.0, 12.0]),
-            np.array([2.0e5, 10.0, 12.0]),
-        ]),
+        "edge_Q_snapshot_m_inv": np.vstack(
+            [
+                np.array([1.0e7, 1.0e7, 1.0e7]),
+                np.array([5.0e8, 1.0e7, 1.0e7]),
+            ]
+        ),
+        "edge_phi_gradient_snapshot_V_m": np.vstack(
+            [
+                np.array([0.0, 10.0, 12.0]),
+                np.array([2.0e5, 10.0, 12.0]),
+            ]
+        ),
         "edge_i": np.array([0, 1, 2], dtype=np.int64),
         "edge_j": np.array([1, 2, 3], dtype=np.int64),
         "edge_length_m": np.full(3, 1.0e-9),

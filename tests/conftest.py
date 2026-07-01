@@ -67,9 +67,8 @@ def gtdgl_material():
         delta0_J=1.764 * K_B_J_K * Tc,
         thickness_m=7.0e-9,
         width_m=1.2e-7,
-        tau_ee_Tc_s=5.0e-12,
-        tau_ep_Tc_s=24.7e-12,
-        tau_scale=1.0,
+        tau_ee_Tc_s=0.5e-12,
+        tau_ep_Tc_s=2.47e-12,
     )
 
 
