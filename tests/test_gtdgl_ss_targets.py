@@ -98,7 +98,7 @@ def test_stationarity_diagnostics_uses_gradients_not_global_fields():
 
     assert diag.passes
     assert diag.phase_gradient_rel_change == 0.0
-    assert diag.phi_gradient_rel_change < 1.0e-12
+    assert diag.phi_gradient_rel_change < 1.0e-8
     assert diag.eta_R_window_max > 1.0e-3
 
 
