@@ -50,6 +50,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--ss-progress", action="store_true")
     parser.add_argument("--ss-terminal-psi", type=float, default=0.0)
     parser.add_argument(
+        "--ss-terminal-healing-xi",
+        type=float,
+        default=None,
+        help=(
+            "Apply a smooth tanh contact-healing envelope to the initial |Delta| seed. "
+            "Use 2.5 for the first metallic-contact SS objective."
+        ),
+    )
+    parser.add_argument("--ss-terminal-healing-fraction", type=float, default=0.95)
+    parser.add_argument("--ss-stationarity-eta", type=float, default=1.0e-5)
+    parser.add_argument("--ss-stationarity-delta-rel", type=float, default=1.0e-4)
+    parser.add_argument("--ss-stationarity-phi-rel", type=float, default=1.0e-4)
+    parser.add_argument("--ss-convergence-min-steps", type=int, default=50)
+    parser.add_argument("--ss-continuity-rms-tol", type=float, default=1.0e-6)
+    parser.add_argument("--ss-continuity-max-tol", type=float, default=1.0e-3)
+    parser.add_argument("--ss-continuity-poisson-tol", type=float, default=1.0e-9)
+    parser.add_argument("--ss-recovery-min-xi", type=float, default=1.5)
+    parser.add_argument("--ss-recovery-max-xi", type=float, default=4.0)
+    parser.add_argument(
         "--ss-no-adaptive",
         action="store_true",
         help="Disable adaptive time stepping in the pyTDGL-like core.",
@@ -135,6 +154,17 @@ def main() -> int:
         n_snapshots=int(args.ss_snapshots),
         progress=bool(args.ss_progress),
         supercurrent_law=supercurrent_law,
+        terminal_healing_xi=args.ss_terminal_healing_xi,
+        terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
+        stationarity_eta=float(args.ss_stationarity_eta),
+        stationarity_delta_rel=float(args.ss_stationarity_delta_rel),
+        stationarity_phi_rel=float(args.ss_stationarity_phi_rel),
+        convergence_min_steps=int(args.ss_convergence_min_steps),
+        continuity_rms_tol=float(args.ss_continuity_rms_tol),
+        continuity_max_tol=float(args.ss_continuity_max_tol),
+        continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
+        recovery_min_xi=float(args.ss_recovery_min_xi),
+        recovery_max_xi=float(args.ss_recovery_max_xi),
     )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")

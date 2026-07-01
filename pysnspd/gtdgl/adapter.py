@@ -27,6 +27,12 @@ from .allmaras import (
 from .device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
 from .solver import TDGLSolver
+from .ss_targets import (
+    apply_terminal_proximity_seed,
+    contact_recovery_diagnostics,
+    continuity_diagnostics,
+    stationarity_diagnostics,
+)
 
 MEV_J = 1.602176634e-22
 
@@ -50,6 +56,17 @@ def solve_stationary_pytdgl_like(
     n_snapshots: int = 6,
     progress: bool = False,
     supercurrent_law: str = "gl",
+    terminal_healing_xi: float | None = None,
+    terminal_healing_fraction: float = 0.95,
+    stationarity_eta: float = 1.0e-5,
+    stationarity_delta_rel: float = 1.0e-4,
+    stationarity_phi_rel: float = 1.0e-4,
+    convergence_min_steps: int = 50,
+    continuity_rms_tol: float = 1.0e-6,
+    continuity_max_tol: float = 1.0e-3,
+    continuity_poisson_tol: float = 1.0e-9,
+    recovery_min_xi: float = 1.5,
+    recovery_max_xi: float = 4.0,
 ) -> RelaxationResult:
     """Run the essential pyTDGL-like stationary solver on a pySNSPD seed.
 
@@ -136,6 +153,15 @@ def solve_stationary_pytdgl_like(
     terminal_currents_A = {"left": -target_current_A, "right": target_current_A}
 
     psi0 = psi0_J / material.delta0_J
+    psi0, proximity_seed_diag = apply_terminal_proximity_seed(
+        psi0,
+        nodes_m=np.asarray(mesh.nodes, dtype=float)[:, :2],
+        material=material,
+        Te_K=Te,
+        healing_target_xi=terminal_healing_xi,
+        target_bulk_fraction=float(terminal_healing_fraction),
+        terminal_value=0.0 if terminal_psi is None else terminal_psi,
+    )
     mu0 = (phi0_V - float(np.mean(phi0_V))) / device.voltage_scale_V
     seed_solution = {
         "psi": psi0,
@@ -191,6 +217,8 @@ def solve_stationary_pytdgl_like(
         supercurrent_override=supercurrent_override,
         supercurrent_law=supercurrent_law,
         allmaras_forcing_callback=allmaras_forcing_callback,
+        stop_eta=float(stationarity_eta) if stationarity_eta is not None and stationarity_eta > 0.0 else None,
+        stop_min_steps=int(convergence_min_steps),
     )
     solver.snapshot_count = max(2, int(n_snapshots))
     solution = solver.solve()
@@ -233,11 +261,42 @@ def solve_stationary_pytdgl_like(
         n_snapshots=n_snapshots,
     )
 
+    stationarity_diag = stationarity_diagnostics(
+        history=history,
+        material=material,
+        delta_rel_tol=float(stationarity_delta_rel),
+        phi_rel_tol=float(stationarity_phi_rel),
+        eta_tol=float(stationarity_eta),
+    )
+    recovery_diag = contact_recovery_diagnostics(
+        psi_dimensionless=psi_final,
+        nodes_m=np.asarray(mesh.nodes, dtype=float)[:, :2],
+        material=material,
+        Te_K=Te,
+        threshold_fraction=float(terminal_healing_fraction),
+        min_allowed_xi=float(recovery_min_xi),
+        max_allowed_xi=float(recovery_max_xi),
+        bin_width_m=float(getattr(mesh, "target_spacing_m", 0.0) or 0.0),
+    )
+    continuity_diag = continuity_diagnostics(
+        currents=currents,
+        mesh=mesh,
+        material=material,
+        target_current_A=target_current_A,
+        history=history,
+        rms_tol=float(continuity_rms_tol),
+        max_tol=float(continuity_max_tol),
+        poisson_tol=float(continuity_poisson_tol),
+    )
+    magic_ready = bool(stationarity_diag.passes and recovery_diag.passes and continuity_diag.passes)
+
     jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
     summary: dict[str, Any] = {
         "backend": "pytdgl_like_minimal_no_screening",
         "supercurrent_law": supercurrent_law,
-        "converged": False,
+        "converged": bool(solution.history.get("converged", np.array([False], dtype=bool))[0]),
+        "convergence_reason": str(solution.history.get("convergence_reason", np.array(["not_reported"], dtype=object))[0]),
+        "first_magic_ready": magic_ready,
         "accepted_steps": int(solution.history.get("final_step", np.array([0]))[0]),
         "rejected_steps": 0,
         "final_time_ps": float(solution.history.get("final_time", np.array([0.0]))[0] * tau0 / 1.0e-12),
@@ -257,6 +316,10 @@ def solve_stationary_pytdgl_like(
         "allmaras_delta_mod_seed_min_over_delta0": float(np.nanmin(allmaras0.delta_mod_over_delta0)),
         "allmaras_delta_mod_seed_median_over_delta0": float(np.nanmedian(allmaras0.delta_mod_over_delta0)),
         "allmaras_delta_mod_seed_max_over_delta0": float(np.nanmax(allmaras0.delta_mod_over_delta0)),
+        "proximity_seed": proximity_seed_diag.as_dict(),
+        "stationarity": stationarity_diag.as_dict(),
+        "contact_recovery": recovery_diag.as_dict(),
+        "continuity": continuity_diag.as_dict(),
         "terminal_psi": None if terminal_psi is None else str(terminal_psi),
         "normal_terminal_enforced": bool(terminal_psi is not None and np.any(terminal_site_mask)),
         "normal_terminal_n_nodes": int(np.count_nonzero(terminal_site_mask)),
@@ -331,6 +394,10 @@ def solve_stationary_pytdgl_like(
             "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
             "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1",
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
+            "first_magic_ready": magic_ready,
+            "stationarity": stationarity_diag.as_dict(),
+            "contact_recovery": recovery_diag.as_dict(),
+            "continuity": continuity_diag.as_dict(),
         },
     )
     return RelaxationResult(state=state, history=history, summary=summary)

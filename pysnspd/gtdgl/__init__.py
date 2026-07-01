@@ -14,6 +14,12 @@ from .solver import SolverResult, TDGLSolver, validate_terminal_currents
 from .adapter import solve_stationary_pytdgl_like
 from .allmaras import AllmarasForcingFields, compute_allmaras_forcing_dimensionless
 from .state import CurrentFields, GTDGLStationaryState, RelaxationResult
+from .ss_targets import (
+    apply_terminal_proximity_seed,
+    contact_recovery_diagnostics,
+    continuity_diagnostics,
+    stationarity_diagnostics,
+)
 
 __all__ = [
     "GTDGLMaterial",
@@ -32,4 +38,8 @@ __all__ = [
     "solve_stationary_pytdgl_like",
     "AllmarasForcingFields",
     "compute_allmaras_forcing_dimensionless",
+    "apply_terminal_proximity_seed",
+    "contact_recovery_diagnostics",
+    "continuity_diagnostics",
+    "stationarity_diagnostics",
 ]
