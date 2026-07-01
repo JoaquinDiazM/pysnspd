@@ -23,7 +23,10 @@ from pysnspd.usadel.catalog import load_usadel_catalog_npz
 from pysnspd.gtdgl import build_fv_operators, build_gtdgl_material, solve_stationary_pytdgl_like
 from pysnspd.gtdgl.seed import build_stationary_seed, save_stationary_seed_npz, seed_summary
 from pysnspd.gtdgl.state_io import save_relaxation_history_npz, save_stationary_state_npz
-from pysnspd.gtdgl.usadel_current import attach_usadel_supercurrent_table_from_npz
+from pysnspd.gtdgl.usadel_current import (
+    attach_usadel_supercurrent_table_from_npz,
+    validate_strict_usadel_supercurrent_table_npz,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -121,10 +124,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ss-supercurrent-law",
         choices=("auto", "gl", "usadel-poisson"),
-        default="auto",
+        default="usadel-poisson",
         help=(
-            "auto uses the PRE Matsubara Usadel table when present, otherwise GL. "
-            "Use usadel-poisson to require the table and fail loudly if absent."
+            "Default is strict usadel-poisson.  SS refuses legacy 1D/2D current tables; "
+            "PRE must provide js_A_m2[Te,delta,q]."
+        ),
+    )
+    parser.add_argument(
+        "--ss-allmaras-contact-guard-layers",
+        type=int,
+        default=2,
+        help=(
+            "Disable the Allmaras current-mismatch correction on terminal/contact nodes "
+            "and this many graph-neighbor layers. Diffusion/reaction terms remain active."
         ),
     )
     return parser.parse_args()
@@ -155,11 +167,12 @@ def main() -> int:
     edge_data = load_edges_npz(edges_path)
     ops = build_fv_operators(mesh, edge_data)
 
+    strict_table_summary = validate_strict_usadel_supercurrent_table_npz(usadel_path)
     base_usadel_catalog = load_usadel_catalog_npz(usadel_path)
     usadel_catalog = attach_usadel_supercurrent_table_from_npz(base_usadel_catalog, usadel_path)
     supercurrent_law, supercurrent_policy = _resolve_supercurrent_law(
         requested=args.ss_supercurrent_law,
-        usadel_npz=usadel_path,
+        strict_table_summary=strict_table_summary,
     )
 
     target_current_A = None
@@ -215,6 +228,7 @@ def main() -> int:
         continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
         recovery_min_xi=float(args.ss_recovery_min_xi),
         recovery_max_xi=float(args.ss_recovery_max_xi),
+        allmaras_contact_guard_layers=int(args.ss_allmaras_contact_guard_layers),
     )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")
@@ -225,6 +239,7 @@ def main() -> int:
         "pre_run_name": pre_name,
         "backend": "flat_gtdgl_pytdgl_like_promoted_backend",
         "supercurrent_policy": supercurrent_policy,
+        "strict_usadel_current_table": strict_table_summary,
         "seed": seed_summary_data,
         "solver": result.summary,
         "outputs": {
@@ -272,58 +287,23 @@ def main() -> int:
     return 0
 
 
-def _resolve_supercurrent_law(*, requested: str, usadel_npz: Path) -> tuple[str, dict[str, Any]]:
+def _resolve_supercurrent_law(*, requested: str, strict_table_summary: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     requested_norm = requested.strip().lower().replace("_", "-")
-    has_table = _npz_has_usadel_current_table(usadel_npz)
-    if requested_norm == "gl":
-        return "gl", {
-            "requested": requested,
-            "resolved": "gl",
-            "has_matsubara_table": has_table,
-            "reason": "User explicitly requested the native GL current law.",
-        }
-    if requested_norm == "usadel-poisson":
-        if not has_table:
-            raise RuntimeError(
-                "--ss-supercurrent-law usadel-poisson requires a PRE Usadel current table. "
-                "Run the updated 01_prerun_template.py first, or use --ss-supercurrent-law gl."
-            )
-        return "usadel_poisson", {
-            "requested": requested,
-            "resolved": "usadel_poisson",
-            "has_matsubara_table": True,
-            "reason": "User explicitly required the PRE Matsubara Usadel supercurrent table.",
-        }
-    if requested_norm != "auto":
-        raise ValueError(f"Unknown supercurrent law: {requested!r}")
-    if has_table:
-        return "usadel_poisson", {
-            "requested": requested,
-            "resolved": "usadel_poisson",
-            "has_matsubara_table": True,
-            "reason": "AUTO selected the PRE Matsubara Usadel supercurrent table.",
-        }
-    return "gl", {
+    if requested_norm == "auto":
+        requested_norm = "usadel-poisson"
+    if requested_norm != "usadel-poisson":
+        raise RuntimeError(
+            "This SS pipeline is configured to require the strict PRE table "
+            "js_A_m2[Te,delta,q].  Use a separate legacy/debug script for GL-only tests."
+        )
+    return "usadel_poisson", {
         "requested": requested,
-        "resolved": "gl",
-        "has_matsubara_table": False,
-        "reason": "AUTO fell back to GL because the PRE NPZ has no Usadel current table.",
+        "resolved": "usadel_poisson",
+        "has_strict_3d_table": True,
+        "strict_table": strict_table_summary,
+        "reason": "SS requires the strict PRE Matsubara Usadel table js_A_m2[Te,delta,q].",
     }
 
-
-def _npz_has_usadel_current_table(path: Path) -> bool:
-    current_keys = {
-        "js_A_m2",
-        "j_s_A_m2",
-        "supercurrent_density_A_m2",
-        "current_density_A_m2",
-        "j_s_grid_A_m2",
-        "js_grid_A_m2",
-    }
-    q_keys = {"q_axis_m_inv", "q_values_m_inv", "q_grid_m_inv"}
-    with np.load(path, allow_pickle=False) as data:
-        keys = set(data.files)
-    return bool(keys & current_keys) and bool(keys & q_keys)
 
 
 def _require_file(path: Path, description: str) -> None:

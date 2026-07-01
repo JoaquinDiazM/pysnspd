@@ -45,6 +45,12 @@ from pysnspd.kinetic.phase_space import (
     save_phase_space_catalog_npz,
 )
 from pysnspd.plotting.pre_diagnostics import write_pre_diagnostic_plots
+from pysnspd.usadel.supercurrent_table import (
+    append_supercurrent_table_3d_to_npz,
+    build_matsubara_supercurrent_table_3d,
+    supercurrent_table_summary,
+    temperature_axis_from_request,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -60,8 +66,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--workers",
         type=int,
-        default=1,
-        help="Reserved for catalogue-building workflows; recorded in the manifest.",
+        default=None,
+        help="Catalogue workers. If omitted, use parallel.workers from the config when enabled.",
     )
     parser.add_argument(
         "--no-progress",
@@ -85,6 +91,39 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gamma-max-fraction", type=float, default=0.80)
     parser.add_argument("--energy-max-factor", type=float, default=30.0)
 
+
+    # Strict 3D Usadel supercurrent table for SS.
+    parser.add_argument(
+        "--js-table-n-Te",
+        type=int,
+        default=3,
+        help="Number of electronic-temperature points for js_A_m2[Te,delta,q]. Use 1 for a cheap smoke PRE-run.",
+    )
+    parser.add_argument(
+        "--js-table-Te-min-K",
+        type=float,
+        default=None,
+        help="Minimum Te for the 3D Usadel supercurrent table. Defaults to bias T.",
+    )
+    parser.add_argument(
+        "--js-table-Te-max-K",
+        type=float,
+        default=None,
+        help="Maximum Te for the 3D Usadel supercurrent table. Defaults near Tc when n_Te > 1.",
+    )
+    parser.add_argument(
+        "--js-table-n-delta",
+        type=int,
+        default=None,
+        help="Number of |Delta| points for the strict current table. Defaults to catalogs.dos.n_delta.",
+    )
+    parser.add_argument(
+        "--js-table-n-q",
+        type=int,
+        default=None,
+        help="Number of q points for the strict current table. Defaults to catalogs.dos.n_q.",
+    )
+
     # Phase space / OE4.
     parser.add_argument("--skip-phase-space", action="store_true")
     parser.add_argument("--phase-n-Te", type=int, default=6)
@@ -101,6 +140,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     cfg = validate_config(load_config(args.config))
+    workers = _resolve_workers(cfg, args.workers)
     layout = create_run_layout(cfg, args.run_name)
     run_name = layout["run_name"]
     raw_pre = Path(layout["raw_pre"])
@@ -144,15 +184,39 @@ def main() -> int:
         energy_max_factor=args.energy_max_factor,
     )
     usadel_npz = save_usadel_catalog_npz(usadel_catalog, raw_pre / "usadel_dos_catalog.npz")
-    _append_matsubara_supercurrent_table(usadel_npz, usadel_catalog)
+
+    js_n_delta = int(args.js_table_n_delta or usadel_catalog.delta_values_J.size)
+    js_n_q = int(args.js_table_n_q or usadel_catalog.q_values_m_inv.size)
+    js_delta_axis = np.linspace(0.0, float(np.max(usadel_catalog.delta_values_J)), js_n_delta)
+    js_q_axis = np.linspace(0.0, float(np.max(usadel_catalog.q_values_m_inv)), js_n_q)
+    js_Te_axis = temperature_axis_from_request(
+        T_bias_K=float(usadel_catalog.metadata["T_bias_K"]),
+        Tc_K=float(usadel_catalog.metadata["Tc_K"]),
+        n_Te=int(args.js_table_n_Te),
+        Te_min_K=args.js_table_Te_min_K,
+        Te_max_K=args.js_table_Te_max_K,
+    )
+    js_table = build_matsubara_supercurrent_table_3d(
+        Te_axis_K=js_Te_axis,
+        delta_axis_J=js_delta_axis,
+        q_axis_m_inv=js_q_axis,
+        D_m2_s=float(usadel_catalog.metadata["D_m2_s"]),
+        sigma_n_S_m=float(usadel_catalog.metadata["sigma_n_S_m"]),
+        n_matsubara=int(usadel_catalog.metadata.get("n_matsubara_configured", 500)),
+        workers=workers,
+    )
+    append_supercurrent_table_3d_to_npz(str(usadel_npz), js_table)
+    js_summary = supercurrent_table_summary(js_table)
 
     usadel_summary = catalog_summary(usadel_catalog)
     usadel_summary["supercurrent_table"] = {
         "stored_in": str(usadel_npz),
-        "table_key": "j_s_A_m2",
-        "axis_key": "q_axis_m_inv",
-        "source": "Matsubara Usadel calibration sweep at T_bias.",
-        "purpose": "Used by the flat gTDGL SS backend when supercurrent_law=usadel_poisson.",
+        "table_key": "js_A_m2",
+        "layout": "Te,delta,q",
+        "axis_keys": ["Te_axis_K", "delta_axis_J", "q_axis_m_inv"],
+        "source": "Matsubara Usadel local-current table over q, |Delta| and Te.",
+        "purpose": "Required by SS usadel_poisson; legacy 1D j_s(q) tables are rejected.",
+        **js_summary,
     }
     usadel_summary_path = raw_pre / "usadel_dos_summary.yaml"
     _write_yaml(
@@ -163,7 +227,7 @@ def main() -> int:
             "metadata": usadel_catalog.metadata,
         },
     )
-    progress.advance("Usadel catalogue and Matsubara current table ready")
+    progress.advance("Usadel catalogue and strict 3D Matsubara current table ready")
 
     outputs: dict[str, str] = {
         "mesh_npz": str(mesh_npz),
@@ -240,7 +304,7 @@ def main() -> int:
         extra={
             "pipeline": "01_prerun_template.py",
             "purpose": "Official PRE-run: pyTDGL-style mesh, dirty-limit Usadel, Matsubara current table, phase-space catalogue.",
-            "workers": int(args.workers),
+            "workers": int(workers),
             "outputs": outputs,
             "mesh_edge_summary": mesh_edge_summary,
             "usadel_summary": usadel_summary,
@@ -279,38 +343,13 @@ def main() -> int:
     return 0
 
 
-def _append_matsubara_supercurrent_table(npz_path: str | Path, usadel_catalog: Any) -> None:
-    """Add the Matsubara Usadel supercurrent table to the PRE NPZ.
-
-    The gTDGL Appendix-B current closure is obtained from a precalculated table.
-    The current table saved here is the stable calibration sweep
-
-        j_s(q, T_bias) = (2 pi k_B T_bias / |e| hbar) sigma_n q sum_n s_n^2,
-
-    already computed by the Usadel layer. The flat gTDGL backend can use this
-    one-dimensional table directly for stationary/frozen-temperature tests.
-    """
-
-    path = Path(npz_path)
-    with np.load(path, allow_pickle=True) as data:
-        arrays = {key: data[key] for key in data.files}
-
-    arrays["j_s_A_m2"] = np.asarray(
-        usadel_catalog.calibration_current_density_values_A_m2,
-        dtype=float,
-    )
-    arrays["js_A_m2"] = arrays["j_s_A_m2"]
-    arrays["q_axis_m_inv"] = np.asarray(
-        usadel_catalog.calibration_q_values_m_inv,
-        dtype=float,
-    )
-    arrays["js_table_T_K"] = np.array(float(usadel_catalog.metadata["T_bias_K"]))
-    arrays["js_table_n_matsubara"] = np.array(
-        int(usadel_catalog.metadata.get("n_matsubara_configured", -1)),
-        dtype=np.int64,
-    )
-
-    np.savez_compressed(path, **arrays)
+def _resolve_workers(cfg: dict[str, Any], requested: int | None) -> int:
+    if requested is not None:
+        return max(1, int(requested))
+    parallel = cfg.get("parallel", {}) if isinstance(cfg, dict) else {}
+    if bool(parallel.get("enabled", False)):
+        return max(1, int(parallel.get("workers", 1)))
+    return 1
 
 
 def _write_yaml(path: str | Path, data: MappingLike) -> None:

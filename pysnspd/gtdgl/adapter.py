@@ -75,6 +75,7 @@ def solve_stationary_pytdgl_like(
     continuity_poisson_tol: float = 1.0e-9,
     recovery_min_xi: float = 1.5,
     recovery_max_xi: float = 4.0,
+    allmaras_contact_guard_layers: int = 2,
 ) -> RelaxationResult:
     """Run the essential pyTDGL-like stationary solver on a pySNSPD seed.
 
@@ -212,6 +213,7 @@ def solve_stationary_pytdgl_like(
         ops=ops,
         blocked_edge_mask=_terminal_edge_mask_from_device(device, ops),
         require_usadel=(supercurrent_law == "usadel_poisson"),
+        contact_guard_layers=int(allmaras_contact_guard_layers),
     )
 
     solver = TDGLSolver(
@@ -326,7 +328,8 @@ def solve_stationary_pytdgl_like(
         "pytdgl_u": u,
         "pytdgl_gamma": gamma_report,
         "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
-        "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1",
+        "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded",
+        "allmaras_contact_correction_guard_layers": int(allmaras_contact_guard_layers),
         "allmaras_solver_u": float(u),
         "allmaras_gamma_min": float(np.nanmin(gamma)) if gamma.size else float("nan"),
         "allmaras_gamma_median": gamma_report,
@@ -413,7 +416,8 @@ def solve_stationary_pytdgl_like(
             "current_scale_A": float(device.current_scale_A),
             "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
             "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
-            "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1",
+            "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded",
+            "allmaras_contact_correction_guard_layers": int(allmaras_contact_guard_layers),
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
             "first_magic_ready": magic_ready,
             "stationarity": stationarity_diag.as_dict(),
@@ -451,6 +455,22 @@ def _terminal_edge_mask_from_device(device, ops: FVOperators) -> np.ndarray:
     node_mask = _terminal_site_mask_from_device(device, ops.n_nodes)
     return node_mask[np.asarray(ops.edge_i, dtype=np.int64)] | node_mask[np.asarray(ops.edge_j, dtype=np.int64)]
 
+
+
+def _expand_node_mask_by_edges(mask: np.ndarray, *, ops: FVOperators, layers: int) -> np.ndarray:
+    """Expand a node mask by graph-neighbor layers on the FV edge graph."""
+    out = np.asarray(mask, dtype=bool).reshape(-1).copy()
+    if out.size != ops.n_nodes:
+        raise ValueError(f"mask has length {out.size}, expected {ops.n_nodes}.")
+    edge_i = np.asarray(ops.edge_i, dtype=np.int64)
+    edge_j = np.asarray(ops.edge_j, dtype=np.int64)
+    for _ in range(max(0, int(layers))):
+        touch = out[edge_i] | out[edge_j]
+        if not np.any(touch):
+            break
+        out[edge_i[touch]] = True
+        out[edge_j[touch]] = True
+    return out
 
 def _normalize_supercurrent_law(value: str) -> str:
     law = str(value).strip().lower().replace("-", "_")
@@ -510,6 +530,7 @@ def _build_allmaras_forcing_callback(
     ops: FVOperators,
     blocked_edge_mask: np.ndarray,
     require_usadel: bool,
+    contact_guard_layers: int = 2,
 ):
     """Build the Appendix-B forcing callback used by ``TDGLSolver``.
 
@@ -520,6 +541,12 @@ def _build_allmaras_forcing_callback(
 
     Te = np.asarray(Te_K, dtype=float).copy()
     L0 = float(device.length_scale_m)
+    terminal_node_mask = _terminal_site_mask_from_device(device, ops.n_nodes)
+    contact_guard_node_mask = _expand_node_mask_by_edges(
+        terminal_node_mask,
+        ops=ops,
+        layers=max(0, int(contact_guard_layers)),
+    )
 
     def callback(psi_dimensionless: np.ndarray, psi_laplacian) -> np.ndarray:
         psi = np.asarray(psi_dimensionless, dtype=np.complex128)
@@ -550,7 +577,17 @@ def _build_allmaras_forcing_callback(
             edge_js_usadel_A_m2=edge_js,
             blocked_edge_mask=blocked_edge_mask,
         )
-        return forcing.forcing_dimensionless
+        out = np.asarray(forcing.forcing_dimensionless, dtype=np.complex128).copy()
+        # Do not assume the Allmaras current-divergence correction is valid in
+        # the normal-metal contact conversion region.  Keep diffusion/reaction
+        # active but remove only the imaginary mismatch drive on the guarded
+        # contact nodes.
+        if np.any(contact_guard_node_mask):
+            out[contact_guard_node_mask] = (
+                np.asarray(forcing.diffusion_dimensionless, dtype=np.complex128)[contact_guard_node_mask]
+                + np.asarray(forcing.reaction_dimensionless, dtype=np.complex128)[contact_guard_node_mask]
+            )
+        return out
 
     return callback
 
