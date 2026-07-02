@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import PowerNorm
 import numpy as np
 
+from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_gamma_J
+from pysnspd.usadel.parameters import HBAR_J_S
 from pysnspd.mesh.delaunay import MeshData, triangle_areas
 from pysnspd.mesh.edges import EdgeData
 
@@ -502,10 +504,21 @@ def _catalog_field_on_equilibrium_gap(usadel_catalog: Any, *, field_name: str) -
 
 
 def _extract_equilibrium_gap_Tq_data(usadel_catalog: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Extract temperature, q, and equilibrium-gap data from the catalogue."""
+    """Extract or reconstruct the self-consistent equilibrium gap on the table axes.
+
+    Preferred path: read a stored two-dimensional Delta_eq(T,q) table if a future
+    PRE-run contains one. Current PRE-runs only store the strict local-current
+    table j_s(T,|Delta|,q), whose Delta axis is deliberately independent of BCS
+    self-consistency. For plotting, we reconstruct Delta_eq(T,q) from the same
+    Matsubara self-consistency equation used by the Usadel calibration, evaluated
+    on the stored supercurrent-table T and q axes, and then snap the result to the
+    closest stored Delta-axis value. This keeps the map consistent with the
+    catalogue resolution without requiring a new PRE-run format.
+    """
     temperature_candidates = [
         "js_table_temperature_values_K",
         "js_table_temperatures_K",
+        "Te_axis_K",
         "temperature_values_K",
         "Te_values_K",
         "temperatures_K",
@@ -515,17 +528,24 @@ def _extract_equilibrium_gap_Tq_data(usadel_catalog: Any) -> tuple[np.ndarray, n
     ]
     q_candidates = [
         "js_table_q_values_m_inv",
+        "q_axis_m_inv",
         "q_values_m_inv",
         "calibration_q_values_m_inv",
         "supercurrent_table_q_values_m_inv",
         "strict_3d_q_values_m_inv",
     ]
-    delta_candidates = [
+    table_delta_axis_candidates = [
+        "delta_axis_J",
+        "js_table_delta_axis_J",
+        "delta_values_J",
+        "supercurrent_table_delta_axis_J",
+        "strict_3d_delta_axis_J",
+    ]
+    delta_table_candidates = [
         "js_table_delta_eq_values_J",
         "js_table_equilibrium_gap_values_J",
         "delta_eq_Tq_values_J",
         "equilibrium_gap_Tq_values_J",
-        "delta_eq_values_J",
         "supercurrent_table_delta_eq_values_J",
         "strict_3d_delta_eq_values_J",
         "js_delta_eq_values_J",
@@ -534,25 +554,129 @@ def _extract_equilibrium_gap_Tq_data(usadel_catalog: Any) -> tuple[np.ndarray, n
 
     T_vals = _find_first_attr(usadel_catalog, temperature_candidates)
     q_vals = _find_first_attr(usadel_catalog, q_candidates)
-    delta_map = _find_first_attr(usadel_catalog, delta_candidates)
+    delta_map = _find_first_attr(usadel_catalog, delta_table_candidates)
 
     if T_vals is not None and q_vals is not None and delta_map is not None:
-        T_vals = np.asarray(T_vals, dtype=float)
-        q_vals = np.asarray(q_vals, dtype=float)
-        delta_map = np.asarray(delta_map, dtype=float)
-        if delta_map.ndim == 2 and delta_map.shape == (T_vals.size, q_vals.size):
-            return T_vals, q_vals, delta_map
-        if delta_map.ndim == 2 and delta_map.shape == (q_vals.size, T_vals.size):
-            return T_vals, q_vals, delta_map.T
+        T_vals_arr = np.asarray(T_vals, dtype=float)
+        q_vals_arr = np.asarray(q_vals, dtype=float)
+        delta_map_arr = np.asarray(delta_map, dtype=float)
+        if delta_map_arr.ndim == 2 and delta_map_arr.shape == (T_vals_arr.size, q_vals_arr.size):
+            return T_vals_arr, q_vals_arr, delta_map_arr
+        if delta_map_arr.ndim == 2 and delta_map_arr.shape == (q_vals_arr.size, T_vals_arr.size):
+            return T_vals_arr, q_vals_arr, delta_map_arr.T
+
+    delta_axis = _find_first_attr(usadel_catalog, table_delta_axis_candidates)
+    metadata = getattr(usadel_catalog, "metadata", {})
+    if T_vals is not None and q_vals is not None and delta_axis is not None:
+        T_vals_arr = np.asarray(T_vals, dtype=float)
+        q_vals_arr = np.asarray(q_vals, dtype=float)
+        delta_axis_arr = np.asarray(delta_axis, dtype=float)
+        inferred = _infer_self_consistent_gap_from_table_axes(
+            usadel_catalog=usadel_catalog,
+            T_vals_K=T_vals_arr,
+            q_vals_m_inv=q_vals_arr,
+            delta_axis_J=delta_axis_arr,
+            metadata=metadata,
+        )
+        if inferred is not None:
+            return T_vals_arr, q_vals_arr, inferred
 
     # Legacy fallback: use only the calibration branch at the configured bias temperature.
     q_cal = np.asarray(getattr(usadel_catalog, "calibration_q_values_m_inv"), dtype=float)
     delta_cal = np.asarray(_calibration_delta_eq_mev(usadel_catalog), dtype=float) * MEV_J
-    metadata = getattr(usadel_catalog, "metadata", {})
     T_bias = _metadata_float(metadata, "T_bias_K")
     if not np.isfinite(T_bias):
         T_bias = 0.0
     return np.asarray([T_bias], dtype=float), q_cal, delta_cal[None, :]
+
+
+def _infer_self_consistent_gap_from_table_axes(
+    *,
+    usadel_catalog: Any,
+    T_vals_K: np.ndarray,
+    q_vals_m_inv: np.ndarray,
+    delta_axis_J: np.ndarray,
+    metadata: Any,
+) -> np.ndarray | None:
+    """Compute Delta_eq(T,q) on existing table axes and snap to the Delta grid."""
+    D_m2_s = _metadata_float(metadata, "D_m2_s")
+    Tc_K = _metadata_float(metadata, "Tc_K")
+    n_matsubara = _integer_attr_or_metadata(
+        usadel_catalog,
+        metadata,
+        attr_candidates=("js_table_n_matsubara", "n_matsubara", "n_matsubara_configured"),
+        metadata_candidates=("js_table_n_matsubara", "n_matsubara", "n_matsubara_configured"),
+        default=500,
+    )
+    if not (np.isfinite(D_m2_s) and D_m2_s > 0.0 and np.isfinite(Tc_K) and Tc_K > 0.0):
+        return None
+
+    T_axis = np.asarray(T_vals_K, dtype=float).reshape(-1)
+    q_axis = np.asarray(q_vals_m_inv, dtype=float).reshape(-1)
+    delta_axis = np.asarray(delta_axis_J, dtype=float).reshape(-1)
+    delta_axis = delta_axis[np.isfinite(delta_axis) & (delta_axis >= 0.0)]
+    if T_axis.size == 0 or q_axis.size == 0 or delta_axis.size == 0:
+        return None
+    delta_axis = np.unique(delta_axis)
+    delta_axis.sort()
+
+    out = np.zeros((T_axis.size, q_axis.size), dtype=float)
+    gamma_axis_J = 0.5 * HBAR_J_S * float(D_m2_s) * q_axis * q_axis
+    for iT, T in enumerate(T_axis):
+        if not np.isfinite(T) or T <= 0.0 or T >= Tc_K:
+            continue
+        eps_n_J = matsubara_energy_axis_J(T_K=float(T), n_matsubara=int(n_matsubara))
+        for iq, gamma in enumerate(gamma_axis_J):
+            if not np.isfinite(gamma) or gamma < 0.0:
+                continue
+            delta_cont = solve_gap_for_gamma_J(
+                gamma_J=float(gamma),
+                T_K=float(T),
+                Tc_K=float(Tc_K),
+                eps_n_J=eps_n_J,
+            )
+            if delta_cont <= 0.0:
+                out[iT, iq] = 0.0
+                continue
+            # The map represents the equilibrium gap available to interpolation on the
+            # stored table, so snap the continuous Matsubara solution to the nearest
+            # PRE-run Delta-axis value.
+            idx = int(np.nanargmin(np.abs(delta_axis - delta_cont)))
+            out[iT, iq] = float(delta_axis[idx])
+    return out
+
+
+def _integer_attr_or_metadata(
+    obj: Any,
+    metadata: Any,
+    *,
+    attr_candidates: tuple[str, ...],
+    metadata_candidates: tuple[str, ...],
+    default: int,
+) -> int:
+    for name in attr_candidates:
+        if hasattr(obj, name):
+            try:
+                value = np.asarray(getattr(obj, name)).reshape(-1)[0]
+                return int(value)
+            except Exception:
+                pass
+    if isinstance(metadata, dict):
+        for name in metadata_candidates:
+            if name in metadata:
+                try:
+                    return int(metadata[name])
+                except Exception:
+                    pass
+        supercurrent = metadata.get("supercurrent_table")
+        if isinstance(supercurrent, dict):
+            for name in metadata_candidates:
+                if name in supercurrent:
+                    try:
+                        return int(supercurrent[name])
+                    except Exception:
+                        pass
+    return int(default)
 
 
 def _find_first_attr(obj: Any, candidates: list[str]) -> Any | None:

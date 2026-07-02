@@ -50,11 +50,6 @@ def test_write_pre_diagnostic_plots_smoke(tmp_path):
     calibration_q = np.linspace(0.0, 1.0e8, 8)
     calibration_delta = 2.0e-22 * np.clip(1.0 - (calibration_q / 1.0e8) ** 2, 0.0, None)
     js_table_temperature_values_K = np.array([0.9, 4.0, 8.0], dtype=float)
-    js_table_delta_eq_values_J = np.vstack([
-        calibration_delta,
-        0.65 * calibration_delta,
-        0.15 * calibration_delta,
-    ])
 
     rho = np.empty((delta_values.size, q_values.size, energy_values.size), dtype=float)
     anomalous = np.empty_like(rho)
@@ -74,7 +69,10 @@ def test_write_pre_diagnostic_plots_smoke(tmp_path):
         calibration_delta_eq_values_J=calibration_delta,
         js_table_temperature_values_K=js_table_temperature_values_K,
         js_table_q_values_m_inv=calibration_q,
-        js_table_delta_eq_values_J=js_table_delta_eq_values_J,
+        Te_axis_K=js_table_temperature_values_K,
+        q_axis_m_inv=calibration_q,
+        delta_axis_J=delta_values,
+        js_table_n_matsubara=np.array(80, dtype=np.int64),
         q_values_m_inv=q_values,
         delta_values_J=delta_values,
         energy_values_J=energy_values,
