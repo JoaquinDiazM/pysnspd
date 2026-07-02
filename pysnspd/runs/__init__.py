@@ -1,1 +1,0 @@
-"""runs subpackage for pySNSPD."""

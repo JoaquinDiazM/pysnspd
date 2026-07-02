@@ -10,6 +10,6 @@ Recommended first implementation targets:
 4. `pysnspd.mesh.edges`
 5. `pysnspd.usadel.catalog`
 6. `pysnspd.kinetic.phase_space`
-7. `pysnspd.runs.prerun`
+7. `pipelines/01_prerun_template.py`
 
 Do not implement PHOTON-run before the SS-run diagnostics are reliable.
