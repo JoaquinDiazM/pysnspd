@@ -29,6 +29,9 @@ class GTDGLMaterial:
     width_m: float
     tau_ee_Tc_s: float
     tau_ep_Tc_s: float
+    D_base_m2_s: float | None = None
+    D_effective_factor: float = 1.0
+
     @property
     def tau0_GL_s(self) -> float:
         """Return the GL time scale pi*hbar/(8*kB*Tc)."""
@@ -96,6 +99,8 @@ class GTDGLMaterial:
 def build_gtdgl_material(
     config: Mapping[str, Any],
     usadel_catalog: Any,
+    *,
+    diffusion_factor: float = 1.0,
 ) -> GTDGLMaterial:
     """Build gTDGL material parameters from the project config and OE3 catalogue."""
 
@@ -103,7 +108,11 @@ def build_gtdgl_material(
     metadata = dict(getattr(usadel_catalog, "metadata", {}) or {})
 
     Tc_K = float(metadata.get("Tc_K", material_cfg.get("Tc_K")))
-    D_m2_s = float(metadata.get("D_m2_s", material_cfg.get("D_m2_s", np.nan)))
+    D_base_m2_s = float(metadata.get("D_m2_s", material_cfg.get("D_m2_s", np.nan)))
+    diffusion_factor = float(diffusion_factor)
+    if not math.isfinite(diffusion_factor) or diffusion_factor <= 0.0:
+        raise ValueError(f"diffusion_factor must be finite and positive, got {diffusion_factor!r}.")
+    D_m2_s = D_base_m2_s * diffusion_factor
     sigma_n = float(metadata.get("sigma_n_S_m", material_cfg.get("sigma_n_S_m")))
     delta0_J = float(metadata.get("delta0_J", 1.764 * K_B_J_K * Tc_K))
     thickness_m = float(metadata.get("thickness_m", material_cfg.get("thickness_m")))
@@ -145,6 +154,8 @@ def build_gtdgl_material(
         width_m=width_m,
         tau_ee_Tc_s=tau_ee_Tc_s,
         tau_ep_Tc_s=tau_ep_Tc_s,
+        D_base_m2_s=D_base_m2_s,
+        D_effective_factor=diffusion_factor,
     )
 
 

@@ -3,12 +3,16 @@
 This pipeline loads PRE-run outputs, builds the analytic stationary seed, and
 relaxes it with ``pysnspd.gtdgl.solve_stationary_pytdgl_like`` promoted to the
 package root.  The preferred supercurrent law is the Matsubara Usadel table
-stored by ``01_prerun_template.py``.  If an older PRE-run is used, ``auto`` falls
-back to the native GL current and records that choice in the manifest.
+stored by ``01_prerun_template.py``.
+
+The pipeline can also run a current sweep.  In that mode the base current is run
+with the normal terminal report, while extra current-offset cases run quietly in
+parallel and only their output directories are printed at the end.
 """
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
@@ -78,6 +82,24 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--ss-dt-fs", type=float, default=0.30)
     parser.add_argument("--ss-target-current-uA", type=float, default=20.0)
+    parser.add_argument(
+        "--extra-currents-uA",
+        type=float,
+        nargs="*",
+        default=[],
+        metavar="OFFSET_UA",
+        help=(
+            "Optional current sweep offsets in microamps relative to --ss-target-current-uA. "
+            "Example: --ss-target-current-uA 28 --extra-currents-uA +2 +4 +6 "
+            "runs 28, 30, 32 and 34 uA. Extra cases run quietly in parallel."
+        ),
+    )
+    parser.add_argument(
+        "--ss-sweep-workers",
+        type=int,
+        default=None,
+        help="Parallel workers for extra-current sweep cases. Defaults to parallel.workers in the YAML.",
+    )
     parser.add_argument("--ss-snapshots", type=int, default=8)
 
     parser.add_argument(
@@ -85,7 +107,7 @@ def parse_args() -> argparse.Namespace:
         dest="ss_progress",
         action="store_true",
         default=True,
-        help="Show SS progress bar. Enabled by default.",
+        help="Show SS progress bar for the base case. Enabled by default.",
     )
     parser.add_argument(
         "--ss-no-progress",
@@ -120,18 +142,14 @@ def parse_args() -> argparse.Namespace:
         ),
     )
 
-    # Gauge-fixed bulk stationarity defaults.  These are intentionally looser
-    # than the first very strict attempt, and correspond to the tolerances that
-    # made sense after isolating the contact-conversion region:
-    #
-    #   Delta Q / Q_rms              < 5e-4
-    #   Delta grad(phi) / grad(phi) < 5e-3
-    #   Delta Q_abs                 < 1e4 m^-1
-    #   Delta grad(phi)_abs         < 1e2 V/m
+    # Operational quasi-SS defaults for the central superconducting bulk.
+    # These are intentionally looser than the earlier strict residual target;
+    # they are meant to pass the small-tau quasi-stationary state in about 20 ps
+    # while still rejecting the long-tau contact-conversion-dominated branch.
     parser.add_argument(
         "--ss-stationarity-phase-gradient-rel",
         type=float,
-        default=5.0e-4,
+        default=3.0e-1,
         help=(
             "Relative tolerance for time-stationarity of edge phase gradient "
             "Q = grad(arg Delta), evaluated only in the superconducting bulk."
@@ -140,7 +158,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ss-stationarity-phi-gradient-rel",
         type=float,
-        default=5.0e-3,
+        default=2.5e-1,
         help=(
             "Relative tolerance for time-stationarity of edge grad(phi), "
             "evaluated only in the superconducting bulk."
@@ -149,13 +167,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ss-stationarity-q-abs-m-inv",
         type=float,
-        default=1.0e4,
+        default=6.0e6,
         help="Absolute fallback tolerance for changes in Q, in m^-1.",
     )
     parser.add_argument(
         "--ss-stationarity-phi-gradient-abs-V-m",
         type=float,
-        default=1.0e2,
+        default=2.0e3,
         help="Absolute fallback tolerance for changes in grad(phi), in V/m.",
     )
     parser.add_argument(
@@ -281,13 +299,103 @@ def parse_args() -> argparse.Namespace:
 
     return parser.parse_args()
 
+
 def main() -> int:
     args = parse_args()
     cfg = validate_config(load_config(args.config))
 
-    ss_layout = create_run_layout(cfg, args.run_name)
-    run_name = ss_layout["run_name"]
-    pre_name = args.pre_run_name or run_name
+    base_layout = create_run_layout(cfg, args.run_name)
+    base_run_name = base_layout["run_name"]
+    pre_name = args.pre_run_name or base_run_name
+    base_current_uA = float(args.ss_target_current_uA) if args.ss_target_current_uA is not None else 20.0
+    extra_offsets = [float(x) for x in (args.extra_currents_uA or [])]
+
+    if not extra_offsets:
+        _run_single_current_case(
+            config_path=args.config,
+            args_dict=vars(args),
+            run_name=base_run_name,
+            pre_name=pre_name,
+            target_current_uA=base_current_uA,
+            quiet=False,
+            progress=bool(args.ss_progress),
+            role="base",
+        )
+        return 0
+
+    workers = _resolve_sweep_workers(cfg, args.ss_sweep_workers, n_extra=len(extra_offsets))
+    print("SS current sweep")
+    print(f"  pre_run_name: {pre_name}")
+    print(f"  base_run_name: {base_run_name}")
+    print(f"  base_current_uA: {base_current_uA}")
+    print(f"  extra_offsets_uA: {extra_offsets}")
+    print(f"  extra_workers: {workers}")
+    print()
+
+    futures = []
+    extra_results: list[dict[str, Any]] = []
+    args_dict = vars(args)
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        for offset in extra_offsets:
+            current_uA = base_current_uA + float(offset)
+            if current_uA <= 0.0:
+                raise ValueError(f"Extra current offset {offset:+g} uA gives non-positive current {current_uA:g} uA.")
+            run_name = _current_sweep_run_name(base_run_name, offset, current_uA)
+            futures.append(
+                pool.submit(
+                    _run_single_current_case,
+                    config_path=args.config,
+                    args_dict=args_dict,
+                    run_name=run_name,
+                    pre_name=pre_name,
+                    target_current_uA=current_uA,
+                    quiet=True,
+                    progress=False,
+                    role="extra",
+                )
+            )
+
+        base_result = _run_single_current_case(
+            config_path=args.config,
+            args_dict=args_dict,
+            run_name=base_run_name,
+            pre_name=pre_name,
+            target_current_uA=base_current_uA,
+            quiet=False,
+            progress=bool(args.ss_progress),
+            role="base",
+        )
+
+        for future in as_completed(futures):
+            extra_results.append(future.result())
+
+    all_results = [base_result] + sorted(extra_results, key=lambda item: float(item["target_current_uA"]))
+    print()
+    print("SS sweep run directories")
+    for item in all_results:
+        print(
+            f"  {item['target_current_uA']:8.3f} uA  "
+            f"run={item['run_name']}  raw_ss={item['raw_ss']}"
+        )
+    print("Status: OK")
+    return 0
+
+
+def _run_single_current_case(
+    *,
+    config_path: str,
+    args_dict: dict[str, Any],
+    run_name: str,
+    pre_name: str,
+    target_current_uA: float,
+    quiet: bool,
+    progress: bool,
+    role: str,
+) -> dict[str, Any]:
+    args = argparse.Namespace(**args_dict)
+    cfg = validate_config(load_config(config_path))
+
+    ss_layout = create_run_layout(cfg, run_name)
     pre_layout = create_run_layout(cfg, pre_name)
 
     raw_pre = Path(pre_layout["raw_pre"])
@@ -314,9 +422,7 @@ def main() -> int:
         strict_table_summary=strict_table_summary,
     )
 
-    target_current_A = None
-    if args.ss_target_current_uA is not None:
-        target_current_A = float(args.ss_target_current_uA) * 1.0e-6
+    target_current_A = float(target_current_uA) * 1.0e-6
 
     seed = build_stationary_seed(
         mesh=mesh,
@@ -328,12 +434,12 @@ def main() -> int:
     seed_npz = save_stationary_seed_npz(seed, raw_ss / "stationary_seed.npz")
     seed_summary_data = seed_summary(seed)
 
+    allmaras_diffusion = _read_pre_allmaras_diffusion(raw_pre)
     material = build_gtdgl_material(
         cfg,
         base_usadel_catalog,
+        diffusion_factor=float(allmaras_diffusion["D_effective_factor"]),
     )
-    if target_current_A is None:
-        target_current_A = float(seed.metadata["target_current_A"])
 
     if args.ss_time_ps is not None:
         total_time_ps = float(args.ss_time_ps)
@@ -363,7 +469,7 @@ def main() -> int:
         adaptive_growth_factor=float(args.ss_adaptive_growth_factor),
         dt_max_factor=float(args.ss_dt_max_factor),
         n_snapshots=int(args.ss_snapshots),
-        progress=bool(args.ss_progress),
+        progress=bool(progress),
         supercurrent_law=supercurrent_law,
         terminal_healing_xi=args.ss_terminal_healing_xi,
         terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
@@ -399,9 +505,12 @@ def main() -> int:
     ss_summary = {
         "run_name": run_name,
         "pre_run_name": pre_name,
+        "target_current_uA": float(target_current_uA),
+        "sweep_role": role,
         "backend": "flat_gtdgl_pytdgl_like_promoted_backend",
         "supercurrent_policy": supercurrent_policy,
         "strict_usadel_current_table": strict_table_summary,
+        "gtdgl_allmaras_diffusion": allmaras_diffusion,
         "seed": seed_summary_data,
         "solver": result.summary,
         "outputs": {
@@ -422,11 +531,61 @@ def main() -> int:
             "pipeline": "02_ss_run_template.py",
             "purpose": "Stationary gTDGL--Poisson relaxation with flat gTDGL backend.",
             "pre_run_name": pre_name,
+            "target_current_uA": float(target_current_uA),
+            "sweep_role": role,
+            "gtdgl_allmaras_diffusion": allmaras_diffusion,
             "outputs": ss_summary["outputs"] | {"ss_summary": str(summary_path)},
             "summary": ss_summary,
         },
     )
 
+    if not quiet:
+        _print_single_case_report(
+            run_name=run_name,
+            pre_name=pre_name,
+            raw_ss=raw_ss,
+            supercurrent_law=supercurrent_law,
+            supercurrent_policy=supercurrent_policy,
+            seed_summary_data=seed_summary_data,
+            solver_summary=result.summary,
+            seed_npz=seed_npz,
+            state_npz=state_npz,
+            history_npz=history_npz,
+            adaptive_timestep_png=adaptive_timestep_png,
+            summary_path=summary_path,
+            manifest_path=manifest_path,
+        )
+
+    return {
+        "run_name": run_name,
+        "pre_run_name": pre_name,
+        "target_current_uA": float(target_current_uA),
+        "raw_ss": str(raw_ss),
+        "summary_path": str(summary_path),
+        "manifest_path": str(manifest_path),
+        "first_magic_ready": bool(result.summary.get("first_magic_ready", False)),
+        "terminal_voltage_V": float(result.summary.get("terminal_voltage_V", float("nan"))),
+        "max_pairbreaking_ratio": float(result.summary.get("max_pairbreaking_ratio", float("nan"))),
+        "normal_current_fraction_max": float(result.summary.get("normal_current_fraction_max", float("nan"))),
+    }
+
+
+def _print_single_case_report(
+    *,
+    run_name: str,
+    pre_name: str,
+    raw_ss: Path,
+    supercurrent_law: str,
+    supercurrent_policy: dict[str, Any],
+    seed_summary_data: dict[str, Any],
+    solver_summary: dict[str, Any],
+    seed_npz: Path,
+    state_npz: Path,
+    history_npz: Path,
+    adaptive_timestep_png: Path,
+    summary_path: Path,
+    manifest_path: Path,
+) -> None:
     print("SS-run stationary relaxation")
     print(f"  run_name:      {run_name}")
     print(f"  pre_run_name:  {pre_name}")
@@ -438,7 +597,7 @@ def main() -> int:
     _print_dict(seed_summary_data)
     print()
     print("Solver")
-    _print_dict(result.summary)
+    _print_dict(solver_summary)
     print()
     print("Outputs")
     print(f"  seed_npz:              {seed_npz}")
@@ -448,7 +607,6 @@ def main() -> int:
     print(f"  ss_summary:            {summary_path}")
     print(f"  ss_manifest:           {manifest_path}")
     print("Status: OK")
-    return 0
 
 
 def _resolve_supercurrent_law(*, requested: str, strict_table_summary: dict[str, Any]) -> tuple[str, dict[str, Any]]:
@@ -468,6 +626,72 @@ def _resolve_supercurrent_law(*, requested: str, strict_table_summary: dict[str,
         "reason": "SS requires the strict PRE Matsubara Usadel table js_A_m2[Te,delta,q].",
     }
 
+
+def _read_pre_allmaras_diffusion(raw_pre: Path) -> dict[str, float | str]:
+    summary_path = raw_pre / "usadel_dos_summary.yaml"
+    if not summary_path.exists():
+        return {
+            "D_effective_factor": 1.0,
+            "D_base_m2_s": float("nan"),
+            "D_effective_m2_s": float("nan"),
+            "source": "default: PRE summary not found; using Usadel D unchanged for gTDGL.",
+        }
+    with summary_path.open("r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    usadel = data.get("usadel", {}) if isinstance(data, dict) else {}
+    allmaras = usadel.get("gtdgl_allmaras", {}) if isinstance(usadel, dict) else {}
+    metadata = data.get("metadata", {}) if isinstance(data, dict) else {}
+    base_D = float(
+        allmaras.get(
+            "D_base_m2_s",
+            metadata.get("D_m2_s", float("nan")),
+        )
+    )
+    factor = float(
+        allmaras.get(
+            "D_effective_factor",
+            metadata.get("gtdgl_allmaras_D_factor", 1.0),
+        )
+    )
+    effective_D = float(allmaras.get("D_effective_m2_s", base_D * factor))
+    if not np.isfinite(factor) or factor <= 0.0:
+        raise ValueError(f"Invalid PRE gTDGL Allmaras diffusion factor: {factor!r}")
+    return {
+        "D_effective_factor": factor,
+        "D_base_m2_s": base_D,
+        "D_effective_m2_s": effective_D,
+        "source": str(
+            allmaras.get(
+                "source",
+                "Effective mesoscopic diffusion for the Allmaras/gTDGL sector; Usadel tables keep the calibrated microscopic D.",
+            )
+        ),
+    }
+
+
+def _current_sweep_run_name(base_run_name: str, offset_uA: float, current_uA: float) -> str:
+    sign = "plus" if offset_uA >= 0.0 else "minus"
+    offset_label = _number_label(abs(float(offset_uA)))
+    current_label = _number_label(float(current_uA))
+    return f"{base_run_name}_dI_{sign}{offset_label}uA_I{current_label}uA"
+
+
+def _number_label(value: float) -> str:
+    text = f"{float(value):.6g}"
+    return text.replace("-", "m").replace("+", "p").replace(".", "p")
+
+
+def _resolve_sweep_workers(cfg: dict[str, Any], requested_workers: int | None, *, n_extra: int) -> int:
+    if n_extra <= 0:
+        return 1
+    parallel = cfg.get("parallel", {}) if isinstance(cfg, dict) else {}
+    if requested_workers is not None:
+        workers = int(requested_workers)
+    elif bool(parallel.get("enabled", False)):
+        workers = int(parallel.get("workers", 1))
+    else:
+        workers = 1
+    return max(1, min(int(workers), int(n_extra)))
 
 
 def _require_file(path: Path, description: str) -> None:

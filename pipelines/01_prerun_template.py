@@ -90,6 +90,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--eta-fraction", type=float, default=1.0e-3)
     parser.add_argument("--gamma-max-fraction", type=float, default=0.80)
     parser.add_argument("--energy-max-factor", type=float, default=30.0)
+    parser.add_argument(
+        "--allmaras-diffusion-factor",
+        type=float,
+        default=1.0,
+        help=(
+            "Effective diffusion multiplier used later by the Allmaras/gTDGL sector. "
+            "The Usadel catalogue itself is still built with the calibrated microscopic D. "
+            "Use 0.68 for the switching-calibrated mesoscopic branch."
+        ),
+    )
 
 
     # Strict 3D Usadel supercurrent table for SS.
@@ -141,6 +151,10 @@ def main() -> int:
     args = parse_args()
     cfg = validate_config(load_config(args.config))
     workers, parallel_backend = _resolve_parallel(cfg, args.workers)
+    allmaras_diffusion_factor = float(args.allmaras_diffusion_factor)
+    if not np.isfinite(allmaras_diffusion_factor) or allmaras_diffusion_factor <= 0.0:
+        raise ValueError("--allmaras-diffusion-factor must be finite and positive.")
+
     layout = create_run_layout(cfg, args.run_name)
     run_name = layout["run_name"]
     raw_pre = Path(layout["raw_pre"])
@@ -212,6 +226,13 @@ def main() -> int:
     js_summary = supercurrent_table_summary(js_table)
 
     usadel_summary = catalog_summary(usadel_catalog)
+    D_usadel_m2_s = float(usadel_catalog.metadata["D_m2_s"])
+    usadel_summary["gtdgl_allmaras"] = {
+        "D_base_m2_s": D_usadel_m2_s,
+        "D_effective_factor": float(allmaras_diffusion_factor),
+        "D_effective_m2_s": D_usadel_m2_s * float(allmaras_diffusion_factor),
+        "source": "Effective mesoscopic diffusion for the Allmaras/gTDGL sector; Usadel tables keep the calibrated microscopic D.",
+    }
     usadel_summary["supercurrent_table"] = {
         "stored_in": str(usadel_npz),
         "table_key": "js_A_m2",
@@ -227,7 +248,11 @@ def main() -> int:
         {
             "run_name": run_name,
             "usadel": usadel_summary,
-            "metadata": usadel_catalog.metadata,
+            "metadata": {
+                **dict(usadel_catalog.metadata),
+                "gtdgl_allmaras_D_factor": float(allmaras_diffusion_factor),
+                "gtdgl_allmaras_D_m2_s": D_usadel_m2_s * float(allmaras_diffusion_factor),
+            },
         },
     )
     progress.advance("Usadel catalogue and strict 3D Matsubara current table ready")
@@ -309,6 +334,7 @@ def main() -> int:
             "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, phase-space catalogue.",
             "workers": int(workers),
             "parallel_backend": str(parallel_backend),
+            "allmaras_diffusion_factor": float(allmaras_diffusion_factor),
             "outputs": outputs,
             "mesh_edge_summary": mesh_edge_summary,
             "usadel_summary": usadel_summary,
