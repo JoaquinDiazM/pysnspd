@@ -562,58 +562,49 @@ Validated:
 * stable superconducting bulk in a short wire of length about twice the width;
 * first PSL formation around $38$–$39,\mu{\rm A}$;
 * multiple PSL states at higher current, including roughly three PSLs near $50,\mu{\rm A}$;
-* Ohmic-like overcritical behavior recovered around $60$–$70,\mu{\rm A}$.
+* Ohmic-like overcritical behavior recovered around $70$–$80,\mu{\rm A}$.
 
 This is the current reference stationary map.
 
-### OE6 ★ — Coupled no-photon stationary state
+### OE6 ★ — Fully coupled no-photon stationary state
 
 Status: next.
 
 Goal:
 
-Validate that the complete system, including thermal variables and circuit variables, has a no-photon stationary state consistent with the already validated SS gTDGL branch.
+Implement and validate the fully coupled detector model without photon injection. This objective is the main physical coupling step: the mesoscopic gTDGL/Poisson sector, the electron--phonon thermal variables and the external circuit must evolve consistently as a single system.
+
+The no-photon case is the necessary baseline because it checks whether the coupled equations reproduce the already validated stationary gTDGL branch before adding any local perturbation.
 
 Expected checks:
 
 * $T_e\approx T_{ph}\approx T_{\rm bath}$ in subcritical superconducting states;
 * no artificial Joule heating in a zero-voltage superconducting state;
-* same qualitative branch structure as the OE5 stationary map;
-* consistent $I_{\rm SNSPD}$, $V_{\rm TDGL}$, $|\Delta|$, $T_e$, $T_{ph}$ and circuit state.
+* same qualitative branch structure as the OE5 stationary current-sweep map;
+* recovery of the Ohmic branch at strongly overcritical current;
+* consistent $I_{\rm SNSPD}$, $V_{\rm TDGL}$, $|\Delta|$, $T_e$, $T_{ph}$ and circuit state;
+* reproducible no-photon stationary states that can be used as initial conditions for photon-triggered runs.
 
-### OE7 — Photon energy deposition
+This objective should include the circuit model already at the no-photon level, because the photon case should not require a different dynamical framework. It should only require a different initial condition or source term.
 
-Status: planned.
-
-Goal:
-
-Implement the photon-induced perturbation as a controlled local energy deposition model.
-
-This objective should not be started before the coupled no-photon stationary state is validated.
-
-### OE8 — Decoupled thermal PHOTON-run
+### OE7 — Fully coupled PHOTON-run and readout pulse
 
 Status: planned.
 
 Goal:
 
-Evolve $T_e$ and $T_{ph}$ with projected powers, diffusion and escape, without yet evolving the full gTDGL/circuit feedback.
+Run the already coupled OE6 system with a controlled photon-induced initial perturbation. In this roadmap, photon absorption is not treated as a separate physical solver layer, but as a different initial condition or localized energy-deposition source applied to the same coupled equations.
 
-### OE9 — Coupled thermal + gTDGL PHOTON-run
+The evolved variables are
 
-Status: planned.
+$$
+T_e(\mathbf r,t), \qquad
+T_{ph}(\mathbf r,t), \qquad
+\Delta(\mathbf r,t), \qquad
+\phi(\mathbf r,t),
+$$
 
-Goal:
-
-Couple $T_e,T_{ph}$ to $\Psi,\phi,V$ and test whether a local perturbation becomes dissipative.
-
-### OE10 — Circuit coupling and readout pulse
-
-Status: planned.
-
-Goal:
-
-Couple the nanowire voltage to an external readout model and generate
+together with the external circuit variables that generate
 
 $$
 I_{\rm SNSPD}(t), \qquad
@@ -621,13 +612,36 @@ V_{\rm TDGL}(t), \qquad
 V_{\rm out}(t).
 $$
 
-### OE11 — Comparison and publication plots
+Expected checks:
+
+* photon deposition produces a local suppression of $|\Delta|$ and a thermal hotspot;
+* the hotspot either heals or triggers a resistive transition depending on bias current and photon energy;
+* the coupled circuit reacts self-consistently to the generated nanowire voltage;
+* $V_{\rm out}(t)$ is obtained without changing the validated no-photon solver structure;
+* the result is reproducible from saved PRE-run catalogues and SS-run initial states.
+
+This objective converts the validated coupled model into the first complete detector-response simulation.
+
+### OE8 — Parameter sweeps, validation and publication figures
 
 Status: planned.
 
 Goal:
 
-Generate reproducible plots comparing bias current, photon energy, geometry, thermal assumptions and microscopic catalogues.
+Generate reproducible comparison runs and publication-quality figures from the complete model.
+
+This objective should organize the final numerical campaign rather than introduce a new physical solver. It should compare bias current, photon energy, geometry, material assumptions, thermal assumptions and microscopic catalogues.
+
+Expected outputs:
+
+* current-sweep diagnostics and $I$--$V$ curves;
+* detection/no-detection maps versus bias current and photon energy;
+* hotspot evolution plots for $T_e$, $T_{ph}$ and $|\Delta|$;
+* circuit-response plots for $I_{\rm SNSPD}(t)$, $V_{\rm TDGL}(t)$ and $V_{\rm out}(t)$;
+* sensitivity checks against microscopic catalogues and thermal closures;
+* final figures suitable for the thesis and, if the results are strong enough, a publication.
+
+This objective closes the pipeline by turning the complete solver into an auditable numerical experiment.
 
 ---
 
