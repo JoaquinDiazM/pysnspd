@@ -43,13 +43,42 @@ def test_write_pre_diagnostic_plots_smoke(tmp_path):
         boundary_guard_layers=0,
     )
     edge_data = build_edge_data(nodes, triangles, length_m=1.0, width_m=1.0)
+
+    q_values = np.linspace(0.0, 1.2e8, 7)
+    delta_values = np.linspace(0.0, 2.2e-22, 6)
+    energy_values = np.linspace(0.0, 6.0e-22, 32)
+    calibration_q = np.linspace(0.0, 1.0e8, 8)
+    calibration_delta = 2.0e-22 * np.clip(1.0 - (calibration_q / 1.0e8) ** 2, 0.0, None)
+
+    rho = np.empty((delta_values.size, q_values.size, energy_values.size), dtype=float)
+    anomalous = np.empty_like(rho)
+    for i_delta, delta in enumerate(delta_values):
+        for i_q, q in enumerate(q_values):
+            gap = max(delta * (1.0 - 0.15 * q / max(q_values[-1], 1.0)), 0.0)
+            e_scaled = energy_values / max(gap, 1.0e-24)
+            rho[i_delta, i_q, :] = 0.02 + np.sqrt(np.maximum(e_scaled - 1.0, 0.0))
+            anomalous[i_delta, i_q, :] = gap / (energy_values + gap + 1.0e-24)
+
     usadel_catalog = SimpleNamespace(
-        calibration_q_values_m_inv=np.linspace(0.0, 1.0e8, 8),
+        calibration_q_values_m_inv=calibration_q,
         calibration_current_values_A=np.array(
             [0.0, 5.0e-6, 1.0e-5, 2.0e-5, 3.0e-5, 3.8e-5, 3.6e-5, 3.2e-5],
             dtype=float,
         ),
-        metadata={"Ic_target_A": 3.88e-5},
+        calibration_delta_eq_values_J=calibration_delta,
+        q_values_m_inv=q_values,
+        delta_values_J=delta_values,
+        energy_values_J=energy_values,
+        rho_delta_gamma_E=rho,
+        anomalous_delta_gamma_E=anomalous,
+        metadata={
+            "Ic_target_A": 3.88e-5,
+            "T_bias_K": 0.9,
+            "Tc_K": 8.65,
+            "D_m2_s": 1.58e-4,
+            "sigma_n_S_m": 4.2e5,
+            "delta0_meV": 1.315,
+        },
     )
 
     outputs = write_pre_diagnostic_plots(
@@ -61,10 +90,12 @@ def test_write_pre_diagnostic_plots_smoke(tmp_path):
     )
 
     assert set(outputs) == {
-        "mesh_boundary_tags_png",
         "mesh_triangle_area_hist_png",
         "mesh_edge_length_hist_png",
         "usadel_supercurrent_curve_png",
+        "usadel_equilibrium_dos_map_png",
+        "usadel_zero_energy_dos_map_png",
+        "usadel_equilibrium_anomalous_map_png",
     }
     for value in outputs.values():
         path = tmp_path / value.split("/")[-1]

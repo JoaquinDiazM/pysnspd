@@ -14,6 +14,7 @@ from typing import Any
 import matplotlib
 matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
+from matplotlib.colors import PowerNorm
 import numpy as np
 
 from pysnspd.mesh.delaunay import MeshData, triangle_areas
@@ -214,7 +215,7 @@ def plot_usadel_supercurrent_curve(
 
     q = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
     current_uA = 1.0e6 * np.asarray(usadel_catalog.calibration_current_values_A, dtype=float)
-    delta_eq_meV = _joule_to_mev(np.asarray(usadel_catalog.calibration_delta_eq_values_J, dtype=float))
+    delta_eq_meV = _calibration_delta_eq_mev(usadel_catalog)
     q_1e7 = q / 1.0e7
 
     finite_i = np.isfinite(q_1e7) & np.isfinite(current_uA)
@@ -232,8 +233,9 @@ def plot_usadel_supercurrent_curve(
         q_1e7[finite_i],
         current_uA[finite_i],
         marker=".",
-        markersize=1.9,
+        markersize=1.6,
         linewidth=1.05,
+        color="tab:blue",
         label=rf"$I_s(q)$ at {temperature_label}",
     )
 
@@ -244,8 +246,9 @@ def plot_usadel_supercurrent_curve(
         q_plot[i_max],
         i_plot[i_max],
         marker="o",
-        markersize=4.0,
+        markersize=4.2,
         linestyle="None",
+        color="tab:orange",
         label=rf"model $I_c$ = {i_plot[i_max]:.2f} $\mu$A",
     )
 
@@ -257,6 +260,7 @@ def plot_usadel_supercurrent_curve(
             target_uA,
             linestyle="--",
             linewidth=1.0,
+            color="tab:blue",
             label=rf"target $I_c$ = {target_uA:.2f} $\mu$A",
         )
 
@@ -267,8 +271,9 @@ def plot_usadel_supercurrent_curve(
             q_1e7[finite_d],
             delta_eq_meV[finite_d],
             marker=".",
-            markersize=1.7,
+            markersize=1.45,
             linewidth=1.0,
+            color="tab:purple",
             label=rf"$|\Delta_{{eq}}(q)|$ at {temperature_label}",
         )
 
@@ -311,9 +316,10 @@ def plot_usadel_equilibrium_dos_map(
     metadata = getattr(usadel_catalog, "metadata", {})
 
     fig, ax = plt.subplots(figsize=(7.1, 4.35))
-    im = ax.pcolormesh(E_meV, q_1e7, rho_eq, shading="auto", vmin=0.0)
+    norm = _positive_power_norm(rho_eq, gamma=0.35)
+    im = ax.pcolormesh(E_meV, q_1e7, rho_eq, shading="auto", norm=norm)
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label(r"$\rho(E,q)$")
+    cbar.set_label(r"$\rho(E,q)$ (power scale, $\gamma=0.35$)")
     ax.set_title(r"Usadel DOS along $\Delta_{eq}(q)$" + _temperature_suffix(metadata))
     ax.set_xlabel(r"energy $E$ [meV]")
     ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$]")
@@ -369,9 +375,10 @@ def plot_usadel_equilibrium_anomalous_map(
     metadata = getattr(usadel_catalog, "metadata", {})
 
     fig, ax = plt.subplots(figsize=(7.1, 4.35))
-    im = ax.pcolormesh(E_meV, q_1e7, anomalous_eq, shading="auto", vmin=0.0)
+    norm = _positive_power_norm(anomalous_eq, gamma=0.35)
+    im = ax.pcolormesh(E_meV, q_1e7, anomalous_eq, shading="auto", norm=norm)
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label(r"$|F(E,q)|$")
+    cbar.set_label(r"$|F(E,q)|$ (power scale, $\gamma=0.35$)")
     ax.set_title(r"Usadel anomalous amplitude along $\Delta_{eq}(q)$" + _temperature_suffix(metadata))
     ax.set_xlabel(r"energy $E$ [meV]")
     ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$]")
@@ -380,6 +387,25 @@ def plot_usadel_equilibrium_anomalous_map(
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
+
+
+def _calibration_delta_eq_mev(usadel_catalog: Any) -> np.ndarray:
+    """Return calibration equilibrium gap in meV, or NaNs for legacy smoke objects."""
+    if hasattr(usadel_catalog, "calibration_delta_eq_values_J"):
+        return _joule_to_mev(np.asarray(usadel_catalog.calibration_delta_eq_values_J, dtype=float))
+    q = np.asarray(getattr(usadel_catalog, "calibration_q_values_m_inv"), dtype=float)
+    return np.full(q.shape, np.nan, dtype=float)
+
+
+def _positive_power_norm(values: np.ndarray, *, gamma: float = 0.35) -> PowerNorm:
+    """Nonlinear positive normalization that keeps zero finite and compresses singular peaks."""
+    arr = np.asarray(values, dtype=float)
+    finite = arr[np.isfinite(arr)]
+    if finite.size == 0:
+        return PowerNorm(gamma=gamma, vmin=0.0, vmax=1.0)
+    vmax = float(np.nanpercentile(finite, 99.7))
+    vmax = max(vmax, float(np.nanmax(finite)), 1.0e-12)
+    return PowerNorm(gamma=gamma, vmin=0.0, vmax=vmax)
 
 
 def _catalog_field_on_equilibrium_gap(usadel_catalog: Any, *, field_name: str) -> np.ndarray:
@@ -391,7 +417,10 @@ def _catalog_field_on_equilibrium_gap(usadel_catalog: Any, *, field_name: str) -
     delta_axis = np.asarray(usadel_catalog.delta_values_J, dtype=float)
     q_axis = np.asarray(usadel_catalog.q_values_m_inv, dtype=float)
     q_cal = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
-    delta_cal = np.asarray(usadel_catalog.calibration_delta_eq_values_J, dtype=float)
+    if hasattr(usadel_catalog, "calibration_delta_eq_values_J"):
+        delta_cal = np.asarray(usadel_catalog.calibration_delta_eq_values_J, dtype=float)
+    else:
+        delta_cal = np.asarray([], dtype=float)
 
     if q_cal.size and delta_cal.size and q_cal.size == delta_cal.size:
         order = np.argsort(q_cal)
@@ -480,7 +509,7 @@ def _usadel_metadata_summary(metadata: Any) -> str:
     sigma = _metadata_float(metadata, "sigma_n_S_m")
     delta0 = _metadata_float(metadata, "delta0_meV")
     if np.isfinite(D):
-        parts.append(rf"$D={D:.3g}$ m$^2$/s")
+        parts.append(rf"$D={1.0e4 * D:.3g}$ cm$^2$/s")
     if np.isfinite(sigma):
         parts.append(rf"$\sigma_n={sigma:.3g}$ S/m")
     if np.isfinite(delta0):
