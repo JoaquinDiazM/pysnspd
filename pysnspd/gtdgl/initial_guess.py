@@ -1,16 +1,16 @@
-"""Analytic initial guesses for stationary gTDGL states."""
+"""Deprecated stationary-initial-guess module.
 
+The active stationary SS seed is implemented in
 
-def build_uniform_bias_guess(mesh, material_params, bias_config, usadel_catalog):
-    """Build a physically motivated initial guess for the SS-run.
+    pysnspd.gtdgl.seed.build_stationary_seed
 
-    The future implementation should set ``Te = Tph = Tbath``, choose an
-    amplitude compatible with the bias state, impose a longitudinal phase
-    ramp, and initialize the scalar potential close to zero.
-    """
-    return 0
+and is called directly by ``pipelines/02_ss_run_template.py``.
 
+This module used to contain placeholder helpers that returned ``0``.
+Those placeholders were intentionally removed during repository cleanup
+because silent zero-valued physics stubs are dangerous in a simulation code.
+"""
 
-def estimate_phase_ramp_from_bias(bias_config, usadel_catalog, geometry_config):
-    """Estimate the phase ramp or superfluid momentum associated with ``I_bias``."""
-    return 0
+from __future__ import annotations
+
+__all__: list[str] = []

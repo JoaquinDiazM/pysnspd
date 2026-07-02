@@ -1,26 +1,17 @@
-"""Effective two-temperature thermal projection."""
+"""Future two-temperature thermal evolution layer.
 
+The active repository currently provides kinetic catalogues and projected
+electron--phonon power diagnostics, but not yet the final spatially coupled
+two-temperature time evolution.
 
-def electronic_energy_density(Te, delta, q, dos_catalog):
-    """Evaluate the superconducting electronic energy density used on the LHS."""
-    return 0
+This module intentionally exposes no public runtime helpers until the thermal
+OE is implemented with a physically audited energy functional, heat capacities,
+diffusion, escape and coupling to the gTDGL fields.
 
+Previous placeholder functions returned ``0``. They were removed because a
+zero-valued thermal update can silently hide missing physics.
+"""
 
-def phonon_energy_density(Tph, phonon_dos):
-    """Evaluate the projected phonon energy density."""
-    return 0
+from __future__ import annotations
 
-
-def electronic_heat_capacity(Te, delta, q, dos_catalog):
-    """Evaluate or interpolate the effective electronic heat capacity."""
-    return 0
-
-
-def phonon_heat_capacity(Tph, phonon_dos):
-    """Evaluate or interpolate the effective phonon heat capacity."""
-    return 0
-
-
-def advance_thermal_state(thermal_state, powers, dt):
-    """Advance ``Te`` and ``Tph`` by one thermal substep."""
-    return 0
+__all__: list[str] = []
