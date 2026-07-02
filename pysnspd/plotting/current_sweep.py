@@ -23,12 +23,21 @@ import matplotlib
 matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
 import numpy as np
 import yaml
 
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
 
 MEV_J = 1.602176634e-22
+
+
+def _load_project_config(config_path: str | Path) -> dict[str, Any]:
+    path = Path(config_path)
+    with path.open("r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+    return data if isinstance(data, dict) else {}
 
 
 def make_current_sweep_figures(
@@ -46,14 +55,17 @@ def make_current_sweep_figures(
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
+    config_dict = _load_project_config(config_path)
+
     points, skipped, meta = collect_current_sweep_iv_points(
         config_path=config_path,
+        project_config=config_dict,
         records=records,
         voltage_probe_offset_nm=voltage_probe_offset_nm,
         voltage_probe_half_window_nm=voltage_probe_half_window_nm,
         include_origin=include_origin,
     )
-    inset_runs = []
+    inset_runs: list[dict[str, Any]] = []
     if delta_inset_currents_uA is not None:
         inset_runs = select_delta_inset_runs(
             config_path=config_path,
@@ -92,6 +104,7 @@ def make_current_sweep_figures(
 def collect_current_sweep_iv_points(
     *,
     config_path: str | Path,
+    project_config: Mapping[str, Any] | None,
     records: Sequence[Mapping[str, Any]],
     voltage_probe_offset_nm: float = 50.0,
     voltage_probe_half_window_nm: float | None = None,
@@ -116,6 +129,7 @@ def collect_current_sweep_iv_points(
                 run_name=run_name,
                 run=run,
                 dataset=dataset,
+                project_config=project_config,
                 voltage_probe_offset_nm=voltage_probe_offset_nm,
                 voltage_probe_half_window_nm=voltage_probe_half_window_nm,
             )
@@ -221,21 +235,11 @@ def plot_current_sweep_iv(
     normal_x, normal_y = _extract_normal_curve(points)
     fit_x, fit_y = _monotone_fit_curve(x_valid, y_valid)
 
-    fig, ax = plt.subplots(figsize=(7.8, 4.9), constrained_layout=False)
+    fig, ax = plt.subplots(figsize=(7.8, 4.95), constrained_layout=False)
     fig.subplots_adjust(left=0.105, right=0.975, bottom=0.125, top=0.965)
 
-    normal_line = None
     fit_line = None
-    if normal_x.size:
-        normal_line, = ax.plot(
-            normal_x,
-            normal_y,
-            linestyle="--",
-            linewidth=1.45,
-            color="tab:orange",
-            label="normal-state Ohmic line",
-            zorder=1,
-        )
+    normal_line = None
     if fit_x.size:
         fit_line, = ax.plot(
             fit_x,
@@ -243,27 +247,40 @@ def plot_current_sweep_iv(
             linewidth=1.55,
             color="black",
             label="monotone fit",
-            zorder=2,
+            zorder=2.0,
+        )
+    if normal_x.size:
+        normal_line, = ax.plot(
+            normal_x,
+            normal_y,
+            linestyle=(0, (5.5, 2.6)),
+            linewidth=1.9,
+            color="tab:orange",
+            alpha=0.98,
+            label="Ohmic behavior",
+            zorder=2.6,
         )
     raw_scatter = ax.scatter(
         x_valid,
         y_valid,
         s=22.0,
         color="tab:blue",
-        label="raw endpoint voltage",
-        zorder=3,
+        label="raw data points",
+        zorder=3.0,
     )
 
     if include_origin:
-        ax.scatter([0.0], [0.0], s=26.0, color="tab:orange", zorder=4)
+        ax.scatter([0.0], [0.0], s=26.0, color="tab:orange", zorder=4.0)
 
     snapshot_handle = None
     if delta_insets:
         snapshot_handle = _highlight_snapshot_points(ax, points, delta_insets)
+        _add_delta_insets(ax, delta_insets)
 
-    ax.set_xlabel(r"$I_{\mathrm{bias}}$ [$\mu$A]")
-    ax.set_ylabel(r"$V_{\mathrm{TDGL}}$ [mV]")
-    ax.grid(False)
+    ax.set_xlabel(r"$I_{\mathrm{bias}}$ [$\mu$A]", fontsize=17)
+    ax.set_ylabel(r"$V_{\mathrm{TDGL}}$ [mV]", fontsize=17)
+    ax.tick_params(axis="both", which="major", labelsize=14)
+    ax.grid(True, linewidth=0.45, alpha=0.33)
 
     if x_valid.size:
         xmin = float(np.nanmin(x_valid))
@@ -281,39 +298,37 @@ def plot_current_sweep_iv(
             upper = lower + 1.0
         ax.set_ylim(lower, upper)
 
-    if delta_insets:
-        _add_delta_insets(ax, delta_insets)
-
     probe_text = (
-        rf"probe: $V = \phi(x_c + {voltage_probe_offset_nm:.0f}\,\mathrm{{nm}}) - "
+        rf"$V = \phi(x_c + {voltage_probe_offset_nm:.0f}\,\mathrm{{nm}}) - "
         rf"\phi(x_c - {voltage_probe_offset_nm:.0f}\,\mathrm{{nm}})$"
     )
     handles = [raw_scatter]
-    labels = ["raw endpoint voltage"]
+    labels = ["raw data points"]
     if fit_line is not None:
         handles.append(fit_line)
         labels.append("monotone fit")
     if normal_line is not None:
         handles.append(normal_line)
-        labels.append("normal-state Ohmic line")
+        labels.append("Ohmic behavior")
     if snapshot_handle is not None:
         handles.append(snapshot_handle)
-        labels.append("|Δ| snapshot used")
+        labels.append(r"$|\Delta|$ snapshots")
 
     legend = ax.legend(
         handles,
         labels,
         loc="lower right",
         frameon=True,
-        fontsize=8.0,
+        fontsize=10.0,
         title=probe_text,
-        title_fontsize=8.0,
+        title_fontsize=10.0,
     )
     legend.get_frame().set_alpha(0.95)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.06)
     plt.close(fig)
     return output
+
 
 
 def write_current_sweep_iv_csv(points: Sequence[Mapping[str, Any]], output_path: str | Path) -> Path:
@@ -371,6 +386,7 @@ def _build_iv_point(
     run_name: str,
     run: Any,
     dataset: Mapping[str, Any],
+    project_config: Mapping[str, Any] | None,
     voltage_probe_offset_nm: float,
     voltage_probe_half_window_nm: float | None,
 ) -> tuple[dict[str, Any], float, float]:
@@ -381,7 +397,12 @@ def _build_iv_point(
         voltage_probe_half_window_nm=voltage_probe_half_window_nm,
     )
     x_profile = np.asarray(dataset.get("x_profile_nm", []), dtype=float)
-    rn_probe_ohm = _infer_probe_normal_resistance_ohm(run=run, dataset=dataset, voltage_probe_offset_nm=voltage_probe_offset_nm)
+    rn_probe_ohm = _infer_probe_normal_resistance_ohm(
+        run=run,
+        dataset=dataset,
+        project_config=project_config,
+        voltage_probe_offset_nm=voltage_probe_offset_nm,
+    )
     normal_voltage_mV = 1.0e-3 * float(current_uA) * float(rn_probe_ohm) if np.isfinite(rn_probe_ohm) else np.nan
 
     point = {
@@ -438,20 +459,41 @@ def _extract_profile_probe_values(
 
 
 
-def _infer_probe_normal_resistance_ohm(*, run: Any, dataset: Mapping[str, Any], voltage_probe_offset_nm: float) -> float:
-    width_m = float(getattr(run.mesh, "width_m", np.nan))
-    thickness_m = _find_numeric_recursive(
-        getattr(run, "summary", {}),
-        keys=("thickness_m", "thickness", "d_m", "film_thickness_m"),
-    )
-    sigma_n = _find_numeric_recursive(
-        getattr(run, "summary", {}),
-        keys=("sigma_n_S_m", "sigma_n_S_per_m", "sigma_n", "normal_conductivity_S_m"),
-    )
+def _infer_probe_normal_resistance_ohm(
+    *,
+    run: Any,
+    dataset: Mapping[str, Any],
+    project_config: Mapping[str, Any] | None,
+    voltage_probe_offset_nm: float,
+) -> float:
+    summary = getattr(run, "summary", {})
+    material_cfg = project_config.get("material", {}) if isinstance(project_config, Mapping) else {}
+    if not isinstance(material_cfg, Mapping):
+        material_cfg = {}
+
+    width_candidates = [
+        getattr(run.mesh, "width_m", np.nan),
+        _find_numeric_recursive(summary, keys=("width_m", "wire_width_m", "w_m", "device_width_m")),
+        _find_numeric_recursive(dataset.get("summary_scalars", {}), keys=("width_m", "wire_width_m", "w_m", "device_width_m")),
+        _find_numeric_recursive(material_cfg, keys=("width_m", "wire_width_m", "w_m")),
+    ]
+    thickness_candidates = [
+        _find_numeric_recursive(summary, keys=("thickness_m", "thickness", "d_m", "film_thickness_m")),
+        _find_numeric_recursive(dataset.get("summary_scalars", {}), keys=("thickness_m", "thickness", "d_m", "film_thickness_m")),
+        _find_numeric_recursive(material_cfg, keys=("thickness_m", "thickness", "d_m", "film_thickness_m")),
+    ]
+    sigma_candidates = [
+        _find_numeric_recursive(summary, keys=("sigma_n_S_m", "sigma_n_S_per_m", "sigma_n", "normal_conductivity_S_m")),
+        _find_numeric_recursive(dataset.get("summary_scalars", {}), keys=("sigma_n_S_m", "sigma_n_S_per_m", "sigma_n", "normal_conductivity_S_m")),
+        _find_numeric_recursive(material_cfg, keys=("sigma_n_S_m", "sigma_n_S_per_m", "sigma_n", "normal_conductivity_S_m")),
+    ]
+
+    width_m = next((float(v) for v in width_candidates if np.isfinite(v) and float(v) > 0.0), np.nan)
+    thickness_m = next((float(v) for v in thickness_candidates if np.isfinite(v) and float(v) > 0.0), np.nan)
+    sigma_n = next((float(v) for v in sigma_candidates if np.isfinite(v) and float(v) > 0.0), np.nan)
     if not np.isfinite(width_m) or not np.isfinite(thickness_m) or not np.isfinite(sigma_n):
         return np.nan
-    if width_m <= 0 or thickness_m <= 0 or sigma_n <= 0:
-        return np.nan
+
     length_m = 2.0 * float(voltage_probe_offset_nm) * 1.0e-9
     return float(length_m / (float(sigma_n) * width_m * float(thickness_m)))
 
@@ -530,16 +572,34 @@ def _isotonic_regression(y: np.ndarray, w: np.ndarray | None = None) -> np.ndarr
 
 
 def _add_delta_insets(ax: plt.Axes, delta_insets: Sequence[Mapping[str, Any]]) -> None:
-    """Place four |Delta| colormap insets inside the main IV axes in a 2x2 grid."""
+    """Place four |Delta| colormap insets inside the main IV axes in a 2x2 grid, with a shared colorbar."""
     positions = [
-        [0.055, 0.58, 0.16, 0.29],
-        [0.235, 0.58, 0.16, 0.29],
-        [0.055, 0.265, 0.16, 0.29],
-        [0.235, 0.265, 0.16, 0.29],
+        [0.055, 0.545, 0.15, 0.255],
+        [0.235, 0.545, 0.15, 0.255],
+        [0.055, 0.205, 0.15, 0.255],
+        [0.235, 0.205, 0.15, 0.255],
     ]
-    for pos, inset in zip(positions, delta_insets):
+    delta_fields_meV = [_extract_delta_field_meV(item.get("dataset", {})) for item in delta_insets]
+    finite_maxima = [float(np.nanmax(field)) for field in delta_fields_meV if field.size and np.any(np.isfinite(field))]
+    vmax_meV = max(finite_maxima) if finite_maxima else 1.0
+    vmax_meV = max(float(vmax_meV), 1.0e-6)
+    norm = Normalize(vmin=0.0, vmax=vmax_meV)
+    cmap = plt.get_cmap("viridis")
+
+    cax = ax.inset_axes([0.055, 0.86, 0.33, 0.024])
+    sm = ScalarMappable(norm=norm, cmap=cmap)
+    cbar = plt.colorbar(sm, cax=cax, orientation="horizontal")
+    cbar.set_label(r"$|\Delta|$ [meV]", fontsize=14.0, labelpad=4.0)
+    cbar.ax.xaxis.set_label_position("top")
+    cbar.ax.xaxis.set_ticks_position("top")
+    ticks = np.linspace(0.0, vmax_meV, 5)
+    cbar.set_ticks(ticks)
+    cbar.set_ticklabels([f"{tick:.2f}" for tick in ticks])
+    cbar.ax.tick_params(labelsize=13.0, length=2.2, pad=1.5)
+
+    for pos, inset, field_meV in zip(positions, delta_insets, delta_fields_meV):
         ax_in = ax.inset_axes(pos)
-        _draw_delta_inset(ax_in, inset)
+        _draw_delta_inset(ax_in, inset, field_meV=field_meV, norm=norm, cmap=cmap)
 
 
 
@@ -564,11 +624,11 @@ def _highlight_snapshot_points(
     handle = ax.scatter(
         xs,
         ys,
-        s=72.0,
+        s=74.0,
         facecolors="red",
         edgecolors="black",
         linewidths=0.9,
-        zorder=5,
+        zorder=5.0,
     )
     for x, y, idx in zip(xs, ys, indices):
         ax.text(
@@ -577,22 +637,77 @@ def _highlight_snapshot_points(
             str(idx),
             ha="center",
             va="center",
-            fontsize=7.0,
+            fontsize=8.0,
             color="white",
             fontweight="bold",
-            zorder=6,
+            zorder=6.0,
         )
     return handle
 
 
 
-def _draw_delta_inset(ax: plt.Axes, inset: Mapping[str, Any]) -> None:
+def _extract_delta_field_meV(dataset: Mapping[str, Any]) -> np.ndarray:
+    """Return |Delta| in meV using the best available dataset keys."""
+    direct_keys = (
+        "delta_meV",
+        "delta_abs_meV",
+        "delta_magnitude_meV",
+        "abs_delta_meV",
+        "delta_mod_meV",
+        "delta_mag_meV",
+    )
+    for key in direct_keys:
+        if key in dataset:
+            arr = np.asarray(dataset.get(key, []), dtype=float)
+            if arr.size:
+                return np.abs(arr)
+
+    profiles = dataset.get("profiles", {})
+    if isinstance(profiles, Mapping):
+        for key in direct_keys:
+            if key in profiles:
+                arr = np.asarray(profiles.get(key, []), dtype=float)
+                if arr.size:
+                    return np.abs(arr)
+
+    delta_over = np.asarray(dataset.get("delta_over_delta0", []), dtype=float)
+    if delta_over.size:
+        summary_scalars = dataset.get("summary_scalars", {})
+        if not isinstance(summary_scalars, Mapping):
+            summary_scalars = {}
+        delta0_meV = _find_numeric_recursive(
+            summary_scalars,
+            keys=("delta0_meV", "delta_eq_meV", "delta_ref_meV", "Delta0_meV", "gap0_meV"),
+        )
+        if not np.isfinite(delta0_meV):
+            delta0_J = _find_numeric_recursive(
+                summary_scalars,
+                keys=("delta0_J", "delta_eq_J", "Delta0_J", "gap0_J"),
+            )
+            if np.isfinite(delta0_J):
+                delta0_meV = float(delta0_J / MEV_J)
+        if np.isfinite(delta0_meV) and delta0_meV > 0.0:
+            return np.abs(delta_over) * float(delta0_meV)
+        # Fall back to unitless scale if nothing else is available; label will still be meV-scale placeholder.
+        return np.abs(delta_over)
+
+    return np.array([], dtype=float)
+
+
+
+def _draw_delta_inset(
+    ax: plt.Axes,
+    inset: Mapping[str, Any],
+    *,
+    field_meV: np.ndarray,
+    norm: Normalize,
+    cmap,
+) -> None:
     dataset = inset.get("dataset", {})
     x_nm = np.asarray(dataset.get("x_nm", []), dtype=float)
     y_nm = np.asarray(dataset.get("y_nm", []), dtype=float)
     triangles = np.asarray(dataset.get("triangles", []), dtype=np.int64)
-    delta = np.asarray(dataset.get("delta_over_delta0", []), dtype=float)
-    if x_nm.size == 0 or y_nm.size == 0 or triangles.size == 0 or delta.size != x_nm.size:
+    if x_nm.size == 0 or y_nm.size == 0 or triangles.size == 0 or field_meV.size != x_nm.size:
         ax.text(0.5, 0.5, "missing\n|Δ| data", ha="center", va="center", transform=ax.transAxes, fontsize=7.0)
         ax.set_xticks([])
         ax.set_yticks([])
@@ -605,7 +720,7 @@ def _draw_delta_inset(ax: plt.Axes, inset: Mapping[str, Any]) -> None:
     y_max = float(np.nanmax(y_nm))
 
     triang = mtri.Triangulation(x_nm, y_nm, triangles)
-    ax.tripcolor(triang, delta, shading="gouraud", vmin=0.0, vmax=1.0)
+    ax.tripcolor(triang, field_meV, shading="gouraud", cmap=cmap, norm=norm)
     ax.set_xlim(x_left, x_right)
     ax.set_ylim(y_min, y_max)
     ax.set_aspect("equal", adjustable="box")
@@ -626,9 +741,9 @@ def _draw_delta_inset(ax: plt.Axes, inset: Mapping[str, Any]) -> None:
         ha="right",
         va="top",
         transform=ax.transAxes,
-        fontsize=7.0,
+        fontsize=8.0,
         color="white",
-        bbox={"boxstyle": "round,pad=0.16", "facecolor": "black", "edgecolor": "white", "linewidth": 0.45, "alpha": 0.72},
+        bbox={"boxstyle": "round,pad=0.18", "facecolor": "red", "edgecolor": "white", "linewidth": 0.6, "alpha": 0.82},
         zorder=10,
     )
     for spine in ax.spines.values():
