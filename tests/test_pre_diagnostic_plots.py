@@ -49,6 +49,12 @@ def test_write_pre_diagnostic_plots_smoke(tmp_path):
     energy_values = np.linspace(0.0, 6.0e-22, 32)
     calibration_q = np.linspace(0.0, 1.0e8, 8)
     calibration_delta = 2.0e-22 * np.clip(1.0 - (calibration_q / 1.0e8) ** 2, 0.0, None)
+    js_table_temperature_values_K = np.array([0.9, 4.0, 8.0], dtype=float)
+    js_table_delta_eq_values_J = np.vstack([
+        calibration_delta,
+        0.65 * calibration_delta,
+        0.15 * calibration_delta,
+    ])
 
     rho = np.empty((delta_values.size, q_values.size, energy_values.size), dtype=float)
     anomalous = np.empty_like(rho)
@@ -66,6 +72,9 @@ def test_write_pre_diagnostic_plots_smoke(tmp_path):
             dtype=float,
         ),
         calibration_delta_eq_values_J=calibration_delta,
+        js_table_temperature_values_K=js_table_temperature_values_K,
+        js_table_q_values_m_inv=calibration_q,
+        js_table_delta_eq_values_J=js_table_delta_eq_values_J,
         q_values_m_inv=q_values,
         delta_values_J=delta_values,
         energy_values_J=energy_values,
@@ -96,6 +105,7 @@ def test_write_pre_diagnostic_plots_smoke(tmp_path):
         "usadel_equilibrium_dos_map_png",
         "usadel_zero_energy_dos_map_png",
         "usadel_equilibrium_anomalous_map_png",
+        "usadel_equilibrium_gap_Tq_map_png",
     }
     for value in outputs.values():
         path = tmp_path / value.split("/")[-1]

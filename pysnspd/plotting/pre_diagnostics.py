@@ -72,6 +72,11 @@ def write_pre_diagnostic_plots(
             out / "usadel_equilibrium_anomalous_map.png",
             dpi=dpi,
         ),
+        "usadel_equilibrium_gap_Tq_map_png": plot_usadel_equilibrium_gap_Tq_map(
+            usadel_catalog,
+            out / "usadel_equilibrium_gap_Tq_map.png",
+            dpi=dpi,
+        ),
     }
     return {key: str(value) for key, value in paths.items()}
 
@@ -336,7 +341,11 @@ def plot_usadel_zero_energy_dos_map(
     *,
     dpi: int = 480,
 ) -> Path:
-    """Plot the zero-energy DOS over the independent (Delta,q) catalogue axes."""
+    """Plot the zero-energy DOS over the independent (Delta,q) catalogue axes.
+
+    Use an interpolated regular-image rendering instead of raw cell colors so the
+    map is less blocky and easier to read for coarse catalogue grids.
+    """
     output = _prepare_output(output_path)
     rho = np.asarray(usadel_catalog.rho_delta_gamma_E, dtype=float)
     energy = np.asarray(usadel_catalog.energy_values_J, dtype=float)
@@ -346,7 +355,22 @@ def plot_usadel_zero_energy_dos_map(
     zero_map = rho[:, :, idx0]
 
     fig, ax = plt.subplots(figsize=(7.1, 4.35))
-    im = ax.pcolormesh(q_1e7, delta_meV, zero_map, shading="auto", vmin=0.0)
+    im = ax.imshow(
+        zero_map,
+        origin="lower",
+        aspect="auto",
+        interpolation="bicubic",
+        extent=_imshow_extent(q_1e7, delta_meV),
+        vmin=0.0,
+        vmax=float(np.nanmax(zero_map)) if np.isfinite(np.nanmax(zero_map)) else 1.0,
+        cmap="viridis",
+    )
+    # Add faint contours to recover the underlying catalogue structure without the
+    # visually harsh pixelation of a plain nearest-cell rendering.
+    if np.isfinite(zero_map).any():
+        levels = np.linspace(float(np.nanmin(zero_map)), float(np.nanmax(zero_map)), 7)
+        if np.nanmax(levels) > np.nanmin(levels):
+            ax.contour(q_1e7, delta_meV, zero_map, levels=levels[1:-1], colors="white", linewidths=0.35, alpha=0.35)
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(r"$\rho(E\approx0;|\Delta|,q)$")
     ax.set_title("Usadel zero-energy DOS over catalogue grid")
@@ -382,6 +406,48 @@ def plot_usadel_equilibrium_anomalous_map(
     ax.set_title(r"Usadel anomalous amplitude along $\Delta_{eq}(q)$" + _temperature_suffix(metadata))
     ax.set_xlabel(r"energy $E$ [meV]")
     ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$]")
+    ax.grid(False)
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return output
+
+
+def plot_usadel_equilibrium_gap_Tq_map(
+    usadel_catalog: Any,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+) -> Path:
+    """Plot the equilibrium gap over the available temperature--q grid.
+
+    The PRE catalogue may carry a strict 3D Matsubara supercurrent table. When a
+    corresponding equilibrium-gap table is available, this helper visualizes the
+    equilibrium gap magnitude over that grid. For legacy/lean smoke objects, it
+    falls back to a single-temperature row built from the calibration branch.
+    """
+    output = _prepare_output(output_path)
+    T_vals_K, q_vals_m_inv, delta_eq_values_J = _extract_equilibrium_gap_Tq_data(usadel_catalog)
+    T_vals_K = np.asarray(T_vals_K, dtype=float)
+    q_1e7 = np.asarray(q_vals_m_inv, dtype=float) / 1.0e7
+    delta_eq_meV = _joule_to_mev(np.asarray(delta_eq_values_J, dtype=float))
+
+    fig, ax = plt.subplots(figsize=(7.1, 4.35))
+    im = ax.imshow(
+        delta_eq_meV,
+        origin="lower",
+        aspect="auto",
+        interpolation="bilinear",
+        extent=_imshow_extent(q_1e7, T_vals_K),
+        vmin=0.0,
+        vmax=float(np.nanmax(delta_eq_meV)) if np.isfinite(np.nanmax(delta_eq_meV)) else 1.0,
+        cmap="viridis",
+    )
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label(r"$|\Delta_{eq}(T,q)|$ [meV]")
+    ax.set_title(r"Equilibrium gap over the $(T,q)$ calibration grid")
+    ax.set_xlabel(r"$q$ [$10^7$ m$^{-1}$]")
+    ax.set_ylabel(r"temperature $T$ [K]")
     ax.grid(False)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -433,6 +499,89 @@ def _catalog_field_on_equilibrium_gap(usadel_catalog: Any, *, field_name: str) -
         idelta = int(np.nanargmin(np.abs(delta_axis - delta)))
         sampled[iq, :] = field[idelta, iq, :]
     return sampled
+
+
+def _extract_equilibrium_gap_Tq_data(usadel_catalog: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Extract temperature, q, and equilibrium-gap data from the catalogue."""
+    temperature_candidates = [
+        "js_table_temperature_values_K",
+        "js_table_temperatures_K",
+        "temperature_values_K",
+        "Te_values_K",
+        "temperatures_K",
+        "supercurrent_table_temperature_values_K",
+        "strict_3d_temperature_values_K",
+        "js_temperature_values_K",
+    ]
+    q_candidates = [
+        "js_table_q_values_m_inv",
+        "q_values_m_inv",
+        "calibration_q_values_m_inv",
+        "supercurrent_table_q_values_m_inv",
+        "strict_3d_q_values_m_inv",
+    ]
+    delta_candidates = [
+        "js_table_delta_eq_values_J",
+        "js_table_equilibrium_gap_values_J",
+        "delta_eq_Tq_values_J",
+        "equilibrium_gap_Tq_values_J",
+        "delta_eq_values_J",
+        "supercurrent_table_delta_eq_values_J",
+        "strict_3d_delta_eq_values_J",
+        "js_delta_eq_values_J",
+        "js_table_delta_eq_J",
+    ]
+
+    T_vals = _find_first_attr(usadel_catalog, temperature_candidates)
+    q_vals = _find_first_attr(usadel_catalog, q_candidates)
+    delta_map = _find_first_attr(usadel_catalog, delta_candidates)
+
+    if T_vals is not None and q_vals is not None and delta_map is not None:
+        T_vals = np.asarray(T_vals, dtype=float)
+        q_vals = np.asarray(q_vals, dtype=float)
+        delta_map = np.asarray(delta_map, dtype=float)
+        if delta_map.ndim == 2 and delta_map.shape == (T_vals.size, q_vals.size):
+            return T_vals, q_vals, delta_map
+        if delta_map.ndim == 2 and delta_map.shape == (q_vals.size, T_vals.size):
+            return T_vals, q_vals, delta_map.T
+
+    # Legacy fallback: use only the calibration branch at the configured bias temperature.
+    q_cal = np.asarray(getattr(usadel_catalog, "calibration_q_values_m_inv"), dtype=float)
+    delta_cal = np.asarray(_calibration_delta_eq_mev(usadel_catalog), dtype=float) * MEV_J
+    metadata = getattr(usadel_catalog, "metadata", {})
+    T_bias = _metadata_float(metadata, "T_bias_K")
+    if not np.isfinite(T_bias):
+        T_bias = 0.0
+    return np.asarray([T_bias], dtype=float), q_cal, delta_cal[None, :]
+
+
+def _find_first_attr(obj: Any, candidates: list[str]) -> Any | None:
+    for name in candidates:
+        if hasattr(obj, name):
+            value = getattr(obj, name)
+            if value is not None:
+                return value
+    return None
+
+
+def _imshow_extent(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float, float]:
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    if x.size == 1:
+        dx = max(abs(float(x[0])) * 0.05, 0.5)
+        xmin, xmax = float(x[0] - dx), float(x[0] + dx)
+    else:
+        dx = np.diff(x)
+        xmin = float(x[0] - 0.5 * dx[0])
+        xmax = float(x[-1] + 0.5 * dx[-1])
+    if y.size == 1:
+        dy = max(abs(float(y[0])) * 0.05, 0.5)
+        ymin, ymax = float(y[0] - dy), float(y[0] + dy)
+    else:
+        dy = np.diff(y)
+        ymin = float(y[0] - 0.5 * dy[0])
+        ymax = float(y[-1] + 0.5 * dy[-1])
+    return xmin, xmax, ymin, ymax
 
 
 def _safe_histogram_bins(values: np.ndarray, *, max_bins: int = 60) -> np.ndarray:
