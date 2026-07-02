@@ -221,23 +221,45 @@ def plot_current_sweep_iv(
     normal_x, normal_y = _extract_normal_curve(points)
     fit_x, fit_y = _monotone_fit_curve(x_valid, y_valid)
 
-    has_insets = bool(delta_insets)
-    fig = plt.figure(figsize=(9.2, 5.8) if has_insets else (7.0, 4.8))
-    main_bottom = 0.11
-    main_height = 0.52 if has_insets else 0.78
-    ax = fig.add_axes([0.085, main_bottom, 0.89, main_height])
+    fig, ax = plt.subplots(figsize=(7.8, 4.9), constrained_layout=False)
+    fig.subplots_adjust(left=0.105, right=0.975, bottom=0.125, top=0.965)
 
-    raw_scatter = ax.scatter(x_valid, y_valid, s=22.0, label="raw endpoint voltage", zorder=4)
-    fit_line = None
     normal_line = None
-    if fit_x.size:
-        fit_line, = ax.plot(fit_x, fit_y, linewidth=1.6, label="monotone fit", zorder=3)
+    fit_line = None
     if normal_x.size:
-        normal_line, = ax.plot(normal_x, normal_y, linestyle="--", linewidth=1.2, label="normal-state Ohmic line", zorder=2)
+        normal_line, = ax.plot(
+            normal_x,
+            normal_y,
+            linestyle="--",
+            linewidth=1.45,
+            color="tab:orange",
+            label="normal-state Ohmic line",
+            zorder=1,
+        )
+    if fit_x.size:
+        fit_line, = ax.plot(
+            fit_x,
+            fit_y,
+            linewidth=1.55,
+            color="black",
+            label="monotone fit",
+            zorder=2,
+        )
+    raw_scatter = ax.scatter(
+        x_valid,
+        y_valid,
+        s=22.0,
+        color="tab:blue",
+        label="raw endpoint voltage",
+        zorder=3,
+    )
 
-    # Explicitly ensure the origin is highlighted when requested.
     if include_origin:
-        ax.scatter([0.0], [0.0], s=26.0, zorder=5)
+        ax.scatter([0.0], [0.0], s=26.0, color="tab:orange", zorder=4)
+
+    snapshot_handle = None
+    if delta_insets:
+        snapshot_handle = _highlight_snapshot_points(ax, points, delta_insets)
 
     ax.set_xlabel(r"$I_{\mathrm{bias}}$ [$\mu$A]")
     ax.set_ylabel(r"$V_{\mathrm{TDGL}}$ [mV]")
@@ -259,18 +281,13 @@ def plot_current_sweep_iv(
             upper = lower + 1.0
         ax.set_ylim(lower, upper)
 
+    if delta_insets:
+        _add_delta_insets(ax, delta_insets)
+
     probe_text = (
         rf"probe: $V = \phi(x_c + {voltage_probe_offset_nm:.0f}\,\mathrm{{nm}}) - "
         rf"\phi(x_c - {voltage_probe_offset_nm:.0f}\,\mathrm{{nm}})$"
     )
-    ax.text(
-        0.02, 0.985, probe_text,
-        transform=ax.transAxes,
-        ha="left", va="top", fontsize=8.0,
-        bbox={"boxstyle": "round,pad=0.26", "facecolor": "white", "edgecolor": "0.35", "linewidth": 0.55, "alpha": 0.88},
-        zorder=10,
-    )
-
     handles = [raw_scatter]
     labels = ["raw endpoint voltage"]
     if fit_line is not None:
@@ -279,15 +296,24 @@ def plot_current_sweep_iv(
     if normal_line is not None:
         handles.append(normal_line)
         labels.append("normal-state Ohmic line")
-    ax.legend(handles, labels, loc="lower right", frameon=True, fontsize=8.0)
+    if snapshot_handle is not None:
+        handles.append(snapshot_handle)
+        labels.append("|Δ| snapshot used")
 
-    if has_insets:
-        _add_delta_insets(fig, ax, delta_insets, points)
+    legend = ax.legend(
+        handles,
+        labels,
+        loc="lower right",
+        frameon=True,
+        fontsize=8.0,
+        title=probe_text,
+        title_fontsize=8.0,
+    )
+    legend.get_frame().set_alpha(0.95)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.06)
     plt.close(fig)
     return output
-
 
 
 def write_current_sweep_iv_csv(points: Sequence[Mapping[str, Any]], output_path: str | Path) -> Path:
@@ -503,21 +529,60 @@ def _isotonic_regression(y: np.ndarray, w: np.ndarray | None = None) -> np.ndarr
 
 
 
-def _add_delta_insets(fig: plt.Figure, ax: plt.Axes, delta_insets: Sequence[Mapping[str, Any]], points: Sequence[Mapping[str, Any]]) -> None:
+def _add_delta_insets(ax: plt.Axes, delta_insets: Sequence[Mapping[str, Any]]) -> None:
+    """Place four |Delta| colormap insets inside the main IV axes in a 2x2 grid."""
     positions = [
-        [0.085, 0.72, 0.18, 0.19],
-        [0.305, 0.72, 0.18, 0.19],
-        [0.525, 0.72, 0.18, 0.19],
-        [0.745, 0.72, 0.18, 0.19],
+        [0.055, 0.58, 0.16, 0.29],
+        [0.235, 0.58, 0.16, 0.29],
+        [0.055, 0.265, 0.16, 0.29],
+        [0.235, 0.265, 0.16, 0.29],
     ]
     for pos, inset in zip(positions, delta_insets):
-        ax_in = fig.add_axes(pos)
+        ax_in = ax.inset_axes(pos)
         _draw_delta_inset(ax_in, inset)
+
+
+
+def _highlight_snapshot_points(
+    ax: plt.Axes,
+    points: Sequence[Mapping[str, Any]],
+    delta_insets: Sequence[Mapping[str, Any]],
+):
+    xs = []
+    ys = []
+    indices = []
+    for inset in delta_insets:
         x = float(inset.get("actual_current_uA", np.nan))
         y = _lookup_voltage(points, x)
         if np.isfinite(x) and np.isfinite(y):
-            ax.scatter([x], [y], s=48.0, facecolors="none", edgecolors="black", linewidths=0.9, zorder=6)
-            ax.text(x, y, str(int(inset.get("index", 0))), ha="center", va="center", fontsize=7.0, zorder=7)
+            xs.append(x)
+            ys.append(y)
+            indices.append(int(inset.get("index", 0)))
+    if not xs:
+        return None
+
+    handle = ax.scatter(
+        xs,
+        ys,
+        s=72.0,
+        facecolors="red",
+        edgecolors="black",
+        linewidths=0.9,
+        zorder=5,
+    )
+    for x, y, idx in zip(xs, ys, indices):
+        ax.text(
+            x,
+            y,
+            str(idx),
+            ha="center",
+            va="center",
+            fontsize=7.0,
+            color="white",
+            fontweight="bold",
+            zorder=6,
+        )
+    return handle
 
 
 
@@ -529,7 +594,8 @@ def _draw_delta_inset(ax: plt.Axes, inset: Mapping[str, Any]) -> None:
     delta = np.asarray(dataset.get("delta_over_delta0", []), dtype=float)
     if x_nm.size == 0 or y_nm.size == 0 or triangles.size == 0 or delta.size != x_nm.size:
         ax.text(0.5, 0.5, "missing\n|Δ| data", ha="center", va="center", transform=ax.transAxes, fontsize=7.0)
-        ax.set_xticks([]); ax.set_yticks([])
+        ax.set_xticks([])
+        ax.set_yticks([])
         return
 
     x_center = 0.5 * (float(np.nanmin(x_nm)) + float(np.nanmax(x_nm)))
@@ -545,6 +611,7 @@ def _draw_delta_inset(ax: plt.Axes, inset: Mapping[str, Any]) -> None:
     ax.set_aspect("equal", adjustable="box")
     ax.set_xticks([])
     ax.set_yticks([])
+
     idx = int(inset.get("index", 0))
     current = float(inset.get("actual_current_uA", np.nan))
     requested = float(inset.get("requested_current_uA", np.nan))
@@ -552,7 +619,18 @@ def _draw_delta_inset(ax: plt.Axes, inset: Mapping[str, Any]) -> None:
         label = f"#{idx}  {current:.0f} μA\n(req {requested:.0f})"
     else:
         label = f"#{idx}  {current:.0f} μA"
-    ax.set_title(label, fontsize=7.2, pad=1.5)
+    ax.text(
+        0.965,
+        0.965,
+        label,
+        ha="right",
+        va="top",
+        transform=ax.transAxes,
+        fontsize=7.0,
+        color="white",
+        bbox={"boxstyle": "round,pad=0.16", "facecolor": "black", "edgecolor": "white", "linewidth": 0.45, "alpha": 0.72},
+        zorder=10,
+    )
     for spine in ax.spines.values():
         spine.set_linewidth(0.7)
         spine.set_edgecolor("0.1")
