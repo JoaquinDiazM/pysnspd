@@ -1,7 +1,7 @@
 """Official PRE-run pipeline for pySNSPD.
 
-This stage builds the reusable, expensive objects needed by later stationary and
-photon runs:
+This stage builds the reusable, expensive objects needed by later stationary
+and photon runs:
 
 1. the 2D nanowire mesh and boundary edge table;
 2. the dirty-limit Usadel/DOS catalogue;
@@ -72,19 +72,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-progress",
         action="store_true",
-        help="Disable the PRE-run stage progress bar.",
+        help="Disable the PRE-run stage progress bar and phase-space progress bar.",
     )
     parser.add_argument(
         "--no-diagnostic-plots",
         action="store_true",
         help="Do not write PRE diagnostic plots.",
     )
-    parser.add_argument(
-        "--dpi",
-        type=int,
-        default=480,
-        help="Resolution for PRE diagnostic plots.",
-    )
+    parser.add_argument("--dpi", type=int, default=480, help="Resolution for PRE diagnostic plots.")
 
     # Usadel / OE3.
     parser.add_argument("--eta-fraction", type=float, default=1.0e-3)
@@ -100,7 +95,6 @@ def parse_args() -> argparse.Namespace:
             "Use 0.68 for the switching-calibrated mesoscopic branch."
         ),
     )
-
 
     # Strict 3D Usadel supercurrent table for SS.
     parser.add_argument(
@@ -143,7 +137,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--phase-omega-max-meV", type=float, default=35.0)
     parser.add_argument("--phase-Te-min-K", type=float, default=None)
     parser.add_argument("--phase-Te-max-K", type=float, default=None)
-
     return parser.parse_args()
 
 
@@ -151,6 +144,7 @@ def main() -> int:
     args = parse_args()
     cfg = validate_config(load_config(args.config))
     workers, parallel_backend = _resolve_parallel(cfg, args.workers)
+
     allmaras_diffusion_factor = float(args.allmaras_diffusion_factor)
     if not np.isfinite(allmaras_diffusion_factor) or allmaras_diffusion_factor <= 0.0:
         raise ValueError("--allmaras-diffusion-factor must be finite and positive.")
@@ -174,10 +168,8 @@ def main() -> int:
         width_m=mesh.width_m,
     )
     assert_edge_data_consistent(edge_data)
-
     mesh_npz = save_mesh_npz(mesh, raw_pre / "mesh.npz")
     edges_npz = save_edges_npz(edge_data, raw_pre / "edges.npz")
-
     mesh_edge_summary = {
         "run_name": run_name,
         "mesh": mesh_summary(mesh),
@@ -223,8 +215,8 @@ def main() -> int:
         backend=parallel_backend,
     )
     append_supercurrent_table_3d_to_npz(str(usadel_npz), js_table)
-    js_summary = supercurrent_table_summary(js_table)
 
+    js_summary = supercurrent_table_summary(js_table)
     usadel_summary = catalog_summary(usadel_catalog)
     D_usadel_m2_s = float(usadel_catalog.metadata["D_m2_s"])
     usadel_summary["gtdgl_allmaras"] = {
@@ -283,6 +275,9 @@ def main() -> int:
             Te_min_K=args.phase_Te_min_K,
             Te_max_K=args.phase_Te_max_K,
             omega_max_meV=args.phase_omega_max_meV,
+            workers=workers,
+            parallel_backend=parallel_backend,
+            progress=not args.no_progress,
         )
         phase_npz = save_phase_space_catalog_npz(
             phase_catalog,
@@ -331,7 +326,7 @@ def main() -> int:
         stage="pre",
         extra={
             "pipeline": "01_prerun_template.py",
-            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, phase-space catalogue.",
+            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, parallel phase-space catalogue.",
             "workers": int(workers),
             "parallel_backend": str(parallel_backend),
             "allmaras_diffusion_factor": float(allmaras_diffusion_factor),
@@ -346,8 +341,8 @@ def main() -> int:
 
     print()
     print("PRE-run generation")
-    print(f"  run_name: {run_name}")
-    print(f"  raw_pre:  {raw_pre}")
+    print(f" run_name: {run_name}")
+    print(f" raw_pre: {raw_pre}")
     print()
     print("Mesh")
     _print_dict(mesh_edge_summary["mesh"])
@@ -366,10 +361,9 @@ def main() -> int:
     print()
     print("Outputs")
     for key, value in outputs.items():
-        print(f"  {key}: {value}")
-    print(f"  pre_manifest: {manifest_path}")
+        print(f" {key}: {value}")
+    print(f" pre_manifest: {manifest_path}")
     print("Status: OK")
-
     return 0
 
 
@@ -379,7 +373,6 @@ def _resolve_parallel(cfg: dict[str, Any], requested_workers: int | None) -> tup
     ``--workers`` overrides only the worker count. The backend still comes from
     ``parallel.backend`` in the YAML so Geminga can use ``process`` by default.
     """
-
     parallel = cfg.get("parallel", {}) if isinstance(cfg, dict) else {}
     backend = str(parallel.get("backend", "process")).lower()
     if backend not in {"process", "thread", "serial"}:
@@ -404,7 +397,7 @@ def _write_yaml(path: str | Path, data: MappingLike) -> None:
 
 def _print_dict(data: dict[str, Any]) -> None:
     for key, value in data.items():
-        print(f"  {key}: {value}")
+        print(f" {key}: {value}")
 
 
 class _ProgressBar:
@@ -429,7 +422,7 @@ class _ProgressBar:
         filled = int(round(self.width * frac))
         bar = "#" * filled + "-" * (self.width - filled)
         percent = int(round(100.0 * frac))
-        print(f"PRE-run [{bar}] {percent:3d}%  {label}", flush=True)
+        print(f"PRE-run [{bar}] {percent:3d}% {label}", flush=True)
 
 
 MappingLike = dict[str, Any]
