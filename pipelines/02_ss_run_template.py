@@ -83,6 +83,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--ss-dt-fs", type=float, default=0.30)
     parser.add_argument("--ss-target-current-uA", type=float, default=20.0)
     parser.add_argument(
+        "--ss-overcritical-seed-policy",
+        choices=("clamp-to-ic", "error"),
+        default="clamp-to-ic",
+        help=(
+            "Policy used only when the requested target current exceeds the PRE Usadel Ic. "
+            "'clamp-to-ic' keeps the simulation target current unchanged, but builds "
+            "the initial analytic superconducting seed slightly below Ic.  This is the "
+            "recommended mode for searching overcritical PSL formation.  'error' preserves "
+            "the old behavior and refuses overcritical stationary seeds."
+        ),
+    )
+    parser.add_argument(
+        "--ss-overcritical-seed-fraction",
+        type=float,
+        default=0.98,
+        help=(
+            "When --ss-overcritical-seed-policy=clamp-to-ic and the requested current "
+            "is above the PRE Usadel Ic, build the analytic seed at this fraction of Ic. "
+            "The boundary-current target remains the requested overcritical current."
+        ),
+    )
+    parser.add_argument(
         "--extra-currents-uA",
         type=float,
         nargs="*",
@@ -366,8 +388,15 @@ def main() -> int:
             role="base",
         )
 
+        failed_results: list[dict[str, Any]] = []
         for future in as_completed(futures):
-            extra_results.append(future.result())
+            try:
+                extra_results.append(future.result())
+            except Exception as exc:  # pragma: no cover - exercised on cluster failures.
+                failed_results.append({
+                    "error_type": type(exc).__name__,
+                    "error": str(exc),
+                })
 
     all_results = [base_result] + sorted(extra_results, key=lambda item: float(item["target_current_uA"]))
     print()
@@ -375,8 +404,17 @@ def main() -> int:
     for item in all_results:
         print(
             f"  {item['target_current_uA']:8.3f} uA  "
+            f"seed={item.get('seed_current_uA', float('nan')):8.3f} uA  "
+            f"clamped={item.get('seed_is_overcritical_clamped', False)}  "
             f"run={item['run_name']}  raw_ss={item['raw_ss']}"
         )
+    if failed_results:
+        print()
+        print("SS sweep failed cases")
+        for item in failed_results:
+            print(f"  {item['error_type']}: {item['error']}")
+        print("Status: PARTIAL")
+        return 2
     print("Status: OK")
     return 0
 
@@ -423,16 +461,27 @@ def _run_single_current_case(
     )
 
     target_current_A = float(target_current_uA) * 1.0e-6
+    seed_current_A, seed_current_policy = _resolve_seed_current_for_target(
+        usadel_catalog=base_usadel_catalog,
+        target_current_A=target_current_A,
+        overcritical_policy=str(args.ss_overcritical_seed_policy),
+        overcritical_seed_fraction=float(args.ss_overcritical_seed_fraction),
+    )
 
     seed = build_stationary_seed(
         mesh=mesh,
         edge_data=edge_data,
         usadel_catalog=base_usadel_catalog,
-        I_bias_A=target_current_A,
+        I_bias_A=seed_current_A,
         phase_origin=args.phase_origin,
     )
     seed_npz = save_stationary_seed_npz(seed, raw_ss / "stationary_seed.npz")
     seed_summary_data = seed_summary(seed)
+    seed_summary_data["simulation_target_current_A"] = float(target_current_A)
+    seed_summary_data["simulation_target_current_uA"] = float(target_current_uA)
+    seed_summary_data["analytic_seed_current_A"] = float(seed_current_A)
+    seed_summary_data["analytic_seed_current_uA"] = float(seed_current_A * 1.0e6)
+    seed_summary_data["overcritical_seed_policy"] = seed_current_policy
 
     allmaras_diffusion = _read_pre_allmaras_diffusion(raw_pre)
     material = build_gtdgl_material(
@@ -511,6 +560,7 @@ def _run_single_current_case(
         "supercurrent_policy": supercurrent_policy,
         "strict_usadel_current_table": strict_table_summary,
         "gtdgl_allmaras_diffusion": allmaras_diffusion,
+        "seed_current_policy": seed_current_policy,
         "seed": seed_summary_data,
         "solver": result.summary,
         "outputs": {
@@ -534,6 +584,7 @@ def _run_single_current_case(
             "target_current_uA": float(target_current_uA),
             "sweep_role": role,
             "gtdgl_allmaras_diffusion": allmaras_diffusion,
+            "seed_current_policy": seed_current_policy,
             "outputs": ss_summary["outputs"] | {"ss_summary": str(summary_path)},
             "summary": ss_summary,
         },
@@ -561,6 +612,8 @@ def _run_single_current_case(
         "pre_run_name": pre_name,
         "target_current_uA": float(target_current_uA),
         "raw_ss": str(raw_ss),
+        "seed_current_uA": float(seed_current_A * 1.0e6),
+        "seed_is_overcritical_clamped": bool(seed_current_policy.get("seed_is_overcritical_clamped", False)),
         "summary_path": str(summary_path),
         "manifest_path": str(manifest_path),
         "first_magic_ready": bool(result.summary.get("first_magic_ready", False)),
@@ -568,6 +621,78 @@ def _run_single_current_case(
         "max_pairbreaking_ratio": float(result.summary.get("max_pairbreaking_ratio", float("nan"))),
         "normal_current_fraction_max": float(result.summary.get("normal_current_fraction_max", float("nan"))),
     }
+
+
+
+def _resolve_seed_current_for_target(
+    *,
+    usadel_catalog,
+    target_current_A: float,
+    overcritical_policy: str,
+    overcritical_seed_fraction: float,
+) -> tuple[float, dict[str, Any]]:
+    """Return the analytic seed current used for a requested simulation current.
+
+    The finite-strip solver can be driven above the PRE Usadel depairing current,
+    but the analytic OE6 seed is a superconducting uniform branch and therefore
+    must remain below Ic.  For overcritical PSL searches we keep the physical
+    boundary-current target unchanged and only clamp the *initial seed* current.
+    """
+    target_current_A = float(target_current_A)
+    if not np.isfinite(target_current_A) or target_current_A <= 0.0:
+        raise ValueError("target_current_A must be positive and finite.")
+
+    Ic_A = _usadel_ic_A(usadel_catalog)
+    policy = str(overcritical_policy).strip().lower().replace("_", "-")
+    fraction = float(overcritical_seed_fraction)
+    if not np.isfinite(fraction) or not (0.0 < fraction < 1.0):
+        raise ValueError("--ss-overcritical-seed-fraction must be in the open interval (0, 1).")
+
+    overcritical = bool(target_current_A > Ic_A)
+    if not overcritical:
+        seed_current_A = target_current_A
+        reason = "target current is below or equal to PRE Usadel Ic; seed uses the requested current."
+        clamped = False
+    elif policy == "error":
+        raise ValueError(
+            f"Requested target current {target_current_A:.6e} A exceeds PRE Usadel Ic {Ic_A:.6e} A. "
+            "Use --ss-overcritical-seed-policy clamp-to-ic to drive the solver above Ic."
+        )
+    elif policy == "clamp-to-ic":
+        seed_current_A = fraction * Ic_A
+        reason = (
+            "target current exceeds PRE Usadel Ic; analytic superconducting seed is clamped "
+            "below Ic while the solver boundary target remains overcritical."
+        )
+        clamped = True
+    else:
+        raise ValueError(f"Unknown --ss-overcritical-seed-policy: {overcritical_policy!r}")
+
+    return float(seed_current_A), {
+        "requested_target_current_A": float(target_current_A),
+        "requested_target_current_uA": float(target_current_A * 1.0e6),
+        "pre_usadel_Ic_A": float(Ic_A),
+        "pre_usadel_Ic_uA": float(Ic_A * 1.0e6),
+        "target_over_pre_usadel_Ic": float(target_current_A / Ic_A),
+        "analytic_seed_current_A": float(seed_current_A),
+        "analytic_seed_current_uA": float(seed_current_A * 1.0e6),
+        "analytic_seed_over_pre_usadel_Ic": float(seed_current_A / Ic_A),
+        "policy": policy,
+        "overcritical_seed_fraction": float(fraction),
+        "seed_is_overcritical_clamped": bool(clamped),
+        "reason": reason,
+    }
+
+
+def _usadel_ic_A(usadel_catalog) -> float:
+    current = np.asarray(usadel_catalog.calibration_current_values_A, dtype=float)
+    finite = np.isfinite(current) & (current >= 0.0)
+    if np.count_nonzero(finite) < 1:
+        raise ValueError("PRE Usadel catalogue has no finite non-negative calibration currents.")
+    Ic_A = float(np.max(current[finite]))
+    if not np.isfinite(Ic_A) or Ic_A <= 0.0:
+        raise ValueError("PRE Usadel critical current is not positive.")
+    return Ic_A
 
 
 def _print_single_case_report(
