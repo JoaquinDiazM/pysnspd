@@ -24,6 +24,7 @@ from pysnspd.io.manager import create_run_layout
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.mesh.edges import load_edges_npz
 from pysnspd.usadel.catalog import load_usadel_catalog_npz
+from pysnspd.plotting.mesh import plot_mesh_pytdgl_style
 from pysnspd.plotting.pre_diagnostics import write_pre_diagnostic_plots
 
 
@@ -69,6 +70,12 @@ def main() -> int:
     )
     saved = {key: Path(value) for key, value in saved_raw.items()}
 
+    saved["mesh_pytdgl_style_png"] = plot_mesh_pytdgl_style(
+        mesh,
+        figures_dir / "mesh_pytdgl_style.png",
+        dpi=int(args.dpi),
+    )
+
     manifest_path = _write_plot_manifest(
         run_name=args.run_name,
         raw_pre=raw_pre,
@@ -97,7 +104,7 @@ def _write_plot_manifest(
     saved: dict[str, Path],
 ) -> Path:
     manifest: dict[str, Any] = {
-        "schema_version": 1,
+        "schema_version": 2,
         "pipeline": "plot_pipelines/01_plot_prerun.py",
         "purpose": "Presentation figures from an existing PRE-run.",
         "run_name": run_name,
