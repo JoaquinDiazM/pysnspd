@@ -15,6 +15,7 @@ import os
 import platform
 import re
 import sys
+import uuid
 
 
 try:
@@ -422,10 +423,26 @@ def _normalize_stage(stage: str) -> str:
 
 
 def _assert_writable(path: Path) -> None:
+    """Check that *path* can be written by this process.
+
+    The write probe must be process-safe because SS current sweeps create run
+    layouts concurrently with ``ProcessPoolExecutor``. A fixed probe filename
+    such as ``.pysnspd_write_test`` is racy: one worker can remove the file
+    while another worker is still testing it, producing a false
+    ``FileNotFoundError`` and an incorrect ``StorageError`` even though the
+    directory is writable.
+    """
+
     try:
         path.mkdir(parents=True, exist_ok=True)
-        test_file = path / ".pysnspd_write_test"
+        test_file = path / f".pysnspd_write_test.{os.getpid()}.{uuid.uuid4().hex}"
         test_file.write_text("ok\n", encoding="utf-8")
-        test_file.unlink()
+        try:
+            test_file.unlink()
+        except FileNotFoundError:
+            # A unique filename should make this impossible in normal use, but
+            # treating a missing cleanup target as harmless keeps the probe
+            # robust on shared filesystems.
+            pass
     except OSError as exc:
         raise StorageError(f"Path is not writable: {path}") from exc
