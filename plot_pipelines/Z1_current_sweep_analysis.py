@@ -20,7 +20,7 @@ from pysnspd.plotting.current_sweep import make_current_sweep_figures
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Index raw data and create first-pass current-sweep IV figures."
+        description="Index raw data and create current-sweep IV figures."
     )
     parser.add_argument("--config", required=True, help="Path to YAML project config.")
     parser.add_argument(
@@ -84,6 +84,18 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--delta-inset-currents-uA",
+        nargs=4,
+        type=float,
+        default=None,
+        metavar=("I1", "I2", "I3", "I4"),
+        help=(
+            "Exactly four currents (in microampere) used to select the four "
+            "|Delta| inset colormaps on the IV figure. Each requested current "
+            "is matched to the nearest available SS run."
+        ),
+    )
+    parser.add_argument(
         "--no-origin",
         action="store_true",
         help="Do not prepend the synthetic (I,V)=(0,0) point.",
@@ -120,6 +132,7 @@ def main() -> int:
         voltage_probe_offset_nm=float(args.voltage_probe_offset_nm),
         voltage_probe_half_window_nm=args.voltage_probe_half_window_nm,
         include_origin=not args.no_origin,
+        delta_inset_currents_uA=args.delta_inset_currents_uA,
     )
 
     manifest_path = _write_z1_manifest(
@@ -146,7 +159,7 @@ def main() -> int:
         print(f" {key}: {path}")
     print()
     print("Figures / tables")
-    for key in ("iv_curve", "iv_points_csv", "iv_points_yaml", "iv_skipped_yaml"):
+    for key in ("iv_curve", "iv_points_csv", "iv_points_yaml", "iv_skipped_yaml", "iv_insets_yaml"):
         path = figure_outputs.get(key)
         if path:
             print(f" {key}: {path}")
@@ -159,6 +172,8 @@ def main() -> int:
         print(f" probe offset [nm]: {iv_summary.get('voltage_probe_offset_nm')}")
         print(f" probe half-window [nm]: {iv_summary.get('voltage_probe_half_window_nm')}")
         print(f" sign flipped: {iv_summary.get('voltage_sign_flipped')}")
+        print(f" delta inset requests [uA]: {iv_summary.get('delta_inset_currents_uA', [])}")
+        print(f" delta inset resolved [uA]: {iv_summary.get('delta_inset_resolved_currents_uA', [])}")
     print("Status: OK")
     return 0
 
@@ -174,9 +189,9 @@ def _write_z1_manifest(
     figure_outputs: dict[str, Any],
 ) -> Path:
     manifest = {
-        "schema_version": 2,
+        "schema_version": 3,
         "pipeline": "plot_pipelines/Z1_current_sweep_analysis.py",
-        "purpose": "Multi-run current-sweep inventory and first-pass IV figure.",
+        "purpose": "Multi-run current-sweep inventory and IV figure with monotone fit, normal-state line, and four |Delta| insets.",
         "config_path": str(config_path),
         "args": args,
         "summary": summary,
