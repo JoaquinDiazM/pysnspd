@@ -100,7 +100,7 @@ def _write_plot_manifest(
 ) -> Path:
     manifest = {
         "schema_version": 1,
-        "pipeline": "plot_pipelines/01_plot_ss_run.py",
+        "pipeline": "plot_pipelines/02_plot_ss_run.py",
         "purpose": "Presentation figures from an existing stationary SS run.",
         "run_name": run.run_name,
         "pre_run_name": run.pre_run_name,

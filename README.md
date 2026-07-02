@@ -322,7 +322,7 @@ pipelines/
   03_photon_run_template.py
 
 plot_pipelines/
-  01_plot_ss_run.py
+  02_plot_ss_run.py
 
 pysnspd/
   config.py
@@ -480,7 +480,7 @@ python pipelines/02_ss_run_template.py \
 ```bash
 cd ~/pysnspd
 
-python plot_pipelines/01_plot_ss_run.py \
+python plot_pipelines/02_plot_ss_run.py \
   --config configs/geminga_local.yaml \
   --run-name "$SS_RUN" \
   --pre-run-name "$PRE_RUN" \
