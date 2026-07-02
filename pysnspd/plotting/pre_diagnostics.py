@@ -32,6 +32,7 @@ def write_pre_diagnostic_plots(
     usadel_catalog: Any,
     output_dir: str | Path,
     dpi: int = 480,
+    usadel_npz_path: str | Path | None = None,
 ) -> dict[str, str]:
     """Write standard PRE diagnostic plots and return their paths.
 
@@ -78,6 +79,7 @@ def write_pre_diagnostic_plots(
             usadel_catalog,
             out / "usadel_equilibrium_gap_Tq_map.png",
             dpi=dpi,
+            usadel_npz_path=usadel_npz_path,
         ),
     }
     return {key: str(value) for key, value in paths.items()}
@@ -420,6 +422,7 @@ def plot_usadel_equilibrium_gap_Tq_map(
     output_path: str | Path,
     *,
     dpi: int = 480,
+    usadel_npz_path: str | Path | None = None,
 ) -> Path:
     """Plot the equilibrium gap over the available temperature--q grid.
 
@@ -429,7 +432,10 @@ def plot_usadel_equilibrium_gap_Tq_map(
     falls back to a single-temperature row built from the calibration branch.
     """
     output = _prepare_output(output_path)
-    T_vals_K, q_vals_m_inv, delta_eq_values_J = _extract_equilibrium_gap_Tq_data(usadel_catalog)
+    T_vals_K, q_vals_m_inv, delta_eq_values_J = _extract_equilibrium_gap_Tq_data(
+        usadel_catalog,
+        usadel_npz_path=usadel_npz_path,
+    )
     T_vals_K = np.asarray(T_vals_K, dtype=float)
     q_1e7 = np.asarray(q_vals_m_inv, dtype=float) / 1.0e7
     delta_eq_meV = _joule_to_mev(np.asarray(delta_eq_values_J, dtype=float))
@@ -503,17 +509,19 @@ def _catalog_field_on_equilibrium_gap(usadel_catalog: Any, *, field_name: str) -
     return sampled
 
 
-def _extract_equilibrium_gap_Tq_data(usadel_catalog: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _extract_equilibrium_gap_Tq_data(
+    usadel_catalog: Any,
+    *,
+    usadel_npz_path: str | Path | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Extract or reconstruct the self-consistent equilibrium gap on the table axes.
 
-    Preferred path: read a stored two-dimensional Delta_eq(T,q) table if a future
-    PRE-run contains one. Current PRE-runs only store the strict local-current
-    table j_s(T,|Delta|,q), whose Delta axis is deliberately independent of BCS
-    self-consistency. For plotting, we reconstruct Delta_eq(T,q) from the same
-    Matsubara self-consistency equation used by the Usadel calibration, evaluated
-    on the stored supercurrent-table T and q axes, and then snap the result to the
-    closest stored Delta-axis value. This keeps the map consistent with the
-    catalogue resolution without requiring a new PRE-run format.
+    ``load_usadel_catalog_npz`` intentionally returns the core OE3 spectral
+    catalogue dataclass. The strict 3D current table appended later to the same
+    NPZ (``Te_axis_K``, ``delta_axis_J``, ``q_axis_m_inv``, ``js_A_m2`` and
+    aliases) is not exposed as dataclass attributes. The PRE plotting pipeline
+    therefore passes the raw NPZ path so this plot can read those table axes
+    directly, without changing the PRE-run file format or the catalogue loader.
     """
     temperature_candidates = [
         "js_table_temperature_values_K",
@@ -552,9 +560,22 @@ def _extract_equilibrium_gap_Tq_data(usadel_catalog: Any) -> tuple[np.ndarray, n
         "js_table_delta_eq_J",
     ]
 
+    npz_payload = _load_npz_payload_for_gap_map(usadel_npz_path)
+    metadata = dict(getattr(usadel_catalog, "metadata", {}) or {})
+    if isinstance(npz_payload.get("metadata"), dict):
+        metadata.update(npz_payload["metadata"])
+
+    # First try a future explicit Delta_eq(T,q) table, either attached to the
+    # object or stored directly in the NPZ.
     T_vals = _find_first_attr(usadel_catalog, temperature_candidates)
     q_vals = _find_first_attr(usadel_catalog, q_candidates)
     delta_map = _find_first_attr(usadel_catalog, delta_table_candidates)
+    if T_vals is None:
+        T_vals = _find_first_mapping_value(npz_payload, temperature_candidates)
+    if q_vals is None:
+        q_vals = _find_first_mapping_value(npz_payload, q_candidates)
+    if delta_map is None:
+        delta_map = _find_first_mapping_value(npz_payload, delta_table_candidates)
 
     if T_vals is not None and q_vals is not None and delta_map is not None:
         T_vals_arr = np.asarray(T_vals, dtype=float)
@@ -565,8 +586,14 @@ def _extract_equilibrium_gap_Tq_data(usadel_catalog: Any) -> tuple[np.ndarray, n
         if delta_map_arr.ndim == 2 and delta_map_arr.shape == (q_vals_arr.size, T_vals_arr.size):
             return T_vals_arr, q_vals_arr, delta_map_arr.T
 
+    # Current PRE-runs store j_s(T,Delta,q), not Delta_eq(T,q). Reconstruct the
+    # equilibrium branch on the real table axes and snap it to the stored Delta
+    # axis. Reading the axes from the raw NPZ is the important step here: the
+    # frozen UsadelCatalog dataclass does not carry them.
     delta_axis = _find_first_attr(usadel_catalog, table_delta_axis_candidates)
-    metadata = getattr(usadel_catalog, "metadata", {})
+    if delta_axis is None:
+        delta_axis = _find_first_mapping_value(npz_payload, table_delta_axis_candidates)
+
     if T_vals is not None and q_vals is not None and delta_axis is not None:
         T_vals_arr = np.asarray(T_vals, dtype=float)
         q_vals_arr = np.asarray(q_vals, dtype=float)
@@ -677,6 +704,46 @@ def _integer_attr_or_metadata(
                     except Exception:
                         pass
     return int(default)
+
+
+def _load_npz_payload_for_gap_map(path: str | Path | None) -> dict[str, Any]:
+    """Read only small table axes/metadata needed by the gap map from the raw NPZ."""
+    if path is None:
+        return {}
+    source = Path(path)
+    if not source.exists():
+        return {}
+    wanted = {
+        "Te_axis_K",
+        "delta_axis_J",
+        "q_axis_m_inv",
+        "js_A_m2",
+        "j_s_A_m2",
+        "js_T_delta_q_A_m2",
+        "metadata",
+    }
+    out: dict[str, Any] = {}
+    with np.load(source, allow_pickle=True) as data:
+        for key in data.files:
+            if key in wanted or key.endswith("_axis_K") or key.endswith("_axis_J") or key.endswith("_axis_m_inv") or "delta_eq" in key:
+                value = data[key]
+                if key == "metadata":
+                    try:
+                        out[key] = value.item()
+                    except Exception:
+                        pass
+                else:
+                    out[key] = np.asarray(value)
+    return out
+
+
+def _find_first_mapping_value(mapping: dict[str, Any], candidates: list[str]) -> Any | None:
+    for name in candidates:
+        if name in mapping:
+            value = mapping[name]
+            if value is not None:
+                return value
+    return None
 
 
 def _find_first_attr(obj: Any, candidates: list[str]) -> Any | None:

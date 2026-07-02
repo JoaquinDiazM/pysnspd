@@ -59,7 +59,8 @@ def main() -> int:
 
     mesh = load_mesh_npz(raw_pre / "mesh.npz")
     edge_data = load_edges_npz(raw_pre / "edges.npz")
-    usadel_catalog = load_usadel_catalog_npz(raw_pre / "usadel_dos_catalog.npz")
+    usadel_npz = raw_pre / "usadel_dos_catalog.npz"
+    usadel_catalog = load_usadel_catalog_npz(usadel_npz)
 
     saved_raw = write_pre_diagnostic_plots(
         mesh=mesh,
@@ -67,6 +68,7 @@ def main() -> int:
         usadel_catalog=usadel_catalog,
         output_dir=figures_dir,
         dpi=int(args.dpi),
+        usadel_npz_path=usadel_npz,
     )
     saved = {key: Path(value) for key, value in saved_raw.items()}
 
