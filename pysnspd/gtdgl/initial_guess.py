@@ -6,9 +6,9 @@ The active stationary SS seed is implemented in
 
 and is called directly by ``pipelines/02_ss_run_template.py``.
 
-This module used to contain placeholder helpers that returned ``0``.
-Those placeholders were intentionally removed during repository cleanup
-because silent zero-valued physics stubs are dangerous in a simulation code.
+This module intentionally exposes no public helpers. Previous placeholder
+functions returned ``0`` and were removed because silent zero-valued physics
+stubs are dangerous in a simulation code.
 """
 
 from __future__ import annotations

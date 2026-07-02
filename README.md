@@ -21,7 +21,7 @@ Raw simulation outputs are intentionally kept outside the repository.
 
 ### 1.1 Material and Usadel layer
 
-The material block calibrates the dirty-limit diffusion coefficient (D) from a target critical current (I_c), the wire geometry, (\sigma_n), (T_c) and the bias temperature.
+The material block calibrates the dirty-limit diffusion coefficient $D$ from a target critical current $I_c$, the wire geometry, $\sigma_n$, $T_c$ and the bias temperature.
 
 The Usadel block provides local-equilibrium superconducting information:
 
@@ -36,7 +36,7 @@ The dirty-limit Matsubara current relation used for calibration is
 
 $$
 j_s(q,T)
-========
+=
 
 \frac{2\pi k_B T}{|e|\hbar}
 \sigma_n q
@@ -77,7 +77,7 @@ The projected electron–phonon powers are constructed from the phase-space cata
 
 $$
 P_{ep}^{S}
-==========
+=
 
 \frac{8\pi N(0)}{\hbar}
 \int d\Omega,
@@ -90,7 +90,7 @@ $$
 
 $$
 P_{ep}^{R}
-==========
+=
 
 \frac{4\pi N(0)}{\hbar}
 \int d\Omega,
@@ -109,7 +109,7 @@ $$
 
 meaning energy leaves the electronic system and enters the phonon system.
 
-The recombination channel (P_{ep}^{R}) is a superconducting channel. It is not an additional normal-state power. In the thermal Usadel audit it is set to zero when
+The recombination channel $P_{ep}^{R}$ is a superconducting channel. It is not an additional normal-state power. In the thermal Usadel audit it is set to zero when
 
 $$
 \Delta_{\rm eq}(T_e,q)=0.
@@ -125,23 +125,23 @@ and against the Vodolazov/Allmaras Debye reference
 
 $$
 P_D
-===
+=
 
 \frac{96\zeta(5)N(0)k_B^2}{\tau_0T_c^3}
 \left(T_e^5-T_{ph}^5\right).
 $$
 
-The parameter (\tau_0) is not the same as the linear electron–phonon relaxation time at (T_c). The conversion used in the code is
+The parameter $\tau_0$ is not the same as the linear electron–phonon relaxation time at $T_c$. The conversion used in the code is
 
 $$
 \tau_0
-======
+=
 
 \frac{720\zeta(5)}{\pi^2}
 \tau_{ep}(T_c).
 $$
 
-For (\tau_{ep}(T_c)=24.7,{\rm ps}),
+For $\tau_{ep}(T_c)=24.7,{\rm ps}$,
 
 $$
 \tau_0\simeq1.868,{\rm ns}.
@@ -153,7 +153,7 @@ The stationary mesoscopic layer evolves the complex order parameter
 
 $$
 \Psi(\mathbf r,t)
-=================
+=
 
 R(\mathbf r,t)e^{i\theta(\mathbf r,t)},
 $$
@@ -171,9 +171,9 @@ The current stationary backend is the promoted pyTDGL-like finite-volume core, a
 The practical SS result now used as baseline is:
 
 * a short physical device, roughly twice the wire width, is sufficient to obtain a useful superconducting bulk;
-* first phase-slip-line formation appears around (38)–(39,\mu{\rm A});
-* multiple PSL states appear at higher current, with about three PSLs near (50,\mu{\rm A});
-* the strongly overcritical branch recovers an Ohmic-like behavior around (60)–(70,\mu{\rm A}).
+* first phase-slip-line formation appears around $38$–$39,\mu{\rm A}$;
+* multiple PSL states appear at higher current, with about three PSLs near $50,\mu{\rm A}$;
+* the strongly overcritical branch recovers an Ohmic-like behavior around $60$–$70,\mu{\rm A}$.
 
 This validated stationary map is the reference before adding thermal and circuit coupling.
 
@@ -375,6 +375,8 @@ tests/
 
 Legacy orchestration, circuit placeholders, validation placeholders, utility placeholders and obsolete plotting modules were removed in Audit 01.
 
+Silent physics stubs for the future thermal and photon-bubble layers were removed in Audit 02.
+
 ---
 
 ## 6. PRE-run outputs
@@ -526,11 +528,11 @@ Status: done.
 Implemented:
 
 * Simon/MIT Eliashberg loader;
-* (\alpha^2F(\Omega)) and phonon-DOS support;
-* (N(0)=\sigma_n/(2e^2D));
+* $\alpha^2F(\Omega)$ and phonon-DOS support;
+* $N(0)=\sigma_n/(2e^2D)$;
 * projected scattering and recombination powers;
-* Debye/Vodolazov comparison with correct (\tau_0);
-* thermal Usadel grid (\Delta_{\rm eq}(T_e,q));
+* Debye/Vodolazov comparison with correct $\tau_0$;
+* thermal Usadel grid $\Delta_{\rm eq}(T_e,q)$;
 * normal-state Eliashberg reference;
 * spectral-support diagnostics.
 
@@ -558,9 +560,9 @@ Status: done.
 Validated:
 
 * stable superconducting bulk in a short wire of length about twice the width;
-* first PSL formation around (38)–(39,\mu{\rm A});
-* multiple PSL states at higher current, including roughly three PSLs near (50,\mu{\rm A});
-* Ohmic-like overcritical behavior recovered around (60)–(70,\mu{\rm A}).
+* first PSL formation around $38$–$39,\mu{\rm A}$;
+* multiple PSL states at higher current, including roughly three PSLs near $50,\mu{\rm A}$;
+* Ohmic-like overcritical behavior recovered around $60$–$70,\mu{\rm A}$.
 
 This is the current reference stationary map.
 
@@ -574,10 +576,10 @@ Validate that the complete system, including thermal variables and circuit varia
 
 Expected checks:
 
-* (T_e\approx T_{ph}\approx T_{\rm bath}) in subcritical superconducting states;
+* $T_e\approx T_{ph}\approx T_{\rm bath}$ in subcritical superconducting states;
 * no artificial Joule heating in a zero-voltage superconducting state;
 * same qualitative branch structure as the OE5 stationary map;
-* consistent (I_{\rm SNSPD}), (V_{\rm TDGL}), (|\Delta|), (T_e), (T_{ph}) and circuit state.
+* consistent $I_{\rm SNSPD}$, $V_{\rm TDGL}$, $|\Delta|$, $T_e$, $T_{ph}$ and circuit state.
 
 ### OE7 — Photon energy deposition
 
@@ -595,7 +597,7 @@ Status: planned.
 
 Goal:
 
-Evolve (T_e) and (T_{ph}) with projected powers, diffusion and escape, without yet evolving the full gTDGL/circuit feedback.
+Evolve $T_e$ and $T_{ph}$ with projected powers, diffusion and escape, without yet evolving the full gTDGL/circuit feedback.
 
 ### OE9 — Coupled thermal + gTDGL PHOTON-run
 
@@ -603,7 +605,7 @@ Status: planned.
 
 Goal:
 
-Couple (T_e,T_{ph}) to (\Psi,\phi,V) and test whether a local perturbation becomes dissipative.
+Couple $T_e,T_{ph}$ to $\Psi,\phi,V$ and test whether a local perturbation becomes dissipative.
 
 ### OE10 — Circuit coupling and readout pulse
 

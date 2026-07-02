@@ -1,33 +1,17 @@
-"""Photon-energy helpers for the future phonon-bubble layer.
+"""Future photon-energy-deposition layer.
 
-Only model-independent photon-energy conversion is provided here. The spatial
-phonon-bubble profile and thermal injection rule are future OE targets and
-should be implemented only after the coupled no-photon stationary state is
-validated.
+The active repository does not yet implement the spatial phonon-bubble profile
+or the thermal injection rule. The official PHOTON-run is still a placeholder
+interface and records photon inputs directly from command-line parameters.
+
+This module intentionally exposes no public runtime helpers until the photon
+deposition OE is implemented and validated against the coupled no-photon
+stationary state.
+
+Previous placeholder functions returned ``0`` and were removed because a
+zero-valued photon-deposition model can silently hide missing physics.
 """
 
 from __future__ import annotations
 
-from scipy import constants
-
-
-def photon_energy_from_wavelength(wavelength_m: float) -> float:
-    """Return photon energy in joules from wavelength in meters.
-
-    Parameters
-    ----------
-    wavelength_m:
-        Photon wavelength in SI meters.
-
-    Returns
-    -------
-    float
-        Photon energy ``h c / wavelength_m`` in joules.
-    """
-    wavelength = float(wavelength_m)
-    if wavelength <= 0.0:
-        raise ValueError("wavelength_m must be positive.")
-    return float(constants.h * constants.c / wavelength)
-
-
-__all__ = ["photon_energy_from_wavelength"]
+__all__: list[str] = []
