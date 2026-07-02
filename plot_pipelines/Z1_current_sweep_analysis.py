@@ -1,10 +1,4 @@
-"""Z1 multi-run current-sweep inventory pipeline.
-
-Z-series plot pipelines compare multiple runs.  This first Z1 pass does not yet
-make current-sweep physics plots.  Instead it verifies that the project can
-access the raw database: every requested run folder, every stage folder, every
-NPZ file, and every YAML/JSON summary or manifest.
-"""
+"""Z1 multi-run current-sweep analysis pipeline."""
 
 from __future__ import annotations
 
@@ -21,12 +15,12 @@ from pysnspd.io.run_database import (
     summarize_inventory,
     write_database_inventory,
 )
-from pysnspd.plotting.current_sweep import plot_current_sweep_placeholder
+from pysnspd.plotting.current_sweep import make_current_sweep_figures
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Index raw data for a multi-run current-sweep analysis."
+        description="Index raw data and create first-pass current-sweep IV figures."
     )
     parser.add_argument("--config", required=True, help="Path to YAML project config.")
     parser.add_argument(
@@ -59,7 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--figures-subdir",
         default="figures",
-        help="Subdirectory under plots/<output-run-name> for inventory files.",
+        help="Subdirectory under plots/<output-run-name> for inventory files and figures.",
     )
     parser.add_argument(
         "--no-npz-keys",
@@ -71,8 +65,32 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="List YAML/JSON files but do not parse their contents.",
     )
+    parser.add_argument(
+        "--voltage-probe-offset-nm",
+        type=float,
+        default=50.0,
+        help=(
+            "Probe the IV voltage from the x-profile as "
+            "phi(x_center + offset) - phi(x_center - offset)."
+        ),
+    )
+    parser.add_argument(
+        "--voltage-probe-half-window-nm",
+        type=float,
+        default=None,
+        help=(
+            "Optional half-width of the averaging window around each probe x. "
+            "Default: infer from x-profile bin spacing."
+        ),
+    )
+    parser.add_argument(
+        "--no-origin",
+        action="store_true",
+        help="Do not prepend the synthetic (I,V)=(0,0) point.",
+    )
     parser.add_argument("--dpi", type=int, default=480)
     return parser.parse_args()
+
 
 
 def main() -> int:
@@ -94,10 +112,14 @@ def main() -> int:
     summary = summarize_inventory(records)
     inventory_paths = write_database_inventory(records, output_dir)
 
-    placeholder_status = plot_current_sweep_placeholder(
-        records,
-        output_dir,
+    figure_outputs = make_current_sweep_figures(
+        config_path=args.config,
+        records=records,
+        output_dir=output_dir,
         dpi=int(args.dpi),
+        voltage_probe_offset_nm=float(args.voltage_probe_offset_nm),
+        voltage_probe_half_window_nm=args.voltage_probe_half_window_nm,
+        include_origin=not args.no_origin,
     )
 
     manifest_path = _write_z1_manifest(
@@ -106,8 +128,10 @@ def main() -> int:
         args=vars(args),
         summary=summary,
         inventory_paths=inventory_paths,
-        placeholder_status=placeholder_status,
+        figure_outputs=figure_outputs,
     )
+
+    iv_summary = figure_outputs.get("iv_summary", {}) if isinstance(figure_outputs, dict) else {}
 
     print("Z1 current sweep analysis")
     print(f" output_run_name: {args.output_run_name}")
@@ -120,10 +144,24 @@ def main() -> int:
     print("Inventory")
     for key, path in inventory_paths.items():
         print(f" {key}: {path}")
+    print()
+    print("Figures / tables")
+    for key in ("iv_curve", "iv_points_csv", "iv_points_yaml", "iv_skipped_yaml"):
+        path = figure_outputs.get(key)
+        if path:
+            print(f" {key}: {path}")
     print(f" manifest: {manifest_path}")
-    print(f" placeholder_status: {placeholder_status}")
+    if iv_summary:
+        print("IV summary")
+        print(f" points: {iv_summary.get('n_points', 0)}")
+        print(f" runs loaded: {iv_summary.get('n_runs_loaded', 0)}")
+        print(f" runs skipped: {iv_summary.get('n_runs_skipped', 0)}")
+        print(f" probe offset [nm]: {iv_summary.get('voltage_probe_offset_nm')}")
+        print(f" probe half-window [nm]: {iv_summary.get('voltage_probe_half_window_nm')}")
+        print(f" sign flipped: {iv_summary.get('voltage_sign_flipped')}")
     print("Status: OK")
     return 0
+
 
 
 def _write_z1_manifest(
@@ -133,17 +171,20 @@ def _write_z1_manifest(
     args: dict[str, Any],
     summary: dict[str, Any],
     inventory_paths: dict[str, Path],
-    placeholder_status: int,
+    figure_outputs: dict[str, Any],
 ) -> Path:
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "pipeline": "plot_pipelines/Z1_current_sweep_analysis.py",
-        "purpose": "Multi-run current-sweep raw database inventory.",
+        "purpose": "Multi-run current-sweep inventory and first-pass IV figure.",
         "config_path": str(config_path),
         "args": args,
         "summary": summary,
         "inventory_files": {key: str(path) for key, path in inventory_paths.items()},
-        "plotting_placeholder_status": int(placeholder_status),
+        "figure_outputs": {
+            key: (str(value) if isinstance(value, Path) else value)
+            for key, value in figure_outputs.items()
+        },
     }
     out = output_dir / "Z1_current_sweep_manifest.yaml"
     with out.open("w", encoding="utf-8") as f:
