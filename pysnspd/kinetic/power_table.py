@@ -156,8 +156,8 @@ def build_power_table_catalog(
                     omega,
                     alpha,
                     Tph_values,
-                    np.asarray(phase_space_catalog.J_S_TdqO_J[iT, id_local, :, omega_mask], dtype=float),
-                    np.asarray(phase_space_catalog.J_R_TdqO_J[iT, id_local, :, omega_mask], dtype=float),
+                    np.asarray(phase_space_catalog.J_S_TdqO_J[iT, id_local, :, :][:, omega_mask], dtype=float),
+                    np.asarray(phase_space_catalog.J_R_TdqO_J[iT, id_local, :, :][:, omega_mask], dtype=float),
                     energy,
                     np.asarray(usadel_catalog.rho_delta_gamma_E[id_parent, q_indices, :], dtype=float),
                     float(N0),
@@ -295,8 +295,8 @@ def _power_T_delta_task(task: tuple[Any, ...]) -> tuple[int, int, np.ndarray, np
     omega = np.asarray(omega, dtype=float)
     alpha = np.asarray(alpha, dtype=float)
     Tph_values = np.asarray(Tph_values, dtype=float)
-    JS_block = np.asarray(JS_block, dtype=float)
-    JR_block = np.asarray(JR_block, dtype=float)
+    JS_block = _as_q_omega_block(JS_block, omega_size=omega.size, name="JS_block")
+    JR_block = _as_q_omega_block(JR_block, omega_size=omega.size, name="JR_block")
 
     n_e = bose_positive_energy(omega, float(Te_K))
     n_ph = np.vstack([bose_positive_energy(omega, float(Tph)) for Tph in Tph_values])
@@ -317,6 +317,26 @@ def _power_T_delta_task(task: tuple[Any, ...]) -> tuple[int, int, np.ndarray, np
         N0_J_m3=float(N0),
     )
     return int(iT), int(id_local), np.asarray(P_S, dtype=float), np.asarray(P_R, dtype=float), u_e
+
+
+def _as_q_omega_block(block: np.ndarray, *, omega_size: int, name: str) -> np.ndarray:
+    """Return a phase-space block with shape ``(n_q, n_omega)``.
+
+    Numpy advanced indexing can accidentally transpose ``(:, omega_mask)`` into
+    ``(n_omega, n_q)`` when the boolean mask is applied directly.  The PRE-run
+    builder now slices in two steps, but this runtime guard keeps the table
+    contraction robust for smoke objects and older catalogues.
+    """
+    arr = np.asarray(block, dtype=float)
+    if arr.ndim != 2:
+        raise ValueError(f"{name} must be two-dimensional, got shape {arr.shape}.")
+    if arr.shape[1] == int(omega_size):
+        return arr
+    if arr.shape[0] == int(omega_size):
+        return arr.T
+    raise ValueError(
+        f"{name} must have one axis with n_omega={omega_size}; got shape {arr.shape}."
+    )
 
 
 def _electron_energy_density_block(
@@ -524,7 +544,7 @@ def _delta0_from_catalog(usadel_catalog: UsadelCatalog) -> float:
 
 
 class _PowerTableProgress:
-    """Dependency-free progress bar for projected-power chunks."""
+    """Single-line dependency-free progress bar for projected-power chunks."""
 
     def __init__(
         self,
@@ -545,32 +565,30 @@ class _PowerTableProgress:
         self.width = int(width)
         self.done_chunks = 0
         self._last_percent = -1
+        self._prefix = (
+            "Power-table "
+            f"({self.total_chunks} chunks, {self.total_states} states, "
+            f"workers={self.workers}, backend={self.backend})"
+        )
 
     def begin(self) -> None:
         if not self.enabled:
             return
-        print(
-            "Power-table: parallel projected-power build "
-            f"({self.total_chunks} chunks, {self.total_states} states, "
-            f"workers={self.workers}, backend={self.backend}) ...",
-            flush=True,
-        )
-        self._print(force=True)
+        self._print(force=True, final=False)
 
     def update(self) -> None:
         if not self.enabled:
             return
         self.done_chunks = min(self.done_chunks + 1, self.total_chunks)
-        self._print(force=False)
+        self._print(force=False, final=False)
 
     def done(self) -> None:
         if not self.enabled:
             return
         self.done_chunks = self.total_chunks
-        self._print(force=True)
-        print("Power-table: projected-power catalogue build complete", flush=True)
+        self._print(force=True, final=True)
 
-    def _print(self, *, force: bool) -> None:
+    def _print(self, *, force: bool, final: bool) -> None:
         percent = int(round(100.0 * self.done_chunks / self.total_chunks))
         if not force and percent == self._last_percent and self.done_chunks != self.total_chunks:
             return
@@ -579,12 +597,12 @@ class _PowerTableProgress:
         filled = int(round(self.width * frac))
         bar = "=" * filled + "-" * (self.width - filled)
         states_done = self.done_chunks * self.states_per_chunk
-        print(
-            f"Power-table [{bar}] {percent:3d}% "
+        line = (
+            f"\r{self._prefix}: [{bar}] {percent:3d}% "
             f"chunks={self.done_chunks}/{self.total_chunks} "
-            f"states={states_done}/{self.total_states}",
-            flush=True,
+            f"states={states_done}/{self.total_states}"
         )
+        print(line, end="\n" if final else "", flush=True)
 
 
 __all__ = [

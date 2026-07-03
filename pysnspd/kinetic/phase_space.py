@@ -577,7 +577,7 @@ def _resolve_parallel(
 
 
 class _PhaseSpaceProgress:
-    """Dependency-free progress bar for phase-space catalogue chunks."""
+    """Single-line dependency-free progress bar for phase-space chunks."""
 
     def __init__(
         self,
@@ -598,32 +598,30 @@ class _PhaseSpaceProgress:
         self.width = int(width)
         self.done_chunks = 0
         self._last_percent = -1
+        self._prefix = (
+            "Phase-space "
+            f"({self.total_chunks} chunks, {self.total_cells} cells, "
+            f"workers={self.workers}, backend={self.backend})"
+        )
 
     def begin(self) -> None:
         if not self.enabled:
             return
-        print(
-            "Phase-space: parallel catalogue build "
-            f"({self.total_chunks} chunks, {self.total_cells} cells, "
-            f"workers={self.workers}, backend={self.backend}) ...",
-            flush=True,
-        )
-        self._print(force=True)
+        self._print(force=True, final=False)
 
     def update(self) -> None:
         if not self.enabled:
             return
         self.done_chunks = min(self.done_chunks + 1, self.total_chunks)
-        self._print(force=False)
+        self._print(force=False, final=False)
 
     def done(self) -> None:
         if not self.enabled:
             return
         self.done_chunks = self.total_chunks
-        self._print(force=True)
-        print("Phase-space: catalogue build complete", flush=True)
+        self._print(force=True, final=True)
 
-    def _print(self, *, force: bool) -> None:
+    def _print(self, *, force: bool, final: bool) -> None:
         percent = int(round(100.0 * self.done_chunks / self.total_chunks))
         if not force and percent == self._last_percent and self.done_chunks != self.total_chunks:
             return
@@ -632,12 +630,12 @@ class _PhaseSpaceProgress:
         filled = int(round(self.width * frac))
         bar = "=" * filled + "-" * (self.width - filled)
         cells_done = self.done_chunks * self.cells_per_chunk
-        print(
-            f"Phase-space [{bar}] {percent:3d}% "
+        line = (
+            f"\r{self._prefix}: [{bar}] {percent:3d}% "
             f"chunks={self.done_chunks}/{self.total_chunks} "
-            f"cells={cells_done}/{self.total_cells}",
-            flush=True,
+            f"cells={cells_done}/{self.total_cells}"
         )
+        print(line, end="\n" if final else "", flush=True)
 
 
 __all__ = [

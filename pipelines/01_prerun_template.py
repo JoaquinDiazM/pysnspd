@@ -426,32 +426,33 @@ def main() -> int:
     print("PRE-run generation")
     print(f" run_name: {run_name}")
     print(f" raw_pre: {raw_pre}")
-    print()
-    print("Mesh")
-    _print_dict(mesh_edge_summary["mesh"])
-    print()
-    print("Edges")
-    _print_dict(mesh_edge_summary["edges"])
-    print()
-    print("Usadel")
-    _print_dict(usadel_summary)
-    print()
-    if phase_summary_data is None:
-        print("Phase-space: skipped")
-    else:
-        print("Phase-space")
-        _print_dict(phase_summary_data)
-    print()
-    if power_summary_data is None:
-        print("Power table: skipped")
-    else:
-        print("Power table")
-        _print_dict(power_summary_data)
-    print()
-    print("Outputs")
-    for key, value in outputs.items():
-        print(f" {key}: {value}")
     print(f" pre_manifest: {manifest_path}")
+    print()
+    print("Summary files")
+    for key in (
+        "mesh_summary",
+        "usadel_summary",
+        "phase_space_summary",
+        "power_table_summary",
+    ):
+        value = outputs.get(key)
+        if value:
+            print(f" {key}: {value}")
+    print()
+    print("Catalogue files")
+    for key in (
+        "mesh_npz",
+        "edges_npz",
+        "usadel_npz",
+        "phase_space_npz",
+        "power_table_npz",
+    ):
+        value = outputs.get(key)
+        if value:
+            print(f" {key}: {value}")
+    if diagnostic_plot_outputs:
+        print()
+        print(f"Diagnostic plots: {len(diagnostic_plot_outputs)} files written")
     print("Status: OK")
     return 0
 
