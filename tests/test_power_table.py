@@ -44,7 +44,7 @@ def _tiny_config() -> dict:
 
 
 def test_power_table_catalog_smoke(tmp_path):
-    Te = np.array([1.0, 3.0], dtype=float)
+    Te = np.array([0.9, 3.0], dtype=float)
     Tph = np.array([0.9, 3.0], dtype=float)
     delta = np.array([0.0, 2.0e-22], dtype=float)
     gamma = np.array([0.0, 1.0e-23], dtype=float)
