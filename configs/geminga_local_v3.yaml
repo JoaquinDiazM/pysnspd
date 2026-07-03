@@ -1,0 +1,86 @@
+project:
+  name: pysnspd_template_project
+  big_data_root: /home/jdiaz/scratch/big_data
+  default_run_name: NbN_120nm_35uA_1064nm_test001
+
+parallel:
+  enabled: true
+  workers: 16
+  backend: process
+
+material:
+  name: NbN
+  Tc_K: 8.65
+  sigma_n_S_m: 4.2e5
+  lambda_L_m: 5.4e-7
+  thickness_m: 7.0e-9
+  width_m: 120.0e-9
+
+  # v3 geometry: use a 3:1 strip for better bulk-like central region.
+  # Some mesh builders read material.length_m; mesh.length_m/length_factor are
+  # also provided below as harmless explicit metadata for newer builders.
+  length_m: 360.0e-9
+
+  # gTDGL/KWT relaxation times at Tc. These values are used directly.
+  # v2 kept the fast relaxation regime that was previously obtained with
+  # the old 0.10 multiplier, but encoded explicitly in the YAML.
+  tau_ee_Tc_ps: 0.5
+  tau_ep_Tc_ps: 2.47
+
+  # Simon et al. NbN table: ion density N = 48 nm^-3.
+  # The PRE power table converts this to 4.8e28 m^-3 for u_ph and C_ph.
+  ion_density_nm3: 48.0
+
+  # Effective phonon escape time to the substrate; used by the PRE power table
+  # to store P_esc(Tph,T_bath) for the later OE6 phonon equation.
+  tau_esc_ps: 15.0
+
+calibration:
+  Ic_target_A: 38.8e-6
+  n_gamma_sweep: 160
+  gamma_max_fraction: 0.80
+  D_warn_min_m2_s: 5.0e-5
+  D_warn_max_m2_s: 5.0e-4
+
+bias:
+  T_bias_K: 0.9
+  I_bias_A: 35.0e-6
+
+mesh:
+  type: delaunay
+  target_spacing_m: 4.0e-9
+  seed: 222222
+  pytdgl_boundary_points: 204
+  pytdgl_smooth: 0
+  length_factor: 3.0
+  length_m: 360.0e-9
+  width_m: 120.0e-9
+
+catalogs:
+  dos:
+    n_delta: 21
+    n_q: 26
+    n_energy: 2000
+    n_matsubara: 500
+  phase_space:
+    n_Te: 40
+    n_Tph: 40
+    n_delta: 21
+    n_q: 26
+    n_omega: 1200
+
+ss_run:
+  max_steps: 10000
+  dt_s: 1.0e-15
+  convergence_tol: 1.0e-7
+
+photon_run:
+  photon_wavelength_m: 1064.0e-9
+  max_steps: 20000
+  dt_s: 1.0e-15
+  bubble_radius_m: 10.0e-9
+
+circuit:
+  R_load_ohm: 50.0
+  L_bias_H: 1.0e-6
+  C_rf_F: 1.0e-12
