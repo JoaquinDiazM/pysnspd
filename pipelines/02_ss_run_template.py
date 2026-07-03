@@ -27,6 +27,10 @@ from pysnspd.usadel.catalog import load_usadel_catalog_npz
 from pysnspd.gtdgl import build_fv_operators, build_gtdgl_material, solve_stationary_pytdgl_like
 from pysnspd.gtdgl.seed import build_stationary_seed, save_stationary_seed_npz, seed_summary
 from pysnspd.gtdgl.state_io import save_relaxation_history_npz, save_stationary_state_npz
+from pysnspd.gtdgl.snapshot_diagnostics import (
+    save_ss_snapshot_bundle_npz,
+    write_ss_snapshot_power_diagnostics,
+)
 from pysnspd.gtdgl.usadel_current import (
     attach_usadel_supercurrent_table_from_npz,
     validate_strict_usadel_supercurrent_table_npz,
@@ -490,12 +494,13 @@ def _run_single_current_case(
         diffusion_factor=float(allmaras_diffusion["D_effective_factor"]),
     )
 
+    ss_run_cfg = cfg.get("ss_run", {}) if isinstance(cfg, dict) else {}
     if args.ss_time_ps is not None:
         total_time_ps = float(args.ss_time_ps)
-    elif args.ss_steps is not None:
-        total_time_ps = float(args.ss_steps) * float(args.ss_dt_fs) * 1.0e-3
     else:
-        total_time_ps = 20.0
+        total_time_ps = float(
+            ss_run_cfg.get("total_time_ps", ss_run_cfg.get("physical_time_ps", 20.0))
+        )
     if total_time_ps <= 0.0:
         raise ValueError("--ss-time-ps must be positive.")
 
@@ -505,7 +510,7 @@ def _run_single_current_case(
         seed=seed,
         material=material,
         ops=ops,
-        steps=None if args.ss_steps is None else int(args.ss_steps),
+        steps=None,
         total_time_s=float(total_time_ps) * 1.0e-12,
         dt_s=float(args.ss_dt_fs) * 1.0e-15,
         target_current_A=target_current_A,
@@ -543,6 +548,17 @@ def _run_single_current_case(
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")
     history_npz = save_relaxation_history_npz(result.history, raw_ss / "relaxation_history.npz")
+    snapshots_npz = save_ss_snapshot_bundle_npz(result.history, raw_ss / "stationary_snapshots.npz")
+    snapshot_power_npz = None
+    power_table_path = raw_pre / "power_table_catalog.npz"
+    if power_table_path.exists():
+        snapshot_power_npz = write_ss_snapshot_power_diagnostics(
+            history=result.history,
+            state=result.state,
+            power_table_npz=power_table_path,
+            output_path=raw_ss / "snapshot_power_energy_diagnostics.npz",
+            sigma_n_S_m=float(material.sigma_n_S_m),
+        )
 
     plots_dir = raw_ss / "plots_diagnostics"
     adaptive_timestep_png = plot_ss_adaptive_timestep_history(
@@ -567,6 +583,10 @@ def _run_single_current_case(
             "seed_npz": str(seed_npz),
             "stationary_state_npz": str(state_npz),
             "relaxation_history_npz": str(history_npz),
+            "stationary_snapshots_npz": str(snapshots_npz),
+            "snapshot_power_energy_diagnostics_npz": (
+                str(snapshot_power_npz) if snapshot_power_npz is not None else None
+            ),
             "adaptive_timestep_history_png": str(adaptive_timestep_png),
         },
     }
