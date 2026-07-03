@@ -319,20 +319,55 @@ def plot_usadel_equilibrium_dos_map(
 ) -> Path:
     """Plot rho(E,q) along the equilibrium gap branch Delta_eq(q)."""
     output = _prepare_output(output_path)
-    rho_eq = _catalog_field_on_equilibrium_gap(usadel_catalog, field_name="rho_delta_gamma_E")
-    q_1e7 = np.asarray(usadel_catalog.q_values_m_inv, dtype=float) / 1.0e7
+
+    rho_eq = _catalog_field_on_equilibrium_gap(
+        usadel_catalog,
+        field_name="rho_delta_gamma_E",
+    )
+
+    # Use the q-axis that matches the equilibrium branch map. In normal PRE-runs
+    # this is q_values_m_inv, but smoke/legacy objects may be closer to the
+    # calibration axis.
+    q_axis_m_inv = np.asarray(getattr(usadel_catalog, "q_values_m_inv"), dtype=float)
+    if q_axis_m_inv.size != rho_eq.shape[0] and hasattr(usadel_catalog, "calibration_q_values_m_inv"):
+        q_axis_m_inv = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
+    q_1e7 = q_axis_m_inv / 1.0e7
+
     E_meV = _joule_to_mev(np.asarray(usadel_catalog.energy_values_J, dtype=float))
     metadata = getattr(usadel_catalog, "metadata", {})
 
+    T_bias_K = _metadata_float(metadata, "T_bias_K")
+    Tc_K = _metadata_float(metadata, "Tc_K")
+    if np.isfinite(T_bias_K) and np.isfinite(Tc_K) and Tc_K > 0.0:
+        title = (
+            rf"Usadel DOS along $\Delta_{{eq}}(q)$ "
+            rf"at $T={T_bias_K:.2f}$ K "
+            rf"$(T/T_c={T_bias_K / Tc_K:.3f})$"
+        )
+    elif np.isfinite(T_bias_K):
+        title = rf"Usadel DOS along $\Delta_{{eq}}(q)$ at $T={T_bias_K:.2f}$ K"
+    else:
+        title = r"Usadel DOS along $\Delta_{eq}(q)$"
+
     fig, ax = plt.subplots(figsize=(7.1, 4.35))
+
     norm = _positive_power_norm(rho_eq, gamma=0.35)
-    im = ax.pcolormesh(E_meV, q_1e7, rho_eq, shading="auto", norm=norm)
+    im = ax.pcolormesh(
+        E_meV,
+        q_1e7,
+        rho_eq,
+        shading="auto",
+        norm=norm,
+    )
+
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label(r"$\rho(E,q)$ (power scale, $\gamma=0.35$)")
-    ax.set_title(r"Usadel DOS along $\Delta_{eq}(q)$" + _temperature_suffix(metadata))
+    cbar.set_label(r"$\rho(E,q)$")
+
+    ax.set_title(title)
     ax.set_xlabel(r"energy $E$ [meV]")
     ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$]")
     ax.grid(False)
+
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
@@ -430,17 +465,25 @@ def plot_usadel_equilibrium_gap_Tq_map(
     corresponding equilibrium-gap table is available, this helper visualizes the
     equilibrium gap magnitude over that grid. For legacy/lean smoke objects, it
     falls back to a single-temperature row built from the calibration branch.
+
+    The full table can extend far above Tc or beyond the depairing momentum,
+    where |Delta_eq| is exactly zero. For visualization, the axes are cropped to
+    the active superconducting region.
     """
     output = _prepare_output(output_path)
     T_vals_K, q_vals_m_inv, delta_eq_values_J = _extract_equilibrium_gap_Tq_data(
         usadel_catalog,
         usadel_npz_path=usadel_npz_path,
     )
+
     T_vals_K = np.asarray(T_vals_K, dtype=float)
     q_1e7 = np.asarray(q_vals_m_inv, dtype=float) / 1.0e7
     delta_eq_meV = _joule_to_mev(np.asarray(delta_eq_values_J, dtype=float))
 
     fig, ax = plt.subplots(figsize=(7.1, 4.35))
+    vmax = float(np.nanmax(delta_eq_meV)) if np.isfinite(delta_eq_meV).any() else 1.0
+    vmax = max(vmax, 1.0e-12)
+
     im = ax.imshow(
         delta_eq_meV,
         origin="lower",
@@ -448,20 +491,68 @@ def plot_usadel_equilibrium_gap_Tq_map(
         interpolation="bilinear",
         extent=_imshow_extent(q_1e7, T_vals_K),
         vmin=0.0,
-        vmax=float(np.nanmax(delta_eq_meV)) if np.isfinite(np.nanmax(delta_eq_meV)) else 1.0,
+        vmax=vmax,
         cmap="viridis",
     )
+
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label(r"$|\Delta_{eq}(T,q)|$ [meV]")
+
     ax.set_title(r"Equilibrium gap over the $(T,q)$ calibration grid")
     ax.set_xlabel(r"$q$ [$10^7$ m$^{-1}$]")
     ax.set_ylabel(r"temperature $T$ [K]")
+
+    # Crop to the active superconducting region. This removes the large
+    # normal-state area where |Delta_eq| = 0 and the plot otherwise wastes space.
+    active_threshold = 1.0e-3 * vmax
+    active = np.isfinite(delta_eq_meV) & (delta_eq_meV > active_threshold)
+
+    if np.any(active) and delta_eq_meV.ndim == 2:
+        active_T_mask = np.any(active, axis=1)
+        active_q_mask = np.any(active, axis=0)
+
+        active_T = T_vals_K[active_T_mask]
+        active_q = q_1e7[active_q_mask]
+
+        if active_T.size and active_q.size:
+            dT = (
+                float(np.nanmedian(np.diff(T_vals_K)))
+                if T_vals_K.size > 1
+                else 0.5
+            )
+            dq = (
+                float(np.nanmedian(np.diff(q_1e7)))
+                if q_1e7.size > 1
+                else 0.5
+            )
+
+            T_min = max(
+                float(np.nanmin(T_vals_K)),
+                float(np.nanmin(active_T)) - dT,
+            )
+            T_max = min(
+                float(np.nanmax(T_vals_K)),
+                float(np.nanmax(active_T)) + dT,
+            )
+            q_min = max(
+                float(np.nanmin(q_1e7)),
+                float(np.nanmin(active_q)) - dq,
+            )
+            q_max = min(
+                float(np.nanmax(q_1e7)),
+                float(np.nanmax(active_q)) + dq,
+            )
+
+            if T_max > T_min:
+                ax.set_ylim(T_min, T_max)
+            if q_max > q_min:
+                ax.set_xlim(q_min, q_max)
+
     ax.grid(False)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
-
 
 def _calibration_delta_eq_mev(usadel_catalog: Any) -> np.ndarray:
     """Return calibration equilibrium gap in meV, or NaNs for legacy smoke objects."""
