@@ -6,7 +6,8 @@ and photon runs:
 1. the 2D nanowire mesh and boundary edge table;
 2. the dirty-limit Usadel/DOS catalogue;
 3. a Matsubara Usadel supercurrent-density table saved into the same NPZ;
-4. the superconducting phase-space catalogue used by the kinetic layer.
+4. the superconducting phase-space catalogue used by the kinetic layer;
+5. the projected power/energy catalogue used by the OE6 thermal layer.
 
 The PRE-run is the only pipeline that should spend time building catalogues.
 Later SS/PHOTON stages load these objects instead of recomputing them.
@@ -44,6 +45,12 @@ from pysnspd.kinetic.phase_space import (
     phase_space_summary,
     save_phase_space_catalog_npz,
 )
+from pysnspd.kinetic.eliashberg import load_simon_eliashberg_dat
+from pysnspd.kinetic.power_table import (
+    build_power_table_catalog,
+    power_table_summary,
+    save_power_table_catalog_npz,
+)
 from pysnspd.plotting.pre_diagnostics import write_pre_diagnostic_plots
 from pysnspd.usadel.supercurrent_table import (
     append_supercurrent_table_3d_to_npz,
@@ -72,7 +79,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-progress",
         action="store_true",
-        help="Disable the PRE-run stage progress bar and phase-space progress bar.",
+        help="Disable the PRE-run stage progress bar and catalogue progress bars.",
     )
     parser.add_argument(
         "--no-diagnostic-plots",
@@ -137,6 +144,30 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--phase-omega-max-meV", type=float, default=35.0)
     parser.add_argument("--phase-Te-min-K", type=float, default=None)
     parser.add_argument("--phase-Te-max-K", type=float, default=None)
+
+    # Projected power / energy table for OE6.
+    parser.add_argument(
+        "--skip-power-table",
+        action="store_true",
+        help="Do not build the projected power/energy catalogue after phase-space.",
+    )
+    parser.add_argument(
+        "--eliashberg-dat",
+        default=None,
+        help=(
+            "Path to Simon/MIT NbN a2F/PhDOS data. Defaults to "
+            "<big_data_root>/catalogs/simon_2025/nbn-a2f-ph.dat."
+        ),
+    )
+    parser.add_argument("--power-n-Tph", type=int, default=None)
+    parser.add_argument("--power-Tph-min-K", type=float, default=None)
+    parser.add_argument("--power-Tph-max-K", type=float, default=None)
+    parser.add_argument(
+        "--power-omega-max-meV",
+        type=float,
+        default=None,
+        help="Maximum Omega used when integrating projected powers. Defaults to the phase-space Omega max.",
+    )
     return parser.parse_args()
 
 
@@ -154,7 +185,7 @@ def main() -> int:
     raw_pre = Path(layout["raw_pre"])
     raw_pre.mkdir(parents=True, exist_ok=True)
 
-    progress = _ProgressBar(total=5, enabled=not args.no_progress)
+    progress = _ProgressBar(total=6, enabled=not args.no_progress)
 
     # ------------------------------------------------------------------
     # OE2: pyTDGL-style mesh and boundary edges.
@@ -257,6 +288,8 @@ def main() -> int:
         "usadel_summary": str(usadel_summary_path),
     }
     phase_summary_data: dict[str, Any] | None = None
+    power_summary_data: dict[str, Any] | None = None
+    phase_catalog = None
 
     # ------------------------------------------------------------------
     # OE4: phase-space catalogue.
@@ -302,6 +335,55 @@ def main() -> int:
         progress.advance("phase-space catalogue ready")
 
     # ------------------------------------------------------------------
+    # OE6 preparation: projected power and local-energy catalogue.
+    # ------------------------------------------------------------------
+    if args.skip_power_table or args.skip_phase_space:
+        reason = "projected power/energy catalogue skipped"
+        if args.skip_phase_space and not args.skip_power_table:
+            reason += " because phase-space was skipped"
+        progress.advance(reason)
+    else:
+        if phase_catalog is None:
+            raise RuntimeError("Internal error: phase_catalog is required to build the power table.")
+        progress.begin("building projected power and energy catalogue")
+        eliashberg_path = _resolve_eliashberg_path(cfg, args.eliashberg_dat)
+        spectrum = load_simon_eliashberg_dat(eliashberg_path)
+        power_catalog = build_power_table_catalog(
+            phase_space_catalog=phase_catalog,
+            usadel_catalog=usadel_catalog,
+            spectrum=spectrum,
+            config=cfg,
+            n_Tph=args.power_n_Tph,
+            Tph_min_K=args.power_Tph_min_K,
+            Tph_max_K=args.power_Tph_max_K,
+            omega_max_meV=args.power_omega_max_meV,
+            workers=workers,
+            parallel_backend=parallel_backend,
+            progress=not args.no_progress,
+        )
+        power_npz = save_power_table_catalog_npz(
+            power_catalog,
+            raw_pre / "power_table_catalog.npz",
+        )
+        power_summary_data = power_table_summary(power_catalog)
+        power_summary_path = raw_pre / "power_table_summary.yaml"
+        _write_yaml(
+            power_summary_path,
+            {
+                "run_name": run_name,
+                "power_table": power_summary_data,
+                "metadata": power_catalog.metadata,
+            },
+        )
+        outputs.update(
+            {
+                "power_table_npz": str(power_npz),
+                "power_table_summary": str(power_summary_path),
+            }
+        )
+        progress.advance("projected power and energy catalogue ready")
+
+    # ------------------------------------------------------------------
     # PRE diagnostic plots.
     # ------------------------------------------------------------------
     diagnostic_plot_outputs: dict[str, str] = {}
@@ -326,7 +408,7 @@ def main() -> int:
         stage="pre",
         extra={
             "pipeline": "01_prerun_template.py",
-            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, parallel phase-space catalogue.",
+            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, parallel phase-space catalogue, and projected power/energy catalogue.",
             "workers": int(workers),
             "parallel_backend": str(parallel_backend),
             "allmaras_diffusion_factor": float(allmaras_diffusion_factor),
@@ -334,6 +416,7 @@ def main() -> int:
             "mesh_edge_summary": mesh_edge_summary,
             "usadel_summary": usadel_summary,
             "phase_space_summary": phase_summary_data,
+            "power_table_summary": power_summary_data,
             "diagnostic_plots": diagnostic_plot_outputs,
         },
     )
@@ -358,6 +441,12 @@ def main() -> int:
     else:
         print("Phase-space")
         _print_dict(phase_summary_data)
+    print()
+    if power_summary_data is None:
+        print("Power table: skipped")
+    else:
+        print("Power table")
+        _print_dict(power_summary_data)
     print()
     print("Outputs")
     for key, value in outputs.items():
@@ -386,6 +475,13 @@ def _resolve_parallel(cfg: dict[str, Any], requested_workers: int | None) -> tup
     if backend == "serial":
         workers = 1
     return workers, backend
+
+
+def _resolve_eliashberg_path(cfg: dict[str, Any], requested_path: str | None) -> Path:
+    if requested_path:
+        return Path(requested_path).expanduser().resolve()
+    root = Path(str(cfg["project"]["big_data_root"])).expanduser()
+    return (root / "catalogs" / "simon_2025" / "nbn-a2f-ph.dat").resolve()
 
 
 def _write_yaml(path: str | Path, data: MappingLike) -> None:
