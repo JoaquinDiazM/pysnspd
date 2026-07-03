@@ -7,7 +7,7 @@ and photon runs:
 2. the dirty-limit Usadel/DOS catalogue;
 3. a Matsubara Usadel supercurrent-density table saved into the same NPZ;
 4. the superconducting phase-space catalogue used by the kinetic layer;
-5. the projected power/energy catalogue used by the OE6 thermal layer.
+5. the projected power/energy/transport catalogue used by the OE6 thermal layer.
 
 The PRE-run is the only pipeline that should spend time building catalogues.
 Later SS/PHOTON stages load these objects instead of recomputing them.
@@ -345,7 +345,7 @@ def main() -> int:
     else:
         if phase_catalog is None:
             raise RuntimeError("Internal error: phase_catalog is required to build the power table.")
-        progress.begin("building projected power and energy catalogue")
+        progress.begin("building projected power, energy and transport catalogue")
         eliashberg_path = _resolve_eliashberg_path(cfg, args.eliashberg_dat)
         spectrum = load_simon_eliashberg_dat(eliashberg_path)
         power_catalog = build_power_table_catalog(
@@ -381,7 +381,7 @@ def main() -> int:
                 "power_table_summary": str(power_summary_path),
             }
         )
-        progress.advance("projected power and energy catalogue ready")
+        progress.advance("projected power, energy and transport catalogue ready")
 
     # ------------------------------------------------------------------
     # PRE diagnostic plots.
@@ -408,7 +408,7 @@ def main() -> int:
         stage="pre",
         extra={
             "pipeline": "01_prerun_template.py",
-            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, parallel phase-space catalogue, and projected power/energy catalogue.",
+            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, parallel phase-space catalogue, and projected power/energy/transport catalogue.",
             "workers": int(workers),
             "parallel_backend": str(parallel_backend),
             "allmaras_diffusion_factor": float(allmaras_diffusion_factor),

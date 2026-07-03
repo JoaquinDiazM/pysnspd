@@ -27,6 +27,8 @@ def _tiny_config() -> dict:
             "width_m": 120.0e-9,
             "tau_ee_Tc_ps": 0.5,
             "tau_ep_Tc_ps": 2.47,
+            "tau_esc_ps": 20.0,
+            "ion_density_nm3": 48.0,
         },
         "calibration": {"Ic_target_A": 38.8e-6},
         "bias": {"T_bias_K": 0.9, "I_bias_A": 35.0e-6},
@@ -43,7 +45,7 @@ def _tiny_config() -> dict:
 
 def test_power_table_catalog_smoke(tmp_path):
     Te = np.array([1.0, 3.0], dtype=float)
-    Tph = np.array([1.0, 3.0], dtype=float)
+    Tph = np.array([0.9, 3.0], dtype=float)
     delta = np.array([0.0, 2.0e-22], dtype=float)
     gamma = np.array([0.0, 1.0e-23], dtype=float)
     q = np.array([0.0, 4.0e7], dtype=float)
@@ -102,8 +104,20 @@ def test_power_table_catalog_smoke(tmp_path):
 
     assert catalog.P_total_W_m3.shape == (2, 2, 2, 2)
     assert catalog.u_e_J_m3.shape == (2, 2, 2)
+    assert catalog.kappa_s_W_m_K.shape == (2, 2)
+    assert catalog.u_ph_J_m3.shape == (2,)
+    assert catalog.C_ph_J_m3_K.shape == (2,)
+    assert catalog.P_esc_W_m3.shape == (2,)
     assert np.all(np.isfinite(catalog.P_total_W_m3))
     assert np.all(np.isfinite(catalog.u_e_J_m3))
+    assert np.all(np.isfinite(catalog.kappa_s_W_m_K))
+    assert np.all(np.isfinite(catalog.u_ph_J_m3))
+    assert np.all(np.isfinite(catalog.C_ph_J_m3_K))
+    assert np.all(np.isfinite(catalog.P_esc_W_m3))
+    assert catalog.kappa_s_W_m_K[0, 0] > catalog.kappa_s_W_m_K[0, 1]
+    assert catalog.u_ph_J_m3[1] > catalog.u_ph_J_m3[0]
+    assert abs(catalog.P_esc_W_m3[0]) < 1.0e-20
+    assert catalog.P_esc_W_m3[1] > 0.0
     assert np.max(np.abs(catalog.P_total_W_m3[0, 0])) < 1.0e-20
     assert np.max(np.abs(catalog.P_total_W_m3[1, 1])) < 1.0e-20
     assert np.max(np.abs(catalog.P_total_W_m3[1, 0])) > 0.0
@@ -112,8 +126,13 @@ def test_power_table_catalog_smoke(tmp_path):
     assert summary["n_Te"] == 2
     assert summary["n_Tph"] == 2
     assert summary["P_total_is_finite"] is True
+    assert summary["kappa_s_is_finite"] is True
+    assert summary["P_esc_is_finite"] is True
 
     path = save_power_table_catalog_npz(catalog, tmp_path / "power_table_catalog.npz")
     loaded = load_power_table_catalog_npz(path)
     assert loaded.P_total_W_m3.shape == catalog.P_total_W_m3.shape
     assert np.allclose(loaded.P_total_W_m3, catalog.P_total_W_m3)
+    assert np.allclose(loaded.kappa_s_W_m_K, catalog.kappa_s_W_m_K)
+    assert np.allclose(loaded.u_ph_J_m3, catalog.u_ph_J_m3)
+    assert np.allclose(loaded.P_esc_W_m3, catalog.P_esc_W_m3)

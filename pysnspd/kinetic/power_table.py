@@ -32,9 +32,10 @@ from pysnspd.kinetic.powers import (
     electronic_density_of_states_from_sigma_D,
 )
 from pysnspd.usadel.catalog import UsadelCatalog, J_to_meV
-from pysnspd.usadel.parameters import HBAR_J_S
+from pysnspd.usadel.parameters import HBAR_J_S, K_B_J_K
 
 MEV_J = 1.602176634e-22
+H_J_S = 2.0 * np.pi * HBAR_J_S
 
 
 @dataclass(frozen=True)
@@ -61,6 +62,10 @@ class PowerTableCatalog:
     P_total_W_m3: np.ndarray
     u_e_J_m3: np.ndarray
     C_e_J_m3_K: np.ndarray
+    kappa_s_W_m_K: np.ndarray
+    u_ph_J_m3: np.ndarray
+    C_ph_J_m3_K: np.ndarray
+    P_esc_W_m3: np.ndarray
     u_ph_weighted_J: np.ndarray
     C_ph_weighted_J_K: np.ndarray
     metadata: dict[str, Any]
@@ -134,6 +139,8 @@ def build_power_table_catalog(
     D_m2_s = _metadata_float(usadel_catalog.metadata, "D_m2_s")
     N0 = electronic_density_of_states_from_sigma_D(sigma_n, D_m2_s)
     delta0_J = _delta0_from_catalog(usadel_catalog)
+    ion_density_m3, ion_density_source = _ion_density_from_config(cfg)
+    tau_esc_s, tau_esc_source = _tau_esc_from_config(cfg)
 
     shape_power = (Te_values.size, Tph_values.size, delta_values.size, q_values.size)
     P_S = np.empty(shape_power, dtype=float)
@@ -196,11 +203,32 @@ def build_power_table_catalog(
 
     P_total = P_S + P_R
     C_e = _temperature_gradient(u_e, Te_values, axis=0)
-    u_ph = _phonon_weighted_energy(omega, phdos, Tph_values)
+    kappa_s = _bardeen_kappa_s_table(
+        Te_values_K=Te_values,
+        delta_values_J=delta_values,
+        D_m2_s=float(D_m2_s),
+        N0_J_m3=float(N0),
+    )
+    u_ph = _phonon_energy_density_simon(
+        omega,
+        phdos,
+        Tph_values,
+        ion_density_m3=float(ion_density_m3),
+    )
     C_ph = _temperature_gradient(u_ph, Tph_values, axis=0)
+    T_bath_K = float(cfg.get("bias", {}).get("T_bias_K", Tph_values[0]))
+    u_ph_bath = float(
+        _phonon_energy_density_simon(
+            omega,
+            phdos,
+            np.asarray([T_bath_K], dtype=float),
+            ion_density_m3=float(ion_density_m3),
+        )[0]
+    )
+    P_esc = (u_ph - u_ph_bath) / float(tau_esc_s)
 
     metadata = {
-        "backend": "projected_power_table_from_phase_space_oe6_pre_v1",
+        "backend": "projected_power_table_from_phase_space_oe6_pre_v2",
         "description": (
             "Runtime-oriented PRE catalogue. It contracts J_S/J_R with alpha2F, "
             "Omega and the Bose imbalance on a Tph axis, avoiding Omega integrals "
@@ -219,14 +247,29 @@ def build_power_table_catalog(
             "P_total_W_m3": "W m^-3",
             "u_e_J_m3": "J m^-3",
             "C_e_J_m3_K": "J m^-3 K^-1",
-            "u_ph_weighted_J": "diagnostic weighted phonon energy integral, not yet volume-normalized",
-            "C_ph_weighted_J_K": "diagnostic weighted phonon heat capacity, not yet volume-normalized",
+            "kappa_s_W_m_K": "W m^-1 K^-1",
+            "u_ph_J_m3": "J m^-3",
+            "C_ph_J_m3_K": "J m^-3 K^-1",
+            "P_esc_W_m3": "W m^-3, positive means phonons lose energy to bath",
+            "u_ph_weighted_J": "legacy diagnostic weighted phonon integral",
+            "C_ph_weighted_J_K": "legacy diagnostic weighted phonon integral derivative",
         },
         "N0_J_m3": float(N0),
         "D_m2_s": float(D_m2_s),
         "sigma_n_S_m": float(sigma_n),
         "delta0_J": float(delta0_J),
         "delta0_meV": float(J_to_meV(delta0_J)),
+        "ion_density_m3": float(ion_density_m3),
+        "ion_density_nm3": float(ion_density_m3) * 1.0e-27,
+        "ion_density_source": str(ion_density_source),
+        "tau_esc_s": float(tau_esc_s),
+        "tau_esc_ps": float(tau_esc_s) / 1.0e-12,
+        "tau_esc_source": str(tau_esc_source),
+        "T_bath_K": float(T_bath_K),
+        "u_ph_bath_J_m3": float(u_ph_bath),
+        "kappa_s_formula": "Bardeen/Allmaras Eq. 3.9: kappa_s=(2*pi^2*D*k_B^2*N0/3)*Te*[1-(6/pi^2)*int_0^(Delta/kBT) x^2 exp(x)/(exp(x)+1)^2 dx]",
+        "phonon_energy_formula": "u_ph=N*int dnu_THz F(nu) Omega(nu) n_B(Omega,Tph), with N from material.ion_density_* and PhDOS in states/THz",
+        "phonon_escape_formula": "P_esc=(u_ph(Tph)-u_ph(T_bath))/tau_esc",
         "omega_max_meV_requested": float(omega_max_meV),
         "omega_max_meV_used": float(j_to_mev(float(omega[-1]))),
         "alpha2F_source": spectrum.metadata.get("source", ""),
@@ -249,9 +292,13 @@ def build_power_table_catalog(
             "and q treated as local state variables."
         ),
         "phonon_energy_policy": (
-            "The phonon energy arrays are diagnostic spectral integrals using the Simon "
-            "PhDOS column. A final OE6 volume-normalized phonon energy model may replace "
-            "or rescale them."
+            "u_ph and C_ph are volume-normalized Simon phonon energy tables using "
+            "u_ph=N*int F(Omega) Omega n_B dOmega, with the tabulated PhDOS interpreted "
+            "as states per THz and N supplied by the material configuration."
+        ),
+        "thermal_conductivity_policy": (
+            "kappa_s_W_m_K is tabulated on (Te, Delta) using the Bardeen-type "
+            "superconducting electronic thermal conductivity quoted by Allmaras Eq. 3.9."
         ),
     }
 
@@ -269,6 +316,10 @@ def build_power_table_catalog(
         P_total_W_m3=P_total,
         u_e_J_m3=u_e,
         C_e_J_m3_K=C_e,
+        kappa_s_W_m_K=kappa_s,
+        u_ph_J_m3=u_ph,
+        C_ph_J_m3_K=C_ph,
+        P_esc_W_m3=P_esc,
         u_ph_weighted_J=u_ph,
         C_ph_weighted_J_K=C_ph,
         metadata=metadata,
@@ -361,18 +412,85 @@ def _electron_energy_density_block(
     return np.asarray(out, dtype=float)
 
 
+def _bardeen_kappa_s_table(
+    *,
+    Te_values_K: np.ndarray,
+    delta_values_J: np.ndarray,
+    D_m2_s: float,
+    N0_J_m3: float,
+) -> np.ndarray:
+    """Bardeen/Allmaras superconducting electronic thermal conductivity.
+
+    Returns a table with shape ``(n_Te, n_delta)`` in W m^-1 K^-1.
+    The normal-state prefactor is reduced by the standard Bardeen integral,
+    so ``Delta=0`` recovers the Wiedemann-like dirty-limit normal value.
+    """
+    Te_values = np.asarray(Te_values_K, dtype=float)
+    delta_values = np.asarray(delta_values_J, dtype=float)
+    out = np.empty((Te_values.size, delta_values.size), dtype=float)
+    prefactor = 2.0 * np.pi * np.pi * float(D_m2_s) * K_B_J_K * K_B_J_K * float(N0_J_m3) / 3.0
+    for iT, Te in enumerate(Te_values):
+        if Te <= 0.0 or not np.isfinite(Te):
+            out[iT, :] = np.nan
+            continue
+        kappa_n = prefactor * float(Te)
+        for idelta, delta in enumerate(delta_values):
+            upper = float(delta) / (K_B_J_K * float(Te)) if delta > 0.0 else 0.0
+            reduction = _bardeen_reduction_integral(upper)
+            factor = 1.0 - (6.0 / (np.pi * np.pi)) * reduction
+            out[iT, idelta] = kappa_n * float(np.clip(factor, 0.0, 1.0))
+    return np.asarray(out, dtype=float)
+
+
+def _bardeen_reduction_integral(upper: float) -> float:
+    if not np.isfinite(upper) or upper <= 0.0:
+        return 0.0
+    # The integral is essentially saturated by x~50.  The sech form is stable
+    # and equal to exp(x)/(exp(x)+1)^2.
+    xmax = min(float(upper), 80.0)
+    n = max(256, min(4096, int(64 * xmax) + 1))
+    x = np.linspace(0.0, xmax, n, dtype=float)
+    integrand = 0.25 * x * x / np.cosh(0.5 * np.minimum(x, 80.0)) ** 2
+    return float(np.trapezoid(integrand, x))
+
+
+def _phonon_energy_density_simon(
+    omega_J: np.ndarray,
+    phdos_states_per_THz: np.ndarray,
+    Tph_values_K: np.ndarray,
+    *,
+    ion_density_m3: float,
+) -> np.ndarray:
+    """Volume-normalized Simon phonon energy density.
+
+    The Simon/MIT PhDOS column is tabulated per THz, while the PRE catalogue
+    uses a phonon-energy axis in joules.  We therefore integrate over the
+    corresponding frequency in THz and multiply by the ion density ``N``.
+    """
+    omega = np.asarray(omega_J, dtype=float)
+    density = np.asarray(phdos_states_per_THz, dtype=float)
+    freq_THz = omega / (H_J_S * 1.0e12)
+    out = np.zeros_like(np.asarray(Tph_values_K, dtype=float), dtype=float)
+    for i, Tph in enumerate(Tph_values_K):
+        n = bose_positive_energy(omega, float(Tph))
+        integrand = omega * density * n
+        integrand = np.nan_to_num(integrand, nan=0.0, posinf=0.0, neginf=0.0)
+        out[i] = float(ion_density_m3) * float(np.trapezoid(integrand, freq_THz))
+    return out
+
+
 def _phonon_weighted_energy(
     omega_J: np.ndarray,
     phdos: np.ndarray,
     Tph_values_K: np.ndarray,
 ) -> np.ndarray:
-    omega = np.asarray(omega_J, dtype=float)
-    density = np.asarray(phdos, dtype=float)
-    out = np.zeros_like(np.asarray(Tph_values_K, dtype=float), dtype=float)
-    for i, Tph in enumerate(Tph_values_K):
-        n = bose_positive_energy(omega, float(Tph))
-        out[i] = float(np.trapezoid(omega * density * n, omega))
-    return out
+    """Legacy non-volume-normalized phonon diagnostic retained for compatibility."""
+    return _phonon_energy_density_simon(
+        omega_J,
+        phdos,
+        Tph_values_K,
+        ion_density_m3=1.0,
+    )
 
 
 def _temperature_gradient(values: np.ndarray, axis_values_K: np.ndarray, *, axis: int) -> np.ndarray:
@@ -402,6 +520,10 @@ def save_power_table_catalog_npz(catalog: PowerTableCatalog, path: str | Path) -
         P_total_W_m3=catalog.P_total_W_m3,
         u_e_J_m3=catalog.u_e_J_m3,
         C_e_J_m3_K=catalog.C_e_J_m3_K,
+        kappa_s_W_m_K=catalog.kappa_s_W_m_K,
+        u_ph_J_m3=catalog.u_ph_J_m3,
+        C_ph_J_m3_K=catalog.C_ph_J_m3_K,
+        P_esc_W_m3=catalog.P_esc_W_m3,
         u_ph_weighted_J=catalog.u_ph_weighted_J,
         C_ph_weighted_J_K=catalog.C_ph_weighted_J_K,
         metadata=np.array(catalog.metadata, dtype=object),
@@ -427,8 +549,12 @@ def load_power_table_catalog_npz(path: str | Path) -> PowerTableCatalog:
             P_total_W_m3=np.asarray(data["P_total_W_m3"], dtype=float),
             u_e_J_m3=np.asarray(data["u_e_J_m3"], dtype=float),
             C_e_J_m3_K=np.asarray(data["C_e_J_m3_K"], dtype=float),
-            u_ph_weighted_J=np.asarray(data["u_ph_weighted_J"], dtype=float),
-            C_ph_weighted_J_K=np.asarray(data["C_ph_weighted_J_K"], dtype=float),
+            kappa_s_W_m_K=np.asarray(data.get("kappa_s_W_m_K", np.zeros((data["Te_values_K"].size, data["delta_values_J"].size))), dtype=float),
+            u_ph_J_m3=np.asarray(data.get("u_ph_J_m3", data.get("u_ph_weighted_J")), dtype=float),
+            C_ph_J_m3_K=np.asarray(data.get("C_ph_J_m3_K", data.get("C_ph_weighted_J_K")), dtype=float),
+            P_esc_W_m3=np.asarray(data.get("P_esc_W_m3", np.zeros_like(data.get("u_ph_weighted_J"))), dtype=float),
+            u_ph_weighted_J=np.asarray(data.get("u_ph_weighted_J", data.get("u_ph_J_m3")), dtype=float),
+            C_ph_weighted_J_K=np.asarray(data.get("C_ph_weighted_J_K", data.get("C_ph_J_m3_K")), dtype=float),
             metadata=dict(data["metadata"].item()),
         )
 
@@ -440,6 +566,10 @@ def power_table_summary(catalog: PowerTableCatalog) -> dict[str, Any]:
     P_total = np.asarray(catalog.P_total_W_m3, dtype=float)
     ue = np.asarray(catalog.u_e_J_m3, dtype=float)
     Ce = np.asarray(catalog.C_e_J_m3_K, dtype=float)
+    kappa = np.asarray(catalog.kappa_s_W_m_K, dtype=float)
+    uph = np.asarray(catalog.u_ph_J_m3, dtype=float)
+    Cph = np.asarray(catalog.C_ph_J_m3_K, dtype=float)
+    Pesc = np.asarray(catalog.P_esc_W_m3, dtype=float)
 
     equal_power = []
     for iT, Te in enumerate(catalog.Te_values_K):
@@ -481,6 +611,18 @@ def power_table_summary(catalog: PowerTableCatalog) -> dict[str, Any]:
         "C_e_max_J_m3_K": float(np.max(Ce)),
         "u_e_is_finite": bool(np.all(np.isfinite(ue))),
         "C_e_is_finite": bool(np.all(np.isfinite(Ce))),
+        "kappa_s_min_W_m_K": float(np.nanmin(kappa)),
+        "kappa_s_max_W_m_K": float(np.nanmax(kappa)),
+        "kappa_s_is_finite": bool(np.all(np.isfinite(kappa))),
+        "u_ph_min_J_m3": float(np.nanmin(uph)),
+        "u_ph_max_J_m3": float(np.nanmax(uph)),
+        "C_ph_min_J_m3_K": float(np.nanmin(Cph)),
+        "C_ph_max_J_m3_K": float(np.nanmax(Cph)),
+        "P_esc_min_W_m3": float(np.nanmin(Pesc)),
+        "P_esc_max_W_m3": float(np.nanmax(Pesc)),
+        "P_esc_is_finite": bool(np.all(np.isfinite(Pesc))),
+        "ion_density_nm3": float(catalog.metadata.get("ion_density_nm3", np.nan)),
+        "tau_esc_ps": float(catalog.metadata.get("tau_esc_ps", np.nan)),
         "parallel_workers": int(catalog.metadata.get("parallel_workers", 1)),
         "parallel_backend": str(catalog.metadata.get("parallel_backend", "serial")),
         "parallel_tasks": int(catalog.metadata.get("parallel_tasks", 1)),
@@ -489,6 +631,32 @@ def power_table_summary(catalog: PowerTableCatalog) -> dict[str, Any]:
         "energy_functional_policy": str(catalog.metadata.get("energy_functional_policy", "")),
         "phonon_energy_policy": str(catalog.metadata.get("phonon_energy_policy", "")),
     }
+
+
+def _ion_density_from_config(cfg: Mapping[str, Any]) -> tuple[float, str]:
+    material = cfg.get("material", {}) if isinstance(cfg, Mapping) else {}
+    for key in ("ion_density_m3", "ion_density_per_m3", "N_m3", "N_per_m3"):
+        if key in material:
+            value = float(material[key])
+            if np.isfinite(value) and value > 0.0:
+                return value, f"material.{key}"
+    for key in ("ion_density_nm3", "ion_density_per_nm3", "N_nm3", "N_per_nm3"):
+        if key in material:
+            value = float(material[key]) * 1.0e27
+            if np.isfinite(value) and value > 0.0:
+                return value, f"material.{key}"
+    # Simon NbN table value; kept as fallback so older smoke configs still run.
+    return 48.0e27, "fallback: Simon NbN N=48 nm^-3"
+
+
+def _tau_esc_from_config(cfg: Mapping[str, Any]) -> tuple[float, str]:
+    material = cfg.get("material", {}) if isinstance(cfg, Mapping) else {}
+    for key, scale in (("tau_esc_s", 1.0), ("tau_escape_s", 1.0), ("tau_esc_ps", 1.0e-12), ("tau_escape_ps", 1.0e-12)):
+        if key in material:
+            value = float(material[key]) * scale
+            if np.isfinite(value) and value > 0.0:
+                return value, f"material.{key}"
+    return 20.0e-12, "fallback: 20 ps"
 
 
 def _resolve_parallel(
