@@ -85,8 +85,12 @@ def compute_ss_snapshot_power_diagnostics(
     if snapshot_t_s.shape != (n_snap,):
         snapshot_t_s = np.asarray(snapshot_t_s[:n_snap], dtype=float)
 
-    Te_node = _broadcast_node_temperature(getattr(state, "Te_K"), n_snap=n_snap, n_nodes=n_nodes, name="Te_K")
-    Tph_node = _broadcast_node_temperature(getattr(state, "Tph_K"), n_snap=n_snap, n_nodes=n_nodes, name="Tph_K")
+    Te_node = _snapshot_or_state_temperature(
+        history, state, key="Te_snapshot_K", attr="Te_K", n_snap=n_snap, n_nodes=n_nodes
+    )
+    Tph_node = _snapshot_or_state_temperature(
+        history, state, key="Tph_snapshot_K", attr="Tph_K", n_snap=n_snap, n_nodes=n_nodes
+    )
 
     q_node = _snapshot_node_q_abs(history, n_snap=n_snap, n_nodes=n_nodes)
 
@@ -172,6 +176,20 @@ def _load_power_table_npz(path: str | Path) -> dict[str, np.ndarray]:
         return out
 
 
+def _snapshot_or_state_temperature(
+    history: Mapping[str, Any],
+    state: Any,
+    *,
+    key: str,
+    attr: str,
+    n_snap: int,
+    n_nodes: int,
+) -> np.ndarray:
+    if key in history:
+        return _broadcast_node_temperature(history[key], n_snap=n_snap, n_nodes=n_nodes, name=key)
+    return _broadcast_node_temperature(getattr(state, attr), n_snap=n_snap, n_nodes=n_nodes, name=attr)
+
+
 def _broadcast_node_temperature(values: Any, *, n_snap: int, n_nodes: int, name: str) -> np.ndarray:
     arr = np.asarray(values, dtype=float)
     if arr.shape == (n_nodes,):
@@ -180,7 +198,7 @@ def _broadcast_node_temperature(values: Any, *, n_snap: int, n_nodes: int, name:
         return arr.copy()
     if arr.size == 1:
         return np.full((n_snap, n_nodes), float(arr.ravel()[0]), dtype=float)
-    raise ValueError(f"state.{name} must be scalar, (n_nodes,), or (n_snap,n_nodes); got {arr.shape}.")
+    raise ValueError(f"{name} must be scalar, (n_nodes,), or (n_snap,n_nodes); got {arr.shape}.")
 
 
 def _snapshot_node_q_abs(history: Mapping[str, Any], *, n_snap: int, n_nodes: int) -> np.ndarray:
@@ -213,6 +231,8 @@ def _snapshot_joule_power_density(
 
 
 def _edge_to_node_snapshots(edge_values: np.ndarray, *, history: Mapping[str, Any], n_nodes: int) -> np.ndarray:
+    if "edge_i" not in history or "edge_j" not in history:
+        raise ValueError("history must include 1D edge_i and edge_j arrays for node projection.")
     edge_i = np.asarray(history.get("edge_i"), dtype=np.int64)
     edge_j = np.asarray(history.get("edge_j"), dtype=np.int64)
     if edge_i.ndim != 1 or edge_j.ndim != 1 or edge_i.size != edge_j.size:

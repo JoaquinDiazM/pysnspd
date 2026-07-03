@@ -71,20 +71,17 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "Physical SS relaxation time in ps. Default is 20 ps. "
-            "This replaces the old --ss-steps control."
+            "Physical SS relaxation time in ps. If omitted, use ss_run.total_time_ps from the YAML."
         ),
     )
     parser.add_argument(
-        "--ss-steps",
-        type=int,
+        "--ss-dt-fs",
+        type=float,
         default=None,
         help=(
-            "Deprecated compatibility input. If --ss-time-ps is omitted, "
-            "the physical time is computed as ss_steps * ss_dt_fs."
+            "Initial SS time step in fs. If omitted, use ss_run.dt_s from the YAML."
         ),
     )
-    parser.add_argument("--ss-dt-fs", type=float, default=0.30)
     parser.add_argument("--ss-target-current-uA", type=float, default=20.0)
     parser.add_argument(
         "--ss-overcritical-seed-policy",
@@ -126,7 +123,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Parallel workers for extra-current sweep cases. Defaults to parallel.workers in the YAML.",
     )
-    parser.add_argument("--ss-snapshots", type=int, default=8)
+    parser.add_argument("--ss-snapshots", type=int, default=None)
 
     parser.add_argument(
         "--ss-progress",
@@ -498,11 +495,20 @@ def _run_single_current_case(
     if args.ss_time_ps is not None:
         total_time_ps = float(args.ss_time_ps)
     else:
-        total_time_ps = float(
-            ss_run_cfg.get("total_time_ps", ss_run_cfg.get("physical_time_ps", 20.0))
-        )
+        total_time_ps = float(ss_run_cfg.get("total_time_ps", ss_run_cfg.get("physical_time_ps", 20.0)))
     if total_time_ps <= 0.0:
-        raise ValueError("--ss-time-ps must be positive.")
+        raise ValueError("--ss-time-ps or ss_run.total_time_ps must be positive.")
+
+    if args.ss_dt_fs is not None:
+        dt_s = float(args.ss_dt_fs) * 1.0e-15
+    else:
+        dt_s = float(ss_run_cfg.get("dt_s", 1.0e-15))
+    if dt_s <= 0.0:
+        raise ValueError("--ss-dt-fs or ss_run.dt_s must be positive.")
+
+    n_snapshots = int(args.ss_snapshots if args.ss_snapshots is not None else ss_run_cfg.get("snapshots", 8))
+    if n_snapshots <= 0:
+        raise ValueError("--ss-snapshots or ss_run.snapshots must be positive.")
 
     result = solve_stationary_pytdgl_like(
         mesh=mesh,
@@ -512,7 +518,7 @@ def _run_single_current_case(
         ops=ops,
         steps=None,
         total_time_s=float(total_time_ps) * 1.0e-12,
-        dt_s=float(args.ss_dt_fs) * 1.0e-15,
+        dt_s=float(dt_s),
         target_current_A=target_current_A,
         usadel_catalog=usadel_catalog,
         terminal_psi=float(args.ss_terminal_psi),
@@ -522,7 +528,7 @@ def _run_single_current_case(
         adaptive_time_step_multiplier=float(args.ss_adaptive_time_step_multiplier),
         adaptive_growth_factor=float(args.ss_adaptive_growth_factor),
         dt_max_factor=float(args.ss_dt_max_factor),
-        n_snapshots=int(args.ss_snapshots),
+        n_snapshots=int(n_snapshots),
         progress=bool(progress),
         supercurrent_law=supercurrent_law,
         terminal_healing_xi=args.ss_terminal_healing_xi,
@@ -547,13 +553,14 @@ def _run_single_current_case(
     )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")
-    history_npz = save_relaxation_history_npz(result.history, raw_ss / "relaxation_history.npz")
-    snapshots_npz = save_ss_snapshot_bundle_npz(result.history, raw_ss / "stationary_snapshots.npz")
+    history = _history_with_fv_topology(result.history, ops=ops)
+    history_npz = save_relaxation_history_npz(history, raw_ss / "relaxation_history.npz")
+    snapshots_npz = save_ss_snapshot_bundle_npz(history, raw_ss / "stationary_snapshots.npz")
     snapshot_power_npz = None
     power_table_path = raw_pre / "power_table_catalog.npz"
     if power_table_path.exists():
         snapshot_power_npz = write_ss_snapshot_power_diagnostics(
-            history=result.history,
+            history=history,
             state=result.state,
             power_table_npz=power_table_path,
             output_path=raw_ss / "snapshot_power_energy_diagnostics.npz",
@@ -572,6 +579,10 @@ def _run_single_current_case(
         "pre_run_name": pre_name,
         "target_current_uA": float(target_current_uA),
         "sweep_role": role,
+        "requested_total_time_ps": float(total_time_ps),
+        "requested_dt_s": float(dt_s),
+        "requested_dt_fs": float(dt_s / 1.0e-15),
+        "requested_snapshots": int(n_snapshots),
         "backend": "flat_gtdgl_pytdgl_like_promoted_backend",
         "supercurrent_policy": supercurrent_policy,
         "strict_usadel_current_table": strict_table_summary,
@@ -622,6 +633,8 @@ def _run_single_current_case(
             seed_npz=seed_npz,
             state_npz=state_npz,
             history_npz=history_npz,
+            snapshots_npz=snapshots_npz,
+            snapshot_power_npz=snapshot_power_npz,
             adaptive_timestep_png=adaptive_timestep_png,
             summary_path=summary_path,
             manifest_path=manifest_path,
@@ -642,6 +655,29 @@ def _run_single_current_case(
         "normal_current_fraction_max": float(result.summary.get("normal_current_fraction_max", float("nan"))),
     }
 
+
+
+def _history_with_fv_topology(history: dict[str, np.ndarray], *, ops) -> dict[str, np.ndarray]:
+    """Attach static FV topology arrays needed by snapshot post-processing.
+
+    The solver history is intentionally compact.  Snapshot power/energy maps,
+    q-projection, and Joule diagnostics need the edge-to-node topology; add it
+    once here before writing ``relaxation_history.npz`` and
+    ``stationary_snapshots.npz``.
+    """
+    out = {str(key): np.asarray(value) for key, value in history.items()}
+    static = {
+        "edge_i": getattr(ops, "edge_i", None),
+        "edge_j": getattr(ops, "edge_j", None),
+        "edge_length_m": getattr(ops, "edge_length_m", None),
+        "dual_face_length_m": getattr(ops, "dual_face_length_m", None),
+        "edge_unit_x": getattr(ops, "edge_unit_x", None),
+        "edge_unit_y": getattr(ops, "edge_unit_y", None),
+    }
+    for key, value in static.items():
+        if key not in out and value is not None:
+            out[key] = np.asarray(value)
+    return out
 
 
 def _resolve_seed_current_for_target(
@@ -727,6 +763,8 @@ def _print_single_case_report(
     seed_npz: Path,
     state_npz: Path,
     history_npz: Path,
+    snapshots_npz: Path,
+    snapshot_power_npz: Path | None,
     adaptive_timestep_png: Path,
     summary_path: Path,
     manifest_path: Path,
@@ -748,6 +786,9 @@ def _print_single_case_report(
     print(f"  seed_npz:              {seed_npz}")
     print(f"  stationary_state_npz:  {state_npz}")
     print(f"  relaxation_history_npz:{history_npz}")
+    print(f"  stationary_snapshots_npz: {snapshots_npz}")
+    if snapshot_power_npz is not None:
+        print(f"  snapshot_power_energy_diagnostics_npz: {snapshot_power_npz}")
     print(f"  adaptive_timestep_png: {adaptive_timestep_png}")
     print(f"  ss_summary:            {summary_path}")
     print(f"  ss_manifest:           {manifest_path}")
