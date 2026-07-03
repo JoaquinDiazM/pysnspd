@@ -700,9 +700,10 @@ def _history_with_fv_topology(history: dict[str, np.ndarray], *, ops) -> dict[st
 class _SSProgressConsoleFilter:
     """Rewrite the solver progress line with wall-clock elapsed time and ETA.
 
-    The core solver owns the numerical loop and only exposes a boolean progress
-    switch.  This lightweight stdout filter keeps the solver API unchanged while
-    making its single-line progress output more useful and less cluttered.
+    The core solver still owns the numerical loop.  It writes its own progress
+    line to a terminal stream, so the pipeline temporarily wraps both stdout and
+    stderr while the solver runs.  This keeps the solver API unchanged while
+    making the progress line more useful.
     """
 
     _progress_re = re.compile(
@@ -715,45 +716,57 @@ class _SSProgressConsoleFilter:
     def __init__(self, *, enabled: bool, total_time_ps: float) -> None:
         self.enabled = bool(enabled)
         self.total_time_ps = float(total_time_ps)
-        self._stream = None
+        self._stdout = None
+        self._stderr = None
+        self._stdout_proxy = None
+        self._stderr_proxy = None
         self._start_s = 0.0
         self._printed_progress = False
 
     def __enter__(self):
         if self.enabled:
-            self._stream = sys.stdout
+            self._stdout = sys.stdout
+            self._stderr = sys.stderr
             self._start_s = time.monotonic()
-            sys.stdout = self
+            self._stdout_proxy = _SSProgressStreamProxy(self, self._stdout)
+            self._stderr_proxy = _SSProgressStreamProxy(self, self._stderr)
+            sys.stdout = self._stdout_proxy
+            sys.stderr = self._stderr_proxy
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:
-        if self.enabled and self._stream is not None:
-            sys.stdout = self._stream
-            if self._printed_progress:
-                self._stream.write("\n")
-                self._stream.flush()
-        self._stream = None
+        if self.enabled:
+            if self._stdout is not None:
+                sys.stdout = self._stdout
+            if self._stderr is not None:
+                sys.stderr = self._stderr
+            if self._printed_progress and self._stdout is not None:
+                self._stdout.write("\n")
+                self._stdout.flush()
+        self._stdout = None
+        self._stderr = None
+        self._stdout_proxy = None
+        self._stderr_proxy = None
 
-    def write(self, text: str) -> int:
-        if self._stream is None:
-            return len(text)
-        if "SS pyTDGL-like" not in str(text):
-            self._stream.write(text)
-            self._stream.flush()
-            return len(text)
+    def _handle_write(self, text: str, fallback_stream) -> int:
+        raw = str(text)
+        if "SS pyTDGL-like" not in raw:
+            fallback_stream.write(raw)
+            fallback_stream.flush()
+            return len(raw)
 
-        match = self._progress_re.search(str(text))
+        match = self._progress_re.search(raw)
         if match is None:
-            self._stream.write(text)
-            self._stream.flush()
-            return len(text)
+            fallback_stream.write(raw)
+            fallback_stream.flush()
+            return len(raw)
 
         pct = float(match.group("pct"))
         step = int(match.group("step"))
         t_ps = float(match.group("t"))
         elapsed_s = max(time.monotonic() - self._start_s, 0.0)
         fraction = min(max(pct / 100.0, 0.0), 1.0)
-        if fraction > 1.0e-12 and fraction < 1.0:
+        if 1.0e-12 < fraction < 1.0:
             eta_s = elapsed_s * (1.0 - fraction) / fraction
         else:
             eta_s = 0.0
@@ -765,14 +778,35 @@ class _SSProgressConsoleFilter:
             f"wall={_format_duration(elapsed_s)} "
             f"eta={_format_duration(eta_s)}"
         )
-        self._stream.write(line)
-        self._stream.flush()
+        # Always put the normalized progress line on stdout.  This avoids the
+        # stdout/stderr interleaving that made the old line look like
+        # ``t=1 ps3 pss`` on some terminals.
+        stream = self._stdout if self._stdout is not None else fallback_stream
+        stream.write(line)
+        stream.flush()
         self._printed_progress = True
-        return len(text)
+        return len(raw)
+
+
+class _SSProgressStreamProxy:
+    """Small stream wrapper used by ``_SSProgressConsoleFilter``."""
+
+    def __init__(self, owner: _SSProgressConsoleFilter, fallback_stream) -> None:
+        self._owner = owner
+        self._fallback_stream = fallback_stream
+
+    def write(self, text: str) -> int:
+        return self._owner._handle_write(text, self._fallback_stream)
 
     def flush(self) -> None:
-        if self._stream is not None:
-            self._stream.flush()
+        self._fallback_stream.flush()
+
+    def isatty(self) -> bool:
+        return bool(getattr(self._fallback_stream, "isatty", lambda: False)())
+
+    @property
+    def encoding(self):
+        return getattr(self._fallback_stream, "encoding", None)
 
 
 def _progress_bar(fraction: float, *, width: int = 32) -> str:
