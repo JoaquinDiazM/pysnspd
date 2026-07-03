@@ -26,6 +26,7 @@ from pysnspd.mesh.edges import load_edges_npz
 from pysnspd.usadel.catalog import load_usadel_catalog_npz
 from pysnspd.plotting.mesh import plot_mesh_pytdgl_style
 from pysnspd.plotting.pre_diagnostics import write_pre_diagnostic_plots
+from pysnspd.plotting.power_diagnostics import write_power_table_diagnostic_plots
 
 
 def parse_args() -> argparse.Namespace:
@@ -78,6 +79,15 @@ def main() -> int:
         dpi=int(args.dpi),
     )
 
+    power_table_npz = raw_pre / "power_table_catalog.npz"
+    if power_table_npz.exists():
+        power_saved_raw = write_power_table_diagnostic_plots(
+            power_table_npz=power_table_npz,
+            output_dir=figures_dir,
+            dpi=int(args.dpi),
+        )
+        saved.update({key: Path(value) for key, value in power_saved_raw.items()})
+
     manifest_path = _write_plot_manifest(
         run_name=args.run_name,
         raw_pre=raw_pre,
@@ -106,9 +116,9 @@ def _write_plot_manifest(
     saved: dict[str, Path],
 ) -> Path:
     manifest: dict[str, Any] = {
-        "schema_version": 2,
+        "schema_version": 3,
         "pipeline": "plot_pipelines/01_plot_prerun.py",
-        "purpose": "Presentation figures from an existing PRE-run.",
+        "purpose": "Presentation figures from an existing PRE-run, including Usadel and power-table diagnostics when available.",
         "run_name": run_name,
         "raw_pre": str(raw_pre),
         "figures_dir": str(figures_dir),
