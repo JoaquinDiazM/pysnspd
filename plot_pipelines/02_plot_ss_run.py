@@ -1,10 +1,9 @@
 """Create presentation figures from an existing stationary SS run.
 
 This post-processing pipeline reads raw SS outputs from
-``scratch/big_data/raw/<run_name>/ss`` and writes figures to
-``scratch/big_data/plots/<run_name>/figures``. It does not modify the raw run.
+``scratch/big_data/raw/<run>/ss`` and writes figures to
+``scratch/big_data/plots/<run>/figures``.  It does not modify the raw run.
 """
-
 from __future__ import annotations
 
 import argparse
@@ -16,6 +15,7 @@ import yaml
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
 from pysnspd.plotting.mesh import plot_mesh_pytdgl_style
 from pysnspd.plotting.ss_figures import make_ss_run_figures
+from pysnspd.plotting.ss_power_figures import make_ss_snapshot_power_figures
 
 
 def parse_args() -> argparse.Namespace:
@@ -34,8 +34,8 @@ def parse_args() -> argparse.Namespace:
         "--figures-subdir",
         default=None,
         help=(
-            "Optional subdirectory inside plots/<run_name>/figures. "
-            "By default figures are written directly to plots/<run_name>/figures."
+            "Optional subdirectory inside plots/<run>/figures. "
+            "By default figures are written directly to plots/<run>/figures."
         ),
     )
     return parser.parse_args()
@@ -43,6 +43,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+
     run = load_ss_run(
         config_path=args.config,
         run_name=args.run_name,
@@ -61,6 +62,20 @@ def main() -> int:
         output_dir=figures_dir,
         dpi=int(args.dpi),
     )
+
+    # New SS snapshot diagnostics.  These functions are intentionally optional:
+    # old SS runs that do not yet have stationary_snapshots.npz or
+    # snapshot_power_energy_diagnostics.npz still plot with the standard figure set.
+    saved.update(
+        make_ss_snapshot_power_figures(
+            mesh=run.mesh,
+            dataset=dataset,
+            raw_ss=run.raw_ss,
+            output_dir=figures_dir,
+            dpi=int(args.dpi),
+        )
+    )
+
     saved["mesh_pytdgl_style"] = plot_mesh_pytdgl_style(
         run.mesh,
         figures_dir / "mesh_pytdgl_style.png",
@@ -99,7 +114,7 @@ def _write_plot_manifest(
     dataset: dict[str, Any],
 ) -> Path:
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "pipeline": "plot_pipelines/02_plot_ss_run.py",
         "purpose": "Presentation figures from an existing stationary SS run.",
         "run_name": run.run_name,
