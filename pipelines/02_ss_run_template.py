@@ -12,6 +12,9 @@ parallel and only their output directories are printed at the end.
 from __future__ import annotations
 
 import argparse
+import re
+import sys
+import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
@@ -137,6 +140,15 @@ def parse_args() -> argparse.Namespace:
         dest="ss_progress",
         action="store_false",
         help="Disable SS progress bar.",
+    )
+    parser.add_argument(
+        "--ss-verbose-report",
+        action="store_true",
+        help=(
+            "Print the full nested Seed/Solver dictionaries to the terminal. "
+            "By default the pipeline writes complete YAML/manifest metadata but "
+            "prints only a compact run report."
+        ),
     )
 
     # Metallic-contact boundary model.
@@ -510,47 +522,51 @@ def _run_single_current_case(
     if n_snapshots <= 0:
         raise ValueError("--ss-snapshots or ss_run.snapshots must be positive.")
 
-    result = solve_stationary_pytdgl_like(
-        mesh=mesh,
-        edge_data=edge_data,
-        seed=seed,
-        material=material,
-        ops=ops,
-        steps=None,
-        total_time_s=float(total_time_ps) * 1.0e-12,
-        dt_s=float(dt_s),
-        target_current_A=target_current_A,
-        usadel_catalog=usadel_catalog,
-        terminal_psi=float(args.ss_terminal_psi),
-        adaptive=not bool(args.ss_no_adaptive),
-        adaptive_window=int(args.ss_adaptive_window),
-        max_solve_retries=int(args.ss_max_solve_retries),
-        adaptive_time_step_multiplier=float(args.ss_adaptive_time_step_multiplier),
-        adaptive_growth_factor=float(args.ss_adaptive_growth_factor),
-        dt_max_factor=float(args.ss_dt_max_factor),
-        n_snapshots=int(n_snapshots),
-        progress=bool(progress),
-        supercurrent_law=supercurrent_law,
-        terminal_healing_xi=args.ss_terminal_healing_xi,
-        terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
-        stationarity_eta=float(args.ss_stationarity_eta),
-        stationarity_phase_gradient_rel=args.ss_stationarity_phase_gradient_rel,
-        stationarity_phi_gradient_rel=args.ss_stationarity_phi_gradient_rel,
-        stationarity_q_abs_m_inv=float(args.ss_stationarity_q_abs_m_inv),
-        stationarity_phi_gradient_abs_V_m=float(args.ss_stationarity_phi_gradient_abs_V_m),
-        stationarity_edge_active_threshold=float(args.ss_stationarity_edge_active_threshold),
-        stationarity_bulk_exclusion_xi=float(args.ss_stationarity_bulk_exclusion_xi),
-        stationarity_delta_rel=args.ss_stationarity_delta_rel,
-        stationarity_phi_rel=args.ss_stationarity_phi_rel,
-        convergence_min_steps=int(args.ss_convergence_min_steps),
-        stop_on_convergence=bool(args.ss_stop_on_convergence),
-        continuity_rms_tol=float(args.ss_continuity_rms_tol),
-        continuity_max_tol=float(args.ss_continuity_max_tol),
-        continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
-        recovery_min_xi=float(args.ss_recovery_min_xi),
-        recovery_max_xi=float(args.ss_recovery_max_xi),
-        allmaras_contact_guard_layers=int(args.ss_allmaras_contact_guard_layers),
-    )
+    with _SSProgressConsoleFilter(
+        enabled=bool(progress),
+        total_time_ps=float(total_time_ps),
+    ):
+        result = solve_stationary_pytdgl_like(
+            mesh=mesh,
+            edge_data=edge_data,
+            seed=seed,
+            material=material,
+            ops=ops,
+            steps=None,
+            total_time_s=float(total_time_ps) * 1.0e-12,
+            dt_s=float(dt_s),
+            target_current_A=target_current_A,
+            usadel_catalog=usadel_catalog,
+            terminal_psi=float(args.ss_terminal_psi),
+            adaptive=not bool(args.ss_no_adaptive),
+            adaptive_window=int(args.ss_adaptive_window),
+            max_solve_retries=int(args.ss_max_solve_retries),
+            adaptive_time_step_multiplier=float(args.ss_adaptive_time_step_multiplier),
+            adaptive_growth_factor=float(args.ss_adaptive_growth_factor),
+            dt_max_factor=float(args.ss_dt_max_factor),
+            n_snapshots=int(n_snapshots),
+            progress=bool(progress),
+            supercurrent_law=supercurrent_law,
+            terminal_healing_xi=args.ss_terminal_healing_xi,
+            terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
+            stationarity_eta=float(args.ss_stationarity_eta),
+            stationarity_phase_gradient_rel=args.ss_stationarity_phase_gradient_rel,
+            stationarity_phi_gradient_rel=args.ss_stationarity_phi_gradient_rel,
+            stationarity_q_abs_m_inv=float(args.ss_stationarity_q_abs_m_inv),
+            stationarity_phi_gradient_abs_V_m=float(args.ss_stationarity_phi_gradient_abs_V_m),
+            stationarity_edge_active_threshold=float(args.ss_stationarity_edge_active_threshold),
+            stationarity_bulk_exclusion_xi=float(args.ss_stationarity_bulk_exclusion_xi),
+            stationarity_delta_rel=args.ss_stationarity_delta_rel,
+            stationarity_phi_rel=args.ss_stationarity_phi_rel,
+            convergence_min_steps=int(args.ss_convergence_min_steps),
+            stop_on_convergence=bool(args.ss_stop_on_convergence),
+            continuity_rms_tol=float(args.ss_continuity_rms_tol),
+            continuity_max_tol=float(args.ss_continuity_max_tol),
+            continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
+            recovery_min_xi=float(args.ss_recovery_min_xi),
+            recovery_max_xi=float(args.ss_recovery_max_xi),
+            allmaras_contact_guard_layers=int(args.ss_allmaras_contact_guard_layers),
+        )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")
     history = _history_with_fv_topology(result.history, ops=ops)
@@ -638,6 +654,7 @@ def _run_single_current_case(
             adaptive_timestep_png=adaptive_timestep_png,
             summary_path=summary_path,
             manifest_path=manifest_path,
+            verbose=bool(args.ss_verbose_report),
         )
 
     return {
@@ -678,6 +695,122 @@ def _history_with_fv_topology(history: dict[str, np.ndarray], *, ops) -> dict[st
         if key not in out and value is not None:
             out[key] = np.asarray(value)
     return out
+
+
+class _SSProgressConsoleFilter:
+    """Rewrite the solver progress line with wall-clock elapsed time and ETA.
+
+    The core solver owns the numerical loop and only exposes a boolean progress
+    switch.  This lightweight stdout filter keeps the solver API unchanged while
+    making its single-line progress output more useful and less cluttered.
+    """
+
+    _progress_re = re.compile(
+        r"SS pyTDGL-like\s*\[(?P<bar>[^\]]*)\]\s*"
+        r"(?P<pct>[0-9]+(?:\.[0-9]+)?)%.*?"
+        r"step=(?P<step>[0-9]+).*?"
+        r"t=(?P<t>[0-9.eE+\-]+)"
+    )
+
+    def __init__(self, *, enabled: bool, total_time_ps: float) -> None:
+        self.enabled = bool(enabled)
+        self.total_time_ps = float(total_time_ps)
+        self._stream = None
+        self._start_s = 0.0
+        self._printed_progress = False
+
+    def __enter__(self):
+        if self.enabled:
+            self._stream = sys.stdout
+            self._start_s = time.monotonic()
+            sys.stdout = self
+        return self
+
+    def __exit__(self, exc_type, exc, tb) -> None:
+        if self.enabled and self._stream is not None:
+            sys.stdout = self._stream
+            if self._printed_progress:
+                self._stream.write("\n")
+                self._stream.flush()
+        self._stream = None
+
+    def write(self, text: str) -> int:
+        if self._stream is None:
+            return len(text)
+        if "SS pyTDGL-like" not in str(text):
+            self._stream.write(text)
+            self._stream.flush()
+            return len(text)
+
+        match = self._progress_re.search(str(text))
+        if match is None:
+            self._stream.write(text)
+            self._stream.flush()
+            return len(text)
+
+        pct = float(match.group("pct"))
+        step = int(match.group("step"))
+        t_ps = float(match.group("t"))
+        elapsed_s = max(time.monotonic() - self._start_s, 0.0)
+        fraction = min(max(pct / 100.0, 0.0), 1.0)
+        if fraction > 1.0e-12 and fraction < 1.0:
+            eta_s = elapsed_s * (1.0 - fraction) / fraction
+        else:
+            eta_s = 0.0
+        bar = _progress_bar(fraction, width=32)
+        line = (
+            f"\rSS pyTDGL-like [{bar}] {pct:6.2f}% "
+            f"step={step} "
+            f"t={t_ps:.6g}/{self.total_time_ps:.6g} ps "
+            f"wall={_format_duration(elapsed_s)} "
+            f"eta={_format_duration(eta_s)}"
+        )
+        self._stream.write(line)
+        self._stream.flush()
+        self._printed_progress = True
+        return len(text)
+
+    def flush(self) -> None:
+        if self._stream is not None:
+            self._stream.flush()
+
+
+def _progress_bar(fraction: float, *, width: int = 32) -> str:
+    filled = int(round(width * min(max(float(fraction), 0.0), 1.0)))
+    filled = min(max(filled, 0), width)
+    return "#" * filled + "-" * (width - filled)
+
+
+def _format_duration(seconds: float) -> str:
+    seconds = float(seconds)
+    if not np.isfinite(seconds) or seconds < 0.0:
+        return "--:--"
+    if seconds < 60.0:
+        return f"{seconds:4.1f}s"
+    minutes, sec = divmod(int(round(seconds)), 60)
+    if minutes < 60:
+        return f"{minutes:02d}:{sec:02d}"
+    hours, minutes = divmod(minutes, 60)
+    return f"{hours:d}:{minutes:02d}:{sec:02d}"
+
+
+def _as_float(value: Any) -> float:
+    try:
+        return float(value)
+    except Exception:
+        return float("nan")
+
+
+def _to_fs(value_s: Any) -> float:
+    value = _as_float(value_s)
+    return value / 1.0e-15 if np.isfinite(value) else float("nan")
+
+
+def _fmt_float(value: Any, *, precision: int = 6) -> str:
+    value_f = _as_float(value)
+    if not np.isfinite(value_f):
+        return "nan"
+    return f"{value_f:.{precision}g}"
 
 
 def _resolve_seed_current_for_target(
@@ -768,19 +901,45 @@ def _print_single_case_report(
     adaptive_timestep_png: Path,
     summary_path: Path,
     manifest_path: Path,
+    verbose: bool = False,
 ) -> None:
+    """Print a compact terminal report.
+
+    Complete dictionaries are written to ``ss_summary.yaml`` and ``manifest.yaml``.
+    The default terminal report intentionally keeps only the quantities that are
+    useful while launching many SS runs.  Use ``--ss-verbose-report`` for the old
+    exhaustive printout.
+    """
+    seed_policy = dict(seed_summary_data.get("overcritical_seed_policy", {}))
+    stationarity = dict(solver_summary.get("stationarity", {}))
+    continuity = dict(solver_summary.get("continuity", {}))
+    contact = dict(solver_summary.get("contact_recovery", {}))
+
     print("SS-run stationary relaxation")
     print(f"  run_name:      {run_name}")
     print(f"  pre_run_name:  {pre_name}")
     print(f"  raw_ss:        {raw_ss}")
     print(f"  supercurrent:  {supercurrent_law}")
-    print(f"  policy:        {supercurrent_policy['reason']}")
+    print(f"  policy:        {supercurrent_policy.get('reason', 'n/a')}")
     print()
-    print("Seed")
-    _print_dict(seed_summary_data)
-    print()
-    print("Solver")
-    _print_dict(solver_summary)
+    print("Run summary")
+    print(f"  target_current_uA:     {seed_summary_data.get('simulation_target_current_uA', float('nan')):.6g}")
+    print(f"  seed_current_uA:       {seed_summary_data.get('analytic_seed_current_uA', float('nan')):.6g}")
+    print(f"  seed_clamped:          {seed_policy.get('seed_is_overcritical_clamped', False)}")
+    print(f"  stop_reason:           {solver_summary.get('stop_reason', 'n/a')}")
+    print(f"  accepted/rejected:     {solver_summary.get('accepted_steps', 'n/a')}/{solver_summary.get('rejected_steps', 'n/a')}")
+    print(f"  final_time_ps:         {_fmt_float(solver_summary.get('final_time_ps'), precision=6)}")
+    print(f"  dt_final_fs:           {_fmt_float(_to_fs(solver_summary.get('dt_final_s')), precision=6)}")
+    print(f"  V_terminal_mV:         {_fmt_float(1.0e3 * _as_float(solver_summary.get('terminal_voltage_V')), precision=6)}")
+    print(f"  continuity_passes:     {continuity.get('passes', 'n/a')}")
+    print(f"  stationarity_passes:   {stationarity.get('passes', 'n/a')}")
+    print(f"  contact_recovery:      {contact.get('passes', 'n/a')}")
+    print(f"  eta_R_final:           {_fmt_float(solver_summary.get('eta_R_final'), precision=6)}")
+    print(f"  min_delta/delta0:      {_fmt_float(solver_summary.get('min_delta_over_delta0'), precision=6)}")
+    print(f"  mean_delta/delta0:     {_fmt_float(solver_summary.get('mean_delta_over_delta0'), precision=6)}")
+    print(f"  max_pairbreaking:      {_fmt_float(solver_summary.get('max_pairbreaking_ratio'), precision=6)}")
+    print(f"  max |j_tot| [A/m2]:    {_fmt_float(solver_summary.get('total_current_max_A_m2'), precision=6)}")
+    print(f"  max |j_n| [A/m2]:      {_fmt_float(solver_summary.get('normal_current_max_A_m2'), precision=6)}")
     print()
     print("Outputs")
     print(f"  seed_npz:              {seed_npz}")
@@ -792,6 +951,15 @@ def _print_single_case_report(
     print(f"  adaptive_timestep_png: {adaptive_timestep_png}")
     print(f"  ss_summary:            {summary_path}")
     print(f"  ss_manifest:           {manifest_path}")
+
+    if verbose:
+        print()
+        print("Seed metadata")
+        _print_dict(seed_summary_data)
+        print()
+        print("Solver metadata")
+        _print_dict(solver_summary)
+
     print("Status: OK")
 
 
