@@ -310,12 +310,95 @@ def plot_usadel_supercurrent_curve(
     plt.close(fig)
     return output
 
+def _auto_energy_xlim_from_tail(
+    E_meV: np.ndarray,
+    values_qE: np.ndarray,
+    *,
+    rel_threshold: float = 0.015,
+    tail_fraction: float = 0.15,
+    pad_fraction: float = 0.10,
+    min_visible_fraction: float = 0.20,
+) -> tuple[float, float]:
+    """
+    Choose an automatic energy window by detecting where the data still differs
+    from its high-energy asymptotic tail.
+
+    This is intended for Usadel DOS/anomalous maps where a long high-energy
+    domain becomes visually uninformative.
+    """
+    E = np.asarray(E_meV, dtype=float)
+    values = np.asarray(values_qE, dtype=float)
+
+    if E.ndim != 1 or values.ndim < 2 or values.shape[-1] != E.size:
+        return float(np.nanmin(E)), float(np.nanmax(E))
+
+    finite_E = np.isfinite(E)
+    if np.count_nonzero(finite_E) < 4:
+        return float(np.nanmin(E)), float(np.nanmax(E))
+
+    # Assume the last part of the energy grid is the asymptotic tail.
+    nE = E.size
+    n_tail = max(3, int(np.ceil(tail_fraction * nE)))
+    n_tail = min(n_tail, nE)
+
+    tail = values[..., -n_tail:]
+    tail_level = np.nanmedian(tail, axis=-1, keepdims=True)
+
+    # Activity as a function of energy: max deviation from the high-energy tail.
+    activity = np.nanmax(np.abs(values - tail_level), axis=0)
+
+    if not np.any(np.isfinite(activity)):
+        return float(np.nanmin(E)), float(np.nanmax(E))
+
+    max_activity = float(np.nanmax(activity))
+    if not np.isfinite(max_activity) or max_activity <= 0.0:
+        return float(np.nanmin(E)), float(np.nanmax(E))
+
+    threshold = rel_threshold * max_activity
+    active = np.flatnonzero(activity >= threshold)
+
+    if active.size == 0:
+        return float(np.nanmin(E)), float(np.nanmax(E))
+
+    i0 = int(active[0])
+    i1 = int(active[-1])
+
+    # For positive energy grids, keep the plot anchored at the minimum energy.
+    # For symmetric grids, keep both lower and upper active bounds.
+    pad_points = max(2, int(np.ceil(pad_fraction * max(1, i1 - i0 + 1))))
+
+    if np.nanmin(E) >= 0.0:
+        i0_plot = 0
+    else:
+        i0_plot = max(0, i0 - pad_points)
+
+    i1_plot = min(nE - 1, i1 + pad_points)
+
+    # Avoid over-cropping if the threshold is too aggressive.
+    min_visible_points = max(4, int(np.ceil(min_visible_fraction * nE)))
+    if (i1_plot - i0_plot + 1) < min_visible_points:
+        missing = min_visible_points - (i1_plot - i0_plot + 1)
+        i1_plot = min(nE - 1, i1_plot + missing)
+
+    return float(E[i0_plot]), float(E[i1_plot])
+
+
+def _energy_visible_mask(E_meV: np.ndarray, xlim: tuple[float, float]) -> np.ndarray:
+    """Mask energy columns inside the plotted x-limits."""
+    E = np.asarray(E_meV, dtype=float)
+    lo, hi = xlim
+    mask = np.isfinite(E) & (E >= lo) & (E <= hi)
+    if np.count_nonzero(mask) < 3:
+        return np.isfinite(E)
+    return mask
 
 def plot_usadel_equilibrium_dos_map(
     usadel_catalog: Any,
     output_path: str | Path,
     *,
     dpi: int = 480,
+    energy_window: bool = True,
+    energy_tail_rel_threshold: float = 0.1
 ) -> Path:
     """Plot rho(E,q) along the equilibrium gap branch Delta_eq(q)."""
     output = _prepare_output(output_path)
@@ -329,29 +412,53 @@ def plot_usadel_equilibrium_dos_map(
     # this is q_values_m_inv, but smoke/legacy objects may be closer to the
     # calibration axis.
     q_axis_m_inv = np.asarray(getattr(usadel_catalog, "q_values_m_inv"), dtype=float)
-    if q_axis_m_inv.size != rho_eq.shape[0] and hasattr(usadel_catalog, "calibration_q_values_m_inv"):
-        q_axis_m_inv = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
-    q_1e7 = q_axis_m_inv / 1.0e7
+    if q_axis_m_inv.size != rho_eq.shape[0] and hasattr(
+        usadel_catalog,
+        "calibration_q_values_m_inv",
+    ):
+        q_axis_m_inv = np.asarray(
+            usadel_catalog.calibration_q_values_m_inv,
+            dtype=float,
+        )
 
+    q_1e7 = q_axis_m_inv / 1.0e7
     E_meV = _joule_to_mev(np.asarray(usadel_catalog.energy_values_J, dtype=float))
     metadata = getattr(usadel_catalog, "metadata", {})
 
     T_bias_K = _metadata_float(metadata, "T_bias_K")
     Tc_K = _metadata_float(metadata, "Tc_K")
+
     if np.isfinite(T_bias_K) and np.isfinite(Tc_K) and Tc_K > 0.0:
         title = (
-            rf"Usadel DOS along $\Delta_{{eq}}(q)$ "
+            rf"Usadel DOS along $\Delta_{{\rm eq}}(q)$ "
             rf"at $T={T_bias_K:.2f}$ K "
             rf"$(T/T_c={T_bias_K / Tc_K:.3f})$"
         )
     elif np.isfinite(T_bias_K):
-        title = rf"Usadel DOS along $\Delta_{{eq}}(q)$ at $T={T_bias_K:.2f}$ K"
+        title = rf"Usadel DOS along $\Delta_{{\rm eq}}(q)$ at $T={T_bias_K:.2f}$ K"
     else:
-        title = r"Usadel DOS along $\Delta_{eq}(q)$"
+        title = r"Usadel DOS along $\Delta_{\rm eq}(q)$"
+
+    if energy_window:
+        xlim = _auto_energy_xlim_from_tail(
+            E_meV,
+            rho_eq,
+            rel_threshold=0.05,
+            tail_fraction=0.15,
+            pad_fraction=0.04,
+            min_visible_fraction=0.08,
+        )
+    else:
+        xlim = (float(np.nanmin(E_meV)), float(np.nanmax(E_meV)))
+
+    visible_E = _energy_visible_mask(E_meV, xlim)
 
     fig, ax = plt.subplots(figsize=(7.1, 4.35))
 
-    norm = _positive_power_norm(rho_eq, gamma=0.35)
+    # Normalize using only the visible energy range, so the long rho -> 1 tail
+    # does not dominate the visual scale.
+    norm = _positive_power_norm(rho_eq[:, visible_E], gamma=0.35)
+
     im = ax.pcolormesh(
         E_meV,
         q_1e7,
@@ -366,6 +473,74 @@ def plot_usadel_equilibrium_dos_map(
     ax.set_title(title)
     ax.set_xlabel(r"energy $E$ [meV]")
     ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$]")
+    ax.set_xlim(*xlim)
+    ax.grid(False)
+
+    fig.tight_layout()
+    fig.savefig(output, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    return output
+
+def plot_usadel_equilibrium_anomalous_map(
+    usadel_catalog: Any,
+    output_path: str | Path,
+    *,
+    dpi: int = 480,
+    energy_window: bool = True,
+    energy_tail_rel_threshold: float = 0.1,
+) -> Path:
+    """Plot |anomalous(E,q)| along the equilibrium gap branch Delta_eq(q)."""
+    output = _prepare_output(output_path)
+
+    anomalous_eq = np.abs(
+        _catalog_field_on_equilibrium_gap(
+            usadel_catalog,
+            field_name="anomalous_delta_gamma_E",
+        )
+    )
+
+    q_1e7 = np.asarray(usadel_catalog.q_values_m_inv, dtype=float) / 1.0e7
+    E_meV = _joule_to_mev(np.asarray(usadel_catalog.energy_values_J, dtype=float))
+    metadata = getattr(usadel_catalog, "metadata", {})
+
+    if energy_window:
+        xlim = _auto_energy_xlim_from_tail(
+            E_meV,
+            anomalous_eq,
+            rel_threshold=0.05,
+            tail_fraction=0.15,
+            pad_fraction=0.04,
+            min_visible_fraction=0.08,
+        )
+    else:
+        xlim = (float(np.nanmin(E_meV)), float(np.nanmax(E_meV)))
+
+    visible_E = _energy_visible_mask(E_meV, xlim)
+
+    fig, ax = plt.subplots(figsize=(7.1, 4.35))
+
+    # Normalize using only the visible energy range. This prevents the hidden
+    # asymptotic tail from affecting the color scale.
+    norm = _positive_power_norm(anomalous_eq[:, visible_E], gamma=0.35)
+
+    im = ax.pcolormesh(
+        E_meV,
+        q_1e7,
+        anomalous_eq,
+        shading="auto",
+        norm=norm,
+    )
+
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label(r"$|F(E,q)|$ (power scale, $\gamma=0.35$)")
+
+    ax.set_title(
+        r"Usadel anomalous amplitude along $\Delta_{\rm eq}(q)$"
+        + _temperature_suffix(metadata)
+    )
+    ax.set_xlabel(r"energy $E$ [meV]")
+    ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$]")
+    ax.set_xlim(*xlim)
     ax.grid(False)
 
     fig.tight_layout()
@@ -415,36 +590,6 @@ def plot_usadel_zero_energy_dos_map(
     ax.set_title("Usadel zero-energy DOS over catalogue grid")
     ax.set_xlabel(r"$q$ [$10^7$ m$^{-1}$]")
     ax.set_ylabel(r"$|\Delta|$ [meV]")
-    ax.grid(False)
-    fig.tight_layout()
-    fig.savefig(output, dpi=dpi, bbox_inches="tight")
-    plt.close(fig)
-    return output
-
-
-def plot_usadel_equilibrium_anomalous_map(
-    usadel_catalog: Any,
-    output_path: str | Path,
-    *,
-    dpi: int = 480,
-) -> Path:
-    """Plot |anomalous(E,q)| along the equilibrium gap branch Delta_eq(q)."""
-    output = _prepare_output(output_path)
-    anomalous_eq = np.abs(
-        _catalog_field_on_equilibrium_gap(usadel_catalog, field_name="anomalous_delta_gamma_E")
-    )
-    q_1e7 = np.asarray(usadel_catalog.q_values_m_inv, dtype=float) / 1.0e7
-    E_meV = _joule_to_mev(np.asarray(usadel_catalog.energy_values_J, dtype=float))
-    metadata = getattr(usadel_catalog, "metadata", {})
-
-    fig, ax = plt.subplots(figsize=(7.1, 4.35))
-    norm = _positive_power_norm(anomalous_eq, gamma=0.35)
-    im = ax.pcolormesh(E_meV, q_1e7, anomalous_eq, shading="auto", norm=norm)
-    cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label(r"$|F(E,q)|$ (power scale, $\gamma=0.35$)")
-    ax.set_title(r"Usadel anomalous amplitude along $\Delta_{eq}(q)$" + _temperature_suffix(metadata))
-    ax.set_xlabel(r"energy $E$ [meV]")
-    ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$]")
     ax.grid(False)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
