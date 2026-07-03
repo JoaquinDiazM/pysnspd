@@ -16,7 +16,6 @@ def test_write_power_table_diagnostic_plots_smoke(tmp_path: Path) -> None:
     q = np.linspace(0.0, 8.0e7, 3)
     omega = np.linspace(0.0, 6.0e-22, 12)
 
-    shape = (Te.size, Tph.size, delta.size, q.size)
     Te4 = Te[:, None, None, None]
     Tph4 = Tph[None, :, None, None]
     delta4 = delta[None, None, :, None]
@@ -32,6 +31,11 @@ def test_write_power_table_diagnostic_plots_smoke(tmp_path: Path) -> None:
         u_e[i] = 100.0 * T**2 + 1.0e22 * delta[:, None] - 1.0e-7 * q[None, :]
         C_e[i] = 200.0 * T + 10.0
 
+    kappa_s = np.empty((Te.size, delta.size), dtype=float)
+    for i, T in enumerate(Te):
+        for j, d in enumerate(delta):
+            kappa_s[i, j] = (0.4 * T) * (1.0 - 0.7 * d / max(delta[-1], 1.0e-30))
+
     path = tmp_path / "power_table_catalog.npz"
     np.savez_compressed(
         path,
@@ -44,6 +48,9 @@ def test_write_power_table_diagnostic_plots_smoke(tmp_path: Path) -> None:
         P_total_W_m3=P_total,
         u_e_J_m3=u_e,
         C_e_J_m3_K=C_e,
+        kappa_s_W_m_K=kappa_s,
+        u_ph_J_m3=Tph**4,
+        C_ph_J_m3_K=4.0 * Tph**3,
         u_ph_weighted_J=Tph**4,
         C_ph_weighted_J_K=4.0 * Tph**3,
         omega_values_J=omega,
@@ -63,6 +70,7 @@ def test_write_power_table_diagnostic_plots_smoke(tmp_path: Path) -> None:
         "power_total_Delta_q_maps_png",
         "power_total_Te_curves_png",
         "energy_heat_capacity_curves_png",
+        "electronic_thermal_conductivity_curves_png",
         "power_equal_temperature_residual_png",
     }
     for value in outputs.values():
