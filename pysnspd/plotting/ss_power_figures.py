@@ -176,8 +176,17 @@ def plot_ss_snapshot_power_energy_maps(
         (kappa[indices], r"$\kappa_s$ [W m$^{-1}$ K$^{-1}$]", "positive_log", r"thermal conductivity"),
     ]
 
-    fig, axes = _snapshot_grid_figure(nrows=3, ncols=len(indices), title=f"SS runtime power/transport maps: {dataset.get('run_name', '')}")
-    _use_horizontal_row_colorbar_layout(fig, nrows=3)
+    fig, axes = _snapshot_grid_figure(
+        nrows=3,
+        ncols=len(indices),
+        title=f"SS runtime power/transport maps: {dataset.get('run_name', '')}",
+        left=0.050,
+        right=0.985,
+        bottom=0.065,
+        top=0.865,
+        wspace=0.10,
+        hspace=0.72,
+    )
     for row, (z, label, mode, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, mode)
         mappable = None
@@ -185,12 +194,12 @@ def plot_ss_snapshot_power_energy_maps(
             ax = axes[row, col]
             mappable = ax.tripcolor(tri, z[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
             if row == 0:
-                ax.set_title(f"t={t_sel[col]:.3g} ps")
+                _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
                 ax.set_ylabel(row_title)
-            _format_map_axis(ax, show_xlabel=(row == 2), show_ylabel=(col == 0))
+            _format_map_axis(ax, show_xlabel_top=(row == 0), show_ylabel=(col == 0))
         if mappable is not None:
-            _add_horizontal_row_colorbar(fig, axes[row, :], mappable, label)
+            _add_row_colorbar(fig, axes[row, :], mappable, label)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -233,8 +242,17 @@ def plot_ss_snapshot_power_balance_maps(
         (phonon_balance[indices], r"$P_{ep}-P_{esc}$ [W m$^{-3}$]", "phonon tendency"),
     ]
 
-    fig, axes = _snapshot_grid_figure(nrows=2, ncols=len(indices), title=f"SS diagnostic power-balance maps: {dataset.get('run_name', '')}")
-    _use_horizontal_row_colorbar_layout(fig, nrows=2)
+    fig, axes = _snapshot_grid_figure(
+        nrows=2,
+        ncols=len(indices),
+        title=f"SS diagnostic power-balance maps: {dataset.get('run_name', '')}",
+        left=0.050,
+        right=0.985,
+        bottom=0.080,
+        top=0.855,
+        wspace=0.10,
+        hspace=0.78,
+    )
     for row, (z, label, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, "signed")
         mappable = None
@@ -242,12 +260,12 @@ def plot_ss_snapshot_power_balance_maps(
             ax = axes[row, col]
             mappable = ax.tripcolor(tri, z[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
             if row == 0:
-                ax.set_title(f"t={t_sel[col]:.3g} ps")
+                _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
                 ax.set_ylabel(row_title)
-            _format_map_axis(ax, show_xlabel=(row == 1), show_ylabel=(col == 0))
+            _format_map_axis(ax, show_xlabel_top=(row == 0), show_ylabel=(col == 0))
         if mappable is not None:
-            _add_horizontal_row_colorbar(fig, axes[row, :], mappable, label)
+            _add_row_colorbar(fig, axes[row, :], mappable, label)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -582,47 +600,82 @@ def _representative_snapshot_indices(n: int, *, max_panels: int) -> np.ndarray:
     return np.unique(np.linspace(0, n - 1, int(max_panels)).round().astype(int))
 
 
-def _use_horizontal_row_colorbar_layout(fig, *, nrows: int) -> None:
-    """Reserve vertical space for one horizontal colorbar below each map row."""
-    if int(nrows) >= 3:
-        fig.subplots_adjust(left=0.055, right=0.985, bottom=0.085, top=0.895, wspace=0.10, hspace=0.58)
-    else:
-        fig.subplots_adjust(left=0.055, right=0.985, bottom=0.105, top=0.890, wspace=0.10, hspace=0.52)
-
-
-def _add_horizontal_row_colorbar(fig, axes_row, mappable, label: str) -> None:
-    """Add a compact horizontal colorbar below one snapshot row."""
-    cb = fig.colorbar(
-        mappable,
-        ax=list(np.ravel(axes_row)),
-        orientation="horizontal",
-        shrink=0.62,
-        pad=0.115,
-        fraction=0.075,
-        aspect=42,
-    )
-    cb.set_label(label)
-
-def _snapshot_grid_figure(*, nrows: int, ncols: int, title: str):
+def _snapshot_grid_figure(
+    *,
+    nrows: int,
+    ncols: int,
+    title: str,
+    left: float = 0.055,
+    right: float = 0.910,
+    bottom: float = 0.080,
+    top: float = 0.900,
+    wspace: float = 0.10,
+    hspace: float = 0.24,
+):
     width = max(7.5, 2.12 * max(ncols, 1) + 1.2)
     height = max(3.0, 2.12 * max(nrows, 1) + 0.9)
     fig, axes = plt.subplots(nrows, ncols, figsize=(width, height), squeeze=False, constrained_layout=False)
-    fig.subplots_adjust(left=0.055, right=0.910, bottom=0.080, top=0.900, wspace=0.10, hspace=0.24)
+    fig.subplots_adjust(left=left, right=right, bottom=bottom, top=top, wspace=wspace, hspace=hspace)
     fig.suptitle(title, y=0.975)
     return fig, axes
 
 
-def _format_map_axis(ax, *, show_xlabel: bool, show_ylabel: bool) -> None:
+def _format_map_axis(ax, *, show_xlabel: bool = False, show_xlabel_top: bool = False, show_ylabel: bool = True) -> None:
     ax.set_aspect("equal", adjustable="box")
     ax.grid(False)
-    if show_xlabel:
+    if show_xlabel_top:
         ax.set_xlabel("x [nm]")
+        ax.xaxis.set_label_position("top")
+        ax.xaxis.tick_top()
+        ax.tick_params(axis="x", labeltop=True, top=True, labelbottom=False, bottom=False, pad=2)
+    elif show_xlabel:
+        ax.set_xlabel("x [nm]")
+        ax.tick_params(axis="x", labeltop=False, top=False, labelbottom=True, bottom=True)
     else:
+        ax.tick_params(axis="x", labeltop=False, top=False, labelbottom=False, bottom=True)
         ax.set_xticklabels([])
     if show_ylabel:
         ax.set_ylabel("y [nm]")
+        ax.tick_params(axis="y", labelleft=True, left=True)
     else:
+        ax.tick_params(axis="y", labelleft=False, left=True)
         ax.set_yticklabels([])
+
+
+def _annotate_snapshot_time(ax, t_ps: float) -> None:
+    ax.text(
+        0.97,
+        0.94,
+        f"t={t_ps:.3g} ps",
+        transform=ax.transAxes,
+        ha="right",
+        va="top",
+        color="white",
+        fontsize=8.5,
+        bbox={
+            "boxstyle": "round,pad=0.18",
+            "facecolor": "#c00000",
+            "edgecolor": "white",
+            "linewidth": 0.9,
+            "alpha": 0.98,
+        },
+        zorder=5,
+    )
+
+
+def _add_row_colorbar(fig, axes_row, mappable, label: str, *, width_fraction: float = 0.80) -> None:
+    row_axes = list(np.ravel(np.asarray(axes_row, dtype=object)))
+    left = min(ax.get_position().x0 for ax in row_axes)
+    right = max(ax.get_position().x1 for ax in row_axes)
+    bottom = min(ax.get_position().y0 for ax in row_axes)
+    row_width = right - left
+    cb_width = row_width * float(width_fraction)
+    cb_left = left + 0.5 * (row_width - cb_width)
+    cb_height = 0.018
+    cb_bottom = max(bottom - 0.042, 0.030)
+    cax = fig.add_axes([cb_left, cb_bottom, cb_width, cb_height])
+    cb = fig.colorbar(mappable, cax=cax, orientation="horizontal")
+    cb.set_label(label)
 
 
 def _node_color_limits(
