@@ -167,12 +167,9 @@ def plot_ss_snapshot_thermal_scalars(
     center_width_nm: float = 100.0,
     dpi: int = 480,
 ) -> Path:
-    """Plot compact memory-ready thermal scalar diagnostics.
+    """Plot compact memory-ready thermal scalar diagnostics."""
 
-    Power extraction intentionally mirrors ``plot_ss_snapshot_runtime_metrics``:
-    ``P_total_snapshot_W_m3``, ``joule_snapshot_W_m3``, ``P_esc_snapshot_W_m3``
-    and the same finite-volume ``_snapshot_diffusion_power_density`` helper.
-    """
+    import matplotlib.ticker as mticker
 
     output = _prepare_output(output_path)
 
@@ -210,7 +207,7 @@ def plot_ss_snapshot_thermal_scalars(
         te_snap = _snapshot_array(snapshots, ("Te_snapshot_K",), shape_like=p_ep)
         tph_snap = _snapshot_array(snapshots, ("Tph_snapshot_K",), shape_like=p_ep)
 
-    # Temperatures: exactly like runtime_metrics: use history when present.
+    # Temperatures: prefer runtime histories when available.
     te_t, te_mean, te_max = _history_or_snapshot_pair(
         dataset,
         t_ps_hist,
@@ -232,16 +229,13 @@ def plot_ss_snapshot_thermal_scalars(
         prefer_history=use_hist,
     )
 
-    # Powers: extracted from the same snapshot arrays/runtime helper used by
-    # plot_ss_snapshot_runtime_metrics.  This avoids the previous bad-history
-    # broadcasting bug and keeps the physical definitions consistent.
+    # Powers: same robust extraction logic as runtime_metrics.
     pj_t, pj_mean, pj_max = _snapshot_pair(t_ps_snap, joule, center_mask, max_mode="max")
     pep_t, pep_mean, pep_max = _snapshot_pair(t_ps_snap, p_ep, center_mask, max_mode="max_abs")
     pesc_t, pesc_mean, pesc_max = _snapshot_pair(t_ps_snap, p_esc, center_mask, max_mode="max_abs")
     pdiff_t, pdiff_mean, pdiff_max = _snapshot_pair(t_ps_snap, p_diff, center_mask, max_mode="max_abs")
 
-    # Keep the "old" diffusion envelope only if it is well-formed, and filter it.
-    # Otherwise we stay with the robust snapshot/runtime-metrics definition above.
+    # Optional smoother diffusion envelope from history, if compatible.
     old_pdiff_t, old_pdiff_mean, old_pdiff_max = _history_pair_if_compatible(
         dataset,
         t_ps_hist,
@@ -250,30 +244,93 @@ def plot_ss_snapshot_thermal_scalars(
     )
     if old_pdiff_t.size and old_pdiff_mean.size and old_pdiff_max.size:
         pdiff_t, pdiff_mean = _filter_history_series(old_pdiff_t, old_pdiff_mean)
-        pdiff_t_max, pdiff_max = _filter_history_series(old_pdiff_t, old_pdiff_max)
-        if pdiff_t_max.size == pdiff_max.size:
-            # Use a common plotted x only when the filtering returned compatible arrays.
-            pass
+        _, pdiff_max = _filter_history_series(old_pdiff_t, old_pdiff_max)
 
-    # Energies: snapshot central strip, same stored energy arrays as runtime_metrics.
+    # Energies: use snapshot central-strip values.
     ue_t, ue_mean, ue_max = _snapshot_pair(t_ps_snap, u_e, center_mask, max_mode="max")
     uph_t, uph_mean, uph_max = _snapshot_pair(t_ps_snap, u_ph, center_mask, max_mode="max")
 
-    fig, axes = plt.subplots(1, 3, figsize=(15.3, 4.05), constrained_layout=False)
-    fig.subplots_adjust(left=0.065, right=0.935, bottom=0.18, top=0.86, wspace=0.55)
+    # Colors
+    te_color = "tab:blue"
+    tph_color = "tab:orange"
+
+    # Left power axis: warm colors
+    pj_color = "#d95f02"     # warm orange
+    pdiff_color = "#b2182b"  # warm red
+
+    # Right power axis: cool colors
+    pep_color = "#1f78b4"    # cool blue
+    pesc_color = "#1b9e77"   # cool teal
+
+    ue_color = "tab:blue"
+    uph_color = "tab:red"
+
+    prethermal_t_ps = 2.0
+
+    def _shade_prethermal(ax):
+        ax.axvspan(0.0, prethermal_t_ps, color="0.85", alpha=0.65, zorder=0)
+
+    def _colored_power_axis_labels(ax_left, ax_right):
+        # Keep units as the formal ylabel, and add colored variable names beside each axis.
+        ax_left.set_ylabel(r"[W m$^{-3}$]")
+        ax_right.set_ylabel(r"[W m$^{-3}$]")
+
+        ax_left.text(
+            -0.20, 0.72, r"$P_J$",
+            transform=ax_left.transAxes,
+            rotation=90,
+            va="center",
+            ha="center",
+            color=pj_color,
+            fontweight="bold",
+        )
+        ax_left.text(
+            -0.20, 0.28, r"$P_{diff}$",
+            transform=ax_left.transAxes,
+            rotation=90,
+            va="center",
+            ha="center",
+            color=pdiff_color,
+            fontweight="bold",
+        )
+
+        ax_right.text(
+            1.18, 0.72, r"$P_{ep}$",
+            transform=ax_right.transAxes,
+            rotation=270,
+            va="center",
+            ha="center",
+            color=pep_color,
+            fontweight="bold",
+        )
+        ax_right.text(
+            1.18, 0.28, r"$P_{esc}$",
+            transform=ax_right.transAxes,
+            rotation=270,
+            va="center",
+            ha="center",
+            color=pesc_color,
+            fontweight="bold",
+        )
+
+    fig, axes = plt.subplots(1, 3, figsize=(15.5, 4.10), constrained_layout=False)
+    fig.subplots_adjust(left=0.070, right=0.955, bottom=0.18, top=0.86, wspace=0.56)
 
     # ------------------------------------------------------------------
-    # Temperatures: independent axes for electron and phonon temperatures.
+    # 1) Temperatures
     # ------------------------------------------------------------------
     ax = axes[0]
     ax_r = ax.twinx()
-    h_te = _plot_series_pair(ax, te_t, te_mean, te_max, color="tab:blue")
-    h_tph = _plot_series_pair(ax_r, tph_t, tph_mean, tph_max, color="tab:orange")
+    _shade_prethermal(ax)
+
+    h_te = _plot_series_pair(ax, te_t, te_mean, te_max, color=te_color)
+    h_tph = _plot_series_pair(ax_r, tph_t, tph_mean, tph_max, color=tph_color)
+
     ax.set_xlabel("t [ps]")
-    ax.set_ylabel(r"$T_e$ [K]", color="tab:blue")
-    ax_r.set_ylabel(r"$T_{ph}$ [K]", color="tab:orange", labelpad=10)
-    ax.tick_params(axis="y", colors="tab:blue")
-    ax_r.tick_params(axis="y", colors="tab:orange")
+    ax.set_ylabel(r"$T_e$ [K]", color=te_color)
+    ax_r.set_ylabel(r"$T_{ph}$ [K]", color=tph_color, labelpad=10)
+    ax.tick_params(axis="y", colors=te_color)
+    ax_r.tick_params(axis="y", colors=tph_color)
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
@@ -287,18 +344,23 @@ def plot_ss_snapshot_thermal_scalars(
     )
 
     # ------------------------------------------------------------------
-    # Powers: left PJ/Pdiff, right Pep/Pesc.
+    # 2) Powers
     # ------------------------------------------------------------------
     ax = axes[1]
     ax_r = ax.twinx()
-    h_pj = _plot_series_pair(ax, pj_t, pj_mean, pj_max, color="tab:blue", take_abs=False)
-    h_pd = _plot_series_pair(ax, pdiff_t, pdiff_mean, pdiff_max, color="tab:red", take_abs=True)
-    h_pep = _plot_series_pair(ax_r, pep_t, pep_mean, pep_max, color="tab:orange", take_abs=True)
-    h_pesc = _plot_series_pair(ax_r, pesc_t, pesc_mean, pesc_max, color="tab:green", take_abs=True)
+    _shade_prethermal(ax)
+
+    h_pj = _plot_series_pair(ax, pj_t, pj_mean, pj_max, color=pj_color, take_abs=False)
+    h_pd = _plot_series_pair(ax, pdiff_t, pdiff_mean, pdiff_max, color=pdiff_color, take_abs=True)
+    h_pep = _plot_series_pair(ax_r, pep_t, pep_mean, pep_max, color=pep_color, take_abs=True)
+    h_pesc = _plot_series_pair(ax_r, pesc_t, pesc_mean, pesc_max, color=pesc_color, take_abs=True)
 
     ax.set_xlabel("t [ps]")
-    ax.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]")
-    ax_r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", labelpad=10)
+    _colored_power_axis_labels(ax, ax_r)
+
+    ax.tick_params(axis="y", colors="black")
+    ax_r.tick_params(axis="y", colors="black")
+
     ax.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax))
     ax_r.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax_r))
     ax.grid(False)
@@ -312,26 +374,40 @@ def plot_ss_snapshot_thermal_scalars(
     )
 
     # ------------------------------------------------------------------
-    # Energies: independent axes for electronic and phonon energy density.
+    # 3) Energies
     # ------------------------------------------------------------------
     ax = axes[2]
     ax_r = ax.twinx()
-    h_ue = _plot_series_pair(ax, ue_t, ue_mean, ue_max, color="tab:blue", take_abs=False)
-    h_uph = _plot_series_pair(ax_r, uph_t, uph_mean, uph_max, color="tab:red", take_abs=False)
+    _shade_prethermal(ax)
+
+    h_ue = _plot_series_pair(ax, ue_t, ue_mean, ue_max, color=ue_color, take_abs=False)
+    h_uph = _plot_series_pair(ax_r, uph_t, uph_mean, uph_max, color=uph_color, take_abs=False)
 
     ax.set_xlabel("t [ps]")
-    ax.set_ylabel(r"$u_e$ [J m$^{-3}$]", color="tab:blue")
-    ax_r.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color="tab:red", labelpad=10)
-    ax.tick_params(axis="y", colors="tab:blue")
-    ax_r.tick_params(axis="y", colors="tab:red")
+    ax.set_ylabel(r"$u_e$ [J m$^{-3}$]", color=ue_color)
+    ax_r.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color=uph_color, labelpad=10)
+    ax.tick_params(axis="y", colors=ue_color)
+    ax_r.tick_params(axis="y", colors=uph_color)
+
     if _all_positive_arrays([ue_mean, ue_max]):
         ax.set_yscale("log")
     elif _has_nonzero_arrays([ue_mean, ue_max]):
         ax.set_yscale("symlog", linthresh=_linthresh_from_arrays([ue_mean, ue_max]))
+
     if _all_positive_arrays([uph_mean, uph_max]):
         ax_r.set_yscale("log")
     elif _has_nonzero_arrays([uph_mean, uph_max]):
         ax_r.set_yscale("symlog", linthresh=_linthresh_from_arrays([uph_mean, uph_max]))
+
+    # Make the right-axis numeric labels compact.
+    fmt_right = mticker.ScalarFormatter(useMathText=True)
+    fmt_right.set_scientific(True)
+    fmt_right.set_powerlimits((0, 0))
+    fmt_right.set_useOffset(True)
+    ax_r.yaxis.set_major_formatter(fmt_right)
+    ax_r.yaxis.set_major_locator(mticker.MaxNLocator(nbins=4))
+    ax_r.yaxis.get_offset_text().set_color(uph_color)
+
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
@@ -345,7 +421,6 @@ def plot_ss_snapshot_thermal_scalars(
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     return output
-
 
 def plot_ss_final_center_scalar_maps(
     mesh: Any,
