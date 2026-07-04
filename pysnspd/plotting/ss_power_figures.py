@@ -172,7 +172,7 @@ def plot_ss_snapshot_power_energy_maps(
 
     fields = [
         (p_ep[indices], r"$P_{ep}=P_S+P_R$ [W m$^{-3}$]", "signed", r"electron $\rightarrow$ phonon power"),
-        (joule[indices], r"$P_J$ [W m$^{-3}$]", "positive_log", r"Joule diagnostic"),
+        (joule[indices], r"$P_J$ [W m$^{-3}$]", "signed", r"Joule diagnostic"),
         (kappa[indices], r"$\kappa_s$ [W m$^{-1}$ K$^{-1}$]", "positive_log", r"thermal conductivity"),
     ]
 
@@ -185,7 +185,7 @@ def plot_ss_snapshot_power_energy_maps(
         bottom=0.065,
         top=0.865,
         wspace=0.10,
-        hspace=0.72,
+        hspace=0.48,
     )
     for row, (z, label, mode, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, mode)
@@ -251,7 +251,7 @@ def plot_ss_snapshot_power_balance_maps(
         bottom=0.080,
         top=0.855,
         wspace=0.10,
-        hspace=0.78,
+        hspace=0.52,
     )
     for row, (z, label, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, "signed")
@@ -672,7 +672,7 @@ def _add_row_colorbar(fig, axes_row, mappable, label: str, *, width_fraction: fl
     cb_width = row_width * float(width_fraction)
     cb_left = left + 0.5 * (row_width - cb_width)
     cb_height = 0.018
-    cb_bottom = max(bottom - 0.042, 0.030)
+    cb_bottom = max(bottom - 0.030, 0.024)
     cax = fig.add_axes([cb_left, cb_bottom, cb_width, cb_height])
     cb = fig.colorbar(mappable, cax=cax, orientation="horizontal")
     cb.set_label(label)
