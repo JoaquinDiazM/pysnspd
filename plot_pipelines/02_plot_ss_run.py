@@ -108,9 +108,9 @@ def _write_plot_manifest(
     dataset: dict[str, Any],
 ) -> Path:
     manifest = {
-        "schema_version": 2,
+        "schema_version": 3,
         "pipeline": "plot_pipelines/02_plot_ss_run.py",
-        "purpose": "Presentation figures from an existing stationary SS run.",
+        "purpose": "Presentation figures from an existing stationary SS run, including thermal-coupling diagnostics when available.",
         "run_name": run.run_name,
         "pre_run_name": run.pre_run_name,
         "raw_ss": str(run.raw_ss),

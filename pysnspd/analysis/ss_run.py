@@ -1,7 +1,7 @@
 """Data analysis utilities for stationary SS gTDGL runs.
 
 This module intentionally contains no matplotlib calls.  It reads the raw SS
-``.npz`` files, extracts physical arrays, builds masks, and returns
+``.npz`` files, extracts physical arrays, builds masks/profiles, and returns
 plain dictionaries that plotting functions can consume.
 """
 
@@ -113,6 +113,8 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
 
     phi_V = _array_or_zeros(state, "phi_V", x_m.size)
     phi_mV = 1.0e3 * phi_V
+    Te_K = _array_or_zeros(state, "Te_K", x_m.size)
+    Tph_K = _array_or_zeros(state, "Tph_K", x_m.size)
 
     jtot_x = _array_or_zeros(state, "node_jtot_x_A_m2", x_m.size)
     jtot_y = _array_or_zeros(state, "node_jtot_y_A_m2", x_m.size)
@@ -146,15 +148,6 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         dt_s = np.diff(np.r_[0.0, t_s]) if t_s.size else np.array([], dtype=float)
     dt_fs = dt_s / 1.0e-15
 
-    snapshot_data = _load_npz_dict_if_exists(Path(run.raw_ss) / "stationary_snapshots.npz")
-    probe_voltage = _tdgl_probe_voltage_from_snapshots(
-        snapshot_data,
-        x_m=x_m,
-        mesh=mesh,
-        left_offset_m=-50.0e-9,
-        right_offset_m=50.0e-9,
-    )
-
     dataset: dict[str, Any] = {
         "run_name": run.run_name,
         "pre_run_name": run.pre_run_name,
@@ -169,6 +162,8 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         "delta_over_delta0": delta_over_delta0,
         "phi_V": phi_V,
         "phi_mV": phi_mV,
+        "Te_K": Te_K,
+        "Tph_K": Tph_K,
         "javg_A_m2": float(jscale),
         "jtot_x_A_m2": jtot_x,
         "jtot_y_A_m2": jtot_y,
@@ -187,12 +182,6 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         "dt_fs": dt_fs,
         "eta_R": _resize_to_time(_history_array(history, "eta_R"), t_ps),
         "terminal_voltage_mV": 1.0e3 * _resize_to_time(_history_array(history, "terminal_voltage_V"), t_ps),
-        "tdgl_probe_voltage_mV": probe_voltage["voltage_mV"],
-        "tdgl_probe_voltage_t_ps": probe_voltage["t_ps"],
-        "tdgl_probe_left_x_nm": probe_voltage["left_x_nm"],
-        "tdgl_probe_right_x_nm": probe_voltage["right_x_nm"],
-        "tdgl_probe_left_node_count": probe_voltage["left_node_count"],
-        "tdgl_probe_right_node_count": probe_voltage["right_node_count"],
         "normal_current_fraction": _normal_current_fraction_history(history, t_ps),
         "pairbreaking_max_history": _resize_to_time(_history_array(history, "pairbreaking_max"), t_ps),
         "adaptive_retries": _resize_to_time(_history_array(history, "adaptive_retries"), t_ps),
@@ -202,6 +191,20 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         "dt_accepted_fs": _resize_to_time(_history_array(history, "dt_accepted_s") / 1.0e-15, t_ps),
         "dt_next_fs": _resize_to_time(_history_array(history, "dt_next_s") / 1.0e-15, t_ps),
         "adaptive_target_dt_fs": _resize_to_time(_history_array(history, "adaptive_target_dt_s") / 1.0e-15, t_ps),
+        "thermal_enabled_history": _resize_to_time(_history_array(history, "thermal_enabled"), t_ps),
+        "thermal_active_history": _resize_to_time(_history_array(history, "thermal_active"), t_ps),
+        "thermal_substeps_history": _resize_to_time(_history_array(history, "thermal_substeps"), t_ps),
+        "thermal_max_Te_K_history": _resize_to_time(_history_array(history, "thermal_max_Te_K"), t_ps),
+        "thermal_mean_Te_K_history": _resize_to_time(_history_array(history, "thermal_mean_Te_K"), t_ps),
+        "thermal_max_Tph_K_history": _resize_to_time(_history_array(history, "thermal_max_Tph_K"), t_ps),
+        "thermal_mean_Tph_K_history": _resize_to_time(_history_array(history, "thermal_mean_Tph_K"), t_ps),
+        "thermal_max_abs_dTe_K_history": _resize_to_time(_history_array(history, "thermal_max_abs_dTe_K"), t_ps),
+        "thermal_max_abs_dTph_K_history": _resize_to_time(_history_array(history, "thermal_max_abs_dTph_K"), t_ps),
+        "thermal_max_rate_K_per_ps_history": _resize_to_time(_history_array(history, "thermal_max_rate_K_per_ps"), t_ps),
+        "thermal_max_P_J_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_J_W_m3"), t_ps),
+        "thermal_max_P_ep_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_ep_W_m3"), t_ps),
+        "thermal_max_P_esc_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_esc_W_m3"), t_ps),
+        "thermal_max_P_diff_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_diff_W_m3"), t_ps),
         "summary_scalars": _summary_scalars(summary),
         "npz_keys": summarize_ss_npz_contents(state=state, history=history),
     }
@@ -215,7 +218,47 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     if dataset["dt_next_fs"].size == 0 and dt_fs.size:
         dataset["dt_next_fs"] = _resize_to_time(dt_fs, t_ps)
 
+    dataset["x_profile_nm"], dataset["profiles"] = compute_x_profiles(dataset)
     return dataset
+
+
+def compute_x_profiles(dataset: Mapping[str, Any], *, n_bins: int = 51) -> tuple[np.ndarray, dict[str, np.ndarray]]:
+    """Compute simple x-binned mean profiles for final SS fields."""
+
+    x_nm = np.asarray(dataset["x_nm"], dtype=float)
+    if x_nm.size == 0:
+        return np.array([], dtype=float), {}
+    bins = np.linspace(float(np.nanmin(x_nm)), float(np.nanmax(x_nm)), int(n_bins) + 1)
+    centers = 0.5 * (bins[:-1] + bins[1:])
+    idx = np.digitize(x_nm, bins) - 1
+    idx = np.clip(idx, 0, centers.size - 1)
+
+    profiles: dict[str, np.ndarray] = {}
+    keys = [
+        "delta_over_delta0",
+        "phi_mV",
+        "Te_K",
+        "Tph_K",
+        "jtot_mag_A_m2",
+        "js_us_mag_A_m2",
+        "jn_mag_A_m2",
+        "pairbreaking_ratio",
+    ]
+    scale = float(dataset.get("javg_A_m2", 1.0))
+    for key in keys:
+        values = np.asarray(dataset.get(key, []), dtype=float)
+        if values.size != x_nm.size:
+            continue
+        out = np.full(centers.shape, np.nan, dtype=float)
+        for k in range(centers.size):
+            mask = idx == k
+            if np.any(mask):
+                out[k] = float(np.nanmean(values[mask]))
+        if key.endswith("_A_m2") and scale > 0.0:
+            profiles[key + "_over_javg"] = out / scale
+        else:
+            profiles[key] = out
+    return centers, profiles
 
 
 def summarize_ss_npz_contents(
@@ -240,14 +283,6 @@ def _load_npz_dict(path: str | Path) -> dict[str, np.ndarray]:
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"Required SS NPZ file does not exist: {p}")
-    with np.load(p, allow_pickle=True) as data:
-        return {key: np.asarray(data[key]) for key in data.files}
-
-
-def _load_npz_dict_if_exists(path: str | Path) -> dict[str, np.ndarray]:
-    p = Path(path)
-    if not p.exists():
-        return {}
     with np.load(p, allow_pickle=True) as data:
         return {key: np.asarray(data[key]) for key in data.files}
 
@@ -387,117 +422,13 @@ def _bulk_node_mask_from_summary(x_m: np.ndarray, solver_summary: Mapping[str, A
     return (x_m >= xmin + exclusion_m) & (x_m <= xmax - exclusion_m)
 
 
-def _tdgl_probe_voltage_from_snapshots(
-    snapshots: Mapping[str, np.ndarray],
-    *,
-    x_m: np.ndarray,
-    mesh: Any,
-    left_offset_m: float,
-    right_offset_m: float,
-) -> dict[str, Any]:
-    """Return V_TDGL between two center-referenced x probes from phi snapshots.
-
-    The convention is V_TDGL = phi(x_center + 50 nm) - phi(x_center - 50 nm).
-    Each probe samples a narrow vertical band and averages over all nodes in
-    that band, which is more stable than selecting a single jittered mesh node.
-    """
-    empty = {
-        "voltage_mV": np.array([], dtype=float),
-        "t_ps": np.array([], dtype=float),
-        "left_x_nm": float("nan"),
-        "right_x_nm": float("nan"),
-        "left_node_count": 0,
-        "right_node_count": 0,
-    }
-    if not snapshots:
-        return empty
-
-    phi = np.asarray(snapshots.get("phi_snapshot_V", []), dtype=float)
-    if phi.ndim != 2 or phi.shape[1] != np.asarray(x_m).size or phi.shape[0] == 0:
-        return empty
-
-    t_s = _snapshot_time_s(snapshots, n=phi.shape[0])
-    x = np.asarray(x_m, dtype=float).reshape(-1)
-    finite_x = x[np.isfinite(x)]
-    if finite_x.size == 0:
-        return empty
-
-    center = 0.5 * (float(np.nanmin(finite_x)) + float(np.nanmax(finite_x)))
-    left_x = center + float(left_offset_m)
-    right_x = center + float(right_offset_m)
-    spacing = _probe_spacing_m(x, mesh)
-    left_mask = _probe_band_mask(x, left_x, spacing)
-    right_mask = _probe_band_mask(x, right_x, spacing)
-
-    if not np.any(left_mask) or not np.any(right_mask):
-        return empty
-
-    left_phi = np.nanmean(phi[:, left_mask], axis=1)
-    right_phi = np.nanmean(phi[:, right_mask], axis=1)
-    voltage_mV = 1.0e3 * (right_phi - left_phi)
-    return {
-        "voltage_mV": np.asarray(voltage_mV, dtype=float),
-        "t_ps": np.asarray(t_s, dtype=float) / 1.0e-12,
-        "left_x_nm": float(left_x * 1.0e9),
-        "right_x_nm": float(right_x * 1.0e9),
-        "left_node_count": int(np.count_nonzero(left_mask)),
-        "right_node_count": int(np.count_nonzero(right_mask)),
-    }
-
-
-def _snapshot_time_s(snapshots: Mapping[str, np.ndarray], *, n: int) -> np.ndarray:
-    for key in ("snapshot_t_s", "phi_snapshot_t_s", "delta_snapshot_t_s"):
-        if key in snapshots:
-            arr = np.asarray(snapshots[key], dtype=float).reshape(-1)
-            if arr.size:
-                if arr.size != int(n):
-                    arr = np.resize(arr, int(n))
-                return arr
-    return np.arange(int(n), dtype=float)
-
-
-def _probe_spacing_m(x_m: np.ndarray, mesh: Any) -> float:
-    try:
-        spacing = float(getattr(mesh, "target_spacing_m"))
-    except Exception:
-        spacing = float("nan")
-    if np.isfinite(spacing) and spacing > 0.0:
-        return spacing
-
-    x = np.unique(np.round(np.asarray(x_m, dtype=float), decimals=15))
-    x = x[np.isfinite(x)]
-    if x.size >= 2:
-        dx = np.diff(np.sort(x))
-        dx = dx[np.isfinite(dx) & (dx > 0.0)]
-        if dx.size:
-            return float(np.nanmedian(dx))
-    return 5.0e-9
-
-
-def _probe_band_mask(x_m: np.ndarray, probe_x_m: float, spacing_m: float) -> np.ndarray:
-    x = np.asarray(x_m, dtype=float)
-    distance = np.abs(x - float(probe_x_m))
-    tolerance = max(0.75 * float(spacing_m), 1.0e-9)
-    mask = np.isfinite(distance) & (distance <= tolerance)
-    if np.any(mask):
-        return mask
-
-    finite = np.isfinite(distance)
-    if not np.any(finite):
-        return np.zeros_like(x, dtype=bool)
-    k = min(max(4, int(round(np.sqrt(float(np.count_nonzero(finite)))))), int(np.count_nonzero(finite)))
-    order = np.argsort(distance[finite])[:k]
-    finite_indices = np.flatnonzero(finite)
-    out = np.zeros_like(x, dtype=bool)
-    out[finite_indices[order]] = True
-    return out
-
-
 def _summary_scalars(summary: Mapping[str, Any]) -> dict[str, Any]:
     solver = _as_mapping(summary.get("solver", {}))
     stationarity = _as_mapping(solver.get("stationarity", {}))
     contact = _as_mapping(solver.get("contact_recovery", {}))
     continuity = _as_mapping(solver.get("continuity", {}))
+    thermal_stationarity = _as_mapping(solver.get("thermal_stationarity", {}))
+    thermal_runtime = _as_mapping(solver.get("thermal_runtime", {}))
     keys = [
         "first_magic_ready",
         "accepted_steps",
@@ -513,4 +444,15 @@ def _summary_scalars(summary: Mapping[str, Any]) -> dict[str, Any]:
     out["stationarity_passes"] = stationarity.get("passes")
     out["contact_recovery_passes"] = contact.get("passes")
     out["continuity_passes"] = continuity.get("passes")
+    out["thermal_stationarity_passes"] = thermal_stationarity.get("passes")
+    out["thermal_stationarity_reason"] = thermal_stationarity.get("reason")
+    out["thermal_tail_max_rate_K_per_ps"] = thermal_stationarity.get("tail_max_rate_K_per_ps")
+    out["thermal_rate_tol_K_per_ps"] = thermal_stationarity.get("rate_tol_K_per_ps")
+    out["thermal_runtime_enabled"] = thermal_runtime.get("enabled")
+    out["thermal_window_nm"] = thermal_runtime.get("window_nm")
+    out["thermal_start_time_ps"] = thermal_runtime.get("start_time_ps")
+    out["thermal_active_n_nodes"] = thermal_runtime.get("active_n_nodes")
+    out["thermal_bath_K"] = thermal_runtime.get("bath_K")
+    out["thermal_min_K"] = thermal_runtime.get("min_K")
+    out["thermal_max_K"] = thermal_runtime.get("max_K")
     return out

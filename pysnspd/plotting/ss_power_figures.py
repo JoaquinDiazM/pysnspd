@@ -95,9 +95,10 @@ def plot_ss_snapshot_state_atlas(
 ) -> Path:
     """Plot the dynamic SS state at all stored snapshots.
 
-    Rows are |Delta|/Delta0, phi, and |j|/javg.  The intent is to see whether a
-    60 ps SS relaxation really stopped changing, not just whether the final
-    state looks reasonable.
+    Default rows are |Delta|/Delta0, phi, and |j|/javg.  When runtime thermal
+    coupling was enabled and the solver saved Te/Tph snapshots, those are added
+    as extra rows so the atlas directly shows whether the thermal window is
+    actually evolving.
     """
     output = _prepare_output(output_path)
     tri = _triangulation(mesh, dataset)
@@ -109,6 +110,8 @@ def plot_ss_snapshot_state_atlas(
     )
     phi_v = _snapshot_array(snapshots, ("phi_snapshot_V",))
     jmag = _snapshot_current_mag(snapshots, family="jtot")
+    Te = _snapshot_array(snapshots, ("Te_snapshot_K",), shape_like=delta_mev)
+    Tph = _snapshot_array(snapshots, ("Tph_snapshot_K",), shape_like=delta_mev)
 
     if delta_mev.size == 0:
         raise ValueError("stationary_snapshots.npz does not contain Delta snapshots")
@@ -123,29 +126,32 @@ def plot_ss_snapshot_state_atlas(
     jscale = _javg(dataset, snapshots)
     j_norm = _resize_snapshot_field(jmag, delta_mev.shape) / jscale
 
-    fields = [
-        (delta_norm[indices], r"$|\Delta|/\Delta_0$", False, 0.0, None, False),
-        (phi_mv[indices], r"$\phi$ [mV]", True, None, None, True),
-        (j_norm[indices], r"$|j|/j_{avg}$", False, 0.0, None, False),
+    fields: list[tuple[np.ndarray, str, bool, float | None, float | None, bool, str]] = [
+        (delta_norm[indices], r"$|\Delta|/\Delta_0$", False, 0.0, None, False, r"order parameter"),
+        (phi_mv[indices], r"$\phi$ [mV]", True, None, None, True, r"electrostatic potential"),
+        (j_norm[indices], r"$|j|/j_{avg}$", False, 0.0, None, False, r"total current"),
     ]
-    row_titles = [r"order parameter", r"electrostatic potential", r"total current"]
+    if Te.size:
+        fields.append((_resize_snapshot_field(Te, delta_mev.shape)[indices], r"$T_e$ [K]", False, None, None, False, r"electron temperature"))
+    if Tph.size:
+        fields.append((_resize_snapshot_field(Tph, delta_mev.shape)[indices], r"$T_{ph}$ [K]", False, None, None, False, r"phonon temperature"))
 
     fig, axes = _snapshot_grid_figure(
-        nrows=3,
+        nrows=len(fields),
         ncols=len(indices),
         title=f"SS snapshots: {dataset.get('run_name', '')}",
         left=0.050,
         right=0.985,
-        bottom=0.065,
-        top=0.865,
+        bottom=0.060,
+        top=0.885,
         wspace=0.10,
         hspace=0.34,
     )
-    for row, (z, label, symmetric, vmin, vmax, wrap_first_to_limited_range) in enumerate(fields):
-        scale_values = z[1:] if wrap_first_to_limited_range and z.shape[0] > 1 else z
+    for row, (z, label, symmetric, vmin, vmax, wrap_first, row_title) in enumerate(fields):
+        scale_values = z[1:] if wrap_first and z.shape[0] > 1 else z
         norm, vmin_eff, vmax_eff = _node_color_limits(scale_values, symmetric=symmetric, vmin=vmin, vmax=vmax)
         z_plot = np.array(z, copy=True)
-        if wrap_first_to_limited_range and z_plot.shape[0] > 0:
+        if wrap_first and z_plot.shape[0] > 0:
             z_plot[0] = _wrap_values_to_range(z_plot[0], vmin_eff, vmax_eff)
         mappable = None
         for col, _idx in enumerate(indices):
@@ -154,7 +160,7 @@ def plot_ss_snapshot_state_atlas(
             if row == 0:
                 _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
-                ax.set_ylabel(row_titles[row])
+                ax.set_ylabel(row_title)
             _format_map_axis(ax, show_xlabel_top=(row == 0), show_ylabel=(col == 0))
         if mappable is not None:
             _add_row_colorbar(fig, axes[row, :], mappable, label)
@@ -233,10 +239,8 @@ def plot_ss_snapshot_power_balance_maps(
 ) -> Path:
     """Plot diagnostic local energy-balance tendencies at snapshots.
 
-    ``P_J - P_ep`` is the local electronic heating tendency before temperature
-    dynamics are actually coupled.  ``P_ep - P_esc`` is the analogous phonon
-    tendency.  These are diagnostics only; they are not fed back into the SS
-    solver yet.
+    ``P_J - P_ep`` is the local electronic heating tendency. ``P_ep - P_esc``
+    is the analogous phonon tendency.
     """
     output = _prepare_output(output_path)
     tri = _triangulation(mesh, dataset)
@@ -297,11 +301,12 @@ def plot_ss_snapshot_runtime_metrics(
     *,
     dpi: int = 480,
 ) -> Path:
-    """Plot compact scalar metrics extracted from snapshot maps."""
+    """Plot compact scalar metrics extracted from snapshot maps and history."""
     output = _prepare_output(output_path)
 
     p_ep = _snapshot_array(power, ("P_total_snapshot_W_m3",))
     joule = _snapshot_array(power, ("joule_snapshot_W_m3",), shape_like=p_ep)
+    p_esc = _snapshot_array(power, ("P_esc_snapshot_W_m3",), shape_like=p_ep)
     q_abs = _snapshot_array(power, ("q_abs_snapshot_m_inv",), shape_like=p_ep)
     u_e = _snapshot_array(power, ("u_e_snapshot_J_m3",), shape_like=p_ep)
     u_ph = _snapshot_array(power, ("u_ph_snapshot_J_m3",), shape_like=p_ep)
@@ -311,22 +316,41 @@ def plot_ss_snapshot_runtime_metrics(
     if p_ep.size == 0:
         raise ValueError("snapshot_power_energy_diagnostics.npz lacks P_total_snapshot_W_m3")
 
-    t_ps = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=p_ep.shape[0])
+    t_ps_snap = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=p_ep.shape[0])
+    t_ps_hist = np.asarray(dataset.get("t_ps", []), dtype=float)
+    use_hist = t_ps_hist.size > 0
+
     delta_norm = np.empty((0, 0), dtype=float)
+    te_snap = np.empty((0, 0), dtype=float)
+    tph_snap = np.empty((0, 0), dtype=float)
     if snapshots:
         delta_mev = _snapshot_array(snapshots, ("delta_snapshot_meV",), fallback=_delta_mev_from_psi_snapshots(snapshots))
         if delta_mev.size:
             delta0 = _delta0_mev(dataset, snapshots)
             delta_norm = delta_mev / delta0 if delta0 > 0.0 else delta_mev
+        te_snap = _snapshot_array(snapshots, ("Te_snapshot_K",), shape_like=p_ep)
+        tph_snap = _snapshot_array(snapshots, ("Tph_snapshot_K",), shape_like=p_ep)
 
-    fig, axes = plt.subplots(2, 2, figsize=(10.0, 7.0), constrained_layout=False)
-    fig.subplots_adjust(left=0.095, right=0.965, bottom=0.095, top=0.905, wspace=0.32, hspace=0.36)
-    fig.suptitle(f"SS snapshot runtime diagnostics: {dataset.get('run_name', '')}", y=0.975)
+    thermal_hist_present = any(
+        np.asarray(dataset.get(key, []), dtype=float).size > 0
+        for key in (
+            "thermal_max_Te_K_history",
+            "thermal_mean_Te_K_history",
+            "thermal_max_rate_K_per_ps_history",
+            "thermal_max_P_J_W_m3_history",
+        )
+    )
+    nrows = 3 if thermal_hist_present or te_snap.size or tph_snap.size else 2
+    fig, axes = plt.subplots(nrows, 2, figsize=(10.4, 3.2 * nrows), constrained_layout=False)
+    fig.subplots_adjust(left=0.090, right=0.970, bottom=0.080, top=0.925, wspace=0.30, hspace=0.36)
+    fig.suptitle(f"SS snapshot/runtime diagnostics: {dataset.get('run_name', '')}", y=0.975)
 
     ax = axes[0, 0]
-    _plot_snapshot_metric(ax, t_ps, p_ep, reducer="max_abs", label=r"max $|P_{ep}|$")
-    _plot_snapshot_metric(ax, t_ps, joule, reducer="max", label=r"max $P_J$")
-    _plot_snapshot_metric(ax, t_ps, joule - p_ep, reducer="max_abs", label=r"max $|P_J-P_{ep}|$")
+    _plot_snapshot_metric(ax, t_ps_snap, p_ep, reducer="max_abs", label=r"max $|P_{ep}|$")
+    _plot_snapshot_metric(ax, t_ps_snap, joule, reducer="max", label=r"max $P_J$")
+    _plot_snapshot_metric(ax, t_ps_snap, joule - p_ep, reducer="max_abs", label=r"max $|P_J-P_{ep}|$")
+    if p_esc.size:
+        _plot_snapshot_metric(ax, t_ps_snap, p_esc, reducer="max", label=r"max $P_{esc}$")
     ax.set_yscale("symlog", linthresh=1.0e8)
     ax.set_ylabel(r"power density [W m$^{-3}$]")
     ax.set_title("power scales")
@@ -334,34 +358,88 @@ def plot_ss_snapshot_runtime_metrics(
     ax.legend(frameon=False)
 
     ax = axes[0, 1]
-    _plot_snapshot_metric(ax, t_ps, q_abs / 1.0e7, reducer="p99", label=r"p99 $|q|$")
-    _plot_snapshot_metric(ax, t_ps, q_abs / 1.0e7, reducer="max", label=r"max $|q|$")
+    _plot_snapshot_metric(ax, t_ps_snap, q_abs / 1.0e7, reducer="p99", label=r"p99 $|q|$")
+    _plot_snapshot_metric(ax, t_ps_snap, q_abs / 1.0e7, reducer="max", label=r"max $|q|$")
     if delta_norm.size:
-        _plot_snapshot_metric(ax, t_ps, delta_norm, reducer="min", label=r"min $|\Delta|/\Delta_0$")
-        _plot_snapshot_metric(ax, t_ps, delta_norm, reducer="mean", label=r"mean $|\Delta|/\Delta_0$")
+        _plot_snapshot_metric(ax, t_ps_snap, delta_norm, reducer="min", label=r"min $|\Delta|/\Delta_0$")
+        _plot_snapshot_metric(ax, t_ps_snap, delta_norm, reducer="mean", label=r"mean $|\Delta|/\Delta_0$")
     ax.set_ylabel(r"$q$ [$10^7$ m$^{-1}$] or normalized gap")
     ax.set_title("order parameter / momentum")
     ax.grid(False)
     ax.legend(frameon=False)
 
-    ax = axes[1, 0]
-    _plot_snapshot_metric(ax, t_ps, u_e, reducer="mean", label=r"mean $u_e$")
-    _plot_snapshot_metric(ax, t_ps, u_ph, reducer="mean", label=r"mean $u_{ph}$")
+    row_offset = 1
+    if nrows == 3:
+        ax = axes[1, 0]
+        if thermal_hist_present and use_hist:
+            _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_mean_Te_K_history"), label=r"mean $T_e$")
+            _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_max_Te_K_history"), label=r"max $T_e$")
+            _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_mean_Tph_K_history"), label=r"mean $T_{ph}$")
+            _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_max_Tph_K_history"), label=r"max $T_{ph}$")
+            ax.set_xlabel("t [ps]")
+        else:
+            _plot_snapshot_metric(ax, t_ps_snap, te_snap, reducer="mean", label=r"mean $T_e$")
+            _plot_snapshot_metric(ax, t_ps_snap, te_snap, reducer="max", label=r"max $T_e$")
+            _plot_snapshot_metric(ax, t_ps_snap, tph_snap, reducer="mean", label=r"mean $T_{ph}$")
+            _plot_snapshot_metric(ax, t_ps_snap, tph_snap, reducer="max", label=r"max $T_{ph}$")
+            ax.set_xlabel("t [ps]")
+        ax.set_ylabel("temperature [K]")
+        ax.set_title("thermal-window temperatures")
+        ax.grid(False)
+        ax.legend(frameon=False)
+
+        ax = axes[1, 1]
+        if thermal_hist_present and use_hist:
+            _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_max_rate_K_per_ps_history"), label=r"max $|dT/dt|$")
+            _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_substeps_history"), label="thermal substeps")
+            ax2 = ax.twinx()
+            _plot_series_if_any(ax2, t_ps_hist, dataset.get("thermal_max_abs_dTe_K_history"), label=r"max $|\Delta T_e|$")
+            _plot_series_if_any(ax2, t_ps_hist, dataset.get("thermal_max_abs_dTph_K_history"), label=r"max $|\Delta T_{ph}|$")
+            ax.set_xlabel("t [ps]")
+            ax.set_ylabel(r"rate [K ps$^{-1}$] / substeps")
+            ax2.set_ylabel(r"per-step increment [K]")
+            _legend_if_labels(ax, frameon=False, loc="upper left")
+            _legend_if_labels(ax2, frameon=False, loc="upper right")
+        else:
+            _plot_snapshot_metric(ax, t_ps_snap, te_snap, reducer="max", label=r"max $T_e$")
+            _plot_snapshot_metric(ax, t_ps_snap, tph_snap, reducer="max", label=r"max $T_{ph}$")
+            ax.set_xlabel("t [ps]")
+            ax.set_ylabel("temperature [K]")
+            ax.legend(frameon=False)
+        ax.set_title("thermal step diagnostics")
+        ax.grid(False)
+        row_offset = 2
+
+    ax = axes[row_offset, 0]
+    _plot_snapshot_metric(ax, t_ps_snap, u_e, reducer="mean", label=r"mean $u_e$")
+    _plot_snapshot_metric(ax, t_ps_snap, u_ph, reducer="mean", label=r"mean $u_{ph}$")
     ax.set_ylabel(r"energy density [J m$^{-3}$]")
     ax.set_xlabel("t [ps]")
     ax.set_title("stored energy diagnostics")
     ax.grid(False)
     ax.legend(frameon=False)
 
-    ax = axes[1, 1]
-    _plot_snapshot_metric(ax, t_ps, c_e, reducer="mean", label=r"mean $C_e$")
-    _plot_snapshot_metric(ax, t_ps, c_ph, reducer="mean", label=r"mean $C_{ph}$")
-    ax.set_yscale("log")
-    ax.set_ylabel(r"heat capacity [J m$^{-3}$ K$^{-1}$]")
-    ax.set_xlabel("t [ps]")
-    ax.set_title("heat-capacity diagnostics")
-    ax.grid(False)
-    ax.legend(frameon=False)
+    ax = axes[row_offset, 1]
+    if thermal_hist_present and use_hist:
+        _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_max_P_J_W_m3_history"), label=r"max $P_J$")
+        _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_max_P_ep_W_m3_history"), label=r"max $P_{ep}$")
+        _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_max_P_esc_W_m3_history"), label=r"max $P_{esc}$")
+        _plot_series_if_any(ax, t_ps_hist, dataset.get("thermal_max_P_diff_W_m3_history"), label=r"max $P_{diff}$")
+        ax.set_xlabel("t [ps]")
+        ax.set_ylabel(r"power density [W m$^{-3}$]")
+        ax.set_yscale("symlog", linthresh=1.0e8)
+        ax.set_title("runtime thermal power envelopes")
+        ax.grid(False)
+        ax.legend(frameon=False)
+    else:
+        _plot_snapshot_metric(ax, t_ps_snap, c_e, reducer="mean", label=r"mean $C_e$")
+        _plot_snapshot_metric(ax, t_ps_snap, c_ph, reducer="mean", label=r"mean $C_{ph}$")
+        ax.set_yscale("log")
+        ax.set_ylabel(r"heat capacity [J m$^{-3}$ K$^{-1}$]")
+        ax.set_xlabel("t [ps]")
+        ax.set_title("heat-capacity diagnostics")
+        ax.grid(False)
+        ax.legend(frameon=False)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -424,7 +502,11 @@ def plot_ss_snapshot_profile_comparison(
     *,
     dpi: int = 480,
 ) -> Path:
-    """Plot x-binned profiles at first/middle/final snapshot."""
+    """Plot x-binned profiles at first/middle/final snapshot.
+
+    When Te/Tph snapshots exist, they are appended as extra profile rows so the
+    same figure can be used to judge both mesoscopic and thermal relaxation.
+    """
     output = _prepare_output(output_path)
     x_nm = _mesh_x_nm(mesh, dataset)
     delta_mev = _snapshot_array(snapshots, ("delta_snapshot_meV",), fallback=_delta_mev_from_psi_snapshots(snapshots))
@@ -434,6 +516,8 @@ def plot_ss_snapshot_profile_comparison(
     delta_norm = delta_mev / delta0 if delta0 > 0.0 else delta_mev
     phi = 1.0e3 * _resize_snapshot_field(_snapshot_array(snapshots, ("phi_snapshot_V",)), delta_mev.shape)
     j_norm = _resize_snapshot_field(_snapshot_current_mag(snapshots, family="jtot"), delta_mev.shape) / _javg(dataset, snapshots)
+    te = _resize_snapshot_field(_snapshot_array(snapshots, ("Te_snapshot_K",)), delta_mev.shape)
+    tph = _resize_snapshot_field(_snapshot_array(snapshots, ("Tph_snapshot_K",)), delta_mev.shape)
 
     q_abs = np.empty((0, 0), dtype=float)
     p_balance = np.empty((0, 0), dtype=float)
@@ -446,28 +530,35 @@ def plot_ss_snapshot_profile_comparison(
     t_ps = _snapshot_times_ps(snapshots, preferred=("snapshot_t_s", "delta_snapshot_t_s"), n=delta_mev.shape[0])
     indices = _representative_snapshot_indices(delta_mev.shape[0], max_panels=3)
 
-    fig, axes = plt.subplots(4, 1, figsize=(9.2, 8.4), sharex=True, constrained_layout=False)
-    fig.subplots_adjust(left=0.105, right=0.970, bottom=0.080, top=0.930, hspace=0.30)
+    rows: list[tuple[str, np.ndarray]] = [
+        (r"$|\Delta|/\Delta_0$", delta_norm),
+        (r"$|j|/j_{avg}$", j_norm),
+        (r"$\phi$ [mV]", phi),
+    ]
+    if np.any(np.isfinite(te)) and np.nanmax(np.abs(te)) > 0.0:
+        rows.append((r"$T_e$ [K]", te))
+    if np.any(np.isfinite(tph)) and np.nanmax(np.abs(tph)) > 0.0:
+        rows.append((r"$T_{ph}$ [K]", tph))
+    if q_abs.size:
+        rows.append((r"$|q|$ [$10^7$ m$^{-1}$]", q_abs))
+    elif p_balance.size:
+        rows.append((r"$P_J-P_{ep}$", p_balance))
+
+    fig, axes = plt.subplots(len(rows), 1, figsize=(9.2, 2.0 * len(rows) + 0.8), sharex=True, constrained_layout=False)
+    axes = np.atleast_1d(axes)
+    fig.subplots_adjust(left=0.105, right=0.970, bottom=0.070, top=0.945, hspace=0.30)
     fig.suptitle(f"SS x-profile evolution: {dataset.get('run_name', '')}", y=0.985)
 
     for idx in indices:
         label = f"t={t_ps[idx]:.3g} ps"
-        _plot_binned_profile(axes[0], x_nm, delta_norm[idx], label=label)
-        _plot_binned_profile(axes[1], x_nm, j_norm[idx], label=label)
-        _plot_binned_profile(axes[2], x_nm, phi[idx], label=label)
-        if q_abs.size:
-            _plot_binned_profile(axes[3], x_nm, q_abs[idx], label=label)
-        elif p_balance.size:
-            _plot_binned_profile(axes[3], x_nm, p_balance[idx], label=label)
+        for ax, (_ylabel, values) in zip(axes, rows):
+            _plot_binned_profile(ax, x_nm, values[idx], label=label)
 
-    axes[0].set_ylabel(r"$|\Delta|/\Delta_0$")
-    axes[1].set_ylabel(r"$|j|/j_{avg}$")
-    axes[2].set_ylabel(r"$\phi$ [mV]")
-    axes[3].set_ylabel(r"$|q|$ [$10^7$ m$^{-1}$]" if q_abs.size else r"$P_J-P_{ep}$")
-    axes[3].set_xlabel("x [nm]")
-    for ax in axes:
+    for ax, (ylabel, _values) in zip(axes, rows):
+        ax.set_ylabel(ylabel)
         ax.grid(False)
         ax.legend(frameon=False, loc="best")
+    axes[-1].set_xlabel("x [nm]")
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
     return output
@@ -595,7 +686,7 @@ def _snapshot_array(
         if arr.ndim == 1:
             arr = arr[None, :]
         return arr
-    if shape_like is not None and shape_like.size:
+    if shape_like is not None and np.asarray(shape_like).size:
         return np.zeros_like(np.asarray(shape_like, dtype=float))
     return np.empty((0, 0), dtype=float)
 
@@ -676,7 +767,7 @@ def _snapshot_grid_figure(
     hspace: float = 0.24,
 ):
     width = max(7.5, 2.12 * max(ncols, 1) + 1.2)
-    height = max(3.0, 2.12 * max(nrows, 1) + 0.9)
+    height = max(3.0, 1.80 * max(nrows, 1) + 1.1)
     fig, axes = plt.subplots(nrows, ncols, figsize=(width, height), squeeze=False, constrained_layout=False)
     fig.subplots_adjust(left=left, right=right, bottom=bottom, top=top, wspace=wspace, hspace=hspace)
     fig.suptitle(title, y=0.975)
@@ -742,12 +833,7 @@ def _add_row_colorbar(fig, axes_row, mappable, label: str, *, width_fraction: fl
 
 
 def _wrap_values_to_range(values: np.ndarray, vmin: float | None, vmax: float | None) -> np.ndarray:
-    """Wrap diagnostic values into a finite color range instead of clipping.
-
-    This is used only for the initial potential snapshot in the state atlas: the
-    seed can have a much larger phi excursion than the later SS snapshots, but
-    the useful colorbar should be set by the post-seed evolution.
-    """
+    """Wrap diagnostic values into a finite color range instead of clipping."""
     z = np.asarray(values, dtype=float)
     if vmin is None or vmax is None or not np.isfinite(vmin) or not np.isfinite(vmax):
         return z
@@ -836,6 +922,32 @@ def _plot_snapshot_metric(ax, t_ps: np.ndarray, values: np.ndarray, *, reducer: 
     n = min(np.asarray(t_ps).size, y.size)
     if n:
         ax.plot(np.asarray(t_ps)[:n], y[:n], marker="o", linewidth=1.2, label=label)
+
+
+def _plot_series_if_any(ax, x, y, *, label: str) -> None:
+    x_arr = np.asarray(x, dtype=float).reshape(-1)
+    y_arr = np.asarray(y if y is not None else [], dtype=float).reshape(-1)
+    if x_arr.size == 0 or y_arr.size == 0:
+        return
+    n = min(x_arr.size, y_arr.size)
+    if n <= 0:
+        return
+    mask = np.isfinite(x_arr[:n]) & np.isfinite(y_arr[:n])
+    if not np.any(mask):
+        return
+    ax.plot(x_arr[:n][mask], y_arr[:n][mask], linewidth=1.2, label=label)
+
+
+def _legend_if_labels(ax, *, frameon: bool = False, loc: str = "best") -> None:
+    handles, labels = ax.get_legend_handles_labels()
+    filtered = [
+        (handle, label)
+        for handle, label in zip(handles, labels)
+        if label and not label.startswith("_")
+    ]
+    if filtered:
+        handles, labels = zip(*filtered)
+        ax.legend(handles, labels, frameon=frameon, loc=loc)
 
 
 def _plot_binned_profile(ax, x_nm: np.ndarray, z: np.ndarray, *, label: str, n_bins: int = 80) -> None:
