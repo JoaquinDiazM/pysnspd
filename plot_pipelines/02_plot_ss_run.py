@@ -2,8 +2,9 @@
 
 This post-processing pipeline reads raw SS outputs from
 ``scratch/big_data/raw/<run>/ss`` and writes figures to
-``scratch/big_data/plots/<run>/figures``.  It does not modify the raw run.
+``scratch/big_data/plots/<run>/figures``. It does not modify the raw run.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -16,12 +17,11 @@ from pysnspd.config import load_config, validate_config
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
 from pysnspd.plotting.ss_figures import make_ss_run_figures
 from pysnspd.plotting.ss_power_figures import make_ss_snapshot_power_figures
+from pysnspd.plotting.ss_memory_figures import make_ss_memory_figures
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Plot figures for a completed stationary SS run."
-    )
+    parser = argparse.ArgumentParser(description="Plot figures for a completed stationary SS run.")
     parser.add_argument("--config", required=True, help="Path to YAML project config.")
     parser.add_argument("--run-name", required=True, help="Existing SS run name to plot.")
     parser.add_argument(
@@ -43,12 +43,12 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-
     run = load_ss_run(
         config_path=args.config,
         run_name=args.run_name,
         pre_run_name=args.pre_run_name,
     )
+
     dataset = build_ss_plot_dataset(run)
     cfg = validate_config(load_config(args.config))
     dataset["sigma_n_S_m"] = float(cfg["material"]["sigma_n_S_m"])
@@ -65,9 +65,7 @@ def main() -> int:
         dpi=int(args.dpi),
     )
 
-    # New SS snapshot diagnostics.  These functions are intentionally optional:
-    # old SS runs that do not yet have stationary_snapshots.npz or
-    # snapshot_power_energy_diagnostics.npz still plot with the standard figure set.
+    # Existing snapshot diagnostics. Optional for older runs.
     saved.update(
         make_ss_snapshot_power_figures(
             mesh=run.mesh,
@@ -78,6 +76,17 @@ def main() -> int:
         )
     )
 
+    # Additional memory-quality figures. Also optional: they only appear when
+    # the required snapshot diagnostics are present.
+    saved.update(
+        make_ss_memory_figures(
+            mesh=run.mesh,
+            dataset=dataset,
+            raw_ss=run.raw_ss,
+            output_dir=figures_dir,
+            dpi=int(args.dpi),
+        )
+    )
 
     manifest_path = _write_plot_manifest(
         run=run,
@@ -110,7 +119,10 @@ def _write_plot_manifest(
     manifest = {
         "schema_version": 3,
         "pipeline": "plot_pipelines/02_plot_ss_run.py",
-        "purpose": "Presentation figures from an existing stationary SS run, including thermal-coupling diagnostics when available.",
+        "purpose": (
+            "Presentation figures from an existing stationary SS run, "
+            "including thermal-coupling diagnostics when available."
+        ),
         "run_name": run.run_name,
         "pre_run_name": run.pre_run_name,
         "raw_ss": str(run.raw_ss),
