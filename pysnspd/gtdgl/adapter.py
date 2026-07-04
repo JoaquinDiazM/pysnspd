@@ -27,6 +27,7 @@ from .allmaras import (
 from .device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
 from .solver import TDGLSolver
+from .thermal import ThermalRuntimeConfig, ThermalRuntimeController, thermal_stationarity_diagnostics
 from .ss_targets import (
     apply_terminal_proximity_seed,
     contact_recovery_diagnostics,
@@ -81,6 +82,16 @@ def solve_stationary_pytdgl_like(
     recovery_min_xi: float = 1.5,
     recovery_max_xi: float = 4.0,
     allmaras_contact_guard_layers: int = 2,
+    thermal_enabled: bool = False,
+    thermal_power_table_npz: str | None = None,
+    thermal_window_m: float = 100.0e-9,
+    thermal_start_time_s: float = 2.0e-12,
+    thermal_bath_K: float | None = None,
+    thermal_min_K: float | None = None,
+    thermal_max_K: float | None = None,
+    thermal_max_step_K: float = 0.05,
+    thermal_max_substeps: int = 64,
+    thermal_stationarity_rate_K_per_ps: float = 1.0e-2,
 ) -> RelaxationResult:
     """Run the essential pyTDGL-like stationary solver on a pySNSPD seed.
 
@@ -112,6 +123,29 @@ def solve_stationary_pytdgl_like(
     phi0_V = np.asarray(seed.node_phi_electric_V, dtype=float)
     Te = np.asarray(seed.node_Te_K, dtype=float).copy()
     Tph = np.asarray(seed.node_Tph_K, dtype=float).copy()
+    bath_K = float(thermal_bath_K) if thermal_bath_K is not None else float(np.nanmedian(Tph))
+    thermal_controller = None
+    thermal_config = ThermalRuntimeConfig(
+        enabled=bool(thermal_enabled and thermal_power_table_npz),
+        window_m=float(thermal_window_m),
+        start_time_s=float(thermal_start_time_s),
+        bath_K=bath_K,
+        min_K=thermal_min_K,
+        max_K=thermal_max_K,
+        max_step_K=float(thermal_max_step_K),
+        max_substeps=int(thermal_max_substeps),
+        stationarity_rate_K_per_ps=float(thermal_stationarity_rate_K_per_ps),
+    )
+    if thermal_config.enabled:
+        thermal_controller = ThermalRuntimeController(
+            nodes_m=np.asarray(mesh.nodes, dtype=float)[:, :2],
+            ops=ops,
+            material=material,
+            Te_K=Te,
+            Tph_K=Tph,
+            power_table_npz=str(thermal_power_table_npz),
+            config=thermal_config,
+        )
 
     device = build_pytdgl_like_device(
         mesh=mesh,
@@ -198,18 +232,26 @@ def solve_stationary_pytdgl_like(
     def disorder_epsilon(r, *, t=None, vectorized=True):
         """Return the pySNSPD epsilon field using pyTDGL's vectorized callable API.
 
-        pyTDGL detects vectorized disorder callables through the keyword-only
-        default ``vectorized=True``.  Without this marker the solver evaluates
-        the callable one site at a time and expects a scalar, which is not what
-        the pySNSPD adapter wants here.
+        The field is rebuilt from the mutable runtime ``Te`` array.  This is
+        what makes the thermal coupling feed back into the local Allmaras/KWT
+        coefficients on the next gTDGL step.
         """
         del t
         arr = np.asarray(r)
+        coeff = allmaras_coefficients(
+            psi_dimensionless=np.ones_like(Te, dtype=np.complex128),
+            material=material,
+            Te_K=Te,
+        )
+        eps_now = np.clip(np.asarray(coeff.solver_epsilon, dtype=float), 0.0, 1.0)
+        gamma_now = np.asarray(coeff.gamma_kwt_dimensionless, dtype=float)
+        gamma_now = np.where(np.isfinite(gamma_now) & (gamma_now >= 0.0), gamma_now, 0.0)
+        device.layer.gamma = gamma_now
         if vectorized and arr.ndim >= 2:
-            if arr.shape[0] != epsilon.size:
-                return np.full(arr.shape[0], float(np.nanmedian(epsilon)), dtype=float)
-            return np.asarray(epsilon, dtype=float).copy()
-        return float(np.nanmedian(epsilon))
+            if arr.shape[0] != eps_now.size:
+                return np.full(arr.shape[0], float(np.nanmedian(eps_now)), dtype=float)
+            return eps_now.copy()
+        return float(np.nanmedian(eps_now))
 
     supercurrent_override = None
     if supercurrent_law == "usadel_poisson":
@@ -232,6 +274,22 @@ def solve_stationary_pytdgl_like(
         contact_guard_layers=int(allmaras_contact_guard_layers),
     )
 
+    thermal_step_callback = None
+    thermal_snapshot_callback = None
+    if thermal_controller is not None:
+        current_scale_A_m2 = native_current_scale_A_m2(device)
+
+        def thermal_step_callback(**kwargs):
+            return thermal_controller.step(
+                time_s=float(kwargs["time"]) * tau0,
+                dt_s=float(kwargs["dt"]) * tau0,
+                psi_dimensionless=np.asarray(kwargs["psi"], dtype=np.complex128),
+                native_normal_current=np.asarray(kwargs["normal_current"], dtype=float),
+                current_scale_A_m2=float(current_scale_A_m2),
+            )
+
+        thermal_snapshot_callback = thermal_controller.snapshot_payload
+
     solver = TDGLSolver(
         device=device,
         options=options,
@@ -243,6 +301,8 @@ def solve_stationary_pytdgl_like(
         supercurrent_override=supercurrent_override,
         supercurrent_law=supercurrent_law,
         allmaras_forcing_callback=allmaras_forcing_callback,
+        thermal_step_callback=thermal_step_callback,
+        thermal_snapshot_callback=thermal_snapshot_callback,
         stop_eta=float(stationarity_eta) if stationarity_eta is not None and stationarity_eta > 0.0 else None,
         stop_min_steps=int(convergence_min_steps),
         stop_on_convergence=bool(stop_on_convergence),
@@ -330,7 +390,19 @@ def solve_stationary_pytdgl_like(
         max_tol=float(continuity_max_tol),
         poisson_tol=float(continuity_poisson_tol),
     )
-    magic_ready = bool(stationarity_diag.passes and recovery_diag.passes and continuity_diag.passes)
+    thermal_stationarity_diag = thermal_stationarity_diagnostics(
+        history,
+        enabled=bool(thermal_config.enabled),
+        start_time_s=float(thermal_config.start_time_s),
+        requested_total_time_s=float(total_time_s),
+        rate_tol_K_per_ps=float(thermal_config.stationarity_rate_K_per_ps),
+    )
+    magic_ready = bool(
+        stationarity_diag.passes
+        and recovery_diag.passes
+        and continuity_diag.passes
+        and bool(thermal_stationarity_diag.get("passes", False))
+    )
 
     jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
     summary: dict[str, Any] = {
@@ -396,6 +468,19 @@ def solve_stationary_pytdgl_like(
         "stationarity": stationarity_diag.as_dict(),
         "contact_recovery": recovery_diag.as_dict(),
         "continuity": continuity_diag.as_dict(),
+        "thermal_stationarity": thermal_stationarity_diag,
+        "thermal_runtime": {
+            "enabled": bool(thermal_config.enabled),
+            "power_table_npz": None if thermal_power_table_npz is None else str(thermal_power_table_npz),
+            "window_nm": float(thermal_config.window_m / 1.0e-9),
+            "start_time_ps": float(thermal_config.start_time_s / 1.0e-12),
+            "bath_K": float(thermal_config.bath_K),
+            "min_K": None if thermal_config.min_K is None else float(thermal_config.min_K),
+            "max_K": None if thermal_config.max_K is None else float(thermal_config.max_K),
+            "max_step_K": float(thermal_config.max_step_K),
+            "max_substeps": int(thermal_config.max_substeps),
+            "active_n_nodes": int(np.count_nonzero(thermal_controller.mask)) if thermal_controller is not None else 0,
+        },
         "terminal_psi": None if terminal_psi is None else str(terminal_psi),
         "normal_terminal_enforced": bool(terminal_psi is not None and np.any(terminal_site_mask)),
         "normal_terminal_n_nodes": int(np.count_nonzero(terminal_site_mask)),
@@ -475,6 +560,7 @@ def solve_stationary_pytdgl_like(
             "stationarity": stationarity_diag.as_dict(),
             "contact_recovery": recovery_diag.as_dict(),
             "continuity": continuity_diag.as_dict(),
+            "thermal_stationarity": thermal_stationarity_diag,
         },
     )
     return RelaxationResult(state=state, history=history, summary=summary)
@@ -591,7 +677,7 @@ def _build_allmaras_forcing_callback(
     for both Poisson and the Allmaras current-divergence correction.
     """
 
-    Te = np.asarray(Te_K, dtype=float).copy()
+    Te = np.asarray(Te_K, dtype=float)
     L0 = float(device.length_scale_m)
     terminal_node_mask = _terminal_site_mask_from_device(device, ops.n_nodes)
     contact_guard_node_mask = _expand_node_mask_by_edges(
@@ -731,6 +817,24 @@ def _build_history(
         "normal_terminal_node_mask": terminal_site_mask.astype(bool),
         "normal_terminal_edge_mask": blocked_edge_mask.astype(bool),
     }
+    for key in (
+        "thermal_enabled",
+        "thermal_active",
+        "thermal_active_n_nodes",
+        "thermal_substeps",
+        "thermal_max_Te_K",
+        "thermal_mean_Te_K",
+        "thermal_max_Tph_K",
+        "thermal_mean_Tph_K",
+        "thermal_max_abs_dTe_K",
+        "thermal_max_abs_dTph_K",
+        "thermal_max_rate_K_per_ps",
+        "thermal_max_P_J_W_m3",
+        "thermal_max_P_ep_W_m3",
+        "thermal_max_P_esc_W_m3",
+        "thermal_max_P_diff_W_m3",
+    ):
+        hist[key] = _raw_series(key, 0.0)
 
     # Store actual lightweight trajectory snapshots captured by TDGLSolver.
     # If the solver did not capture frames for any reason, fall back to the
@@ -746,12 +850,16 @@ def _build_history(
     native_res_snap = np.asarray(raw.get("poisson_residual_snapshot", []), dtype=float)
     native_divs_snap = np.asarray(raw.get("div_supercurrent_snapshot", []), dtype=float)
     native_brhs_snap = np.asarray(raw.get("boundary_rhs_snapshot", []), dtype=float)
+    Te_snap_raw = np.asarray(raw.get("Te_snapshot_K", []), dtype=float)
+    Tph_snap_raw = np.asarray(raw.get("Tph_snapshot_K", []), dtype=float)
 
     if psi_snap.ndim != 2 or psi_snap.shape[1] != mesh.n_nodes or raw_snap_t.size == 0:
         ns = max(2, int(n_snapshots))
         snap_t = np.linspace(0.0, float(t_s[-1]) if t_s.size else 0.0, ns)
         psi_snap_J = np.tile(psi_final_J, (ns, 1))
         phi_snap_V = np.tile(phi_final_V, (ns, 1))
+        Te_frames = np.tile(np.asarray(Te, dtype=float), (ns, 1))
+        Tph_frames = np.tile(np.asarray(Tph, dtype=float), (ns, 1))
     else:
         ns = min(int(n_snapshots), raw_snap_t.size, psi_snap.shape[0])
         if ns < 2:
@@ -763,6 +871,14 @@ def _build_history(
             phi_snap_V = phi_snap_V - np.mean(phi_snap_V, axis=1, keepdims=True)
         else:
             phi_snap_V = np.tile(phi_final_V, (ns, 1))
+        if Te_snap_raw.ndim == 2 and Te_snap_raw.shape[0] >= ns and Te_snap_raw.shape[1] == mesh.n_nodes:
+            Te_frames = Te_snap_raw[:ns].copy()
+        else:
+            Te_frames = np.tile(np.asarray(Te, dtype=float), (ns, 1))
+        if Tph_snap_raw.ndim == 2 and Tph_snap_raw.shape[0] >= ns and Tph_snap_raw.shape[1] == mesh.n_nodes:
+            Tph_frames = Tph_snap_raw[:ns].copy()
+        else:
+            Tph_frames = np.tile(np.asarray(Tph, dtype=float), (ns, 1))
 
     delta_mev = np.abs(psi_snap_J) / MEV_J
     def _native_snap(arr: np.ndarray, ncols: int) -> np.ndarray:
@@ -790,21 +906,21 @@ def _build_history(
             edge_data=edge_data,
             ops=ops,
             material=material,
-            Te_K=Te,
+            Te_K=Te_frames[k],
             target_current_A=target_current_A,
         )
         udiag = compute_usadel_supercurrent_diagnostic(
             usadel_catalog=usadel_catalog,
             psi_dimensionless=psi_dim,
             material=material,
-            Te_K=Te,
+            Te_K=Te_frames[k],
             ops=ops,
             blocked_edge_mask=blocked_edge_mask,
         )
         adiag = compute_allmaras_appendix_b_diagnostic(
             psi_dimensionless=psi_dim,
             material=material,
-            Te_K=Te,
+            Te_K=Te_frames[k],
             ops=ops,
             terminal_node_mask=terminal_site_mask,
             blocked_edge_mask=blocked_edge_mask,
@@ -921,6 +1037,8 @@ def _build_history(
         "psi_snapshot_imag_J": np.imag(psi_snap_J),
         "delta_snapshot_meV": delta_mev,
         "phi_snapshot_V": phi_snap_V,
+        "Te_snapshot_K": Te_frames,
+        "Tph_snapshot_K": Tph_frames,
         "current_density_snapshot_A_m2": jtot_mag,
         "jtot_snapshot_mag_A_m2": jtot_mag,
         "current_density_snapshot_x_A_m2": jtot_x,

@@ -129,6 +129,50 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--ss-snapshots", type=int, default=None)
 
     parser.add_argument(
+        "--thermal-enable",
+        dest="thermal_enable",
+        action="store_true",
+        default=True,
+        help="Enable runtime Te/Tph coupling after --thermal-start-ps. Enabled by default.",
+    )
+    parser.add_argument(
+        "--thermal-disable",
+        dest="thermal_enable",
+        action="store_false",
+        help="Disable runtime Te/Tph coupling and recover frozen-thermal SS behavior.",
+    )
+    parser.add_argument(
+        "--thermal-window-nm",
+        type=float,
+        default=100.0,
+        help="Central x-window in nm where Te/Tph are dynamic. Outside, Te=Tph=Tbath.",
+    )
+    parser.add_argument(
+        "--thermal-start-ps",
+        type=float,
+        default=2.0,
+        help="Start thermal coupling after this physical time in ps; before that, run frozen-thermal gTDGL.",
+    )
+    parser.add_argument(
+        "--thermal-max-step-K",
+        type=float,
+        default=0.05,
+        help="Maximum explicit thermal temperature increment per substep.",
+    )
+    parser.add_argument(
+        "--thermal-max-substeps",
+        type=int,
+        default=64,
+        help="Maximum thermal substeps inside one accepted gTDGL step.",
+    )
+    parser.add_argument(
+        "--thermal-stationarity-rate-K-per-ps",
+        type=float,
+        default=1.0e-2,
+        help="Fourth run-effective criterion: max final thermal rate tolerance in K/ps.",
+    )
+
+    parser.add_argument(
         "--ss-progress",
         dest="ss_progress",
         action="store_true",
@@ -522,6 +566,9 @@ def _run_single_current_case(
     if n_snapshots <= 0:
         raise ValueError("--ss-snapshots or ss_run.snapshots must be positive.")
 
+    power_table_path = raw_pre / "power_table_catalog.npz"
+    thermal_power_table_npz = power_table_path if bool(args.thermal_enable) and power_table_path.exists() else None
+
     with _SSProgressConsoleFilter(
         enabled=bool(progress),
         total_time_ps=float(total_time_ps),
@@ -566,6 +613,16 @@ def _run_single_current_case(
             recovery_min_xi=float(args.ss_recovery_min_xi),
             recovery_max_xi=float(args.ss_recovery_max_xi),
             allmaras_contact_guard_layers=int(args.ss_allmaras_contact_guard_layers),
+            thermal_enabled=bool(args.thermal_enable and thermal_power_table_npz is not None),
+            thermal_power_table_npz=(str(thermal_power_table_npz) if thermal_power_table_npz is not None else None),
+            thermal_window_m=float(args.thermal_window_nm) * 1.0e-9,
+            thermal_start_time_s=float(args.thermal_start_ps) * 1.0e-12,
+            thermal_bath_K=float(np.nanmedian(seed.node_Tph_K)),
+            thermal_min_K=float(np.nanmedian(seed.node_Tph_K)),
+            thermal_max_K=None,
+            thermal_max_step_K=float(args.thermal_max_step_K),
+            thermal_max_substeps=int(args.thermal_max_substeps),
+            thermal_stationarity_rate_K_per_ps=float(args.thermal_stationarity_rate_K_per_ps),
         )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")
@@ -573,7 +630,6 @@ def _run_single_current_case(
     history_npz = save_relaxation_history_npz(history, raw_ss / "relaxation_history.npz")
     snapshots_npz = save_ss_snapshot_bundle_npz(history, raw_ss / "stationary_snapshots.npz")
     snapshot_power_npz = None
-    power_table_path = raw_pre / "power_table_catalog.npz"
     if power_table_path.exists():
         snapshot_power_npz = write_ss_snapshot_power_diagnostics(
             history=history,

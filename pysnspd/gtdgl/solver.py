@@ -99,6 +99,8 @@ class TDGLSolver:
         supercurrent_override: Optional[Callable[[np.ndarray, np.ndarray], np.ndarray]] = None,
         supercurrent_law: str = "gl",
         allmaras_forcing_callback: Optional[Callable[[np.ndarray, sp.spmatrix], np.ndarray]] = None,
+        thermal_step_callback: Optional[Callable[..., dict[str, float]]] = None,
+        thermal_snapshot_callback: Optional[Callable[[], dict[str, np.ndarray]]] = None,
         stop_eta: Optional[float] = None,
         stop_min_steps: int = 0,
         stop_on_convergence: bool = False,
@@ -112,7 +114,10 @@ class TDGLSolver:
         self.supercurrent_override = supercurrent_override
         self.supercurrent_law = str(supercurrent_law)
         self.allmaras_forcing_callback = allmaras_forcing_callback
+        self.thermal_step_callback = thermal_step_callback
+        self.thermal_snapshot_callback = thermal_snapshot_callback
         self.last_allmaras_forcing_dimensionless = None
+        self.last_thermal_diagnostics: dict[str, float] = {}
         self.stop_eta = None if stop_eta is None else float(stop_eta)
         self.stop_min_steps = max(0, int(stop_min_steps))
         self.stop_on_convergence = bool(stop_on_convergence)
@@ -515,6 +520,19 @@ class TDGLSolver:
         )
         mu, supercurrent, normal_current = self.solve_for_observables(psi, dA_dt)
 
+        thermal_diag: dict[str, float] = {}
+        if self.thermal_step_callback is not None:
+            thermal_diag = self.thermal_step_callback(
+                step=step,
+                time=float(time) + float(dt),
+                dt=float(dt),
+                psi=psi,
+                mu=mu,
+                supercurrent=supercurrent,
+                normal_current=normal_current,
+            ) or {}
+            self.last_thermal_diagnostics = dict(thermal_diag)
+
         running_state.append("dt", dt)
         running_state.append("max_abs_psi", float(np.max(np.abs(psi))))
         running_state.append("min_abs_psi", float(np.min(np.abs(psi))))
@@ -581,6 +599,8 @@ class TDGLSolver:
         running_state.append("adaptive_rejected_attempts", int(self.last_adaptive_rejected_attempts))
         running_state.append("adaptive_window_mean_d_abs_sq", float(self.last_adaptive_window_mean_d_abs_sq))
         running_state.append("adaptive_target_dt", float(self.last_adaptive_target_dt))
+        for key, value in thermal_diag.items():
+            running_state.append(str(key), float(value))
 
         return SolverResult(dt, psi, mu, supercurrent, normal_current, induced_vector_potential)
 
@@ -653,6 +673,9 @@ class TDGLSolver:
             running_state.append("div_supercurrent_snapshot", getattr(self, "last_div_supercurrent", np.zeros(len(self.sites))))
             running_state.append("boundary_rhs_snapshot", getattr(self, "last_boundary_rhs", np.zeros(len(self.sites))))
             running_state.append("mu_boundary_snapshot", getattr(self, "last_mu_boundary", np.zeros(len(self.device.mesh.edge_mesh.boundary_edge_indices))))
+            if self.thermal_snapshot_callback is not None:
+                for key, value in (self.thermal_snapshot_callback() or {}).items():
+                    running_state.append(str(key), value)
 
         append_snapshot(0.0, result)
         next_snapshot = 1
