@@ -121,27 +121,40 @@ def plot_ss_snapshot_state_atlas(
     j_norm = _resize_snapshot_field(jmag, delta_mev.shape) / jscale
 
     fields = [
-        (delta_norm[indices], r"$|\Delta|/\Delta_0$", False, 0.0, None),
-        (phi_mv[indices], r"$\phi$ [mV]", True, None, None),
-        (j_norm[indices], r"$|j|/j_{avg}$", False, 0.0, None),
+        (delta_norm[indices], r"$|\Delta|/\Delta_0$", False, 0.0, None, False),
+        (phi_mv[indices], r"$\phi$ [mV]", True, None, None, True),
+        (j_norm[indices], r"$|j|/j_{avg}$", False, 0.0, None, False),
     ]
     row_titles = [r"order parameter", r"electrostatic potential", r"total current"]
 
-    fig, axes = _snapshot_grid_figure(nrows=3, ncols=len(indices), title=f"SS snapshots: {dataset.get('run_name', '')}")
-    for row, (z, label, symmetric, vmin, vmax) in enumerate(fields):
-        norm, vmin_eff, vmax_eff = _node_color_limits(z, symmetric=symmetric, vmin=vmin, vmax=vmax)
+    fig, axes = _snapshot_grid_figure(
+        nrows=3,
+        ncols=len(indices),
+        title=f"SS snapshots: {dataset.get('run_name', '')}",
+        left=0.050,
+        right=0.985,
+        bottom=0.065,
+        top=0.865,
+        wspace=0.10,
+        hspace=0.48,
+    )
+    for row, (z, label, symmetric, vmin, vmax, wrap_first_to_limited_range) in enumerate(fields):
+        scale_values = z[1:] if wrap_first_to_limited_range and z.shape[0] > 1 else z
+        norm, vmin_eff, vmax_eff = _node_color_limits(scale_values, symmetric=symmetric, vmin=vmin, vmax=vmax)
+        z_plot = np.array(z, copy=True)
+        if wrap_first_to_limited_range and z_plot.shape[0] > 0:
+            z_plot[0] = _wrap_values_to_range(z_plot[0], vmin_eff, vmax_eff)
         mappable = None
         for col, _idx in enumerate(indices):
             ax = axes[row, col]
-            mappable = ax.tripcolor(tri, z[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
+            mappable = ax.tripcolor(tri, z_plot[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
             if row == 0:
-                ax.set_title(f"t={t_sel[col]:.3g} ps")
+                _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
                 ax.set_ylabel(row_titles[row])
-            _format_map_axis(ax, show_xlabel=(row == 2), show_ylabel=(col == 0))
+            _format_map_axis(ax, show_xlabel_top=(row == 0), show_ylabel=(col == 0))
         if mappable is not None:
-            cb = fig.colorbar(mappable, ax=list(axes[row, :]), shrink=0.72, pad=0.012)
-            cb.set_label(label)
+            _add_row_colorbar(fig, axes[row, :], mappable, label)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -676,6 +689,25 @@ def _add_row_colorbar(fig, axes_row, mappable, label: str, *, width_fraction: fl
     cax = fig.add_axes([cb_left, cb_bottom, cb_width, cb_height])
     cb = fig.colorbar(mappable, cax=cax, orientation="horizontal")
     cb.set_label(label)
+
+
+def _wrap_values_to_range(values: np.ndarray, vmin: float | None, vmax: float | None) -> np.ndarray:
+    """Wrap diagnostic values into a finite color range instead of clipping.
+
+    This is used only for the initial potential snapshot in the state atlas: the
+    seed can have a much larger phi excursion than the later SS snapshots, but
+    the useful colorbar should be set by the post-seed evolution.
+    """
+    z = np.asarray(values, dtype=float)
+    if vmin is None or vmax is None or not np.isfinite(vmin) or not np.isfinite(vmax):
+        return z
+    width = float(vmax) - float(vmin)
+    if not np.isfinite(width) or width <= 0.0:
+        return z
+    out = np.array(z, copy=True)
+    finite = np.isfinite(out)
+    out[finite] = ((out[finite] - float(vmin)) % width) + float(vmin)
+    return out
 
 
 def _node_color_limits(
