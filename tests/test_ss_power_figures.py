@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
+from pysnspd.gtdgl.snapshot_diagnostics import compute_snapshot_joule_power_density
 from pysnspd.plotting.ss_power_figures import (
     plot_ss_snapshot_power_balance_maps,
     plot_ss_snapshot_power_energy_maps,
@@ -60,6 +61,35 @@ def _dataset(mesh: DummyMesh) -> dict[str, np.ndarray | str]:
         "y_nm": mesh.nodes[:, 1] * 1.0e9,
         "triangles": mesh.triangles,
     }
+
+
+
+
+def test_snapshot_joule_power_density_is_positive_definite_jn_squared():
+    history = {
+        "edge_jn_snapshot_A_m2": np.array([[-2.0, 4.0], [3.0, -5.0]]),
+        "edge_i": np.array([0, 1], dtype=np.int64),
+        "edge_j": np.array([1, 2], dtype=np.int64),
+        "edge_length_m": np.ones(2),
+        "dual_face_length_m": np.ones(2),
+    }
+
+    joule = compute_snapshot_joule_power_density(
+        history,
+        sigma_n_S_m=2.0,
+        n_snap=2,
+        n_nodes=3,
+    )
+
+    assert joule is not None
+    expected = np.array(
+        [
+            [2.0, 0.5 * (2.0 + 8.0), 8.0],
+            [4.5, 0.5 * (4.5 + 12.5), 12.5],
+        ]
+    )
+    np.testing.assert_allclose(joule, expected)
+    assert np.all(joule >= 0.0)
 
 
 def test_plot_ss_snapshot_power_energy_maps(tmp_path: Path):

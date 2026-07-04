@@ -27,6 +27,8 @@ import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 from matplotlib.colors import LogNorm, SymLogNorm
 
+from pysnspd.gtdgl.snapshot_diagnostics import compute_snapshot_joule_power_density
+
 MEV_J = 1.602176634e-22
 
 
@@ -50,6 +52,7 @@ def make_ss_snapshot_power_figures(
 
     snapshots = _load_npz_if_exists(raw / "stationary_snapshots.npz")
     power = _load_npz_if_exists(raw / "snapshot_power_energy_diagnostics.npz")
+    power = _with_recomputed_joule_power(power, snapshots=snapshots, dataset=dataset)
 
     saved: dict[str, Path] = {}
     if snapshots:
@@ -136,7 +139,7 @@ def plot_ss_snapshot_state_atlas(
         bottom=0.065,
         top=0.865,
         wspace=0.10,
-        hspace=0.48,
+        hspace=0.34,
     )
     for row, (z, label, symmetric, vmin, vmax, wrap_first_to_limited_range) in enumerate(fields):
         scale_values = z[1:] if wrap_first_to_limited_range and z.shape[0] > 1 else z
@@ -185,7 +188,7 @@ def plot_ss_snapshot_power_energy_maps(
 
     fields = [
         (p_ep[indices], r"$P_{ep}=P_S+P_R$ [W m$^{-3}$]", "signed", r"electron $\rightarrow$ phonon power"),
-        (joule[indices], r"$P_J$ [W m$^{-3}$]", "signed", r"Joule diagnostic"),
+        (joule[indices], r"$P_J$ [W m$^{-3}$]", "positive_log", r"Joule diagnostic"),
         (kappa[indices], r"$\kappa_s$ [W m$^{-1}$ K$^{-1}$]", "positive_log", r"thermal conductivity"),
     ]
 
@@ -198,14 +201,15 @@ def plot_ss_snapshot_power_energy_maps(
         bottom=0.065,
         top=0.865,
         wspace=0.10,
-        hspace=0.48,
+        hspace=0.34,
     )
     for row, (z, label, mode, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, mode)
         mappable = None
         for col, _idx in enumerate(indices):
             ax = axes[row, col]
-            mappable = ax.tripcolor(tri, z[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
+            z_panel = _plot_values_for_mode(z[col], mode=mode, norm=norm)
+            mappable = ax.tripcolor(tri, z_panel, shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
             if row == 0:
                 _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
@@ -264,7 +268,7 @@ def plot_ss_snapshot_power_balance_maps(
         bottom=0.080,
         top=0.855,
         wspace=0.10,
-        hspace=0.52,
+        hspace=0.36,
     )
     for row, (z, label, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, "signed")
@@ -472,6 +476,52 @@ def plot_ss_snapshot_profile_comparison(
 # -----------------------------------------------------------------------------
 # Helpers
 # -----------------------------------------------------------------------------
+
+
+def _with_recomputed_joule_power(
+    power: Mapping[str, np.ndarray],
+    *,
+    snapshots: Mapping[str, np.ndarray],
+    dataset: Mapping[str, Any],
+) -> dict[str, np.ndarray]:
+    """Return power maps with positive-definite Joule recomputed from snapshots.
+
+    Older SS runs may have ``joule_snapshot_W_m3`` saved as
+    ``j_tot*j_n/sigma_n``.  The plotting pipeline has enough frozen snapshot
+    data to repair the diagnostic in memory, so figures can be regenerated
+    without rerunning PRE or SS.
+    """
+    out = dict(power)
+    if not out or not snapshots:
+        return out
+    sigma_n = _dataset_sigma_n(dataset)
+    if sigma_n is None:
+        return out
+    p_ep = _snapshot_array(out, ("P_total_snapshot_W_m3",))
+    if p_ep.size == 0:
+        return out
+    joule = compute_snapshot_joule_power_density(
+        snapshots,
+        sigma_n_S_m=sigma_n,
+        n_snap=int(p_ep.shape[0]),
+        n_nodes=int(p_ep.shape[1]),
+    )
+    if joule is not None and joule.shape == p_ep.shape:
+        out["joule_snapshot_W_m3"] = np.asarray(joule, dtype=float)
+        out["joule_formula"] = np.asarray(["jn_squared_over_sigma_n"], dtype=object)
+    return out
+
+
+def _dataset_sigma_n(dataset: Mapping[str, Any]) -> float | None:
+    for key in ("sigma_n_S_m", "sigma_n"):
+        if key in dataset:
+            try:
+                val = float(np.asarray(dataset[key]).reshape(-1)[0])
+            except Exception:
+                continue
+            if np.isfinite(val) and val > 0.0:
+                return val
+    return None
 
 
 def _load_npz_if_exists(path: Path) -> dict[str, np.ndarray]:
@@ -685,7 +735,7 @@ def _add_row_colorbar(fig, axes_row, mappable, label: str, *, width_fraction: fl
     cb_width = row_width * float(width_fraction)
     cb_left = left + 0.5 * (row_width - cb_width)
     cb_height = 0.018
-    cb_bottom = max(bottom - 0.030, 0.024)
+    cb_bottom = max(bottom - 0.022, 0.020)
     cax = fig.add_axes([cb_left, cb_bottom, cb_width, cb_height])
     cb = fig.colorbar(mappable, cax=cax, orientation="horizontal")
     cb.set_label(label)
@@ -708,6 +758,14 @@ def _wrap_values_to_range(values: np.ndarray, vmin: float | None, vmax: float | 
     finite = np.isfinite(out)
     out[finite] = ((out[finite] - float(vmin)) % width) + float(vmin)
     return out
+
+
+def _plot_values_for_mode(values: np.ndarray, *, mode: str, norm: Any) -> np.ndarray:
+    z = np.asarray(values, dtype=float)
+    if mode == "positive_log" and isinstance(norm, LogNorm):
+        floor = float(norm.vmin) if norm.vmin is not None else 1.0e-300
+        return np.where(z > 0.0, z, floor)
+    return z
 
 
 def _node_color_limits(

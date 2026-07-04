@@ -12,6 +12,7 @@ from typing import Any
 
 import yaml
 
+from pysnspd.config import load_config, validate_config
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
 from pysnspd.plotting.ss_figures import make_ss_run_figures
 from pysnspd.plotting.ss_power_figures import make_ss_snapshot_power_figures
@@ -49,6 +50,8 @@ def main() -> int:
         pre_run_name=args.pre_run_name,
     )
     dataset = build_ss_plot_dataset(run)
+    cfg = validate_config(load_config(args.config))
+    dataset["sigma_n_S_m"] = float(cfg["material"]["sigma_n_S_m"])
 
     figures_dir = run.figures_dir
     if args.figures_subdir:

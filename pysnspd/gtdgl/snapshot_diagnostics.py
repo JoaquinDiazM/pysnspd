@@ -217,17 +217,61 @@ def _snapshot_joule_power_density(
     n_snap: int,
     n_nodes: int,
 ) -> np.ndarray | None:
+    return compute_snapshot_joule_power_density(
+        history,
+        sigma_n_S_m=sigma_n_S_m,
+        n_snap=n_snap,
+        n_nodes=n_nodes,
+    )
+
+
+def compute_snapshot_joule_power_density(
+    history: Mapping[str, Any],
+    *,
+    sigma_n_S_m: float | None,
+    n_snap: int | None = None,
+    n_nodes: int | None = None,
+) -> np.ndarray | None:
+    """Return node Joule power density from the dissipative normal current.
+
+    The thermal source must be positive definite.  We therefore use
+
+        P_J = sigma_n |E|^2 = |j_n|^2 / sigma_n,
+
+    evaluated on finite-volume edges and then projected to nodes with the same
+    edge-to-node weights used by the snapshot q diagnostic.
+    """
     if sigma_n_S_m is None or not np.isfinite(float(sigma_n_S_m)) or float(sigma_n_S_m) <= 0.0:
         return None
-    if "edge_jn_snapshot_A_m2" not in history or "edge_jtot_snapshot_A_m2" not in history:
+    if "edge_jn_snapshot_A_m2" not in history:
         return None
     edge_jn = np.asarray(history["edge_jn_snapshot_A_m2"], dtype=float)
-    edge_jtot = np.asarray(history["edge_jtot_snapshot_A_m2"], dtype=float)
-    if edge_jn.shape != edge_jtot.shape or edge_jn.ndim != 2 or edge_jn.shape[0] != n_snap:
+    if edge_jn.ndim != 2:
         return None
-    # Since j_n = sigma_n E on each edge projection, j_tot.E = j_tot*j_n/sigma_n.
-    edge_joule = edge_jtot * edge_jn / float(sigma_n_S_m)
-    return _edge_to_node_snapshots(edge_joule, history=history, n_nodes=n_nodes)
+    if n_snap is None:
+        n_snap = int(edge_jn.shape[0])
+    if edge_jn.shape[0] != int(n_snap):
+        return None
+    if n_nodes is None:
+        n_nodes = _infer_n_nodes_from_history(history)
+    if n_nodes is None:
+        return None
+    edge_joule = edge_jn * edge_jn / float(sigma_n_S_m)
+    return _edge_to_node_snapshots(edge_joule, history=history, n_nodes=int(n_nodes))
+
+
+def _infer_n_nodes_from_history(history: Mapping[str, Any]) -> int | None:
+    for key in ("delta_snapshot_meV", "phi_snapshot_V", "Te_snapshot_K", "Tph_snapshot_K"):
+        if key in history:
+            arr = np.asarray(history[key])
+            if arr.ndim == 2:
+                return int(arr.shape[1])
+    if "edge_i" in history and "edge_j" in history:
+        edge_i = np.asarray(history["edge_i"], dtype=np.int64)
+        edge_j = np.asarray(history["edge_j"], dtype=np.int64)
+        if edge_i.size and edge_j.size:
+            return int(max(np.max(edge_i), np.max(edge_j)) + 1)
+    return None
 
 
 def _edge_to_node_snapshots(edge_values: np.ndarray, *, history: Mapping[str, Any], n_nodes: int) -> np.ndarray:
@@ -312,6 +356,7 @@ def _diagnostic_metadata_json(cat: Mapping[str, Any], power_table_npz: str | Pat
 
 __all__ = [
     "save_ss_snapshot_bundle_npz",
+    "compute_snapshot_joule_power_density",
     "compute_ss_snapshot_power_diagnostics",
     "write_ss_snapshot_power_diagnostics",
 ]
