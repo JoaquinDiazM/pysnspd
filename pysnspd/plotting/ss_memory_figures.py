@@ -361,34 +361,215 @@ def plot_ss_final_center_scalar_maps(
     y_nm = np.asarray(tri.y, dtype=float)
     xlim, ylim, crop_mask = _center_window(x_nm, y_nm, center_width_nm=center_width_nm)
 
+    def _node_array_from_dataset(keys: tuple[str, ...], *, default: float = 0.0) -> np.ndarray:
+        for key in keys:
+            if key in dataset:
+                arr = np.asarray(dataset[key], dtype=float).reshape(-1)
+                if arr.size:
+                    if arr.size != x_nm.size:
+                        arr = np.resize(arr, x_nm.size)
+                    return arr
+        return np.full(x_nm.size, float(default), dtype=float)
+
+    def _center_limits(
+        values: np.ndarray,
+        *,
+        force_vmin: float | None = None,
+        force_vmax: float | None = None,
+        positive_floor: bool = False,
+    ) -> tuple[float, float]:
+        vals = np.asarray(values, dtype=float)
+        if vals.size != x_nm.size:
+            vals = np.resize(vals, x_nm.size)
+
+        vis = vals[crop_mask]
+        vis = vis[np.isfinite(vis)]
+
+        if vis.size == 0:
+            vmin = 0.0
+            vmax = 1.0
+        else:
+            vmin = float(np.nanmin(vis))
+            vmax = float(np.nanmax(vis))
+
+        if positive_floor:
+            vmin = 0.0
+
+        if force_vmin is not None:
+            vmin = float(force_vmin)
+        if force_vmax is not None:
+            vmax = float(force_vmax)
+
+        if not np.isfinite(vmin) or not np.isfinite(vmax):
+            vmin, vmax = 0.0, 1.0
+
+        if np.isclose(vmin, vmax):
+            pad = max(1.0e-12, 0.02 * max(abs(vmin), 1.0))
+            if force_vmin is None:
+                vmin -= pad
+            if force_vmax is None:
+                vmax += pad
+
+        return vmin, vmax
+
+    def _phase_gradient_q_abs_m_inv() -> np.ndarray:
+        """Estimate |q| = |grad arg(psi)| from the final complex order parameter.
+
+        This is the fallback used when the final-state dataset does not already
+        contain a nonzero q-map.  With A=0 in the current SS runs, the
+        gauge-invariant superfluid momentum is the phase gradient.
+        """
+
+        psi = np.asarray(dataset.get("psi_J", []), dtype=np.complex128).reshape(-1)
+        if psi.size != x_nm.size:
+            return np.zeros(x_nm.size, dtype=float)
+
+        theta = np.angle(psi)
+        x_m = x_nm * 1.0e-9
+        y_m = y_nm * 1.0e-9
+
+        triangles = np.asarray(tri.triangles, dtype=np.int64)
+        if triangles.size == 0:
+            return np.zeros(x_nm.size, dtype=float)
+
+        edges = np.vstack(
+            (
+                triangles[:, [0, 1]],
+                triangles[:, [1, 2]],
+                triangles[:, [2, 0]],
+            )
+        )
+        edges = np.sort(edges, axis=1)
+        edges = np.unique(edges, axis=0)
+
+        Axx = np.zeros(x_nm.size, dtype=float)
+        Axy = np.zeros(x_nm.size, dtype=float)
+        Ayy = np.zeros(x_nm.size, dtype=float)
+        bx = np.zeros(x_nm.size, dtype=float)
+        by = np.zeros(x_nm.size, dtype=float)
+
+        for i, j in edges:
+            dx = float(x_m[j] - x_m[i])
+            dy = float(y_m[j] - y_m[i])
+            if not np.isfinite(dx) or not np.isfinite(dy):
+                continue
+
+            dtheta = float(np.angle(np.exp(1j * (theta[j] - theta[i]))))
+
+            # Node i: dtheta = grad(theta)_i · (r_j - r_i)
+            Axx[i] += dx * dx
+            Axy[i] += dx * dy
+            Ayy[i] += dy * dy
+            bx[i] += dtheta * dx
+            by[i] += dtheta * dy
+
+            # Node j: -dtheta = grad(theta)_j · (r_i - r_j)
+            Axx[j] += dx * dx
+            Axy[j] += dx * dy
+            Ayy[j] += dy * dy
+            bx[j] += dtheta * dx
+            by[j] += dtheta * dy
+
+        det = Axx * Ayy - Axy * Axy
+        good = np.isfinite(det) & (np.abs(det) > 1.0e-300)
+
+        qx = np.zeros(x_nm.size, dtype=float)
+        qy = np.zeros(x_nm.size, dtype=float)
+        qx[good] = (Ayy[good] * bx[good] - Axy[good] * by[good]) / det[good]
+        qy[good] = (-Axy[good] * bx[good] + Axx[good] * by[good]) / det[good]
+
+        q_abs = np.sqrt(qx * qx + qy * qy)
+        q_abs[~np.isfinite(q_abs)] = 0.0
+        return q_abs
+
+    def _q_abs_m_inv() -> np.ndarray:
+        q_saved = _node_array_from_dataset(
+            (
+                "q_mag_m_inv",
+                "q_abs_m_inv",
+                "node_q_mag_m_inv",
+                "node_q_abs_m_inv",
+                "node_superfluid_momentum_mag_m_inv",
+            )
+        )
+
+        q_center = q_saved[crop_mask]
+        if np.any(np.isfinite(q_center)) and float(np.nanmax(np.abs(q_center))) > 0.0:
+            return q_saved
+
+        return _phase_gradient_q_abs_m_inv()
+
+    delta_norm = _node_array_from_dataset(("delta_over_delta0",))
+    phi_uV = 1.0e6 * _node_array_from_dataset(("phi_V",))
+    if not np.any(np.isfinite(phi_uV)) or np.nanmax(np.abs(phi_uV)) == 0.0:
+        phi_uV = 1.0e3 * _node_array_from_dataset(("phi_mV",))
+
+    q_abs = _q_abs_m_inv()
+    Te_K = _node_array_from_dataset(("Te_K",))
+    Tph_K = _node_array_from_dataset(("Tph_K",))
+
     fields = [
-        (np.asarray(dataset.get("delta_over_delta0", np.zeros_like(x_nm)), dtype=float), r"$|\Delta|/\Delta_0$"),
-        (np.asarray(dataset.get("phi_mV", np.zeros_like(x_nm)), dtype=float), r"$\phi$ [mV]"),
-        (np.asarray(dataset.get("q_mag_m_inv", np.zeros_like(x_nm)), dtype=float), r"$|q|$ [m$^{-1}$]"),
-        (np.asarray(dataset.get("Te_K", np.zeros_like(x_nm)), dtype=float), r"$T_e$ [K]"),
-        (np.asarray(dataset.get("Tph_K", np.zeros_like(x_nm)), dtype=float), r"$T_{ph}$ [K]"),
+        {
+            "values": delta_norm,
+            "label": r"$|\Delta|/\Delta_0$",
+            "vmin": 0.0,
+            "vmax": 1.0,
+            "positive_floor": True,
+        },
+        {
+            "values": phi_uV,
+            "label": r"$\phi$ [$\mu$V]",
+            "vmin": None,
+            "vmax": None,
+            "positive_floor": False,
+        },
+        {
+            "values": q_abs,
+            "label": r"$|q|$ [m$^{-1}$]",
+            "vmin": 0.0,
+            "vmax": None,
+            "positive_floor": True,
+        },
+        {
+            "values": Te_K,
+            "label": r"$T_e$ [K]",
+            "vmin": None,
+            "vmax": None,
+            "positive_floor": False,
+        },
+        {
+            "values": Tph_K,
+            "label": r"$T_{ph}$ [K]",
+            "vmin": None,
+            "vmax": None,
+            "positive_floor": False,
+        },
     ]
 
-    fig = plt.figure(figsize=(17.6, 3.65), constrained_layout=False)
-    gs = fig.add_gridspec(2, 5, height_ratios=[0.10, 1.00], wspace=0.18, hspace=0.10)
+    fig = plt.figure(figsize=(18.4, 3.75), constrained_layout=False)
+    gs = fig.add_gridspec(
+        2,
+        5,
+        height_ratios=[0.10, 1.00],
+        wspace=0.24,
+        hspace=0.12,
+    )
     caxes = [fig.add_subplot(gs[0, k]) for k in range(5)]
     axes = [fig.add_subplot(gs[1, k]) for k in range(5)]
 
-    for idx, (ax, cax, (values, cbar_label)) in enumerate(zip(axes, caxes, fields)):
-        values = np.asarray(values, dtype=float)
+    import matplotlib.ticker as mticker
+
+    for idx, (ax, cax, spec) in enumerate(zip(axes, caxes, fields)):
+        values = np.asarray(spec["values"], dtype=float).reshape(-1)
         if values.size != x_nm.size:
             values = np.resize(values, x_nm.size)
 
-        vis = values[crop_mask]
-        vis = vis[np.isfinite(vis)]
-        if vis.size == 0:
-            vis = np.array([0.0, 1.0], dtype=float)
-        vmin = float(np.nanmin(vis))
-        vmax = float(np.nanmax(vis))
-        if np.isclose(vmin, vmax):
-            pad = max(1.0e-12, 0.02 * max(abs(vmin), 1.0))
-            vmin -= pad
-            vmax += pad
+        vmin, vmax = _center_limits(
+            values,
+            force_vmin=spec["vmin"],
+            force_vmax=spec["vmax"],
+            positive_floor=bool(spec["positive_floor"]),
+        )
 
         mappable = ax.tripcolor(tri, values, shading="gouraud", vmin=vmin, vmax=vmax)
         ax.set_xlim(*xlim)
@@ -400,14 +581,14 @@ def plot_ss_final_center_scalar_maps(
         ax.grid(False)
 
         cbar = fig.colorbar(mappable, cax=cax, orientation="horizontal")
-        cbar.set_label(cbar_label, labelpad=2.0)
+        cbar.set_label(str(spec["label"]), labelpad=2.0)
         cbar.ax.xaxis.set_ticks_position("top")
         cbar.ax.xaxis.set_label_position("top")
+        cbar.ax.xaxis.set_major_locator(mticker.MaxNLocator(nbins=3))
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     return output
-
 
 def _prepare_output(output_path: str | Path) -> Path:
     output = Path(output_path)
