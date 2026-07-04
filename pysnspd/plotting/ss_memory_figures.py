@@ -277,9 +277,13 @@ def plot_ss_snapshot_thermal_scalars(
         smooth_history=True,
     )
 
-    # Energies: snapshot central-strip values.
-    ue_t, ue_mean, ue_max = _snapshot_pair(t_ps_snap, u_e, center_mask, max_mode="max")
-    uph_t, uph_mean, uph_max = _snapshot_pair(t_ps_snap, u_ph, center_mask, max_mode="max")
+    # Energies: copy the data extraction used by
+    # plot_ss_snapshot_runtime_metrics / stored energy diagnostics.
+    # That panel plots spatial means over the full snapshot map, not center-strip
+    # maxima.  We keep the memory-plot visual design, but separate u_e and u_ph
+    # into two y axes because their operating ranges are very different.
+    ue_t, ue_mean = _snapshot_mean_series(t_ps_snap, u_e)
+    uph_t, uph_mean = _snapshot_mean_series(t_ps_snap, u_ph)
 
     # Colors
     te_color = "tab:blue"
@@ -363,8 +367,8 @@ def plot_ss_snapshot_thermal_scalars(
     ax_r = ax.twinx()
     _shade_prethermal(ax, prethermal_t_ps)
 
-    h_ue = _plot_series_pair(ax, ue_t, ue_mean, ue_max, color=ue_color, take_abs=False)
-    h_uph = _plot_series_pair(ax_r, uph_t, uph_mean, uph_max, color=uph_color, take_abs=False)
+    h_ue = _plot_single_series(ax, ue_t, ue_mean, color=ue_color)
+    h_uph = _plot_single_series(ax_r, uph_t, uph_mean, color=uph_color)
 
     ax.set_xlabel("t [ps]")
     ax.set_ylabel(r"$u_e$ [J m$^{-3}$]", color=ue_color)
@@ -372,19 +376,16 @@ def plot_ss_snapshot_thermal_scalars(
     ax.tick_params(axis="y", colors=ue_color)
     ax_r.tick_params(axis="y", colors=uph_color)
 
-    if _all_positive_arrays([ue_mean, ue_max]):
-        ax.set_yscale("log")
-    elif _has_nonzero_arrays([ue_mean, ue_max]):
-        ax.set_yscale("symlog", linthresh=_linthresh_from_arrays([ue_mean, ue_max]))
-
-    if _all_positive_arrays([uph_mean, uph_max]):
-        ax_r.set_yscale("log")
-    elif _has_nonzero_arrays([uph_mean, uph_max]):
-        ax_r.set_yscale("symlog", linthresh=_linthresh_from_arrays([uph_mean, uph_max]))
+    # u_e can be negative in the current normalization; center the axis around
+    # the negative operating value rather than forcing log/symlog.  u_ph is
+    # shown independently on the right axis because it lives close to zero and
+    # varies on a much smaller absolute scale.
+    _center_linear_axis(ax, [ue_mean], frac=0.10)
+    _center_linear_axis(ax_r, [uph_mean], frac=0.25)
 
     fmt_right = mticker.ScalarFormatter(useMathText=True)
     fmt_right.set_scientific(True)
-    fmt_right.set_powerlimits((0, 0))
+    fmt_right.set_powerlimits((-3, 3))
     fmt_right.set_useOffset(True)
     ax_r.yaxis.set_major_formatter(fmt_right)
     ax_r.yaxis.set_major_locator(mticker.MaxNLocator(nbins=4))
@@ -393,9 +394,9 @@ def plot_ss_snapshot_thermal_scalars(
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
-    _add_legends(
+    _add_variable_legend(
         ax,
-        variable_handles=[h_ue[0], h_uph[0]],
+        variable_handles=[h_ue, h_uph],
         variable_labels=[r"$u_e$", r"$u_{ph}$"],
         variable_ncol=2,
     )
@@ -854,6 +855,31 @@ def _snapshot_pair(
     return t, mean_vals, max_vals
 
 
+def _snapshot_mean_series(
+    t_ps: np.ndarray,
+    values: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Spatial mean over the full snapshot map.
+
+    This mirrors the energy extraction used by
+    ``plot_ss_snapshot_runtime_metrics`` in its stored-energy panel.
+    """
+
+    arr = np.asarray(values, dtype=float)
+    if arr.size == 0:
+        return np.array([], dtype=float), np.array([], dtype=float)
+    if arr.ndim == 1:
+        arr = arr[None, :]
+
+    with np.errstate(invalid="ignore"):
+        mean_vals = np.nanmean(arr, axis=1)
+
+    t = np.asarray(t_ps, dtype=float).reshape(-1)
+    if t.size != arr.shape[0]:
+        t = np.resize(t, arr.shape[0])
+    return t, mean_vals
+
+
 def _history_or_snapshot_pair(
     dataset: Mapping[str, Any],
     t_hist: np.ndarray,
@@ -994,6 +1020,24 @@ def _plot_series_pair(
     h_mean, = ax.plot(t_mean, y_mean, color=color, linestyle="-")
     h_max, = ax.plot(t_max, y_max, color=color, linestyle="--")
     return h_mean, h_max
+
+
+def _plot_single_series(
+    ax,
+    t_ps: np.ndarray,
+    values: np.ndarray,
+    *,
+    color: str,
+):
+    t = np.asarray(t_ps, dtype=float).reshape(-1)
+    y = np.asarray(values, dtype=float).reshape(-1)
+    n = min(t.size, y.size)
+    if n <= 1:
+        h, = ax.plot(t[:n], y[:n], color=color, linestyle="-")
+        return h
+    t_smooth, y_smooth = _smooth_series(t[:n], y[:n])
+    h, = ax.plot(t_smooth, y_smooth, color=color, linestyle="-")
+    return h
 
 
 def _smooth_series(t: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -1163,6 +1207,50 @@ def _add_legends(
         handlelength=2.4,
         borderaxespad=0.3,
     )
+
+
+def _add_variable_legend(
+    ax,
+    *,
+    variable_handles,
+    variable_labels,
+    variable_ncol: int,
+) -> None:
+    ax.legend(
+        variable_handles,
+        variable_labels,
+        loc="upper center",
+        bbox_to_anchor=(0.50, 1.14),
+        ncol=variable_ncol,
+        frameon=False,
+        columnspacing=1.2,
+        handlelength=2.6,
+        borderaxespad=0.0,
+    )
+
+
+def _center_linear_axis(ax, arrays: list[np.ndarray], *, frac: float = 0.10) -> None:
+    values = []
+    for arr in arrays:
+        a = np.asarray(arr, dtype=float).reshape(-1)
+        a = a[np.isfinite(a)]
+        if a.size:
+            values.append(a)
+    if not values:
+        return
+
+    vals = np.concatenate(values)
+    vmin = float(np.nanmin(vals))
+    vmax = float(np.nanmax(vals))
+
+    if np.isclose(vmin, vmax):
+        center = 0.5 * (vmin + vmax)
+        pad = max(1.0e-12, float(frac) * max(abs(center), 1.0))
+        ax.set_ylim(center - pad, center + pad)
+        return
+
+    pad = float(frac) * (vmax - vmin)
+    ax.set_ylim(vmin - pad, vmax + pad)
 
 
 def _linthresh_from_axes_lines(ax) -> float:
