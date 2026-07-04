@@ -1,9 +1,4 @@
-"""Data analysis utilities for stationary SS gTDGL runs.
-
-This module intentionally contains no matplotlib calls.  It reads the raw SS
-``.npz`` files, extracts physical arrays, builds masks and returns plain
-dictionaries that plotting functions can consume.
-"""
+"""Data analysis utilities for stationary SS gTDGL runs."""
 
 from __future__ import annotations
 
@@ -26,8 +21,6 @@ MEV_J = 1.602176634e-22
 
 @dataclass(frozen=True)
 class SSRunData:
-    """Loaded raw data for one stationary SS run."""
-
     run_name: str
     pre_run_name: str | None
     raw_ss: Path
@@ -45,8 +38,6 @@ def load_ss_run(
     run_name: str,
     pre_run_name: str | None = None,
 ) -> SSRunData:
-    """Load mesh, edge table, stationary state, relaxation history and summary."""
-
     cfg = validate_config(load_config(config_path))
     ss_layout = create_run_layout(cfg, run_name)
     raw_ss = Path(ss_layout["raw_ss"])
@@ -81,8 +72,6 @@ def load_ss_run(
 
 
 def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
-    """Build physical plotting arrays from raw SS state/history files."""
-
     mesh = run.mesh
     nodes = np.asarray(mesh.nodes, dtype=float)
     x_m = nodes[:, 0]
@@ -215,15 +204,21 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         "thermal_max_abs_dTph_K_history": _resize_to_time(_history_array(history, "thermal_max_abs_dTph_K"), t_ps),
         "thermal_max_rate_K_per_ps_history": _resize_to_time(_history_array(history, "thermal_max_rate_K_per_ps"), t_ps),
         "thermal_max_P_J_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_J_W_m3"), t_ps),
+        "thermal_mean_P_J_W_m3_history": _resize_to_time(_history_array(history, "thermal_mean_P_J_W_m3"), t_ps),
         "thermal_max_P_ep_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_ep_W_m3"), t_ps),
+        "thermal_mean_P_ep_W_m3_history": _resize_to_time(_history_array(history, "thermal_mean_P_ep_W_m3"), t_ps),
         "thermal_max_P_esc_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_esc_W_m3"), t_ps),
+        "thermal_mean_P_esc_W_m3_history": _resize_to_time(_history_array(history, "thermal_mean_P_esc_W_m3"), t_ps),
         "thermal_max_P_diff_W_m3_history": _resize_to_time(_history_array(history, "thermal_max_P_diff_W_m3"), t_ps),
+        "thermal_mean_P_diff_W_m3_history": _resize_to_time(_history_array(history, "thermal_mean_P_diff_W_m3"), t_ps),
+        "thermal_max_u_e_J_m3_history": _resize_to_time(_history_array(history, "thermal_max_u_e_J_m3"), t_ps),
+        "thermal_mean_u_e_J_m3_history": _resize_to_time(_history_array(history, "thermal_mean_u_e_J_m3"), t_ps),
+        "thermal_max_u_ph_J_m3_history": _resize_to_time(_history_array(history, "thermal_max_u_ph_J_m3"), t_ps),
+        "thermal_mean_u_ph_J_m3_history": _resize_to_time(_history_array(history, "thermal_mean_u_ph_J_m3"), t_ps),
         "summary_scalars": _summary_scalars(summary),
         "npz_keys": summarize_ss_npz_contents(state=state, history=history),
     }
 
-    # Backward compatibility: if the adaptive diagnostics were not saved yet,
-    # still provide useful curves from the accepted dt history.
     if dataset["dt_accepted_fs"].size == 0 and dt_fs.size:
         dataset["dt_accepted_fs"] = _resize_to_time(dt_fs, t_ps)
     if dataset["dt_attempt_fs"].size == 0 and dt_fs.size:
@@ -231,23 +226,14 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     if dataset["dt_next_fs"].size == 0 and dt_fs.size:
         dataset["dt_next_fs"] = _resize_to_time(dt_fs, t_ps)
 
-    # Center-probe TDGL voltage is a plot-level diagnostic extracted from
-    # saved phi snapshots.  It intentionally overrides the terminal-voltage
-    # history when the snapshot file is available.
     probe = _center_probe_voltage_from_snapshots(run.raw_ss / "stationary_snapshots.npz", x_m)
     if probe:
         dataset.update(probe)
-
-    # Do not inject ``profiles`` or ``x_profile_nm`` into every dataset.  The
-    # old tests and the plotting API expect profiles to be optional; callers
-    # that need them can still call ``compute_x_profiles(dataset)`` explicitly.
 
     return dataset
 
 
 def compute_x_profiles(dataset: Mapping[str, Any], *, n_bins: int = 51) -> tuple[np.ndarray, dict[str, np.ndarray]]:
-    """Compute simple x-binned mean profiles for final SS fields."""
-
     x_nm = np.asarray(dataset["x_nm"], dtype=float)
     if x_nm.size == 0:
         return np.array([], dtype=float), {}
@@ -292,8 +278,6 @@ def summarize_ss_npz_contents(
     state: Mapping[str, np.ndarray] | None = None,
     history: Mapping[str, np.ndarray] | None = None,
 ) -> dict[str, Any]:
-    """Return key/shape/dtype summaries for SS ``.npz`` files."""
-
     out: dict[str, Any] = {}
     for name, data in (("state", state), ("history", history)):
         if data is None:
@@ -457,12 +441,6 @@ def _bulk_node_mask_from_summary(x_m: np.ndarray, solver_summary: Mapping[str, A
 
 
 def _center_probe_voltage_from_snapshots(path: str | Path, x_m: np.ndarray) -> dict[str, Any]:
-    """Return V_TDGL across the two center probes, if snapshots are available.
-
-    The probes are the nearest node columns to x_center ± 50 nm.  For each
-    snapshot, voltage is mean(phi_right) - mean(phi_left), reported in mV.
-    """
-
     snapshots = _load_npz_if_exists(path)
     if not snapshots:
         return {}
@@ -518,8 +496,6 @@ def _nearest_x_column_mask(x_m: np.ndarray, target_m: float) -> np.ndarray:
         return np.zeros_like(x, dtype=bool)
 
     dmin = float(np.nanmin(distances[finite]))
-    # Tight absolute tolerance plus a scale-aware floor.  This selects all nodes
-    # in the nearest x-column, not merely one node.
     atol = max(1.0e-15, 1.0e-9 * max(float(np.nanmax(np.abs(x[finite]))), 1.0e-12))
     return finite & (distances <= dmin + atol)
 

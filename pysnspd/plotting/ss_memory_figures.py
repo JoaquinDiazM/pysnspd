@@ -1,7 +1,7 @@
 """Additional memory-quality stationary SS plots.
 
-This module is plotting-only. It complements the existing ``02_plot_ss_run.py``
-pipeline without replacing any current figure.
+This module is plotting-only. It complements the existing
+``02_plot_ss_run.py`` pipeline without replacing any current figure.
 """
 
 from __future__ import annotations
@@ -27,8 +27,6 @@ def make_ss_memory_figures(
     dpi: int = 480,
     center_width_nm: float = 100.0,
 ) -> dict[str, Path]:
-    """Create additional memory-quality SS figures."""
-
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     raw = Path(raw_ss)
@@ -51,7 +49,7 @@ def make_ss_memory_figures(
             dpi=dpi,
         )
 
-    if _has_thermal_scalar_snapshot_data(power, snapshots):
+    if _has_thermal_scalar_snapshot_data(power, snapshots, dataset):
         saved["snapshot_thermal_scalars"] = plot_ss_snapshot_thermal_scalars(
             power,
             snapshots,
@@ -102,9 +100,9 @@ def plot_ss_final_center_current_maps(
         raise ValueError("central-strip current map has no nodes inside the requested x window")
 
     families = [
-        (r"$j_s^{Us}$", js_mag / jscale, js_x / jscale, js_y / jscale),
-        (r"$j_n$", jn_mag / jscale, jn_x / jscale, jn_y / jscale),
-        (r"$j_s^{Us}+j_n$", jtot_mag / jscale, jtot_x / jscale, jtot_y / jscale),
+        ("(a)", js_mag / jscale, js_x / jscale, js_y / jscale),
+        ("(b)", jn_mag / jscale, jn_x / jscale, jn_y / jscale),
+        ("(c)", jtot_mag / jscale, jtot_x / jscale, jtot_y / jscale),
     ]
 
     finite_for_scale: list[np.ndarray] = []
@@ -117,13 +115,14 @@ def plot_ss_final_center_current_maps(
         raise ValueError("central-strip current map does not contain finite current values")
     vmax = max(1.0, float(np.nanmax(np.concatenate(finite_for_scale))))
 
-    fig, axes = plt.subplots(1, 3, figsize=(13.2, 3.45), constrained_layout=False)
-    fig.subplots_adjust(left=0.060, right=0.920, bottom=0.150, top=0.860, wspace=0.18)
-    fig.suptitle(f"SS final-state center-strip currents: {dataset.get('run_name', '')}", y=0.955)
+    fig = plt.figure(figsize=(10.8, 3.1), constrained_layout=False)
+    gs = fig.add_gridspec(1, 4, width_ratios=[1.0, 1.0, 1.0, 0.06], wspace=0.06)
+    axes = [fig.add_subplot(gs[0, k]) for k in range(3)]
+    cax = fig.add_subplot(gs[0, 3])
 
     mappable = None
     arrow_length_nm = 0.10 * max(ylim[1] - ylim[0], 1.0)
-    for idx, (ax, (title, mag, jx, jy)) in enumerate(zip(axes, families)):
+    for idx, (ax, (panel_tag, mag, jx, jy)) in enumerate(zip(axes, families)):
         z = np.asarray(mag, dtype=float)
         mappable = ax.tripcolor(tri, z, shading="gouraud", vmin=0.0, vmax=vmax)
         _overlay_current_arrows(
@@ -138,17 +137,26 @@ def plot_ss_final_center_current_maps(
         ax.set_xlim(*xlim)
         ax.set_ylim(*ylim)
         ax.set_aspect("equal", adjustable="box")
-        ax.set_title(title)
         ax.set_xlabel("x [nm]")
         if idx == 0:
             ax.set_ylabel("y [nm]")
+        ax.text(
+            0.02,
+            0.98,
+            panel_tag,
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            fontsize=9,
+            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", alpha=0.7, linewidth=0.0),
+        )
         ax.grid(False)
 
     if mappable is not None:
-        cbar = fig.colorbar(mappable, ax=axes[-1], fraction=0.075, pad=0.035)
+        cbar = fig.colorbar(mappable, cax=cax)
         cbar.set_label(r"$|j|/j_{\rm avg}$")
 
-    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
+    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     return output
 
@@ -162,62 +170,212 @@ def plot_ss_snapshot_thermal_scalars(
     dpi: int = 480,
 ) -> Path:
     output = _prepare_output(output_path)
-    p_ep = _snapshot_array(power, ("P_total_snapshot_W_m3",))
-    if p_ep.size == 0:
-        raise ValueError("snapshot_power_energy_diagnostics.npz lacks P_total_snapshot_W_m3")
 
-    t_ps = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=p_ep.shape[0])
-    joule = _snapshot_array(power, ("joule_snapshot_W_m3",), shape_like=p_ep)
-    p_esc = _snapshot_array(power, ("P_esc_snapshot_W_m3",), shape_like=p_ep)
-    p_diff = _snapshot_array(
-        power,
-        ("P_diff_snapshot_W_m3", "P_diffusion_snapshot_W_m3", "diffusion_power_snapshot_W_m3"),
-        shape_like=p_ep,
-    )
-    te = _snapshot_array(snapshots, ("Te_snapshot_K",))
-    tph = _snapshot_array(snapshots, ("Tph_snapshot_K",), shape_like=te)
-    u_e = _snapshot_array(power, ("u_e_snapshot_J_m3",), shape_like=p_ep)
-    u_ph = _snapshot_array(power, ("u_ph_snapshot_J_m3",), shape_like=p_ep)
+    t_hist = np.asarray(dataset.get("t_ps", []), dtype=float).reshape(-1)
+    t_snap = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=_infer_snapshot_count(power, snapshots))
 
-    fig, axes = plt.subplots(1, 3, figsize=(15.0, 3.8), constrained_layout=False)
-    fig.subplots_adjust(left=0.060, right=0.985, bottom=0.165, top=0.865, wspace=0.28)
-    fig.suptitle(f"SS thermal scalar diagnostics: {dataset.get('run_name', '')}", y=0.955)
+    fig, axes = plt.subplots(1, 3, figsize=(13.6, 3.55), constrained_layout=False)
+    fig.subplots_adjust(left=0.070, right=0.965, bottom=0.185, top=0.965, wspace=0.34)
 
+    # ------------------------------------------------------------------
+    # temperatures: prefer smooth history arrays
+    # ------------------------------------------------------------------
     ax = axes[0]
-    _plot_mean_max_series(ax, t_ps, te, label=r"$T_e$")
-    _plot_mean_max_series(ax, t_ps, tph, label=r"$T_{ph}$")
+    _plot_series_pair(
+        ax,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_Te_K_history", "thermal_max_Te_K_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_Te_K_history",
+            snapshots,
+            "Te_snapshot_K",
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_Te_K_history",
+            snapshots,
+            "Te_snapshot_K",
+            reducer="max",
+        ),
+        label=r"$T_e$",
+    )
+    _plot_series_pair(
+        ax,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_Tph_K_history", "thermal_max_Tph_K_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_Tph_K_history",
+            snapshots,
+            "Tph_snapshot_K",
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_Tph_K_history",
+            snapshots,
+            "Tph_snapshot_K",
+            reducer="max",
+        ),
+        label=r"$T_{ph}$",
+    )
     ax.set_xlabel("t [ps]")
     ax.set_ylabel("temperature [K]")
-    ax.set_title("temperatures")
     ax.grid(False)
     ax.legend(frameon=False, fontsize=8)
 
+    # ------------------------------------------------------------------
+    # powers: prefer smooth history arrays
+    # ------------------------------------------------------------------
     ax = axes[1]
-    _plot_mean_max_series(ax, t_ps, joule, label=r"$P_J$", use_abs=False)
-    _plot_mean_max_series(ax, t_ps, p_ep, label=r"$P_{ep}$", use_abs=False)
-    if p_esc.size:
-        _plot_mean_max_series(ax, t_ps, p_esc, label=r"$P_{esc}$", use_abs=True)
-    if np.any(np.isfinite(p_diff)):
-        _plot_mean_max_series(ax, t_ps, p_diff, label=r"$P_{diff}$", use_abs=True)
+    _plot_series_pair(
+        ax,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_P_J_W_m3_history", "thermal_max_P_J_W_m3_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_P_J_W_m3_history",
+            power,
+            "joule_snapshot_W_m3",
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_P_J_W_m3_history",
+            power,
+            "joule_snapshot_W_m3",
+            reducer="max",
+        ),
+        label=r"$P_J$",
+        take_abs=False,
+    )
+    _plot_series_pair(
+        ax,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_P_ep_W_m3_history", "thermal_max_P_ep_W_m3_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_P_ep_W_m3_history",
+            power,
+            "P_total_snapshot_W_m3",
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_P_ep_W_m3_history",
+            power,
+            "P_total_snapshot_W_m3",
+            reducer="max",
+        ),
+        label=r"$P_{ep}$",
+        take_abs=False,
+    )
+    _plot_series_pair(
+        ax,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_P_esc_W_m3_history", "thermal_max_P_esc_W_m3_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_P_esc_W_m3_history",
+            power,
+            "P_esc_snapshot_W_m3",
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_P_esc_W_m3_history",
+            power,
+            "P_esc_snapshot_W_m3",
+            reducer="max",
+        ),
+        label=r"$P_{esc}$",
+        take_abs=True,
+    )
+    _plot_series_pair(
+        ax,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_P_diff_W_m3_history", "thermal_max_P_diff_W_m3_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_P_diff_W_m3_history",
+            power,
+            ("P_diff_snapshot_W_m3", "P_diffusion_snapshot_W_m3", "diffusion_power_snapshot_W_m3"),
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_P_diff_W_m3_history",
+            power,
+            ("P_diff_snapshot_W_m3", "P_diffusion_snapshot_W_m3", "diffusion_power_snapshot_W_m3"),
+            reducer="max",
+        ),
+        label=r"$P_{diff}$",
+        take_abs=True,
+    )
     ax.set_xlabel("t [ps]")
     ax.set_ylabel(r"power density [W m$^{-3}$]")
-    ax.set_title("power densities")
-    ax.set_yscale("symlog", linthresh=_linthresh_from_fields(joule, p_ep, p_esc, p_diff, use_abs=True))
+    linthresh = _linthresh_from_axes_lines(ax)
+    ax.set_yscale("symlog", linthresh=linthresh)
     ax.grid(False)
     ax.legend(frameon=False, fontsize=8, ncol=2)
 
+    # ------------------------------------------------------------------
+    # energies: left axis for electrons, right axis for phonons
+    # ------------------------------------------------------------------
     ax = axes[2]
-    _plot_mean_max_series(ax, t_ps, u_e, label=r"$u_e$", use_abs=False)
-    _plot_mean_max_series(ax, t_ps, u_ph, label=r"$u_{ph}$", use_abs=False)
-    ax.set_xlabel("t [ps]")
-    ax.set_ylabel(r"energy density [J m$^{-3}$]")
-    ax.set_title("stored energies")
-    if _all_positive(u_e, u_ph):
-        ax.set_yscale("log")
-    ax.grid(False)
-    ax.legend(frameon=False, fontsize=8)
+    ax_r = ax.twinx()
 
-    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
+    _plot_series_pair(
+        ax,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_u_e_J_m3_history", "thermal_max_u_e_J_m3_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_u_e_J_m3_history",
+            power,
+            "u_e_snapshot_J_m3",
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_u_e_J_m3_history",
+            power,
+            "u_e_snapshot_J_m3",
+            reducer="max",
+        ),
+        label=r"$u_e$",
+        take_abs=False,
+    )
+    _plot_series_pair(
+        ax_r,
+        t=t_hist if _has_nonempty(dataset, "thermal_mean_u_ph_J_m3_history", "thermal_max_u_ph_J_m3_history") else t_snap,
+        mean_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_mean_u_ph_J_m3_history",
+            power,
+            "u_ph_snapshot_J_m3",
+            reducer="mean",
+        ),
+        max_vals=_series_from_dataset_or_snapshots(
+            dataset,
+            "thermal_max_u_ph_J_m3_history",
+            power,
+            "u_ph_snapshot_J_m3",
+            reducer="max",
+        ),
+        label=r"$u_{ph}$",
+        take_abs=False,
+    )
+
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$u_e$ [J m$^{-3}$]")
+    ax_r.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]")
+    if _all_positive_from_axis(ax):
+        ax.set_yscale("log")
+    if _all_positive_from_axis(ax_r):
+        ax_r.set_yscale("log")
+    ax.grid(False)
+
+    handles_l, labels_l = ax.get_legend_handles_labels()
+    handles_r, labels_r = ax_r.get_legend_handles_labels()
+    ax.legend(handles_l + handles_r, labels_l + labels_r, frameon=False, fontsize=8, ncol=2, loc="best")
+
+    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     return output
 
@@ -260,11 +418,12 @@ def _javg(dataset: Mapping[str, Any], snapshots: Mapping[str, np.ndarray] | None
 
 def _snapshot_array(
     data: Mapping[str, np.ndarray] | None,
-    keys: tuple[str, ...],
+    keys: str | tuple[str, ...],
     *,
-    fallback: np.ndarray | None = None,
     shape_like: np.ndarray | None = None,
 ) -> np.ndarray:
+    if isinstance(keys, str):
+        keys = (keys,)
     if data:
         for key in keys:
             if key in data:
@@ -272,26 +431,14 @@ def _snapshot_array(
                 if arr.ndim == 1:
                     arr = arr[None, :]
                 return arr
-    if fallback is not None:
-        arr = np.asarray(fallback, dtype=float)
-        if arr.ndim == 1:
-            arr = arr[None, :]
-        return arr
     if shape_like is not None and np.asarray(shape_like).size:
         return np.zeros_like(np.asarray(shape_like, dtype=float))
     return np.empty((0, 0), dtype=float)
 
 
-def _resize_snapshot_field(arr: np.ndarray, shape: tuple[int, int]) -> np.ndarray:
-    a = np.asarray(arr, dtype=float)
-    if a.size == 0:
-        return np.zeros(shape, dtype=float)
-    if a.shape == shape:
-        return a
-    return np.resize(a, shape)
-
-
 def _snapshot_times_ps(data: Mapping[str, np.ndarray], *, preferred: tuple[str, ...], n: int) -> np.ndarray:
+    if n <= 0:
+        return np.array([], dtype=float)
     for key in preferred:
         if key in data:
             arr = np.asarray(data[key], dtype=float).reshape(-1)
@@ -385,15 +532,18 @@ def _has_current_family_data(
 def _has_thermal_scalar_snapshot_data(
     power: Mapping[str, np.ndarray] | None,
     snapshots: Mapping[str, np.ndarray] | None,
+    dataset: Mapping[str, Any],
 ) -> bool:
     return bool(
-        _snapshot_array(power, ("P_total_snapshot_W_m3",)).size
-        and (
-            _snapshot_array(snapshots, ("Te_snapshot_K",)).size
-            or _snapshot_array(snapshots, ("Tph_snapshot_K",)).size
-            or _snapshot_array(power, ("u_e_snapshot_J_m3",)).size
-            or _snapshot_array(power, ("u_ph_snapshot_J_m3",)).size
-        )
+        _has_nonempty(dataset, "thermal_mean_Te_K_history", "thermal_max_Te_K_history")
+        or _has_nonempty(dataset, "thermal_mean_Tph_K_history", "thermal_max_Tph_K_history")
+        or _has_nonempty(dataset, "thermal_mean_P_J_W_m3_history", "thermal_max_P_J_W_m3_history")
+        or _has_nonempty(dataset, "thermal_mean_u_e_J_m3_history", "thermal_max_u_e_J_m3_history")
+        or _snapshot_array(power, "P_total_snapshot_W_m3").size
+        or _snapshot_array(snapshots, "Te_snapshot_K").size
+        or _snapshot_array(snapshots, "Tph_snapshot_K").size
+        or _snapshot_array(power, "u_e_snapshot_J_m3").size
+        or _snapshot_array(power, "u_ph_snapshot_J_m3").size
     )
 
 
@@ -439,59 +589,107 @@ def _overlay_current_arrows(
     )
 
 
-def _plot_mean_max_series(
+def _plot_series_pair(
     ax,
-    t_ps: np.ndarray,
-    fields: np.ndarray,
     *,
+    t: np.ndarray,
+    mean_vals: np.ndarray,
+    max_vals: np.ndarray,
     label: str,
-    use_abs: bool = False,
+    take_abs: bool = False,
 ) -> None:
-    data = np.asarray(fields, dtype=float)
-    if data.size == 0:
+    t = np.asarray(t, dtype=float).reshape(-1)
+    mean_arr = np.asarray(mean_vals, dtype=float).reshape(-1)
+    max_arr = np.asarray(max_vals, dtype=float).reshape(-1)
+    if mean_arr.size == 0 and max_arr.size == 0:
         return
-    if data.ndim == 1:
-        data = data[None, :]
-    if data.shape[0] != t_ps.size:
-        data = _resize_snapshot_field(data, (t_ps.size, data.shape[-1]))
-    if use_abs:
-        data = np.abs(data)
-    finite = np.isfinite(data)
-    if not np.any(finite):
+    n = max(mean_arr.size, max_arr.size)
+    if n == 0:
         return
-    with np.errstate(invalid="ignore"):
-        mean_vals = np.nanmean(np.where(finite, data, np.nan), axis=1)
-        max_vals = np.nanmax(np.where(finite, data, np.nan), axis=1)
-    (line,) = ax.plot(t_ps, mean_vals, label=rf"mean {label}")
-    ax.plot(t_ps, max_vals, linestyle="--", color=line.get_color(), label=rf"max {label}")
+    if t.size != n:
+        t = np.resize(t, n)
+    if mean_arr.size != n:
+        mean_arr = np.resize(mean_arr, n)
+    if max_arr.size != n:
+        max_arr = np.resize(max_arr, n)
+    if take_abs:
+        mean_arr = np.abs(mean_arr)
+        max_arr = np.abs(max_arr)
+
+    finite_mean = np.isfinite(mean_arr)
+    finite_max = np.isfinite(max_arr)
+    if not np.any(finite_mean) and not np.any(finite_max):
+        return
+
+    (line,) = ax.plot(t, mean_arr, label=rf"mean {label}")
+    ax.plot(t, max_arr, linestyle="--", color=line.get_color(), label=rf"max {label}")
 
 
-def _linthresh_from_fields(*fields: np.ndarray, use_abs: bool = False) -> float:
-    vals: list[np.ndarray] = []
-    for field in fields:
-        arr = np.asarray(field, dtype=float)
-        if arr.size == 0:
-            continue
-        if use_abs:
-            arr = np.abs(arr)
-        arr = arr[np.isfinite(arr)]
-        arr = np.abs(arr[arr != 0.0])
+def _series_from_dataset_or_snapshots(
+    dataset: Mapping[str, Any],
+    dataset_key: str,
+    source: Mapping[str, np.ndarray] | None,
+    source_key: str | tuple[str, ...],
+    *,
+    reducer: str,
+) -> np.ndarray:
+    arr = np.asarray(dataset.get(dataset_key, []), dtype=float).reshape(-1)
+    if arr.size:
+        return arr
+
+    snap = _snapshot_array(source, source_key)
+    if snap.size == 0:
+        return np.array([], dtype=float)
+    if reducer == "mean":
+        return np.nanmean(snap, axis=1)
+    if reducer == "max":
+        return np.nanmax(snap, axis=1)
+    raise ValueError(f"unknown reducer: {reducer}")
+
+
+def _infer_snapshot_count(power: Mapping[str, np.ndarray], snapshots: Mapping[str, np.ndarray] | None) -> int:
+    for data, key in (
+        (power, "P_total_snapshot_W_m3"),
+        (snapshots or {}, "Te_snapshot_K"),
+        (snapshots or {}, "Tph_snapshot_K"),
+        (power, "u_e_snapshot_J_m3"),
+        (power, "u_ph_snapshot_J_m3"),
+    ):
+        if key in data:
+            arr = np.asarray(data[key], dtype=float)
+            if arr.ndim == 1:
+                return 1
+            if arr.ndim >= 2:
+                return int(arr.shape[0])
+    return 0
+
+
+def _has_nonempty(dataset: Mapping[str, Any], *keys: str) -> bool:
+    for key in keys:
+        arr = np.asarray(dataset.get(key, []), dtype=float).reshape(-1)
         if arr.size:
-            vals.append(arr)
+            return True
+    return False
+
+
+def _linthresh_from_axes_lines(ax) -> float:
+    vals = []
+    for line in ax.lines:
+        y = np.asarray(line.get_ydata(), dtype=float)
+        y = y[np.isfinite(y)]
+        y = np.abs(y[y != 0.0])
+        if y.size:
+            vals.append(y)
     if not vals:
         return 1.0
     concat = np.concatenate(vals)
     return max(float(np.nanpercentile(concat, 10.0)), 1.0e-30)
 
 
-def _all_positive(*fields: np.ndarray) -> bool:
-    for field in fields:
-        arr = np.asarray(field, dtype=float)
-        if arr.size == 0:
-            continue
-        finite = arr[np.isfinite(arr)]
-        if finite.size == 0:
-            continue
-        if np.any(finite <= 0.0):
+def _all_positive_from_axis(ax) -> bool:
+    for line in ax.lines:
+        y = np.asarray(line.get_ydata(), dtype=float)
+        y = y[np.isfinite(y)]
+        if y.size and np.any(y <= 0.0):
             return False
     return True
