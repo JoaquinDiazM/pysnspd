@@ -1,8 +1,8 @@
 """Data analysis utilities for stationary SS gTDGL runs.
 
 This module intentionally contains no matplotlib calls.  It reads the raw SS
-``.npz`` files, extracts physical arrays, builds masks/profiles, and returns
-plain dictionaries that plotting functions can consume.
+``.npz`` files, extracts physical arrays, builds masks and returns plain
+dictionaries that plotting functions can consume.
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ from pysnspd.config import load_config, validate_config
 from pysnspd.io.manager import create_run_layout
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.mesh.edges import load_edges_npz
+
 
 MEV_J = 1.602176634e-22
 
@@ -44,24 +45,13 @@ def load_ss_run(
     run_name: str,
     pre_run_name: str | None = None,
 ) -> SSRunData:
-    """Load mesh, edge table, stationary state, relaxation history and summary.
-
-    Parameters
-    ----------
-    config_path:
-        YAML project config.
-    run_name:
-        SS run to analyze.
-    pre_run_name:
-        PRE run that provided ``mesh.npz`` and ``edges.npz``.  If omitted,
-        the function first reads it from ``ss_summary.yaml`` and otherwise
-        falls back to ``run_name``.
-    """
+    """Load mesh, edge table, stationary state, relaxation history and summary."""
 
     cfg = validate_config(load_config(config_path))
     ss_layout = create_run_layout(cfg, run_name)
     raw_ss = Path(ss_layout["raw_ss"])
     summary = _load_yaml(raw_ss / "ss_summary.yaml")
+
     resolved_pre = pre_run_name or str(summary.get("pre_run_name") or run_name)
     pre_layout = create_run_layout(cfg, resolved_pre)
     raw_pre = Path(pre_layout["raw_pre"])
@@ -73,6 +63,7 @@ def load_ss_run(
     edge_data = load_edges_npz(raw_pre / "edges.npz")
     state = _load_npz_dict(state_path)
     history = _load_npz_dict(history_path)
+
     figures_dir = Path(ss_layout["plots_figures"])
     figures_dir.mkdir(parents=True, exist_ok=True)
 
@@ -96,6 +87,7 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     nodes = np.asarray(mesh.nodes, dtype=float)
     x_m = nodes[:, 0]
     y_m = nodes[:, 1]
+
     state = run.state
     history = run.history
     summary = run.summary
@@ -103,16 +95,22 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
 
     psi_J = _complex_from_state(state, "psi_real_J", "psi_imag_J")
     delta_meV = np.abs(psi_J) / MEV_J
+
     delta0_meV = _scalar_from_sources(
         history,
         solver_summary,
         "delta0_meV",
         default=_metadata_scalar(state, "delta0_meV", default=np.nan),
     )
-    delta_over_delta0 = delta_meV / delta0_meV if np.isfinite(delta0_meV) and delta0_meV > 0.0 else delta_meV
+    delta_over_delta0 = (
+        delta_meV / delta0_meV
+        if np.isfinite(delta0_meV) and delta0_meV > 0.0
+        else delta_meV
+    )
 
     phi_V = _array_or_zeros(state, "phi_V", x_m.size)
     phi_mV = 1.0e3 * phi_V
+
     Te_K = _array_or_zeros(state, "Te_K", x_m.size)
     Tph_K = _array_or_zeros(state, "Tph_K", x_m.size)
 
@@ -122,6 +120,7 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     js_y = _array_or_zeros(state, "node_js_us_y_A_m2", x_m.size)
     jn_x = _array_or_zeros(state, "node_jn_x_A_m2", x_m.size)
     jn_y = _array_or_zeros(state, "node_jn_y_A_m2", x_m.size)
+
     jtot_mag = _magnitude(jtot_x, jtot_y)
     js_mag = _magnitude(js_x, js_y)
     jn_mag = _magnitude(jn_x, jn_y)
@@ -131,18 +130,32 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         target_current_A = float(solver_summary.get("target_current_A", np.nan))
         width = float(getattr(mesh, "width_m", np.nan))
         thickness = _infer_thickness_from_summary(summary, default=np.nan)
-        if np.isfinite(target_current_A) and np.isfinite(width) and np.isfinite(thickness) and width > 0 and thickness > 0:
+        if (
+            np.isfinite(target_current_A)
+            and np.isfinite(width)
+            and np.isfinite(thickness)
+            and width > 0.0
+            and thickness > 0.0
+        ):
             javg = abs(target_current_A / (width * thickness))
-    jscale = abs(javg) if np.isfinite(javg) and abs(javg) > 0.0 else max(float(np.nanmax(jtot_mag)), 1.0)
+
+    finite_j = jtot_mag[np.isfinite(jtot_mag)]
+    fallback_jscale = max(float(np.nanmax(finite_j)), 1.0) if finite_j.size else 1.0
+    jscale = abs(javg) if np.isfinite(javg) and abs(javg) > 0.0 else fallback_jscale
 
     pairbreaking = _array_or_zeros(state, "node_pairbreaking_ratio", x_m.size)
     div_j = _array_or_zeros(state, "node_div_jtot_A_m3", x_m.size)
 
     normal_terminal_mask = _history_bool_mask(history, "normal_terminal_node_mask", x_m.size)
-    bulk_mask = _bulk_node_mask_from_summary(x_m, solver_summary, fallback=np.logical_not(normal_terminal_mask))
+    bulk_mask = _bulk_node_mask_from_summary(
+        x_m,
+        solver_summary,
+        fallback=np.logical_not(normal_terminal_mask),
+    )
 
     t_s = _history_time_s(history)
     t_ps = t_s / 1.0e-12
+
     dt_s = _history_array(history, "dt_s")
     if dt_s.size == 0:
         dt_s = np.diff(np.r_[0.0, t_s]) if t_s.size else np.array([], dtype=float)
@@ -218,7 +231,17 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     if dataset["dt_next_fs"].size == 0 and dt_fs.size:
         dataset["dt_next_fs"] = _resize_to_time(dt_fs, t_ps)
 
-    dataset["x_profile_nm"], dataset["profiles"] = compute_x_profiles(dataset)
+    # Center-probe TDGL voltage is a plot-level diagnostic extracted from
+    # saved phi snapshots.  It intentionally overrides the terminal-voltage
+    # history when the snapshot file is available.
+    probe = _center_probe_voltage_from_snapshots(run.raw_ss / "stationary_snapshots.npz", x_m)
+    if probe:
+        dataset.update(probe)
+
+    # Do not inject ``profiles`` or ``x_profile_nm`` into every dataset.  The
+    # old tests and the plotting API expect profiles to be optional; callers
+    # that need them can still call ``compute_x_profiles(dataset)`` explicitly.
+
     return dataset
 
 
@@ -228,6 +251,7 @@ def compute_x_profiles(dataset: Mapping[str, Any], *, n_bins: int = 51) -> tuple
     x_nm = np.asarray(dataset["x_nm"], dtype=float)
     if x_nm.size == 0:
         return np.array([], dtype=float), {}
+
     bins = np.linspace(float(np.nanmin(x_nm)), float(np.nanmax(x_nm)), int(n_bins) + 1)
     centers = 0.5 * (bins[:-1] + bins[1:])
     idx = np.digitize(x_nm, bins) - 1
@@ -245,6 +269,7 @@ def compute_x_profiles(dataset: Mapping[str, Any], *, n_bins: int = 51) -> tuple
         "pairbreaking_ratio",
     ]
     scale = float(dataset.get("javg_A_m2", 1.0))
+
     for key in keys:
         values = np.asarray(dataset.get(key, []), dtype=float)
         if values.size != x_nm.size:
@@ -258,6 +283,7 @@ def compute_x_profiles(dataset: Mapping[str, Any], *, n_bins: int = 51) -> tuple
             profiles[key + "_over_javg"] = out / scale
         else:
             profiles[key] = out
+
     return centers, profiles
 
 
@@ -283,6 +309,14 @@ def _load_npz_dict(path: str | Path) -> dict[str, np.ndarray]:
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"Required SS NPZ file does not exist: {p}")
+    with np.load(p, allow_pickle=True) as data:
+        return {key: np.asarray(data[key]) for key in data.files}
+
+
+def _load_npz_if_exists(path: str | Path) -> dict[str, np.ndarray]:
+    p = Path(path)
+    if not p.exists():
+        return {}
     with np.load(p, allow_pickle=True) as data:
         return {key: np.asarray(data[key]) for key in data.files}
 
@@ -389,8 +423,6 @@ def _metadata_scalar(state: Mapping[str, np.ndarray], key: str, *, default: floa
 
 
 def _infer_thickness_from_summary(summary: Mapping[str, Any], *, default: float = np.nan) -> float:
-    # The SS summary stores most physical scalars under solver, while the
-    # manifest/config path is not guaranteed to be present in ad-hoc tests.
     cfg = _as_mapping(summary.get("config", {}))
     mat = _as_mapping(cfg.get("material", {}))
     try:
@@ -415,11 +447,81 @@ def _bulk_node_mask_from_summary(x_m: np.ndarray, solver_summary: Mapping[str, A
         exclusion_m = float(stationarity.get("bulk_exclusion_length_m", np.nan))
     except Exception:
         exclusion_m = np.nan
+
     if not np.isfinite(exclusion_m) or exclusion_m <= 0.0:
         return np.asarray(fallback, dtype=bool)
+
     xmin = float(np.nanmin(x_m))
     xmax = float(np.nanmax(x_m))
     return (x_m >= xmin + exclusion_m) & (x_m <= xmax - exclusion_m)
+
+
+def _center_probe_voltage_from_snapshots(path: str | Path, x_m: np.ndarray) -> dict[str, Any]:
+    """Return V_TDGL across the two center probes, if snapshots are available.
+
+    The probes are the nearest node columns to x_center ± 50 nm.  For each
+    snapshot, voltage is mean(phi_right) - mean(phi_left), reported in mV.
+    """
+
+    snapshots = _load_npz_if_exists(path)
+    if not snapshots:
+        return {}
+
+    phi = np.asarray(snapshots.get("phi_snapshot_V", []), dtype=float)
+    if phi.size == 0:
+        return {}
+    if phi.ndim == 1:
+        phi = phi[None, :]
+
+    x = np.asarray(x_m, dtype=float).reshape(-1)
+    if phi.shape[1] != x.size:
+        phi = np.resize(phi, (phi.shape[0], x.size))
+
+    xmin = float(np.nanmin(x))
+    xmax = float(np.nanmax(x))
+    x_center = 0.5 * (xmin + xmax)
+    dx_probe = 50.0e-9
+
+    left_mask = _nearest_x_column_mask(x, x_center - dx_probe)
+    right_mask = _nearest_x_column_mask(x, x_center + dx_probe)
+
+    if not np.any(left_mask) or not np.any(right_mask):
+        return {}
+
+    v_mV = 1.0e3 * (np.nanmean(phi[:, right_mask], axis=1) - np.nanmean(phi[:, left_mask], axis=1))
+
+    t_s = np.asarray(
+        snapshots.get(
+            "snapshot_t_s",
+            snapshots.get("phi_snapshot_t_s", snapshots.get("delta_snapshot_t_s", np.arange(phi.shape[0], dtype=float))),
+        ),
+        dtype=float,
+    ).reshape(-1)
+    if t_s.size != phi.shape[0]:
+        t_s = np.resize(t_s, phi.shape[0])
+
+    return {
+        "tdgl_probe_voltage_t_ps": t_s / 1.0e-12,
+        "tdgl_probe_voltage_mV": v_mV,
+        "tdgl_probe_left_node_count": int(np.count_nonzero(left_mask)),
+        "tdgl_probe_right_node_count": int(np.count_nonzero(right_mask)),
+        "tdgl_probe_left_x_nm": float(np.nanmean(x[left_mask]) * 1.0e9),
+        "tdgl_probe_right_x_nm": float(np.nanmean(x[right_mask]) * 1.0e9),
+    }
+
+
+def _nearest_x_column_mask(x_m: np.ndarray, target_m: float) -> np.ndarray:
+    x = np.asarray(x_m, dtype=float)
+    distances = np.abs(x - float(target_m))
+    finite = np.isfinite(distances)
+    if not np.any(finite):
+        return np.zeros_like(x, dtype=bool)
+
+    dmin = float(np.nanmin(distances[finite]))
+    # Tight absolute tolerance plus a scale-aware floor.  This selects all nodes
+    # in the nearest x-column, not merely one node.
+    atol = max(1.0e-15, 1.0e-9 * max(float(np.nanmax(np.abs(x[finite]))), 1.0e-12))
+    return finite & (distances <= dmin + atol)
 
 
 def _summary_scalars(summary: Mapping[str, Any]) -> dict[str, Any]:
@@ -429,6 +531,7 @@ def _summary_scalars(summary: Mapping[str, Any]) -> dict[str, Any]:
     continuity = _as_mapping(solver.get("continuity", {}))
     thermal_stationarity = _as_mapping(solver.get("thermal_stationarity", {}))
     thermal_runtime = _as_mapping(solver.get("thermal_runtime", {}))
+
     keys = [
         "first_magic_ready",
         "accepted_steps",
@@ -440,6 +543,7 @@ def _summary_scalars(summary: Mapping[str, Any]) -> dict[str, Any]:
         "normal_current_fraction_max",
         "usadel_current_backend",
     ]
+
     out = {key: solver.get(key) for key in keys if key in solver}
     out["stationarity_passes"] = stationarity.get("passes")
     out["contact_recovery_passes"] = contact.get("passes")

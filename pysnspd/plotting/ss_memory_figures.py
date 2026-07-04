@@ -1,18 +1,7 @@
 """Additional memory-quality stationary SS plots.
 
-This module is plotting-only. It complements the existing
-``02_plot_ss_run.py`` pipeline without replacing any current figure.
-
-Added figures
--------------
-1. ``ss_final_center_current_maps.png``
-   Three final-state central-strip colormaps (100 nm centrales in x):
-   ``j_s^Us``, ``j_n`` and ``j_s^Us + j_n``.  All share one colorbar and are
-   normalized to ``j_avg``.  Current arrows are overlaid.
-
-2. ``ss_snapshot_thermal_scalars.png``
-   Three horizontal time-series panels: temperatures, powers and energies.
-   Spatial means are solid and spatial maxima are dashed.
+This module is plotting-only. It complements the existing ``02_plot_ss_run.py``
+pipeline without replacing any current figure.
 """
 
 from __future__ import annotations
@@ -23,6 +12,7 @@ from typing import Any, Mapping
 import numpy as np
 
 import matplotlib
+
 matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
@@ -37,11 +27,7 @@ def make_ss_memory_figures(
     dpi: int = 480,
     center_width_nm: float = 100.0,
 ) -> dict[str, Path]:
-    """Create additional memory-quality SS figures.
-
-    Missing snapshot diagnostic files are treated as non-errors so that the
-    normal SS plotting pipeline remains backward compatible with older runs.
-    """
+    """Create additional memory-quality SS figures."""
 
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -252,7 +238,14 @@ def _load_npz_if_exists(path: Path) -> dict[str, np.ndarray]:
 def _triangulation(mesh: Any, dataset: Mapping[str, Any]) -> mtri.Triangulation:
     x = np.asarray(dataset.get("x_nm", np.asarray(mesh.nodes)[:, 0] * 1.0e9), dtype=float)
     y = np.asarray(dataset.get("y_nm", np.asarray(mesh.nodes)[:, 1] * 1.0e9), dtype=float)
-    triangles = np.asarray(dataset.get("triangles", getattr(mesh, "triangles", mesh.elements)), dtype=np.int64)
+    if "triangles" in dataset:
+        triangles = np.asarray(dataset["triangles"], dtype=np.int64)
+    elif hasattr(mesh, "triangles"):
+        triangles = np.asarray(mesh.triangles, dtype=np.int64)
+    elif hasattr(mesh, "elements"):
+        triangles = np.asarray(mesh.elements, dtype=np.int64)
+    else:
+        raise ValueError("cannot build triangulation: missing triangles/elements")
     return mtri.Triangulation(x, y, triangles)
 
 
@@ -469,7 +462,7 @@ def _plot_mean_max_series(
     with np.errstate(invalid="ignore"):
         mean_vals = np.nanmean(np.where(finite, data, np.nan), axis=1)
         max_vals = np.nanmax(np.where(finite, data, np.nan), axis=1)
-    line, = ax.plot(t_ps, mean_vals, label=rf"mean {label}")
+    (line,) = ax.plot(t_ps, mean_vals, label=rf"mean {label}")
     ax.plot(t_ps, max_vals, linestyle="--", color=line.get_color(), label=rf"max {label}")
 
 
