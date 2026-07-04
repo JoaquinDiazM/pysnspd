@@ -114,6 +114,12 @@ def plot_ss_final_center_current_maps(
         (jtot_mag / jscale, jtot_x / jscale, jtot_y / jscale),
     ]
 
+    panel_labels = [
+        r"$j_s^{\mathrm{Us}}$",
+        r"$j_n$",
+        r"$j_{\mathrm{tot}}$",
+    ]
+
     finite_for_scale: list[np.ndarray] = []
     for mag, _, _ in families:
         vis = np.asarray(mag[crop_mask], dtype=float)
@@ -132,7 +138,13 @@ def plot_ss_final_center_current_maps(
     mappable = None
     arrow_length_nm = 0.10 * max(ylim[1] - ylim[0], 1.0)
     for idx, (ax, (mag, jx, jy)) in enumerate(zip(axes, families)):
-        mappable = ax.tripcolor(tri, np.asarray(mag, dtype=float), shading="gouraud", vmin=0.0, vmax=vmax)
+        mappable = ax.tripcolor(
+            tri,
+            np.asarray(mag, dtype=float),
+            shading="gouraud",
+            vmin=0.0,
+            vmax=vmax,
+        )
         _overlay_current_arrows(
             ax,
             x_nm,
@@ -142,6 +154,26 @@ def plot_ss_final_center_current_maps(
             crop_mask,
             arrow_length_nm=arrow_length_nm,
         )
+
+        ax.text(
+            0.03,
+            0.97,
+            panel_labels[idx],
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            color="white",
+            fontsize=14,
+            fontweight="bold",
+            bbox=dict(
+                boxstyle="round,pad=0.22",
+                facecolor="#ff0000",
+                edgecolor="#ff0000",
+                linewidth=0.0,
+            ),
+            zorder=10,
+        )
+
         ax.set_xlim(*xlim)
         ax.set_ylim(*ylim)
         ax.set_aspect("equal", adjustable="box")
@@ -170,9 +202,9 @@ def plot_ss_snapshot_thermal_scalars(
 ) -> Path:
     """Plot compact memory-ready thermal scalar diagnostics.
 
-    The power panel uses the same runtime-history power envelopes used by
-    ``plot_ss_snapshot_runtime_metrics`` whenever those histories are present.
-    Snapshot maps are kept only as fallbacks.
+    - Temperaturas: mean + max.
+    - Potencias: solo máximos, con línea sólida.
+    - Energías: medias espaciales tipo ss_snapshot_runtime_metrics.
     """
 
     output = _prepare_output(output_path)
@@ -210,7 +242,9 @@ def plot_ss_snapshot_thermal_scalars(
         te_snap = _snapshot_array(snapshots, ("Te_snapshot_K",), shape_like=p_ep)
         tph_snap = _snapshot_array(snapshots, ("Tph_snapshot_K",), shape_like=p_ep)
 
-    # Temperatures: history if present, snapshot fallback.
+    # ------------------------------------------------------------------
+    # Temperaturas: history si existe, fallback snapshot.
+    # ------------------------------------------------------------------
     te_t, te_mean, te_max = _history_or_snapshot_pair(
         dataset,
         t_ps_hist,
@@ -230,7 +264,10 @@ def plot_ss_snapshot_thermal_scalars(
         center_mask=center_mask,
     )
 
-    # Powers: runtime histories first, exactly to match the runtime-metrics panel.
+    # ------------------------------------------------------------------
+    # Potencias: history primero, fallback snapshot.
+    # Queremos conservar SOLO los máximos.
+    # ------------------------------------------------------------------
     pj_t, pj_mean, pj_max = _history_or_snapshot_pair(
         dataset,
         t_ps_hist,
@@ -277,28 +314,29 @@ def plot_ss_snapshot_thermal_scalars(
         smooth_history=True,
     )
 
-    # Energies: copy the data extraction used by
-    # plot_ss_snapshot_runtime_metrics / stored energy diagnostics.
-    # That panel plots spatial means over the full snapshot map, not center-strip
-    # maxima.  We keep the memory-plot visual design, but separate u_e and u_ph
-    # into two y axes because their operating ranges are very different.
+    # ------------------------------------------------------------------
+    # Energías: igual que stored energy diagnostics de
+    # ss_snapshot_runtime_metrics: media espacial del mapa completo.
+    # ------------------------------------------------------------------
     ue_t, ue_mean = _snapshot_mean_series(t_ps_snap, u_e)
     uph_t, uph_mean = _snapshot_mean_series(t_ps_snap, u_ph)
 
     # Colors
     te_color = "tab:blue"
     tph_color = "tab:orange"
-    pj_color = "#d95f02"      # warm orange
-    pdiff_color = "#b2182b"   # warm red
-    pep_color = "#1f78b4"     # cool blue
-    pesc_color = "#1b9e77"    # cool teal
+    pj_color = "#ffa200"
+    pdiff_color = "#ff0000"
+    hot_color = "#ff5100"
+    pep_color = "#7700ff"
+    pesc_color = "#00c3ff"
+    cold_color = "#0011ff"
     ue_color = "tab:blue"
     uph_color = "tab:red"
 
     prethermal_t_ps = 2.0
 
     fig, axes = plt.subplots(1, 3, figsize=(15.6, 4.10), constrained_layout=False)
-    fig.subplots_adjust(left=0.070, right=0.955, bottom=0.18, top=0.86, wspace=0.56)
+    fig.subplots_adjust(left=0.070, right=0.955, bottom=0.18, top=0.86, wspace=0.66)
 
     # ------------------------------------------------------------------
     # 1) Temperatures
@@ -310,54 +348,79 @@ def plot_ss_snapshot_thermal_scalars(
     h_te = _plot_series_pair(ax, te_t, te_mean, te_max, color=te_color, take_abs=False)
     h_tph = _plot_series_pair(ax_r, tph_t, tph_mean, tph_max, color=tph_color, take_abs=False)
 
-    ax.set_xlabel("t [ps]")
-    ax.set_ylabel(r"$T_e$ [K]", color=te_color)
-    ax_r.set_ylabel(r"$T_{ph}$ [K]", color=tph_color, labelpad=10)
-    ax.tick_params(axis="y", colors=te_color)
-    ax_r.tick_params(axis="y", colors=tph_color)
+    ax.set_xlabel("t [ps]", fontsize=14)
+    ax.set_ylabel(r"$T_e$ [K]", color=te_color, fontsize=14)
+    ax_r.set_ylabel(r"$T_{ph}$ [K]", color=tph_color, fontsize=14)
+    ax.tick_params(axis="x", labelsize=14)
+    ax.tick_params(axis="y", colors=te_color, labelsize=14)
+    ax_r.tick_params(axis="y", colors=tph_color, labelsize=14)
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
     _apply_axis_limits(ax, [te_mean, te_max], frac=0.07)
     _apply_axis_limits(ax_r, [tph_mean, tph_max], frac=0.07)
-    _add_legends(
-        ax,
-        variable_handles=[h_te[0], h_tph[0]],
-        variable_labels=[r"$T_e$", r"$T_{ph}$"],
-        variable_ncol=2,
+
+    ax.legend(
+        [
+            Line2D([0], [0], color="black", linestyle="-"),
+            Line2D([0], [0], color="black", linestyle="--"),
+        ],
+        ["mean", "max"],
+        loc="lower right",
+        frameon=False,
+        ncol=2,
+        columnspacing=1.0,
+        handlelength=2.4,
+        borderaxespad=0.4,
+        fontsize=14,
     )
 
     # ------------------------------------------------------------------
     # 2) Powers
+    # SOLO máximos, todos con línea sólida.
     # ------------------------------------------------------------------
     ax = axes[1]
     ax_r = ax.twinx()
     _shade_prethermal(ax, prethermal_t_ps)
 
-    h_pj = _plot_series_pair(ax, pj_t, pj_mean, pj_max, color=pj_color, take_abs=True)
-    h_pd = _plot_series_pair(ax, pdiff_t, pdiff_mean, pdiff_max, color=pdiff_color, take_abs=True)
-    h_pep = _plot_series_pair(ax_r, pep_t, pep_mean, pep_max, color=pep_color, take_abs=True)
-    h_pesc = _plot_series_pair(ax_r, pesc_t, pesc_mean, pesc_max, color=pesc_color, take_abs=True)
+    h_pj = _plot_single_series(ax, pj_t, np.abs(pj_max), color=pj_color)
+    h_pd = _plot_single_series(ax, pdiff_t, np.abs(pdiff_max), color=pdiff_color)
+    h_pep = _plot_single_series(ax_r, pep_t, np.abs(pep_max), color=pep_color)
+    h_pesc = _plot_single_series(ax_r, pesc_t, np.abs(pesc_max), color=pesc_color)
 
-    ax.set_xlabel("t [ps]")
-    ax.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]")
-    ax_r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", labelpad=10)
-    ax.tick_params(axis="y", colors="black")
-    ax_r.tick_params(axis="y", colors="black")
+    ax.set_xlabel("t [ps]", fontsize=14)
+    ax.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]", fontsize=14, color=hot_color)
+    ax_r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", fontsize=14, color=cold_color)
+    ax.tick_params(axis="x", labelsize=14)
+    ax.tick_params(axis="y", colors=hot_color, labelsize=14)
+    ax_r.tick_params(axis="y", colors=cold_color, labelsize=14)
 
     ax.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax))
     ax_r.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax_r))
+
     _autoscale_symlog_axis(ax)
     _autoscale_symlog_axis(ax_r)
+
+    # Forzar que el eje izquierdo llegue al menos hasta 1e12.
+    y0, y1 = ax.get_ylim()
+    yr0, yr1 = ax_r.get_ylim()
+    ax.set_ylim(min(y0, 0.0), max(y1, 1.0e12))
+    ax_r.set_ylim(min(yr0, 0.0), max(yr1,1.0e-7))
 
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
-    _add_legends(
-        ax,
-        variable_handles=[h_pj[0], h_pd[0], h_pep[0], h_pesc[0]],
-        variable_labels=[r"$P_J$", r"$P_{diff}$", r"$P_{ep}$", r"$P_{esc}$"],
-        variable_ncol=4,
+
+    ax.legend(
+        [h_pj, h_pd, h_pep, h_pesc],
+        [r"$P_J$", r"$P_{diff}$", r"$P_{ep}$", r"$P_{esc}$"],
+        loc="lower right",
+        frameon=False,
+        ncol=2,
+        columnspacing=1.1,
+        handlelength=2.5,
+        borderaxespad=0.3,
+        fontsize=14,
     )
 
     # ------------------------------------------------------------------
@@ -367,21 +430,19 @@ def plot_ss_snapshot_thermal_scalars(
     ax_r = ax.twinx()
     _shade_prethermal(ax, prethermal_t_ps)
 
-    h_ue = _plot_single_series(ax, ue_t, ue_mean, color=ue_color)
-    h_uph = _plot_single_series(ax_r, uph_t, uph_mean, color=uph_color)
+    h_uph = _plot_single_series(ax, uph_t, uph_mean, color=uph_color)
+    h_ue = _plot_single_series(ax_r, ue_t, ue_mean, color=ue_color)
 
-    ax.set_xlabel("t [ps]")
-    ax.set_ylabel(r"$u_e$ [J m$^{-3}$]", color=ue_color)
-    ax_r.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color=uph_color, labelpad=10)
-    ax.tick_params(axis="y", colors=ue_color)
-    ax_r.tick_params(axis="y", colors=uph_color)
+    ax.set_xlabel("t [ps]", fontsize=14)
+    ax.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color=uph_color, fontsize=14)
+    ax_r.set_ylabel(r"$u_e$ [J m$^{-3}$]", color=ue_color, fontsize=14)
 
-    # u_e can be negative in the current normalization; center the axis around
-    # the negative operating value rather than forcing log/symlog.  u_ph is
-    # shown independently on the right axis because it lives close to zero and
-    # varies on a much smaller absolute scale.
-    _center_linear_axis(ax, [ue_mean], frac=0.10)
-    _center_linear_axis(ax_r, [uph_mean], frac=0.25)
+    ax.tick_params(axis="x", labelsize=14)
+    ax.tick_params(axis="y", colors=uph_color, labelsize=14)
+    ax_r.tick_params(axis="y", colors=ue_color, labelsize=14)
+
+    _center_linear_axis(ax, [uph_mean], frac=0.25)
+    _center_linear_axis(ax_r, [ue_mean], frac=0.10)
 
     fmt_right = mticker.ScalarFormatter(useMathText=True)
     fmt_right.set_scientific(True)
@@ -389,17 +450,11 @@ def plot_ss_snapshot_thermal_scalars(
     fmt_right.set_useOffset(True)
     ax_r.yaxis.set_major_formatter(fmt_right)
     ax_r.yaxis.set_major_locator(mticker.MaxNLocator(nbins=4))
-    ax_r.yaxis.get_offset_text().set_color(uph_color)
+    ax_r.yaxis.get_offset_text().set_color(ue_color)
 
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
-    _add_variable_legend(
-        ax,
-        variable_handles=[h_ue, h_uph],
-        variable_labels=[r"$u_e$", r"$u_{ph}$"],
-        variable_ncol=2,
-    )
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
