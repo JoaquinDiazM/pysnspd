@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import matplotlib.tri as mtri
 
+from pysnspd.plotting.ss_power_figures import _snapshot_diffusion_power_density
+
 
 def make_ss_memory_figures(
     *,
@@ -165,213 +167,178 @@ def plot_ss_snapshot_thermal_scalars(
     center_width_nm: float = 100.0,
     dpi: int = 480,
 ) -> Path:
+    """Plot compact memory-ready thermal scalar diagnostics.
+
+    Power extraction intentionally mirrors ``plot_ss_snapshot_runtime_metrics``:
+    ``P_total_snapshot_W_m3``, ``joule_snapshot_W_m3``, ``P_esc_snapshot_W_m3``
+    and the same finite-volume ``_snapshot_diffusion_power_density`` helper.
+    """
+
     output = _prepare_output(output_path)
+
+    p_ep = _snapshot_array(power, ("P_total_snapshot_W_m3",))
+    if p_ep.size == 0:
+        raise ValueError("snapshot_power_energy_diagnostics.npz lacks P_total_snapshot_W_m3")
+
+    joule = _snapshot_array(power, ("joule_snapshot_W_m3",), shape_like=p_ep)
+    p_esc = _snapshot_array(power, ("P_esc_snapshot_W_m3",), shape_like=p_ep)
+    u_e = _snapshot_array(power, ("u_e_snapshot_J_m3",), shape_like=p_ep)
+    u_ph = _snapshot_array(power, ("u_ph_snapshot_J_m3",), shape_like=p_ep)
+
+    p_diff = _snapshot_diffusion_power_density(
+        None,
+        snapshots=snapshots,
+        power=power,
+        dataset=dataset,
+        shape_like=p_ep,
+    )
+
+    t_ps_snap = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=p_ep.shape[0])
+    t_ps_hist = np.asarray(dataset.get("t_ps", []), dtype=float).reshape(-1)
+    use_hist = t_ps_hist.size > 0
 
     x_nm = np.asarray(dataset.get("x_nm", []), dtype=float)
     center_mask = _center_mask_from_x(x_nm, center_width_nm=center_width_nm)
+    if center_mask.size != p_ep.shape[1]:
+        center_mask = np.resize(center_mask.astype(bool), p_ep.shape[1])
     if not np.any(center_mask):
-        center_mask = np.ones_like(x_nm, dtype=bool)
+        center_mask = np.ones(p_ep.shape[1], dtype=bool)
 
-    t_hist = np.asarray(dataset.get("t_ps", []), dtype=float).reshape(-1)
-    t_snap = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=_infer_snapshot_count(power, snapshots))
+    te_snap = np.empty((0, 0), dtype=float)
+    tph_snap = np.empty((0, 0), dtype=float)
+    if snapshots:
+        te_snap = _snapshot_array(snapshots, ("Te_snapshot_K",), shape_like=p_ep)
+        tph_snap = _snapshot_array(snapshots, ("Tph_snapshot_K",), shape_like=p_ep)
 
-    # Central-strip snapshot statistics
-    Te_mean, Te_max, Te_t = _snapshot_series_pair(snapshots, "Te_snapshot_K", t_snap, center_mask)
-    Tph_mean, Tph_max, Tph_t = _snapshot_series_pair(snapshots, "Tph_snapshot_K", t_snap, center_mask)
-    PJ_mean, PJ_max, PJ_t = _snapshot_series_pair(power, "joule_snapshot_W_m3", t_snap, center_mask)
-    Pep_mean, Pep_max, Pep_t = _snapshot_series_pair(power, "P_total_snapshot_W_m3", t_snap, center_mask)
-    Pesc_mean, Pesc_max, Pesc_t = _snapshot_series_pair(power, "P_esc_snapshot_W_m3", t_snap, center_mask)
-    ue_mean, ue_max, ue_t = _snapshot_series_pair(power, "u_e_snapshot_J_m3", t_snap, center_mask)
-    uph_mean, uph_max, uph_t = _snapshot_series_pair(power, "u_ph_snapshot_J_m3", t_snap, center_mask)
-
-    # Diffusion: keep the smoother previous mean/max histories, but filter
-    # high-frequency oscillations as requested.
-    Pdiff_t, Pdiff_mean, Pdiff_max = _history_series_pair(
+    # Temperatures: exactly like runtime_metrics: use history when present.
+    te_t, te_mean, te_max = _history_or_snapshot_pair(
         dataset,
+        t_ps_hist,
+        mean_key="thermal_mean_Te_K_history",
+        max_key="thermal_max_Te_K_history",
+        snapshot_t=t_ps_snap,
+        snapshot_values=te_snap,
+        center_mask=center_mask,
+        prefer_history=use_hist,
+    )
+    tph_t, tph_mean, tph_max = _history_or_snapshot_pair(
+        dataset,
+        t_ps_hist,
+        mean_key="thermal_mean_Tph_K_history",
+        max_key="thermal_max_Tph_K_history",
+        snapshot_t=t_ps_snap,
+        snapshot_values=tph_snap,
+        center_mask=center_mask,
+        prefer_history=use_hist,
+    )
+
+    # Powers: extracted from the same snapshot arrays/runtime helper used by
+    # plot_ss_snapshot_runtime_metrics.  This avoids the previous bad-history
+    # broadcasting bug and keeps the physical definitions consistent.
+    pj_t, pj_mean, pj_max = _snapshot_pair(t_ps_snap, joule, center_mask, max_mode="max")
+    pep_t, pep_mean, pep_max = _snapshot_pair(t_ps_snap, p_ep, center_mask, max_mode="max_abs")
+    pesc_t, pesc_mean, pesc_max = _snapshot_pair(t_ps_snap, p_esc, center_mask, max_mode="max_abs")
+    pdiff_t, pdiff_mean, pdiff_max = _snapshot_pair(t_ps_snap, p_diff, center_mask, max_mode="max_abs")
+
+    # Keep the "old" diffusion envelope only if it is well-formed, and filter it.
+    # Otherwise we stay with the robust snapshot/runtime-metrics definition above.
+    old_pdiff_t, old_pdiff_mean, old_pdiff_max = _history_pair_if_compatible(
+        dataset,
+        t_ps_hist,
         "thermal_mean_P_diff_W_m3_history",
         "thermal_max_P_diff_W_m3_history",
-        t_hist,
     )
-    Pdiff_t, Pdiff_mean = _filter_history_series(Pdiff_t, Pdiff_mean)
-    _, Pdiff_max = _filter_history_series(Pdiff_t, Pdiff_max)
+    if old_pdiff_t.size and old_pdiff_mean.size and old_pdiff_max.size:
+        pdiff_t, pdiff_mean = _filter_history_series(old_pdiff_t, old_pdiff_mean)
+        pdiff_t_max, pdiff_max = _filter_history_series(old_pdiff_t, old_pdiff_max)
+        if pdiff_t_max.size == pdiff_max.size:
+            # Use a common plotted x only when the filtering returned compatible arrays.
+            pass
 
-    # Fallbacks if snapshots/histories are missing.
-    if Te_mean.size == 0:
-        Te_t, Te_mean, Te_max = _history_series_pair(dataset, "thermal_mean_Te_K_history", "thermal_max_Te_K_history", t_hist)
-    if Tph_mean.size == 0:
-        Tph_t, Tph_mean, Tph_max = _history_series_pair(dataset, "thermal_mean_Tph_K_history", "thermal_max_Tph_K_history", t_hist)
-    if PJ_mean.size == 0:
-        PJ_t, PJ_mean, PJ_max = _history_series_pair(dataset, "thermal_mean_P_J_W_m3_history", "thermal_max_P_J_W_m3_history", t_hist)
-    if Pep_mean.size == 0:
-        Pep_t, Pep_mean, Pep_max = _history_series_pair(dataset, "thermal_mean_P_ep_W_m3_history", "thermal_max_P_ep_W_m3_history", t_hist)
-    if Pesc_mean.size == 0:
-        Pesc_t, Pesc_mean, Pesc_max = _history_series_pair(dataset, "thermal_mean_P_esc_W_m3_history", "thermal_max_P_esc_W_m3_history", t_hist)
-    if ue_mean.size == 0:
-        ue_t, ue_mean, ue_max = _history_series_pair(dataset, "thermal_mean_u_e_J_m3_history", "thermal_max_u_e_J_m3_history", t_hist)
-    if uph_mean.size == 0:
-        uph_t, uph_mean, uph_max = _history_series_pair(dataset, "thermal_mean_u_ph_J_m3_history", "thermal_max_u_ph_J_m3_history", t_hist)
+    # Energies: snapshot central strip, same stored energy arrays as runtime_metrics.
+    ue_t, ue_mean, ue_max = _snapshot_pair(t_ps_snap, u_e, center_mask, max_mode="max")
+    uph_t, uph_mean, uph_max = _snapshot_pair(t_ps_snap, u_ph, center_mask, max_mode="max")
 
-    fig, axes = plt.subplots(1, 3, figsize=(15.2, 4.1), constrained_layout=False)
+    fig, axes = plt.subplots(1, 3, figsize=(15.3, 4.05), constrained_layout=False)
     fig.subplots_adjust(left=0.065, right=0.935, bottom=0.18, top=0.86, wspace=0.55)
 
     # ------------------------------------------------------------------
-    # 1) Temperatures: twin y-axis
+    # Temperatures: independent axes for electron and phonon temperatures.
     # ------------------------------------------------------------------
-    ax1 = axes[0]
-    ax1r = ax1.twinx()
-
-    h1 = _plot_series_pair(
-        ax1,
-        t_ps=Te_t,
-        mean_vals=Te_mean,
-        max_vals=Te_max,
-        color="tab:blue",
-        label_mean=r"$T_e$",
-        label_max=r"$T_e$",
-    )
-    h2 = _plot_series_pair(
-        ax1r,
-        t_ps=Tph_t,
-        mean_vals=Tph_mean,
-        max_vals=Tph_max,
-        color="tab:orange",
-        label_mean=r"$T_{ph}$",
-        label_max=r"$T_{ph}$",
-    )
-
-    ax1.set_xlabel("t [ps]")
-    ax1.set_ylabel(r"$T_e$ [K]", color="tab:blue")
-    ax1r.set_ylabel(r"$T_{ph}$ [K]", color="tab:orange", labelpad=10)
-    ax1.tick_params(axis="y", colors="tab:blue")
-    ax1r.tick_params(axis="y", colors="tab:orange")
-    ax1.grid(False)
-    ax1r.grid(False)
-    _clean_twin_axis(ax1, ax1r)
-    _apply_temperature_axis_limits(ax1, [Te_mean, Te_max])
-    _apply_temperature_axis_limits(ax1r, [Tph_mean, Tph_max])
-    _add_dual_legend(
-        ax1,
-        variable_handles=[h1[0], h2[0]],
+    ax = axes[0]
+    ax_r = ax.twinx()
+    h_te = _plot_series_pair(ax, te_t, te_mean, te_max, color="tab:blue")
+    h_tph = _plot_series_pair(ax_r, tph_t, tph_mean, tph_max, color="tab:orange")
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$T_e$ [K]", color="tab:blue")
+    ax_r.set_ylabel(r"$T_{ph}$ [K]", color="tab:orange", labelpad=10)
+    ax.tick_params(axis="y", colors="tab:blue")
+    ax_r.tick_params(axis="y", colors="tab:orange")
+    ax.grid(False)
+    ax_r.grid(False)
+    _clean_twin_axis(ax, ax_r)
+    _apply_axis_limits(ax, [te_mean, te_max], frac=0.07)
+    _apply_axis_limits(ax_r, [tph_mean, tph_max], frac=0.07)
+    _add_legends(
+        ax,
+        variable_handles=[h_te[0], h_tph[0]],
         variable_labels=[r"$T_e$", r"$T_{ph}$"],
-        style_loc="upper right",
-        variable_loc="upper center",
         variable_ncol=2,
     )
 
     # ------------------------------------------------------------------
-    # 2) Powers: twin y-axis
-    # left  -> P_J and P_diff
-    # right -> P_ep and P_esc
+    # Powers: left PJ/Pdiff, right Pep/Pesc.
     # ------------------------------------------------------------------
-    ax2 = axes[1]
-    ax2r = ax2.twinx()
+    ax = axes[1]
+    ax_r = ax.twinx()
+    h_pj = _plot_series_pair(ax, pj_t, pj_mean, pj_max, color="tab:blue", take_abs=False)
+    h_pd = _plot_series_pair(ax, pdiff_t, pdiff_mean, pdiff_max, color="tab:red", take_abs=True)
+    h_pep = _plot_series_pair(ax_r, pep_t, pep_mean, pep_max, color="tab:orange", take_abs=True)
+    h_pesc = _plot_series_pair(ax_r, pesc_t, pesc_mean, pesc_max, color="tab:green", take_abs=True)
 
-    hPJ = _plot_series_pair(
-        ax2,
-        t_ps=PJ_t,
-        mean_vals=PJ_mean,
-        max_vals=PJ_max,
-        color="tab:blue",
-        label_mean=r"$P_J$",
-        label_max=r"$P_J$",
-        take_abs=False,
-    )
-    hPd = _plot_series_pair(
-        ax2,
-        t_ps=Pdiff_t,
-        mean_vals=Pdiff_mean,
-        max_vals=Pdiff_max,
-        color="tab:red",
-        label_mean=r"$P_{diff}$",
-        label_max=r"$P_{diff}$",
-        take_abs=True,
-        force_history_smoothing=True,
-    )
-    hPep = _plot_series_pair(
-        ax2r,
-        t_ps=Pep_t,
-        mean_vals=Pep_mean,
-        max_vals=Pep_max,
-        color="tab:orange",
-        label_mean=r"$P_{ep}$",
-        label_max=r"$P_{ep}$",
-        take_abs=True,
-    )
-    hPesc = _plot_series_pair(
-        ax2r,
-        t_ps=Pesc_t,
-        mean_vals=Pesc_mean,
-        max_vals=Pesc_max,
-        color="tab:green",
-        label_mean=r"$P_{esc}$",
-        label_max=r"$P_{esc}$",
-        take_abs=True,
-    )
-
-    ax2.set_xlabel("t [ps]")
-    ax2.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]", color="black")
-    ax2r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", color="black", labelpad=10)
-    ax2.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax2))
-    ax2r.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax2r))
-    ax2.grid(False)
-    ax2r.grid(False)
-    _clean_twin_axis(ax2, ax2r)
-    _add_dual_legend(
-        ax2,
-        variable_handles=[hPJ[0], hPd[0], hPep[0], hPesc[0]],
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]")
+    ax_r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", labelpad=10)
+    ax.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax))
+    ax_r.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax_r))
+    ax.grid(False)
+    ax_r.grid(False)
+    _clean_twin_axis(ax, ax_r)
+    _add_legends(
+        ax,
+        variable_handles=[h_pj[0], h_pd[0], h_pep[0], h_pesc[0]],
         variable_labels=[r"$P_J$", r"$P_{diff}$", r"$P_{ep}$", r"$P_{esc}$"],
-        style_loc="upper right",
-        variable_loc="upper center",
         variable_ncol=4,
     )
 
     # ------------------------------------------------------------------
-    # 3) Energies: twin y-axis
+    # Energies: independent axes for electronic and phonon energy density.
     # ------------------------------------------------------------------
-    ax3 = axes[2]
-    ax3r = ax3.twinx()
+    ax = axes[2]
+    ax_r = ax.twinx()
+    h_ue = _plot_series_pair(ax, ue_t, ue_mean, ue_max, color="tab:blue", take_abs=False)
+    h_uph = _plot_series_pair(ax_r, uph_t, uph_mean, uph_max, color="tab:red", take_abs=False)
 
-    hue = _plot_series_pair(
-        ax3,
-        t_ps=ue_t,
-        mean_vals=ue_mean,
-        max_vals=ue_max,
-        color="tab:blue",
-        label_mean=r"$u_e$",
-        label_max=r"$u_e$",
-    )
-    huph = _plot_series_pair(
-        ax3r,
-        t_ps=uph_t,
-        mean_vals=uph_mean,
-        max_vals=uph_max,
-        color="tab:red",
-        label_mean=r"$u_{ph}$",
-        label_max=r"$u_{ph}$",
-    )
-
-    ax3.set_xlabel("t [ps]")
-    ax3.set_ylabel(r"$u_e$ [J m$^{-3}$]", color="tab:blue")
-    ax3r.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color="tab:red", labelpad=10)
-    ax3.tick_params(axis="y", colors="tab:blue")
-    ax3r.tick_params(axis="y", colors="tab:red")
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$u_e$ [J m$^{-3}$]", color="tab:blue")
+    ax_r.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color="tab:red", labelpad=10)
+    ax.tick_params(axis="y", colors="tab:blue")
+    ax_r.tick_params(axis="y", colors="tab:red")
     if _all_positive_arrays([ue_mean, ue_max]):
-        ax3.set_yscale("log")
+        ax.set_yscale("log")
     elif _has_nonzero_arrays([ue_mean, ue_max]):
-        ax3.set_yscale("symlog", linthresh=_linthresh_from_arrays([ue_mean, ue_max]))
+        ax.set_yscale("symlog", linthresh=_linthresh_from_arrays([ue_mean, ue_max]))
     if _all_positive_arrays([uph_mean, uph_max]):
-        ax3r.set_yscale("log")
+        ax_r.set_yscale("log")
     elif _has_nonzero_arrays([uph_mean, uph_max]):
-        ax3r.set_yscale("symlog", linthresh=_linthresh_from_arrays([uph_mean, uph_max]))
-    ax3.grid(False)
-    ax3r.grid(False)
-    _clean_twin_axis(ax3, ax3r)
-    _add_dual_legend(
-        ax3,
-        variable_handles=[hue[0], huph[0]],
+        ax_r.set_yscale("symlog", linthresh=_linthresh_from_arrays([uph_mean, uph_max]))
+    ax.grid(False)
+    ax_r.grid(False)
+    _clean_twin_axis(ax, ax_r)
+    _add_legends(
+        ax,
+        variable_handles=[h_ue[0], h_uph[0]],
         variable_labels=[r"$u_e$", r"$u_{ph}$"],
-        style_loc="upper right",
-        variable_loc="upper center",
         variable_ncol=2,
     )
 
@@ -402,20 +369,16 @@ def plot_ss_final_center_scalar_maps(
         (np.asarray(dataset.get("Tph_K", np.zeros_like(x_nm)), dtype=float), r"$T_{ph}$ [K]"),
     ]
 
-    # Horizontal colorbars above each subplot avoid the previous side-overlap.
     fig = plt.figure(figsize=(17.6, 3.65), constrained_layout=False)
-    gs = fig.add_gridspec(
-        2,
-        5,
-        height_ratios=[0.10, 1.00],
-        wspace=0.18,
-        hspace=0.10,
-    )
+    gs = fig.add_gridspec(2, 5, height_ratios=[0.10, 1.00], wspace=0.18, hspace=0.10)
     caxes = [fig.add_subplot(gs[0, k]) for k in range(5)]
     axes = [fig.add_subplot(gs[1, k]) for k in range(5)]
 
     for idx, (ax, cax, (values, cbar_label)) in enumerate(zip(axes, caxes, fields)):
         values = np.asarray(values, dtype=float)
+        if values.size != x_nm.size:
+            values = np.resize(values, x_nm.size)
+
         vis = values[crop_mask]
         vis = vis[np.isfinite(vis)]
         if vis.size == 0:
@@ -423,7 +386,9 @@ def plot_ss_final_center_scalar_maps(
         vmin = float(np.nanmin(vis))
         vmax = float(np.nanmax(vis))
         if np.isclose(vmin, vmax):
-            vmax = vmin + 1.0
+            pad = max(1.0e-12, 0.02 * max(abs(vmin), 1.0))
+            vmin -= pad
+            vmax += pad
 
         mappable = ax.tripcolor(tri, values, shading="gouraud", vmin=vmin, vmax=vmax)
         ax.set_xlim(*xlim)
@@ -483,6 +448,8 @@ def _javg(dataset: Mapping[str, Any], snapshots: Mapping[str, np.ndarray] | None
 def _snapshot_array(
     data: Mapping[str, np.ndarray] | None,
     keys: str | tuple[str, ...],
+    *,
+    shape_like: np.ndarray | None = None,
 ) -> np.ndarray:
     if isinstance(keys, str):
         keys = (keys,)
@@ -493,6 +460,8 @@ def _snapshot_array(
                 if arr.ndim == 1:
                     arr = arr[None, :]
                 return arr
+    if shape_like is not None and np.asarray(shape_like).size:
+        return np.zeros_like(np.asarray(shape_like, dtype=float))
     return np.empty((0, 0), dtype=float)
 
 
@@ -632,13 +601,14 @@ def _has_field_map_data(dataset: Mapping[str, Any]) -> bool:
     return bool(np.asarray(dataset.get("delta_over_delta0", []), dtype=float).size)
 
 
-def _snapshot_series_pair(
-    data: Mapping[str, np.ndarray] | None,
-    keys: str | tuple[str, ...],
+def _snapshot_pair(
     t_ps: np.ndarray,
+    values: np.ndarray,
     center_mask: np.ndarray,
+    *,
+    max_mode: str,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    arr = _snapshot_array(data, keys)
+    arr = np.asarray(values, dtype=float)
     if arr.size == 0:
         return np.array([], dtype=float), np.array([], dtype=float), np.array([], dtype=float)
     if arr.ndim == 1:
@@ -647,34 +617,55 @@ def _snapshot_series_pair(
         center_mask = np.resize(center_mask.astype(bool), arr.shape[1])
     if not np.any(center_mask):
         center_mask = np.ones(arr.shape[1], dtype=bool)
-    sub = np.asarray(arr[:, center_mask], dtype=float)
+
+    sub = arr[:, center_mask]
     mean_vals = np.nanmean(sub, axis=1)
-    max_vals = np.nanmax(sub, axis=1)
+    if max_mode == "max_abs":
+        max_vals = np.nanmax(np.abs(sub), axis=1)
+    elif max_mode == "max":
+        max_vals = np.nanmax(sub, axis=1)
+    else:
+        raise ValueError(f"unknown max_mode: {max_mode}")
+
     t = np.asarray(t_ps, dtype=float).reshape(-1)
-    if t.size != sub.shape[0]:
-        t = np.resize(t, sub.shape[0])
-    return mean_vals, max_vals, t
+    if t.size != arr.shape[0]:
+        t = np.resize(t, arr.shape[0])
+    return t, mean_vals, max_vals
 
 
-def _history_series_pair(
+def _history_or_snapshot_pair(
     dataset: Mapping[str, Any],
+    t_hist: np.ndarray,
+    *,
     mean_key: str,
     max_key: str,
-    t_ps: np.ndarray,
+    snapshot_t: np.ndarray,
+    snapshot_values: np.ndarray,
+    center_mask: np.ndarray,
+    prefer_history: bool,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    if prefer_history:
+        t, mean_vals, max_vals = _history_pair_if_compatible(dataset, t_hist, mean_key, max_key)
+        if t.size:
+            return t, mean_vals, max_vals
+    return _snapshot_pair(snapshot_t, snapshot_values, center_mask, max_mode="max")
+
+
+def _history_pair_if_compatible(
+    dataset: Mapping[str, Any],
+    t_hist: np.ndarray,
+    mean_key: str,
+    max_key: str,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    t = np.asarray(t_hist, dtype=float).reshape(-1)
     mean_vals = np.asarray(dataset.get(mean_key, []), dtype=float).reshape(-1)
     max_vals = np.asarray(dataset.get(max_key, []), dtype=float).reshape(-1)
-    t = np.asarray(t_ps, dtype=float).reshape(-1)
-    n = max(mean_vals.size, max_vals.size)
-    if n == 0:
+    if t.size == 0 or mean_vals.size == 0 or max_vals.size == 0:
         return np.array([], dtype=float), np.array([], dtype=float), np.array([], dtype=float)
-    if t.size != n:
-        t = np.resize(t, n)
-    if mean_vals.size != n:
-        mean_vals = np.resize(mean_vals, n)
-    if max_vals.size != n:
-        max_vals = np.resize(max_vals, n)
-    return t, mean_vals, max_vals
+    n = min(t.size, mean_vals.size, max_vals.size)
+    if n <= 1:
+        return np.array([], dtype=float), np.array([], dtype=float), np.array([], dtype=float)
+    return t[:n], mean_vals[:n], max_vals[:n]
 
 
 def _overlay_current_arrows(
@@ -721,65 +712,70 @@ def _overlay_current_arrows(
 
 def _plot_series_pair(
     ax,
-    *,
     t_ps: np.ndarray,
     mean_vals: np.ndarray,
     max_vals: np.ndarray,
+    *,
     color: str,
-    label_mean: str,
-    label_max: str,
     take_abs: bool = False,
-    force_history_smoothing: bool = False,
 ):
     t = np.asarray(t_ps, dtype=float).reshape(-1)
     mean_arr = np.asarray(mean_vals, dtype=float).reshape(-1)
     max_arr = np.asarray(max_vals, dtype=float).reshape(-1)
-    if mean_arr.size == 0 and max_arr.size == 0:
-        empty1, = ax.plot([], [], color=color, linestyle="-", label=label_mean)
-        empty2, = ax.plot([], [], color=color, linestyle="--", label=label_max)
-        return empty1, empty2
 
-    n = max(mean_arr.size, max_arr.size)
-    if t.size != n:
-        t = np.resize(t, n)
-    if mean_arr.size != n:
-        mean_arr = np.resize(mean_arr, n)
-    if max_arr.size != n:
-        max_arr = np.resize(max_arr, n)
+    if mean_arr.size == 0 and max_arr.size == 0:
+        h1, = ax.plot([], [], color=color, linestyle="-")
+        h2, = ax.plot([], [], color=color, linestyle="--")
+        return h1, h2
+
+    n = min(t.size if t.size else max(mean_arr.size, max_arr.size), mean_arr.size, max_arr.size)
+    if n <= 1:
+        h1, = ax.plot(t[:n], mean_arr[:n], color=color, linestyle="-")
+        h2, = ax.plot(t[:n], max_arr[:n], color=color, linestyle="--")
+        return h1, h2
+
+    t = t[:n]
+    mean_arr = mean_arr[:n]
+    max_arr = max_arr[:n]
+
     if take_abs:
         mean_arr = np.abs(mean_arr)
         max_arr = np.abs(max_arr)
 
-    if force_history_smoothing:
-        t_mean, y_mean = _filter_history_series(t, mean_arr)
-        t_max, y_max = _filter_history_series(t, max_arr)
-    else:
-        t_mean, y_mean = _smart_smooth_series(t, mean_arr)
-        t_max, y_max = _smart_smooth_series(t, max_arr)
+    t_mean, y_mean = _smooth_series(t, mean_arr)
+    t_max, y_max = _smooth_series(t, max_arr)
 
-    h_mean, = ax.plot(t_mean, y_mean, color=color, linestyle="-", label=label_mean)
-    h_max, = ax.plot(t_max, y_max, color=color, linestyle="--", label=label_max)
+    h_mean, = ax.plot(t_mean, y_mean, color=color, linestyle="-")
+    h_max, = ax.plot(t_max, y_max, color=color, linestyle="--")
     return h_mean, h_max
 
 
-def _smart_smooth_series(t: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def _smooth_series(t: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     t = np.asarray(t, dtype=float).reshape(-1)
     y = np.asarray(y, dtype=float).reshape(-1)
+    n = min(t.size, y.size)
+    if n <= 1:
+        return t[:n], y[:n]
+    t = t[:n]
+    y = y[:n]
+
     mask = np.isfinite(t) & np.isfinite(y)
     if np.count_nonzero(mask) < 2:
         return t[mask], y[mask]
     t = t[mask]
     y = y[mask]
+
     order = np.argsort(t)
     t = t[order]
     y = y[order]
     t, unique_idx = np.unique(t, return_index=True)
     y = y[unique_idx]
+
     if t.size < 3:
         return t, y
-    if t.size < 7:
+    if t.size < 12:
         return _monotone_cubic_smooth(t, y, n_dense=320)
-    return _filter_history_series(t, y, prefer_dense=False)
+    return _filter_history_series(t, y)
 
 
 def _monotone_cubic_smooth(t: np.ndarray, y: np.ndarray, *, n_dense: int = 300) -> tuple[np.ndarray, np.ndarray]:
@@ -822,28 +818,29 @@ def _monotone_cubic_smooth(t: np.ndarray, y: np.ndarray, *, n_dense: int = 300) 
     return td, yd
 
 
-def _filter_history_series(
-    t: np.ndarray,
-    y: np.ndarray,
-    *,
-    prefer_dense: bool = True,
-) -> tuple[np.ndarray, np.ndarray]:
+def _filter_history_series(t: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     t = np.asarray(t, dtype=float).reshape(-1)
     y = np.asarray(y, dtype=float).reshape(-1)
+    n = min(t.size, y.size)
+    if n <= 1:
+        return t[:n], y[:n]
+    t = t[:n]
+    y = y[:n]
+
     mask = np.isfinite(t) & np.isfinite(y)
     if np.count_nonzero(mask) < 2:
         return t[mask], y[mask]
     t = t[mask]
     y = y[mask]
+
     order = np.argsort(t)
     t = t[order]
     y = y[order]
 
     n = t.size
-    if n < 5:
+    if n < 7:
         return _monotone_cubic_smooth(t, y, n_dense=280)
 
-    # moving-average filter with scale-aware window
     win = max(5, int(n // 180))
     if win % 2 == 0:
         win += 1
@@ -851,15 +848,10 @@ def _filter_history_series(
     y_pad = np.pad(y, (win // 2, win // 2), mode="edge")
     y_smooth = np.convolve(y_pad, kernel, mode="valid")
 
-    if prefer_dense and n < 1200:
-        return _monotone_cubic_smooth(t, y_smooth, n_dense=min(700, max(300, 3 * n)))
-
-    # decimate very long histories to keep PNGs light and readable
     target = 900
     if n > target:
         idx = np.linspace(0, n - 1, target).astype(int)
-        t = t[idx]
-        y_smooth = y_smooth[idx]
+        return t[idx], y_smooth[idx]
     return t, y_smooth
 
 
@@ -869,7 +861,7 @@ def _clean_twin_axis(ax, ax_r) -> None:
     ax_r.patch.set_alpha(0.0)
 
 
-def _apply_temperature_axis_limits(ax, arrays: Sequence[np.ndarray]) -> None:
+def _apply_axis_limits(ax, arrays: Sequence[np.ndarray], *, frac: float = 0.05) -> None:
     values = []
     for arr in arrays:
         a = np.asarray(arr, dtype=float).reshape(-1)
@@ -884,17 +876,15 @@ def _apply_temperature_axis_limits(ax, arrays: Sequence[np.ndarray]) -> None:
     if np.isclose(vmin, vmax):
         pad = max(0.01, 0.02 * max(abs(vmin), 1.0))
     else:
-        pad = 0.06 * (vmax - vmin)
+        pad = float(frac) * (vmax - vmin)
     ax.set_ylim(vmin - pad, vmax + pad)
 
 
-def _add_dual_legend(
+def _add_legends(
     ax,
     *,
     variable_handles,
     variable_labels,
-    style_loc: str,
-    variable_loc: str,
     variable_ncol: int,
 ) -> None:
     style_handles = [
@@ -904,19 +894,19 @@ def _add_dual_legend(
     leg_vars = ax.legend(
         variable_handles,
         variable_labels,
-        loc=variable_loc,
+        loc="upper center",
         bbox_to_anchor=(0.50, 1.14),
         ncol=variable_ncol,
         frameon=False,
-        columnspacing=1.2,
-        handlelength=2.6,
+        columnspacing=1.1,
+        handlelength=2.5,
         borderaxespad=0.0,
     )
     ax.add_artist(leg_vars)
     ax.legend(
         style_handles,
         ["mean", "max"],
-        loc=style_loc,
+        loc="upper right",
         frameon=False,
         ncol=2,
         columnspacing=1.0,
@@ -972,23 +962,6 @@ def _has_nonzero_arrays(arrays: Sequence[np.ndarray]) -> bool:
         if y.size and np.any(np.abs(y) > 0.0):
             return True
     return False
-
-
-def _infer_snapshot_count(power: Mapping[str, np.ndarray], snapshots: Mapping[str, np.ndarray] | None) -> int:
-    for data, key in (
-        (power, "P_total_snapshot_W_m3"),
-        (snapshots or {}, "Te_snapshot_K"),
-        (snapshots or {}, "Tph_snapshot_K"),
-        (power, "u_e_snapshot_J_m3"),
-        (power, "u_ph_snapshot_J_m3"),
-    ):
-        if key in data:
-            arr = np.asarray(data[key], dtype=float)
-            if arr.ndim == 1:
-                return 1
-            if arr.ndim >= 2:
-                return int(arr.shape[0])
-    return 0
 
 
 def _has_nonempty(dataset: Mapping[str, Any], *keys: str) -> bool:
