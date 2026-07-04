@@ -85,8 +85,9 @@ def test_build_ss_plot_dataset_and_figures(tmp_path):
     )
     dataset = build_ss_plot_dataset(run)
     assert dataset["delta_over_delta0"].shape == (n,)
-    assert dataset["profiles"]
+    assert "profiles" not in dataset
+
     saved = make_ss_run_figures(mesh=mesh, dataset=dataset, output_dir=run.figures_dir, dpi=80)
-    assert set(saved) == {"overview", "relaxation", "profiles", "adaptive", "masks"}
+    assert set(saved) == {"overview", "relaxation", "adaptive", "masks"}
     for path in saved.values():
         assert path.exists()

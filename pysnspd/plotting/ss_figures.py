@@ -33,7 +33,6 @@ def make_ss_run_figures(
     saved: dict[str, Path] = {}
     saved["overview"] = plot_ss_final_overview(mesh, dataset, out / "ss_final_overview.png", dpi=dpi)
     saved["relaxation"] = plot_ss_relaxation_monitors(dataset, out / "ss_relaxation_monitors.png", dpi=dpi)
-    saved["profiles"] = plot_ss_x_profiles(dataset, out / "ss_x_profiles.png", dpi=dpi)
     saved["adaptive"] = plot_ss_adaptive_summary(dataset, out / "ss_adaptive_summary.png", dpi=dpi)
     saved["masks"] = plot_ss_region_masks(mesh, dataset, out / "ss_region_masks.png", dpi=dpi)
     return saved
@@ -100,7 +99,12 @@ def plot_ss_relaxation_monitors(dataset: Mapping[str, Any], output_path: str | P
     axes[0].legend(frameon=False)
     axes[0].grid(False)
 
-    _plot_curve(axes[1], t, dataset.get("terminal_voltage_mV"), r"$V_{TDGL}$ [mV]")
+    v_tdgl_t = np.asarray(dataset.get("tdgl_probe_voltage_t_ps", []), dtype=float)
+    v_tdgl = np.asarray(dataset.get("tdgl_probe_voltage_mV", []), dtype=float)
+    if v_tdgl_t.size == 0 or v_tdgl.size == 0:
+        v_tdgl_t = t
+        v_tdgl = np.asarray(dataset.get("terminal_voltage_mV", []), dtype=float)
+    _plot_curve(axes[1], v_tdgl_t, v_tdgl, r"$V_{TDGL}^{\pm 50\,nm}$ [mV]")
     _plot_curve(axes[1], t, dataset.get("normal_current_fraction"), r"$\max|j_n|/\max|j|$")
     axes[1].set_ylabel("physical monitors")
     axes[1].legend(frameon=False)
@@ -117,43 +121,6 @@ def plot_ss_relaxation_monitors(dataset: Mapping[str, Any], output_path: str | P
     plt.close(fig)
     return output
 
-
-def plot_ss_x_profiles(dataset: Mapping[str, Any], output_path: str | Path, *, dpi: int = 480) -> Path:
-    """Plot x-binned final-state profiles through the strip."""
-
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    x = np.asarray(dataset.get("x_profile_nm", []), dtype=float)
-    profiles = dataset.get("profiles", {})
-    if not isinstance(profiles, Mapping):
-        profiles = {}
-
-    fig, axes = plt.subplots(3, 1, figsize=(8.8, 7.6), sharex=True, constrained_layout=False)
-    fig.subplots_adjust(left=0.110, right=0.970, bottom=0.085, top=0.930, hspace=0.34)
-    fig.suptitle(f"SS x profiles: {dataset.get('run_name', '')}", y=0.985)
-
-    _plot_curve(axes[0], x, profiles.get("delta_over_delta0"), r"$|\Delta|/\Delta_0$")
-    _plot_curve(axes[0], x, profiles.get("pairbreaking_ratio"), r"$\chi_{pb}$")
-    axes[0].set_ylabel("order parameter")
-    axes[0].legend(frameon=False)
-    axes[0].grid(False)
-
-    _plot_curve(axes[1], x, profiles.get("jtot_mag_A_m2_over_javg"), r"$|j|/j_{avg}$")
-    _plot_curve(axes[1], x, profiles.get("js_us_mag_A_m2_over_javg"), r"$|j_s^{Us}|/j_{avg}$")
-    _plot_curve(axes[1], x, profiles.get("jn_mag_A_m2_over_javg"), r"$|j_n|/j_{avg}$")
-    axes[1].set_ylabel("current density")
-    axes[1].legend(frameon=False)
-    axes[1].grid(False)
-
-    _plot_curve(axes[2], x, profiles.get("phi_mV"), r"$\phi$ [mV]")
-    axes[2].set_xlabel("x [nm]")
-    axes[2].set_ylabel("potential")
-    axes[2].legend(frameon=False)
-    axes[2].grid(False)
-
-    fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
-    plt.close(fig)
-    return output
 
 
 def plot_ss_adaptive_summary(dataset: Mapping[str, Any], output_path: str | Path, *, dpi: int = 480) -> Path:

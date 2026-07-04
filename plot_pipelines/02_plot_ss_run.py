@@ -13,7 +13,6 @@ from typing import Any
 import yaml
 
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
-from pysnspd.plotting.mesh import plot_mesh_pytdgl_style
 from pysnspd.plotting.ss_figures import make_ss_run_figures
 from pysnspd.plotting.ss_power_figures import make_ss_snapshot_power_figures
 
@@ -76,14 +75,6 @@ def main() -> int:
         )
     )
 
-    saved["mesh_pytdgl_style"] = plot_mesh_pytdgl_style(
-        run.mesh,
-        figures_dir / "mesh_pytdgl_style.png",
-        dpi=int(args.dpi),
-        show_sites=True,
-        show_edges=True,
-        show_dual_edges=True,
-    )
 
     manifest_path = _write_plot_manifest(
         run=run,

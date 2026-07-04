@@ -177,6 +177,7 @@ def plot_ss_snapshot_power_energy_maps(
     ]
 
     fig, axes = _snapshot_grid_figure(nrows=3, ncols=len(indices), title=f"SS runtime power/transport maps: {dataset.get('run_name', '')}")
+    _use_horizontal_row_colorbar_layout(fig, nrows=3)
     for row, (z, label, mode, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, mode)
         mappable = None
@@ -189,8 +190,7 @@ def plot_ss_snapshot_power_energy_maps(
                 ax.set_ylabel(row_title)
             _format_map_axis(ax, show_xlabel=(row == 2), show_ylabel=(col == 0))
         if mappable is not None:
-            cb = fig.colorbar(mappable, ax=list(axes[row, :]), shrink=0.72, pad=0.012)
-            cb.set_label(label)
+            _add_horizontal_row_colorbar(fig, axes[row, :], mappable, label)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -234,6 +234,7 @@ def plot_ss_snapshot_power_balance_maps(
     ]
 
     fig, axes = _snapshot_grid_figure(nrows=2, ncols=len(indices), title=f"SS diagnostic power-balance maps: {dataset.get('run_name', '')}")
+    _use_horizontal_row_colorbar_layout(fig, nrows=2)
     for row, (z, label, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, "signed")
         mappable = None
@@ -246,8 +247,7 @@ def plot_ss_snapshot_power_balance_maps(
                 ax.set_ylabel(row_title)
             _format_map_axis(ax, show_xlabel=(row == 1), show_ylabel=(col == 0))
         if mappable is not None:
-            cb = fig.colorbar(mappable, ax=list(axes[row, :]), shrink=0.72, pad=0.012)
-            cb.set_label(label)
+            _add_horizontal_row_colorbar(fig, axes[row, :], mappable, label)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -581,6 +581,27 @@ def _representative_snapshot_indices(n: int, *, max_panels: int) -> np.ndarray:
         return np.arange(n, dtype=int)
     return np.unique(np.linspace(0, n - 1, int(max_panels)).round().astype(int))
 
+
+def _use_horizontal_row_colorbar_layout(fig, *, nrows: int) -> None:
+    """Reserve vertical space for one horizontal colorbar below each map row."""
+    if int(nrows) >= 3:
+        fig.subplots_adjust(left=0.055, right=0.985, bottom=0.085, top=0.895, wspace=0.10, hspace=0.58)
+    else:
+        fig.subplots_adjust(left=0.055, right=0.985, bottom=0.105, top=0.890, wspace=0.10, hspace=0.52)
+
+
+def _add_horizontal_row_colorbar(fig, axes_row, mappable, label: str) -> None:
+    """Add a compact horizontal colorbar below one snapshot row."""
+    cb = fig.colorbar(
+        mappable,
+        ax=list(np.ravel(axes_row)),
+        orientation="horizontal",
+        shrink=0.62,
+        pad=0.115,
+        fraction=0.075,
+        aspect=42,
+    )
+    cb.set_label(label)
 
 def _snapshot_grid_figure(*, nrows: int, ncols: int, title: str):
     width = max(7.5, 2.12 * max(ncols, 1) + 1.2)
