@@ -7,7 +7,7 @@ This module is plotting-only. It complements the existing
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping
 
 import numpy as np
 
@@ -16,6 +16,7 @@ import matplotlib
 matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+import matplotlib.ticker as mticker
 import matplotlib.tri as mtri
 
 from pysnspd.plotting.ss_power_figures import _snapshot_diffusion_power_density
@@ -32,6 +33,7 @@ def make_ss_memory_figures(
 ) -> dict[str, Path]:
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
+
     raw = Path(raw_ss)
     snapshots = _load_npz_if_exists(raw / "stationary_snapshots.npz")
     power = _load_npz_if_exists(raw / "snapshot_power_energy_diagnostics.npz")
@@ -130,8 +132,7 @@ def plot_ss_final_center_current_maps(
     mappable = None
     arrow_length_nm = 0.10 * max(ylim[1] - ylim[0], 1.0)
     for idx, (ax, (mag, jx, jy)) in enumerate(zip(axes, families)):
-        z = np.asarray(mag, dtype=float)
-        mappable = ax.tripcolor(tri, z, shading="gouraud", vmin=0.0, vmax=vmax)
+        mappable = ax.tripcolor(tri, np.asarray(mag, dtype=float), shading="gouraud", vmin=0.0, vmax=vmax)
         _overlay_current_arrows(
             ax,
             x_nm,
@@ -167,9 +168,12 @@ def plot_ss_snapshot_thermal_scalars(
     center_width_nm: float = 100.0,
     dpi: int = 480,
 ) -> Path:
-    """Plot compact memory-ready thermal scalar diagnostics."""
+    """Plot compact memory-ready thermal scalar diagnostics.
 
-    import matplotlib.ticker as mticker
+    The power panel uses the same runtime-history power envelopes used by
+    ``plot_ss_snapshot_runtime_metrics`` whenever those histories are present.
+    Snapshot maps are kept only as fallbacks.
+    """
 
     output = _prepare_output(output_path)
 
@@ -192,7 +196,6 @@ def plot_ss_snapshot_thermal_scalars(
 
     t_ps_snap = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=p_ep.shape[0])
     t_ps_hist = np.asarray(dataset.get("t_ps", []), dtype=float).reshape(-1)
-    use_hist = t_ps_hist.size > 0
 
     x_nm = np.asarray(dataset.get("x_nm", []), dtype=float)
     center_mask = _center_mask_from_x(x_nm, center_width_nm=center_width_nm)
@@ -207,7 +210,7 @@ def plot_ss_snapshot_thermal_scalars(
         te_snap = _snapshot_array(snapshots, ("Te_snapshot_K",), shape_like=p_ep)
         tph_snap = _snapshot_array(snapshots, ("Tph_snapshot_K",), shape_like=p_ep)
 
-    # Temperatures: prefer runtime histories when available.
+    # Temperatures: history if present, snapshot fallback.
     te_t, te_mean, te_max = _history_or_snapshot_pair(
         dataset,
         t_ps_hist,
@@ -216,7 +219,6 @@ def plot_ss_snapshot_thermal_scalars(
         snapshot_t=t_ps_snap,
         snapshot_values=te_snap,
         center_mask=center_mask,
-        prefer_history=use_hist,
     )
     tph_t, tph_mean, tph_max = _history_or_snapshot_pair(
         dataset,
@@ -226,94 +228,72 @@ def plot_ss_snapshot_thermal_scalars(
         snapshot_t=t_ps_snap,
         snapshot_values=tph_snap,
         center_mask=center_mask,
-        prefer_history=use_hist,
     )
 
-    # Powers: same robust extraction logic as runtime_metrics.
-    pj_t, pj_mean, pj_max = _snapshot_pair(t_ps_snap, joule, center_mask, max_mode="max")
-    pep_t, pep_mean, pep_max = _snapshot_pair(t_ps_snap, p_ep, center_mask, max_mode="max_abs")
-    pesc_t, pesc_mean, pesc_max = _snapshot_pair(t_ps_snap, p_esc, center_mask, max_mode="max_abs")
-    pdiff_t, pdiff_mean, pdiff_max = _snapshot_pair(t_ps_snap, p_diff, center_mask, max_mode="max_abs")
-
-    # Optional smoother diffusion envelope from history, if compatible.
-    old_pdiff_t, old_pdiff_mean, old_pdiff_max = _history_pair_if_compatible(
+    # Powers: runtime histories first, exactly to match the runtime-metrics panel.
+    pj_t, pj_mean, pj_max = _history_or_snapshot_pair(
         dataset,
         t_ps_hist,
-        "thermal_mean_P_diff_W_m3_history",
-        "thermal_max_P_diff_W_m3_history",
+        mean_key="thermal_mean_P_J_W_m3_history",
+        max_key="thermal_max_P_J_W_m3_history",
+        snapshot_t=t_ps_snap,
+        snapshot_values=joule,
+        center_mask=center_mask,
+        max_mode="max",
+        abs_snapshot=False,
     )
-    if old_pdiff_t.size and old_pdiff_mean.size and old_pdiff_max.size:
-        pdiff_t, pdiff_mean = _filter_history_series(old_pdiff_t, old_pdiff_mean)
-        _, pdiff_max = _filter_history_series(old_pdiff_t, old_pdiff_max)
+    pep_t, pep_mean, pep_max = _history_or_snapshot_pair(
+        dataset,
+        t_ps_hist,
+        mean_key="thermal_mean_P_ep_W_m3_history",
+        max_key="thermal_max_P_ep_W_m3_history",
+        snapshot_t=t_ps_snap,
+        snapshot_values=p_ep,
+        center_mask=center_mask,
+        max_mode="max_abs",
+        abs_snapshot=True,
+    )
+    pesc_t, pesc_mean, pesc_max = _history_or_snapshot_pair(
+        dataset,
+        t_ps_hist,
+        mean_key="thermal_mean_P_esc_W_m3_history",
+        max_key="thermal_max_P_esc_W_m3_history",
+        snapshot_t=t_ps_snap,
+        snapshot_values=p_esc,
+        center_mask=center_mask,
+        max_mode="max_abs",
+        abs_snapshot=True,
+    )
+    pdiff_t, pdiff_mean, pdiff_max = _history_or_snapshot_pair(
+        dataset,
+        t_ps_hist,
+        mean_key="thermal_mean_P_diff_W_m3_history",
+        max_key="thermal_max_P_diff_W_m3_history",
+        snapshot_t=t_ps_snap,
+        snapshot_values=p_diff,
+        center_mask=center_mask,
+        max_mode="max_abs",
+        abs_snapshot=True,
+        smooth_history=True,
+    )
 
-    # Energies: use snapshot central-strip values.
+    # Energies: snapshot central-strip values.
     ue_t, ue_mean, ue_max = _snapshot_pair(t_ps_snap, u_e, center_mask, max_mode="max")
     uph_t, uph_mean, uph_max = _snapshot_pair(t_ps_snap, u_ph, center_mask, max_mode="max")
 
     # Colors
     te_color = "tab:blue"
     tph_color = "tab:orange"
-
-    # Left power axis: warm colors
-    pj_color = "#d95f02"     # warm orange
-    pdiff_color = "#b2182b"  # warm red
-
-    # Right power axis: cool colors
-    pep_color = "#1f78b4"    # cool blue
-    pesc_color = "#1b9e77"   # cool teal
-
+    pj_color = "#d95f02"      # warm orange
+    pdiff_color = "#b2182b"   # warm red
+    pep_color = "#1f78b4"     # cool blue
+    pesc_color = "#1b9e77"    # cool teal
     ue_color = "tab:blue"
     uph_color = "tab:red"
 
     prethermal_t_ps = 2.0
 
-    def _shade_prethermal(ax):
-        ax.axvspan(0.0, prethermal_t_ps, color="0.85", alpha=0.65, zorder=0)
-
-    def _colored_power_axis_labels(ax_left, ax_right):
-        # Keep units as the formal ylabel, and add colored variable names beside each axis.
-        ax_left.set_ylabel(r"[W m$^{-3}$]")
-        ax_right.set_ylabel(r"[W m$^{-3}$]")
-
-        ax_left.text(
-            -0.20, 0.72, r"$P_J$",
-            transform=ax_left.transAxes,
-            rotation=90,
-            va="center",
-            ha="center",
-            color=pj_color,
-            fontweight="bold",
-        )
-        ax_left.text(
-            -0.20, 0.28, r"$P_{diff}$",
-            transform=ax_left.transAxes,
-            rotation=90,
-            va="center",
-            ha="center",
-            color=pdiff_color,
-            fontweight="bold",
-        )
-
-        ax_right.text(
-            1.18, 0.72, r"$P_{ep}$",
-            transform=ax_right.transAxes,
-            rotation=270,
-            va="center",
-            ha="center",
-            color=pep_color,
-            fontweight="bold",
-        )
-        ax_right.text(
-            1.18, 0.28, r"$P_{esc}$",
-            transform=ax_right.transAxes,
-            rotation=270,
-            va="center",
-            ha="center",
-            color=pesc_color,
-            fontweight="bold",
-        )
-
-    fig, axes = plt.subplots(1, 3, figsize=(15.5, 4.10), constrained_layout=False)
+    fig, axes = plt.subplots(1, 3, figsize=(15.6, 4.10), constrained_layout=False)
     fig.subplots_adjust(left=0.070, right=0.955, bottom=0.18, top=0.86, wspace=0.56)
 
     # ------------------------------------------------------------------
@@ -321,10 +301,10 @@ def plot_ss_snapshot_thermal_scalars(
     # ------------------------------------------------------------------
     ax = axes[0]
     ax_r = ax.twinx()
-    _shade_prethermal(ax)
+    _shade_prethermal(ax, prethermal_t_ps)
 
-    h_te = _plot_series_pair(ax, te_t, te_mean, te_max, color=te_color)
-    h_tph = _plot_series_pair(ax_r, tph_t, tph_mean, tph_max, color=tph_color)
+    h_te = _plot_series_pair(ax, te_t, te_mean, te_max, color=te_color, take_abs=False)
+    h_tph = _plot_series_pair(ax_r, tph_t, tph_mean, tph_max, color=tph_color, take_abs=False)
 
     ax.set_xlabel("t [ps]")
     ax.set_ylabel(r"$T_e$ [K]", color=te_color)
@@ -348,21 +328,24 @@ def plot_ss_snapshot_thermal_scalars(
     # ------------------------------------------------------------------
     ax = axes[1]
     ax_r = ax.twinx()
-    _shade_prethermal(ax)
+    _shade_prethermal(ax, prethermal_t_ps)
 
-    h_pj = _plot_series_pair(ax, pj_t, pj_mean, pj_max, color=pj_color, take_abs=False)
+    h_pj = _plot_series_pair(ax, pj_t, pj_mean, pj_max, color=pj_color, take_abs=True)
     h_pd = _plot_series_pair(ax, pdiff_t, pdiff_mean, pdiff_max, color=pdiff_color, take_abs=True)
     h_pep = _plot_series_pair(ax_r, pep_t, pep_mean, pep_max, color=pep_color, take_abs=True)
     h_pesc = _plot_series_pair(ax_r, pesc_t, pesc_mean, pesc_max, color=pesc_color, take_abs=True)
 
     ax.set_xlabel("t [ps]")
-    _colored_power_axis_labels(ax, ax_r)
-
+    ax.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]")
+    ax_r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", labelpad=10)
     ax.tick_params(axis="y", colors="black")
     ax_r.tick_params(axis="y", colors="black")
 
     ax.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax))
     ax_r.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax_r))
+    _autoscale_symlog_axis(ax)
+    _autoscale_symlog_axis(ax_r)
+
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
@@ -378,7 +361,7 @@ def plot_ss_snapshot_thermal_scalars(
     # ------------------------------------------------------------------
     ax = axes[2]
     ax_r = ax.twinx()
-    _shade_prethermal(ax)
+    _shade_prethermal(ax, prethermal_t_ps)
 
     h_ue = _plot_series_pair(ax, ue_t, ue_mean, ue_max, color=ue_color, take_abs=False)
     h_uph = _plot_series_pair(ax_r, uph_t, uph_mean, uph_max, color=uph_color, take_abs=False)
@@ -399,7 +382,6 @@ def plot_ss_snapshot_thermal_scalars(
     elif _has_nonzero_arrays([uph_mean, uph_max]):
         ax_r.set_yscale("symlog", linthresh=_linthresh_from_arrays([uph_mean, uph_max]))
 
-    # Make the right-axis numeric labels compact.
     fmt_right = mticker.ScalarFormatter(useMathText=True)
     fmt_right.set_scientific(True)
     fmt_right.set_powerlimits((0, 0))
@@ -421,6 +403,7 @@ def plot_ss_snapshot_thermal_scalars(
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     return output
+
 
 def plot_ss_final_center_scalar_maps(
     mesh: Any,
@@ -469,7 +452,6 @@ def plot_ss_final_center_scalar_maps(
 
         if positive_floor:
             vmin = 0.0
-
         if force_vmin is not None:
             vmin = float(force_vmin)
         if force_vmax is not None:
@@ -488,13 +470,6 @@ def plot_ss_final_center_scalar_maps(
         return vmin, vmax
 
     def _phase_gradient_q_abs_m_inv() -> np.ndarray:
-        """Estimate |q| = |grad arg(psi)| from the final complex order parameter.
-
-        This is the fallback used when the final-state dataset does not already
-        contain a nonzero q-map.  With A=0 in the current SS runs, the
-        gauge-invariant superfluid momentum is the phase gradient.
-        """
-
         psi = np.asarray(dataset.get("psi_J", []), dtype=np.complex128).reshape(-1)
         if psi.size != x_nm.size:
             return np.zeros(x_nm.size, dtype=float)
@@ -507,13 +482,7 @@ def plot_ss_final_center_scalar_maps(
         if triangles.size == 0:
             return np.zeros(x_nm.size, dtype=float)
 
-        edges = np.vstack(
-            (
-                triangles[:, [0, 1]],
-                triangles[:, [1, 2]],
-                triangles[:, [2, 0]],
-            )
-        )
+        edges = np.vstack((triangles[:, [0, 1]], triangles[:, [1, 2]], triangles[:, [2, 0]]))
         edges = np.sort(edges, axis=1)
         edges = np.unique(edges, axis=0)
 
@@ -531,14 +500,12 @@ def plot_ss_final_center_scalar_maps(
 
             dtheta = float(np.angle(np.exp(1j * (theta[j] - theta[i]))))
 
-            # Node i: dtheta = grad(theta)_i · (r_j - r_i)
             Axx[i] += dx * dx
             Axy[i] += dx * dy
             Ayy[i] += dy * dy
             bx[i] += dtheta * dx
             by[i] += dtheta * dy
 
-            # Node j: -dtheta = grad(theta)_j · (r_i - r_j)
             Axx[j] += dx * dx
             Axy[j] += dx * dy
             Ayy[j] += dy * dy
@@ -567,14 +534,13 @@ def plot_ss_final_center_scalar_maps(
                 "node_superfluid_momentum_mag_m_inv",
             )
         )
-
         q_center = q_saved[crop_mask]
         if np.any(np.isfinite(q_center)) and float(np.nanmax(np.abs(q_center))) > 0.0:
             return q_saved
-
         return _phase_gradient_q_abs_m_inv()
 
     delta_norm = _node_array_from_dataset(("delta_over_delta0",))
+
     phi_uV = 1.0e6 * _node_array_from_dataset(("phi_V",))
     if not np.any(np.isfinite(phi_uV)) or np.nanmax(np.abs(phi_uV)) == 0.0:
         phi_uV = 1.0e3 * _node_array_from_dataset(("phi_mV",))
@@ -622,17 +588,9 @@ def plot_ss_final_center_scalar_maps(
     ]
 
     fig = plt.figure(figsize=(18.4, 3.75), constrained_layout=False)
-    gs = fig.add_gridspec(
-        2,
-        5,
-        height_ratios=[0.10, 1.00],
-        wspace=0.24,
-        hspace=0.12,
-    )
+    gs = fig.add_gridspec(2, 5, height_ratios=[0.10, 1.00], wspace=0.24, hspace=0.12)
     caxes = [fig.add_subplot(gs[0, k]) for k in range(5)]
     axes = [fig.add_subplot(gs[1, k]) for k in range(5)]
-
-    import matplotlib.ticker as mticker
 
     for idx, (ax, cax, spec) in enumerate(zip(axes, caxes, fields)):
         values = np.asarray(spec["values"], dtype=float).reshape(-1)
@@ -664,6 +622,7 @@ def plot_ss_final_center_scalar_maps(
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
     return output
+
 
 def _prepare_output(output_path: str | Path) -> Path:
     output = Path(output_path)
@@ -863,6 +822,7 @@ def _snapshot_pair(
     center_mask: np.ndarray,
     *,
     max_mode: str,
+    abs_mean: bool = False,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     arr = np.asarray(values, dtype=float)
     if arr.size == 0:
@@ -875,13 +835,18 @@ def _snapshot_pair(
         center_mask = np.ones(arr.shape[1], dtype=bool)
 
     sub = arr[:, center_mask]
-    mean_vals = np.nanmean(sub, axis=1)
-    if max_mode == "max_abs":
-        max_vals = np.nanmax(np.abs(sub), axis=1)
-    elif max_mode == "max":
-        max_vals = np.nanmax(sub, axis=1)
-    else:
-        raise ValueError(f"unknown max_mode: {max_mode}")
+    with np.errstate(invalid="ignore"):
+        if abs_mean:
+            mean_vals = np.nanmean(np.abs(sub), axis=1)
+        else:
+            mean_vals = np.nanmean(sub, axis=1)
+
+        if max_mode == "max_abs":
+            max_vals = np.nanmax(np.abs(sub), axis=1)
+        elif max_mode == "max":
+            max_vals = np.nanmax(sub, axis=1)
+        else:
+            raise ValueError(f"unknown max_mode: {max_mode}")
 
     t = np.asarray(t_ps, dtype=float).reshape(-1)
     if t.size != arr.shape[0]:
@@ -898,13 +863,27 @@ def _history_or_snapshot_pair(
     snapshot_t: np.ndarray,
     snapshot_values: np.ndarray,
     center_mask: np.ndarray,
-    prefer_history: bool,
+    max_mode: str = "max",
+    abs_snapshot: bool = False,
+    smooth_history: bool = False,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    if prefer_history:
-        t, mean_vals, max_vals = _history_pair_if_compatible(dataset, t_hist, mean_key, max_key)
-        if t.size:
-            return t, mean_vals, max_vals
-    return _snapshot_pair(snapshot_t, snapshot_values, center_mask, max_mode="max")
+    t, mean_vals, max_vals = _history_pair_if_compatible(dataset, t_hist, mean_key, max_key)
+    if t.size:
+        if smooth_history:
+            t_mean, mean_vals = _filter_history_series(t, mean_vals)
+            t_max, max_vals = _filter_history_series(t, max_vals)
+            if t_mean.size != t_max.size:
+                max_vals = np.resize(max_vals, t_mean.size)
+            return t_mean, mean_vals, max_vals
+        return t, mean_vals, max_vals
+
+    return _snapshot_pair(
+        snapshot_t,
+        snapshot_values,
+        center_mask,
+        max_mode=max_mode,
+        abs_mean=abs_snapshot,
+    )
 
 
 def _history_pair_if_compatible(
@@ -916,11 +895,17 @@ def _history_pair_if_compatible(
     t = np.asarray(t_hist, dtype=float).reshape(-1)
     mean_vals = np.asarray(dataset.get(mean_key, []), dtype=float).reshape(-1)
     max_vals = np.asarray(dataset.get(max_key, []), dtype=float).reshape(-1)
-    if t.size == 0 or mean_vals.size == 0 or max_vals.size == 0:
+
+    if t.size == 0 or max_vals.size == 0:
         return np.array([], dtype=float), np.array([], dtype=float), np.array([], dtype=float)
+
+    if mean_vals.size == 0:
+        mean_vals = max_vals.copy()
+
     n = min(t.size, mean_vals.size, max_vals.size)
     if n <= 1:
         return np.array([], dtype=float), np.array([], dtype=float), np.array([], dtype=float)
+
     return t[:n], mean_vals[:n], max_vals[:n]
 
 
@@ -983,6 +968,11 @@ def _plot_series_pair(
         h1, = ax.plot([], [], color=color, linestyle="-")
         h2, = ax.plot([], [], color=color, linestyle="--")
         return h1, h2
+
+    if mean_arr.size == 0:
+        mean_arr = max_arr.copy()
+    if max_arr.size == 0:
+        max_arr = mean_arr.copy()
 
     n = min(t.size if t.size else max(mean_arr.size, max_arr.size), mean_arr.size, max_arr.size)
     if n <= 1:
@@ -1111,13 +1101,17 @@ def _filter_history_series(t: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np
     return t, y_smooth
 
 
+def _shade_prethermal(ax, end_ps: float) -> None:
+    ax.axvspan(0.0, float(end_ps), color="0.85", alpha=0.65, zorder=0)
+
+
 def _clean_twin_axis(ax, ax_r) -> None:
     ax.spines["right"].set_visible(False)
     ax_r.spines["left"].set_visible(False)
     ax_r.patch.set_alpha(0.0)
 
 
-def _apply_axis_limits(ax, arrays: Sequence[np.ndarray], *, frac: float = 0.05) -> None:
+def _apply_axis_limits(ax, arrays: list[np.ndarray], *, frac: float = 0.05) -> None:
     values = []
     for arr in arrays:
         a = np.asarray(arr, dtype=float).reshape(-1)
@@ -1185,7 +1179,7 @@ def _linthresh_from_axes_lines(ax) -> float:
     return max(float(np.nanpercentile(concat, 12.0)), 1.0e-30)
 
 
-def _linthresh_from_arrays(arrays: Sequence[np.ndarray]) -> float:
+def _linthresh_from_arrays(arrays: list[np.ndarray]) -> float:
     vals = []
     for arr in arrays:
         y = np.asarray(arr, dtype=float).reshape(-1)
@@ -1199,7 +1193,7 @@ def _linthresh_from_arrays(arrays: Sequence[np.ndarray]) -> float:
     return max(float(np.nanpercentile(concat, 12.0)), 1.0e-30)
 
 
-def _all_positive_arrays(arrays: Sequence[np.ndarray]) -> bool:
+def _all_positive_arrays(arrays: list[np.ndarray]) -> bool:
     found = False
     for arr in arrays:
         y = np.asarray(arr, dtype=float).reshape(-1)
@@ -1211,13 +1205,34 @@ def _all_positive_arrays(arrays: Sequence[np.ndarray]) -> bool:
     return found
 
 
-def _has_nonzero_arrays(arrays: Sequence[np.ndarray]) -> bool:
+def _has_nonzero_arrays(arrays: list[np.ndarray]) -> bool:
     for arr in arrays:
         y = np.asarray(arr, dtype=float).reshape(-1)
         y = y[np.isfinite(y)]
         if y.size and np.any(np.abs(y) > 0.0):
             return True
     return False
+
+
+def _autoscale_symlog_axis(ax) -> None:
+    vals = []
+    for line in ax.lines:
+        y = np.asarray(line.get_ydata(), dtype=float)
+        y = y[np.isfinite(y)]
+        if y.size:
+            vals.append(y)
+    if not vals:
+        return
+    finite = np.concatenate(vals)
+    finite = finite[np.isfinite(finite)]
+    if finite.size == 0:
+        return
+    ymin = float(np.nanmin(finite))
+    ymax = float(np.nanmax(finite))
+    if np.isclose(ymin, ymax):
+        return
+    pad = 0.10 * (ymax - ymin)
+    ax.set_ylim(ymin - pad, ymax + pad)
 
 
 def _has_nonempty(dataset: Mapping[str, Any], *keys: str) -> bool:
