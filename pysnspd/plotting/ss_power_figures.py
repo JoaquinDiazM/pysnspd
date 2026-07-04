@@ -13,6 +13,7 @@ This module deliberately treats both files as diagnostics.  It never changes
 solver state and it gracefully returns no figures for older runs that do not
 have the new files yet.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -43,13 +44,13 @@ def make_ss_snapshot_power_figures(
     """Create additional snapshot/power figures for a completed SS run.
 
     Missing diagnostic files are not an error because historical SS runs only
-    contain final-state fields.  The returned dictionary is directly merged into
-    the plotting-pipeline manifest.
+    contain final-state fields.  The returned dictionary is directly merged
+    into the plotting-pipeline manifest.
     """
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    raw = Path(raw_ss)
 
+    raw = Path(raw_ss)
     snapshots = _load_npz_if_exists(raw / "stationary_snapshots.npz")
     power = _load_npz_if_exists(raw / "snapshot_power_energy_diagnostics.npz")
     power = _with_recomputed_joule_power(power, snapshots=snapshots, dataset=dataset)
@@ -57,24 +58,50 @@ def make_ss_snapshot_power_figures(
     saved: dict[str, Path] = {}
     if snapshots:
         saved["snapshot_state_atlas"] = plot_ss_snapshot_state_atlas(
-            mesh, snapshots, dataset, out / "ss_snapshot_state_atlas.png", dpi=dpi
+            mesh,
+            snapshots,
+            dataset,
+            out / "ss_snapshot_state_atlas.png",
+            dpi=dpi,
         )
         saved["snapshot_final_profile_comparison"] = plot_ss_snapshot_profile_comparison(
-            mesh, snapshots, power, dataset, out / "ss_snapshot_profile_comparison.png", dpi=dpi
+            mesh,
+            snapshots,
+            power,
+            dataset,
+            out / "ss_snapshot_profile_comparison.png",
+            dpi=dpi,
         )
 
     if power:
         saved["snapshot_power_energy_maps"] = plot_ss_snapshot_power_energy_maps(
-            mesh, power, dataset, out / "ss_snapshot_power_energy_maps.png", dpi=dpi
+            mesh,
+            power,
+            dataset,
+            out / "ss_snapshot_power_energy_maps.png",
+            dpi=dpi,
         )
         saved["snapshot_power_balance_maps"] = plot_ss_snapshot_power_balance_maps(
-            mesh, power, dataset, out / "ss_snapshot_power_balance_maps.png", dpi=dpi
+            mesh,
+            power,
+            dataset,
+            out / "ss_snapshot_power_balance_maps.png",
+            snapshots=snapshots,
+            dpi=dpi,
         )
         saved["snapshot_runtime_metrics"] = plot_ss_snapshot_runtime_metrics(
-            power, snapshots, dataset, out / "ss_snapshot_runtime_metrics.png", dpi=dpi
+            power,
+            snapshots,
+            dataset,
+            out / "ss_snapshot_runtime_metrics.png",
+            dpi=dpi,
         )
         saved["snapshot_catalog_indices"] = plot_ss_snapshot_catalog_indices(
-            mesh, power, dataset, out / "ss_snapshot_catalog_indices.png", dpi=dpi
+            mesh,
+            power,
+            dataset,
+            out / "ss_snapshot_catalog_indices.png",
+            dpi=dpi,
         )
 
     return saved
@@ -116,7 +143,9 @@ def plot_ss_snapshot_state_atlas(
     if delta_mev.size == 0:
         raise ValueError("stationary_snapshots.npz does not contain Delta snapshots")
 
-    t_ps = _snapshot_times_ps(snapshots, preferred=("snapshot_t_s", "delta_snapshot_t_s"), n=delta_mev.shape[0])
+    t_ps = _snapshot_times_ps(
+        snapshots, preferred=("snapshot_t_s", "delta_snapshot_t_s"), n=delta_mev.shape[0]
+    )
     indices = _representative_snapshot_indices(delta_mev.shape[0], max_panels=9)
     t_sel = t_ps[indices]
 
@@ -132,9 +161,13 @@ def plot_ss_snapshot_state_atlas(
         (j_norm[indices], r"$|j|/j_{avg}$", False, 0.0, None, False, r"total current"),
     ]
     if Te.size:
-        fields.append((_resize_snapshot_field(Te, delta_mev.shape)[indices], r"$T_e$ [K]", False, None, None, False, r"electron temperature"))
+        fields.append(
+            (_resize_snapshot_field(Te, delta_mev.shape)[indices], r"$T_e$ [K]", False, None, None, False, r"electron temperature")
+        )
     if Tph.size:
-        fields.append((_resize_snapshot_field(Tph, delta_mev.shape)[indices], r"$T_{ph}$ [K]", False, None, None, False, r"phonon temperature"))
+        fields.append(
+            (_resize_snapshot_field(Tph, delta_mev.shape)[indices], r"$T_{ph}$ [K]", False, None, None, False, r"phonon temperature")
+        )
 
     fig, axes = _snapshot_grid_figure(
         nrows=len(fields),
@@ -147,16 +180,22 @@ def plot_ss_snapshot_state_atlas(
         wspace=0.10,
         hspace=0.34,
     )
+
     for row, (z, label, symmetric, vmin, vmax, wrap_first, row_title) in enumerate(fields):
         scale_values = z[1:] if wrap_first and z.shape[0] > 1 else z
-        norm, vmin_eff, vmax_eff = _node_color_limits(scale_values, symmetric=symmetric, vmin=vmin, vmax=vmax)
+        norm, vmin_eff, vmax_eff = _node_color_limits(
+            scale_values, symmetric=symmetric, vmin=vmin, vmax=vmax
+        )
         z_plot = np.array(z, copy=True)
         if wrap_first and z_plot.shape[0] > 0:
             z_plot[0] = _wrap_values_to_range(z_plot[0], vmin_eff, vmax_eff)
+
         mappable = None
         for col, _idx in enumerate(indices):
             ax = axes[row, col]
-            mappable = ax.tripcolor(tri, z_plot[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
+            mappable = ax.tripcolor(
+                tri, z_plot[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm
+            )
             if row == 0:
                 _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
@@ -178,13 +217,15 @@ def plot_ss_snapshot_power_energy_maps(
     *,
     dpi: int = 480,
 ) -> Path:
-    """Plot catalogue-derived power, Joule, and thermal transport maps."""
+    """Plot catalogue-derived power, Joule, escape, and transport maps."""
     output = _prepare_output(output_path)
     tri = _triangulation(mesh, dataset)
 
     p_ep = _snapshot_array(power, ("P_total_snapshot_W_m3",))
     joule = _snapshot_array(power, ("joule_snapshot_W_m3",), shape_like=p_ep)
+    p_esc = _snapshot_array(power, ("P_esc_snapshot_W_m3",), shape_like=p_ep)
     kappa = _snapshot_array(power, ("kappa_s_snapshot_W_m_K",), shape_like=p_ep)
+
     if p_ep.size == 0:
         raise ValueError("snapshot_power_energy_diagnostics.npz lacks P_total_snapshot_W_m3")
 
@@ -194,28 +235,32 @@ def plot_ss_snapshot_power_energy_maps(
 
     fields = [
         (p_ep[indices], r"$P_{ep}=P_S+P_R$ [W m$^{-3}$]", "signed", r"electron $\rightarrow$ phonon power"),
-        (joule[indices], r"$P_J$ [W m$^{-3}$]", "positive_log", r"Joule diagnostic"),
+        (joule[indices], r"$P_J=|j_n|^2/\sigma_n$ [W m$^{-3}$]", "positive_log", r"Joule diagnostic"),
+        (p_esc[indices], r"$P_{esc}$ [W m$^{-3}$]", "signed", r"phonon escape power"),
         (kappa[indices], r"$\kappa_s$ [W m$^{-1}$ K$^{-1}$]", "positive_log", r"thermal conductivity"),
     ]
 
     fig, axes = _snapshot_grid_figure(
-        nrows=3,
+        nrows=len(fields),
         ncols=len(indices),
         title=f"SS runtime power/transport maps: {dataset.get('run_name', '')}",
         left=0.050,
         right=0.985,
-        bottom=0.065,
-        top=0.865,
+        bottom=0.060,
+        top=0.860,
         wspace=0.10,
-        hspace=0.34,
+        hspace=0.36,
     )
+
     for row, (z, label, mode, row_title) in enumerate(fields):
         norm, vmin_eff, vmax_eff = _norm_for_mode(z, mode)
         mappable = None
         for col, _idx in enumerate(indices):
             ax = axes[row, col]
             z_panel = _plot_values_for_mode(z[col], mode=mode, norm=norm)
-            mappable = ax.tripcolor(tri, z_panel, shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
+            mappable = ax.tripcolor(
+                tri, z_panel, shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm
+            )
             if row == 0:
                 _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
@@ -235,12 +280,19 @@ def plot_ss_snapshot_power_balance_maps(
     dataset: Mapping[str, Any],
     output_path: str | Path,
     *,
+    snapshots: Mapping[str, np.ndarray] | None = None,
     dpi: int = 480,
 ) -> Path:
     """Plot diagnostic local energy-balance tendencies at snapshots.
 
-    ``P_J - P_ep`` is the local electronic heating tendency. ``P_ep - P_esc``
-    is the analogous phonon tendency.
+    The electronic tendency is now the no-photon thermal-balance diagnostic
+
+        P_J + P_diff - P_ep,
+
+    where ``P_diff`` is the finite-volume graph approximation to
+    ``div(kappa_s grad T_e)`` when a saved diffusion map is not already present
+    in ``snapshot_power_energy_diagnostics.npz``.  The phonon tendency remains
+    ``P_ep - P_esc``.
     """
     output = _prepare_output(output_path)
     tri = _triangulation(mesh, dataset)
@@ -248,38 +300,54 @@ def plot_ss_snapshot_power_balance_maps(
     p_ep = _snapshot_array(power, ("P_total_snapshot_W_m3",))
     joule = _snapshot_array(power, ("joule_snapshot_W_m3",), shape_like=p_ep)
     p_esc = _snapshot_array(power, ("P_esc_snapshot_W_m3",), shape_like=p_ep)
+    p_diff = _snapshot_diffusion_power_density(
+        mesh,
+        snapshots=snapshots,
+        power=power,
+        dataset=dataset,
+        shape_like=p_ep,
+    )
+
     if p_ep.size == 0:
         raise ValueError("snapshot_power_energy_diagnostics.npz lacks P_total_snapshot_W_m3")
 
-    electron_balance = joule - p_ep
+    electron_balance = joule + p_diff - p_ep
     phonon_balance = p_ep - p_esc
+    joule_plus_diff = joule + p_diff
 
     t_ps = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=p_ep.shape[0])
     indices = _representative_snapshot_indices(p_ep.shape[0], max_panels=9)
     t_sel = t_ps[indices]
 
     fields = [
-        (electron_balance[indices], r"$P_J-P_{ep}$ [W m$^{-3}$]", "electronic tendency"),
-        (phonon_balance[indices], r"$P_{ep}-P_{esc}$ [W m$^{-3}$]", "phonon tendency"),
+        (joule[indices], r"$P_J$ [W m$^{-3}$]", "positive_log", r"Joule heating"),
+        (p_diff[indices], r"$P_{diff}=\nabla\cdot(\kappa_s\nabla T_e)$ [W m$^{-3}$]", "signed", r"electron diffusion"),
+        (joule_plus_diff[indices], r"$P_J+P_{diff}$ [W m$^{-3}$]", "signed", r"Joule + diffusion"),
+        (electron_balance[indices], r"$P_J+P_{diff}-P_{ep}$ [W m$^{-3}$]", "signed", r"electronic tendency"),
+        (phonon_balance[indices], r"$P_{ep}-P_{esc}$ [W m$^{-3}$]", "signed", r"phonon tendency"),
     ]
 
     fig, axes = _snapshot_grid_figure(
-        nrows=2,
+        nrows=len(fields),
         ncols=len(indices),
         title=f"SS diagnostic power-balance maps: {dataset.get('run_name', '')}",
         left=0.050,
         right=0.985,
-        bottom=0.080,
-        top=0.855,
+        bottom=0.050,
+        top=0.840,
         wspace=0.10,
-        hspace=0.36,
+        hspace=0.39,
     )
-    for row, (z, label, row_title) in enumerate(fields):
-        norm, vmin_eff, vmax_eff = _norm_for_mode(z, "signed")
+
+    for row, (z, label, mode, row_title) in enumerate(fields):
+        norm, vmin_eff, vmax_eff = _norm_for_mode(z, mode)
         mappable = None
         for col, _idx in enumerate(indices):
             ax = axes[row, col]
-            mappable = ax.tripcolor(tri, z[col], shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm)
+            z_panel = _plot_values_for_mode(z[col], mode=mode, norm=norm)
+            mappable = ax.tripcolor(
+                tri, z_panel, shading="gouraud", vmin=vmin_eff, vmax=vmax_eff, norm=norm
+            )
             if row == 0:
                 _annotate_snapshot_time(ax, t_sel[col])
             if col == 0:
@@ -316,6 +384,14 @@ def plot_ss_snapshot_runtime_metrics(
     if p_ep.size == 0:
         raise ValueError("snapshot_power_energy_diagnostics.npz lacks P_total_snapshot_W_m3")
 
+    p_diff = _snapshot_diffusion_power_density(
+        None,
+        snapshots=snapshots,
+        power=power,
+        dataset=dataset,
+        shape_like=p_ep,
+    )
+
     t_ps_snap = _snapshot_times_ps(power, preferred=("snapshot_t_s",), n=p_ep.shape[0])
     t_ps_hist = np.asarray(dataset.get("t_ps", []), dtype=float)
     use_hist = t_ps_hist.size > 0
@@ -324,7 +400,11 @@ def plot_ss_snapshot_runtime_metrics(
     te_snap = np.empty((0, 0), dtype=float)
     tph_snap = np.empty((0, 0), dtype=float)
     if snapshots:
-        delta_mev = _snapshot_array(snapshots, ("delta_snapshot_meV",), fallback=_delta_mev_from_psi_snapshots(snapshots))
+        delta_mev = _snapshot_array(
+            snapshots,
+            ("delta_snapshot_meV",),
+            fallback=_delta_mev_from_psi_snapshots(snapshots),
+        )
         if delta_mev.size:
             delta0 = _delta0_mev(dataset, snapshots)
             delta_norm = delta_mev / delta0 if delta0 > 0.0 else delta_mev
@@ -340,6 +420,7 @@ def plot_ss_snapshot_runtime_metrics(
             "thermal_max_P_J_W_m3_history",
         )
     )
+
     nrows = 3 if thermal_hist_present or te_snap.size or tph_snap.size else 2
     fig, axes = plt.subplots(nrows, 2, figsize=(10.4, 3.2 * nrows), constrained_layout=False)
     fig.subplots_adjust(left=0.090, right=0.970, bottom=0.080, top=0.925, wspace=0.30, hspace=0.36)
@@ -348,9 +429,11 @@ def plot_ss_snapshot_runtime_metrics(
     ax = axes[0, 0]
     _plot_snapshot_metric(ax, t_ps_snap, p_ep, reducer="max_abs", label=r"max $|P_{ep}|$")
     _plot_snapshot_metric(ax, t_ps_snap, joule, reducer="max", label=r"max $P_J$")
-    _plot_snapshot_metric(ax, t_ps_snap, joule - p_ep, reducer="max_abs", label=r"max $|P_J-P_{ep}|$")
+    _plot_snapshot_metric(ax, t_ps_snap, joule + p_diff - p_ep, reducer="max_abs", label=r"max $|P_J+P_{diff}-P_{ep}|$")
     if p_esc.size:
-        _plot_snapshot_metric(ax, t_ps_snap, p_esc, reducer="max", label=r"max $P_{esc}$")
+        _plot_snapshot_metric(ax, t_ps_snap, p_esc, reducer="max_abs", label=r"max $|P_{esc}|$")
+    if np.any(np.isfinite(p_diff)):
+        _plot_snapshot_metric(ax, t_ps_snap, p_diff, reducer="max_abs", label=r"max $|P_{diff}|$")
     ax.set_yscale("symlog", linthresh=1.0e8)
     ax.set_ylabel(r"power density [W m$^{-3}$]")
     ax.set_title("power scales")
@@ -476,7 +559,9 @@ def plot_ss_snapshot_catalog_indices(
     axes = np.asarray(axes, dtype=object).reshape(1, -1)
     fig.subplots_adjust(left=0.055, right=0.965, bottom=0.145, top=0.845, wspace=0.32)
     fig.suptitle(f"PRE catalogue indices at final SS snapshot: {dataset.get('run_name', '')}", y=0.960)
-    for ax, (z, label, key) in zip(axes.ravel(), fields):
+
+    flat_axes = axes.ravel()
+    for ax, (z, label, key) in zip(flat_axes, fields):
         z = np.asarray(z, dtype=float)
         finite = z[np.isfinite(z)]
         vmin = float(np.nanmin(finite)) if finite.size else 0.0
@@ -485,9 +570,10 @@ def plot_ss_snapshot_catalog_indices(
             vmax = vmin + 1.0
         mappable = ax.tripcolor(tri, z, shading="gouraud", vmin=vmin, vmax=vmax)
         ax.set_title(label)
-        _format_map_axis(ax, show_xlabel=True, show_ylabel=(ax is axes.ravel()[0]))
+        _format_map_axis(ax, show_xlabel=True, show_ylabel=(ax is flat_axes[0]))
         cb = fig.colorbar(mappable, ax=ax, shrink=0.82)
         cb.set_label(key)
+
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
     return output
@@ -509,9 +595,15 @@ def plot_ss_snapshot_profile_comparison(
     """
     output = _prepare_output(output_path)
     x_nm = _mesh_x_nm(mesh, dataset)
-    delta_mev = _snapshot_array(snapshots, ("delta_snapshot_meV",), fallback=_delta_mev_from_psi_snapshots(snapshots))
+
+    delta_mev = _snapshot_array(
+        snapshots,
+        ("delta_snapshot_meV",),
+        fallback=_delta_mev_from_psi_snapshots(snapshots),
+    )
     if delta_mev.size == 0:
         raise ValueError("stationary_snapshots.npz does not contain Delta snapshots")
+
     delta0 = _delta0_mev(dataset, snapshots)
     delta_norm = delta_mev / delta0 if delta0 > 0.0 else delta_mev
     phi = 1.0e3 * _resize_snapshot_field(_snapshot_array(snapshots, ("phi_snapshot_V",)), delta_mev.shape)
@@ -525,9 +617,12 @@ def plot_ss_snapshot_profile_comparison(
         p_ep = _snapshot_array(power, ("P_total_snapshot_W_m3",))
         joule = _snapshot_array(power, ("joule_snapshot_W_m3",), shape_like=p_ep)
         q_abs = _snapshot_array(power, ("q_abs_snapshot_m_inv",), shape_like=p_ep) / 1.0e7
-        p_balance = joule - p_ep
+        p_diff = _snapshot_diffusion_power_density(mesh, snapshots=snapshots, power=power, dataset=dataset, shape_like=p_ep)
+        p_balance = joule + p_diff - p_ep
 
-    t_ps = _snapshot_times_ps(snapshots, preferred=("snapshot_t_s", "delta_snapshot_t_s"), n=delta_mev.shape[0])
+    t_ps = _snapshot_times_ps(
+        snapshots, preferred=("snapshot_t_s", "delta_snapshot_t_s"), n=delta_mev.shape[0]
+    )
     indices = _representative_snapshot_indices(delta_mev.shape[0], max_panels=3)
 
     rows: list[tuple[str, np.ndarray]] = [
@@ -542,7 +637,7 @@ def plot_ss_snapshot_profile_comparison(
     if q_abs.size:
         rows.append((r"$|q|$ [$10^7$ m$^{-1}$]", q_abs))
     elif p_balance.size:
-        rows.append((r"$P_J-P_{ep}$", p_balance))
+        rows.append((r"$P_J+P_{diff}-P_{ep}$", p_balance))
 
     fig, axes = plt.subplots(len(rows), 1, figsize=(9.2, 2.0 * len(rows) + 0.8), sharex=True, constrained_layout=False)
     axes = np.atleast_1d(axes)
@@ -553,12 +648,12 @@ def plot_ss_snapshot_profile_comparison(
         label = f"t={t_ps[idx]:.3g} ps"
         for ax, (_ylabel, values) in zip(axes, rows):
             _plot_binned_profile(ax, x_nm, values[idx], label=label)
-
     for ax, (ylabel, _values) in zip(axes, rows):
         ax.set_ylabel(ylabel)
         ax.grid(False)
         ax.legend(frameon=False, loc="best")
     axes[-1].set_xlabel("x [nm]")
+
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
     return output
@@ -585,12 +680,15 @@ def _with_recomputed_joule_power(
     out = dict(power)
     if not out or not snapshots:
         return out
+
     sigma_n = _dataset_sigma_n(dataset)
     if sigma_n is None:
         return out
+
     p_ep = _snapshot_array(out, ("P_total_snapshot_W_m3",))
     if p_ep.size == 0:
         return out
+
     joule = compute_snapshot_joule_power_density(
         snapshots,
         sigma_n_S_m=sigma_n,
@@ -600,6 +698,7 @@ def _with_recomputed_joule_power(
     if joule is not None and joule.shape == p_ep.shape:
         out["joule_snapshot_W_m3"] = np.asarray(joule, dtype=float)
         out["joule_formula"] = np.asarray(["jn_squared_over_sigma_n"], dtype=object)
+
     return out
 
 
@@ -642,10 +741,26 @@ def _mesh_y_nm(mesh: Any, dataset: Mapping[str, Any]) -> np.ndarray:
     return nodes[:, 1] * 1.0e9
 
 
+def _mesh_nodes_m(mesh: Any, dataset: Mapping[str, Any]) -> np.ndarray:
+    nodes = np.asarray(getattr(mesh, "nodes", getattr(mesh, "sites", [])), dtype=float)
+    if nodes.ndim == 2 and nodes.shape[1] >= 2 and nodes.shape[0] > 0:
+        return nodes[:, :2]
+    if "x_m" in dataset and "y_m" in dataset:
+        return np.column_stack((np.asarray(dataset["x_m"], dtype=float), np.asarray(dataset["y_m"], dtype=float)))
+    return np.column_stack((_mesh_x_nm(mesh, dataset) * 1.0e-9, _mesh_y_nm(mesh, dataset) * 1.0e-9))
+
+
+def _mesh_triangles(mesh: Any, dataset: Mapping[str, Any]) -> np.ndarray:
+    return np.asarray(
+        dataset.get("triangles", getattr(mesh, "triangles", getattr(mesh, "elements", []))),
+        dtype=np.int64,
+    )
+
+
 def _triangulation(mesh: Any, dataset: Mapping[str, Any]) -> mtri.Triangulation:
     x = _mesh_x_nm(mesh, dataset)
     y = _mesh_y_nm(mesh, dataset)
-    triangles = np.asarray(dataset.get("triangles", getattr(mesh, "triangles", getattr(mesh, "elements", []))), dtype=np.int64)
+    triangles = _mesh_triangles(mesh, dataset)
     return mtri.Triangulation(x, y, triangles)
 
 
@@ -715,8 +830,18 @@ def _delta_mev_from_psi_snapshots(snapshots: Mapping[str, np.ndarray] | None) ->
 def _snapshot_current_mag(snapshots: Mapping[str, np.ndarray], *, family: str) -> np.ndarray:
     if family == "jtot":
         mag_keys = ("jtot_snapshot_mag_A_m2", "jmag_snapshot_A_m2", "current_density_snapshot_A_m2")
-        x_keys = ("jtot_snapshot_x_A_m2", "current_density_snapshot_x_A_m2", "node_jtot_x_snapshot_A_m2", "jx_snapshot_A_m2")
-        y_keys = ("jtot_snapshot_y_A_m2", "current_density_snapshot_y_A_m2", "node_jtot_y_snapshot_A_m2", "jy_snapshot_A_m2")
+        x_keys = (
+            "jtot_snapshot_x_A_m2",
+            "current_density_snapshot_x_A_m2",
+            "node_jtot_x_snapshot_A_m2",
+            "jx_snapshot_A_m2",
+        )
+        y_keys = (
+            "jtot_snapshot_y_A_m2",
+            "current_density_snapshot_y_A_m2",
+            "node_jtot_y_snapshot_A_m2",
+            "jy_snapshot_A_m2",
+        )
     elif family == "jn":
         mag_keys = ("jn_snapshot_mag_A_m2", "normal_current_density_snapshot_A_m2")
         x_keys = ("jn_snapshot_x_A_m2", "normal_current_density_snapshot_x_A_m2")
@@ -774,7 +899,13 @@ def _snapshot_grid_figure(
     return fig, axes
 
 
-def _format_map_axis(ax, *, show_xlabel: bool = False, show_xlabel_top: bool = False, show_ylabel: bool = True) -> None:
+def _format_map_axis(
+    ax,
+    *,
+    show_xlabel: bool = False,
+    show_xlabel_top: bool = False,
+    show_ylabel: bool = True,
+) -> None:
     ax.set_aspect("equal", adjustable="box")
     ax.grid(False)
     if show_xlabel_top:
@@ -787,13 +918,13 @@ def _format_map_axis(ax, *, show_xlabel: bool = False, show_xlabel_top: bool = F
         ax.tick_params(axis="x", labeltop=False, top=False, labelbottom=True, bottom=True)
     else:
         ax.tick_params(axis="x", labeltop=False, top=False, labelbottom=False, bottom=True)
-        ax.set_xticklabels([])
+    ax.set_xticklabels([])
     if show_ylabel:
         ax.set_ylabel("y [nm]")
         ax.tick_params(axis="y", labelleft=True, left=True)
     else:
         ax.tick_params(axis="y", labelleft=False, left=True)
-        ax.set_yticklabels([])
+    ax.set_yticklabels([])
 
 
 def _annotate_snapshot_time(ax, t_ps: float) -> None:
@@ -903,22 +1034,199 @@ def _norm_for_mode(values: np.ndarray, mode: str):
     return _node_color_limits(z, symmetric=False, vmin=None, vmax=None)
 
 
+def _snapshot_diffusion_power_density(
+    mesh: Any | None,
+    *,
+    snapshots: Mapping[str, np.ndarray] | None,
+    power: Mapping[str, np.ndarray] | None,
+    dataset: Mapping[str, Any],
+    shape_like: np.ndarray,
+) -> np.ndarray:
+    """Return a diagnostic electron-diffusion power-density map.
+
+    Preference order:
+      1. use a saved diffusion map if a future SS writer provides one;
+      2. reconstruct ``div(kappa_s grad T_e)`` from saved snapshot topology;
+      3. return NaNs with the requested shape so the row renders as unavailable.
+
+    This helper is intentionally plotting-side only.  It does not modify the SS
+    solver, the raw diagnostics NPZ, or the PRE power catalogue.
+    """
+    shape_arr = np.asarray(shape_like, dtype=float)
+    if shape_arr.ndim != 2 or shape_arr.size == 0:
+        return np.empty((0, 0), dtype=float)
+    shape = shape_arr.shape
+
+    saved = _snapshot_array(
+        power,
+        (
+            "P_diff_snapshot_W_m3",
+            "P_diffusion_snapshot_W_m3",
+            "diffusion_snapshot_W_m3",
+            "thermal_diffusion_snapshot_W_m3",
+            "electron_diffusion_snapshot_W_m3",
+        ),
+    )
+    if saved.size:
+        return _resize_snapshot_field(saved, shape)
+
+    if not snapshots:
+        return np.full(shape, np.nan, dtype=float)
+
+    Te = _snapshot_array(snapshots, ("Te_snapshot_K",), shape_like=shape_arr)
+    if Te.size == 0 or not np.any(np.isfinite(Te)):
+        return np.full(shape, np.nan, dtype=float)
+    Te = _resize_snapshot_field(Te, shape)
+
+    kappa = _snapshot_array(power, ("kappa_s_snapshot_W_m_K",), shape_like=shape_arr)
+    if kappa.size == 0 or not np.any(np.isfinite(kappa)):
+        return np.full(shape, np.nan, dtype=float)
+    kappa = _resize_snapshot_field(kappa, shape)
+
+    edge_i, edge_j = _edge_indices_from_snapshots_or_mesh(snapshots, mesh, dataset)
+    if edge_i.size == 0 or edge_i.size != edge_j.size:
+        return np.full(shape, np.nan, dtype=float)
+
+    n_snap, n_nodes = shape
+    if int(np.max(edge_i, initial=-1)) >= n_nodes or int(np.max(edge_j, initial=-1)) >= n_nodes:
+        return np.full(shape, np.nan, dtype=float)
+
+    edge_length = _edge_length_from_snapshots_or_mesh(snapshots, mesh, dataset, edge_i=edge_i, edge_j=edge_j)
+    dual_length = _dual_length_from_snapshots(snapshots, edge_length)
+    node_area = _node_control_areas_m2(mesh, dataset, n_nodes=n_nodes)
+    if node_area.size != n_nodes or not np.all(np.isfinite(node_area)):
+        return np.full(shape, np.nan, dtype=float)
+
+    edge_length = np.maximum(np.asarray(edge_length, dtype=float), 1.0e-300)
+    dual_length = np.maximum(np.asarray(dual_length, dtype=float), 0.0)
+    node_area = np.maximum(np.asarray(node_area, dtype=float), 1.0e-300)
+
+    out = np.zeros(shape, dtype=float)
+    geom = dual_length / edge_length
+    for s in range(n_snap):
+        k_edge = 0.5 * (kappa[s, edge_i] + kappa[s, edge_j])
+        dT = Te[s, edge_j] - Te[s, edge_i]
+        flux_into_i = k_edge * geom * dT
+        acc = np.zeros(n_nodes, dtype=float)
+        np.add.at(acc, edge_i, flux_into_i)
+        np.add.at(acc, edge_j, -flux_into_i)
+        out[s] = acc / node_area
+    return out
+
+
+def _edge_indices_from_snapshots_or_mesh(
+    snapshots: Mapping[str, np.ndarray] | None,
+    mesh: Any | None,
+    dataset: Mapping[str, Any],
+) -> tuple[np.ndarray, np.ndarray]:
+    if snapshots and "edge_i" in snapshots and "edge_j" in snapshots:
+        return (
+            np.asarray(snapshots["edge_i"], dtype=np.int64).reshape(-1),
+            np.asarray(snapshots["edge_j"], dtype=np.int64).reshape(-1),
+        )
+
+    triangles = _mesh_triangles(mesh, dataset) if mesh is not None else _mesh_triangles(_NullMesh(), dataset)
+    if triangles.size == 0:
+        return np.array([], dtype=np.int64), np.array([], dtype=np.int64)
+    edge_set: set[tuple[int, int]] = set()
+    for tri in np.asarray(triangles, dtype=np.int64):
+        for a, b in ((tri[0], tri[1]), (tri[1], tri[2]), (tri[2], tri[0])):
+            ia, ib = int(a), int(b)
+            edge_set.add((ia, ib) if ia < ib else (ib, ia))
+    if not edge_set:
+        return np.array([], dtype=np.int64), np.array([], dtype=np.int64)
+    edges = np.array(sorted(edge_set), dtype=np.int64)
+    return edges[:, 0], edges[:, 1]
+
+
+class _NullMesh:
+    nodes = np.empty((0, 2), dtype=float)
+    triangles = np.empty((0, 3), dtype=np.int64)
+
+
+def _edge_length_from_snapshots_or_mesh(
+    snapshots: Mapping[str, np.ndarray] | None,
+    mesh: Any | None,
+    dataset: Mapping[str, Any],
+    *,
+    edge_i: np.ndarray,
+    edge_j: np.ndarray,
+) -> np.ndarray:
+    if snapshots and "edge_length_m" in snapshots:
+        arr = np.asarray(snapshots["edge_length_m"], dtype=float).reshape(-1)
+        if arr.size == edge_i.size:
+            return arr
+    if mesh is None:
+        return np.ones(edge_i.size, dtype=float)
+    nodes = _mesh_nodes_m(mesh, dataset)
+    if nodes.shape[0] <= max(int(np.max(edge_i, initial=0)), int(np.max(edge_j, initial=0))):
+        return np.ones(edge_i.size, dtype=float)
+    return np.linalg.norm(nodes[edge_j] - nodes[edge_i], axis=1)
+
+
+def _dual_length_from_snapshots(snapshots: Mapping[str, np.ndarray] | None, edge_length: np.ndarray) -> np.ndarray:
+    if snapshots and "dual_face_length_m" in snapshots:
+        arr = np.asarray(snapshots["dual_face_length_m"], dtype=float).reshape(-1)
+        if arr.size == np.asarray(edge_length).size:
+            return arr
+    return np.asarray(edge_length, dtype=float)
+
+
+def _node_control_areas_m2(mesh: Any | None, dataset: Mapping[str, Any], *, n_nodes: int) -> np.ndarray:
+    for key in (
+        "node_control_area_m2",
+        "control_area_m2",
+        "node_area_m2",
+        "dual_area_m2",
+        "site_areas_m2",
+    ):
+        if key in dataset:
+            arr = np.asarray(dataset[key], dtype=float).reshape(-1)
+            if arr.size == n_nodes:
+                return arr
+
+    if mesh is None:
+        return np.full(n_nodes, np.nan, dtype=float)
+    nodes = _mesh_nodes_m(mesh, dataset)
+    triangles = _mesh_triangles(mesh, dataset)
+    if nodes.shape[0] < n_nodes or triangles.size == 0:
+        return np.full(n_nodes, np.nan, dtype=float)
+
+    tri = np.asarray(triangles, dtype=np.int64)
+    p0 = nodes[tri[:, 0]]
+    p1 = nodes[tri[:, 1]]
+    p2 = nodes[tri[:, 2]]
+    area = 0.5 * np.abs(
+        (p1[:, 0] - p0[:, 0]) * (p2[:, 1] - p0[:, 1])
+        - (p1[:, 1] - p0[:, 1]) * (p2[:, 0] - p0[:, 0])
+    )
+    out = np.zeros(n_nodes, dtype=float)
+    for local in range(3):
+        valid = (tri[:, local] >= 0) & (tri[:, local] < n_nodes)
+        np.add.at(out, tri[valid, local], area[valid] / 3.0)
+    return out
+
+
 def _plot_snapshot_metric(ax, t_ps: np.ndarray, values: np.ndarray, *, reducer: str, label: str) -> None:
     arr = np.asarray(values, dtype=float)
     if arr.ndim != 2 or arr.size == 0:
         return
-    if reducer == "max":
-        y = np.nanmax(arr, axis=1)
-    elif reducer == "max_abs":
-        y = np.nanmax(np.abs(arr), axis=1)
-    elif reducer == "min":
-        y = np.nanmin(arr, axis=1)
-    elif reducer == "mean":
-        y = np.nanmean(arr, axis=1)
-    elif reducer == "p99":
-        y = np.nanpercentile(arr, 99.0, axis=1)
-    else:
-        raise ValueError(f"unknown reducer: {reducer}")
+    finite_by_row = np.any(np.isfinite(arr), axis=1)
+    if not np.any(finite_by_row):
+        return
+    with np.errstate(all="ignore"):
+        if reducer == "max":
+            y = np.nanmax(arr, axis=1)
+        elif reducer == "max_abs":
+            y = np.nanmax(np.abs(arr), axis=1)
+        elif reducer == "min":
+            y = np.nanmin(arr, axis=1)
+        elif reducer == "mean":
+            y = np.nanmean(arr, axis=1)
+        elif reducer == "p99":
+            y = np.nanpercentile(arr, 99.0, axis=1)
+        else:
+            raise ValueError(f"unknown reducer: {reducer}")
     n = min(np.asarray(t_ps).size, y.size)
     if n:
         ax.plot(np.asarray(t_ps)[:n], y[:n], marker="o", linewidth=1.2, label=label)
