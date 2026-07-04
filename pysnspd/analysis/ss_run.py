@@ -110,6 +110,46 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     jn_x = _array_or_zeros(state, "node_jn_x_A_m2", x_m.size)
     jn_y = _array_or_zeros(state, "node_jn_y_A_m2", x_m.size)
 
+    q_x = _state_alias_array(
+        state,
+        (
+            "node_q_x_m_inv",
+            "node_qx_m_inv",
+            "node_q_x_1_m",
+            "node_qx_1_m",
+            "q_x_m_inv",
+            "qx_m_inv",
+            "node_superfluid_momentum_x_m_inv",
+        ),
+        x_m.size,
+    )
+    q_y = _state_alias_array(
+        state,
+        (
+            "node_q_y_m_inv",
+            "node_qy_m_inv",
+            "node_q_y_1_m",
+            "node_qy_1_m",
+            "q_y_m_inv",
+            "qy_m_inv",
+            "node_superfluid_momentum_y_m_inv",
+        ),
+        x_m.size,
+    )
+    q_mag = _state_alias_array(
+        state,
+        (
+            "node_q_mag_m_inv",
+            "node_q_abs_m_inv",
+            "q_mag_m_inv",
+            "q_abs_m_inv",
+            "node_superfluid_momentum_mag_m_inv",
+        ),
+        x_m.size,
+    )
+    if not np.any(np.isfinite(q_mag)) or np.nanmax(np.abs(q_mag)) == 0.0:
+        q_mag = _magnitude(q_x, q_y)
+
     jtot_mag = _magnitude(jtot_x, jtot_y)
     js_mag = _magnitude(js_x, js_y)
     jn_mag = _magnitude(jn_x, jn_y)
@@ -166,6 +206,9 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         "phi_mV": phi_mV,
         "Te_K": Te_K,
         "Tph_K": Tph_K,
+        "q_x_m_inv": q_x,
+        "q_y_m_inv": q_y,
+        "q_mag_m_inv": q_mag,
         "javg_A_m2": float(jscale),
         "jtot_x_A_m2": jtot_x,
         "jtot_y_A_m2": jtot_y,
@@ -297,14 +340,6 @@ def _load_npz_dict(path: str | Path) -> dict[str, np.ndarray]:
         return {key: np.asarray(data[key]) for key in data.files}
 
 
-def _load_npz_if_exists(path: str | Path) -> dict[str, np.ndarray]:
-    p = Path(path)
-    if not p.exists():
-        return {}
-    with np.load(p, allow_pickle=True) as data:
-        return {key: np.asarray(data[key]) for key in data.files}
-
-
 def _load_yaml(path: str | Path) -> dict[str, Any]:
     p = Path(path)
     if not p.exists():
@@ -314,6 +349,14 @@ def _load_yaml(path: str | Path) -> dict[str, Any]:
     if not isinstance(obj, dict):
         raise ValueError(f"YAML summary must contain a mapping: {p}")
     return obj
+
+
+def _load_npz_if_exists(path: str | Path) -> dict[str, np.ndarray]:
+    p = Path(path)
+    if not p.exists():
+        return {}
+    with np.load(p, allow_pickle=True) as data:
+        return {key: np.asarray(data[key]) for key in data.files}
 
 
 def _as_mapping(obj: Any) -> Mapping[str, Any]:
@@ -333,6 +376,16 @@ def _array_or_zeros(data: Mapping[str, np.ndarray], key: str, n: int) -> np.ndar
     if arr.size != int(n):
         arr = np.resize(arr, int(n))
     return arr
+
+
+def _state_alias_array(state: Mapping[str, np.ndarray], keys: tuple[str, ...], n: int) -> np.ndarray:
+    for key in keys:
+        if key in state:
+            arr = np.asarray(state[key], dtype=float)
+            if arr.size != int(n):
+                arr = np.resize(arr, int(n))
+            return arr
+    return np.zeros(int(n), dtype=float)
 
 
 def _history_array(history: Mapping[str, np.ndarray], key: str) -> np.ndarray:
