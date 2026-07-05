@@ -186,8 +186,8 @@ def central_tdgl_voltage_V(
     if not np.any(right_mask):
         right_mask = np.abs(x - x_right) == np.nanmin(np.abs(x - x_right))
 
-    #return float(np.nanmean(phi[right_mask]) - np.nanmean(phi[left_mask]))
-    return float(np.nanmean(phi[left_mask]) - np.nanmean(phi[right_mask]))
+    return float(np.nanmean(phi[right_mask]) - np.nanmean(phi[left_mask]))
+    #return float(np.nanmean(phi[left_mask]) - np.nanmean(phi[right_mask]))
 
 def circuit_observables(
     state: CircuitState,

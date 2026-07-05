@@ -1,0 +1,332 @@
+pipeline03 CPU diagnostic
+date: Sun Jul  5 03:48:44 UTC 2026
+host: geminga
+
+
+============================================================
+STATIC DIAG PID 4056302
+============================================================
+CMD:
+python pipelines/03_photon_run_template.py --config configs/geminga_local_v3.yaml --run-name photon_1p6eV_center_sigma12nm_I33uA_500ps_01 --pre-run-name pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01 --ss-run-name ss_thermal_attempt1_I33uA_200ps_9snap_01 --total-time-ps 500.0 --gtdgl-dt-fs 0.50 --coupling-step-fs 200.0 --snapshots 21 --center-voltage-width-nm 100.0 --thermal-window-nm 100.0 --circuit-Lk-nH 10.0 --circuit-Rload-ohm 50.0 --circuit-Rbias-ohm 10000.0 --circuit-Lbias-nH 1000.0 --circuit-Ccouple-pF 100.0 --photon-time-ps 25.0 --photon-energy-eV 1.6 --photon-x-nm 180.0 --photon-y-nm 0.0 --photon-sigma-nm 12.0 --progress 
+
+Process:
+    PID    PPID     ELAPSED NLWP PSR %CPU %MEM   RSS    VSZ STAT COMMAND         COMMAND
+4056302 1470712       35:29    2   0 99.9  0.5 744280 1031896 Rl+ python         python pipelines/03_photon_run_template.py --config configs/geminga_local_v3.yaml --run-name photon_1p6eV_center_sigma12nm_I33uA_500ps_01 --pre-run-name pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01 --ss-run-name ss_thermal_attempt1_I33uA_200ps_9snap_01 --total-time-ps 500.0 --gtdgl-dt-fs 0.50 --coupling-step-fs 200.0 --snapshots 21 --center-voltage-width-nm 100.0 --thermal-window-nm 100.0 --circuit-Lk-nH 10.0 --circuit-Rload-ohm 50.0 --circuit-Rbias-ohm 10000.0 --circuit-Lbias-nH 1000.0 --circuit-Ccouple-pF 100.0 --photon-time-ps 25.0 --photon-energy-eV 1.6 --photon-x-nm 180.0 --photon-y-nm 0.0 --photon-sigma-nm 12.0 --progress
+
+CPU affinity:
+pid 4056302's current affinity list: 0-31
+Threads:	2
+Cpus_allowed_list:	0-31
+
+Inherited thread environment:
+NUMEXPR_NUM_THREADS=1
+OPENBLAS_NUM_THREADS=1
+OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1
+
+Native numeric libraries:
+
+Parent chain:
+4056302 1470712 python          python pipelines/03_photon_run_template.py --config configs/geminga_local_v3.yaml --run-name photon_1p6eV_center_sigma12nm_I33uA_500ps_01 --pre-run-name pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01 --ss-run-name ss_thermal_attempt1_I33uA_200ps_9snap_01 --total-time-ps 500.0 --gtdgl-dt-fs 0.50 --coupling-step-fs 200.0 --snapshots 21 --center-voltage-width-nm 100.0 --thermal-window-nm 100.0 --circuit-Lk-nH 10.0 --circuit-Rload-ohm 50.0 --circuit-Rbias-ohm 10000.0 --circuit-Lbias-nH 1000.0 --circuit-Ccouple-pF 100.0 --photon-time-ps 25.0 --photon-energy-eV 1.6 --photon-x-nm 180.0 --photon-y-nm 0.0 --photon-sigma-nm 12.0 --progress
+1470712 1470711 bash            /bin/bash
+1470711       1 screen          SCREEN -S code1
+
+============================================================
+STATIC DIAG PID 4093396
+============================================================
+CMD:
+python pipelines/03_photon_run_template.py --config configs/geminga_local_v3.yaml --run-name photon_1p6eV_center_sigma18nm_I33uA_800ps_01 --pre-run-name pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01 --ss-run-name ss_thermal_attempt1_I33uA_200ps_9snap_01 --total-time-ps 800.0 --gtdgl-dt-fs 0.50 --coupling-step-fs 200.0 --snapshots 801 --center-voltage-width-nm 100.0 --thermal-window-nm 100.0 --circuit-Lk-nH 10.0 --circuit-Rload-ohm 50.0 --circuit-Rbias-ohm 10000.0 --circuit-Lbias-nH 1000.0 --circuit-Ccouple-pF 100.0 --photon-time-ps 50.0 --photon-energy-eV 1.6 --photon-x-nm 180.0 --photon-y-nm 0.0 --photon-sigma-nm 18.0 --progress 
+
+Process:
+    PID    PPID     ELAPSED NLWP PSR %CPU %MEM   RSS    VSZ STAT COMMAND         COMMAND
+4093396 4080617       02:41   64   4 2941  0.5 729472 3569608 Rl+ python         python pipelines/03_photon_run_template.py --config configs/geminga_local_v3.yaml --run-name photon_1p6eV_center_sigma18nm_I33uA_800ps_01 --pre-run-name pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01 --ss-run-name ss_thermal_attempt1_I33uA_200ps_9snap_01 --total-time-ps 800.0 --gtdgl-dt-fs 0.50 --coupling-step-fs 200.0 --snapshots 801 --center-voltage-width-nm 100.0 --thermal-window-nm 100.0 --circuit-Lk-nH 10.0 --circuit-Rload-ohm 50.0 --circuit-Rbias-ohm 10000.0 --circuit-Lbias-nH 1000.0 --circuit-Ccouple-pF 100.0 --photon-time-ps 50.0 --photon-energy-eV 1.6 --photon-x-nm 180.0 --photon-y-nm 0.0 --photon-sigma-nm 18.0 --progress
+
+CPU affinity:
+pid 4093396's current affinity list: 0-31
+Threads:	64
+Cpus_allowed_list:	0-31
+
+Inherited thread environment:
+
+Native numeric libraries:
+
+Parent chain:
+4093396 4080617 python          python pipelines/03_photon_run_template.py --config configs/geminga_local_v3.yaml --run-name photon_1p6eV_center_sigma18nm_I33uA_800ps_01 --pre-run-name pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01 --ss-run-name ss_thermal_attempt1_I33uA_200ps_9snap_01 --total-time-ps 800.0 --gtdgl-dt-fs 0.50 --coupling-step-fs 200.0 --snapshots 801 --center-voltage-width-nm 100.0 --thermal-window-nm 100.0 --circuit-Lk-nH 10.0 --circuit-Rload-ohm 50.0 --circuit-Rbias-ohm 10000.0 --circuit-Lbias-nH 1000.0 --circuit-Ccouple-pF 100.0 --photon-time-ps 50.0 --photon-energy-eV 1.6 --photon-x-nm 180.0 --photon-y-nm 0.0 --photon-sigma-nm 18.0 --progress
+4080617 4080616 bash            /bin/bash
+4080616       1 screen          SCREEN -S code2
+
+============================================================
+LIVE SAMPLING
+============================================================
+
+---------------- sample 1 / 15 : Sun Jul  5 03:48:44 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:29    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:41   64   4 2941  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=53 active_cores_gt_1pct=31 summed_thread_cpu_pct=2929.50
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396   4 2941 Rl+  python
+
+---------------- sample 2 / 15 : Sun Jul  5 03:48:47 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:32    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:43   64   4 2943  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=36 active_cores_gt_1pct=31 summed_thread_cpu_pct=2912.90
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396   4 2943 Rl+  python
+
+---------------- sample 3 / 15 : Sun Jul  5 03:48:49 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:34    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:46   64   4 2944  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=32 active_cores_gt_1pct=31 summed_thread_cpu_pct=2911.00
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396   4 2944 Rl+  python
+
+---------------- sample 4 / 15 : Sun Jul  5 03:48:51 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:36    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:48   64   4 2946  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=32 active_cores_gt_1pct=31 summed_thread_cpu_pct=2913.20
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396   4 2946 Rl+  python
+
+---------------- sample 5 / 15 : Sun Jul  5 03:48:53 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:38    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:50   64   4 2948  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=32 active_cores_gt_1pct=31 summed_thread_cpu_pct=2915.30
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396   4 2948 Rl+  python
+
+---------------- sample 6 / 15 : Sun Jul  5 03:48:55 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:40    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:52   64   4 2950  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=32 active_cores_gt_1pct=31 summed_thread_cpu_pct=2917.40
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396   4 2950 Rl+  python
+
+---------------- sample 7 / 15 : Sun Jul  5 03:48:57 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:42    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:54   64   4 2941  0.3 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=32 active_cores_gt_1pct=30 summed_thread_cpu_pct=2909.20
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396   4 2941 Rl+  python
+
+---------------- sample 8 / 15 : Sun Jul  5 03:48:59 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:44    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:56   64  27 2931  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2926.20
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  27 2931 Rl+  python
+
+---------------- sample 9 / 15 : Sun Jul  5 03:49:02 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:47    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       02:58   64  12 2933  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2928.80
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  12 2933 Rl+  python
+
+---------------- sample 10 / 15 : Sun Jul  5 03:49:04 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:49    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       03:00   64  12 2935  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2930.80
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  12 2935 Rl+  python
+
+---------------- sample 11 / 15 : Sun Jul  5 03:49:06 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:51    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       03:03   64  15 2937  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2932.70
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  15 2937 Rl+  python
+
+---------------- sample 12 / 15 : Sun Jul  5 03:49:08 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:53    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       03:05   64  14 2938  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2934.60
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  14 2938 Rl+  python
+
+---------------- sample 13 / 15 : Sun Jul  5 03:49:10 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:55    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       03:07   64  14 2940  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2936.40
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  14 2940 Rl+  python
+
+---------------- sample 14 / 15 : Sun Jul  5 03:49:12 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:57    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       03:09   64  14 2942  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2936.70
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  30 2942 Rl+  python
+
+---------------- sample 15 / 15 : Sun Jul  5 03:49:14 UTC 2026 ----------------
+
+PID 4056302 process:
+4056302       35:59    2   0 99.9  0.5 Rl+  python
+PID 4056302 active summary:
+active_threads_gt_1pct=1 active_cores_gt_1pct=1 summed_thread_cpu_pct=99.90
+PID 4056302 top threads:
+    TID PSR %CPU STAT COMMAND
+4056302   0 99.9 Rl+  python
+
+PID 4093396 process:
+4093396       03:11   64  14 2943  0.5 Rl+  python
+PID 4093396 active summary:
+active_threads_gt_1pct=61 active_cores_gt_1pct=31 summed_thread_cpu_pct=2938.70
+PID 4093396 top threads:
+    TID PSR %CPU STAT COMMAND
+4093396  14 2943 Rl+  python
+
+Saved report: /home/jdiaz/pysnspd/pipeline03_cpu_diag_20260705_034844.txt
