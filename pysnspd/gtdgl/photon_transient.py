@@ -138,9 +138,24 @@ def run_coupled_transient(
     )
     next_snapshot = len(snapshots["snapshot_t_s"])
 
-    n_chunks = int(np.ceil(float(cfg.total_time_s) / float(cfg.chunk_time_s)))
+    progress = _ProgressReporter(
+        enabled=bool(cfg.progress),
+        total_ps=float(cfg.total_time_s) / 1.0e-12,
+        description="Pipeline 03 transient",
+    )
 
-    for k in range(n_chunks):
+    max_loop_count = int(np.ceil(float(cfg.total_time_s) / max(float(cfg.chunk_time_s), 1.0e-30))) + 8
+    loop_count = 0
+
+    while t < float(cfg.total_time_s) - 1.0e-30:
+        loop_count += 1
+        if loop_count > max_loop_count:
+            progress.close()
+            raise RuntimeError(
+                "Pipeline 03 transient loop exceeded the expected number of chunks; "
+                "check chunk_time_s, photon_time_s and total_time_s."
+            )
+
         remaining = float(cfg.total_time_s) - t
         if remaining <= 1.0e-30:
             break
@@ -205,6 +220,13 @@ def run_coupled_transient(
             )
             obs = circuit_observables(circuit, params=circuit_params, V_tdgl_V=V_tdgl)
             _append_history(history, t=t, obs=obs, state=state, material=material, dt_chunk=dt_chunk, photon_applied=False)
+            progress.update(
+                dt_ps=float(dt_chunk) / 1.0e-12,
+                I_s_uA=float(obs["I_s_A"]) * 1.0e6,
+                V_out_uV=float(obs["V_out_V"]) * 1.0e6,
+                Vtdgl_uV=float(obs["V_tdgl_center_V"]) * 1.0e6,
+                photon=photon_applied,
+            )
             _append_snapshot_if_due(
                 t,
                 current,
@@ -250,6 +272,9 @@ def run_coupled_transient(
             history["max_pairbreaking_ratio"].append(float("nan"))
             history["max_Te_K"].append(float(np.nanmax(current.node_Te_K)))
             history["max_Tph_K"].append(float(np.nanmax(current.node_Tph_K)))
+            progress.mark_photon(float(t) / 1.0e-12, photon_metadata)
+
+    progress.close()
 
     # Always append final state.
     _append_snapshot_force(float(cfg.total_time_s), current, material=material, snapshots=snapshots)
@@ -424,6 +449,93 @@ def _save_transient_snapshots(snapshots: dict[str, list], *, ops: Any, output_pa
 
     np.savez_compressed(output_path, **arrays)
     return output_path
+
+
+
+class _ProgressReporter:
+    """Optional progress wrapper for pipeline 03.
+
+    Uses tqdm when available.  If tqdm is unavailable, it falls back to sparse
+    text updates, so the transient still runs on minimal environments.
+    """
+
+    def __init__(self, *, enabled: bool, total_ps: float, description: str) -> None:
+        self.enabled = bool(enabled)
+        self.total_ps = float(total_ps)
+        self.current_ps = 0.0
+        self._bar = None
+        self._last_print_fraction = -1.0
+
+        if not self.enabled:
+            return
+
+        try:
+            from tqdm.auto import tqdm  # type: ignore
+
+            self._bar = tqdm(
+                total=self.total_ps,
+                desc=description,
+                unit="ps",
+                dynamic_ncols=True,
+                leave=True,
+                mininterval=0.5,
+            )
+        except Exception:
+            self._bar = None
+            print(f"{description}: 0.000 / {self.total_ps:.3f} ps")
+
+    def update(
+        self,
+        *,
+        dt_ps: float,
+        I_s_uA: float,
+        V_out_uV: float,
+        Vtdgl_uV: float,
+        photon: bool,
+    ) -> None:
+        if not self.enabled:
+            return
+
+        dt = max(float(dt_ps), 0.0)
+        self.current_ps = min(self.current_ps + dt, self.total_ps)
+        postfix = {
+            "I_s[uA]": f"{float(I_s_uA):.6g}",
+            "Vout[uV]": f"{float(V_out_uV):.3g}",
+            "Vtdgl[uV]": f"{float(Vtdgl_uV):.3g}",
+            "photon": "yes" if bool(photon) else "no",
+        }
+
+        if self._bar is not None:
+            self._bar.update(dt)
+            self._bar.set_postfix(postfix)
+            return
+
+        fraction = self.current_ps / max(self.total_ps, 1.0e-300)
+        if fraction >= self._last_print_fraction + 0.10 or fraction >= 1.0:
+            self._last_print_fraction = fraction
+            print(
+                f"Pipeline 03 transient: {self.current_ps:.3f}/{self.total_ps:.3f} ps "
+                f"({100.0 * fraction:5.1f}%) "
+                f"I_s={float(I_s_uA):.6g} uA "
+                f"Vout={float(V_out_uV):.3g} uV "
+                f"Vtdgl={float(Vtdgl_uV):.3g} uV "
+                f"photon={'yes' if bool(photon) else 'no'}"
+            )
+
+    def mark_photon(self, t_ps: float, metadata: Mapping[str, Any]) -> None:
+        if not self.enabled:
+            return
+        energy = metadata.get("energy_eV", float("nan"))
+        reason = metadata.get("reason", "photon event")
+        msg = f"photon event at t={float(t_ps):.6g} ps, E={energy} eV: {reason}"
+        if self._bar is not None:
+            self._bar.write(msg)
+        else:
+            print(msg)
+
+    def close(self) -> None:
+        if self._bar is not None:
+            self._bar.close()
 
 
 __all__ = [
