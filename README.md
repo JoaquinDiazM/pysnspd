@@ -1,217 +1,298 @@
 # pySNSPD
 
-`pySNSPD` is a modular research code for building a multiscale simulation framework for NbN superconducting nanowire single-photon detectors (SNSPDs).
-
-The repository contains the source code developed for an Electrical Engineering thesis. The goal is not to provide a monolithic detector simulator, but to build a reproducible pipeline where each physical layer can be audited before being coupled to the next one.
-
-The active model is organized around:
-
-1. dirty-limit Usadel material calibration;
-2. quasiparticle density-of-states catalogues;
-3. electron–phonon kinetic phase-space catalogues;
-4. projected electron–phonon power diagnostics;
-5. stationary mesoscopic gTDGL/Poisson relaxation;
-6. future thermal, photon and circuit coupling.
-
-Raw simulation outputs are intentionally kept outside the repository.
-
----
-
-## 1. Physical model
-
-### 1.1 Material and Usadel layer
-
-The material block calibrates the dirty-limit diffusion coefficient $D$ from a target critical current $I_c$, the wire geometry, $\sigma_n$, $T_c$ and the bias temperature.
-
-The Usadel block provides local-equilibrium superconducting information:
-
-$$
-\Delta_{\rm eq}(q,T), \qquad
-s_n(q,T), \qquad
-j_s(q,T), \qquad
-\rho(E;|\Delta|,q).
-$$
-
-The dirty-limit Matsubara current relation used for calibration is
-
-$$
-j_s(q,T)
-=
-
-\frac{2\pi k_B T}{|e|\hbar}
-\sigma_n q
-\sum_{n=0}^{\infty} s_n^2(q,T).
-$$
-
-The density-of-states catalogue is built from the retarded dirty-limit Usadel equation
-
-$$
-(\Gamma_q c-i z)^2(1-c^2)-|\Delta|^2c^2=0,
-\qquad
-\rho(E)=\operatorname{Re}c(E),
-$$
-
-with
-
-$$
-\Gamma_q=\frac{\hbar Dq^2}{2}.
-$$
-
-### 1.2 Kinetic electron–phonon layer
-
-The kinetic layer follows the Simon/MIT microscopic structure and projects the expensive electronic integrals into reusable phase-space catalogues:
-
-$$
-\mathcal J_S(\Omega;T_e,|\Delta|,q),
-$$
-
-$$
-\mathcal J_R(\Omega;T_e,|\Delta|,q).
-$$
-
-These catalogues are not full thermal powers by themselves. They are superconducting electronic phase-space factors that can later be combined with external Eliashberg material data, phonon occupation factors and local thermal fields.
-
-### 1.3 Projected power diagnostics
-
-The projected electron–phonon powers are constructed from the phase-space catalogues and the external Eliashberg spectrum:
-
-$$
-P_{ep}^{S}
-=
-
-\frac{8\pi N(0)}{\hbar}
-\int d\Omega,
-\alpha^2F(\Omega)\Omega
-\left[
-n_e(\Omega,T_e)-n_{ph}(\Omega,T_{ph})
-\right]
-\mathcal J_S(\Omega;T_e,|\Delta|,q),
-$$
-
-$$
-P_{ep}^{R}
-=
-
-\frac{4\pi N(0)}{\hbar}
-\int d\Omega,
-\alpha^2F(\Omega)\Omega
-\left[
-n_e(\Omega,T_e)-n_{ph}(\Omega,T_{ph})
-\right]
-\mathcal J_R(\Omega;T_e,|\Delta|,q).
-$$
-
-The sign convention is:
-
-$$
-P_{ep}>0
-$$
-
-meaning energy leaves the electronic system and enters the phonon system.
-
-The recombination channel $P_{ep}^{R}$ is a superconducting channel. It is not an additional normal-state power. In the thermal Usadel audit it is set to zero when
-
-$$
-\Delta_{\rm eq}(T_e,q)=0.
-$$
-
-The normal-state comparison is made against
-
-$$
-P_{\Delta=0}^{\rm Eliashberg}
-$$
-
-and against the Vodolazov/Allmaras Debye reference
-
-$$
-P_D
-=
-
-\frac{96\zeta(5)N(0)k_B^2}{\tau_0T_c^3}
-\left(T_e^5-T_{ph}^5\right).
-$$
-
-The parameter $\tau_0$ is not the same as the linear electron–phonon relaxation time at $T_c$. The conversion used in the code is
-
-$$
-\tau_0
-=
-
-\frac{720\zeta(5)}{\pi^2}
-\tau_{ep}(T_c).
-$$
-
-For $\tau_{ep}(T_c)=24.7,{\rm ps}$,
-
-$$
-\tau_0\simeq1.868,{\rm ns}.
-$$
-
-### 1.4 Mesoscopic gTDGL/Poisson layer
-
-The stationary mesoscopic layer evolves the complex order parameter
-
-$$
-\Psi(\mathbf r,t)
-=
-
-R(\mathbf r,t)e^{i\theta(\mathbf r,t)},
-$$
-
-the electrostatic potential, the supercurrent, the normal current and the current-continuity diagnostics.
-
-The current stationary backend is the promoted pyTDGL-like finite-volume core, adapted to pySNSPD while keeping SI physical units at the repository level. The active SS-run loads PRE-run objects and relaxes a stationary state using:
-
-* the mesh and edge table;
-* the strict 3D Matsubara Usadel supercurrent table;
-* Allmaras/gTDGL material factors;
-* metallic left/right terminal conditions;
-* finite-volume current-continuity diagnostics.
-
-The practical SS result now used as baseline is:
-
-* a short physical device, roughly twice the wire width, is sufficient to obtain a useful superconducting bulk;
-* first phase-slip-line formation appears around $38$–$39,\mu{\rm A}$;
-* multiple PSL states appear at higher current, with about three PSLs near $50,\mu{\rm A}$;
-* the strongly overcritical branch recovers an Ohmic-like behavior around $60$–$70,\mu{\rm A}$.
-
-This validated stationary map is the reference before adding thermal and circuit coupling.
-
-### 1.5 Future thermal, photon and circuit coupling
-
-The future coupled model should evolve
-
-$$
-T_e(\mathbf r,t), \qquad
-T_{ph}(\mathbf r,t), \qquad
-\Psi(\mathbf r,t), \qquad
-\phi(\mathbf r,t),
-$$
-
-and then couple the nanowire voltage to an external circuit to obtain
-
-$$
-I_{\rm SNSPD}(t), \qquad
-V_{\rm TDGL}(t), \qquad
-V_{\rm out}(t).
-$$
-
-The next major physical target is not photon injection yet. The next target is to verify that the fully coupled no-photon stationary state reproduces the already validated SS gTDGL branch.
-
----
-
-## 2. Data policy
-
-Raw data, catalogues, logs and plots must not be stored inside the git repository.
-
-The config must define an external data root:
-
-```yaml
-project:
-  big_data_root: /home/jdiaz/scratch/big_data
+**Multiscale research code for superconducting nanowire single-photon detector (SNSPD) simulations.**
+
+This README documents the frozen, dirty-but-functional research version of `pySNSPD` used to obtain the main thermal-photon result of the thesis work.
+
+```text
+Frozen SHA : 9aeeab333dd01952c94bc28286d028ccef1d7445
+Git tag    : dirty-functional-thermal-photon-v1
+Repository : github.com/JoaquinDiazM/pysnspd
+Status     : research prototype, functional, not yet cleaned
+Date       : 2026-07-05
 ```
 
-The expected layout is:
+---
+
+## 0. Honest status
+
+`pySNSPD` is not yet a polished detector simulator. It is a thesis/research codebase that grew quickly while integrating several physical layers that are usually studied separately:
+
+1. dirty-limit Usadel superconductivity;
+2. quasiparticle density-of-states catalogues;
+3. electron-phonon phase-space integrals;
+4. projected power/energy catalogues;
+5. finite-volume mesoscopic gTDGL/Poisson dynamics;
+6. two-temperature electron/phonon thermal dynamics;
+7. photon perturbation;
+8. external circuit readout;
+9. plotting and current-sweep diagnostics.
+
+The code at this SHA is **dirty but functional**. It reproduces the central result needed for the thesis: a photon-induced transient in a NbN nanowire where the order parameter, thermal fields, electric potential, current redistribution and output voltage evolve consistently over picosecond scales.
+
+The repository still contains historical naming, partially redundant diagnostics, exploratory plotting code and configuration files created during development. The goal of this README is not to pretend that the project is clean, but to explain what is currently reliable and how the present result was obtained.
+
+---
+
+## 1. Main result of this frozen version
+
+The current working pipeline produces a coupled photon response for a short NbN nanowire device. The representative result includes:
+
+- transient suppression and recovery of the superconducting order parameter `Delta_s`;
+- RF current response `I_RF`;
+- central TDGL voltage `V_TDGL^center`;
+- external output signal `V_out`;
+- spatial maps of `|Delta|/Delta0`, electrostatic potential `phi`, gauge-invariant momentum magnitude `|q|`, electron temperature `T_e` and phonon temperature `T_ph`;
+- time-resolved diagnostics at selected times after photon injection.
+
+---
+
+## 2. What this repository is trying to do
+
+The purpose of `pySNSPD` is to build a reproducible multiscale framework for SNSPD modelling, especially for NbN devices. The code is designed around physical SI units and explicit intermediate catalogues. It is not a purely dimensionless TDGL toy model.
+
+The central modelling idea is:
+
+```text
+microscopic material information
+  -> mesoscopic superconducting dynamics
+  -> thermal electron/phonon response
+  -> electrical detector output
+```
+
+The thesis contribution is not a single new closed-form equation. The contribution is the integration of multiple layers into one auditable numerical workflow:
+
+- Usadel-like superconducting material calibration;
+- Allmaras/Vodolazov-inspired gTDGL dynamics;
+- Simon/MIT-style electron-phonon spectral data and kernels;
+- finite-volume current continuity and Poisson projection;
+- two-temperature local thermal dynamics;
+- photon perturbation and circuit-level observables.
+
+---
+
+## 3. Physical model, in implementation language
+
+### 3.1 Material, geometry and calibration philosophy
+
+The current working material is NbN, using physical parameters close to the thesis configuration:
+
+```text
+Tc                ~ 8.65 K
+D_eff             ~ 1.58e-4 m^2/s   # calibrated effective diffusion constant for Ic = 38.8 uA
+sigma_n           ~ 4.2e5 S/m
+lambda_L          ~ 5.4e-7 m
+thickness         ~ 7 nm
+width             ~ 120 nm
+```
+
+The diffusion constant used in the functional runs should be read as an **effective calibrated dirty-limit diffusion constant**, not merely as a raw value copied from literature. During the development of the main result, `D_eff` was tuned so that the mesoscopic superconducting model reproduces the expected experimental cutoff/depairing current scale for the nominal NbN strip.
+
+This calibration matters because `D_eff` enters the superconducting coherence scale, the Usadel pair-breaking scale, the current tables and the final critical-current scale of the gTDGL/Poisson state. In practice, the repo treats `D_eff` as part of the material-calibration layer connecting microscopic material assumptions to the experimentally relevant bias-current window.
+
+The code assumes a thin superconducting strip and works with a 2D mesh representing the nanowire plane. All numerical quantities are stored and passed in SI units unless explicitly labelled otherwise. The calibration does not change this convention: the repo still evolves real physical quantities, but with a calibrated material parameter set.
+
+### 3.2 Usadel, DOS and current catalogues
+
+The PRE-run stage builds reusable superconducting catalogues. These include equilibrium gap information, quasiparticle density-of-states information and current-related tables over physical axes such as temperature, order-parameter amplitude and gauge-invariant momentum.
+
+Conceptually, this layer provides quantities such as
+
+```text
+Delta_eq(T, q; D_eff)
+rho(E; Delta, q, D_eff)
+j_s(T, Delta, q; D_eff)
+```
+
+which are later queried by the stationary and dynamic solvers.
+
+The current catalogue is not only a diagnostic output. It is part of the bridge between the calibrated material model and the mesoscopic solver: the stationary and photon stages inherit the current scale implied by the calibrated `D_eff`, `Tc`, `sigma_n`, geometry and gap model.
+
+### 3.3 Electron-phonon phase space and power/energy catalogues
+
+Earlier versions focused mainly on phase-space integrals. The current functional version goes further: it builds and uses projected **power/energy catalogues** suitable for thermal dynamics.
+
+This is one of the main implementation changes relative to the original plan. Instead of recomputing expensive microscopic integrals inside the dynamic solver, expensive spectral quantities are precomputed and compressed into interpolation-ready catalogues.
+
+The practical benefit is that the photon/thermal run can evolve local fields without repeatedly solving the full microscopic electron-phonon problem at every node and time step.
+
+### 3.4 Mesh and finite-volume layer
+
+The spatial domain is represented by a physical 2D mesh. The mesh stores nodes, triangles, edges and boundary tags. The solver uses finite-volume-like operators to evaluate gradients, currents, divergence diagnostics and boundary conditions.
+
+This layer is important because the photon response is not treated as a purely 0D box. The plots show real spatial structure across the nanowire width and along the device.
+
+### 3.5 Stationary gTDGL/Poisson state
+
+Before injecting a photon, the code constructs a stationary superconducting state at the selected bias current. This state provides:
+
+```text
+Delta(r)
+theta(r)
+phi(r)
+q(r)
+j_s(r)
+j_n(r)
+```
+
+The stationary solver uses a gTDGL/Allmaras-like backend coupled to a Poisson/current-continuity projection. Its material scale is inherited from the calibrated PRE-run catalogues. Therefore, the stationary state is not an arbitrary mathematical initial condition: it is the calibrated superconducting operating point from which the photon perturbation starts.
+
+### 3.6 Photon, thermal dynamics and circuit response
+
+The photon run evolves the coupled response after local energy deposition. The active dynamic variables include, schematically:
+
+```text
+Delta(r,t)
+phi(r,t)
+q(r,t)
+T_e(r,t)
+T_ph(r,t)
+I_RF(t)
+V_TDGL(t)
+V_out(t)
+```
+
+The resulting diagnostic plots connect the local mesoscopic dynamics to circuit-level observables. In the frozen functional version, this final layer should be interpreted as the result of the full calibrated chain:
+
+```text
+calibrated NbN material set
+  -> Usadel/DOS/current catalogues
+  -> power/energy thermal catalogues
+  -> stationary gTDGL/Poisson operating point
+  -> photon/thermal/circuit transient
+```
+
+---
+
+## 4. Official workflow at this SHA
+
+The dirty functional workflow has three main pipeline stages plus plotting scripts.
+
+### 4.1 PRE-run
+
+Script:
+
+```bash
+python pipelines/01_prerun_template.py --help
+```
+
+Role:
+
+- build/load mesh;
+- build Usadel/DOS catalogue;
+- build phase-space catalogue;
+- build thermal power/energy interpolation objects;
+- store raw reusable outputs under the external `big_data_root`.
+
+### 4.2 SS-run
+
+Script:
+
+```bash
+python pipelines/02_ss_run_template.py --help
+```
+
+Role:
+
+- load PRE-run outputs;
+- create the superconducting stationary seed;
+- relax the stationary gTDGL/Poisson state;
+- write stationary fields and diagnostics.
+
+### 4.3 PHOTON-run
+
+Script:
+
+```bash
+python pipelines/03_photon_run_template.py --help
+```
+
+Role:
+
+- load PRE-run catalogues;
+- load the SS stationary state;
+- inject photon-like localized energy;
+- evolve coupled thermal/gTDGL/circuit variables;
+- write dynamic histories and raw fields.
+
+### 4.4 Plot pipelines
+
+Scripts:
+
+```bash
+python plot_pipelines/01_plot_prerun.py --help
+python plot_pipelines/02_plot_ss_run.py --help
+python plot_pipelines/03_plot_photon_run.py --help
+python plot_pipelines/Z1_current_sweep_analysis.py --help
+```
+
+Role:
+
+- regenerate plots without rerunning the expensive physics;
+- inspect PRE, SS and PHOTON outputs;
+- analyze current sweeps and overcritical branches.
+
+---
+
+## 5. Representative commands
+
+These commands are written for the development machine used during the thesis work. Paths and run names may need adjustment on another system.
+
+### 5.1 Checkout the frozen functional version
+
+```bash
+cd ~/pysnspd
+git fetch --all --tags
+git checkout dirty-functional-thermal-photon-v1
+git rev-parse HEAD
+```
+
+Expected SHA:
+
+```text
+9aeeab333dd01952c94bc28286d028ccef1d7445
+```
+
+### 5.2 Basic validation
+
+```bash
+cd ~/pysnspd
+python -m compileall -q pysnspd pipelines plot_pipelines tests
+python -m pytest -q
+```
+
+At the frozen functional state, the local development run had the full test suite passing.
+
+### 5.3 Representative photon plotting command
+
+This command regenerates the main photon plots from an already completed PRE/PHOTON run:
+
+```bash
+cd ~/pysnspd
+python plot_pipelines/03_plot_photon_run.py \
+  --config configs/geminga_local_v3.yaml \
+  --run-name photon_1p6eV_center_sigma12nm_I33uA_500ps_01 \
+  --pre-run-name pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01 \
+  --scalar-times-ps 25 50 75 100 125 500 \
+  --center-width-nm 100.0 \
+  --dpi 640
+```
+
+This is a plotting command, not a full recomputation of the photon dynamics.
+
+---
+
+## 6. Data policy
+
+Large outputs are intentionally kept outside git. The repository should not store raw `.npz` simulation outputs, large catalogues, logs or generated high-resolution plots.
+
+The development configuration uses an external data root similar to:
+
+```text
+/home/jdiaz/scratch/big_data
+```
+
+Expected layout:
 
 ```text
 big_data_root/
@@ -222,437 +303,196 @@ big_data_root/
       photon/
   plots/
     <run_name>/
-      mesh/
-      diagnostics/
-      comparisons/
-      figures/
   logs/
   catalogs/
     simon_2025/
       nbn-a2f-ph.dat
-      README.txt
   tmp/
 ```
 
-The same `run_name` links raw outputs, plots and logs.
+The same `run_name` should be used to link raw outputs, diagnostic plots and logs.
 
 ---
 
-## 3. External material data
+## 7. External data
 
-The NbN Eliashberg file used by the kinetic diagnostics is external material data and should live under:
+The electron-phonon spectral input is external material data and is not committed to this repository. The local development path is:
 
 ```text
 /home/jdiaz/scratch/big_data/catalogs/simon_2025/nbn-a2f-ph.dat
 ```
 
-The source file header is expected to be:
+Expected text-file header:
 
 ```text
 #E (THz) a^2F PhDOS (st/THz)
 ```
 
-The code converts the THz axis to an energy axis using
-
-$$
-\Omega=hf.
-$$
-
-The file is not committed to the repository.
+The code converts the frequency axis to an energy axis internally. Keep the raw external data outside the git repository.
 
 ---
 
-## 4. Official workflow
+## 8. Repository structure at the frozen SHA
 
-The official workflow has three stages.
-
-### 4.1 PRE-run
-
-The PRE-run generates reusable expensive objects:
-
-* mesh;
-* edge table;
-* boundary tags;
-* Usadel/DOS catalogue;
-* strict 3D Matsubara supercurrent table;
-* superconducting phase-space catalogue;
-* PRE diagnostic plots;
-* manifests.
-
-The PRE-run is the natural place for parallelization because catalogue points are independent.
-
-### 4.2 SS-run
-
-The SS-run constructs and relaxes the stationary detector state before photon absorption.
-
-It loads PRE-run outputs and initializes:
-
-$$
-T_e=T_{ph}=T_{\rm bath},
-$$
-
-$$
-|\Delta|\approx \Delta_{\rm eq}(T_{\rm bias},q_{\rm bias}),
-$$
-
-$$
-\theta(\mathbf r)\approx qx.
-$$
-
-It then relaxes the gTDGL/Poisson system and writes stationary fields, histories, diagnostics and plots.
-
-### 4.3 PHOTON-run
-
-The PHOTON-run is still a future physical target.
-
-It should eventually load the PRE-run catalogues and the SS-run state, inject a photon-induced perturbation, and evolve the coupled thermal, gTDGL and circuit variables.
-
-The current repository should not pretend that this layer is implemented before the coupled no-photon stationary state is validated.
-
----
-
-## 5. Current repository structure
+The top-level structure is approximately:
 
 ```text
 configs/
+docs/
 pipelines/
   00_configure_project.py
   01_prerun_template.py
   02_ss_run_template.py
   03_photon_run_template.py
-
 plot_pipelines/
+  01_plot_prerun.py
   02_plot_ss_run.py
-
+  03_plot_photon_run.py
+  Z1_current_sweep_analysis.py
 pysnspd/
   config.py
   io/
-    manager.py
   mesh/
-    delaunay.py
-    edges.py
-    pytdgl_like.py
-    quality.py
   usadel/
-    calibration.py
-    catalog.py
-    parameters.py
-    solver.py
-    supercurrent_table.py
   kinetic/
-    eliashberg.py
-    phase_space.py
-    powers.py
-    thermal_usadel.py
   gtdgl/
-    adapter.py
-    allmaras.py
-    currents.py
-    device.py
-    diagnostics.py
-    finite_volume/
-    geometry.py
-    material.py
-    operators.py
-    options.py
-    seed.py
-    solver.py
-    ss_targets.py
-    state.py
-    state_io.py
-    tdgl_compat.py
-    tdgl_operators.py
-    usadel_current.py
   plotting/
-    figures.py
-    kinetic.py
-    pre_diagnostics.py
-    ss_figures.py
-    ss_run.py
-
 tests/
+pyproject.toml
+README.md
+LICENSE
 ```
 
-Legacy orchestration, circuit placeholders, validation placeholders, utility placeholders and obsolete plotting modules were removed in Audit 01.
-
-Silent physics stubs for the future thermal and photon-bubble layers were removed in Audit 02.
+Important note: this structure is functional, not final. Several names still reflect the historical order in which the thesis objectives were implemented.
 
 ---
 
-## 6. PRE-run outputs
+## 9. Development objectives and status
 
-A useful PRE-run writes:
+The internal development was organized as objective blocks. The exact numbering evolved during the semester, but the current conceptual status is:
 
 ```text
-raw/<run_name>/pre/
-  mesh.npz
-  edges.npz
-  mesh_summary.yaml
-  usadel_dos_catalog.npz
-  usadel_dos_summary.yaml
-  phase_space_catalog.npz
-  phase_space_summary.yaml
-  manifest.yaml
-  plots_diagnostics/
+[done] OE0  Project skeleton, configuration and external-data policy
+[done] OE1  Material parameters, run manager and reproducible IO
+[done] OE2  Physical 2D mesh, edge table and diagnostics
+[done] OE3  Usadel/DOS catalogues and superconducting current tables
+[done] OE4  Electron-phonon phase-space catalogues
+[done] OE5  Thermal power/energy catalogues and Debye/Eliashberg diagnostics
+[done] OE6  Stationary seed, plotting infrastructure and SS diagnostics
+[done] OE7  Stationary gTDGL/Poisson solver and current-sweep analysis
+[done] OE8  Photon, thermal dynamics and circuit-level output diagnostics
+[*]    OE9  Calibration, parameter sweeps, validation and physical interpretation
 ```
 
-The Usadel NPZ also stores the strict 3D Matsubara current table:
+The star intentionally remains on the last OE. Calibration and parameter sweeps are open-ended: there will always be better material parameters, better meshes, better bias points, better photon models and better validation datasets. The purpose of the star is to mark the active frontier, not to imply that the earlier layers are useless or incomplete.
+
+---
+
+## 10. What is reliable right now
+
+At this SHA, the following parts are considered reliable enough for thesis-level use, with the normal caution required for a research prototype:
+
+- the PRE/SS/PHOTON workflow concept;
+- the use of physical SI units across the repository;
+- the external-data policy using `big_data_root`;
+- the mesh and finite-volume diagnostic philosophy;
+- the Usadel/DOS catalogue approach;
+- the power/energy catalogue approach for thermal dynamics;
+- the stationary gTDGL/Poisson state as a photon initial condition;
+- the photon plotting pipeline for the main dynamic figures;
+- the current-sweep plotting approach for comparing bias regimes.
+
+The plots produced from the current pipeline are suitable as the basis for thesis figures, after final captioning, discussion and consistency checks.
+
+---
+
+## 11. What is still dirty
+
+This version still needs a full audit. Known issues include:
+
+- some names still refer to earlier development objectives;
+- some plotting modules contain thesis-specific choices;
+- some configuration files are machine-specific;
+- the dependency list in `pyproject.toml` is not yet a complete user-facing install recipe;
+- some commands assume the development environment `snspd` and the `geminga` data layout;
+- some diagnostic files are exploratory and should later be separated from the official workflow;
+- the README, appendix and thesis text still need to be synchronized with the actual implementation;
+- future users need clearer minimal examples and smaller test datasets.
+
+This is expected. The current tag exists precisely to preserve the functional state before the repository is cleaned.
+
+---
+
+## 12. What should not be claimed yet
+
+This repository should not yet be advertised as:
+
+- a production-ready SNSPD simulator;
+- a complete replacement for experimental calibration;
+- a universal model for all SNSPD materials and geometries;
+- a fully validated commercial detector-design tool;
+- a polished package for non-expert installation.
+
+The honest claim is stronger and more defensible:
+
+> `pySNSPD` is a functional research framework that demonstrates a coupled micro/meso/thermal/circuit SNSPD simulation workflow in physical units, suitable for thesis-level analysis and future refinement.
+
+---
+
+## 13. Suggested next repository tasks
+
+After this dirty functional tag, the next steps should be done in this order:
+
+1. update the thesis appendix so that every equation corresponds to actual code;
+2. write the main thesis narrative around the achieved coupled result;
+3. audit every file and classify it as official, diagnostic, legacy or removable;
+4. rename/reorganize source modules and pipelines;
+5. create a clean public README for new users;
+6. add a small reproducible demo dataset or lightweight smoke example;
+7. improve installation instructions and dependency tracking;
+8. document citation expectations and thesis references.
+
+Do not refactor the full repository before the functional result has been fully documented.
+
+---
+
+## 14. Thesis positioning
+
+The scientific value of this work is in the integrated modelling workflow. The project combines ideas from superconductivity, nonequilibrium kinetics, numerical PDEs, thermal modelling and circuit readout.
+
+For the thesis, the main message should be:
 
 ```text
-js_A_m2[Te, delta, q]
-Te_axis_K
-delta_axis_J
-q_axis_m_inv
+This work builds local computational capacity for modelling SNSPDs from material physics to detector-level signals, using an auditable Python framework in physical units.
 ```
 
-This table is required by the active SS `usadel-poisson` current law.
+This is relevant because SNSPDs are important for quantum communication, astronomical instrumentation, low-light sensing and future photonic technologies. A local framework like this helps Chilean research groups study detector physics without relying only on black-box tools or external codebases.
 
 ---
 
-## 7. Representative commands
+## 15. Minimal citation note
 
-### PRE-run
+The final thesis/manuscript should cite the relevant literature for:
 
-```bash
-cd ~/pysnspd
+- dirty-limit Usadel superconductivity;
+- gTDGL/KWT and Allmaras/Vodolazov SNSPD modelling;
+- electron-phonon kinetic kernels and the Simon/MIT NbN spectral data;
+- SNSPD detector physics and circuit readout;
+- numerical finite-volume/mesh methods where appropriate.
 
-RUN_NAME=NbN_120nm_35uA_1064nm_pre
-
-python pipelines/01_prerun_template.py \
-  --config configs/geminga_local.yaml \
-  --run-name "$RUN_NAME" \
-  --workers 16 \
-  --eta-fraction 1.0e-3 \
-  --gamma-max-fraction 0.80 \
-  --energy-max-factor 30.0 \
-  --phase-omega-max-meV 35.0 \
-  --phase-n-Te 12 \
-  --phase-n-delta 12 \
-  --phase-n-q 12 \
-  --phase-n-omega 480 \
-  --js-table-n-Te 3
-```
-
-### SS-run
-
-```bash
-cd ~/pysnspd
-
-PRE_RUN=NbN_120nm_35uA_1064nm_pre
-SS_RUN=NbN_120nm_35uA_1064nm_ss_35uA
-
-python pipelines/02_ss_run_template.py \
-  --config configs/geminga_local.yaml \
-  --run-name "$SS_RUN" \
-  --pre-run-name "$PRE_RUN" \
-  --ss-target-current-uA 35 \
-  --ss-time-ps 20 \
-  --ss-dt-fs 0.30 \
-  --ss-snapshots 8 \
-  --ss-progress \
-  --dpi 480
-```
-
-### SS current sweep
-
-```bash
-cd ~/pysnspd
-
-PRE_RUN=NbN_120nm_35uA_1064nm_pre
-SS_RUN=ss_sweep_Dgtdgl100_tau_v2_long_base34uA_60ps_01
-
-python pipelines/02_ss_run_template.py \
-  --config configs/geminga_local.yaml \
-  --run-name "$SS_RUN" \
-  --pre-run-name "$PRE_RUN" \
-  --ss-target-current-uA 34 \
-  --extra-currents-uA +3 +6 +9 +12 +16 +26 +36 \
-  --ss-sweep-workers 4 \
-  --ss-time-ps 60 \
-  --ss-dt-fs 0.30 \
-  --ss-snapshots 8 \
-  --ss-progress \
-  --dpi 480
-```
-
-### SS plot pipeline
-
-```bash
-cd ~/pysnspd
-
-python plot_pipelines/02_plot_ss_run.py \
-  --config configs/geminga_local.yaml \
-  --run-name "$SS_RUN" \
-  --pre-run-name "$PRE_RUN" \
-  --dpi 480
-```
+This README intentionally avoids pretending that the code is independently derived from first principles without external literature. The implementation is a synthesis of published physical models and thesis-specific numerical engineering.
 
 ---
 
-## 8. Development roadmap
+## 16. License
 
-The roadmap is organized by physical milestones. Early objectives were compacted because they became small infrastructure layers rather than full standalone physical stages.
-
-### OE1 — Repository, configuration and data layout
-
-Status: done.
-
-Implemented:
-
-* external `big_data_root`;
-* run-specific `raw/`, `plots/`, `logs/`, `catalogs/`, `tmp/` policy;
-* config validation;
-* manifest writing;
-* process-safe storage checks.
-
-### OE2 — PRE-run foundation
-
-Status: done.
-
-Implemented:
-
-* pyTDGL-style rectangular finite-volume mesh;
-* boundary and edge table;
-* dirty-limit Usadel calibration;
-* DOS catalogue;
-* strict 3D Matsubara supercurrent table;
-* superconducting phase-space catalogue;
-* PRE diagnostic plots.
-
-This objective compactly replaces the older split between mesh-only, Usadel-only and phase-space-only objectives.
-
-### OE3 — Projected electron–phonon power audit
-
-Status: done.
-
-Implemented:
-
-* Simon/MIT Eliashberg loader;
-* $\alpha^2F(\Omega)$ and phonon-DOS support;
-* $N(0)=\sigma_n/(2e^2D)$;
-* projected scattering and recombination powers;
-* Debye/Vodolazov comparison with correct $\tau_0$;
-* thermal Usadel grid $\Delta_{\rm eq}(T_e,q)$;
-* normal-state Eliashberg reference;
-* spectral-support diagnostics.
-
-This objective is now considered a diagnostic/catalogue layer, not the final thermal solver.
-
-### OE4 — Stationary gTDGL/Poisson backend
-
-Status: done.
-
-Implemented:
-
-* promoted pyTDGL-like finite-volume backend;
-* SI material adapter;
-* metallic terminal treatment;
-* Allmaras/gTDGL current-mismatch correction;
-* strict `usadel-poisson` supercurrent law;
-* adaptive stationary relaxation;
-* stationary state, history and diagnostic outputs;
-* SS plot pipeline.
-
-### OE5 — Stationary current sweep and PSL map
-
-Status: done.
-
-Validated:
-
-* stable superconducting bulk in a short wire of length about twice the width;
-* first PSL formation around $38$–$39,\mu{\rm A}$;
-* multiple PSL states at higher current, including roughly three PSLs near $50,\mu{\rm A}$;
-* Ohmic-like overcritical behavior recovered around $70$–$80,\mu{\rm A}$.
-
-This is the current reference stationary map.
-
-### OE6 ★ — Fully coupled no-photon stationary state
-
-Status: next.
-
-Goal:
-
-Implement and validate the fully coupled detector model without photon injection. This objective is the main physical coupling step: the mesoscopic gTDGL/Poisson sector, the electron--phonon thermal variables and the external circuit must evolve consistently as a single system.
-
-The no-photon case is the necessary baseline because it checks whether the coupled equations reproduce the already validated stationary gTDGL branch before adding any local perturbation.
-
-Expected checks:
-
-* $T_e\approx T_{ph}\approx T_{\rm bath}$ in subcritical superconducting states;
-* no artificial Joule heating in a zero-voltage superconducting state;
-* same qualitative branch structure as the OE5 stationary current-sweep map;
-* recovery of the Ohmic branch at strongly overcritical current;
-* consistent $I_{\rm SNSPD}$, $V_{\rm TDGL}$, $|\Delta|$, $T_e$, $T_{ph}$ and circuit state;
-* reproducible no-photon stationary states that can be used as initial conditions for photon-triggered runs.
-
-This objective should include the circuit model already at the no-photon level, because the photon case should not require a different dynamical framework. It should only require a different initial condition or source term.
-
-### OE7 — Fully coupled PHOTON-run and readout pulse
-
-Status: planned.
-
-Goal:
-
-Run the already coupled OE6 system with a controlled photon-induced initial perturbation. In this roadmap, photon absorption is not treated as a separate physical solver layer, but as a different initial condition or localized energy-deposition source applied to the same coupled equations.
-
-The evolved variables are
-
-$$
-T_e(\mathbf r,t), \qquad
-T_{ph}(\mathbf r,t), \qquad
-\Delta(\mathbf r,t), \qquad
-\phi(\mathbf r,t),
-$$
-
-together with the external circuit variables that generate
-
-$$
-I_{\rm SNSPD}(t), \qquad
-V_{\rm TDGL}(t), \qquad
-V_{\rm out}(t).
-$$
-
-Expected checks:
-
-* photon deposition produces a local suppression of $|\Delta|$ and a thermal hotspot;
-* the hotspot either heals or triggers a resistive transition depending on bias current and photon energy;
-* the coupled circuit reacts self-consistently to the generated nanowire voltage;
-* $V_{\rm out}(t)$ is obtained without changing the validated no-photon solver structure;
-* the result is reproducible from saved PRE-run catalogues and SS-run initial states.
-
-This objective converts the validated coupled model into the first complete detector-response simulation.
-
-### OE8 — Parameter sweeps, validation and publication figures
-
-Status: planned.
-
-Goal:
-
-Generate reproducible comparison runs and publication-quality figures from the complete model.
-
-This objective should organize the final numerical campaign rather than introduce a new physical solver. It should compare bias current, photon energy, geometry, material assumptions, thermal assumptions and microscopic catalogues.
-
-Expected outputs:
-
-* current-sweep diagnostics and $I$--$V$ curves;
-* detection/no-detection maps versus bias current and photon energy;
-* hotspot evolution plots for $T_e$, $T_{ph}$ and $|\Delta|$;
-* circuit-response plots for $I_{\rm SNSPD}(t)$, $V_{\rm TDGL}(t)$ and $V_{\rm out}(t)$;
-* sensitivity checks against microscopic catalogues and thermal closures;
-* final figures suitable for the thesis and, if the results are strong enough, a publication.
-
-This objective closes the pipeline by turning the complete solver into an auditable numerical experiment.
+See `LICENSE` in the repository.
 
 ---
 
-## 9. Design rules
+## 17. Maintainer
 
-1. No heavy raw data inside the repository.
-2. Every heavy object must be generated in PRE-run and registered in a manifest.
-3. SS-run and PHOTON-run should load catalogues, not rebuild them.
-4. PRE-run can and should be parallelized.
-5. Time evolution is not the first target for parallelization.
-6. The same `run_name` links raw data, plots and logs.
-7. Physical shortcuts must be explicit in metadata and plots.
-8. No placeholder function should silently return `0`.
-9. The README star should move only after tests, smoke tests and representative outputs are verified.
+Joaquin Andres Diaz Monge  
+Universidad de Chile, Departamento de Ingenieria Electrica  
+GitHub: `JoaquinDiazM`
+
