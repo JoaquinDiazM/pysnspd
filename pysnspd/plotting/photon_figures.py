@@ -278,21 +278,23 @@ def plot_photon_center_scalar_snapshot_rows(
 
             if col == 0:
                 ax.set_ylabel("y [nm]", fontsize=12)
+            else:
+                ax.set_ylabel("")
+                ax.tick_params(axis="y", labelleft=False)
+
+            if col == 4:
                 ax.text(
-                    -0.26,
+                    1.08,
                     0.50,
                     rf"$t={actual_t[r]:.3g}$ ps",
                     transform=ax.transAxes,
-                    ha="right",
+                    ha="left",
                     va="center",
-                    rotation=90,
+                    rotation=270,
                     fontsize=13,
                     color="black",
                     clip_on=False,
                 )
-            else:
-                ax.set_ylabel("")
-                ax.tick_params(axis="y", labelleft=False)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
