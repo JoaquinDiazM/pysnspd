@@ -1,312 +1,344 @@
 """Extra plotting utilities for Usadel equilibrium-gap diagnostics.
 
-This module is intentionally light on pySNSPD internals: it reads the
-pre-run Usadel ``.npz`` catalog directly, extracts ``Delta_eq(T, q)``, and
-builds a publication-ready PDF plot.
+The official PRE-run does *not* store a two-dimensional Delta_eq(T, q)
+array.  It stores the DOS catalogue plus calibration metadata at T_bias and
+then appends the strict local-current table js_A_m2[Te, delta, q].  Therefore
+this module reconstructs Delta_eq(T, q) for plotting by reusing the same
+Matsubara self-consistency solver used by the calibration layer.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
+from typing import Any, Mapping
 
 import numpy as np
 
+from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_gamma_J
+from pysnspd.usadel.parameters import E_CHARGE_C, HBAR_J_S
 
-_E_CHARGE_C = 1.602176634e-19
+_MEV_J = E_CHARGE_C * 1.0e-3
 
 
 @dataclass(frozen=True)
 class UsadelGapCatalog:
     """Minimal representation needed for E1 pre-run gap plots.
 
-    Attributes
+    Parameters
     ----------
     temperature_K:
         One-dimensional electron-temperature grid in K.
     q_m_inv:
-        One-dimensional superfluid momentum grid in m^-1.
+        One-dimensional superfluid-momentum grid in m^-1.  For E1 this is the
+        selected six-curve grid by default, not necessarily the full DOS axis.
     gap_meV:
         Equilibrium gap array with shape ``(n_temperature, n_q)`` in meV.
     source_key:
-        Name of the field used from the ``.npz`` catalog.
+        Human-readable description of how the field was obtained.
+    q_critical_m_inv:
+        Critical q used for normalization in the legend.
+    metadata:
+        Compact metadata copied/derived from the PRE-run Usadel catalogue.
     """
 
     temperature_K: np.ndarray
     q_m_inv: np.ndarray
     gap_meV: np.ndarray
     source_key: str
+    q_critical_m_inv: float
+    metadata: dict[str, Any]
 
 
-def _npz_mapping(npz: np.lib.npyio.NpzFile | Mapping[str, np.ndarray]) -> Mapping[str, np.ndarray]:
-    return npz  # type: ignore[return-value]
+def _load_npz_arrays(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        raise FileNotFoundError(f"Usadel catalog not found: {path}")
+    with np.load(path, allow_pickle=True) as data:
+        return {key: data[key] for key in data.files}
 
 
-def _first_existing_array(
-    data: Mapping[str, np.ndarray],
-    candidates: Sequence[str],
-) -> tuple[str, np.ndarray] | None:
-    for key in candidates:
-        if key in data:
-            return key, np.asarray(data[key])
+def _metadata_from_arrays(arrays: Mapping[str, Any]) -> dict[str, Any]:
+    raw = arrays.get("metadata")
+    if raw is None:
+        return {}
+    try:
+        item = raw.item()
+    except Exception:
+        return {}
+    if isinstance(item, Mapping):
+        return dict(item)
+    return {}
+
+
+def _as_float(value: Any, *, name: str) -> float:
+    try:
+        out = float(np.asarray(value).squeeze())
+    except Exception as exc:  # pragma: no cover - defensive error detail
+        raise ValueError(f"Could not read scalar {name!r} from Usadel catalog.") from exc
+    if not np.isfinite(out):
+        raise ValueError(f"Scalar {name!r} is not finite: {out!r}")
+    return out
+
+
+def _as_int(value: Any, *, name: str) -> int:
+    out = int(round(_as_float(value, name=name)))
+    if out <= 0:
+        raise ValueError(f"Integer {name!r} must be positive, got {out}.")
+    return out
+
+
+def _catalog_scalar(
+    arrays: Mapping[str, Any],
+    metadata: Mapping[str, Any],
+    keys: tuple[str, ...],
+    *,
+    required: bool = True,
+    default: float | None = None,
+) -> float:
+    for key in keys:
+        if key in metadata:
+            return _as_float(metadata[key], name=key)
+        if key in arrays:
+            return _as_float(arrays[key], name=key)
+    calibration = metadata.get("calibration")
+    if isinstance(calibration, Mapping):
+        for key in keys:
+            if key in calibration:
+                return _as_float(calibration[key], name=f"calibration.{key}")
+    if default is not None:
+        return float(default)
+    if required:
+        joined = ", ".join(keys)
+        raise KeyError(f"Could not find any of these scalar fields in the Usadel catalog: {joined}")
+    return float("nan")
+
+
+def _catalog_int(
+    arrays: Mapping[str, Any],
+    metadata: Mapping[str, Any],
+    keys: tuple[str, ...],
+    *,
+    default: int,
+) -> int:
+    for key in keys:
+        if key in metadata:
+            return _as_int(metadata[key], name=key)
+        if key in arrays:
+            return _as_int(arrays[key], name=key)
+    return int(default)
+
+
+def _array_1d(arrays: Mapping[str, Any], keys: tuple[str, ...]) -> np.ndarray | None:
+    for key in keys:
+        if key in arrays:
+            out = np.asarray(arrays[key], dtype=float).squeeze()
+            if out.ndim == 1 and out.size > 0:
+                return out
     return None
 
 
-def _one_dimensional(name: str, array: np.ndarray) -> np.ndarray:
-    out = np.asarray(array, dtype=float).squeeze()
-    if out.ndim != 1:
-        raise ValueError(f"Expected {name} to be one-dimensional, got shape {array.shape}.")
-    return out
+def _resolve_q_critical(
+    arrays: Mapping[str, Any],
+    metadata: Mapping[str, Any],
+    q_critical_m_inv: float | None,
+) -> float:
+    if q_critical_m_inv is not None:
+        qcrit = float(q_critical_m_inv)
+        if not np.isfinite(qcrit) or qcrit <= 0.0:
+            raise ValueError(f"--q-critical-m-inv must be finite and positive, got {qcrit!r}")
+        return qcrit
 
-
-def _find_temperature_grid(data: Mapping[str, np.ndarray]) -> tuple[str, np.ndarray]:
-    explicit = _first_existing_array(
-        data,
-        (
-            "T_values_K",
-            "temperature_values_K",
-            "Te_values_K",
-            "te_values_K",
-            "T_grid_K",
-            "temperature_grid_K",
-            "temperatures_K",
-        ),
-    )
-    if explicit is not None:
-        key, arr = explicit
-        return key, _one_dimensional(key, arr)
-
-    for key in data:
-        key_l = key.lower()
-        if ("temp" in key_l or key_l in {"t", "te"}) and key_l.endswith("_k"):
-            arr = np.asarray(data[key])
-            if arr.squeeze().ndim == 1:
-                return key, _one_dimensional(key, arr)
-
-    raise KeyError(
-        "Could not find a temperature grid in the Usadel catalog. Expected a key like "
-        "T_values_K, temperature_values_K or Te_values_K."
-    )
-
-
-def _find_q_grid(data: Mapping[str, np.ndarray]) -> tuple[str, np.ndarray]:
-    explicit = _first_existing_array(
-        data,
-        (
-            "q_values_m_inv",
-            "q_grid_m_inv",
-            "q_values_inv_m",
-            "q_m_inv",
-            "q_values",
-        ),
-    )
-    if explicit is not None:
-        key, arr = explicit
-        return key, _one_dimensional(key, arr)
-
-    for key in data:
-        key_l = key.lower()
-        if key_l.startswith("q") and ("m_inv" in key_l or "inv_m" in key_l or key_l == "q"):
-            arr = np.asarray(data[key])
-            if arr.squeeze().ndim == 1:
-                return key, _one_dimensional(key, arr)
-
-    raise KeyError(
-        "Could not find a q grid in the Usadel catalog. Expected a key like "
-        "q_values_m_inv or q_grid_m_inv."
-    )
-
-
-def _candidate_gap_keys(data: Mapping[str, np.ndarray]) -> list[str]:
-    preferred = [
-        "delta_eq_J",
-        "Delta_eq_J",
-        "gap_eq_J",
-        "Delta_equilibrium_J",
-        "delta_equilibrium_J",
-        "delta_eq_meV",
-        "Delta_eq_meV",
-        "gap_eq_meV",
-        "delta_grid_J",
-        "Delta_grid_J",
-        "gap_grid_J",
-    ]
-    out: list[str] = [key for key in preferred if key in data]
-
-    banned = ("rho", "dos", "energy", "omega", "anomalous", "gamma", "phase")
-    for key in data:
-        if key in out:
-            continue
-        key_l = key.lower()
-        if any(word in key_l for word in banned):
-            continue
-        if ("delta" in key_l or "gap" in key_l) and ("eq" in key_l or "equil" in key_l or "grid" in key_l):
-            out.append(key)
-    return out
-
-
-def _orient_gap_array(
-    key: str,
-    array: np.ndarray,
-    n_temperature: int,
-    n_q: int,
-) -> np.ndarray:
-    gap = np.asarray(array, dtype=float).squeeze()
-
-    if gap.ndim != 2:
-        raise ValueError(
-            f"Candidate gap field {key!r} has shape {array.shape}; expected a 2-D "
-            "array compatible with (n_temperature, n_q)."
+    try:
+        return _catalog_scalar(
+            arrays,
+            metadata,
+            ("q_critical_m_inv", "qcrit_m_inv", "q_c_m_inv"),
+            required=True,
         )
+    except KeyError:
+        pass
 
-    if gap.shape == (n_temperature, n_q):
-        return gap
-    if gap.shape == (n_q, n_temperature):
-        return gap.T
+    q_cal = _array_1d(arrays, ("calibration_q_values_m_inv",))
+    current = _array_1d(arrays, ("calibration_current_values_A", "calibration_current_density_values_A_m2"))
+    if q_cal is not None and current is not None and q_cal.size == current.size:
+        idx = int(np.nanargmax(np.asarray(current, dtype=float)))
+        qcrit = float(q_cal[idx])
+        if np.isfinite(qcrit) and qcrit > 0.0:
+            return qcrit
 
-    raise ValueError(
-        f"Candidate gap field {key!r} has shape {gap.shape}; expected either "
-        f"({n_temperature}, {n_q}) or ({n_q}, {n_temperature})."
-    )
+    q_axis = _array_1d(arrays, ("q_values_m_inv", "q_axis_m_inv", "calibration_q_values_m_inv"))
+    if q_axis is not None:
+        qcrit = float(np.nanmax(q_axis))
+        if np.isfinite(qcrit) and qcrit > 0.0:
+            return qcrit
 
-
-def _gap_to_mev(key: str, gap: np.ndarray) -> np.ndarray:
-    key_l = key.lower()
-    out = np.asarray(gap, dtype=float)
-
-    if "mev" in key_l:
-        return out
-    if key_l.endswith("_j") or "_j_" in key_l:
-        return out / _E_CHARGE_C * 1.0e3
-
-    finite = np.abs(out[np.isfinite(out)])
-    if finite.size == 0:
-        return out
-
-    max_abs = float(np.nanmax(finite))
-    # NbN gaps stored in joules are around 1e-22 J.  This conservative
-    # fallback keeps old catalogs usable even if the key did not include _J.
-    if max_abs < 1.0e-18:
-        return out / _E_CHARGE_C * 1.0e3
-    return out
+    raise KeyError("Could not determine q_c from metadata, calibration arrays, or q axis.")
 
 
-def load_usadel_gap_catalog(npz_path: str | Path) -> UsadelGapCatalog:
-    """Load ``Delta_eq(T, q)`` from a pySNSPD pre-run Usadel catalog.
+def _temperature_axis(
+    *,
+    Tc_K: float,
+    T_bias_K: float,
+    n_temperature: int,
+    T_min_K: float | None,
+    T_max_K: float | None,
+) -> np.ndarray:
+    n = int(n_temperature)
+    if n < 3:
+        raise ValueError("n_temperature must be at least 3.")
+    if not np.isfinite(Tc_K) or Tc_K <= 0.0:
+        raise ValueError(f"Tc_K must be finite and positive, got {Tc_K!r}")
 
-    The loader accepts several historical field names so that the extra plot
-    pipeline is not tied to one exact catalog version.
+    lo = float(T_min_K) if T_min_K is not None else float(T_bias_K)
+    if not np.isfinite(lo) or lo <= 0.0:
+        lo = max(1.0e-3, 0.01 * Tc_K)
+
+    hi = float(T_max_K) if T_max_K is not None else float(Tc_K)
+    if not np.isfinite(hi) or hi <= 0.0:
+        hi = float(Tc_K)
+    hi = min(hi, float(Tc_K))
+
+    if lo >= hi:
+        raise ValueError(f"Invalid temperature range: T_min_K={lo:.6g}, T_max_K={hi:.6g}")
+    return np.linspace(lo, hi, n)
+
+
+def build_gap_eq_temperature_catalog(
+    npz_path: str | Path,
+    *,
+    n_curves: int = 6,
+    n_temperature: int = 160,
+    T_min_K: float | None = None,
+    T_max_K: float | None = None,
+    q_critical_m_inv: float | None = None,
+    n_matsubara: int | None = None,
+) -> UsadelGapCatalog:
+    """Reconstruct ``Delta_eq(T, q)`` from an official PRE-run Usadel NPZ.
+
+    The official file written by ``save_usadel_catalog_npz`` stores
+    ``metadata``, ``q_values_m_inv`` and calibration arrays, but not a full
+    temperature-dependent equilibrium-gap table.  This function computes the
+    requested curves using ``solve_gap_for_gamma_J`` with
+    ``Gamma_q = hbar D q^2 / 2``.
     """
 
     path = Path(npz_path)
-    if not path.exists():
-        raise FileNotFoundError(f"Usadel catalog not found: {path}")
+    arrays = _load_npz_arrays(path)
+    metadata = _metadata_from_arrays(arrays)
 
-    with np.load(path, allow_pickle=False) as npz:
-        data = _npz_mapping(npz)
-        _, temperature_K = _find_temperature_grid(data)
-        _, q_m_inv = _find_q_grid(data)
+    Tc_K = _catalog_scalar(arrays, metadata, ("Tc_K", "Tc"), required=True)
+    T_bias_K = _catalog_scalar(arrays, metadata, ("T_bias_K", "T_K"), required=False, default=0.01 * Tc_K)
+    D_m2_s = _catalog_scalar(arrays, metadata, ("D_m2_s", "D"), required=True)
+    n_m = int(n_matsubara) if n_matsubara is not None else _catalog_int(
+        arrays,
+        metadata,
+        ("n_matsubara_configured", "n_matsubara", "js_table_n_matsubara"),
+        default=500,
+    )
+    if n_m <= 0:
+        raise ValueError(f"n_matsubara must be positive, got {n_m}.")
 
-        errors: list[str] = []
-        for key in _candidate_gap_keys(data):
-            try:
-                gap = _orient_gap_array(key, np.asarray(data[key]), temperature_K.size, q_m_inv.size)
-            except ValueError as exc:
-                errors.append(str(exc))
-                continue
-            gap_meV = _gap_to_mev(key, gap)
-            return UsadelGapCatalog(
-                temperature_K=np.asarray(temperature_K, dtype=float),
-                q_m_inv=np.asarray(q_m_inv, dtype=float),
-                gap_meV=np.asarray(gap_meV, dtype=float),
-                source_key=key,
+    qcrit = _resolve_q_critical(arrays, metadata, q_critical_m_inv)
+    q_values = np.linspace(0.0, qcrit, int(n_curves))
+    if q_values.size < 2:
+        raise ValueError("n_curves must be at least 2.")
+
+    temperature = _temperature_axis(
+        Tc_K=Tc_K,
+        T_bias_K=T_bias_K,
+        n_temperature=int(n_temperature),
+        T_min_K=T_min_K,
+        T_max_K=T_max_K,
+    )
+
+    gap_J = np.zeros((temperature.size, q_values.size), dtype=float)
+    gamma_values = 0.5 * HBAR_J_S * D_m2_s * q_values * q_values
+
+    for iT, T_K in enumerate(temperature):
+        eps_n_J = matsubara_energy_axis_J(T_K=float(T_K), n_matsubara=int(n_m))
+        for iq, gamma_J in enumerate(gamma_values):
+            gap_J[iT, iq] = solve_gap_for_gamma_J(
+                gamma_J=float(gamma_J),
+                T_K=float(T_K),
+                Tc_K=float(Tc_K),
+                eps_n_J=eps_n_J,
             )
 
-    detail = "\n".join(f"  - {err}" for err in errors)
-    raise KeyError(
-        "Could not find a usable Delta_eq(T, q) field in the Usadel catalog. "
-        "Expected a 2-D array with a name like delta_eq_J, Delta_eq_J or gap_eq_J."
-        + (f"\nRejected candidates:\n{detail}" if detail else "")
+    compact_metadata: dict[str, Any] = {
+        "source_npz": str(path),
+        "Tc_K": float(Tc_K),
+        "T_bias_K": float(T_bias_K),
+        "D_m2_s": float(D_m2_s),
+        "n_matsubara": int(n_m),
+        "n_temperature": int(temperature.size),
+        "n_curves": int(q_values.size),
+    }
+
+    return UsadelGapCatalog(
+        temperature_K=temperature,
+        q_m_inv=q_values,
+        gap_meV=gap_J / _MEV_J,
+        source_key="computed_from_matsubara_self_consistency",
+        q_critical_m_inv=float(qcrit),
+        metadata=compact_metadata,
     )
 
 
-def estimate_q_critical(
-    q_m_inv: np.ndarray,
-    gap_meV: np.ndarray,
+def load_usadel_gap_catalog(
+    npz_path: str | Path,
     *,
-    gap_fraction_threshold: float = 1.0e-3,
-) -> float:
-    """Estimate q_c as the largest q with a non-negligible low-T gap."""
+    n_curves: int = 6,
+    n_temperature: int = 160,
+    T_min_K: float | None = None,
+    T_max_K: float | None = None,
+    q_critical_m_inv: float | None = None,
+    n_matsubara: int | None = None,
+) -> UsadelGapCatalog:
+    """Compatibility wrapper for the E1 pipeline.
 
-    q = np.asarray(q_m_inv, dtype=float)
-    gap = np.asarray(gap_meV, dtype=float)
-    if gap.ndim != 2:
-        raise ValueError(f"gap_meV must be 2-D, got shape {gap.shape}.")
-    if q.ndim != 1 or q.size != gap.shape[1]:
-        raise ValueError("q_m_inv must be 1-D and match the second gap dimension.")
+    The name says "load" because E1 reads an existing PRE-run, but the
+    temperature-dependent equilibrium gap is reconstructed on demand.
+    """
 
-    reference = gap[0, :]
-    finite = np.isfinite(reference)
-    if not np.any(finite):
-        return float(np.nanmax(q))
-
-    max_gap = float(np.nanmax(np.abs(reference[finite])))
-    if max_gap <= 0.0:
-        return float(np.nanmax(q))
-
-    active = finite & (np.abs(reference) >= gap_fraction_threshold * max_gap)
-    if not np.any(active):
-        return float(np.nanmax(q))
-    return float(np.nanmax(q[active]))
+    return build_gap_eq_temperature_catalog(
+        npz_path,
+        n_curves=n_curves,
+        n_temperature=n_temperature,
+        T_min_K=T_min_K,
+        T_max_K=T_max_K,
+        q_critical_m_inv=q_critical_m_inv,
+        n_matsubara=n_matsubara,
+    )
 
 
 def interpolate_gap_curves(
     catalog: UsadelGapCatalog,
     *,
-    n_curves: int = 6,
+    n_curves: int | None = None,
     q_critical_m_inv: float | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Return target q values and interpolated ``Delta_eq(T)`` curves.
-
-    Returns
-    -------
-    q_targets_m_inv:
-        Shape ``(n_curves,)``.
-    temperature_K:
-        Sorted temperature grid.
-    curves_meV:
-        Shape ``(n_curves, n_temperature)``.
-    """
-
-    if n_curves < 2:
-        raise ValueError("n_curves must be at least 2.")
+    """Return q values, temperature grid and curves in ``(n_curves, n_T)`` layout."""
 
     temperature = np.asarray(catalog.temperature_K, dtype=float)
     q = np.asarray(catalog.q_m_inv, dtype=float)
     gap = np.asarray(catalog.gap_meV, dtype=float)
+    if gap.shape != (temperature.size, q.size):
+        raise ValueError(
+            f"gap_meV shape {gap.shape} is not compatible with temperature/q axes "
+            f"({temperature.size}, {q.size})."
+        )
 
-    t_order = np.argsort(temperature)
-    q_order = np.argsort(q)
-    temperature = temperature[t_order]
-    q = q[q_order]
-    gap = gap[np.ix_(t_order, q_order)]
+    qcrit = float(q_critical_m_inv) if q_critical_m_inv is not None else float(catalog.q_critical_m_inv)
+    if n_curves is None or int(n_curves) == q.size:
+        return q, temperature, gap.T
 
-    qcrit = float(q_critical_m_inv) if q_critical_m_inv is not None else estimate_q_critical(q, gap)
-    qcrit = min(qcrit, float(np.nanmax(q)))
-    if qcrit <= float(np.nanmin(q)):
-        raise ValueError(f"Invalid q critical value: {qcrit:.6e} m^-1.")
-
-    q_targets = np.linspace(float(np.nanmin(q)), qcrit, int(n_curves))
+    q_targets = np.linspace(float(np.nanmin(q)), min(qcrit, float(np.nanmax(q))), int(n_curves))
     curves = np.empty((q_targets.size, temperature.size), dtype=float)
-    for i_t in range(temperature.size):
-        row = gap[i_t, :]
-        valid = np.isfinite(row)
-        if np.count_nonzero(valid) < 2:
-            curves[:, i_t] = np.nan
-            continue
-        curves[:, i_t] = np.interp(q_targets, q[valid], row[valid], left=np.nan, right=np.nan)
-
+    q_order = np.argsort(q)
+    q_sorted = q[q_order]
+    gap_sorted = gap[:, q_order]
+    for iT in range(temperature.size):
+        curves[:, iT] = np.interp(q_targets, q_sorted, gap_sorted[iT, :])
     return q_targets, temperature, curves
 
 
@@ -314,16 +346,12 @@ def plot_gap_eq_vs_temperature(
     catalog: UsadelGapCatalog,
     output_path: str | Path,
     *,
-    n_curves: int = 6,
+    n_curves: int | None = None,
     q_critical_m_inv: float | None = None,
     dpi: int = 480,
     title: str | None = None,
 ) -> Path:
-    """Plot ``Delta_eq`` versus temperature for multiple q values.
-
-    The figure is saved as PDF when ``output_path`` has suffix ``.pdf``.  A
-    non-PDF suffix is allowed, but the E1 pipeline uses PDF by default.
-    """
+    """Plot ``Delta_eq`` versus temperature for multiple q values."""
 
     import matplotlib
 
@@ -338,7 +366,7 @@ def plot_gap_eq_vs_temperature(
         n_curves=n_curves,
         q_critical_m_inv=q_critical_m_inv,
     )
-    qcrit = float(q_targets[-1])
+    qcrit = float(q_critical_m_inv) if q_critical_m_inv is not None else float(catalog.q_critical_m_inv)
 
     fig, ax = plt.subplots(figsize=(6.4, 4.2), constrained_layout=True)
     for q_value, curve in zip(q_targets, curves):
@@ -366,7 +394,7 @@ def plot_gap_eq_vs_temperature(
 
 __all__ = [
     "UsadelGapCatalog",
-    "estimate_q_critical",
+    "build_gap_eq_temperature_catalog",
     "interpolate_gap_curves",
     "load_usadel_gap_catalog",
     "plot_gap_eq_vs_temperature",
