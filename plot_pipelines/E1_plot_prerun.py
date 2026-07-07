@@ -2,7 +2,7 @@
 """E1 extra PRE plotting pipeline: Usadel equilibrium gap versus temperature.
 
 Input: an existing PRE-run produced by ``pipelines/01_prerun_template.py``.
-Output: a PDF plot with six ``Delta_eq(T)`` curves from q=0 to q_c.
+Output: a memory-ready PDF with four ``Delta_eq(T)`` curves from q=0 to q_c.
 """
 
 from __future__ import annotations
@@ -44,10 +44,15 @@ def parse_args() -> argparse.Namespace:
         help="Optional output directory; defaults to plots/<pre-run-name>/figures/E1_prerun.",
     )
     parser.add_argument("--pdf-name", default="E1_usadel_gap_eq_vs_temperature.pdf", help="Output PDF filename.")
-    parser.add_argument("--n-curves", type=int, default=6, help="Number of q curves, including q=0 and q=q_c.")
-    parser.add_argument("--n-temperature", type=int, default=160, help="Number of temperature samples between T_min and T_max.")
+    parser.add_argument("--n-curves", type=int, default=4, help="Number of q curves, including q=0 and q=q_c.")
+    parser.add_argument("--n-temperature", type=int, default=240, help="Number of temperature samples from T_min to slightly above Tc.")
     parser.add_argument("--T-min-K", type=float, default=None, help="Optional minimum temperature. Defaults to PRE metadata T_bias_K.")
-    parser.add_argument("--T-max-K", type=float, default=None, help="Optional maximum temperature. Defaults to Tc_K.")
+    parser.add_argument(
+        "--T-max-K",
+        type=float,
+        default=None,
+        help="Optional maximum temperature. Values at or below Tc are automatically extended to show Tc inside the axis.",
+    )
     parser.add_argument(
         "--q-critical-m-inv",
         type=float,
@@ -62,16 +67,33 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--dpi", type=int, default=480, help="PDF rasterization DPI for any rasterized artists.")
     parser.add_argument("--title", default=None, help="Optional figure title. Default keeps the memory-ready figure title-free.")
+    parser.add_argument(
+        "--progress",
+        dest="progress",
+        action="store_true",
+        default=True,
+        help="Show a progress bar while solving the Matsubara self-consistency points.",
+    )
+    parser.add_argument(
+        "--no-progress",
+        dest="progress",
+        action="store_false",
+        help="Disable the E1 solver progress bar.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+
     cfg = validate_config(load_config(args.config))
     layout = create_run_layout(cfg, args.pre_run_name)
-
     raw_pre = Path(layout["raw_pre"])
-    figures_dir = Path(layout["plots_figures"]) / "E1_prerun" if args.output_dir is None else args.output_dir.expanduser().resolve()
+    figures_dir = (
+        Path(layout["plots_figures"]) / "E1_prerun"
+        if args.output_dir is None
+        else args.output_dir.expanduser().resolve()
+    )
     figures_dir.mkdir(parents=True, exist_ok=True)
 
     catalog_path = (
@@ -93,6 +115,7 @@ def main() -> int:
         T_max_K=args.T_max_K,
         q_critical_m_inv=args.q_critical_m_inv,
         n_matsubara=args.n_matsubara,
+        progress=bool(args.progress),
     )
     output = plot_gap_eq_vs_temperature(
         catalog,
@@ -100,6 +123,7 @@ def main() -> int:
         dpi=int(args.dpi),
         title=args.title,
     )
+
     manifest_path = _write_manifest(
         pre_run_name=args.pre_run_name,
         raw_pre=raw_pre,

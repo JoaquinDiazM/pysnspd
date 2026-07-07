@@ -1,10 +1,11 @@
 """Extra plotting utilities for Usadel equilibrium-gap diagnostics.
 
-The official PRE-run does *not* store a two-dimensional Delta_eq(T, q)
-array.  It stores the DOS catalogue plus calibration metadata at T_bias and
-then appends the strict local-current table js_A_m2[Te, delta, q].  Therefore
-this module reconstructs Delta_eq(T, q) for plotting by reusing the same
-Matsubara self-consistency solver used by the calibration layer.
+E1 uses an existing PRE-run as input.  The PRE-run stores the Usadel DOS
+catalogue and the metadata needed to reconstruct the equilibrium branch, but
+normal production files do not necessarily store a dense presentation-ready
+``Delta_eq(T, q)`` table.  This module therefore rebuilds the few curves needed
+by the E1 figure using the same Matsubara self-consistency solver used by the
+Usadel calibration layer.
 """
 
 from __future__ import annotations
@@ -12,12 +13,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
+import sys
 
 import numpy as np
+from scipy.constants import Boltzmann, e
 
 from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_gamma_J
 from pysnspd.usadel.parameters import E_CHARGE_C, HBAR_J_S
-from scipy.constants import Boltzmann, e
 
 _MEV_J = E_CHARGE_C * 1.0e-3
 
@@ -31,8 +33,7 @@ class UsadelGapCatalog:
     temperature_K:
         One-dimensional electron-temperature grid in K.
     q_m_inv:
-        One-dimensional superfluid-momentum grid in m^-1.  For E1 this is the
-        selected six-curve grid by default, not necessarily the full DOS axis.
+        One-dimensional superfluid-momentum grid in m^-1.
     gap_meV:
         Equilibrium gap array with shape ``(n_temperature, n_q)`` in meV.
     source_key:
@@ -101,11 +102,19 @@ def _catalog_scalar(
             return _as_float(metadata[key], name=key)
         if key in arrays:
             return _as_float(arrays[key], name=key)
+
     calibration = metadata.get("calibration")
     if isinstance(calibration, Mapping):
         for key in keys:
             if key in calibration:
                 return _as_float(calibration[key], name=f"calibration.{key}")
+
+    supercurrent = metadata.get("supercurrent_table")
+    if isinstance(supercurrent, Mapping):
+        for key in keys:
+            if key in supercurrent:
+                return _as_float(supercurrent[key], name=f"supercurrent_table.{key}")
+
     if default is not None:
         return float(default)
     if required:
@@ -126,6 +135,13 @@ def _catalog_int(
             return _as_int(metadata[key], name=key)
         if key in arrays:
             return _as_int(arrays[key], name=key)
+
+    supercurrent = metadata.get("supercurrent_table")
+    if isinstance(supercurrent, Mapping):
+        for key in keys:
+            if key in supercurrent:
+                return _as_int(supercurrent[key], name=f"supercurrent_table.{key}")
+
     return int(default)
 
 
@@ -160,14 +176,17 @@ def _resolve_q_critical(
         pass
 
     q_cal = _array_1d(arrays, ("calibration_q_values_m_inv",))
-    current = _array_1d(arrays, ("calibration_current_values_A", "calibration_current_density_values_A_m2"))
+    current = _array_1d(
+        arrays,
+        ("calibration_current_values_A", "calibration_current_density_values_A_m2"),
+    )
     if q_cal is not None and current is not None and q_cal.size == current.size:
         idx = int(np.nanargmax(np.asarray(current, dtype=float)))
         qcrit = float(q_cal[idx])
         if np.isfinite(qcrit) and qcrit > 0.0:
             return qcrit
 
-    q_axis = _array_1d(arrays, ("q_values_m_inv", "q_axis_m_inv", "calibration_q_values_m_inv"))
+    q_axis = _array_1d(arrays, ("q_axis_m_inv", "q_values_m_inv", "calibration_q_values_m_inv"))
     if q_axis is not None:
         qcrit = float(np.nanmax(q_axis))
         if np.isfinite(qcrit) and qcrit > 0.0:
@@ -194,33 +213,74 @@ def _temperature_axis(
     if not np.isfinite(lo) or lo <= 0.0:
         lo = max(1.0e-3, 0.01 * Tc_K)
 
-    hi = float(T_max_K) if T_max_K is not None else float(Tc_K)
+    # Keep a small normal-state interval to the right of Tc.  The solver returns
+    # Delta=0 for T>=Tc, so the curves remain physically clear while the dashed
+    # Tc line is no longer glued to the plot boundary.
+    hi = float(T_max_K) if T_max_K is not None else 1.08 * float(Tc_K)
     if not np.isfinite(hi) or hi <= 0.0:
-        hi = float(Tc_K)
-    hi = min(hi, float(Tc_K))
+        hi = 1.08 * float(Tc_K)
 
+    if hi <= float(Tc_K):
+        hi = 1.08 * float(Tc_K)
     if lo >= hi:
         raise ValueError(f"Invalid temperature range: T_min_K={lo:.6g}, T_max_K={hi:.6g}")
     return np.linspace(lo, hi, n)
 
 
+class _TextProgress:
+    """Tiny fallback progress bar used when tqdm is not installed."""
+
+    def __init__(self, *, total: int, enabled: bool, label: str) -> None:
+        self.total = max(1, int(total))
+        self.enabled = bool(enabled)
+        self.label = str(label)
+        self.count = 0
+        self._last_pct = -1
+        if self.enabled:
+            print(f"{self.label}: 0%", end="", file=sys.stderr, flush=True)
+
+    def update(self, n: int = 1) -> None:
+        if not self.enabled:
+            return
+        self.count += int(n)
+        pct = int(100 * min(self.count, self.total) / self.total)
+        if pct >= self._last_pct + 5 or pct == 100:
+            print(f"\r{self.label}: {pct:3d}%", end="", file=sys.stderr, flush=True)
+            self._last_pct = pct
+
+    def close(self) -> None:
+        if self.enabled:
+            print("", file=sys.stderr, flush=True)
+
+
+def _make_progress(*, total: int, enabled: bool, label: str) -> Any:
+    if not enabled:
+        return _TextProgress(total=total, enabled=False, label=label)
+    try:
+        from tqdm import tqdm  # type: ignore
+    except Exception:
+        return _TextProgress(total=total, enabled=True, label=label)
+    return tqdm(total=total, desc=label, unit="solve")
+
+
 def build_gap_eq_temperature_catalog(
     npz_path: str | Path,
     *,
-    n_curves: int = 6,
-    n_temperature: int = 160,
+    n_curves: int = 4,
+    n_temperature: int = 240,
     T_min_K: float | None = None,
     T_max_K: float | None = None,
     q_critical_m_inv: float | None = None,
     n_matsubara: int | None = None,
+    progress: bool = False,
 ) -> UsadelGapCatalog:
-    """Reconstruct ``Delta_eq(T, q)`` from an official PRE-run Usadel NPZ.
+    """Reconstruct dense ``Delta_eq(T, q)`` curves from a PRE-run Usadel NPZ.
 
-    The official file written by ``save_usadel_catalog_npz`` stores
-    ``metadata``, ``q_values_m_inv`` and calibration arrays, but not a full
-    temperature-dependent equilibrium-gap table.  This function computes the
-    requested curves using ``solve_gap_for_gamma_J`` with
-    ``Gamma_q = hbar D q^2 / 2``.
+    The PRE catalogue is treated as the source of material/calibration metadata.
+    The plotted branch itself is recomputed as a smooth presentation grid using
+    ``solve_gap_for_gamma_J`` with ``Gamma_q = hbar D q^2 / 2``.  This avoids the
+    blocky visual artefacts that appear when a presentation plot is drawn from a
+    coarse stored ``T``/``Delta`` table.
     """
 
     path = Path(npz_path)
@@ -228,7 +288,13 @@ def build_gap_eq_temperature_catalog(
     metadata = _metadata_from_arrays(arrays)
 
     Tc_K = _catalog_scalar(arrays, metadata, ("Tc_K", "Tc"), required=True)
-    T_bias_K = _catalog_scalar(arrays, metadata, ("T_bias_K", "T_K"), required=False, default=0.01 * Tc_K)
+    T_bias_K = _catalog_scalar(
+        arrays,
+        metadata,
+        ("T_bias_K", "T_K"),
+        required=False,
+        default=0.01 * Tc_K,
+    )
     D_m2_s = _catalog_scalar(arrays, metadata, ("D_m2_s", "D"), required=True)
     n_m = int(n_matsubara) if n_matsubara is not None else _catalog_int(
         arrays,
@@ -255,15 +321,29 @@ def build_gap_eq_temperature_catalog(
     gap_J = np.zeros((temperature.size, q_values.size), dtype=float)
     gamma_values = 0.5 * HBAR_J_S * D_m2_s * q_values * q_values
 
-    for iT, T_K in enumerate(temperature):
-        eps_n_J = matsubara_energy_axis_J(T_K=float(T_K), n_matsubara=int(n_m))
-        for iq, gamma_J in enumerate(gamma_values):
-            gap_J[iT, iq] = solve_gap_for_gamma_J(
-                gamma_J=float(gamma_J),
-                T_K=float(T_K),
-                Tc_K=float(Tc_K),
-                eps_n_J=eps_n_J,
-            )
+    pbar = _make_progress(
+        total=int(temperature.size * q_values.size),
+        enabled=bool(progress),
+        label="E1 Usadel self-consistency",
+    )
+    try:
+        for iT, T_K in enumerate(temperature):
+            if not np.isfinite(T_K) or T_K <= 0.0:
+                pbar.update(q_values.size)
+                continue
+            eps_n_J = matsubara_energy_axis_J(T_K=float(T_K), n_matsubara=int(n_m))
+            for iq, gamma_J in enumerate(gamma_values):
+                gap_J[iT, iq] = solve_gap_for_gamma_J(
+                    gamma_J=float(gamma_J),
+                    T_K=float(T_K),
+                    Tc_K=float(Tc_K),
+                    eps_n_J=eps_n_J,
+                    n_scan=120,
+                    n_bisect=80,
+                )
+                pbar.update(1)
+    finally:
+        pbar.close()
 
     compact_metadata: dict[str, Any] = {
         "source_npz": str(path),
@@ -273,6 +353,9 @@ def build_gap_eq_temperature_catalog(
         "n_matsubara": int(n_m),
         "n_temperature": int(temperature.size),
         "n_curves": int(q_values.size),
+        "T_max_over_Tc": float(np.nanmax(temperature) / Tc_K),
+        "solver": "solve_gap_for_gamma_J",
+        "gamma_relation": "Gamma_q = 0.5*hbar*D*q^2",
     }
 
     return UsadelGapCatalog(
@@ -288,17 +371,19 @@ def build_gap_eq_temperature_catalog(
 def load_usadel_gap_catalog(
     npz_path: str | Path,
     *,
-    n_curves: int = 6,
-    n_temperature: int = 160,
+    n_curves: int = 4,
+    n_temperature: int = 240,
     T_min_K: float | None = None,
     T_max_K: float | None = None,
     q_critical_m_inv: float | None = None,
     n_matsubara: int | None = None,
+    progress: bool = False,
 ) -> UsadelGapCatalog:
     """Compatibility wrapper for the E1 pipeline.
 
-    The name says "load" because E1 reads an existing PRE-run, but the
-    temperature-dependent equilibrium gap is reconstructed on demand.
+    The name says "load" because E1 reads an existing PRE-run, but the dense
+    temperature-dependent equilibrium gap is reconstructed on demand from the
+    PRE-run metadata.
     """
 
     return build_gap_eq_temperature_catalog(
@@ -309,6 +394,7 @@ def load_usadel_gap_catalog(
         T_max_K=T_max_K,
         q_critical_m_inv=q_critical_m_inv,
         n_matsubara=n_matsubara,
+        progress=progress,
     )
 
 
@@ -343,6 +429,20 @@ def interpolate_gap_curves(
     return q_targets, temperature, curves
 
 
+def _legend_column_major_order(n_items: int, ncols: int) -> list[int]:
+    """Return handle order that makes Matplotlib's column-major legend read row-wise."""
+
+    ncols = max(1, int(ncols))
+    nrows = int(np.ceil(n_items / ncols))
+    order: list[int] = []
+    for col in range(ncols):
+        for row in range(nrows):
+            idx = row * ncols + col
+            if idx < n_items:
+                order.append(idx)
+    return order
+
+
 def plot_gap_eq_vs_temperature(
     catalog: UsadelGapCatalog,
     output_path: str | Path,
@@ -352,15 +452,7 @@ def plot_gap_eq_vs_temperature(
     dpi: int = 480,
     title: str | None = None,
 ) -> Path:
-    """Plot ``Delta_eq`` versus temperature for multiple q values.
-
-    E1 memory-ready style:
-    - show 4 q-curves by default, even if the reconstructed catalog has 6,
-    - extend the temperature axis beyond Tc so the Tc marker is visible,
-    - add vertical Tc and horizontal BCS Delta(0) reference lines,
-    - use larger labels/ticks/legend,
-    - arrange legend as 2 columns x 3 rows.
-    """
+    """Plot ``Delta_eq`` versus temperature for multiple q values."""
 
     import matplotlib
 
@@ -370,12 +462,11 @@ def plot_gap_eq_vs_temperature(
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    # Requested: remove two of the original six q-curves.
-    # If the caller asks for fewer than 4, respect that; otherwise cap at 4.
+    # E1 is meant to be a clean thesis figure, so the default is four curves:
+    # q/qc = 0, 1/3, 2/3 and 1.
     n_plot_curves = 4 if n_curves is None else min(int(n_curves), 4)
 
     qcrit = float(q_critical_m_inv) if q_critical_m_inv is not None else float(catalog.q_critical_m_inv)
-
     q_targets, temperature, curves = interpolate_gap_curves(
         catalog,
         n_curves=n_plot_curves,
@@ -395,40 +486,44 @@ def plot_gap_eq_vs_temperature(
 
     delta_bcs_0_meV = 1.764 * Boltzmann * Tc_K / e * 1.0e3
 
-    fig, ax = plt.subplots(figsize=(8.4, 5.8), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(8.2, 5.35))
+    fig.subplots_adjust(left=0.15, right=0.985, bottom=0.17, top=0.77)
 
-    # Larger typography for thesis-ready PDF figures.
-    label_fs = 17
-    tick_fs = 14
-    legend_fs = 12
+    label_fs = 16
+    tick_fs = 13
+    legend_fs = 11.2
 
-    handles = []
-    labels = []
+    handles: list[Any] = []
+    labels: list[str] = []
+
+    bcs_line = ax.axhline(
+        delta_bcs_0_meV,
+        color="0.42",
+        linestyle=(0, (5.0, 2.2, 1.3, 2.2)),
+        linewidth=1.65,
+        zorder=1,
+        label=r"$\Delta_{\mathrm{BCS}}(0)=1.764\,k_B T_c$",
+    )
+    tc_line = ax.axvline(
+        Tc_K,
+        color="0.25",
+        linestyle="--",
+        linewidth=1.8,
+        zorder=1,
+        label=rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
+    )
 
     for q_value, curve in zip(q_targets, curves):
         ratio = q_value / qcrit if qcrit != 0.0 else np.nan
         (line,) = ax.plot(
             temperature,
             curve,
-            linewidth=2.3,
+            linewidth=2.25,
+            zorder=3,
             label=rf"$q/q_c={ratio:.2f}$",
         )
         handles.append(line)
         labels.append(rf"$q/q_c={ratio:.2f}$")
-
-    tc_line = ax.axvline(
-        Tc_K,
-        linestyle="--",
-        linewidth=2.1,
-        label=rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
-    )
-
-    bcs_line = ax.axhline(
-        delta_bcs_0_meV,
-        linestyle="-.",
-        linewidth=2.1,
-        label=r"$\Delta_{\mathrm{BCS}}(0)=1.764\,k_B T_c$",
-    )
 
     handles.extend([tc_line, bcs_line])
     labels.extend(
@@ -438,38 +533,44 @@ def plot_gap_eq_vs_temperature(
         ]
     )
 
-    # Wider than Tc so the vertical dashed line is inside the plot, not on
-    # the right border. The curves still stop at the computed temperature grid.
     T_min = float(np.nanmin(temperature))
-    T_max_data = float(np.nanmax(temperature))
-    T_max_plot = max(T_max_data, 1.08 * Tc_K)
+    T_max_plot = max(float(np.nanmax(temperature)), 1.08 * Tc_K)
     ax.set_xlim(T_min, T_max_plot)
 
     y_max_curves = float(np.nanmax(curves)) if curves.size else 0.0
-    y_max_plot = max(y_max_curves, delta_bcs_0_meV) * 1.08
+    y_max_plot = max(y_max_curves, delta_bcs_0_meV) * 1.10
     ax.set_ylim(bottom=0.0, top=y_max_plot)
 
     ax.set_xlabel(r"Electron temperature $T_e$ (K)", fontsize=label_fs)
     ax.set_ylabel(r"Equilibrium gap $\Delta_{\mathrm{eq}}$ (meV)", fontsize=label_fs)
-    ax.tick_params(axis="both", which="major", labelsize=tick_fs)
+    ax.tick_params(axis="both", which="major", labelsize=tick_fs, direction="in")
+    ax.tick_params(axis="both", which="minor", direction="in")
+    ax.minorticks_on()
 
-    ax.grid(True, alpha=0.25)
+    ax.grid(True, which="major", linewidth=0.45, alpha=0.18)
+    ax.grid(True, which="minor", linewidth=0.25, alpha=0.08)
+    ax.spines["top"].set_alpha(0.65)
+    ax.spines["right"].set_alpha(0.65)
 
-    # 2 columns x 3 rows:
-    # row 1: q-curve 1, q-curve 2
-    # row 2: q-curve 3, q-curve 4
-    # row 3: Tc, Delta_BCS(0)
+    # Desired semantic order: row 1 = q0,q1; row 2 = q2,q3; row 3 = Tc,BCS.
+    # Matplotlib lays multi-column legends column-major in this backend, so we
+    # permute handles before passing them in.
+    legend_order = _legend_column_major_order(len(handles), ncols=2)
+    handles_for_legend = [handles[i] for i in legend_order]
+    labels_for_legend = [labels[i] for i in legend_order]
+
     ax.legend(
-        handles,
-        labels,
+        handles_for_legend,
+        labels_for_legend,
         frameon=False,
         fontsize=legend_fs,
         ncol=2,
         loc="upper center",
-        bbox_to_anchor=(0.5, 1.02),
-        columnspacing=1.5,
-        handlelength=2.8,
-        handletextpad=0.7,
+        bbox_to_anchor=(0.5, 1.34),
+        columnspacing=1.65,
+        handlelength=3.0,
+        handletextpad=0.65,
+        borderaxespad=0.0,
     )
 
     if title:
@@ -478,6 +579,7 @@ def plot_gap_eq_vs_temperature(
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
+
 
 __all__ = [
     "UsadelGapCatalog",
