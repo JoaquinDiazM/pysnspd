@@ -17,6 +17,7 @@ import numpy as np
 
 from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_gamma_J
 from pysnspd.usadel.parameters import E_CHARGE_C, HBAR_J_S
+from scipy.constants import Boltzmann, e
 
 _MEV_J = E_CHARGE_C * 1.0e-3
 
@@ -351,7 +352,15 @@ def plot_gap_eq_vs_temperature(
     dpi: int = 480,
     title: str | None = None,
 ) -> Path:
-    """Plot ``Delta_eq`` versus temperature for multiple q values."""
+    """Plot ``Delta_eq`` versus temperature for multiple q values.
+
+    E1 memory-ready style:
+    - show 4 q-curves by default, even if the reconstructed catalog has 6,
+    - extend the temperature axis beyond Tc so the Tc marker is visible,
+    - add vertical Tc and horizontal BCS Delta(0) reference lines,
+    - use larger labels/ticks/legend,
+    - arrange legend as 2 columns x 3 rows.
+    """
 
     import matplotlib
 
@@ -361,36 +370,114 @@ def plot_gap_eq_vs_temperature(
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    q_targets, temperature, curves = interpolate_gap_curves(
-        catalog,
-        n_curves=n_curves,
-        q_critical_m_inv=q_critical_m_inv,
-    )
+    # Requested: remove two of the original six q-curves.
+    # If the caller asks for fewer than 4, respect that; otherwise cap at 4.
+    n_plot_curves = 4 if n_curves is None else min(int(n_curves), 4)
+
     qcrit = float(q_critical_m_inv) if q_critical_m_inv is not None else float(catalog.q_critical_m_inv)
 
-    fig, ax = plt.subplots(figsize=(6.4, 4.2), constrained_layout=True)
+    q_targets, temperature, curves = interpolate_gap_curves(
+        catalog,
+        n_curves=n_plot_curves,
+        q_critical_m_inv=qcrit,
+    )
+
+    try:
+        Tc_K = float(catalog.metadata["Tc_K"])
+    except Exception as exc:
+        raise KeyError(
+            "plot_gap_eq_vs_temperature requires catalog.metadata['Tc_K'] "
+            "to draw the Tc and Delta_BCS reference lines."
+        ) from exc
+
+    if not np.isfinite(Tc_K) or Tc_K <= 0.0:
+        raise ValueError(f"Invalid Tc_K in catalog metadata: {Tc_K!r}")
+
+    delta_bcs_0_meV = 1.764 * Boltzmann * Tc_K / e * 1.0e3
+
+    fig, ax = plt.subplots(figsize=(8.4, 5.8), constrained_layout=True)
+
+    # Larger typography for thesis-ready PDF figures.
+    label_fs = 17
+    tick_fs = 14
+    legend_fs = 12
+
+    handles = []
+    labels = []
+
     for q_value, curve in zip(q_targets, curves):
         ratio = q_value / qcrit if qcrit != 0.0 else np.nan
-        ax.plot(
+        (line,) = ax.plot(
             temperature,
             curve,
-            linewidth=1.7,
+            linewidth=2.3,
             label=rf"$q/q_c={ratio:.2f}$",
         )
+        handles.append(line)
+        labels.append(rf"$q/q_c={ratio:.2f}$")
 
-    ax.set_xlabel(r"Electron temperature $T_e$ (K)")
-    ax.set_ylabel(r"Equilibrium gap $\Delta_{\mathrm{eq}}$ (meV)")
-    ax.set_xlim(float(np.nanmin(temperature)), float(np.nanmax(temperature)))
-    ax.set_ylim(bottom=0.0)
+    tc_line = ax.axvline(
+        Tc_K,
+        linestyle="--",
+        linewidth=2.1,
+        label=rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
+    )
+
+    bcs_line = ax.axhline(
+        delta_bcs_0_meV,
+        linestyle="-.",
+        linewidth=2.1,
+        label=r"$\Delta_{\mathrm{BCS}}(0)=1.764\,k_B T_c$",
+    )
+
+    handles.extend([tc_line, bcs_line])
+    labels.extend(
+        [
+            rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
+            r"$\Delta_{\mathrm{BCS}}(0)=1.764\,k_B T_c$",
+        ]
+    )
+
+    # Wider than Tc so the vertical dashed line is inside the plot, not on
+    # the right border. The curves still stop at the computed temperature grid.
+    T_min = float(np.nanmin(temperature))
+    T_max_data = float(np.nanmax(temperature))
+    T_max_plot = max(T_max_data, 1.08 * Tc_K)
+    ax.set_xlim(T_min, T_max_plot)
+
+    y_max_curves = float(np.nanmax(curves)) if curves.size else 0.0
+    y_max_plot = max(y_max_curves, delta_bcs_0_meV) * 1.08
+    ax.set_ylim(bottom=0.0, top=y_max_plot)
+
+    ax.set_xlabel(r"Electron temperature $T_e$ (K)", fontsize=label_fs)
+    ax.set_ylabel(r"Equilibrium gap $\Delta_{\mathrm{eq}}$ (meV)", fontsize=label_fs)
+    ax.tick_params(axis="both", which="major", labelsize=tick_fs)
+
     ax.grid(True, alpha=0.25)
-    ax.legend(frameon=False, fontsize=8, ncol=2)
+
+    # 2 columns x 3 rows:
+    # row 1: q-curve 1, q-curve 2
+    # row 2: q-curve 3, q-curve 4
+    # row 3: Tc, Delta_BCS(0)
+    ax.legend(
+        handles,
+        labels,
+        frameon=False,
+        fontsize=legend_fs,
+        ncol=2,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 1.02),
+        columnspacing=1.5,
+        handlelength=2.8,
+        handletextpad=0.7,
+    )
+
     if title:
-        ax.set_title(title)
+        ax.set_title(title, fontsize=label_fs)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
-
 
 __all__ = [
     "UsadelGapCatalog",
