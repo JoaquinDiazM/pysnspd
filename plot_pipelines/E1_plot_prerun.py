@@ -10,6 +10,7 @@ Delta_eq(T) figure:
 - E1_usadel_supercurrent_curve.pdf
 - E1_usadel_dos_curves_delta_eq.pdf
 - E1_usadel_dos_curves_delta0.pdf
+- E1_eliashberg_spectral_function_phdos.pdf
 
 Use --with-gap-plot only when the additional Delta_eq(T) figure is needed.
 """
@@ -30,6 +31,8 @@ if str(_REPO_ROOT) not in sys.path:
 
 from pysnspd.config import load_config, validate_config
 from pysnspd.io.manager import create_run_layout
+from pysnspd.kinetic.eliashberg import load_simon_eliashberg_dat
+from pysnspd.plotting.eliashberg_spectrum import plot_eliashberg_spectrum
 from pysnspd.plotting.pre_diagnostics import plot_usadel_supercurrent_curve
 from pysnspd.plotting.usadel_dos_curves import (
     plot_usadel_dos_curves_equilibrium_gap,
@@ -43,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "E1 PRE plotting pipeline: write the Usadel supercurrent PDF, two DOS-curve PDFs, "
-            "and optionally the expensive Delta_eq(T) PDF."
+            "the Eliashberg/PhDOS spectrum PDF, and optionally the expensive Delta_eq(T) PDF."
         ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
@@ -72,6 +75,24 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help="Optional output directory; defaults to plots/<pre-run-name>/figures/E1_prerun.",
+    )
+    parser.add_argument(
+        "--eliashberg-dat",
+        default=None,
+        help=(
+            "Path to Simon/MIT NbN alpha2F/PhDOS data. Defaults to "
+            "<project.big_data_root>/catalogs/simon_2025/nbn-a2f-ph.dat."
+        ),
+    )
+    parser.add_argument(
+        "--eliashberg-pdf-name",
+        default="E1_eliashberg_spectral_function_phdos.pdf",
+        help="Output PDF filename for the full Eliashberg alpha2F and PhDOS spectrum.",
+    )
+    parser.add_argument(
+        "--skip-eliashberg-spectrum",
+        action="store_true",
+        help="Skip the Eliashberg alpha2F/PhDOS spectrum PDF.",
     )
 
     parser.add_argument(
@@ -257,6 +278,16 @@ def main() -> int:
         )
         saved["usadel_dos_curves_delta0_pdf"] = dos_delta0_output
 
+    if not args.skip_eliashberg_spectrum:
+        eliashberg_path = _resolve_eliashberg_path(cfg, args.eliashberg_dat)
+        spectrum = load_simon_eliashberg_dat(eliashberg_path)
+        eliashberg_output = plot_eliashberg_spectrum(
+            spectrum,
+            figures_dir / _ensure_pdf_name(args.eliashberg_pdf_name),
+            dpi=int(args.dpi),
+        )
+        saved["eliashberg_spectral_function_phdos_pdf"] = eliashberg_output
+
     gap_source = "not_requested"
     q_critical_m_inv = None
     gap_metadata: dict[str, Any] = {}
@@ -294,6 +325,13 @@ def main() -> int:
             "energy_max_meV": args.dos_energy_max_meV,
             "energy_window": bool(args.dos_energy_window),
         },
+        skip_eliashberg_spectrum=bool(args.skip_eliashberg_spectrum),
+        eliashberg_settings={
+            "dat_path": str(_resolve_eliashberg_path(cfg, args.eliashberg_dat))
+            if not args.skip_eliashberg_spectrum
+            else None,
+            "pdf_name": _ensure_pdf_name(args.eliashberg_pdf_name),
+        },
         with_gap_plot=bool(args.with_gap_plot),
         gap_source=gap_source,
         q_critical_m_inv=q_critical_m_inv,
@@ -322,6 +360,14 @@ def main() -> int:
     return 0
 
 
+def _resolve_eliashberg_path(cfg: dict[str, Any], requested_path: str | None) -> Path:
+    """Resolve the Simon/MIT NbN alpha2F/PhDOS data path as in 01_prerun_template.py."""
+    if requested_path:
+        return Path(requested_path).expanduser().resolve()
+    root = Path(str(cfg["project"]["big_data_root"])).expanduser()
+    return (root / "catalogs" / "simon_2025" / "nbn-a2f-ph.dat").resolve()
+
+
 def _ensure_pdf_name(name: str | Path) -> str:
     raw = str(name)
     return raw if raw.lower().endswith(".pdf") else f"{raw}.pdf"
@@ -336,6 +382,8 @@ def _write_manifest(
     saved: dict[str, Path],
     skip_dos_curves: bool,
     dos_settings: dict[str, Any],
+    skip_eliashberg_spectrum: bool,
+    eliashberg_settings: dict[str, Any],
     with_gap_plot: bool,
     gap_source: str,
     q_critical_m_inv: float | None,
@@ -345,7 +393,7 @@ def _write_manifest(
     manifest: dict[str, Any] = {
         "schema_version": 3,
         "pipeline": "plot_pipelines/E1_plot_prerun.py",
-        "purpose": "E-type PRE figures in PDF format: supercurrent curve, DOS curves, and optional Delta_eq(T,q).",
+        "purpose": "E-type PRE figures in PDF format: supercurrent curve, DOS curves, Eliashberg/PhDOS spectrum, and optional Delta_eq(T,q).",
         "pre_run_name": pre_run_name,
         "raw_pre": str(raw_pre),
         "figures_dir": str(figures_dir),
@@ -353,6 +401,8 @@ def _write_manifest(
         "figures": {key: str(path) for key, path in saved.items()},
         "skip_dos_curves": bool(skip_dos_curves),
         "dos_settings": dos_settings,
+        "skip_eliashberg_spectrum": bool(skip_eliashberg_spectrum),
+        "eliashberg_settings": eliashberg_settings,
         "with_gap_plot": bool(with_gap_plot),
         "gap_source": gap_source,
         "q_critical_m_inv": None if q_critical_m_inv is None else float(q_critical_m_inv),
