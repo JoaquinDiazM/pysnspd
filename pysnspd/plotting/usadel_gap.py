@@ -213,15 +213,14 @@ def _temperature_axis(
     if not np.isfinite(lo) or lo <= 0.0:
         lo = max(1.0e-3, 0.01 * Tc_K)
 
-    # Keep a small normal-state interval to the right of Tc.  The solver returns
-    # Delta=0 for T>=Tc, so the curves remain physically clear while the dashed
-    # Tc line is no longer glued to the plot boundary.
-    hi = float(T_max_K) if T_max_K is not None else 1.08 * float(Tc_K)
+    # Keep a wide normal-state interval to the right of Tc.  This leaves room
+    # for an in-frame legend and keeps the dashed Tc line away from the boundary.
+    hi = float(T_max_K) if T_max_K is not None else 1.55 * float(Tc_K)
     if not np.isfinite(hi) or hi <= 0.0:
-        hi = 1.08 * float(Tc_K)
+        hi = 1.55 * float(Tc_K)
 
     if hi <= float(Tc_K):
-        hi = 1.08 * float(Tc_K)
+        hi = 1.55 * float(Tc_K)
     if lo >= hi:
         raise ValueError(f"Invalid temperature range: T_min_K={lo:.6g}, T_max_K={hi:.6g}")
     return np.linspace(lo, hi, n)
@@ -272,6 +271,8 @@ def build_gap_eq_temperature_catalog(
     T_max_K: float | None = None,
     q_critical_m_inv: float | None = None,
     n_matsubara: int | None = None,
+    solver_n_scan: int = 120,
+    solver_n_bisect: int = 80,
     progress: bool = False,
 ) -> UsadelGapCatalog:
     """Reconstruct dense ``Delta_eq(T, q)`` curves from a PRE-run Usadel NPZ.
@@ -304,6 +305,10 @@ def build_gap_eq_temperature_catalog(
     )
     if n_m <= 0:
         raise ValueError(f"n_matsubara must be positive, got {n_m}.")
+    if int(solver_n_scan) <= 2:
+        raise ValueError(f"solver_n_scan must be greater than 2, got {solver_n_scan}.")
+    if int(solver_n_bisect) <= 0:
+        raise ValueError(f"solver_n_bisect must be positive, got {solver_n_bisect}.")
 
     qcrit = _resolve_q_critical(arrays, metadata, q_critical_m_inv)
     q_values = np.linspace(0.0, qcrit, int(n_curves))
@@ -328,7 +333,7 @@ def build_gap_eq_temperature_catalog(
     )
     try:
         for iT, T_K in enumerate(temperature):
-            if not np.isfinite(T_K) or T_K <= 0.0:
+            if not np.isfinite(T_K) or T_K <= 0.0 or T_K >= Tc_K:
                 pbar.update(q_values.size)
                 continue
             eps_n_J = matsubara_energy_axis_J(T_K=float(T_K), n_matsubara=int(n_m))
@@ -338,8 +343,8 @@ def build_gap_eq_temperature_catalog(
                     T_K=float(T_K),
                     Tc_K=float(Tc_K),
                     eps_n_J=eps_n_J,
-                    n_scan=120,
-                    n_bisect=80,
+                    n_scan=int(solver_n_scan),
+                    n_bisect=int(solver_n_bisect),
                 )
                 pbar.update(1)
     finally:
@@ -355,6 +360,9 @@ def build_gap_eq_temperature_catalog(
         "n_curves": int(q_values.size),
         "T_max_over_Tc": float(np.nanmax(temperature) / Tc_K),
         "solver": "solve_gap_for_gamma_J",
+        "solver_n_scan": int(solver_n_scan),
+        "solver_n_bisect": int(solver_n_bisect),
+        "n_self_consistency_solves": int(temperature.size * q_values.size),
         "gamma_relation": "Gamma_q = 0.5*hbar*D*q^2",
     }
 
@@ -377,6 +385,8 @@ def load_usadel_gap_catalog(
     T_max_K: float | None = None,
     q_critical_m_inv: float | None = None,
     n_matsubara: int | None = None,
+    solver_n_scan: int = 120,
+    solver_n_bisect: int = 80,
     progress: bool = False,
 ) -> UsadelGapCatalog:
     """Compatibility wrapper for the E1 pipeline.
@@ -394,6 +404,8 @@ def load_usadel_gap_catalog(
         T_max_K=T_max_K,
         q_critical_m_inv=q_critical_m_inv,
         n_matsubara=n_matsubara,
+        solver_n_scan=solver_n_scan,
+        solver_n_bisect=solver_n_bisect,
         progress=progress,
     )
 
@@ -486,12 +498,12 @@ def plot_gap_eq_vs_temperature(
 
     delta_bcs_0_meV = 1.764 * Boltzmann * Tc_K / e * 1.0e3
 
-    fig, ax = plt.subplots(figsize=(8.2, 5.35))
-    fig.subplots_adjust(left=0.15, right=0.985, bottom=0.17, top=0.77)
+    fig, ax = plt.subplots(figsize=(9.2, 6.15))
+    fig.subplots_adjust(left=0.155, right=0.985, bottom=0.17, top=0.965)
 
-    label_fs = 16
-    tick_fs = 13
-    legend_fs = 11.2
+    label_fs = 21
+    tick_fs = 17
+    legend_fs = 15
 
     handles: list[Any] = []
     labels: list[str] = []
@@ -499,16 +511,16 @@ def plot_gap_eq_vs_temperature(
     bcs_line = ax.axhline(
         delta_bcs_0_meV,
         color="0.42",
-        linestyle=(0, (5.0, 2.2, 1.3, 2.2)),
-        linewidth=1.65,
+        #linestyle=(0, (5.0, 2.2, 1.3, 2.2)),
+        linewidth=2.1,
         zorder=1,
-        label=r"$\Delta_{\mathrm{BCS}}(0)=1.764\,k_B T_c$",
+        label=r"$\Delta_{\mathrm{BCS}}(0)$",
     )
     tc_line = ax.axvline(
         Tc_K,
         color="0.25",
         linestyle="--",
-        linewidth=1.8,
+        linewidth=2.2,
         zorder=1,
         label=rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
     )
@@ -518,7 +530,7 @@ def plot_gap_eq_vs_temperature(
         (line,) = ax.plot(
             temperature,
             curve,
-            linewidth=2.25,
+            linewidth=2.8,
             zorder=3,
             label=rf"$q/q_c={ratio:.2f}$",
         )
@@ -529,48 +541,49 @@ def plot_gap_eq_vs_temperature(
     labels.extend(
         [
             rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
-            r"$\Delta_{\mathrm{BCS}}(0)=1.764\,k_B T_c$",
+            r"$\Delta_{\mathrm{BCS}}(0)$",
         ]
     )
 
     T_min = float(np.nanmin(temperature))
-    T_max_plot = max(float(np.nanmax(temperature)), 1.08 * Tc_K)
+
+    # Give enough empty normal-state region to place a single-column legend
+    # inside the frame without hiding the relevant gap curves.
+    T_max_plot = max(float(np.nanmax(temperature)), 1.15 * Tc_K)
     ax.set_xlim(T_min, T_max_plot)
 
     y_max_curves = float(np.nanmax(curves)) if curves.size else 0.0
-    y_max_plot = max(y_max_curves, delta_bcs_0_meV) * 1.10
+    y_max_plot = max(y_max_curves, delta_bcs_0_meV) * 1.12
     ax.set_ylim(bottom=0.0, top=y_max_plot)
 
-    ax.set_xlabel(r"Electron temperature $T_e$ (K)", fontsize=label_fs)
+    ax.set_xlabel(r"Temperature $T$ (K)", fontsize=label_fs)
     ax.set_ylabel(r"Equilibrium gap $\Delta_{\mathrm{eq}}$ (meV)", fontsize=label_fs)
-    ax.tick_params(axis="both", which="major", labelsize=tick_fs, direction="in")
-    ax.tick_params(axis="both", which="minor", direction="in")
+    ax.tick_params(axis="both", which="major", labelsize=tick_fs, direction="in", length=6.5, width=1.1)
+    ax.tick_params(axis="both", which="minor", direction="in", length=3.5, width=0.8)
     ax.minorticks_on()
 
-    ax.grid(True, which="major", linewidth=0.45, alpha=0.18)
-    ax.grid(True, which="minor", linewidth=0.25, alpha=0.08)
-    ax.spines["top"].set_alpha(0.65)
-    ax.spines["right"].set_alpha(0.65)
-
-    # Desired semantic order: row 1 = q0,q1; row 2 = q2,q3; row 3 = Tc,BCS.
-    # Matplotlib lays multi-column legends column-major in this backend, so we
-    # permute handles before passing them in.
-    legend_order = _legend_column_major_order(len(handles), ncols=2)
-    handles_for_legend = [handles[i] for i in legend_order]
-    labels_for_legend = [labels[i] for i in legend_order]
+    ax.grid(True, which="major", linewidth=0.50, alpha=0.18)
+    ax.grid(True, which="minor", linewidth=0.28, alpha=0.08)
+    ax.spines["top"].set_alpha(0.70)
+    ax.spines["right"].set_alpha(0.70)
 
     ax.legend(
-        handles_for_legend,
-        labels_for_legend,
-        frameon=False,
+        handles,
+        labels,
+        frameon=True,
+        fancybox=False,
+        framealpha=1.0,
+        facecolor="white",
+        edgecolor="0.70",
         fontsize=legend_fs,
-        ncol=2,
-        loc="upper center",
-        bbox_to_anchor=(0.5, 1.34),
-        columnspacing=1.65,
-        handlelength=3.0,
+        ncol=1,
+        loc="upper right",
+        bbox_to_anchor=(0.985, 0.975),
+        handlelength=2.75,
         handletextpad=0.65,
         borderaxespad=0.0,
+        borderpad=0.55,
+        labelspacing=0.42,
     )
 
     if title:
@@ -579,7 +592,6 @@ def plot_gap_eq_vs_temperature(
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
-
 
 __all__ = [
     "UsadelGapCatalog",
