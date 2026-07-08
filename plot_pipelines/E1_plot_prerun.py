@@ -7,7 +7,7 @@ E-type thesis figures in PDF format.
 Default output is intentionally fast and does not reconstruct the expensive
 Delta_eq(T) figure:
 
-- usadel_supercurrent_curve.pdf
+- E1_usadel_supercurrent_curve.pdf
 - E1_usadel_dos_curves_delta_eq.pdf
 - E1_usadel_dos_curves_delta0.pdf
 
@@ -76,7 +76,7 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument(
         "--supercurrent-pdf-name",
-        default="usadel_supercurrent_curve.pdf",
+        default="E1_usadel_supercurrent_curve.pdf",
         help="Output PDF filename for the supercurrent calibration figure.",
     )
     parser.add_argument(
@@ -98,7 +98,7 @@ def parse_args() -> argparse.Namespace:
         "--dos-current-fractions",
         nargs="+",
         type=float,
-        default=(0.0, 0.50, 0.65, 0.80, 0.95),
+        default=(0.0, 0.25, 0.50, 0.65, 0.80, 0.95),
         help="Current fractions I_s/I_c used for both DOS-curve PDFs.",
     )
     parser.add_argument(
@@ -234,7 +234,7 @@ def main() -> int:
         figures_dir / _ensure_pdf_name(args.supercurrent_pdf_name),
         dpi=int(args.dpi),
     )
-    saved["usadel_supercurrent_curve_pdf"] = supercurrent_output
+    saved["E1_usadel_supercurrent_curve_pdf"] = supercurrent_output
 
     if not args.skip_dos_curves:
         dos_eq_output = plot_usadel_dos_curves_equilibrium_gap(
