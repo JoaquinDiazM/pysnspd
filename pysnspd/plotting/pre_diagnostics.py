@@ -225,8 +225,8 @@ def plot_usadel_supercurrent_curve(
     q = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
     current_uA = 1.0e6 * np.asarray(usadel_catalog.calibration_current_values_A, dtype=float)
     delta_eq_meV = _calibration_delta_eq_mev(usadel_catalog)
-    q_1e7 = q / 1.0e7
 
+    q_1e7 = q / 1.0e7
     finite_i = np.isfinite(q_1e7) & np.isfinite(current_uA)
     finite_d = np.isfinite(q_1e7) & np.isfinite(delta_eq_meV)
     if not np.any(finite_i):
@@ -237,28 +237,27 @@ def plot_usadel_supercurrent_curve(
     Tc_K = _metadata_float(metadata, "Tc_K")
     temperature_label = _temperature_label(T_bias_K, Tc_K)
 
-    fig, ax_i = plt.subplots(figsize=(7.1, 4.35))
-    line_i, = ax_i.plot(
-        q_1e7[finite_i],
-        current_uA[finite_i],
-        marker=".",
-        markersize=1.6,
-        linewidth=1.05,
-        color="tab:blue",
-        label=rf"$I_s(q)$ at {temperature_label}",
-    )
+    current_color = "tab:blue"
+    gap_color = "tab:purple"
+
+    fig, ax_i = plt.subplots(figsize=(9.4, 5.9))
+    label_fs = 18
+    tick_fs = 16
+    legend_fs = 14.0
+    legend_title_fs = 14.0
 
     q_plot = q_1e7[finite_i]
     i_plot = current_uA[finite_i]
     i_max = int(np.nanargmax(i_plot))
-    peak_line, = ax_i.plot(
-        q_plot[i_max],
-        i_plot[i_max],
-        marker="o",
-        markersize=4.2,
-        linestyle="None",
-        color="tab:orange",
-        label=rf"model $I_c$ = {i_plot[i_max]:.2f} $\mu$A",
+    ic_uA = float(i_plot[i_max])
+
+    line_i, = ax_i.plot(
+        q_plot,
+        i_plot,
+        linewidth=2.2,
+        color=current_color,
+        zorder=3,
+        label=rf"$I_s(q)$ at {temperature_label}",
     )
 
     target_line = None
@@ -268,8 +267,10 @@ def plot_usadel_supercurrent_curve(
         target_line = ax_i.axhline(
             target_uA,
             linestyle="--",
-            linewidth=1.0,
-            color="tab:blue",
+            linewidth=1.6,
+            color=current_color,
+            alpha=0.95,
+            zorder=2,
             label=rf"target $I_c$ = {target_uA:.2f} $\mu$A",
         )
 
@@ -279,31 +280,124 @@ def plot_usadel_supercurrent_curve(
         gap_line, = ax_d.plot(
             q_1e7[finite_d],
             delta_eq_meV[finite_d],
-            marker=".",
-            markersize=1.45,
-            linewidth=1.0,
-            color="tab:purple",
+            linewidth=2.0,
+            color=gap_color,
+            zorder=3,
             label=rf"$|\Delta_{{eq}}(q)|$ at {temperature_label}",
         )
 
-    ax_i.set_title("Usadel/Matsubara calibration: current and equilibrium gap")
-    ax_i.set_xlabel(r"superfluid momentum $q$ [$10^7$ m$^{-1}$]")
-    ax_i.set_ylabel(r"$I_s$ [$\mu$A]")
-    ax_d.set_ylabel(r"$|\Delta_{eq}|$ [meV]")
-    ax_i.grid(True, linewidth=0.35, alpha=0.28)
+    ax_i.set_xlabel(r"superfluid momentum $q$ [$10^7$ m$^{-1}$]", fontsize=label_fs)
+    ax_i.set_ylabel(r"$I_s$ [$\mu$A]", fontsize=label_fs, color=current_color)
+    ax_d.set_ylabel(r"$|\Delta_{eq}|$ [meV]", fontsize=label_fs, color=gap_color)
 
-    handles = [line_i, peak_line]
+    ax_i.tick_params(axis="x", which="both", direction="in", labelsize=tick_fs)
+    ax_i.tick_params(axis="y", which="both", direction="in", labelsize=tick_fs, colors=current_color)
+    ax_d.tick_params(axis="y", which="both", direction="in", labelsize=tick_fs, colors=gap_color)
+
+    ax_i.minorticks_on()
+    ax_d.minorticks_on()
+
+    ax_i.spines["left"].set_color(current_color)
+    ax_i.spines["left"].set_linewidth(1.2)
+    ax_d.spines["right"].set_color(gap_color)
+    ax_d.spines["right"].set_linewidth(1.2)
+
+    ax_i.yaxis.label.set_color(current_color)
+    ax_d.yaxis.label.set_color(gap_color)
+
+    ax_i.grid(True, linewidth=0.4, alpha=0.25, zorder=1)
+
+    handles = [line_i]
     if target_line is not None:
         handles.append(target_line)
     if gap_line is not None:
         handles.append(gap_line)
+
     labels = [h.get_label() for h in handles]
 
-    extra = _usadel_metadata_summary(metadata)
-    legend_title = "Usadel calibration"
-    if extra:
-        legend_title += "\n" + extra
-    ax_i.legend(handles, labels, loc="best", fontsize=7.6, title=legend_title, title_fontsize=7.5)
+    def _find_diffusivity_value(meta: Any) -> float | None:
+        if not isinstance(meta, dict):
+            return None
+
+        candidate_keys = (
+            "D_m2_s",
+            "D",
+            "diffusivity_m2_s",
+            "diffusion_constant_m2_s",
+        )
+
+        for key in candidate_keys:
+            if key in meta:
+                try:
+                    value = float(meta[key])
+                    if np.isfinite(value):
+                        return value
+                except Exception:
+                    pass
+
+        for block_key in ("calibration", "material", "supercurrent_table"):
+            block = meta.get(block_key)
+            if isinstance(block, dict):
+                for key in candidate_keys:
+                    if key in block:
+                        try:
+                            value = float(block[key])
+                            if np.isfinite(value):
+                                return value
+                        except Exception:
+                            pass
+
+        return None
+
+    legend_lines = []
+
+    D_value = _find_diffusivity_value(metadata)
+    if D_value is not None:
+        D_cm2_s = 1.0e4 * D_value
+        legend_lines.append(rf"Calibration $\Rightarrow$ $D={D_cm2_s:.3f}$ cm$^2$/s")
+
+    # Esta es la línea que agregaba el resumen:
+    # D = ..., sigma_n = ..., Delta_0 = ...
+    # Se deja comentada para no mostrar esa segunda línea en la leyenda.
+    #
+    # extra = _usadel_metadata_summary(metadata)
+    # if extra:
+    #     for line in extra.splitlines():
+    #         clean = line.strip()
+    #         if not clean:
+    #             continue
+    #         clean = clean.replace("(", "").replace(")", "")
+    #         if clean:
+    #             legend_lines.append(clean)
+
+    legend_title = "\n".join(legend_lines) if legend_lines else None
+
+    legend = ax_i.legend(
+        handles,
+        labels,
+        loc="lower center",
+        bbox_to_anchor=(0.50, 0.055),
+        fontsize=legend_fs,
+        title=legend_title,
+        title_fontsize=legend_title_fs,
+        frameon=True,
+        fancybox=False,
+        framealpha=1.0,
+        facecolor="white",
+        edgecolor="black",
+        handlelength=2.8,
+        borderpad=0.60,
+        labelspacing=0.45,
+    )
+
+    legend.get_frame().set_linewidth(1.0)
+    legend.set_zorder(10)
+
+    # Centra horizontalmente la primera línea, que en Matplotlib corresponde
+    # al título de la leyenda.
+    legend.get_title().set_ha("center")
+    legend.get_title().set_multialignment("center")
+    legend._legend_box.align = "center"
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -1061,7 +1155,8 @@ def _metadata_float(metadata: Any, key: str) -> float:
 
 def _temperature_label(T_bias_K: float, Tc_K: float) -> str:
     if np.isfinite(T_bias_K) and np.isfinite(Tc_K) and Tc_K > 0.0:
-        return rf"$T={T_bias_K:.2f}$ K ($T/T_c={T_bias_K / Tc_K:.3f}$)"
+        #return rf"$T={T_bias_K:.2f}$ K ($T/T_c={T_bias_K / Tc_K:.3f}$)"
+        return rf"$T={T_bias_K:.2f}$ K"
     if np.isfinite(T_bias_K):
         return rf"$T={T_bias_K:.2f}$ K"
     return "configured bias temperature"
