@@ -1,7 +1,7 @@
 """Presentation-quality Usadel DOS curve plots for PRE/E-type pipelines.
 
 The PRE catalogue stores the real-axis dirty-limit Usadel DOS over independent
-``(|Delta|, Gamma_q, E)`` axes.  This module turns those catalogue slices into
+``(|Delta|, Gamma_q, E)`` axes. This module turns those catalogue slices into
 line plots that are more useful for thesis figures than the raw 2-D colormaps.
 
 Two slices are provided:
@@ -25,8 +25,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 MEV_J = 1.602176634e-22
-
-_DEFAULT_CURRENT_FRACTIONS: tuple[float, ...] = (0.0, 0.25, 0.50, 0.75)
+_DEFAULT_CURRENT_FRACTIONS: tuple[float, ...] = (0.0, 0.25, 0.50, 0.65, 0.80, 0.95)
 
 
 def plot_usadel_dos_curves_equilibrium_gap(
@@ -35,16 +34,15 @@ def plot_usadel_dos_curves_equilibrium_gap(
     *,
     current_fractions: Sequence[float] = _DEFAULT_CURRENT_FRACTIONS,
     dpi: int = 480,
-    energy_max_meV: float | None = None,
+    energy_max_meV: float | None = 4.0,
     energy_window: bool = True,
 ) -> Path:
     """Plot DOS curves ``rho(E; Delta_eq(q), q)`` for selected currents.
 
-    The selected currents are interpreted as fractions of the model depairing
-    current obtained from the PRE Matsubara calibration branch.  Only the stable
+    The selected currents are interpreted as fractions of the model critical
+    current obtained from the PRE Matsubara calibration branch. Only the stable
     pre-maximum branch of ``I_s(q)`` is used to convert ``I_s/I_c`` to ``q``.
     """
-
     return _plot_dos_curves(
         usadel_catalog,
         output_path,
@@ -62,16 +60,15 @@ def plot_usadel_dos_curves_fixed_delta0(
     *,
     current_fractions: Sequence[float] = _DEFAULT_CURRENT_FRACTIONS,
     dpi: int = 480,
-    energy_max_meV: float | None = None,
+    energy_max_meV: float | None = 4.0,
     energy_window: bool = True,
 ) -> Path:
     """Plot DOS curves ``rho(E; Delta_0, q)`` for selected currents.
 
-    This is not a self-consistent finite-current branch.  It is a fixed-gap
+    This is not a self-consistent finite-current branch. It is a fixed-gap
     catalogue section that keeps ``Delta`` at ``Delta_0`` while changing the
     depairing parameter through ``q``.
     """
-
     return _plot_dos_curves(
         usadel_catalog,
         output_path,
@@ -94,14 +91,21 @@ def _plot_dos_curves(
     energy_window: bool,
 ) -> Path:
     output = _prepare_output(output_path)
-
     fractions = _normalize_current_fractions(current_fractions)
-    energy_meV = _energy_axis_meV(usadel_catalog)
+    energy_meV_full = _energy_axis_meV(usadel_catalog)
+    positive_energy = np.isfinite(energy_meV_full) & (energy_meV_full >= 0.0)
+    if not np.any(positive_energy):
+        raise ValueError("energy_values_J has no finite non-negative energy points.")
+
     curves = _extract_dos_curves_for_current_fractions(
         usadel_catalog,
         current_fractions=fractions,
         mode=mode,
     )
+
+    energy_meV = energy_meV_full[positive_energy]
+    for curve in curves:
+        curve["rho"] = np.asarray(curve["rho"], dtype=float)[positive_energy]
 
     metadata = getattr(usadel_catalog, "metadata", {})
     T_bias_K = _metadata_float(metadata, "T_bias_K")
@@ -115,11 +119,11 @@ def _plot_dos_curves(
     else:  # pragma: no cover - internal defensive branch
         raise ValueError(f"Unknown DOS-curve mode: {mode!r}")
 
-    fig, ax = plt.subplots(figsize=(7.6, 5.7))
-    label_fs = 18
-    tick_fs = 15
-    legend_fs = 13.0
-    legend_title_fs = 13.2
+    fig, ax = plt.subplots(figsize=(9.4, 6.8))
+    label_fs = 22
+    tick_fs = 18
+    legend_fs = 16.0
+    legend_title_fs = 16.2
 
     colors = _curve_colors(len(curves))
     handles: list[Any] = []
@@ -129,33 +133,35 @@ def _plot_dos_curves(
         line, = ax.plot(
             energy_meV,
             curve["rho"],
-            linewidth=2.1,
+            linewidth=2.8,
             color=color,
             label=rf"{_fraction_label(curve['fraction'])}",
         )
         handles.append(line)
         labels.append(rf"{_fraction_label(curve['fraction'])}")
 
+    rho_stack = np.vstack([np.asarray(curve["rho"], dtype=float) for curve in curves])
     xlim = _energy_xlim(
         energy_meV,
-        np.vstack([np.asarray(curve["rho"], dtype=float) for curve in curves]),
+        rho_stack,
         energy_max_meV=energy_max_meV,
         energy_window=energy_window,
     )
     ax.set_xlim(*xlim)
 
-    y_values = np.concatenate([np.asarray(curve["rho"], dtype=float) for curve in curves])
+    visible = (energy_meV >= xlim[0]) & (energy_meV <= xlim[1])
+    y_values = rho_stack[:, visible] if np.any(visible) else rho_stack
     y_values = y_values[np.isfinite(y_values)]
     y_top = 1.05 * float(np.nanmax(y_values)) if y_values.size else 1.0
     ax.set_ylim(bottom=0.0, top=max(1.05, y_top))
 
     ax.set_xlabel(r"energy $E$ [meV]", fontsize=label_fs)
     ax.set_ylabel(r"$\rho(E)$", fontsize=label_fs)
-    ax.tick_params(axis="both", which="major", labelsize=tick_fs, direction="in", length=6.0, width=1.0)
-    ax.tick_params(axis="both", which="minor", direction="in", length=3.2, width=0.8)
+    ax.tick_params(axis="both", which="major", labelsize=tick_fs, direction="in", length=7.0, width=1.15)
+    ax.tick_params(axis="both", which="minor", direction="in", length=4.0, width=0.9)
     ax.minorticks_on()
-    ax.grid(True, which="major", linewidth=0.45, alpha=0.20)
-    ax.grid(True, which="minor", linewidth=0.25, alpha=0.08)
+    ax.grid(True, which="major", linewidth=0.50, alpha=0.20)
+    ax.grid(True, which="minor", linewidth=0.30, alpha=0.08)
 
     if np.isfinite(T_ratio):
         temp_line = rf"$T/T_c={T_ratio:.3f}$"
@@ -164,9 +170,9 @@ def _plot_dos_curves(
     else:
         temp_line = ""
 
-    legend_title = state_label
+    legend_title = state_label + "\n" + r"$I_s/I_c$"
     if temp_line:
-        legend_title += "\n" + temp_line
+        legend_title = state_label + "\n" + temp_line + "\n" + r"$I_s/I_c$"
 
     legend = ax.legend(
         handles,
@@ -180,26 +186,14 @@ def _plot_dos_curves(
         framealpha=1.0,
         facecolor="white",
         edgecolor="0.35",
-        handlelength=2.5,
-        borderpad=0.55,
-        labelspacing=0.35,
+        handlelength=3.0,
+        borderpad=0.75,
+        labelspacing=0.52,
     )
-    legend.get_frame().set_linewidth(0.9)
+    legend.get_frame().set_linewidth(1.05)
     legend.set_zorder(10)
-
-    # A second, compact legend-like header clarifies that the numbers are
-    # normalized currents without putting this text into every curve label.
-    ax.text(
-        0.035,
-        0.955,
-        r"$I_s/I_c$",
-        transform=ax.transAxes,
-        ha="left",
-        va="top",
-        fontsize=legend_title_fs,
-        bbox={"boxstyle": "square,pad=0.25", "facecolor": "white", "edgecolor": "0.65", "alpha": 1.0},
-        zorder=11,
-    )
+    legend.get_title().set_multialignment("center")
+    legend._legend_box.align = "center"
 
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -214,7 +208,6 @@ def _extract_dos_curves_for_current_fractions(
     mode: str,
 ) -> list[dict[str, Any]]:
     q_targets = _q_targets_from_current_fractions(usadel_catalog, current_fractions)
-
     q_axis = np.asarray(usadel_catalog.q_values_m_inv, dtype=float)
     delta_axis = np.asarray(usadel_catalog.delta_values_J, dtype=float)
     rho = np.asarray(usadel_catalog.rho_delta_gamma_E, dtype=float)
@@ -228,7 +221,6 @@ def _extract_dos_curves_for_current_fractions(
 
     out: list[dict[str, Any]] = []
     delta0_J = _resolve_delta0_J(usadel_catalog)
-
     for fraction, q_target in zip(current_fractions, q_targets):
         iq = _nearest_index(q_axis, q_target)
         q_actual = float(q_axis[iq])
@@ -253,7 +245,6 @@ def _extract_dos_curves_for_current_fractions(
                 "rho": np.asarray(rho[idelta, iq, :], dtype=float),
             }
         )
-
     return out
 
 
@@ -263,7 +254,6 @@ def _q_targets_from_current_fractions(
 ) -> np.ndarray:
     q = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
     current = np.asarray(usadel_catalog.calibration_current_values_A, dtype=float)
-
     finite = np.isfinite(q) & np.isfinite(current)
     q = q[finite]
     current = current[finite]
@@ -287,7 +277,6 @@ def _q_targets_from_current_fractions(
     current_mono = np.maximum.accumulate(current_branch)
     unique_current, unique_idx = np.unique(current_mono, return_index=True)
     q_unique = q_branch[unique_idx]
-
     if unique_current.size < 2:
         raise ValueError("Current branch is not usable for I/Ic interpolation.")
 
@@ -298,7 +287,6 @@ def _q_targets_from_current_fractions(
 def _delta_eq_at_q(usadel_catalog: Any, q_m_inv: float) -> float:
     q_cal = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
     delta_cal = np.asarray(usadel_catalog.calibration_delta_eq_values_J, dtype=float)
-
     finite = np.isfinite(q_cal) & np.isfinite(delta_cal)
     q_cal = q_cal[finite]
     delta_cal = delta_cal[finite]
@@ -308,27 +296,36 @@ def _delta_eq_at_q(usadel_catalog: Any, q_m_inv: float) -> float:
     order = np.argsort(q_cal)
     q_cal = q_cal[order]
     delta_cal = delta_cal[order]
-
     return float(np.interp(float(q_m_inv), q_cal, delta_cal, left=delta_cal[0], right=delta_cal[-1]))
 
 
 def _resolve_delta0_J(usadel_catalog: Any) -> float:
     metadata = getattr(usadel_catalog, "metadata", {})
-    if isinstance(metadata, dict):
-        for key in ("delta0_J", "Delta0_J", "delta_ref_J"):
-            if key in metadata:
-                try:
-                    value = float(metadata[key])
-                    if np.isfinite(value) and value > 0.0:
-                        return value
-                except Exception:
-                    pass
+    for value in _metadata_values_recursive(metadata, ("delta0_J", "Delta0_J", "delta_ref_J", "Delta_ref_J")):
+        try:
+            out = float(value)
+        except Exception:
+            continue
+        if np.isfinite(out) and out > 0.0:
+            return out
 
     delta_axis = np.asarray(usadel_catalog.delta_values_J, dtype=float)
     finite = delta_axis[np.isfinite(delta_axis)]
     if finite.size == 0:
         raise ValueError("delta_values_J has no finite values, cannot resolve Delta0.")
     return float(np.nanmax(finite))
+
+
+def _metadata_values_recursive(metadata: Any, keys: tuple[str, ...]) -> list[Any]:
+    if not isinstance(metadata, dict):
+        return []
+    found: list[Any] = []
+    for key, value in metadata.items():
+        if key in keys:
+            found.append(value)
+        if isinstance(value, dict):
+            found.extend(_metadata_values_recursive(value, keys))
+    return found
 
 
 def _energy_axis_meV(usadel_catalog: Any) -> np.ndarray:
@@ -349,10 +346,15 @@ def _energy_xlim(
     x_min = max(0.0, float(np.nanmin(energy_meV)))
     x_max_available = float(np.nanmax(energy_meV))
 
-    if energy_max_meV is not None:
-        x_max = min(float(energy_max_meV), x_max_available)
-        if np.isfinite(x_max) and x_max > x_min:
-            return (x_min, x_max)
+    # E-type DOS figures are thesis figures, not exploratory colormaps.
+    # Keep the default positive-energy domain fixed to 4 meV unless the
+    # pipeline explicitly requests another value.
+    if energy_max_meV is None:
+        energy_max_meV = 4.0
+
+    x_max = min(float(energy_max_meV), x_max_available)
+    if np.isfinite(x_max) and x_max > x_min:
+        return (x_min, x_max)
 
     if not energy_window:
         return (x_min, x_max_available)
@@ -377,12 +379,11 @@ def _auto_energy_xlim_from_tail(
     min_visible_fraction: float = 0.20,
 ) -> tuple[float, float]:
     """Choose a compact energy window from deviations from the high-energy tail."""
-
     E = np.asarray(E_meV, dtype=float)
     values = np.asarray(values_qE, dtype=float)
+
     if E.ndim != 1 or E.size < 3 or values.size == 0:
         return (float(np.nanmin(E)), float(np.nanmax(E)))
-
     if values.ndim == 1:
         values = values[None, :]
     if values.shape[-1] != E.size:
