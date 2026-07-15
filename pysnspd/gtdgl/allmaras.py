@@ -12,6 +12,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+import scipy.sparse as sp
+import scipy.sparse.linalg as spla
 
 from pysnspd.gtdgl.material import GTDGLMaterial, K_B_J_K
 from pysnspd.gtdgl.operators import (
@@ -39,7 +41,22 @@ class AllmarasCoefficientFields:
     delta_mod2_J2: np.ndarray
     delta_mod_over_delta0: np.ndarray
     solver_epsilon: np.ndarray
-    correction_C_J_m3_A: np.ndarray
+    correction_C_J2_m3_A: np.ndarray
+
+
+@dataclass(frozen=True)
+class PhaseDriveConvergenceInfo:
+    """Convergence metadata for the low-amplitude phase-drive continuation."""
+
+    converged: bool
+    iterations: int
+    residual_rel: float
+    direct_node_count: int
+    continued_node_count: int
+    zero_amplitude_node_count: int
+    direct_amplitude_fraction: float
+    tolerance: float
+    max_iterations: int
 
 
 @dataclass(frozen=True)
@@ -63,6 +80,7 @@ class AllmarasDiagnosticFields:
     node_phase_drive_abs_J: np.ndarray
     node_phase_drive_abs_over_delta0: np.ndarray
     bulk_node_mask: np.ndarray
+    phase_drive_convergence: PhaseDriveConvergenceInfo
 
 
 
@@ -89,6 +107,7 @@ class AllmarasForcingFields:
     node_div_js_us_A_m3: np.ndarray
     node_div_js_gl_A_m3: np.ndarray
     node_mismatch_divergence_A_m3: np.ndarray
+    phase_drive_convergence: PhaseDriveConvergenceInfo
 
 
 def allmaras_coefficients(
@@ -158,7 +177,7 @@ def allmaras_coefficients(
         delta_mod2_J2=delta_mod2,
         delta_mod_over_delta0=delta_mod_over_delta0,
         solver_epsilon=solver_epsilon,
-        correction_C_J_m3_A=np.asarray(correction_C, dtype=float),
+        correction_C_J2_m3_A=np.asarray(correction_C, dtype=float),
     )
 
 
@@ -171,14 +190,13 @@ def compute_allmaras_appendix_b_diagnostic(
     terminal_node_mask: np.ndarray | None = None,
     blocked_edge_mask: np.ndarray | None = None,
     edge_js_usadel_A_m2: np.ndarray | None = None,
-    bulk_guard_layers: int = 1,
-    r_epsilon_fraction: float = 1.0e-6,
+    phase_drive_continuation: PhaseDriveContinuationSolver | None = None,
 ) -> AllmarasDiagnosticFields:
     """Compute the Appendix-B current-divergence correction as a diagnostic.
 
-    This evaluates Eqs. (137), (159), and (160) from Appendix B on the current
-    snapshot.  The result is diagnostic only: it is not yet injected into the
-    ``w_i, z_i`` local update.
+    This evaluates the Appendix-B current correction on the current snapshot
+    using the same normalized harmonic-continuation rule as the ``w_i, z_i``
+    update.
     """
 
     psi = np.asarray(psi_dimensionless, dtype=np.complex128)
@@ -233,14 +251,16 @@ def compute_allmaras_appendix_b_diagnostic(
     )
     if terminal_mask.size != ops.n_nodes:
         raise ValueError(f"terminal_node_mask has length {terminal_mask.size}, expected {ops.n_nodes}.")
-    bulk_mask = bulk_node_mask_from_terminal_mask(ops, terminal_mask, guard_layers=bulk_guard_layers)
+    bulk_mask = nonterminal_node_mask(terminal_mask, n_nodes=ops.n_nodes)
 
-    Delta_J = psi * float(material.delta0_J)
-    r_eps2 = np.maximum(
-        np.abs(Delta_J) ** 2,
-        (float(r_epsilon_fraction) * float(material.delta0_J)) ** 2,
+    continuation = phase_drive_continuation or PhaseDriveContinuationSolver.from_operators(ops)
+    drive_dimensionless, convergence = continuation.solve(
+        psi_dimensionless=psi,
+        mismatch_divergence_A_m3=mismatch,
+        correction_C_J2_m3_A=coeff.correction_C_J2_m3_A,
+        delta0_J=float(material.delta0_J),
     )
-    drive_complex = 1j * coeff.correction_C_J_m3_A * mismatch * Delta_J / r_eps2
+    drive_complex = drive_dimensionless * float(material.delta0_J)
     drive_abs = np.abs(drive_complex)
 
     return AllmarasDiagnosticFields(
@@ -259,8 +279,9 @@ def compute_allmaras_appendix_b_diagnostic(
         node_mismatch_divergence_A_m3=np.asarray(mismatch, dtype=float),
         node_phase_drive_complex_J=np.asarray(drive_complex, dtype=np.complex128),
         node_phase_drive_abs_J=np.asarray(drive_abs, dtype=float),
-        node_phase_drive_abs_over_delta0=np.asarray(drive_abs / max(float(material.delta0_J), 1.0e-300), dtype=float),
+        node_phase_drive_abs_over_delta0=np.asarray(np.abs(drive_dimensionless), dtype=float),
         bulk_node_mask=bulk_mask,
+        phase_drive_convergence=convergence,
     )
 
 
@@ -311,6 +332,213 @@ def gl_supercurrent_edges(
     )
 
 
+@dataclass(frozen=True)
+class PhaseDriveContinuationSolver:
+    """Continue the Allmaras phase quotient through low-amplitude regions.
+
+    The exact dimensionless correction contains
+
+        (div j_s^Us - div j_s^GL) * psi / |psi|^2.
+
+    That quotient is evaluated directly where ``|psi|`` is resolved.  Where the
+    condensate amplitude is small, its finite continuous limit is obtained as a
+    discrete harmonic continuation on the same finite-volume graph.  A
+    Jacobi-preconditioned conjugate-gradient solve acts only on the unresolved
+    nodes and reports its actual residual and iteration count.
+    """
+
+    graph_laplacian: sp.csr_matrix
+    direct_amplitude_fraction: float = 1.0e-2
+    tolerance: float = 1.0e-3
+    max_iterations: int = 64
+    zero_amplitude_fraction: float = 1.0e-12
+
+    @classmethod
+    def from_operators(
+        cls,
+        ops: FVOperators,
+        *,
+        direct_amplitude_fraction: float = 1.0e-2,
+        tolerance: float = 1.0e-3,
+        max_iterations: int = 64,
+    ) -> "PhaseDriveContinuationSolver":
+        direct = float(direct_amplitude_fraction)
+        tol = float(tolerance)
+        iterations = int(max_iterations)
+        if not np.isfinite(direct) or not (0.0 < direct < 1.0):
+            raise ValueError("direct_amplitude_fraction must lie in (0, 1).")
+        if not np.isfinite(tol) or tol <= 0.0:
+            raise ValueError("phase-drive convergence tolerance must be positive and finite.")
+        if iterations < 1:
+            raise ValueError("phase-drive max_iterations must be at least one.")
+
+        edge_i = np.asarray(ops.edge_i, dtype=np.int64)
+        edge_j = np.asarray(ops.edge_j, dtype=np.int64)
+        edge_length = np.maximum(np.asarray(ops.edge_length_m, dtype=float), 1.0e-300)
+        dual_length = np.asarray(ops.dual_face_length_m, dtype=float)
+        weights = dual_length / edge_length
+        if np.any(~np.isfinite(weights)) or np.any(weights <= 0.0):
+            raise ValueError("Finite-volume continuation weights must be positive and finite.")
+
+        rows = np.concatenate((edge_i, edge_j))
+        cols = np.concatenate((edge_j, edge_i))
+        data = np.concatenate((weights, weights))
+        degree = np.bincount(rows, weights=data, minlength=ops.n_nodes)
+        if np.any(degree <= 0.0):
+            raise ValueError("Every node must have at least one positive continuation weight.")
+        adjacency = sp.csr_matrix(
+            (data, (rows, cols)),
+            shape=(ops.n_nodes, ops.n_nodes),
+            dtype=float,
+        )
+        graph_laplacian = (sp.diags(degree, format="csr") - adjacency).tocsr()
+        return cls(
+            graph_laplacian=graph_laplacian,
+            direct_amplitude_fraction=direct,
+            tolerance=tol,
+            max_iterations=iterations,
+        )
+
+    def solve(
+        self,
+        *,
+        psi_dimensionless: np.ndarray,
+        mismatch_divergence_A_m3: np.ndarray,
+        correction_C_J2_m3_A: np.ndarray,
+        delta0_J: float,
+    ) -> tuple[np.ndarray, PhaseDriveConvergenceInfo]:
+        psi = np.asarray(psi_dimensionless, dtype=np.complex128).reshape(-1)
+        mismatch = np.asarray(mismatch_divergence_A_m3, dtype=float).reshape(-1)
+        correction = np.asarray(correction_C_J2_m3_A, dtype=float)
+        if psi.size != self.graph_laplacian.shape[0] or mismatch.shape != psi.shape:
+            raise ValueError("Phase-drive continuation arrays must match the FV node count.")
+        if correction.ndim == 0:
+            correction = np.full(psi.shape, float(correction), dtype=float)
+        else:
+            correction = correction.reshape(-1)
+        if correction.shape != psi.shape:
+            raise ValueError("correction_C_J2_m3_A must be scalar or node shaped.")
+        if np.any(~np.isfinite(psi)) or np.any(~np.isfinite(mismatch)) or np.any(~np.isfinite(correction)):
+            raise ValueError("Phase-drive continuation inputs must be finite.")
+
+        delta0 = float(delta0_J)
+        if not np.isfinite(delta0) or delta0 <= 0.0:
+            raise ValueError("delta0_J must be positive and finite.")
+
+        amplitude = np.abs(psi)
+        direct_mask = amplitude >= float(self.direct_amplitude_fraction)
+        zero_mask = amplitude <= float(self.zero_amplitude_fraction)
+        continuation_mask = ~direct_mask
+
+        quotient = np.zeros(psi.shape, dtype=np.complex128)
+        if np.any(direct_mask):
+            quotient[direct_mask] = (
+                mismatch[direct_mask]
+                * psi[direct_mask]
+                / np.maximum(amplitude[direct_mask] ** 2, 1.0e-300)
+            )
+
+        # A bounded Tikhonov estimate gives CG a local, finite initial guess.
+        # The converged harmonic extension is independent of this initialization.
+        if np.any(continuation_mask):
+            threshold2 = float(self.direct_amplitude_fraction) ** 2
+            quotient[continuation_mask] = (
+                mismatch[continuation_mask]
+                * psi[continuation_mask]
+                / (amplitude[continuation_mask] ** 2 + threshold2)
+            )
+
+        converged = True
+        residual_rel = 0.0
+        iterations = 0
+        if np.any(continuation_mask):
+            if not np.any(direct_mask):
+                # With no resolved condensate anywhere, phase has no Dirichlet
+                # reference and the finite correction is set to its null limit.
+                quotient[continuation_mask] = 0.0
+            else:
+                continued = np.flatnonzero(continuation_mask)
+                direct = np.flatnonzero(direct_mask)
+                operator = self.graph_laplacian[continued][:, continued].tocsr()
+                rhs = -self.graph_laplacian[continued][:, direct] @ quotient[direct]
+                diagonal = np.asarray(operator.diagonal(), dtype=float)
+                if np.any(~np.isfinite(diagonal)) or np.any(diagonal <= 0.0):
+                    raise RuntimeError("Harmonic continuation operator has an invalid diagonal.")
+                preconditioner = spla.LinearOperator(
+                    operator.shape,
+                    matvec=lambda value: np.asarray(value, dtype=float) / diagonal,
+                    dtype=float,
+                )
+
+                def solve_component(rhs_component: np.ndarray, initial: np.ndarray):
+                    rhs_component = np.asarray(rhs_component, dtype=float)
+                    rhs_norm = float(np.linalg.norm(rhs_component))
+                    if rhs_norm <= 1.0e-300:
+                        return np.zeros(rhs_component.shape, dtype=float), True, 0, 0.0
+                    counter = [0]
+
+                    def count_iteration(_value) -> None:
+                        counter[0] += 1
+
+                    solution, status = spla.cg(
+                        operator,
+                        rhs_component,
+                        x0=np.asarray(initial, dtype=float),
+                        rtol=float(self.tolerance),
+                        atol=0.0,
+                        maxiter=int(self.max_iterations),
+                        M=preconditioner,
+                        callback=count_iteration,
+                    )
+                    residual = float(
+                        np.linalg.norm(operator @ solution - rhs_component)
+                        / max(rhs_norm, 1.0e-300)
+                    )
+                    component_converged = bool(
+                        status == 0
+                        and np.isfinite(residual)
+                        and residual <= float(self.tolerance)
+                    )
+                    return np.asarray(solution, dtype=float), component_converged, counter[0], residual
+
+                real, real_ok, real_iterations, real_residual = solve_component(
+                    np.real(rhs),
+                    np.real(quotient[continued]),
+                )
+                imag, imag_ok, imag_iterations, imag_residual = solve_component(
+                    np.imag(rhs),
+                    np.imag(quotient[continued]),
+                )
+                quotient[continued] = real + 1j * imag
+                converged = bool(real_ok and imag_ok)
+                iterations = max(int(real_iterations), int(imag_iterations))
+                residual_rel = max(float(real_residual), float(imag_residual))
+
+        if not converged:
+            raise RuntimeError(
+                "Allmaras phase-drive harmonic continuation did not converge: "
+                f"residual={residual_rel:.6e}, tolerance={float(self.tolerance):.6e}, "
+                f"iterations={iterations}/{int(self.max_iterations)}."
+            )
+
+        phase_drive = 1j * correction * quotient / (delta0 * delta0)
+        if np.any(~np.isfinite(phase_drive)):
+            raise RuntimeError("Controlled Allmaras phase-drive continuation produced non-finite values.")
+
+        info = PhaseDriveConvergenceInfo(
+            converged=bool(converged),
+            iterations=int(iterations),
+            residual_rel=float(residual_rel),
+            direct_node_count=int(np.count_nonzero(direct_mask)),
+            continued_node_count=int(np.count_nonzero(continuation_mask)),
+            zero_amplitude_node_count=int(np.count_nonzero(zero_mask)),
+            direct_amplitude_fraction=float(self.direct_amplitude_fraction),
+            tolerance=float(self.tolerance),
+            max_iterations=int(self.max_iterations),
+        )
+        return np.asarray(phase_drive, dtype=np.complex128), info
+
+
 def compute_allmaras_forcing_dimensionless(
     *,
     psi_dimensionless: np.ndarray,
@@ -321,6 +549,7 @@ def compute_allmaras_forcing_dimensionless(
     length_scale_m: float,
     edge_js_usadel_A_m2: np.ndarray | None = None,
     blocked_edge_mask: np.ndarray | None = None,
+    phase_drive_continuation: PhaseDriveContinuationSolver | None = None,
     r_epsilon_fraction: float = 1.0e-6,
 ) -> AllmarasForcingFields:
     """Return the Appendix-B forcing injected into the local KWT update.
@@ -334,11 +563,13 @@ def compute_allmaras_forcing_dimensionless(
 
         F/Delta0 = (xi_mod^2/L0^2) L' psi
                  + [1 - Te/Tc - |Delta|^2/Delta_mod^2] psi
-                 + i C (div j_s^Us - div j_s^GL) Delta/(R_eps^2 Delta0).
+                 + i (C/Delta0^2) H[(div j_s^Us-div j_s^GL) psi/|psi|^2].
 
     ``L'`` is the promoted pyTDGL-like Laplacian in dimensionless coordinates
-    x' = x/L0.  The returned array is dimensionless; the solver multiplies it by
-    ``rho_KWT * dt`` because its time variable is already scaled by ``tau0``.
+    x' = x/L0 and ``H`` denotes the controlled harmonic continuation through
+    low-amplitude nodes.  The returned array is dimensionless; the solver
+    multiplies it by ``rho_KWT * dt`` because its time variable is already
+    scaled by ``tau0``.
     """
 
     psi = np.asarray(psi_dimensionless, dtype=np.complex128).reshape(-1)
@@ -397,8 +628,13 @@ def compute_allmaras_forcing_dimensionless(
     denom = np.maximum(delta_mod2, delta_mod_floor2)
     reaction = (1.0 - Te / float(material.Tc_K) - (np.abs(Delta_J) ** 2) / denom) * psi
 
-    r_eps2 = np.maximum(np.abs(Delta_J) ** 2, delta_mod_floor2)
-    phase_drive = 1j * coeff.correction_C_J_m3_A * mismatch * Delta_J / r_eps2
+    continuation = phase_drive_continuation or PhaseDriveContinuationSolver.from_operators(ops)
+    phase_drive, phase_drive_convergence = continuation.solve(
+        psi_dimensionless=psi,
+        mismatch_divergence_A_m3=mismatch,
+        correction_C_J2_m3_A=coeff.correction_C_J2_m3_A,
+        delta0_J=delta0,
+    )
 
     forcing = diffusion + reaction + phase_drive
     forcing = np.asarray(forcing, dtype=np.complex128)
@@ -418,45 +654,18 @@ def compute_allmaras_forcing_dimensionless(
         node_div_js_us_A_m3=np.asarray(div_us, dtype=float),
         node_div_js_gl_A_m3=np.asarray(div_gl, dtype=float),
         node_mismatch_divergence_A_m3=np.asarray(mismatch, dtype=float),
+        phase_drive_convergence=phase_drive_convergence,
     )
 
 
-def bulk_node_mask_from_terminal_mask(
-    ops: FVOperators,
-    terminal_node_mask: np.ndarray,
-    *,
-    guard_layers: int = 1,
-) -> np.ndarray:
-    """Return a bulk diagnostic mask excluding terminals and guard layers.
+def nonterminal_node_mask(terminal_node_mask: np.ndarray, *, n_nodes: int) -> np.ndarray:
+    """Return the diagnostic domain with only exact terminal nodes excluded."""
 
-    For production meshes, one or more graph guard layers remove the nodes
-    adjacent to the normal-metal contacts, preventing contact singularities from
-    dominating bulk diagnostics.  Very small unit-test meshes may not contain an
-    interior after one guard expansion.  In that case the physically meaningful
-    fallback is the terminal-only exclusion, not an empty bulk mask.
-    """
-
-    terminal = np.asarray(terminal_node_mask, dtype=bool).reshape(-1).copy()
-    if terminal.size != ops.n_nodes:
-        raise ValueError(f"terminal_node_mask has length {terminal.size}, expected {ops.n_nodes}.")
-    base_bulk = ~terminal
-    if not np.any(base_bulk):
-        return np.ones(ops.n_nodes, dtype=bool)
-
-    excluded = terminal.copy()
-    for _ in range(max(0, int(guard_layers))):
-        touch = excluded[np.asarray(ops.edge_i, dtype=np.int64)] | excluded[np.asarray(ops.edge_j, dtype=np.int64)]
-        if not np.any(touch):
-            continue
-        new_excluded = excluded.copy()
-        new_excluded[np.asarray(ops.edge_i, dtype=np.int64)[touch]] = True
-        new_excluded[np.asarray(ops.edge_j, dtype=np.int64)[touch]] = True
-        excluded = new_excluded
-
-    guarded_bulk = ~excluded
-    if not np.any(guarded_bulk):
-        return base_bulk
-    return guarded_bulk
+    terminal = np.asarray(terminal_node_mask, dtype=bool).reshape(-1)
+    if terminal.size != int(n_nodes):
+        raise ValueError(f"terminal_node_mask has length {terminal.size}, expected {n_nodes}.")
+    bulk = ~terminal
+    return bulk if np.any(bulk) else np.ones(int(n_nodes), dtype=bool)
 
 
 def rms(values: np.ndarray, mask: np.ndarray | None = None) -> float:

@@ -7,6 +7,7 @@ from pysnspd.gtdgl.material import GTDGLMaterial
 from pysnspd.gtdgl.ss_targets import (
     apply_terminal_proximity_seed,
     contact_recovery_diagnostics,
+    dynamic_stationarity_diagnostics,
     stationarity_diagnostics,
 )
 
@@ -224,3 +225,67 @@ def test_stationarity_diagnostics_excludes_contact_conversion_region():
 
     assert not full_domain_diag.passes
     assert full_domain_diag.active_edge_count == 3
+
+
+def _dynamic_history(*, add_final_band: bool) -> tuple[dict[str, np.ndarray], np.ndarray]:
+    material = _material()
+    x_axis = np.linspace(0.0, 200.0e-9, 81)
+    y_axis = np.linspace(-60.0e-9, 60.0e-9, 9)
+    xx, yy = np.meshgrid(x_axis, y_axis, indexing="xy")
+    nodes = np.column_stack([xx.reshape(-1), yy.reshape(-1)])
+    snapshot_t_s = np.linspace(0.0, 4.0e-12, 5)
+    frames = []
+    for index, _ in enumerate(snapshot_t_s):
+        profile = np.ones_like(x_axis)
+        profile -= 0.65 * np.exp(-0.5 * ((x_axis - 75.0e-9) / 5.0e-9) ** 2)
+        profile -= 0.60 * np.exp(-0.5 * ((x_axis - 130.0e-9) / 5.0e-9) ** 2)
+        profile *= 1.0 + 1.0e-3 * np.sin(index)
+        if add_final_band and index == len(snapshot_t_s) - 1:
+            profile -= 0.65 * np.exp(-0.5 * ((x_axis - 102.0e-9) / 4.0e-9) ** 2)
+        frames.append(np.tile(profile, y_axis.size))
+    amplitude = np.asarray(frames) * material.delta0_J
+    history_t_s = np.linspace(0.0, 4.0e-12, 101)
+    voltage = 10.0e-3 * (1.0 + 2.0e-3 * np.sin(2.0 * np.pi * history_t_s / 0.4e-12))
+    history = {
+        "snapshot_t_s": snapshot_t_s,
+        "psi_snapshot_real_J": amplitude,
+        "psi_snapshot_imag_J": np.zeros_like(amplitude),
+        "stationarity_xi_m": np.array([10.0e-9]),
+        "t_s": history_t_s,
+        "terminal_voltage_V": voltage,
+    }
+    return history, nodes
+
+
+def test_dynamic_stationarity_accepts_stable_psl_morphology_with_small_oscillation():
+    material = _material()
+    history, nodes = _dynamic_history(add_final_band=False)
+    diag = dynamic_stationarity_diagnostics(
+        history=history,
+        nodes_m=nodes,
+        delta0_J=material.delta0_J,
+        tail_snapshots=4,
+        minimum_tail_duration_ps=2.0,
+    )
+
+    assert diag.passes
+    assert diag.topology_count_stable
+    assert not diag.new_suppressed_band_in_tail
+    assert diag.psl_count_final == 2
+    assert diag.voltage_relative_span < diag.tolerance_voltage_relative
+
+
+def test_dynamic_stationarity_rejects_new_psl_in_tail():
+    material = _material()
+    history, nodes = _dynamic_history(add_final_band=True)
+    diag = dynamic_stationarity_diagnostics(
+        history=history,
+        nodes_m=nodes,
+        delta0_J=material.delta0_J,
+        tail_snapshots=4,
+        minimum_tail_duration_ps=2.0,
+    )
+
+    assert not diag.passes
+    assert diag.new_suppressed_band_in_tail
+    assert not diag.topology_count_stable

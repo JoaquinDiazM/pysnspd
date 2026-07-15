@@ -106,6 +106,29 @@ def plot_eliashberg_spectrum(
     x_max = float(np.nanmax(omega_meV))
     ax_a.set_xlim(x_min, x_max)
 
+    high_energy_cut_meV = 35.0
+    high_energy_band = None
+
+    if x_max > high_energy_cut_meV:
+        high_energy_band = ax_a.axvspan(
+            high_energy_cut_meV,
+            x_max,
+            facecolor="0.88",
+            edgecolor="none",
+            alpha=0.55,
+            zorder=0,
+            label=r"high-energy band, $\Omega \geq 35$ meV",
+        )
+
+        ax_a.axvline(
+            high_energy_cut_meV,
+            color="0.35",
+            linestyle="--",
+            linewidth=1.1,
+            alpha=0.75,
+            zorder=2,
+        )
+
     alpha_top = 1.08 * float(np.nanmax(alpha2F)) if alpha2F.size else 1.0
     phdos_top = 1.08 * float(np.nanmax(phdos)) if phdos.size else 1.0
     ax_a.set_ylim(bottom=0.0, top=max(alpha_top, 1.0e-12))
@@ -119,9 +142,16 @@ def plot_eliashberg_spectrum(
     title_lines.append("Full Simon/MIT NbN spectrum")
     legend_title = "\n".join(title_lines)
 
+    legend_handles = [line_a, line_p]
+    legend_labels = [line_a.get_label(), line_p.get_label()]
+
+    if high_energy_band is not None:
+        legend_handles.append(high_energy_band)
+        legend_labels.append(r"high-energy band")
+
     legend = ax_a.legend(
-        [line_a, line_p],
-        [line_a.get_label(), line_p.get_label()],
+        legend_handles,
+        legend_labels,
         loc="upper right",
         fontsize=legend_fs,
         title=legend_title,

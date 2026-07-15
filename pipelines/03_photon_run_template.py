@@ -57,9 +57,26 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--center-voltage-width-nm", type=float, default=100.0)
     parser.add_argument("--center-voltage-probe-band-nm", type=float, default=None)
 
+    parser.add_argument(
+        "--thermal-enable",
+        dest="thermal_enable",
+        action="store_true",
+        default=True,
+        help="Enable runtime Te/Tph evolution. Enabled by default.",
+    )
+    parser.add_argument(
+        "--thermal-disable",
+        dest="thermal_enable",
+        action="store_false",
+        help="Freeze Te/Tph during mesoscopic chunks; a photon event can still set the initial Tph bubble.",
+    )
     parser.add_argument("--thermal-window-nm", type=float, default=100.0)
     parser.add_argument("--thermal-max-step-K", type=float, default=0.05)
     parser.add_argument("--thermal-max-substeps", type=int, default=64)
+
+    parser.add_argument("--allmaras-direct-amplitude-fraction", type=float, default=1.0e-2)
+    parser.add_argument("--allmaras-convergence-tol", type=float, default=1.0e-3)
+    parser.add_argument("--allmaras-convergence-max-iterations", type=int, default=64)
 
     parser.add_argument("--terminal-psi", type=float, default=0.0)
     parser.add_argument(
@@ -163,6 +180,7 @@ def main() -> int:
         center_voltage_probe_band_m=(
             None if args.center_voltage_probe_band_nm is None else float(args.center_voltage_probe_band_nm) * 1.0e-9
         ),
+        thermal_enabled=bool(args.thermal_enable),
         thermal_window_m=float(args.thermal_window_nm) * 1.0e-9,
         thermal_max_step_K=float(args.thermal_max_step_K),
         thermal_max_substeps=int(args.thermal_max_substeps),
@@ -170,6 +188,9 @@ def main() -> int:
         terminal_healing_xi=args.terminal_healing_xi,
         terminal_healing_fraction=float(args.terminal_healing_fraction),
         supercurrent_law="usadel_poisson",
+        allmaras_phase_direct_amplitude_fraction=float(args.allmaras_direct_amplitude_fraction),
+        allmaras_phase_convergence_tol=float(args.allmaras_convergence_tol),
+        allmaras_phase_convergence_max_iterations=int(args.allmaras_convergence_max_iterations),
         progress=bool(args.progress),
     )
 
@@ -214,6 +235,7 @@ def main() -> int:
     print(f" total_time_ps: {float(args.total_time_ps):.6g}")
     print(f" coupling_step_fs: {float(args.coupling_step_fs):.6g}")
     print(f" gtdgl_dt_fs: {float(args.gtdgl_dt_fs):.6g}")
+    print(f" thermal_enabled: {bool(args.thermal_enable)}")
     print(f" initial_current_uA: {float(initial_current_A) * 1.0e6:.6g}")
     print(f" initial_V_tdgl_center_uV: {float(summary['initial_V_tdgl_center_V']) * 1.0e6:.6g}")
     print(f" photon_energy_eV: {float(args.photon_energy_eV):.6g}")

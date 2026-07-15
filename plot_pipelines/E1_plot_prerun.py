@@ -17,6 +17,9 @@ Use --with-gap-plot only when the additional Delta_eq(T) figure is needed.
 
 from __future__ import annotations
 
+# TODO(plot-style): legacy styling is deprecated; migrate this pipeline to
+# pysnspd.plotting.style and its canonical thesis figure dimensions.
+
 import argparse
 import sys
 from pathlib import Path

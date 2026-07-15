@@ -144,6 +144,61 @@ class StationarityDiagnostics:
 
 
 @dataclass(frozen=True)
+class DynamicStationarityDiagnostics:
+    """Tail-envelope and condensate-morphology test for a dynamic SS state."""
+
+    passes: bool
+    reason: str
+    sufficient_history: bool
+    morphology_regime: str
+    tail_snapshot_count: int
+    tail_duration_ps: float
+    suppressed_band_counts: tuple[int, ...]
+    suppressed_band_count_final: int
+    psl_count_final: int
+    topology_count_stable: bool
+    new_suppressed_band_in_tail: bool
+    profile_relative_fluctuation: float
+    profile_relative_drift: float
+    voltage_relative_span: float
+    voltage_relative_drift: float
+    mean_delta_final_over_delta0: float
+    normal_like_fraction_final: float
+    tolerance_profile_relative: float
+    tolerance_voltage_relative: float
+    psl_threshold_over_delta0: float
+    normal_like_fraction_threshold: float
+    minimum_tail_duration_ps: float
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "diagnostic": "dynamic_ss_tail_envelope_and_x_profile_v1",
+            "passes": bool(self.passes),
+            "reason": str(self.reason),
+            "sufficient_history": bool(self.sufficient_history),
+            "morphology_regime": str(self.morphology_regime),
+            "tail_snapshot_count": int(self.tail_snapshot_count),
+            "tail_duration_ps": float(self.tail_duration_ps),
+            "suppressed_band_counts": [int(value) for value in self.suppressed_band_counts],
+            "suppressed_band_count_final": int(self.suppressed_band_count_final),
+            "psl_count_final": int(self.psl_count_final),
+            "topology_count_stable": bool(self.topology_count_stable),
+            "new_suppressed_band_in_tail": bool(self.new_suppressed_band_in_tail),
+            "profile_relative_fluctuation": float(self.profile_relative_fluctuation),
+            "profile_relative_drift": float(self.profile_relative_drift),
+            "voltage_relative_span": float(self.voltage_relative_span),
+            "voltage_relative_drift": float(self.voltage_relative_drift),
+            "mean_delta_final_over_delta0": float(self.mean_delta_final_over_delta0),
+            "normal_like_fraction_final": float(self.normal_like_fraction_final),
+            "tolerance_profile_relative": float(self.tolerance_profile_relative),
+            "tolerance_voltage_relative": float(self.tolerance_voltage_relative),
+            "psl_threshold_over_delta0": float(self.psl_threshold_over_delta0),
+            "normal_like_fraction_threshold": float(self.normal_like_fraction_threshold),
+            "minimum_tail_duration_ps": float(self.minimum_tail_duration_ps),
+        }
+
+
+@dataclass(frozen=True)
 class ContinuityDiagnostics:
     """Current-continuity metrics in the final stationary state."""
 
@@ -426,6 +481,192 @@ def stationarity_diagnostics(
     )
 
 
+def dynamic_stationarity_diagnostics(
+    *,
+    history: dict[str, np.ndarray],
+    nodes_m: np.ndarray,
+    delta0_J: float,
+    tail_snapshots: int = 4,
+    minimum_tail_duration_ps: float = 2.0,
+    profile_relative_tolerance: float = 5.0e-2,
+    voltage_relative_tolerance: float = 5.0e-2,
+    voltage_absolute_scale_V: float = 1.0e-4,
+    psl_threshold_over_delta0: float = 0.75,
+    normal_like_fraction_threshold: float = 0.85,
+    minimum_band_width_xi: float = 0.25,
+    bulk_exclusion_xi: float = 4.0,
+) -> DynamicStationarityDiagnostics:
+    """Identify a time-periodic or weakly oscillating dynamic SS attractor.
+
+    Strict stationarity compares the last two gauge-fixed fields point by point
+    and therefore rejects translating vortices or a persistent phase-slip
+    cycle.  This complementary diagnostic asks whether the late-time envelope
+    has stopped evolving:
+
+    * the transverse-median ``|Delta|(x)`` profile has small fluctuation and
+      drift over several snapshots;
+    * the number of cross-width suppressed bands is unchanged throughout the
+      tail, so no new phase-slip line appears there;
+    * the terminal-voltage oscillation envelope and drift are small.
+
+    Local moving vortex cores affect only a minority of nodes in an x bin and
+    are intentionally suppressed by the transverse median.  A globally
+    collapsed condensate is reported separately as ``normal_like`` rather than
+    being misidentified as one phase-slip line.
+    """
+
+    nodes = np.asarray(nodes_m, dtype=float)
+    x_m = nodes[:, 0] if nodes.ndim == 2 and nodes.shape[1] >= 1 else np.array([], dtype=float)
+    snap_t_s = np.asarray(
+        history.get("snapshot_t_s", history.get("delta_snapshot_t_s", [])),
+        dtype=float,
+    ).reshape(-1)
+    psi_r = _snapshot_2d(history.get("psi_snapshot_real_J", []))
+    psi_i = _snapshot_2d(history.get("psi_snapshot_imag_J", []))
+    if psi_r.shape == psi_i.shape and psi_r.shape[1:] == (x_m.size,):
+        delta_over_delta0 = np.hypot(psi_r, psi_i) / max(float(delta0_J), 1.0e-300)
+    else:
+        delta_meV = _snapshot_2d(history.get("delta_snapshot_meV", []))
+        delta0_meV = float(delta0_J) / 1.602176634e-22
+        delta_over_delta0 = delta_meV / max(delta0_meV, 1.0e-300)
+
+    n_available = min(snap_t_s.size, delta_over_delta0.shape[0])
+    requested_tail = max(3, int(tail_snapshots))
+    n_tail = min(requested_tail, n_available)
+    if n_tail > 0:
+        tail_t_s = snap_t_s[n_available - n_tail : n_available]
+        tail_delta = delta_over_delta0[n_available - n_tail : n_available]
+    else:
+        tail_t_s = np.array([], dtype=float)
+        tail_delta = np.empty((0, x_m.size), dtype=float)
+    tail_duration_ps = (
+        float((tail_t_s[-1] - tail_t_s[0]) / 1.0e-12) if tail_t_s.size >= 2 else 0.0
+    )
+
+    xi_values = np.asarray(history.get("stationarity_xi_m", []), dtype=float).reshape(-1)
+    xi_m = float(xi_values[0]) if xi_values.size and np.isfinite(xi_values[0]) else float("nan")
+    profiles, bin_width_m = _transverse_delta_profiles(
+        x_m=x_m,
+        delta_over_delta0=tail_delta,
+        xi_m=xi_m,
+        bulk_exclusion_xi=float(bulk_exclusion_xi),
+    )
+    minimum_width_m = (
+        float(minimum_band_width_xi) * xi_m if np.isfinite(xi_m) and xi_m > 0.0 else 0.0
+    )
+    minimum_bins = max(1, int(np.ceil(minimum_width_m / max(bin_width_m, 1.0e-300))))
+    band_counts = tuple(
+        _count_true_runs(profile < float(psl_threshold_over_delta0), minimum_bins=minimum_bins)
+        for profile in profiles
+    )
+    topology_stable = bool(len(band_counts) >= 3 and len(set(band_counts)) == 1)
+    new_band = bool(
+        len(band_counts) >= 2
+        and any(current > previous for previous, current in zip(band_counts[:-1], band_counts[1:]))
+    )
+
+    if profiles.size:
+        tail_mean_profile = np.nanmean(profiles, axis=0)
+        profile_scale = max(float(np.sqrt(np.nanmean(tail_mean_profile**2))), 5.0e-2)
+        deviations = np.sqrt(np.nanmean((profiles - tail_mean_profile[None, :]) ** 2, axis=1))
+        profile_fluctuation = float(np.nanmax(deviations) / profile_scale)
+        profile_drift = float(
+            np.sqrt(np.nanmean((profiles[-1] - profiles[0]) ** 2)) / profile_scale
+        )
+        final_profile = profiles[-1]
+        normal_fraction = float(np.mean(final_profile < float(psl_threshold_over_delta0)))
+        mean_delta_final = float(np.nanmean(final_profile))
+    else:
+        profile_fluctuation = float("nan")
+        profile_drift = float("nan")
+        normal_fraction = float("nan")
+        mean_delta_final = float("nan")
+
+    normal_like = bool(
+        np.isfinite(normal_fraction)
+        and normal_fraction >= float(normal_like_fraction_threshold)
+    )
+    final_band_count = int(band_counts[-1]) if band_counts else 0
+    if normal_like:
+        morphology_regime = "normal_like"
+    elif final_band_count > 0:
+        morphology_regime = "superconducting_with_suppressed_bands"
+    else:
+        morphology_regime = "superconducting_without_suppressed_bands"
+    psl_count_final = 0 if normal_like else final_band_count
+
+    history_t_s = np.asarray(history.get("t_s", []), dtype=float).reshape(-1)
+    terminal_voltage = np.asarray(history.get("terminal_voltage_V", []), dtype=float).reshape(-1)
+    if history_t_s.size and terminal_voltage.size:
+        n_voltage = min(history_t_s.size, terminal_voltage.size)
+        history_t_s = history_t_s[-n_voltage:]
+        terminal_voltage = terminal_voltage[-n_voltage:]
+        tail_start_s = float(tail_t_s[0]) if tail_t_s.size else float(history_t_s[-1])
+        voltage_tail = terminal_voltage[history_t_s >= tail_start_s]
+    else:
+        voltage_tail = np.array([], dtype=float)
+    voltage_span, voltage_drift = _tail_scalar_envelope_metrics(
+        voltage_tail,
+        absolute_scale=float(voltage_absolute_scale_V),
+    )
+
+    sufficient_history = bool(
+        n_tail >= 3
+        and profiles.shape[0] >= 3
+        and tail_duration_ps >= float(minimum_tail_duration_ps)
+        and voltage_tail.size >= 4
+    )
+    finite_metrics = bool(
+        np.isfinite(profile_fluctuation)
+        and np.isfinite(profile_drift)
+        and np.isfinite(voltage_span)
+        and np.isfinite(voltage_drift)
+    )
+    passes = bool(
+        sufficient_history
+        and finite_metrics
+        and topology_stable
+        and not new_band
+        and profile_fluctuation <= float(profile_relative_tolerance)
+        and profile_drift <= float(profile_relative_tolerance)
+        and voltage_span <= float(voltage_relative_tolerance)
+        and voltage_drift <= float(voltage_relative_tolerance)
+    )
+    if passes:
+        reason = "late-time voltage envelope and condensate morphology are dynamically stationary"
+    elif not sufficient_history:
+        reason = "insufficient late-time duration or snapshots for dynamic-stationarity classification"
+    elif not topology_stable or new_band:
+        reason = "suppressed-band topology still changes in the late-time snapshot tail"
+    else:
+        reason = "late-time morphology or voltage envelope exceeds dynamic-stationarity tolerances"
+
+    return DynamicStationarityDiagnostics(
+        passes=passes,
+        reason=reason,
+        sufficient_history=sufficient_history,
+        morphology_regime=morphology_regime,
+        tail_snapshot_count=int(n_tail),
+        tail_duration_ps=tail_duration_ps,
+        suppressed_band_counts=band_counts,
+        suppressed_band_count_final=final_band_count,
+        psl_count_final=psl_count_final,
+        topology_count_stable=topology_stable,
+        new_suppressed_band_in_tail=new_band,
+        profile_relative_fluctuation=profile_fluctuation,
+        profile_relative_drift=profile_drift,
+        voltage_relative_span=voltage_span,
+        voltage_relative_drift=voltage_drift,
+        mean_delta_final_over_delta0=mean_delta_final,
+        normal_like_fraction_final=normal_fraction,
+        tolerance_profile_relative=float(profile_relative_tolerance),
+        tolerance_voltage_relative=float(voltage_relative_tolerance),
+        psl_threshold_over_delta0=float(psl_threshold_over_delta0),
+        normal_like_fraction_threshold=float(normal_like_fraction_threshold),
+        minimum_tail_duration_ps=float(minimum_tail_duration_ps),
+    )
+
+
 def continuity_diagnostics(
     *,
     currents,
@@ -585,6 +826,86 @@ def _edge_field_change_metrics(field: np.ndarray, mask: np.ndarray | None, *, ab
         "active_count": int(np.count_nonzero(finite)),
         "total_count": total,
     }
+
+
+def _transverse_delta_profiles(
+    *,
+    x_m: np.ndarray,
+    delta_over_delta0: np.ndarray,
+    xi_m: float,
+    bulk_exclusion_xi: float,
+) -> tuple[np.ndarray, float]:
+    x = np.asarray(x_m, dtype=float).reshape(-1)
+    values = np.asarray(delta_over_delta0, dtype=float)
+    if values.ndim != 2 or values.shape[1] != x.size or x.size == 0:
+        return np.empty((0, 0), dtype=float), float("nan")
+    xmin = float(np.nanmin(x))
+    xmax = float(np.nanmax(x))
+    length = max(xmax - xmin, 1.0e-300)
+    exclusion_m = (
+        max(0.0, float(bulk_exclusion_xi)) * float(xi_m)
+        if np.isfinite(xi_m) and xi_m > 0.0
+        else 0.1 * length
+    )
+    lo = xmin + min(exclusion_m, 0.4 * length)
+    hi = xmax - min(exclusion_m, 0.4 * length)
+    bulk_nodes = np.isfinite(x) & (x >= lo) & (x <= hi)
+    if np.count_nonzero(bulk_nodes) < 16:
+        lo = xmin + 0.1 * length
+        hi = xmax - 0.1 * length
+        bulk_nodes = np.isfinite(x) & (x >= lo) & (x <= hi)
+    bulk_length = max(hi - lo, 1.0e-300)
+    if np.isfinite(xi_m) and xi_m > 0.0:
+        n_bins = int(np.clip(np.ceil(2.0 * bulk_length / xi_m), 16, 128))
+    else:
+        n_bins = 64
+    edges = np.linspace(lo, hi, n_bins + 1)
+    centers = 0.5 * (edges[:-1] + edges[1:])
+    bin_index = np.clip(np.digitize(x, edges) - 1, 0, n_bins - 1)
+    profiles = np.full((values.shape[0], n_bins), np.nan, dtype=float)
+    for bin_number in range(n_bins):
+        mask = bulk_nodes & (bin_index == bin_number)
+        if np.any(mask):
+            profiles[:, bin_number] = np.nanmedian(values[:, mask], axis=1)
+    for row_index in range(profiles.shape[0]):
+        finite = np.isfinite(profiles[row_index])
+        if np.count_nonzero(finite) >= 2:
+            profiles[row_index, ~finite] = np.interp(
+                centers[~finite],
+                centers[finite],
+                profiles[row_index, finite],
+            )
+    valid_columns = np.all(np.isfinite(profiles), axis=0)
+    profiles = profiles[:, valid_columns]
+    bin_width_m = bulk_length / max(n_bins, 1)
+    return profiles, float(bin_width_m)
+
+
+def _count_true_runs(mask: np.ndarray, *, minimum_bins: int) -> int:
+    active = np.asarray(mask, dtype=bool).reshape(-1)
+    if active.size == 0:
+        return 0
+    padded = np.concatenate(([False], active, [False])).astype(np.int8)
+    transitions = np.diff(padded)
+    starts = np.flatnonzero(transitions == 1)
+    stops = np.flatnonzero(transitions == -1)
+    widths = stops - starts
+    return int(np.count_nonzero(widths >= max(1, int(minimum_bins))))
+
+
+def _tail_scalar_envelope_metrics(values: np.ndarray, *, absolute_scale: float) -> tuple[float, float]:
+    array = np.asarray(values, dtype=float).reshape(-1)
+    array = array[np.isfinite(array)]
+    if array.size < 4:
+        return float("nan"), float("nan")
+    median = float(np.nanmedian(array))
+    scale = max(abs(median), abs(float(absolute_scale)), 1.0e-300)
+    span = float((np.nanpercentile(array, 95.0) - np.nanpercentile(array, 5.0)) / scale)
+    midpoint = max(1, array.size // 2)
+    first = float(np.nanmedian(array[:midpoint]))
+    second = float(np.nanmedian(array[midpoint:]))
+    drift = abs(second - first) / scale
+    return span, float(drift)
 
 
 def _first_binned_crossing_distance(

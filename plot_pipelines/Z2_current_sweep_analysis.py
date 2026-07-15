@@ -1,4 +1,4 @@
-"""Z1 multi-run current-sweep analysis pipeline."""
+"""Z2 multi-run current-sweep analysis pipeline."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from pysnspd.io.run_database import (
     write_database_inventory,
 )
 from pysnspd.plotting.current_sweep import make_current_sweep_figures
+from pysnspd.plotting.style import THESIS_DPI
 
 
 def parse_args() -> argparse.Namespace:
@@ -47,8 +48,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output-run-name",
-        default="Z1_current_sweep_analysis",
-        help="Run-like folder name under big_data_root/plots for Z1 outputs.",
+        default="Z2_current_sweep_analysis",
+        help="Run-like folder name under big_data_root/plots for Z2 outputs.",
     )
     parser.add_argument(
         "--figures-subdir",
@@ -96,11 +97,22 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--terminal-delta-inset-currents-uA",
+        nargs=3,
+        type=float,
+        default=None,
+        metavar=("I1", "I2", "I3"),
+        help=(
+            "Exactly three currents (in microampere) used for the vertically "
+            "stacked full-strip |Delta| maps beside the terminal-voltage IV curve."
+        ),
+    )
+    parser.add_argument(
         "--no-origin",
         action="store_true",
         help="Do not prepend the synthetic (I,V)=(0,0) point.",
     )
-    parser.add_argument("--dpi", type=int, default=480)
+    parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     return parser.parse_args()
 
 
@@ -133,9 +145,10 @@ def main() -> int:
         voltage_probe_half_window_nm=args.voltage_probe_half_window_nm,
         include_origin=not args.no_origin,
         delta_inset_currents_uA=args.delta_inset_currents_uA,
+        terminal_delta_inset_currents_uA=args.terminal_delta_inset_currents_uA,
     )
 
-    manifest_path = _write_z1_manifest(
+    manifest_path = _write_z2_manifest(
         output_dir=output_dir,
         config_path=args.config,
         args=vars(args),
@@ -146,7 +159,7 @@ def main() -> int:
 
     iv_summary = figure_outputs.get("iv_summary", {}) if isinstance(figure_outputs, dict) else {}
 
-    print("Z1 current sweep analysis")
+    print("Z2 current sweep analysis")
     print(f" output_run_name: {args.output_run_name}")
     print(f" output_dir: {output_dir}")
     print(f" runs indexed: {summary['n_runs']}")
@@ -159,7 +172,15 @@ def main() -> int:
         print(f" {key}: {path}")
     print()
     print("Figures / tables")
-    for key in ("iv_curve", "iv_points_csv", "iv_points_yaml", "iv_skipped_yaml", "iv_insets_yaml"):
+    for key in (
+        "iv_curve",
+        "terminal_iv_curve",
+        "iv_points_csv",
+        "iv_points_yaml",
+        "iv_skipped_yaml",
+        "iv_insets_yaml",
+        "terminal_iv_insets_yaml",
+    ):
         path = figure_outputs.get(key)
         if path:
             print(f" {key}: {path}")
@@ -172,14 +193,18 @@ def main() -> int:
         print(f" probe offset [nm]: {iv_summary.get('voltage_probe_offset_nm')}")
         print(f" probe half-window [nm]: {iv_summary.get('voltage_probe_half_window_nm')}")
         print(f" sign flipped: {iv_summary.get('voltage_sign_flipped')}")
+        print(f" terminal sign flipped: {iv_summary.get('terminal_voltage_sign_flipped')}")
+        print(f" terminal normal resistance [ohm]: {iv_summary.get('normal_resistance_terminal_ohm')}")
         print(f" delta inset requests [uA]: {iv_summary.get('delta_inset_currents_uA', [])}")
         print(f" delta inset resolved [uA]: {iv_summary.get('delta_inset_resolved_currents_uA', [])}")
+        print(f" terminal delta requests [uA]: {iv_summary.get('terminal_delta_inset_currents_uA', [])}")
+        print(f" terminal delta resolved [uA]: {iv_summary.get('terminal_delta_inset_resolved_currents_uA', [])}")
     print("Status: OK")
     return 0
 
 
 
-def _write_z1_manifest(
+def _write_z2_manifest(
     *,
     output_dir: Path,
     config_path: str | Path,
@@ -189,9 +214,12 @@ def _write_z1_manifest(
     figure_outputs: dict[str, Any],
 ) -> Path:
     manifest = {
-        "schema_version": 3,
-        "pipeline": "plot_pipelines/Z1_current_sweep_analysis.py",
-        "purpose": "Multi-run current-sweep inventory and IV figure with monotone fit, normal-state line, and four |Delta| insets.",
+        "schema_version": 4,
+        "pipeline": "plot_pipelines/Z2_current_sweep_analysis.py",
+        "purpose": (
+            "Multi-run current-sweep inventory with central TDGL and terminal-voltage "
+            "IV figures, full-length normal-state reference, and |Delta| snapshots."
+        ),
         "config_path": str(config_path),
         "args": args,
         "summary": summary,
@@ -201,7 +229,7 @@ def _write_z1_manifest(
             for key, value in figure_outputs.items()
         },
     }
-    out = output_dir / "Z1_current_sweep_manifest.yaml"
+    out = output_dir / "Z2_current_sweep_manifest.yaml"
     with out.open("w", encoding="utf-8") as f:
         yaml.safe_dump(manifest, f, sort_keys=False, allow_unicode=True, default_flow_style=False)
     return out

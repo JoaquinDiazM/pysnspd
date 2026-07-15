@@ -3,11 +3,111 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
-from pysnspd.gtdgl.allmaras import compute_allmaras_forcing_dimensionless
+from pysnspd.gtdgl.allmaras import (
+    PhaseDriveContinuationSolver,
+    compute_allmaras_forcing_dimensionless,
+)
 
-ALLMARAS_UPDATE_BACKEND = "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded"
+ALLMARAS_UPDATE_BACKEND = "appendix_b_normalized_phase_drive_harmonic_continuation_v2"
+
+
+def test_normalized_phase_drive_matches_exact_direct_formula(small_strip_mesh_bundle, gtdgl_material):
+    mesh, _, ops = small_strip_mesh_bundle
+    psi = np.exp(1j * np.linspace(0.0, 0.2, mesh.n_nodes))
+    mismatch = np.linspace(1.0, float(mesh.n_nodes), mesh.n_nodes)
+    delta0 = float(gtdgl_material.delta0_J)
+    continuation = PhaseDriveContinuationSolver.from_operators(ops)
+
+    drive, info = continuation.solve(
+        psi_dimensionless=psi,
+        mismatch_divergence_A_m3=mismatch,
+        correction_C_J2_m3_A=np.full(mesh.n_nodes, delta0 * delta0),
+        delta0_J=delta0,
+    )
+
+    expected = 1j * mismatch * psi / (np.abs(psi) ** 2)
+    assert np.allclose(drive, expected, rtol=1.0e-13, atol=1.0e-13)
+    assert info.converged
+    assert info.continued_node_count == 0
+
+
+def test_low_amplitude_phase_drive_is_continued_to_convergence(small_strip_mesh_bundle, gtdgl_material):
+    mesh, _, ops = small_strip_mesh_bundle
+    psi = np.ones(mesh.n_nodes, dtype=np.complex128)
+    low_node = mesh.n_nodes // 2
+    psi[low_node] = 1.0e-4
+    delta0 = float(gtdgl_material.delta0_J)
+    continuation = PhaseDriveContinuationSolver.from_operators(
+        ops,
+        direct_amplitude_fraction=1.0e-2,
+        tolerance=1.0e-8,
+        max_iterations=24,
+    )
+
+    drive, info = continuation.solve(
+        psi_dimensionless=psi,
+        mismatch_divergence_A_m3=np.ones(mesh.n_nodes),
+        correction_C_J2_m3_A=np.full(mesh.n_nodes, delta0 * delta0),
+        delta0_J=delta0,
+    )
+
+    assert info.converged
+    assert info.continued_node_count == 1
+    assert np.isclose(drive[low_node], 1j, rtol=1.0e-6, atol=1.0e-6)
+
+
+def test_zero_amplitude_node_is_inside_continuation_domain(small_strip_mesh_bundle, gtdgl_material):
+    mesh, _, ops = small_strip_mesh_bundle
+    psi = np.ones(mesh.n_nodes, dtype=np.complex128)
+    zero_node = mesh.n_nodes // 2
+    psi[zero_node] = 0.0
+    delta0 = float(gtdgl_material.delta0_J)
+    continuation = PhaseDriveContinuationSolver.from_operators(
+        ops,
+        tolerance=1.0e-8,
+        max_iterations=24,
+    )
+
+    drive, info = continuation.solve(
+        psi_dimensionless=psi,
+        mismatch_divergence_A_m3=np.ones(mesh.n_nodes),
+        correction_C_J2_m3_A=np.full(mesh.n_nodes, delta0 * delta0),
+        delta0_J=delta0,
+    )
+
+    assert info.converged
+    assert info.continued_node_count == 1
+    assert info.zero_amplitude_node_count == 1
+    assert np.isclose(drive[zero_node], 1j, rtol=1.0e-6, atol=1.0e-6)
+
+
+def test_phase_drive_refuses_unconverged_harmonic_extension(small_strip_mesh_bundle, gtdgl_material):
+    mesh, _, ops = small_strip_mesh_bundle
+    psi = np.ones(mesh.n_nodes, dtype=np.complex128)
+    middle = np.isclose(
+        mesh.nodes[:, 0],
+        np.median(np.unique(mesh.nodes[:, 0])),
+        rtol=0.0,
+        atol=1.0e-15,
+    )
+    psi[middle] = 0.0
+    delta0 = float(gtdgl_material.delta0_J)
+    continuation = PhaseDriveContinuationSolver.from_operators(
+        ops,
+        tolerance=1.0e-14,
+        max_iterations=1,
+    )
+
+    with pytest.raises(RuntimeError, match="did not converge"):
+        continuation.solve(
+            psi_dimensionless=psi,
+            mismatch_divergence_A_m3=np.linspace(1.0, 3.0, mesh.n_nodes),
+            correction_C_J2_m3_A=np.full(mesh.n_nodes, delta0 * delta0),
+            delta0_J=delta0,
+        )
 
 
 def test_allmaras_forcing_dimensionless_is_finite(small_strip_mesh_bundle, gtdgl_material, stationary_seed_factory):

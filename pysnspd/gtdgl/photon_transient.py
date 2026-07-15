@@ -37,6 +37,7 @@ class CoupledTransientConfig:
     n_snapshots: int = 8
     center_voltage_width_m: float = 100.0e-9
     center_voltage_probe_band_m: float | None = None
+    thermal_enabled: bool = True
     thermal_window_m: float = 100.0e-9
     thermal_max_step_K: float = 0.05
     thermal_max_substeps: int = 64
@@ -44,6 +45,9 @@ class CoupledTransientConfig:
     terminal_healing_xi: float | None = None
     terminal_healing_fraction: float = 0.95
     supercurrent_law: str = "usadel_poisson"
+    allmaras_phase_direct_amplitude_fraction: float = 1.0e-2
+    allmaras_phase_convergence_tol: float = 1.0e-3
+    allmaras_phase_convergence_max_iterations: int = 64
     progress: bool = False
 
     def validated(self) -> "CoupledTransientConfig":
@@ -53,6 +57,12 @@ class CoupledTransientConfig:
                 raise ValueError(f"{key} must be positive and finite.")
         if int(self.n_snapshots) <= 0:
             raise ValueError("n_snapshots must be positive.")
+        if not (0.0 < float(self.allmaras_phase_direct_amplitude_fraction) < 1.0):
+            raise ValueError("allmaras_phase_direct_amplitude_fraction must lie in (0, 1).")
+        if float(self.allmaras_phase_convergence_tol) <= 0.0:
+            raise ValueError("allmaras_phase_convergence_tol must be positive.")
+        if int(self.allmaras_phase_convergence_max_iterations) < 1:
+            raise ValueError("allmaras_phase_convergence_max_iterations must be at least one.")
         return self
 
 
@@ -191,7 +201,10 @@ def run_coupled_transient(
                 stationarity_eta=1.0e-5,
                 convergence_min_steps=500,
                 stop_on_convergence=False,
-                thermal_enabled=bool(power_table_npz is not None),
+                allmaras_phase_direct_amplitude_fraction=float(cfg.allmaras_phase_direct_amplitude_fraction),
+                allmaras_phase_convergence_tol=float(cfg.allmaras_phase_convergence_tol),
+                allmaras_phase_convergence_max_iterations=int(cfg.allmaras_phase_convergence_max_iterations),
+                thermal_enabled=bool(cfg.thermal_enabled and power_table_npz is not None),
                 thermal_power_table_npz=(None if power_table_npz is None else str(power_table_npz)),
                 thermal_window_m=float(cfg.thermal_window_m),
                 thermal_start_time_s=0.0,

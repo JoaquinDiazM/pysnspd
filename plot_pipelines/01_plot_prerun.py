@@ -13,6 +13,9 @@ It does not modify the raw PRE-run.
 
 from __future__ import annotations
 
+# TODO(plot-style): legacy styling is deprecated; migrate this pipeline to
+# pysnspd.plotting.style and its canonical thesis figure dimensions.
+
 import argparse
 from pathlib import Path
 from typing import Any

@@ -117,6 +117,7 @@ class TDGLSolver:
         self.thermal_step_callback = thermal_step_callback
         self.thermal_snapshot_callback = thermal_snapshot_callback
         self.last_allmaras_forcing_dimensionless = None
+        self.last_allmaras_convergence_diagnostics: dict[str, float | int | bool] = {}
         self.last_thermal_diagnostics: dict[str, float] = {}
         self.stop_eta = None if stop_eta is None else float(stop_eta)
         self.stop_min_steps = max(0, int(stop_min_steps))
@@ -376,6 +377,9 @@ class TDGLSolver:
                     f"{forcing_dimensionless.shape}, expected {psi.shape}."
                 )
             self.last_allmaras_forcing_dimensionless = forcing_dimensionless.copy()
+            self.last_allmaras_convergence_diagnostics = dict(
+                getattr(self.allmaras_forcing_callback, "last_convergence_diagnostics", {}) or {}
+            )
 
         kwargs = dict(
             psi=psi,
@@ -544,6 +548,31 @@ class TDGLSolver:
         running_state.append(
             "allmaras_update_forcing_max_abs",
             float(np.max(np.abs(forcing))) if forcing is not None and np.size(forcing) else 0.0,
+        )
+        phase_convergence = dict(getattr(self, "last_allmaras_convergence_diagnostics", {}) or {})
+        running_state.append(
+            "allmaras_phase_convergence_converged",
+            bool(phase_convergence.get("converged", False)),
+        )
+        running_state.append(
+            "allmaras_phase_convergence_iterations",
+            int(phase_convergence.get("iterations", 0)),
+        )
+        running_state.append(
+            "allmaras_phase_convergence_residual_rel",
+            float(phase_convergence.get("residual_rel", float("nan"))),
+        )
+        running_state.append(
+            "allmaras_phase_continued_node_count",
+            int(phase_convergence.get("continued_node_count", 0)),
+        )
+        running_state.append(
+            "allmaras_phase_direct_node_count",
+            int(phase_convergence.get("direct_node_count", 0)),
+        )
+        running_state.append(
+            "allmaras_phase_zero_amplitude_node_count",
+            int(phase_convergence.get("zero_amplitude_node_count", 0)),
         )
         rhs = getattr(self, "last_poisson_rhs", np.array([], dtype=float))
         residual = getattr(self, "last_poisson_residual", np.array([], dtype=float))

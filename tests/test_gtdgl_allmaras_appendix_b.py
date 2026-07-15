@@ -7,11 +7,11 @@ import numpy as np
 from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
 from pysnspd.gtdgl.allmaras import (
     allmaras_coefficients,
-    bulk_node_mask_from_terminal_mask,
     compute_allmaras_appendix_b_diagnostic,
+    nonterminal_node_mask,
 )
 
-ALLMARAS_UPDATE_BACKEND = "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded"
+ALLMARAS_UPDATE_BACKEND = "appendix_b_normalized_phase_drive_harmonic_continuation_v2"
 
 
 def test_allmaras_coefficients_are_appendix_b_shapes_and_positive(
@@ -53,7 +53,10 @@ def test_allmaras_mismatch_diagnostic_has_bulk_mask_and_finite_drive(
 
     terminal = np.zeros(mesh.n_nodes, dtype=bool)
     x = mesh.nodes[:, 0]
-    terminal[np.isclose(x, x.min()) | np.isclose(x, x.max())] = True
+    terminal[
+        np.isclose(x, x.min(), rtol=0.0, atol=1.0e-15)
+        | np.isclose(x, x.max(), rtol=0.0, atol=1.0e-15)
+    ] = True
 
     diag = compute_allmaras_appendix_b_diagnostic(
         psi_dimensionless=psi,
@@ -61,7 +64,6 @@ def test_allmaras_mismatch_diagnostic_has_bulk_mask_and_finite_drive(
         Te_K=Te,
         ops=ops,
         terminal_node_mask=terminal,
-        bulk_guard_layers=1,
     )
 
     assert diag.edge_js_us_allmaras_A_m2.shape == (ops.n_edges,)
@@ -102,45 +104,31 @@ def test_solver_history_contains_appendix_b_diagnostics(
     assert result.history["allmaras_mismatch_divergence_snapshot_A_m3"].shape[1] == mesh.n_nodes
 
 
-def test_bulk_mask_falls_back_to_nonempty_mask_on_tiny_mesh(small_strip_mesh_bundle):
-    mesh, _, ops = small_strip_mesh_bundle
+def test_nonterminal_mask_excludes_only_exact_terminals(small_strip_mesh_bundle):
+    mesh, _, _ = small_strip_mesh_bundle
 
     terminal = np.zeros(mesh.n_nodes, dtype=bool)
     x = mesh.nodes[:, 0]
-    terminal[np.isclose(x, x.min()) | np.isclose(x, x.max())] = True
+    terminal[
+        np.isclose(x, x.min(), rtol=0.0, atol=1.0e-15)
+        | np.isclose(x, x.max(), rtol=0.0, atol=1.0e-15)
+    ] = True
 
-    bulk = bulk_node_mask_from_terminal_mask(
-        ops,
-        terminal,
-        guard_layers=1,
-    )
+    bulk = nonterminal_node_mask(terminal, n_nodes=mesh.n_nodes)
 
     assert bulk.shape == (mesh.n_nodes,)
     assert bulk.dtype == np.bool_
     assert np.any(bulk)
 
-    base_bulk = ~terminal
-
-    if np.any(base_bulk):
-        # In tiny meshes, one guard layer may remove every interior node.
-        # The intended fallback is then the terminal-only exclusion.
-        assert np.array_equal(bulk, base_bulk) or np.any(bulk & base_bulk)
-    else:
-        # Degenerate tiny fixtures can mark every node as terminal.
-        # The diagnostic mask must still be nonempty to keep RMS/max summaries finite.
-        assert np.all(bulk)
+    assert np.array_equal(bulk, ~terminal)
 
 
-def test_bulk_mask_all_terminal_degenerate_fixture_is_nonempty(small_strip_mesh_bundle):
-    mesh, _, ops = small_strip_mesh_bundle
+def test_nonterminal_mask_all_terminal_degenerate_fixture_is_nonempty(small_strip_mesh_bundle):
+    mesh, _, _ = small_strip_mesh_bundle
 
     terminal = np.ones(mesh.n_nodes, dtype=bool)
 
-    bulk = bulk_node_mask_from_terminal_mask(
-        ops,
-        terminal,
-        guard_layers=1,
-    )
+    bulk = nonterminal_node_mask(terminal, n_nodes=mesh.n_nodes)
 
     assert bulk.shape == (mesh.n_nodes,)
     assert bulk.dtype == np.bool_

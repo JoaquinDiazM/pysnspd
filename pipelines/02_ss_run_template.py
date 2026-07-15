@@ -12,6 +12,7 @@ parallel and only their output directories are printed at the end.
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 import re
 import sys
 import time
@@ -21,6 +22,11 @@ from typing import Any
 
 import numpy as np
 import yaml
+
+try:
+    from threadpoolctl import threadpool_limits
+except ImportError:  # pragma: no cover - exercised only in incomplete runtime environments.
+    threadpool_limits = None
 
 from pysnspd.config import load_config, validate_config
 from pysnspd.io.manager import create_run_layout, write_manifest
@@ -110,14 +116,16 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--extra-currents-uA",
-        type=float,
+        type=str,
         nargs="*",
         default=[],
-        metavar="OFFSET_UA",
+        metavar="CURRENT_OR_OFFSET_UA",
         help=(
-            "Optional current sweep offsets in microamps relative to --ss-target-current-uA. "
-            "Example: --ss-target-current-uA 28 --extra-currents-uA +2 +4 +6 "
-            "runs 28, 30, 32 and 34 uA. Extra cases run quietly in parallel."
+            "Additional sweep currents in microamps. Unsigned values are absolute currents; "
+            "values with an explicit leading '+' are offsets relative to "
+            "--ss-target-current-uA. Example: with a 28 uA base, values '30 34' and "+
+            "'+2 +6' both produce the additional currents 30 and 34 uA. Extra cases run "
+            "quietly in parallel."
         ),
     )
     parser.add_argument(
@@ -125,6 +133,15 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=None,
         help="Parallel workers for extra-current sweep cases. Defaults to parallel.workers in the YAML.",
+    )
+    parser.add_argument(
+        "--ss-threads-per-case",
+        type=int,
+        default=None,
+        help=(
+            "BLAS/OpenMP threads allowed inside each current case. A multi-current sweep "
+            "defaults to 1 to prevent nested over-subscription; a single run is unrestricted."
+        ),
     )
     parser.add_argument("--ss-snapshots", type=int, default=None)
 
@@ -273,6 +290,39 @@ def parse_args() -> argparse.Namespace:
             "this many physical coherence lengths away from metallic contacts."
         ),
     )
+    parser.add_argument(
+        "--ss-dynamic-stationarity-tail-snapshots",
+        type=int,
+        default=4,
+        help="Number of final snapshots used to classify a dynamic stationary state.",
+    )
+    parser.add_argument(
+        "--ss-dynamic-stationarity-min-tail-ps",
+        type=float,
+        default=2.0,
+        help="Minimum physical duration covered by the dynamic-stationarity snapshot tail.",
+    )
+    parser.add_argument(
+        "--ss-dynamic-stationarity-profile-rel",
+        type=float,
+        default=5.0e-2,
+        help="Relative tolerance for fluctuation and drift of the transverse-median gap profile.",
+    )
+    parser.add_argument(
+        "--ss-dynamic-stationarity-voltage-rel",
+        type=float,
+        default=5.0e-2,
+        help="Relative tolerance for the late terminal-voltage envelope and drift.",
+    )
+    parser.add_argument(
+        "--ss-dynamic-stationarity-psl-threshold",
+        type=float,
+        default=0.75,
+        help=(
+            "Count a cross-width suppressed band where the transverse-median "
+            "gap is below this fraction of Delta_BCS(0)."
+        ),
+    )
 
     # Deprecated aliases kept for compatibility with older command lines.
     parser.add_argument(
@@ -365,14 +415,16 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--ss-allmaras-contact-guard-layers",
-        type=int,
-        default=2,
+        "--ss-allmaras-direct-amplitude-fraction",
+        type=float,
+        default=1.0e-2,
         help=(
-            "Disable the Allmaras current-mismatch correction on terminal/contact nodes "
-            "and this many graph-neighbor layers. Diffusion/reaction terms remain active."
+            "Evaluate the normalized Allmaras phase quotient directly above this |Delta|/Delta0. "
+            "Below it, use controlled harmonic continuation on the FV graph."
         ),
     )
+    parser.add_argument("--ss-allmaras-convergence-tol", type=float, default=1.0e-3)
+    parser.add_argument("--ss-allmaras-convergence-max-iterations", type=int, default=64)
 
     parser.add_argument("--dpi", type=int, default=480, help="DPI for SS diagnostic plots.")
 
@@ -387,7 +439,10 @@ def main() -> int:
     base_run_name = base_layout["run_name"]
     pre_name = args.pre_run_name or base_run_name
     base_current_uA = float(args.ss_target_current_uA) if args.ss_target_current_uA is not None else 20.0
-    extra_offsets = [float(x) for x in (args.extra_currents_uA or [])]
+    extra_offsets = _resolve_extra_current_specs(
+        base_current_uA=base_current_uA,
+        specs=[str(value) for value in (args.extra_currents_uA or [])],
+    )
 
     if not extra_offsets:
         _run_single_current_case(
@@ -402,13 +457,19 @@ def main() -> int:
         )
         return 0
 
+    if args.ss_threads_per_case is None:
+        args.ss_threads_per_case = 1
+    if int(args.ss_threads_per_case) <= 0:
+        raise ValueError("--ss-threads-per-case must be positive when supplied.")
     workers = _resolve_sweep_workers(cfg, args.ss_sweep_workers, n_extra=len(extra_offsets))
     print("SS current sweep")
     print(f"  pre_run_name: {pre_name}")
     print(f"  base_run_name: {base_run_name}")
     print(f"  base_current_uA: {base_current_uA}")
-    print(f"  extra_offsets_uA: {extra_offsets}")
+    print(f"  extra_current_specs: {list(args.extra_currents_uA or [])}")
+    print(f"  extra_currents_uA: {[base_current_uA + offset for offset in extra_offsets]}")
     print(f"  extra_workers: {workers}")
+    print(f"  threads_per_case: {args.ss_threads_per_case}")
     print()
 
     futures = []
@@ -463,6 +524,7 @@ def main() -> int:
             f"  {item['target_current_uA']:8.3f} uA  "
             f"seed={item.get('seed_current_uA', float('nan')):8.3f} uA  "
             f"clamped={item.get('seed_is_overcritical_clamped', False)}  "
+            f"dynamic_SS={item.get('dynamic_stationarity_passes', False)}  "
             f"run={item['run_name']}  raw_ss={item['raw_ss']}"
         )
     if failed_results:
@@ -569,61 +631,101 @@ def _run_single_current_case(
     power_table_path = raw_pre / "power_table_catalog.npz"
     thermal_power_table_npz = power_table_path if bool(args.thermal_enable) and power_table_path.exists() else None
 
-    with _SSProgressConsoleFilter(
-        enabled=bool(progress),
-        total_time_ps=float(total_time_ps),
-    ):
-        result = solve_stationary_pytdgl_like(
-            mesh=mesh,
-            edge_data=edge_data,
-            seed=seed,
-            material=material,
-            ops=ops,
-            steps=None,
-            total_time_s=float(total_time_ps) * 1.0e-12,
-            dt_s=float(dt_s),
-            target_current_A=target_current_A,
-            usadel_catalog=usadel_catalog,
-            terminal_psi=float(args.ss_terminal_psi),
-            adaptive=not bool(args.ss_no_adaptive),
-            adaptive_window=int(args.ss_adaptive_window),
-            max_solve_retries=int(args.ss_max_solve_retries),
-            adaptive_time_step_multiplier=float(args.ss_adaptive_time_step_multiplier),
-            adaptive_growth_factor=float(args.ss_adaptive_growth_factor),
-            dt_max_factor=float(args.ss_dt_max_factor),
-            n_snapshots=int(n_snapshots),
-            progress=bool(progress),
-            supercurrent_law=supercurrent_law,
-            terminal_healing_xi=args.ss_terminal_healing_xi,
-            terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
-            stationarity_eta=float(args.ss_stationarity_eta),
-            stationarity_phase_gradient_rel=args.ss_stationarity_phase_gradient_rel,
-            stationarity_phi_gradient_rel=args.ss_stationarity_phi_gradient_rel,
-            stationarity_q_abs_m_inv=float(args.ss_stationarity_q_abs_m_inv),
-            stationarity_phi_gradient_abs_V_m=float(args.ss_stationarity_phi_gradient_abs_V_m),
-            stationarity_edge_active_threshold=float(args.ss_stationarity_edge_active_threshold),
-            stationarity_bulk_exclusion_xi=float(args.ss_stationarity_bulk_exclusion_xi),
-            stationarity_delta_rel=args.ss_stationarity_delta_rel,
-            stationarity_phi_rel=args.ss_stationarity_phi_rel,
-            convergence_min_steps=int(args.ss_convergence_min_steps),
-            stop_on_convergence=bool(args.ss_stop_on_convergence),
-            continuity_rms_tol=float(args.ss_continuity_rms_tol),
-            continuity_max_tol=float(args.ss_continuity_max_tol),
-            continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
-            recovery_min_xi=float(args.ss_recovery_min_xi),
-            recovery_max_xi=float(args.ss_recovery_max_xi),
-            allmaras_contact_guard_layers=int(args.ss_allmaras_contact_guard_layers),
-            thermal_enabled=bool(args.thermal_enable and thermal_power_table_npz is not None),
-            thermal_power_table_npz=(str(thermal_power_table_npz) if thermal_power_table_npz is not None else None),
-            thermal_window_m=float(args.thermal_window_nm) * 1.0e-9,
-            thermal_start_time_s=float(args.thermal_start_ps) * 1.0e-12,
-            thermal_bath_K=float(np.nanmedian(seed.node_Tph_K)),
-            thermal_min_K=float(np.nanmedian(seed.node_Tph_K)),
-            thermal_max_K=None,
-            thermal_max_step_K=float(args.thermal_max_step_K),
-            thermal_max_substeps=int(args.thermal_max_substeps),
-            thermal_stationarity_rate_K_per_ps=float(args.thermal_stationarity_rate_K_per_ps),
+    thread_limit = args.ss_threads_per_case
+    if thread_limit is not None and threadpool_limits is None:
+        raise RuntimeError(
+            "--ss-threads-per-case requires threadpoolctl in the active Python environment."
         )
+    thread_context = (
+        threadpool_limits(limits=int(thread_limit))
+        if thread_limit is not None and threadpool_limits is not None
+        else nullcontext()
+    )
+    with thread_context:
+        with _SSProgressConsoleFilter(
+            enabled=bool(progress),
+            total_time_ps=float(total_time_ps),
+        ):
+            result = solve_stationary_pytdgl_like(
+                mesh=mesh,
+                edge_data=edge_data,
+                seed=seed,
+                material=material,
+                ops=ops,
+                steps=None,
+                total_time_s=float(total_time_ps) * 1.0e-12,
+                dt_s=float(dt_s),
+                target_current_A=target_current_A,
+                usadel_catalog=usadel_catalog,
+                terminal_psi=float(args.ss_terminal_psi),
+                adaptive=not bool(args.ss_no_adaptive),
+                adaptive_window=int(args.ss_adaptive_window),
+                max_solve_retries=int(args.ss_max_solve_retries),
+                adaptive_time_step_multiplier=float(args.ss_adaptive_time_step_multiplier),
+                adaptive_growth_factor=float(args.ss_adaptive_growth_factor),
+                dt_max_factor=float(args.ss_dt_max_factor),
+                n_snapshots=int(n_snapshots),
+                progress=bool(progress),
+                supercurrent_law=supercurrent_law,
+                terminal_healing_xi=args.ss_terminal_healing_xi,
+                terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
+                stationarity_eta=float(args.ss_stationarity_eta),
+                stationarity_phase_gradient_rel=args.ss_stationarity_phase_gradient_rel,
+                stationarity_phi_gradient_rel=args.ss_stationarity_phi_gradient_rel,
+                stationarity_q_abs_m_inv=float(args.ss_stationarity_q_abs_m_inv),
+                stationarity_phi_gradient_abs_V_m=float(
+                    args.ss_stationarity_phi_gradient_abs_V_m
+                ),
+                stationarity_edge_active_threshold=float(
+                    args.ss_stationarity_edge_active_threshold
+                ),
+                stationarity_bulk_exclusion_xi=float(args.ss_stationarity_bulk_exclusion_xi),
+                dynamic_stationarity_tail_snapshots=int(
+                    args.ss_dynamic_stationarity_tail_snapshots
+                ),
+                dynamic_stationarity_minimum_tail_ps=float(
+                    args.ss_dynamic_stationarity_min_tail_ps
+                ),
+                dynamic_stationarity_profile_rel=float(
+                    args.ss_dynamic_stationarity_profile_rel
+                ),
+                dynamic_stationarity_voltage_rel=float(
+                    args.ss_dynamic_stationarity_voltage_rel
+                ),
+                dynamic_stationarity_psl_threshold=float(
+                    args.ss_dynamic_stationarity_psl_threshold
+                ),
+                stationarity_delta_rel=args.ss_stationarity_delta_rel,
+                stationarity_phi_rel=args.ss_stationarity_phi_rel,
+                convergence_min_steps=int(args.ss_convergence_min_steps),
+                stop_on_convergence=bool(args.ss_stop_on_convergence),
+                continuity_rms_tol=float(args.ss_continuity_rms_tol),
+                continuity_max_tol=float(args.ss_continuity_max_tol),
+                continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
+                recovery_min_xi=float(args.ss_recovery_min_xi),
+                recovery_max_xi=float(args.ss_recovery_max_xi),
+                allmaras_phase_direct_amplitude_fraction=float(
+                    args.ss_allmaras_direct_amplitude_fraction
+                ),
+                allmaras_phase_convergence_tol=float(args.ss_allmaras_convergence_tol),
+                allmaras_phase_convergence_max_iterations=int(
+                    args.ss_allmaras_convergence_max_iterations
+                ),
+                thermal_enabled=bool(args.thermal_enable and thermal_power_table_npz is not None),
+                thermal_power_table_npz=(
+                    str(thermal_power_table_npz) if thermal_power_table_npz is not None else None
+                ),
+                thermal_window_m=float(args.thermal_window_nm) * 1.0e-9,
+                thermal_start_time_s=float(args.thermal_start_ps) * 1.0e-12,
+                thermal_bath_K=float(np.nanmedian(seed.node_Tph_K)),
+                thermal_min_K=float(np.nanmedian(seed.node_Tph_K)),
+                thermal_max_K=None,
+                thermal_max_step_K=float(args.thermal_max_step_K),
+                thermal_max_substeps=int(args.thermal_max_substeps),
+                thermal_stationarity_rate_K_per_ps=float(
+                    args.thermal_stationarity_rate_K_per_ps
+                ),
+            )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")
     history = _history_with_fv_topology(result.history, ops=ops)
@@ -723,6 +825,9 @@ def _run_single_current_case(
         "summary_path": str(summary_path),
         "manifest_path": str(manifest_path),
         "first_magic_ready": bool(result.summary.get("first_magic_ready", False)),
+        "dynamic_stationarity_passes": bool(
+            dict(result.summary.get("dynamic_stationarity", {})).get("passes", False)
+        ),
         "terminal_voltage_V": float(result.summary.get("terminal_voltage_V", float("nan"))),
         "max_pairbreaking_ratio": float(result.summary.get("max_pairbreaking_ratio", float("nan"))),
         "normal_current_fraction_max": float(result.summary.get("normal_current_fraction_max", float("nan"))),
@@ -1002,6 +1107,7 @@ def _print_single_case_report(
     """
     seed_policy = dict(seed_summary_data.get("overcritical_seed_policy", {}))
     stationarity = dict(solver_summary.get("stationarity", {}))
+    dynamic_stationarity = dict(solver_summary.get("dynamic_stationarity", {}))
     continuity = dict(solver_summary.get("continuity", {}))
     contact = dict(solver_summary.get("contact_recovery", {}))
 
@@ -1023,6 +1129,9 @@ def _print_single_case_report(
     print(f"  V_terminal_mV:         {_fmt_float(1.0e3 * _as_float(solver_summary.get('terminal_voltage_V')), precision=6)}")
     print(f"  continuity_passes:     {continuity.get('passes', 'n/a')}")
     print(f"  stationarity_passes:   {stationarity.get('passes', 'n/a')}")
+    print(f"  dynamic_SS_passes:     {dynamic_stationarity.get('passes', 'n/a')}")
+    print(f"  dynamic_SS_regime:     {dynamic_stationarity.get('morphology_regime', 'n/a')}")
+    print(f"  dynamic_SS_PSL_count:  {dynamic_stationarity.get('psl_count_final', 'n/a')}")
     print(f"  contact_recovery:      {contact.get('passes', 'n/a')}")
     print(f"  eta_R_final:           {_fmt_float(solver_summary.get('eta_R_final'), precision=6)}")
     print(f"  min_delta/delta0:      {_fmt_float(solver_summary.get('min_delta_over_delta0'), precision=6)}")
@@ -1118,6 +1227,42 @@ def _current_sweep_run_name(base_run_name: str, offset_uA: float, current_uA: fl
     offset_label = _number_label(abs(float(offset_uA)))
     current_label = _number_label(float(current_uA))
     return f"{base_run_name}_dI_{sign}{offset_label}uA_I{current_label}uA"
+
+
+def _resolve_extra_current_specs(*, base_current_uA: float, specs: list[str]) -> list[float]:
+    """Resolve unsigned absolute currents and explicitly signed offsets.
+
+    ``35`` means an absolute 35 uA case. ``+35`` means base + 35 uA.  Keeping
+    the raw CLI token as text is essential because converting it to ``float``
+    would erase the distinction between ``35`` and ``+35``.
+    """
+
+    currents = [float(base_current_uA)]
+    validated: list[float] = []
+    for raw_spec in specs:
+        spec = str(raw_spec).strip()
+        if not spec:
+            raise ValueError("Empty --extra-currents-uA argument.")
+        try:
+            numeric = float(spec)
+        except ValueError as exc:
+            raise ValueError(f"Invalid extra-current specification {raw_spec!r}.") from exc
+        is_explicit_offset = spec.startswith(("+", "-"))
+        current = float(base_current_uA) + numeric if is_explicit_offset else numeric
+        offset = current - float(base_current_uA)
+        if current <= 0.0:
+            raise ValueError(
+                f"Extra-current specification {raw_spec!r} gives non-positive current "
+                f"{current:g} uA."
+            )
+        if any(np.isclose(current, previous, rtol=0.0, atol=1.0e-9) for previous in currents):
+            raise ValueError(
+                f"Duplicate sweep current {current:g} uA would make parallel cases write to "
+                "the same run directory. Remove the duplicate or launch a separately named replicate."
+            )
+        currents.append(current)
+        validated.append(float(offset))
+    return validated
 
 
 def _number_label(value: float) -> str:

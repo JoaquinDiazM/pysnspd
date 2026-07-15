@@ -18,6 +18,7 @@ from pysnspd.gtdgl.diagnostics import (
 from .currents import native_edge_currents_to_current_fields, native_current_scale_A_m2
 from .usadel_current import compute_usadel_supercurrent_diagnostic
 from .allmaras import (
+    PhaseDriveContinuationSolver,
     allmaras_coefficients,
     compute_allmaras_appendix_b_diagnostic,
     compute_allmaras_forcing_dimensionless,
@@ -32,6 +33,7 @@ from .ss_targets import (
     apply_terminal_proximity_seed,
     contact_recovery_diagnostics,
     continuity_diagnostics,
+    dynamic_stationarity_diagnostics,
     stationarity_diagnostics,
 )
 
@@ -69,6 +71,11 @@ def solve_stationary_pytdgl_like(
     stationarity_phi_gradient_abs_V_m: float = 1.0e2,
     stationarity_edge_active_threshold: float = 0.05,
     stationarity_bulk_exclusion_xi: float = 4.0,
+    dynamic_stationarity_tail_snapshots: int = 4,
+    dynamic_stationarity_minimum_tail_ps: float = 2.0,
+    dynamic_stationarity_profile_rel: float = 5.0e-2,
+    dynamic_stationarity_voltage_rel: float = 5.0e-2,
+    dynamic_stationarity_psl_threshold: float = 0.75,
     # Deprecated aliases from the pre-gauge-gradient diagnostic.  If the new
     # tolerances are not provided, these values are used as compatibility
     # aliases for phase-gradient and phi-gradient relative tolerances.
@@ -81,7 +88,9 @@ def solve_stationary_pytdgl_like(
     continuity_poisson_tol: float = 1.0e-9,
     recovery_min_xi: float = 1.5,
     recovery_max_xi: float = 4.0,
-    allmaras_contact_guard_layers: int = 2,
+    allmaras_phase_direct_amplitude_fraction: float = 1.0e-2,
+    allmaras_phase_convergence_tol: float = 1.0e-3,
+    allmaras_phase_convergence_max_iterations: int = 64,
     thermal_enabled: bool = False,
     thermal_power_table_npz: str | None = None,
     thermal_window_m: float = 100.0e-9,
@@ -263,6 +272,12 @@ def solve_stationary_pytdgl_like(
             ops=ops,
         )
 
+    phase_drive_continuation = PhaseDriveContinuationSolver.from_operators(
+        ops,
+        direct_amplitude_fraction=float(allmaras_phase_direct_amplitude_fraction),
+        tolerance=float(allmaras_phase_convergence_tol),
+        max_iterations=int(allmaras_phase_convergence_max_iterations),
+    )
     allmaras_forcing_callback = _build_allmaras_forcing_callback(
         usadel_catalog=usadel_catalog,
         device=device,
@@ -271,7 +286,7 @@ def solve_stationary_pytdgl_like(
         ops=ops,
         blocked_edge_mask=_terminal_edge_mask_from_device(device, ops),
         require_usadel=(supercurrent_law == "usadel_poisson"),
-        contact_guard_layers=int(allmaras_contact_guard_layers),
+        phase_drive_continuation=phase_drive_continuation,
     )
 
     thermal_step_callback = None
@@ -347,6 +362,7 @@ def solve_stationary_pytdgl_like(
         usadel_catalog=usadel_catalog,
         n_snapshots=n_snapshots,
         stationarity_bulk_exclusion_xi=float(stationarity_bulk_exclusion_xi),
+        phase_drive_continuation=phase_drive_continuation,
     )
 
     phase_gradient_rel_tol = (
@@ -369,6 +385,17 @@ def solve_stationary_pytdgl_like(
         edge_active_threshold=float(stationarity_edge_active_threshold),
         bulk_exclusion_xi=float(stationarity_bulk_exclusion_xi),
         eta_tol=float(stationarity_eta),
+    )
+    dynamic_stationarity_diag = dynamic_stationarity_diagnostics(
+        history=history,
+        nodes_m=np.asarray(mesh.nodes, dtype=float)[:, :2],
+        delta0_J=float(material.delta0_J),
+        tail_snapshots=int(dynamic_stationarity_tail_snapshots),
+        minimum_tail_duration_ps=float(dynamic_stationarity_minimum_tail_ps),
+        profile_relative_tolerance=float(dynamic_stationarity_profile_rel),
+        voltage_relative_tolerance=float(dynamic_stationarity_voltage_rel),
+        psl_threshold_over_delta0=float(dynamic_stationarity_psl_threshold),
+        bulk_exclusion_xi=float(stationarity_bulk_exclusion_xi),
     )
     recovery_diag = contact_recovery_diagnostics(
         psi_dimensionless=psi_final,
@@ -416,6 +443,7 @@ def solve_stationary_pytdgl_like(
         "eta_convergence_step": int(solution.history.get("eta_convergence_step", np.array([-1], dtype=int))[0]),
         "eta_convergence_time_ps": float(solution.history.get("eta_convergence_time", np.array([float("nan")]))[0] * tau0 / 1.0e-12),
         "first_magic_ready": magic_ready,
+        "dynamic_stationarity_passes": bool(dynamic_stationarity_diag.passes),
         "accepted_steps": int(solution.history.get("final_step", np.array([0]))[0]),
         "rejected_steps": int(solution.history.get("total_rejected_attempts", np.array([0]))[0]),
         "requested_time_ps": float(total_time_s) / 1.0e-12,
@@ -451,8 +479,16 @@ def solve_stationary_pytdgl_like(
         "pytdgl_u": u,
         "pytdgl_gamma": gamma_report,
         "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
-        "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded",
-        "allmaras_contact_correction_guard_layers": int(allmaras_contact_guard_layers),
+        "allmaras_update_backend": "appendix_b_normalized_phase_drive_harmonic_continuation_v2",
+        "allmaras_phase_continuation": {
+            "method": "jacobi_preconditioned_cg_harmonic_continuation",
+            "direct_amplitude_fraction": float(allmaras_phase_direct_amplitude_fraction),
+            "tolerance": float(allmaras_phase_convergence_tol),
+            "max_iterations": int(allmaras_phase_convergence_max_iterations),
+            "final_converged": bool(history.get("allmaras_phase_convergence_converged", np.array([False]))[-1]),
+            "final_iterations": int(history.get("allmaras_phase_convergence_iterations", np.array([0]))[-1]),
+            "final_residual_rel": float(history.get("allmaras_phase_convergence_residual_rel", np.array([float("nan")]))[-1]),
+        },
         "stationarity_bulk_exclusion_xi": float(stationarity_bulk_exclusion_xi),
         "allmaras_solver_u": float(u),
         "allmaras_gamma_min": float(np.nanmin(gamma)) if gamma.size else float("nan"),
@@ -466,6 +502,7 @@ def solve_stationary_pytdgl_like(
         "allmaras_delta_mod_seed_max_over_delta0": float(np.nanmax(allmaras0.delta_mod_over_delta0)),
         "proximity_seed": proximity_seed_diag.as_dict(),
         "stationarity": stationarity_diag.as_dict(),
+        "dynamic_stationarity": dynamic_stationarity_diag.as_dict(),
         "contact_recovery": recovery_diag.as_dict(),
         "continuity": continuity_diag.as_dict(),
         "thermal_stationarity": thermal_stationarity_diag,
@@ -525,7 +562,7 @@ def solve_stationary_pytdgl_like(
         "native_poisson_rhs_norm_final": float(history.get("pytdgl_like_poisson_rhs_norm", np.array([float("nan")]))[-1]),
         "native_boundary_rhs_norm_final": float(history.get("pytdgl_like_boundary_rhs_norm", np.array([float("nan")]))[-1]),
         "native_mu_boundary_max_abs_final": float(history.get("pytdgl_like_mu_boundary_max_abs", np.array([float("nan")]))[-1]),
-        "allmaras_bulk_guard_layers": int(history.get("allmaras_bulk_guard_layers", np.array([1]))[0]),
+        "allmaras_bulk_mask_policy": str(history.get("allmaras_bulk_mask_policy", np.array(["terminal_nodes_excluded_only"]))[0]),
         "allmaras_bulk_n_nodes": int(np.count_nonzero(history.get("allmaras_bulk_node_mask", np.zeros(mesh.n_nodes, dtype=bool)))),
         "allmaras_mismatch_div_rms_A_m3_final": float(history.get("allmaras_mismatch_div_rms_A_m3", np.array([float("nan")]))[-1]),
         "allmaras_mismatch_div_bulk_rms_A_m3_final": float(history.get("allmaras_mismatch_div_bulk_rms_A_m3", np.array([float("nan")]))[-1]),
@@ -553,11 +590,13 @@ def solve_stationary_pytdgl_like(
             "current_scale_A": float(device.current_scale_A),
             "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
             "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
-            "allmaras_update_backend": "appendix_b_explicit_forcing_rho_kwt_wz_v1_contact_guarded",
-            "allmaras_contact_correction_guard_layers": int(allmaras_contact_guard_layers),
+            "allmaras_update_backend": "appendix_b_normalized_phase_drive_harmonic_continuation_v2",
+            "allmaras_phase_continuation_method": "jacobi_preconditioned_cg_harmonic_continuation",
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
             "first_magic_ready": magic_ready,
+            "dynamic_stationarity_passes": bool(dynamic_stationarity_diag.passes),
             "stationarity": stationarity_diag.as_dict(),
+            "dynamic_stationarity": dynamic_stationarity_diag.as_dict(),
             "contact_recovery": recovery_diag.as_dict(),
             "continuity": continuity_diag.as_dict(),
             "thermal_stationarity": thermal_stationarity_diag,
@@ -594,21 +633,6 @@ def _terminal_edge_mask_from_device(device, ops: FVOperators) -> np.ndarray:
     return node_mask[np.asarray(ops.edge_i, dtype=np.int64)] | node_mask[np.asarray(ops.edge_j, dtype=np.int64)]
 
 
-
-def _expand_node_mask_by_edges(mask: np.ndarray, *, ops: FVOperators, layers: int) -> np.ndarray:
-    """Expand a node mask by graph-neighbor layers on the FV edge graph."""
-    out = np.asarray(mask, dtype=bool).reshape(-1).copy()
-    if out.size != ops.n_nodes:
-        raise ValueError(f"mask has length {out.size}, expected {ops.n_nodes}.")
-    edge_i = np.asarray(ops.edge_i, dtype=np.int64)
-    edge_j = np.asarray(ops.edge_j, dtype=np.int64)
-    for _ in range(max(0, int(layers))):
-        touch = out[edge_i] | out[edge_j]
-        if not np.any(touch):
-            break
-        out[edge_i[touch]] = True
-        out[edge_j[touch]] = True
-    return out
 
 def _normalize_supercurrent_law(value: str) -> str:
     law = str(value).strip().lower().replace("-", "_")
@@ -668,7 +692,7 @@ def _build_allmaras_forcing_callback(
     ops: FVOperators,
     blocked_edge_mask: np.ndarray,
     require_usadel: bool,
-    contact_guard_layers: int = 2,
+    phase_drive_continuation: PhaseDriveContinuationSolver,
 ):
     """Build the Appendix-B forcing callback used by ``TDGLSolver``.
 
@@ -679,12 +703,6 @@ def _build_allmaras_forcing_callback(
 
     Te = np.asarray(Te_K, dtype=float)
     L0 = float(device.length_scale_m)
-    terminal_node_mask = _terminal_site_mask_from_device(device, ops.n_nodes)
-    contact_guard_node_mask = _expand_node_mask_by_edges(
-        terminal_node_mask,
-        ops=ops,
-        layers=max(0, int(contact_guard_layers)),
-    )
 
     def callback(psi_dimensionless: np.ndarray, psi_laplacian) -> np.ndarray:
         psi = np.asarray(psi_dimensionless, dtype=np.complex128)
@@ -714,19 +732,20 @@ def _build_allmaras_forcing_callback(
             length_scale_m=L0,
             edge_js_usadel_A_m2=edge_js,
             blocked_edge_mask=blocked_edge_mask,
+            phase_drive_continuation=phase_drive_continuation,
         )
-        out = np.asarray(forcing.forcing_dimensionless, dtype=np.complex128).copy()
-        # Do not assume the Allmaras current-divergence correction is valid in
-        # the normal-metal contact conversion region.  Keep diffusion/reaction
-        # active but remove only the imaginary mismatch drive on the guarded
-        # contact nodes.
-        if np.any(contact_guard_node_mask):
-            out[contact_guard_node_mask] = (
-                np.asarray(forcing.diffusion_dimensionless, dtype=np.complex128)[contact_guard_node_mask]
-                + np.asarray(forcing.reaction_dimensionless, dtype=np.complex128)[contact_guard_node_mask]
-            )
-        return out
+        info = forcing.phase_drive_convergence
+        callback.last_convergence_diagnostics = {
+            "converged": bool(info.converged),
+            "iterations": int(info.iterations),
+            "residual_rel": float(info.residual_rel),
+            "direct_node_count": int(info.direct_node_count),
+            "continued_node_count": int(info.continued_node_count),
+            "zero_amplitude_node_count": int(info.zero_amplitude_node_count),
+        }
+        return np.asarray(forcing.forcing_dimensionless, dtype=np.complex128)
 
+    callback.last_convergence_diagnostics = {}
     return callback
 
 
@@ -745,6 +764,7 @@ def _build_history(
     target_current_A: float,
     usadel_catalog: Any | None,
     n_snapshots: int,
+    phase_drive_continuation: PhaseDriveContinuationSolver,
     stationarity_bulk_exclusion_xi: float = 4.0,
 ) -> dict[str, np.ndarray]:
     raw = solution.history
@@ -814,6 +834,12 @@ def _build_history(
         "pytdgl_like_boundary_rhs_norm": np.asarray(raw.get("boundary_rhs_norm", np.zeros_like(t_s)), dtype=float),
         "pytdgl_like_mu_boundary_max_abs": np.asarray(raw.get("mu_boundary_max_abs", np.zeros_like(t_s)), dtype=float),
         "allmaras_update_forcing_max_abs": np.asarray(raw.get("allmaras_update_forcing_max_abs", np.zeros_like(t_s)), dtype=float),
+        "allmaras_phase_convergence_converged": _raw_series("allmaras_phase_convergence_converged", 0.0).astype(bool),
+        "allmaras_phase_convergence_iterations": _raw_series("allmaras_phase_convergence_iterations", 0.0).astype(np.int64),
+        "allmaras_phase_convergence_residual_rel": _raw_series("allmaras_phase_convergence_residual_rel", np.nan),
+        "allmaras_phase_continued_node_count": _raw_series("allmaras_phase_continued_node_count", 0.0).astype(np.int64),
+        "allmaras_phase_direct_node_count": _raw_series("allmaras_phase_direct_node_count", 0.0).astype(np.int64),
+        "allmaras_phase_zero_amplitude_node_count": _raw_series("allmaras_phase_zero_amplitude_node_count", 0.0).astype(np.int64),
         "normal_terminal_node_mask": terminal_site_mask.astype(bool),
         "normal_terminal_edge_mask": blocked_edge_mask.astype(bool),
     }
@@ -925,7 +951,7 @@ def _build_history(
             terminal_node_mask=terminal_site_mask,
             blocked_edge_mask=blocked_edge_mask,
             edge_js_usadel_A_m2=(udiag.edge_js_usadel_A_m2 if udiag.available else None),
-            bulk_guard_layers=1,
+            phase_drive_continuation=phase_drive_continuation,
         )
         current_frames.append(c)
         native_diags.append(d)
@@ -970,7 +996,7 @@ def _build_history(
     allmaras_delta_mod_over_delta0 = np.vstack([d.coefficients.delta_mod_over_delta0 for d in allmaras_diags])
     allmaras_rho_kwt = np.vstack([d.coefficients.rho_kwt for d in allmaras_diags])
     allmaras_xi_mod2_m2 = np.vstack([d.coefficients.xi_mod2_m2 for d in allmaras_diags])
-    allmaras_C = np.vstack([d.coefficients.correction_C_J_m3_A for d in allmaras_diags])
+    allmaras_C = np.vstack([d.coefficients.correction_C_J2_m3_A for d in allmaras_diags])
 
     time_aliases = {
         "snapshot_t_s": snap_t,
@@ -1098,9 +1124,9 @@ def _build_history(
         "allmaras_delta_mod_over_delta0_snapshot": allmaras_delta_mod_over_delta0,
         "allmaras_rho_kwt_snapshot": allmaras_rho_kwt,
         "allmaras_xi_mod2_snapshot_m2": allmaras_xi_mod2_m2,
-        "allmaras_correction_C_snapshot_J_m3_A": allmaras_C,
+        "allmaras_correction_C_snapshot_J2_m3_A": allmaras_C,
         "allmaras_bulk_node_mask": allmaras_bulk_mask.astype(bool),
-        "allmaras_bulk_guard_layers": np.array([1], dtype=np.int64),
+        "allmaras_bulk_mask_policy": np.array(["terminal_nodes_excluded_only"]),
         "edge_i": edge_i,
         "edge_j": edge_j,
     }.items():
