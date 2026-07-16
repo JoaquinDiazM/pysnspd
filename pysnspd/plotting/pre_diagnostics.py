@@ -21,6 +21,7 @@ from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_ga
 from pysnspd.usadel.parameters import HBAR_J_S
 from pysnspd.mesh.delaunay import MeshData, triangle_areas
 from pysnspd.mesh.edges import EdgeData
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
 
 MEV_J = 1.602176634e-22
 
@@ -220,6 +221,7 @@ def plot_usadel_supercurrent_curve(
     dpi: int = 480,
 ) -> Path:
     """Plot Usadel calibration current and equilibrium gap versus superfluid momentum."""
+    apply_thesis_style()
     output = _prepare_output(output_path)
 
     q = np.asarray(usadel_catalog.calibration_q_values_m_inv, dtype=float)
@@ -240,11 +242,11 @@ def plot_usadel_supercurrent_curve(
     current_color = "tab:blue"
     gap_color = "tab:purple"
 
-    fig, ax_i = plt.subplots(figsize=(9.4, 5.9))
-    label_fs = 18
-    tick_fs = 16
-    legend_fs = 14.0
-    legend_title_fs = 14.0
+    fig, ax_i = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
+    label_fs = 12
+    tick_fs = 10
+    legend_fs = 9.0
+    legend_title_fs = 9.0
 
     q_plot = q_1e7[finite_i]
     i_plot = current_uA[finite_i]
@@ -271,7 +273,7 @@ def plot_usadel_supercurrent_curve(
             color=current_color,
             alpha=0.95,
             zorder=2,
-            label=rf"target $I_c$ = {target_uA:.2f} $\mu$A",
+            label=rf"Target $I_c={target_uA:.2f}\,\mu$A",
         )
 
     ax_d = ax_i.twinx()
@@ -286,7 +288,7 @@ def plot_usadel_supercurrent_curve(
             label=rf"$|\Delta_{{eq}}(q)|$ at {temperature_label}",
         )
 
-    ax_i.set_xlabel(r"superfluid momentum $q$ [$10^7$ m$^{-1}$]", fontsize=label_fs)
+    ax_i.set_xlabel(r"Superfluid momentum $q$ [$10^7$ m$^{-1}$]", fontsize=label_fs)
     ax_i.set_ylabel(r"$I_s$ [$\mu$A]", fontsize=label_fs, color=current_color)
     ax_d.set_ylabel(r"$|\Delta_{eq}|$ [meV]", fontsize=label_fs, color=gap_color)
 
@@ -354,7 +356,7 @@ def plot_usadel_supercurrent_curve(
     D_value = _find_diffusivity_value(metadata)
     if D_value is not None:
         D_cm2_s = 1.0e4 * D_value
-        legend_lines.append(rf"Calibration $\Rightarrow$ $D={D_cm2_s:.3f}$ cm$^2$/s")
+        legend_lines.append(rf"Calibrated $D={D_cm2_s:.3f}$ cm$^2$/s")
 
     # Esta es la línea que agregaba el resumen:
     # D = ..., sigma_n = ..., Delta_0 = ...
@@ -376,7 +378,7 @@ def plot_usadel_supercurrent_curve(
         handles,
         labels,
         loc="lower center",
-        bbox_to_anchor=(0.50, 0.055),
+        bbox_to_anchor=(0.50, 0.035),
         fontsize=legend_fs,
         title=legend_title,
         title_fontsize=legend_title_fs,

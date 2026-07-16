@@ -18,6 +18,7 @@ import sys
 import numpy as np
 from scipy.constants import Boltzmann, e
 
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
 from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_gamma_J
 from pysnspd.usadel.parameters import E_CHARGE_C, HBAR_J_S
 
@@ -471,6 +472,7 @@ def plot_gap_eq_vs_temperature(
     matplotlib.use("Agg", force=True)
     import matplotlib.pyplot as plt
 
+    apply_thesis_style()
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
@@ -498,12 +500,7 @@ def plot_gap_eq_vs_temperature(
 
     delta_bcs_0_meV = 1.764 * Boltzmann * Tc_K / e * 1.0e3
 
-    fig, ax = plt.subplots(figsize=(9.2, 6.15))
-    fig.subplots_adjust(left=0.155, right=0.985, bottom=0.17, top=0.965)
-
-    label_fs = 21
-    tick_fs = 17
-    legend_fs = 15
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE, constrained_layout=True)
 
     handles: list[Any] = []
     labels: list[str] = []
@@ -512,7 +509,7 @@ def plot_gap_eq_vs_temperature(
         delta_bcs_0_meV,
         color="0.42",
         #linestyle=(0, (5.0, 2.2, 1.3, 2.2)),
-        linewidth=2.1,
+        linewidth=1.0,
         zorder=1,
         label=r"$\Delta_{\mathrm{BCS}}(0)$",
     )
@@ -520,7 +517,7 @@ def plot_gap_eq_vs_temperature(
         Tc_K,
         color="0.25",
         linestyle="--",
-        linewidth=2.2,
+        linewidth=1.0,
         zorder=1,
         label=rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
     )
@@ -530,7 +527,7 @@ def plot_gap_eq_vs_temperature(
         (line,) = ax.plot(
             temperature,
             curve,
-            linewidth=2.8,
+            linewidth=1.25,
             zorder=3,
             label=rf"$q/q_c={ratio:.2f}$",
         )
@@ -556,10 +553,10 @@ def plot_gap_eq_vs_temperature(
     y_max_plot = max(y_max_curves, delta_bcs_0_meV) * 1.12
     ax.set_ylim(bottom=0.0, top=y_max_plot)
 
-    ax.set_xlabel(r"Temperature $T$ (K)", fontsize=label_fs)
-    ax.set_ylabel(r"Equilibrium gap $\Delta_{\mathrm{eq}}$ (meV)", fontsize=label_fs)
-    ax.tick_params(axis="both", which="major", labelsize=tick_fs, direction="in", length=6.5, width=1.1)
-    ax.tick_params(axis="both", which="minor", direction="in", length=3.5, width=0.8)
+    ax.set_xlabel(r"Temperature $T$ [K]")
+    ax.set_ylabel(r"Equilibrium gap $\Delta_{\mathrm{eq}}$ [meV]")
+    ax.tick_params(axis="both", which="major", direction="in")
+    ax.tick_params(axis="both", which="minor", direction="in")
     ax.minorticks_on()
 
     ax.grid(True, which="major", linewidth=0.50, alpha=0.18)
@@ -573,9 +570,8 @@ def plot_gap_eq_vs_temperature(
         frameon=True,
         fancybox=False,
         framealpha=1.0,
-        facecolor="white",
         edgecolor="0.70",
-        fontsize=legend_fs,
+        fontsize=7.5,
         ncol=1,
         loc="upper right",
         bbox_to_anchor=(0.985, 0.975),
@@ -587,7 +583,7 @@ def plot_gap_eq_vs_temperature(
     )
 
     if title:
-        ax.set_title(title, fontsize=label_fs)
+        ax.set_title(title)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)

@@ -20,6 +20,8 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Circle
 import numpy as np
 
+from pysnspd.plotting.style import THESIS_WIDTH_IN, apply_thesis_style
+
 
 Color = str | Sequence[float] | None
 
@@ -93,6 +95,7 @@ def plot_mesh_pytdgl_style(
         Circular inset radius in plotted coordinates. If omitted, a radius is
         inferred from the mesh spacing and strip width.
     """
+    apply_thesis_style()
     output = _prepare_output(output_path)
     sites, elements = _mesh_sites_elements(mesh)
     sites_plot = coordinate_scale * sites
@@ -101,8 +104,8 @@ def plot_mesh_pytdgl_style(
     polygons = _mesh_voronoi_polygons(mesh, coordinate_scale=coordinate_scale)
     node_classes = _classify_nodes(mesh, sites_plot, coordinate_scale=coordinate_scale)
 
-    fig, ax = plt.subplots(figsize=(7.45, 3.95), constrained_layout=False)
-    fig.subplots_adjust(left=0.086, right=0.985, bottom=0.150, top=0.875)
+    fig, ax = plt.subplots(figsize=(THESIS_WIDTH_IN, 3.15), constrained_layout=False)
+    fig.subplots_adjust(left=0.095, right=0.985, bottom=0.145, top=0.965)
 
     # Main panel: primal mesh + colored node classes. The dual is reserved for
     # the inset so the global view remains readable.
@@ -441,7 +444,7 @@ def _draw_center_zoom_inset(
     inset.text(
         0.5,
         0.04,
-        "center zoom",
+            "Center zoom",
         transform=inset.transAxes,
         ha="center",
         va="bottom",
@@ -468,15 +471,15 @@ def _draw_stats_box(
     spacing = _maybe_scaled_attr(mesh, "target_spacing_m", coordinate_scale)
 
     lines = [
-        "mesh stats",
-        f"nodes: {sites.shape[0]}",
-        f"triangles: {elements.shape[0]}",
-        f"edges: {int(n_edges)}",
+        "Mesh statistics",
+        f"Nodes: {sites.shape[0]}",
+        f"Triangles: {elements.shape[0]}",
+        f"Edges: {int(n_edges)}",
     ]
     if np.isfinite(length) and np.isfinite(width):
-        lines.append(f"L×W: {_fmt_number(length)}×{_fmt_number(width)} {coordinate_unit}")
+        lines.append(f"L x W: {_fmt_number(length)} x {_fmt_number(width)} {coordinate_unit}")
     if np.isfinite(spacing):
-        lines.append(f"h: {_fmt_number(spacing)} {coordinate_unit}")
+        lines.append(f"Target h: {_fmt_number(spacing)} {coordinate_unit}")
 
     x, y, ha, va = _text_anchor(location)
     y_stats = y if va == "top" else min(0.28, y + 0.23)
@@ -512,9 +515,9 @@ def _draw_node_class_legend(
     location: str,
 ) -> None:
     labels = [
-        ("current", current_color, int(np.count_nonzero(node_classes["current"]))),
-        ("insulating", insulating_color, int(np.count_nonzero(node_classes["insulating"]))),
-        ("interior", interior_color, int(np.count_nonzero(node_classes["interior"]))),
+        ("Current contacts", current_color, int(np.count_nonzero(node_classes["current"]))),
+        ("Insulating boundary", insulating_color, int(np.count_nonzero(node_classes["insulating"]))),
+        ("Interior", interior_color, int(np.count_nonzero(node_classes["interior"]))),
     ]
     handles = [
         Line2D([0], [0], marker="o", linestyle="None", markersize=4.2, markerfacecolor=color, markeredgewidth=0.0)
@@ -539,7 +542,7 @@ def _draw_node_class_legend(
     legend = ax.legend(
         handles,
         legend_labels,
-        title="node classes",
+        title="Node classes",
         loc=legend_loc,
         bbox_to_anchor=bbox,
         fontsize=6.7,

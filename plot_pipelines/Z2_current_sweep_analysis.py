@@ -21,7 +21,7 @@ from pysnspd.plotting.style import THESIS_DPI
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Index raw data and create current-sweep IV figures."
+        description="Index raw data and create thesis-ready current-sweep IV PDFs."
     )
     parser.add_argument("--config", required=True, help="Path to YAML project config.")
     parser.add_argument(
@@ -214,11 +214,11 @@ def _write_z2_manifest(
     figure_outputs: dict[str, Any],
 ) -> Path:
     manifest = {
-        "schema_version": 4,
+        "schema_version": 5,
         "pipeline": "plot_pipelines/Z2_current_sweep_analysis.py",
         "purpose": (
             "Multi-run current-sweep inventory with central TDGL and terminal-voltage "
-            "IV figures, full-length normal-state reference, and |Delta| snapshots."
+            "IV PDFs, full-length normal-state reference, and |Delta| snapshots."
         ),
         "config_path": str(config_path),
         "args": args,

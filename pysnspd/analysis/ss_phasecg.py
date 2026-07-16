@@ -75,6 +75,8 @@ def build_phasecg_diagnostic_dataset(
     delta_meV = _snapshot_matrix(snapshots, ("delta_snapshot_meV",), n_snapshots, n_nodes)
     delta_over_delta0 = delta_meV / delta0_meV
     phi_V = _snapshot_matrix(snapshots, ("phi_snapshot_V",), n_snapshots, n_nodes)
+    Te_K = _snapshot_matrix(snapshots, ("Te_snapshot_K",), n_snapshots, n_nodes)
+    Tph_K = _snapshot_matrix(snapshots, ("Tph_snapshot_K",), n_snapshots, n_nodes)
 
     jtot_x = _snapshot_matrix(
         snapshots,
@@ -159,12 +161,16 @@ def build_phasecg_diagnostic_dataset(
     if not np.any(center_mask):
         center_mask = np.ones(n_nodes, dtype=bool)
 
+    current_sign = _current_orientation(jtot_x[:, center_mask], target_current_A)
+    jtot_x_over_javg = current_sign * jtot_x / javg_A_m2
+    js_x_over_javg = current_sign * js_x / javg_A_m2
+    jn_x_over_javg = current_sign * jn_x / javg_A_m2
+
     terminal_left = _nearest_x_column_mask(x_m, xmin)
     terminal_right = _nearest_x_column_mask(x_m, xmax)
     probe_left = _nearest_x_column_mask(x_m, x_center - half_width)
     probe_right = _nearest_x_column_mask(x_m, x_center + half_width)
 
-    current_sign = _current_orientation(jtot_x[:, center_mask], target_current_A)
     center_weights = np.asarray(ops.node_area_m2, dtype=float)[center_mask]
     current_total_A = current_sign * _weighted_rows(jtot_x[:, center_mask], center_weights) * cross_section_m2
     current_super_A = current_sign * _weighted_rows(js_x[:, center_mask], center_weights) * cross_section_m2
@@ -214,12 +220,19 @@ def build_phasecg_diagnostic_dataset(
             "nodes_x_nm": x_m * 1.0e9,
             "nodes_y_nm": nodes_m[:, 1] * 1.0e9,
             "triangles": triangles,
+            "delta0_meV": delta0_meV,
             "delta_snapshot_over_delta0": delta_over_delta0,
             "phi_snapshot_mV": phi_V * 1.0e3,
+            "Te_snapshot_K": Te_K,
+            "Tph_snapshot_K": Tph_K,
             "qxi_snapshot": q_node_m_inv * xi_m,
             "jtot_snapshot_over_javg": jtot_mag_over_javg,
             "js_snapshot_over_javg": js_mag_over_javg,
             "jn_snapshot_over_javg": jn_mag_over_javg,
+            "jtot_x_snapshot_over_javg": jtot_x_over_javg,
+            "js_x_snapshot_over_javg": js_x_over_javg,
+            "jn_x_snapshot_over_javg": jn_x_over_javg,
+            "node_area_m2": np.asarray(ops.node_area_m2, dtype=float),
             "div_j_snapshot_normalized": div_j_normalized,
             "phase_drive_snapshot_over_delta0": phase_drive,
             "target_current_uA": target_current_A * 1.0e6,
@@ -302,6 +315,15 @@ def build_phasecg_diagnostic_dataset(
                 _mapping(solver.get("continuity")).get("tolerance_poisson", np.nan)
             ),
             "stationarity_passes": bool(_mapping(solver.get("stationarity")).get("passes", False)),
+            "dynamic_stationarity_passes": bool(
+                _mapping(solver.get("dynamic_stationarity")).get("passes", False)
+            ),
+            "thermal_stationarity_passes": bool(
+                _mapping(solver.get("thermal_stationarity")).get("passes", False)
+            ),
+            "thermal_enabled": bool(
+                np.any(_history_series(history, "thermal_enabled", history_t_ps.size) > 0.5)
+            ),
             "continuity_passes": bool(_mapping(solver.get("continuity")).get("passes", False)),
         }
     )

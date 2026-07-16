@@ -24,6 +24,8 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
+
 MEV_J = 1.602176634e-22
 _DEFAULT_CURRENT_FRACTIONS: tuple[float, ...] = (0.0, 0.25, 0.50, 0.65, 0.80, 0.95)
 
@@ -63,10 +65,10 @@ def plot_usadel_dos_curves_fixed_delta0(
     energy_max_meV: float | None = 4.0,
     energy_window: bool = True,
 ) -> Path:
-    """Plot DOS curves ``rho(E; Delta_0, q)`` for selected currents.
+    """Plot DOS curves ``rho(E; Delta_BCS(0), q)`` for selected currents.
 
     This is not a self-consistent finite-current branch. It is a fixed-gap
-    catalogue section that keeps ``Delta`` at ``Delta_0`` while changing the
+    catalogue section that keeps ``Delta`` at ``Delta_BCS(0)`` while changing the
     depairing parameter through ``q``.
     """
     return _plot_dos_curves(
@@ -90,6 +92,7 @@ def _plot_dos_curves(
     energy_max_meV: float | None,
     energy_window: bool,
 ) -> Path:
+    apply_thesis_style()
     output = _prepare_output(output_path)
     fractions = _normalize_current_fractions(current_fractions)
     energy_meV_full = _energy_axis_meV(usadel_catalog)
@@ -115,15 +118,15 @@ def _plot_dos_curves(
     if mode == "equilibrium_gap":
         state_label = r"$\Delta=\Delta_{\mathrm{eq}}(q)$"
     elif mode == "fixed_delta0":
-        state_label = r"$\Delta=\Delta_0$"
+        state_label = r"$\Delta=\Delta_{\mathrm{BCS}}(0)$"
     else:  # pragma: no cover - internal defensive branch
         raise ValueError(f"Unknown DOS-curve mode: {mode!r}")
 
-    fig, ax = plt.subplots(figsize=(9.4, 6.8))
-    label_fs = 22
-    tick_fs = 18
-    legend_fs = 16.0
-    legend_title_fs = 16.2
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
+    label_fs = 12
+    tick_fs = 10
+    legend_fs = 9.0
+    legend_title_fs = 9.0
 
     colors = _curve_colors(len(curves))
     handles: list[Any] = []
@@ -133,7 +136,7 @@ def _plot_dos_curves(
         line, = ax.plot(
             energy_meV,
             curve["rho"],
-            linewidth=2.8,
+            linewidth=1.25,
             color=color,
             label=rf"{_fraction_label(curve['fraction'])}",
         )
@@ -155,7 +158,7 @@ def _plot_dos_curves(
     y_top = 1.05 * float(np.nanmax(y_values)) if y_values.size else 1.0
     ax.set_ylim(bottom=0.0, top=max(1.05, y_top))
 
-    ax.set_xlabel(r"energy $E$ [meV]", fontsize=label_fs)
+    ax.set_xlabel(r"Energy $E$ [meV]", fontsize=label_fs)
     ax.set_ylabel(r"$\rho(E)$", fontsize=label_fs)
     ax.tick_params(axis="both", which="major", labelsize=tick_fs, direction="in", length=7.0, width=1.15)
     ax.tick_params(axis="both", which="minor", direction="in", length=4.0, width=0.9)

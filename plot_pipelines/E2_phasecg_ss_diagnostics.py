@@ -7,9 +7,6 @@ Allmaras phase drive without modifying the simulation state.
 
 from __future__ import annotations
 
-# TODO(plot-style): legacy styling is deprecated; migrate this pipeline to
-# pysnspd.plotting.style and its canonical thesis figure dimensions.
-
 import argparse
 from pathlib import Path
 from typing import Any, Mapping
@@ -72,6 +69,7 @@ def main() -> int:
         center_width_m=float(args.center_width_nm) * 1.0e-9,
         measured_wall_time_s=args.wall_time_seconds,
     )
+    _attach_snapshot_power_diagnostics(dataset, run.raw_ss)
 
     figures_dir = run.figures_dir / str(args.figures_subdir)
     saved = make_phasecg_ss_figures(
@@ -142,7 +140,7 @@ def _write_manifest(
         )
     )
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "pipeline": "plot_pipelines/E2_phasecg_ss_diagnostics.py",
         "purpose": (
             "Focused validation of the normalized Allmaras phase-drive continuation, "
@@ -173,6 +171,13 @@ def _write_manifest(
             "max_normalized_bulk_current_divergence": _max_finite(div_max),
             "continuity_passes": bool(dataset.get("continuity_passes", False)),
             "stationarity_passes": bool(dataset.get("stationarity_passes", False)),
+            "dynamic_stationarity_passes": bool(
+                dataset.get("dynamic_stationarity_passes", False)
+            ),
+            "thermal_stationarity_passes": bool(
+                dataset.get("thermal_stationarity_passes", False)
+            ),
+            "thermal_enabled": bool(dataset.get("thermal_enabled", False)),
             "phase_cg_converged_all_accepted_steps": bool(
                 phase_converged.size and np.all(phase_converged)
             ),
@@ -191,6 +196,30 @@ def _write_manifest(
             default_flow_style=False,
         )
     return out
+
+
+def _attach_snapshot_power_diagnostics(dataset: dict[str, Any], raw_ss: Path) -> None:
+    """Attach the stored thermal balance without recomputing catalogue lookups."""
+
+    path = Path(raw_ss) / "snapshot_power_energy_diagnostics.npz"
+    if not path.exists():
+        return
+    requested = (
+        "snapshot_t_ps",
+        "joule_snapshot_W_m3",
+        "P_S_snapshot_W_m3",
+        "P_R_snapshot_W_m3",
+        "P_total_snapshot_W_m3",
+        "P_esc_snapshot_W_m3",
+        "u_e_snapshot_J_m3",
+        "u_ph_snapshot_J_m3",
+        "C_e_snapshot_J_m3_K",
+        "C_ph_snapshot_J_m3_K",
+    )
+    with np.load(path, allow_pickle=True) as stored:
+        for key in requested:
+            if key in stored.files:
+                dataset[key] = np.asarray(stored[key])
 
 
 def _last_finite(values: np.ndarray) -> float | None:

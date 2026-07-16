@@ -16,6 +16,8 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
+
 
 def plot_eliashberg_spectrum(
     spectrum: Any,
@@ -35,6 +37,7 @@ def plot_eliashberg_spectrum(
     dpi:
         Rasterization DPI for PDF backends.
     """
+    apply_thesis_style()
     output = _prepare_output(output_path)
 
     omega_meV = np.asarray(spectrum.omega_meV, dtype=float)
@@ -57,13 +60,13 @@ def plot_eliashberg_spectrum(
     alpha_color = "tab:blue"
     phdos_color = "tab:purple"
 
-    fig, ax_a = plt.subplots(figsize=(9.4, 5.9))
+    fig, ax_a = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
     ax_p = ax_a.twinx()
 
-    label_fs = 20
-    tick_fs = 16
-    legend_fs = 13.5
-    legend_title_fs = 13.0
+    label_fs = 12
+    tick_fs = 10
+    legend_fs = 9.0
+    legend_title_fs = 9.0
 
     line_a, = ax_a.plot(
         omega_meV,
@@ -78,11 +81,11 @@ def plot_eliashberg_spectrum(
         phdos,
         linewidth=2.0,
         color=phdos_color,
-        label=r"PhDOS $F(\Omega)$",
+        label=r"Phonon DOS $F(\Omega)$",
         zorder=3,
     )
 
-    ax_a.set_xlabel(r"phonon energy $\Omega$ [meV]", fontsize=label_fs)
+    ax_a.set_xlabel(r"Phonon energy $\Omega$ [meV]", fontsize=label_fs)
     ax_a.set_ylabel(r"$\alpha^2F(\Omega)$", fontsize=label_fs, color=alpha_color)
     ax_p.set_ylabel(r"PhDOS [states/THz]", fontsize=label_fs, color=phdos_color)
 
@@ -117,7 +120,7 @@ def plot_eliashberg_spectrum(
             edgecolor="none",
             alpha=0.55,
             zorder=0,
-            label=r"high-energy band, $\Omega \geq 35$ meV",
+        label=r"High-energy band, $\Omega \geq 35$ meV",
         )
 
         ax_a.axvline(
@@ -139,7 +142,7 @@ def plot_eliashberg_spectrum(
     lambda_ep = float(getattr(spectrum, "lambda_ep", np.nan))
     if np.isfinite(lambda_ep):
         title_lines.append(rf"$\lambda_{{ep}}={lambda_ep:.3f}$")
-    title_lines.append("Full Simon/MIT NbN spectrum")
+    title_lines.append("Simon/MIT NbN spectrum")
     legend_title = "\n".join(title_lines)
 
     legend_handles = [line_a, line_p]
@@ -147,7 +150,7 @@ def plot_eliashberg_spectrum(
 
     if high_energy_band is not None:
         legend_handles.append(high_energy_band)
-        legend_labels.append(r"high-energy band")
+        legend_labels.append(r"High-energy band")
 
     legend = ax_a.legend(
         legend_handles,

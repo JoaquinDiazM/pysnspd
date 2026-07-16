@@ -87,7 +87,7 @@ def make_current_sweep_figures(
     saved: dict[str, Any] = {}
     saved["iv_curve"] = plot_current_sweep_iv(
         points,
-        out / "Z2_iv_curve.png",
+        out / "Z2_iv_curve.pdf",
         dpi=dpi,
         voltage_probe_offset_nm=voltage_probe_offset_nm,
         include_origin=include_origin,
@@ -95,7 +95,7 @@ def make_current_sweep_figures(
     )
     saved["terminal_iv_curve"] = plot_terminal_current_sweep_iv(
         points,
-        out / "Z2_terminal_iv_curve.png",
+        out / "Z2_terminal_iv_curve.pdf",
         dpi=dpi,
         include_origin=include_origin,
         delta_insets=terminal_inset_runs,
@@ -354,7 +354,7 @@ def plot_current_sweep_iv(
             fit_y,
             linewidth=1.55,
             color="black",
-            label="monotone fit",
+            label="Monotone fit",
             zorder=2.0,
         )
     if normal_x.size:
@@ -373,7 +373,7 @@ def plot_current_sweep_iv(
         y_valid,
         s=22.0,
         color="tab:blue",
-        label="raw data points",
+        label="Raw data points",
         zorder=3.0,
     )
 
@@ -407,16 +407,16 @@ def plot_current_sweep_iv(
         ax.set_ylim(lower, upper)
 
     handles = [raw_scatter]
-    labels = ["raw data points"]
+    labels = ["Raw data points"]
     if fit_line is not None:
         handles.append(fit_line)
-        labels.append("monotone fit")
+        labels.append("Monotone fit")
     if normal_line is not None:
         handles.append(normal_line)
         labels.append("Ohmic behavior")
     if snapshot_handle is not None:
         handles.append(snapshot_handle)
-        labels.append(r"$|\Delta|$ snapshots")
+        labels.append("Order-parameter snapshots")
 
     legend = ax.legend(
         handles,
@@ -474,7 +474,7 @@ def plot_terminal_current_sweep_iv(
             fit_y,
             linewidth=1.55,
             color="black",
-            label="monotone fit",
+            label="Monotone fit",
             zorder=2.0,
         )
     if normal_x.size:
@@ -493,7 +493,7 @@ def plot_terminal_current_sweep_iv(
         y_valid,
         s=25.0,
         color="tab:blue",
-        label="raw data points",
+        label="Raw data points",
         zorder=3.0,
     )
     if include_origin:
@@ -519,16 +519,16 @@ def plot_terminal_current_sweep_iv(
     _set_iv_limits(ax, x_valid, y_valid, normal_y, fit_y)
 
     handles = [raw_scatter]
-    labels = ["raw data points"]
+    labels = ["Raw data points"]
     if fit_line is not None:
         handles.append(fit_line)
-        labels.append("monotone fit")
+        labels.append("Monotone fit")
     if normal_line is not None:
         handles.append(normal_line)
         labels.append("Ohmic behavior")
     if snapshot_handle is not None:
         handles.append(snapshot_handle)
-        labels.append(r"$|\Delta|$ snapshots")
+        labels.append("Order-parameter snapshots")
     legend = ax.legend(handles, labels, loc="lower right", frameon=True)
     legend.get_frame().set_alpha(0.95)
 
@@ -994,7 +994,14 @@ def _draw_full_delta_panel(
         return
 
     triang = mtri.Triangulation(x_nm, y_nm, triangles)
-    ax.tripcolor(triang, field_meV, shading="gouraud", cmap=cmap, norm=norm)
+    ax.tripcolor(
+        triang,
+        field_meV,
+        shading="gouraud",
+        cmap=cmap,
+        norm=norm,
+        rasterized=True,
+    )
     ax.set_xlim(float(np.nanmin(x_nm)), float(np.nanmax(x_nm)))
     ax.set_ylim(float(np.nanmin(y_nm)), float(np.nanmax(y_nm)))
     ax.set_aspect("equal", adjustable="box")
@@ -1152,7 +1159,14 @@ def _draw_delta_inset(
     y_max = float(np.nanmax(y_nm))
 
     triang = mtri.Triangulation(x_nm, y_nm, triangles)
-    ax.tripcolor(triang, field_meV, shading="gouraud", cmap=cmap, norm=norm)
+    ax.tripcolor(
+        triang,
+        field_meV,
+        shading="gouraud",
+        cmap=cmap,
+        norm=norm,
+        rasterized=True,
+    )
     ax.set_xlim(x_left, x_right)
     ax.set_ylim(y_min, y_max)
     ax.set_aspect("equal", adjustable="box")

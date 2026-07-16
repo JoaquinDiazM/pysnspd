@@ -19,7 +19,15 @@ import matplotlib
 matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 from matplotlib.colors import SymLogNorm
+from matplotlib.ticker import FuncFormatter, MultipleLocator
 import numpy as np
+from scipy.constants import Boltzmann
+
+from pysnspd.plotting.style import (
+    THESIS_DOUBLE_FIGSIZE,
+    THESIS_WIDTH_IN,
+    apply_thesis_style,
+)
 
 MEV_J = 1.602176634e-22
 
@@ -146,11 +154,10 @@ def plot_power_channels_Te_Tph_maps(
     The slice is taken at the largest tabulated gap and q=0. This is the cleanest
     superconducting reference state for checking signs and relative channel size.
     """
+    apply_thesis_style()
     output = _prepare_output(output_path)
     i_delta = int(np.nanargmax(catalog.delta_values_J))
     i_q = _nearest_index(catalog.q_values_m_inv, 0.0)
-    delta_meV = _joule_to_mev(catalog.delta_values_J[i_delta])
-    q_1e7 = catalog.q_values_m_inv[i_q] / 1.0e7
 
     channels = [
         (catalog.P_S_W_m3[:, :, i_delta, i_q], r"$P_S$ scattering"),
@@ -161,7 +168,7 @@ def plot_power_channels_Te_Tph_maps(
     norm = _symmetric_log_norm(vmax)
     extent = _imshow_extent(catalog.Tph_values_K, catalog.Te_values_K)
 
-    fig, axes = plt.subplots(1, 3, figsize=(12.3, 3.75), constrained_layout=True)
+    fig, axes = plt.subplots(1, 3, figsize=THESIS_DOUBLE_FIGSIZE, constrained_layout=True)
     for ax, (arr, title) in zip(axes, channels):
         im = ax.imshow(
             arr,
@@ -178,8 +185,7 @@ def plot_power_channels_Te_Tph_maps(
         ax.set_ylabel(r"$T_e$ [K]")
         ax.grid(False)
     cbar = fig.colorbar(im, ax=axes.ravel().tolist(), shrink=0.92)
-    cbar.set_label(r"power density [W m$^{-3}$], positive: electrons $\rightarrow$ phonons")
-    fig.suptitle(rf"Projected powers at $|\Delta|={delta_meV:.3f}$ meV, $q={q_1e7:.2f}\times10^7$ m$^{{-1}}$")
+    cbar.set_label(r"Power density [W m$^{-3}$]; positive: electrons $\rightarrow$ phonons")
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
@@ -247,23 +253,56 @@ def plot_power_total_Te_curves(
     dpi: int = 480,
 ) -> Path:
     """Plot total power versus Te at bath phonon temperature for representative states."""
+    apply_thesis_style()
     output = _prepare_output(output_path)
     iTph = _nearest_index(catalog.Tph_values_K, float(np.nanmin(catalog.Tph_values_K)))
     states = _representative_state_indices(catalog)
 
-    fig, ax = plt.subplots(figsize=(7.4, 4.45))
-    max_abs = 0.0
+    fig, ax = plt.subplots(figsize=(THESIS_WIDTH_IN, 3.15))
+    positive_values: list[np.ndarray] = []
     for label, i_delta, i_q in states:
         y = catalog.P_total_W_m3[:, iTph, i_delta, i_q]
-        max_abs = max(max_abs, float(np.nanmax(np.abs(y)))) if np.isfinite(y).any() else max_abs
-        ax.plot(catalog.Te_values_K, y, marker=".", markersize=2.2, linewidth=1.0, label=label)
-    ax.axhline(0.0, color="black", linewidth=0.75, alpha=0.75)
-    ax.axvline(catalog.Tph_values_K[iTph], color="black", linewidth=0.75, alpha=0.55, linestyle="--")
-    ax.set_yscale("symlog", linthresh=max(1.0e-6 * max_abs, 1.0))
-    ax.set_title(rf"Projected total power vs $T_e$ at $T_{{ph}}={catalog.Tph_values_K[iTph]:.2f}$ K")
+        mask = np.isfinite(y) & (y > 0.0)
+        if np.any(mask):
+            positive_values.append(y[mask])
+            ax.plot(
+                catalog.Te_values_K[mask],
+                y[mask],
+                marker=".",
+                markersize=2.2,
+                linewidth=1.0,
+                label=label,
+            )
+    T_bath_K = float(catalog.Tph_values_K[iTph])
+    Tc_K = _critical_temperature_K(catalog)
+    ax.axvline(
+        T_bath_K,
+        color="0.20",
+        linewidth=0.9,
+        linestyle=":",
+        label=rf"Bath temperature, $T_b={T_bath_K:.2f}$ K",
+    )
+    if np.isfinite(Tc_K):
+        ax.axvline(
+            Tc_K,
+            color="0.35",
+            linewidth=0.9,
+            linestyle="--",
+            label=rf"Critical temperature, $T_c={Tc_K:.2f}$ K",
+        )
+    if positive_values:
+        positive = np.concatenate(positive_values)
+        y_min = max(float(np.nanmin(positive)) * 0.55, 1.0e-300)
+        y_max = float(np.nanmax(positive)) * 1.8
+        ax.set_yscale("log")
+        ax.set_ylim(y_min, y_max)
     ax.set_xlabel(r"$T_e$ [K]")
     ax.set_ylabel(r"$P_S+P_R$ [W m$^{-3}$]")
-    ax.legend(loc="best", fontsize=7.2)
+    T_min_K = float(np.nanmin(catalog.Te_values_K))
+    T_max_K = float(np.nanmax(catalog.Te_values_K))
+    T_margin_K = 0.02 * max(T_max_K - T_min_K, 1.0)
+    ax.set_xlim(max(0.0, T_min_K - T_margin_K), T_max_K)
+    ax.legend(loc="best", fontsize=7.0, ncol=2)
     ax.grid(True, linewidth=0.35, alpha=0.28)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -285,10 +324,11 @@ def plot_energy_heat_capacity_curves(
     curve versus $T_{ph}$.  The horizontal axis is therefore labelled as a
     generic temperature variable rather than purely $T_e$.
     """
+    apply_thesis_style()
     output = _prepare_output(output_path)
     states = _representative_state_indices(catalog)
 
-    fig, (ax_u, ax_c) = plt.subplots(1, 2, figsize=(11.4, 4.35), constrained_layout=True)
+    fig, (ax_u, ax_c) = plt.subplots(1, 2, figsize=THESIS_DOUBLE_FIGSIZE, constrained_layout=True)
     for label, i_delta, i_q in states:
         ax_u.plot(
             catalog.Te_values_K,
@@ -314,7 +354,7 @@ def plot_energy_heat_capacity_curves(
             color="black",
             linestyle="--",
             linewidth=1.35,
-            label=r"phonons: $u_{ph}(T_{ph})$",
+            label=r"Phonons: $u_{ph}(T_{ph})$",
         )
     if catalog.C_ph_J_m3_K.size:
         ax_c.plot(
@@ -323,18 +363,21 @@ def plot_energy_heat_capacity_curves(
             color="black",
             linestyle="--",
             linewidth=1.35,
-            label=r"phonons: $C_{ph}(T_{ph})$",
+            label=r"Phonons: $C_{ph}(T_{ph})$",
         )
 
     ax_u.set_title(r"Energy densities")
-    ax_u.set_xlabel(r"temperature variable [$T_e$ or $T_{ph}$] [K]")
-    ax_u.set_ylabel(r"energy density [J m$^{-3}$]")
+    ax_u.set_xlabel(r"Temperature [$T_e$ or $T_{ph}$] [K]")
+    ax_u.set_ylabel(r"Energy density [J m$^{-3}$]")
+    ax_u.set_ylim(bottom=0.0)
+    ax_u.yaxis.set_major_locator(MultipleLocator(2.0e4))
+    ax_u.yaxis.set_major_formatter(FuncFormatter(_format_thousands_tick))
     ax_u.grid(True, linewidth=0.35, alpha=0.28)
     ax_u.legend(loc="best", fontsize=7.0)
 
     ax_c.set_title(r"Heat capacities")
-    ax_c.set_xlabel(r"temperature variable [$T_e$ or $T_{ph}$] [K]")
-    ax_c.set_ylabel(r"heat capacity [J m$^{-3}$ K$^{-1}$]")
+    ax_c.set_xlabel(r"Temperature [$T_e$ or $T_{ph}$] [K]")
+    ax_c.set_ylabel(r"Heat capacity [J m$^{-3}$ K$^{-1}$]")
     finite_c = np.abs(catalog.C_e_J_m3_K[np.isfinite(catalog.C_e_J_m3_K)])
     if catalog.C_ph_J_m3_K.size:
         finite_c = np.concatenate([finite_c, np.abs(catalog.C_ph_J_m3_K[np.isfinite(catalog.C_ph_J_m3_K)])]) if finite_c.size else np.abs(catalog.C_ph_J_m3_K[np.isfinite(catalog.C_ph_J_m3_K)])
@@ -343,7 +386,6 @@ def plot_energy_heat_capacity_curves(
     ax_c.grid(True, linewidth=0.35, alpha=0.28)
     ax_c.legend(loc="best", fontsize=7.0)
 
-    fig.suptitle("Runtime energy and heat-capacity tables extracted from the PRE power catalogue")
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
@@ -357,29 +399,39 @@ def plot_electronic_thermal_conductivity_curves(
     dpi: int = 480,
 ) -> Path:
     """Plot the Bardeen/Allmaras superconducting electronic thermal conductivity."""
+    apply_thesis_style()
     output = _prepare_output(output_path)
 
-    fig, ax = plt.subplots(figsize=(7.2, 4.35))
+    fig, ax = plt.subplots(figsize=(THESIS_WIDTH_IN, 3.0))
     delta_states = _representative_delta_indices(catalog)
+    Tc_K = _critical_temperature_K(catalog)
+    T_max_K = float(np.nanmax(catalog.Te_values_K))
     for prefix, i_delta in delta_states:
         y = catalog.kappa_s_W_m_K[:, i_delta]
+        kappa_at_tc = _interpolate_finite(catalog.Te_values_K, y, Tc_K)
+        kappa_at_tmax = _interpolate_finite(catalog.Te_values_K, y, T_max_K)
+        label = (
+            _delta_label(catalog, prefix, i_delta)
+            + "\n"
+            + rf"$\kappa_s(T_c)={_format_compact_value(kappa_at_tc)}$, "
+            + rf"$\kappa_s(T_{{\max}})={_format_compact_value(kappa_at_tmax)}$ W m$^{{-1}}$ K$^{{-1}}$"
+        )
         ax.plot(
             catalog.Te_values_K,
             y,
             marker=".",
             markersize=2.0,
             linewidth=1.0,
-            label=_delta_label(catalog, prefix, i_delta),
+            label=label,
         )
 
-    ax.set_title(r"Superconducting electronic thermal conductivity")
     ax.set_xlabel(r"$T_e$ [K]")
     ax.set_ylabel(r"$\kappa_s$ [W m$^{-1}$ K$^{-1}$]")
     positive = catalog.kappa_s_W_m_K[np.isfinite(catalog.kappa_s_W_m_K) & (catalog.kappa_s_W_m_K > 0.0)]
     if positive.size and float(np.nanmax(positive) / max(np.nanmin(positive), 1.0e-300)) > 50.0:
         ax.set_yscale("log")
     ax.grid(True, linewidth=0.35, alpha=0.28)
-    ax.legend(loc="best", fontsize=7.2)
+    ax.legend(loc="best", fontsize=6.8, labelspacing=0.55)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
@@ -423,10 +475,10 @@ def _representative_state_indices(catalog: PowerTablePlotCatalog) -> list[tuple[
     i_q_mid = _nearest_index(catalog.q_values_m_inv, 0.5 * float(np.nanmax(catalog.q_values_m_inv)))
     i_q_high = _nearest_index(catalog.q_values_m_inv, 0.85 * float(np.nanmax(catalog.q_values_m_inv)))
     return [
-        (_state_label(catalog, "normal-like", i_delta0, i_q0), i_delta0, i_q0),
-        (_state_label(catalog, "SC q=0", i_delta_max, i_q0), i_delta_max, i_q0),
-        (_state_label(catalog, "SC mid-q", i_delta_max, i_q_mid), i_delta_max, i_q_mid),
-        (_state_label(catalog, "reduced gap high-q", i_delta_half, i_q_high), i_delta_half, i_q_high),
+        (_state_label(catalog, "Normal-like", i_delta0, i_q0), i_delta0, i_q0),
+        (_state_label(catalog, "SC, q=0", i_delta_max, i_q0), i_delta_max, i_q0),
+        (_state_label(catalog, "SC, intermediate q", i_delta_max, i_q_mid), i_delta_max, i_q_mid),
+        (_state_label(catalog, "Reduced gap, high q", i_delta_half, i_q_high), i_delta_half, i_q_high),
     ]
 
 
@@ -436,9 +488,9 @@ def _representative_delta_indices(catalog: PowerTablePlotCatalog) -> list[tuple[
     i_delta_half = _nearest_index(catalog.delta_values_J, 0.5 * float(np.nanmax(catalog.delta_values_J)))
     i_delta_max = int(np.nanargmax(catalog.delta_values_J))
     return [
-        ("normal-like", i_delta0),
-        ("intermediate gap", i_delta_half),
-        ("max gap", i_delta_max),
+        ("Normal-like", i_delta0),
+        ("Intermediate gap", i_delta_half),
+        ("Maximum gap", i_delta_max),
     ]
 
 
@@ -544,6 +596,45 @@ def _metadata_float(metadata: dict[str, Any], key: str) -> float:
         return float(metadata[key])
     except Exception:
         return float("nan")
+
+
+def _critical_temperature_K(catalog: PowerTablePlotCatalog) -> float:
+    Tc_K = _metadata_float(catalog.metadata, "Tc_K")
+    if np.isfinite(Tc_K) and Tc_K > 0.0:
+        return Tc_K
+    delta0_J = _metadata_float(catalog.metadata, "delta0_J")
+    if np.isfinite(delta0_J) and delta0_J > 0.0:
+        return float(delta0_J / (1.764 * Boltzmann))
+    return float("nan")
+
+
+def _interpolate_finite(x: np.ndarray, y: np.ndarray, target: float) -> float:
+    x_values = np.asarray(x, dtype=float)
+    y_values = np.asarray(y, dtype=float)
+    mask = np.isfinite(x_values) & np.isfinite(y_values)
+    if not np.any(mask) or not np.isfinite(target):
+        return float("nan")
+    order = np.argsort(x_values[mask])
+    return float(np.interp(float(target), x_values[mask][order], y_values[mask][order]))
+
+
+def _format_compact_value(value: float) -> str:
+    if not np.isfinite(value):
+        return r"\mathrm{n/a}"
+    magnitude = abs(float(value))
+    if magnitude == 0.0:
+        return "0"
+    if 1.0e-2 <= magnitude < 1.0e3:
+        return f"{value:.3g}"
+    exponent = int(np.floor(np.log10(magnitude)))
+    mantissa = float(value) / 10.0**exponent
+    return rf"{mantissa:.2f}\times10^{{{exponent}}}"
+
+
+def _format_thousands_tick(value: float, _position: float) -> str:
+    if np.isclose(value, 0.0):
+        return "0"
+    return f"{value / 1.0e3:g}k"
 
 
 
