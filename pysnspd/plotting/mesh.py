@@ -20,7 +20,9 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Circle
 import numpy as np
 
-from pysnspd.plotting.style import THESIS_WIDTH_IN, apply_thesis_style
+from pysnspd.plotting.style import THESIS_DPI, THESIS_WIDTH_IN, apply_thesis_style
+
+apply_thesis_style()
 
 
 Color = str | Sequence[float] | None
@@ -30,7 +32,7 @@ def plot_mesh_pytdgl_style(
     mesh: Any,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     show_sites: bool = True,
     show_edges: bool = True,
     show_dual_edges: bool = True,

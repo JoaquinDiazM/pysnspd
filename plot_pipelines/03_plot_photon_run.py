@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-# TODO(plot-style): legacy styling is deprecated; migrate this pipeline to
-# pysnspd.plotting.style and its canonical thesis figure dimensions.
-
 import argparse
 from pathlib import Path
 from typing import Any
@@ -15,6 +12,7 @@ from pysnspd.config import load_config, validate_config
 from pysnspd.io.manager import create_run_layout
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.plotting.photon_figures import load_npz_dict, make_photon_run_figures
+from pysnspd.plotting.style import THESIS_DPI
 
 
 def parse_args() -> argparse.Namespace:
@@ -26,7 +24,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="PRE run name. Required when --scalar-times-ps is used because the mesh is loaded from PRE.",
     )
-    parser.add_argument("--dpi", type=int, default=480)
+    parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     parser.add_argument("--center-width-nm", type=float, default=100.0)
     parser.add_argument(
         "--scalar-times-ps",

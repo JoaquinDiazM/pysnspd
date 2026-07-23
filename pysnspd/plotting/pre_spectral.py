@@ -21,7 +21,9 @@ from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_ga
 from pysnspd.usadel.parameters import HBAR_J_S
 from pysnspd.mesh.delaunay import MeshData, triangle_areas
 from pysnspd.mesh.edges import EdgeData
-from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
+
+apply_thesis_style()
 
 MEV_J = 1.602176634e-22
 
@@ -111,7 +113,7 @@ def plot_usadel_equilibrium_dos_map(
     usadel_catalog: Any,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     energy_window: bool = True,
     energy_tail_rel_threshold: float = 0.1
 ) -> Path:
@@ -168,7 +170,7 @@ def plot_usadel_equilibrium_dos_map(
 
     visible_E = _energy_visible_mask(E_meV, xlim)
 
-    fig, ax = plt.subplots(figsize=(7.1, 4.35))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
 
     # Normalize using only the visible energy range, so the long rho -> 1 tail
     # does not dominate the visual scale.
@@ -200,7 +202,7 @@ def plot_usadel_equilibrium_anomalous_map(
     usadel_catalog: Any,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     energy_window: bool = True,
     energy_tail_rel_threshold: float = 0.1,
 ) -> Path:
@@ -232,7 +234,7 @@ def plot_usadel_equilibrium_anomalous_map(
 
     visible_E = _energy_visible_mask(E_meV, xlim)
 
-    fig, ax = plt.subplots(figsize=(7.1, 4.35))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
 
     # Normalize using only the visible energy range. This prevents the hidden
     # asymptotic tail from affecting the color scale.
@@ -268,7 +270,7 @@ def plot_usadel_zero_energy_dos_map(
     usadel_catalog: Any,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot the zero-energy DOS over the independent (Delta,q) catalogue axes.
 
@@ -283,7 +285,7 @@ def plot_usadel_zero_energy_dos_map(
     delta_meV = _joule_to_mev(np.asarray(usadel_catalog.delta_values_J, dtype=float))
     zero_map = rho[:, :, idx0]
 
-    fig, ax = plt.subplots(figsize=(7.1, 4.35))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
     im = ax.imshow(
         zero_map,
         origin="lower",
@@ -316,7 +318,7 @@ def plot_usadel_equilibrium_gap_Tq_map(
     usadel_catalog: Any,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     usadel_npz_path: str | Path | None = None,
 ) -> Path:
     """Plot the equilibrium gap over the available temperature--q grid.
@@ -340,7 +342,7 @@ def plot_usadel_equilibrium_gap_Tq_map(
     q_1e7 = np.asarray(q_vals_m_inv, dtype=float) / 1.0e7
     delta_eq_meV = _joule_to_mev(np.asarray(delta_eq_values_J, dtype=float))
 
-    fig, ax = plt.subplots(figsize=(7.1, 4.35))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
     vmax = float(np.nanmax(delta_eq_meV)) if np.isfinite(delta_eq_meV).any() else 1.0
     vmax = max(vmax, 1.0e-12)
 

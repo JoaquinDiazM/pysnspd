@@ -29,10 +29,6 @@ import numpy as np
 import yaml
 
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
-from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
-
-apply_thesis_style()
-
 MEV_J = 1.602176634e-22
 
 def _add_delta_insets(ax: plt.Axes, delta_insets: Sequence[Mapping[str, Any]]) -> None:

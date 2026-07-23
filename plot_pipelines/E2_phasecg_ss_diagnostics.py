@@ -18,6 +18,7 @@ from pysnspd.analysis.ss_phasecg import build_phasecg_diagnostic_dataset
 from pysnspd.analysis.ss_run import load_ss_run
 from pysnspd.config import load_config, validate_config
 from pysnspd.plotting.ss_phasecg_figures import make_phasecg_ss_figures
+from pysnspd.plotting.style import THESIS_DPI
 
 
 def parse_args() -> argparse.Namespace:
@@ -46,7 +47,7 @@ def parse_args() -> argparse.Namespace:
             "attempt-count estimate because this run format stores no step timings."
         ),
     )
-    parser.add_argument("--dpi", type=int, default=240)
+    parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     parser.add_argument(
         "--figures-subdir",
         default="E2_phasecg_diagnostics",

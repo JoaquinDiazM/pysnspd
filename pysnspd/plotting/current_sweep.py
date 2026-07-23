@@ -29,9 +29,7 @@ import numpy as np
 import yaml
 
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
-from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
-
-apply_thesis_style()
+from pysnspd.plotting.style import THESIS_DPI
 
 MEV_J = 1.602176634e-22
 

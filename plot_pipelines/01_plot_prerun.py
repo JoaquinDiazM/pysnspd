@@ -13,9 +13,6 @@ It does not modify the raw PRE-run.
 
 from __future__ import annotations
 
-# TODO(plot-style): legacy styling is deprecated; migrate this pipeline to
-# pysnspd.plotting.style and its canonical thesis figure dimensions.
-
 import argparse
 from pathlib import Path
 from typing import Any
@@ -30,6 +27,7 @@ from pysnspd.usadel.catalog import load_usadel_catalog_npz
 from pysnspd.plotting.mesh import plot_mesh_pytdgl_style
 from pysnspd.plotting.pre_diagnostics import write_pre_diagnostic_plots
 from pysnspd.plotting.power_diagnostics import write_power_table_diagnostic_plots
+from pysnspd.plotting.style import THESIS_DPI
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,7 +36,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--config", required=True, help="Path to YAML project config.")
     parser.add_argument("--run-name", required=True, help="Existing PRE-run name to plot.")
-    parser.add_argument("--dpi", type=int, default=480)
+    parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     parser.add_argument(
         "--figures-subdir",
         default=None,

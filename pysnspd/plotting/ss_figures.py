@@ -18,13 +18,22 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 
+from pysnspd.plotting.style import (
+    THESIS_DOUBLE_FIGSIZE,
+    THESIS_DPI,
+    THESIS_WIDTH_IN,
+    apply_thesis_style,
+)
+
+apply_thesis_style()
+
 
 def make_ss_run_figures(
     *,
     mesh: Any,
     dataset: Mapping[str, Any],
     output_dir: str | Path,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> dict[str, Path]:
     """Create the standard SS figure set under ``plots/<run>/figures``."""
 
@@ -50,7 +59,13 @@ def _legend_if_labels(ax, *, frameon: bool = False, loc: str = "best") -> None:
         ax.legend(handles, labels, frameon=frameon, loc=loc)
 
         
-def plot_ss_final_overview(mesh: Any, dataset: Mapping[str, Any], output_path: str | Path, *, dpi: int = 480) -> Path:
+def plot_ss_final_overview(
+    mesh: Any,
+    dataset: Mapping[str, Any],
+    output_path: str | Path,
+    *,
+    dpi: int = THESIS_DPI,
+) -> Path:
     """Plot final SS fields in a compact six-panel overview."""
 
     output = Path(output_path)
@@ -68,28 +83,60 @@ def plot_ss_final_overview(mesh: Any, dataset: Mapping[str, Any], output_path: s
         ("pairbreaking_ratio", r"pairbreaking ratio", r"$\chi_{pb}$", False, 0.0),
     ]
 
-    fig, axes = plt.subplots(2, 3, figsize=(12.6, 6.8), constrained_layout=False)
-    fig.subplots_adjust(left=0.055, right=0.965, bottom=0.080, top=0.900, wspace=0.28, hspace=0.32)
+    fig, axes = plt.subplots(
+        2,
+        3,
+        figsize=(THESIS_WIDTH_IN, 4.5),
+        constrained_layout=False,
+    )
+    fig.subplots_adjust(
+        left=0.065,
+        right=0.975,
+        bottom=0.085,
+        top=0.900,
+        wspace=0.58,
+        hspace=0.38,
+    )
     fig.suptitle(f"SS final state: {dataset.get('run_name', '')}", y=0.975)
 
     for ax, (key, title, label, symmetric, vmin) in zip(axes.ravel(), panels):
         z = np.asarray(dataset.get(key, []), dtype=float)
         if key.endswith("_A_m2"):
             z = z / jscale
-        _draw_node_scalar(ax, tri, z, title=title, label=label, symmetric=symmetric, vmin=vmin)
+        _draw_node_scalar(
+            ax,
+            tri,
+            z,
+            title=title,
+            label=label,
+            symmetric=symmetric,
+            vmin=vmin,
+            compact=True,
+        )
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
     return output
 
 
-def plot_ss_relaxation_monitors(dataset: Mapping[str, Any], output_path: str | Path, *, dpi: int = 480) -> Path:
+def plot_ss_relaxation_monitors(
+    dataset: Mapping[str, Any],
+    output_path: str | Path,
+    *,
+    dpi: int = THESIS_DPI,
+) -> Path:
     """Plot physical and numerical monitors versus physical time."""
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
     t = np.asarray(dataset.get("t_ps", []), dtype=float)
-    fig, axes = plt.subplots(3, 1, figsize=(9.0, 7.8), sharex=True, constrained_layout=False)
+    fig, axes = plt.subplots(
+        3,
+        1,
+        figsize=(THESIS_WIDTH_IN, 6.0),
+        sharex=True,
+        constrained_layout=False,
+    )
     fig.subplots_adjust(left=0.110, right=0.970, bottom=0.085, top=0.930, hspace=0.32)
     fig.suptitle(f"SS relaxation monitors: {dataset.get('run_name', '')}", y=0.985)
 
@@ -123,13 +170,24 @@ def plot_ss_relaxation_monitors(dataset: Mapping[str, Any], output_path: str | P
 
 
 
-def plot_ss_adaptive_summary(dataset: Mapping[str, Any], output_path: str | Path, *, dpi: int = 480) -> Path:
+def plot_ss_adaptive_summary(
+    dataset: Mapping[str, Any],
+    output_path: str | Path,
+    *,
+    dpi: int = THESIS_DPI,
+) -> Path:
     """Plot adaptive Euler information from relaxation history."""
 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
     t = np.asarray(dataset.get("t_ps", []), dtype=float)
-    fig, axes = plt.subplots(2, 1, figsize=(9.0, 6.4), sharex=True, constrained_layout=False)
+    fig, axes = plt.subplots(
+        2,
+        1,
+        figsize=(THESIS_WIDTH_IN, 4.8),
+        sharex=True,
+        constrained_layout=False,
+    )
     fig.subplots_adjust(left=0.110, right=0.970, bottom=0.095, top=0.920, hspace=0.34)
     fig.suptitle(f"SS adaptive Euler summary: {dataset.get('run_name', '')}", y=0.985)
 
@@ -157,7 +215,13 @@ def plot_ss_adaptive_summary(dataset: Mapping[str, Any], output_path: str | Path
     return output
 
 
-def plot_ss_region_masks(mesh: Any, dataset: Mapping[str, Any], output_path: str | Path, *, dpi: int = 480) -> Path:
+def plot_ss_region_masks(
+    mesh: Any,
+    dataset: Mapping[str, Any],
+    output_path: str | Path,
+    *,
+    dpi: int = THESIS_DPI,
+) -> Path:
     """Visualize terminal and bulk masks used by post-run analysis."""
 
     output = Path(output_path)
@@ -173,7 +237,7 @@ def plot_ss_region_masks(mesh: Any, dataset: Mapping[str, Any], output_path: str
     z[bulk] = 1.0
     z[terminal] = 2.0
 
-    fig, ax = plt.subplots(figsize=(8.2, 3.2))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
     _draw_node_scalar(ax, tri, z, title="analysis masks: bulk and metallic terminals", label="mask id", vmin=0.0)
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
@@ -196,6 +260,7 @@ def _draw_node_scalar(
     label: str,
     symmetric: bool = False,
     vmin: float | None = None,
+    compact: bool = False,
 ):
     z = np.asarray(values, dtype=float)
     if z.size != tri.x.size:
@@ -214,13 +279,23 @@ def _draw_node_scalar(
         if not np.isfinite(vmax) or vmax <= vmin:
             vmax = vmin + 1.0
     mappable = ax.tripcolor(tri, z, shading="gouraud", vmin=vmin, vmax=vmax)
-    ax.set_title(title)
-    ax.set_xlabel("x [nm]")
-    ax.set_ylabel("y [nm]")
+    if compact:
+        ax.set_title(title, fontsize=8.0)
+        ax.set_xlabel("x [nm]", fontsize=8.0)
+        ax.set_ylabel("y [nm]", fontsize=8.0)
+        ax.tick_params(labelsize=7.0)
+    else:
+        ax.set_title(title)
+        ax.set_xlabel("x [nm]")
+        ax.set_ylabel("y [nm]")
     ax.set_aspect("equal", adjustable="box")
     ax.grid(False)
     cb = ax.figure.colorbar(mappable, ax=ax, shrink=0.86)
-    cb.set_label(label)
+    if compact:
+        cb.set_label(label, fontsize=8.0)
+        cb.ax.tick_params(labelsize=7.0)
+    else:
+        cb.set_label(label)
 
 
 def _plot_curve(ax, x, y, label: str):

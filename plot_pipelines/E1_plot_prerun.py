@@ -48,6 +48,7 @@ from pysnspd.plotting.power_diagnostics import (
     plot_power_channels_Te_Tph_maps,
     plot_power_total_Te_curves,
 )
+from pysnspd.plotting.style import THESIS_DPI
 from pysnspd.plotting.usadel_dos_curves import (
     plot_usadel_dos_curves_equilibrium_gap,
     plot_usadel_dos_curves_fixed_delta0,
@@ -242,7 +243,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--dpi",
         type=int,
-        default=480,
+        default=THESIS_DPI,
         help="PDF rasterization DPI for any rasterized artists.",
     )
     parser.add_argument(

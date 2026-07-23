@@ -24,7 +24,9 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
+
+apply_thesis_style()
 
 MEV_J = 1.602176634e-22
 _DEFAULT_CURRENT_FRACTIONS: tuple[float, ...] = (0.0, 0.25, 0.50, 0.65, 0.80, 0.95)
@@ -35,7 +37,7 @@ def plot_usadel_dos_curves_equilibrium_gap(
     output_path: str | Path,
     *,
     current_fractions: Sequence[float] = _DEFAULT_CURRENT_FRACTIONS,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     energy_max_meV: float | None = 4.0,
     energy_window: bool = True,
 ) -> Path:
@@ -61,7 +63,7 @@ def plot_usadel_dos_curves_fixed_delta0(
     output_path: str | Path,
     *,
     current_fractions: Sequence[float] = _DEFAULT_CURRENT_FRACTIONS,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     energy_max_meV: float | None = 4.0,
     energy_window: bool = True,
 ) -> Path:

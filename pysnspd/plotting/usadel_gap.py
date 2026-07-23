@@ -18,7 +18,9 @@ import sys
 import numpy as np
 from scipy.constants import Boltzmann, e
 
-from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
+
+apply_thesis_style()
 from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_gamma_J
 from pysnspd.usadel.parameters import E_CHARGE_C, HBAR_J_S
 
@@ -448,7 +450,7 @@ def plot_gap_eq_vs_temperature(
     *,
     n_curves: int | None = None,
     q_critical_m_inv: float | None = None,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     title: str | None = None,
 ) -> Path:
     """Plot ``Delta_eq`` versus temperature for multiple q values."""

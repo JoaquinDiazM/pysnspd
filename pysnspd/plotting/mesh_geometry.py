@@ -20,9 +20,6 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Circle
 import numpy as np
 
-from pysnspd.plotting.style import THESIS_WIDTH_IN, apply_thesis_style
-
-
 Color = str | Sequence[float] | None
 
 

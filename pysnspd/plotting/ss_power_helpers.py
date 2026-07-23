@@ -29,6 +29,9 @@ import matplotlib.tri as mtri
 from matplotlib.colors import LogNorm, SymLogNorm
 
 from pysnspd.analysis.snapshots import compute_snapshot_joule_power_density
+from pysnspd.plotting.style import THESIS_WIDTH_IN, apply_thesis_style
+
+apply_thesis_style()
 
 MEV_J = 1.602176634e-22
 
@@ -259,9 +262,14 @@ def _snapshot_grid_figure(
     wspace: float = 0.10,
     hspace: float = 0.24,
 ):
-    width = max(7.5, 2.12 * max(ncols, 1) + 1.2)
     height = max(3.0, 1.80 * max(nrows, 1) + 1.1)
-    fig, axes = plt.subplots(nrows, ncols, figsize=(width, height), squeeze=False, constrained_layout=False)
+    fig, axes = plt.subplots(
+        nrows,
+        ncols,
+        figsize=(THESIS_WIDTH_IN, height),
+        squeeze=False,
+        constrained_layout=False,
+    )
     fig.subplots_adjust(left=left, right=right, bottom=bottom, top=top, wspace=wspace, hspace=hspace)
     fig.suptitle(title, y=0.975)
     return fig, axes

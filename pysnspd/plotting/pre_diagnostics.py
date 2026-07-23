@@ -21,7 +21,9 @@ from pysnspd.usadel.calibration import matsubara_energy_axis_J, solve_gap_for_ga
 from pysnspd.usadel.parameters import HBAR_J_S
 from pysnspd.mesh.delaunay import MeshData, triangle_areas
 from pysnspd.mesh.edges import EdgeData
-from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
+
+apply_thesis_style()
 
 MEV_J = 1.602176634e-22
 
@@ -32,7 +34,7 @@ def write_pre_diagnostic_plots(
     edge_data: EdgeData,
     usadel_catalog: Any,
     output_dir: str | Path,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     usadel_npz_path: str | Path | None = None,
 ) -> dict[str, str]:
     """Write standard PRE diagnostic plots and return their paths.
@@ -90,13 +92,13 @@ def plot_triangle_area_histogram(
     mesh: MeshData,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot the distribution of triangle areas in nm^2."""
     output = _prepare_output(output_path)
     areas_nm2 = triangle_areas(mesh.nodes, mesh.triangles) * 1.0e18
 
-    fig, ax = plt.subplots(figsize=(6.2, 4.0))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
     ax.hist(areas_nm2, bins=_safe_histogram_bins(areas_nm2, max_bins=60))
     ax.axvline(float(np.mean(areas_nm2)), linestyle="--", linewidth=1.0, label="mean")
     ax.set_title("PRE mesh: triangle area distribution")
@@ -114,14 +116,14 @@ def plot_edge_length_histogram(
     edge_data: EdgeData,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot the interior/boundary edge-length distributions in nm."""
     output = _prepare_output(output_path)
     lengths_nm = np.asarray(edge_data.lengths, dtype=float) * 1.0e9
     boundary = np.asarray(edge_data.is_boundary, dtype=bool)
 
-    fig, ax = plt.subplots(figsize=(6.2, 4.0))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
     if np.any(~boundary):
         interior_lengths = lengths_nm[~boundary]
         ax.hist(
@@ -154,7 +156,7 @@ def plot_usadel_supercurrent_curve(
     usadel_catalog: Any,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot Usadel calibration current and equilibrium gap versus superfluid momentum."""
     apply_thesis_style()

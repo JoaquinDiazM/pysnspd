@@ -25,9 +25,12 @@ from scipy.constants import Boltzmann
 
 from pysnspd.plotting.style import (
     THESIS_DOUBLE_FIGSIZE,
+    THESIS_DPI,
     THESIS_WIDTH_IN,
     apply_thesis_style,
 )
+
+apply_thesis_style()
 
 MEV_J = 1.602176634e-22
 
@@ -60,7 +63,7 @@ def write_power_table_diagnostic_plots(
     *,
     power_table_npz: str | Path,
     output_dir: str | Path,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> dict[str, str]:
     """Write diagnostic plots for a PRE-run projected power table."""
     cat = load_power_table_plot_catalog(power_table_npz)
@@ -144,7 +147,7 @@ def plot_power_channels_Te_Tph_maps(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot scattering, recombination and total powers over the (Te,Tph) plane.
 
@@ -192,7 +195,7 @@ def plot_power_total_Delta_q_maps(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot total projected power over (Delta,q) for four thermal states."""
     output = _prepare_output(output_path)
@@ -218,7 +221,12 @@ def plot_power_total_Delta_q_maps(
     delta_meV = _joule_to_mev(catalog.delta_values_J)
     extent = _imshow_extent(q_1e7, delta_meV)
 
-    fig, axes = plt.subplots(2, 2, figsize=(9.2, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(
+        2,
+        2,
+        figsize=(THESIS_WIDTH_IN, 6.0),
+        constrained_layout=True,
+    )
     for ax, (arr, label) in zip(axes.ravel(), slices):
         im = ax.imshow(
             arr,
@@ -245,7 +253,7 @@ def plot_power_total_Te_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot total power versus Te at bath phonon temperature for representative states."""
     apply_thesis_style()
@@ -313,7 +321,7 @@ def plot_energy_heat_capacity_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     r"""Plot electronic/phononic energy and heat capacity curves.
 
@@ -396,7 +404,7 @@ def plot_electronic_thermal_conductivity_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot the Bardeen/Allmaras superconducting electronic thermal conductivity."""
     apply_thesis_style()
@@ -444,7 +452,7 @@ def plot_equal_temperature_residual(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot detailed-balance residual max |P_total(Te=Tph)| over the state grid."""
     output = _prepare_output(output_path)
@@ -453,7 +461,7 @@ def plot_equal_temperature_residual(
     for k, (it, ip) in enumerate(zip(iTe, iTph)):
         residual[k] = float(np.nanmax(np.abs(catalog.P_total_W_m3[it, ip, :, :])))
 
-    fig, ax = plt.subplots(figsize=(6.7, 4.15))
+    fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE)
     ax.plot(common_T, residual, marker=".", markersize=3.0, linewidth=1.0)
     ax.set_title(r"Detailed-balance check: max $|P_S+P_R|$ at $T_e=T_{ph}$")
     ax.set_xlabel("temperature [K]")

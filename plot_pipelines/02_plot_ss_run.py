@@ -7,9 +7,6 @@ This post-processing pipeline reads raw SS outputs from
 
 from __future__ import annotations
 
-# TODO(plot-style): legacy styling is deprecated; migrate this pipeline to
-# pysnspd.plotting.style and its canonical thesis figure dimensions.
-
 import argparse
 from pathlib import Path
 from typing import Any
@@ -21,6 +18,7 @@ from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
 from pysnspd.plotting.ss_figures import make_ss_run_figures
 from pysnspd.plotting.ss_power_figures import make_ss_snapshot_power_figures
 from pysnspd.plotting.ss_memory_figures import make_ss_memory_figures
+from pysnspd.plotting.style import THESIS_DPI
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,7 +30,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="PRE run containing mesh/edge files. If omitted, read from ss_summary.yaml.",
     )
-    parser.add_argument("--dpi", type=int, default=480)
+    parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     parser.add_argument(
         "--figures-subdir",
         default=None,

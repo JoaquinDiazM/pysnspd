@@ -10,8 +10,17 @@ matplotlib.use("Agg", force=True)
 
 import matplotlib.pyplot as plt
 
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
 
-def plot_ss_adaptive_timestep_history(history: dict, output_path: str | Path, *, dpi: int = 480) -> Path:
+apply_thesis_style()
+
+
+def plot_ss_adaptive_timestep_history(
+    history: dict,
+    output_path: str | Path,
+    *,
+    dpi: int = THESIS_DPI,
+) -> Path:
     """Plot adaptive-Euler step-size diagnostics.
 
     The upper panel shows the actual accepted ``dt`` together with the
@@ -24,7 +33,13 @@ def plot_ss_adaptive_timestep_history(history: dict, output_path: str | Path, *,
     output.parent.mkdir(parents=True, exist_ok=True)
     t_ps = np.asarray(history.get("t_s", []), dtype=float) / 1.0e-12
 
-    fig, axes = plt.subplots(2, 1, figsize=(8.8, 6.2), sharex=True, constrained_layout=False)
+    fig, axes = plt.subplots(
+        2,
+        1,
+        figsize=THESIS_DOUBLE_FIGSIZE,
+        sharex=True,
+        constrained_layout=False,
+    )
     fig.subplots_adjust(left=0.105, right=0.970, bottom=0.090, top=0.925, hspace=0.42)
     ax_dt, ax_retry = axes
 

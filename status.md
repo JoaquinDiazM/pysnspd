@@ -73,6 +73,38 @@ Validation on Geminga:
 - pytest: `103 passed in 13.26s`;
 - no PRE, SS, photon, sweep, or publication plot was regenerated.
 
+## Plot-style unification record
+
+All figure-producing modules under `pysnspd/plotting/` now load
+`thesis_sty.mplstyle` through `apply_thesis_style()`. Public plotting functions
+and all seven scripts in `plot_pipelines/` use `THESIS_DPI` as their default,
+and figure widths come from the shared thesis constants rather than independent
+numeric widths. The deprecated style TODOs in pipelines 01, 02, and 03 were
+removed.
+
+The migration covered the remaining legacy producers for photon, stationary
+summary, memory, snapshot-power, snapshot-grid, and adaptive-step figures.
+Explicit 14-point overrides in the legacy photon and SS-memory plots were
+removed so labels, ticks, and legends inherit the common typography. Compact
+multi-panel labels remain explicit only where the canonical page width
+requires them.
+
+`tests/test_plotting_style_policy.py` now rejects figure producers that do not
+apply the shared style, numeric DPI defaults, independent numeric figure
+widths, divergent pipeline DPI defaults, and reintroduced migration TODOs. A
+new pipeline-03 plotting smoke test covers its five-column scalar snapshot
+figure.
+
+Validation on Geminga:
+
+- style policy: `6 passed`;
+- plotting smoke tests: all seven entry points accept `--help`;
+- complete pytest suite: `110 passed in 13.31s`;
+- synthetic renders for SS overview, SS relaxation/adaptive diagnostics,
+  snapshot power maps, runtime metrics, and photon scalar maps were visually
+  checked for clipping, overlap, and legibility;
+- no production PRE, SS, photon, sweep, or publication dataset was modified.
+
 ## Frozen change inventory
 
 The production diff at the freeze contains nine plotting modules, with 83
@@ -125,7 +157,7 @@ debt; P3 is cleanup that can wait until the scientific path is stable.
 | MAT-002 | P1 | Open | Cross-consistency among `D`, `sigma_n`, sheet resistance, `N(0)`, `T_c`, thickness, and `I_c` is not yet presented as one audit. | A single material table reports source, uncertainty, inference path, and consistency checks for every parameter. |
 | MAT-003 | P1 | Open | The phonon escape time is not yet constrained by data or a defensible material/interface range. | `tau_esc` is tied to evidence or treated in a sensitivity analysis. |
 | PERF-001 | P1 | Open | A representative trajectory costs roughly 40-45 hours, making the full threshold map infeasible without acceleration. | Early termination, continuation, bisection, and coarse-to-fine search provide an effective 5-10x campaign speedup. |
-| PLOT-001 | P2 | Active | Thesis-style migration is partial; several plotting pipelines explicitly retain deprecated local styling. | Every publication figure uses the shared style API and passes a visual consistency review. |
+| PLOT-001 | P2 | Closed | Every plotting producer uses the shared thesis style API; all plotting pipelines share one DPI default and no deprecated style TODO remains. | Closed by the plot-style unification record above, including static enforcement and representative visual review. |
 | PLOT-002 | P2 | Open | `power_diagnostics.py` contains hard-coded axis ranges, commented alternatives, and simplified labels whose general validity is not documented. | Dataset-driven defaults are restored or the publication-specific choices become named, documented options. |
 | DOC-001 | P2 | Open | README examples and implementation have drifted, including the documented `Z1_current_sweep_analysis.py` versus tracked `Z2_current_sweep_analysis.py`. | All documented commands are checked against tracked entry points. |
 | DOC-002 | P2 | Open | README, thesis, appendix, and implementation still require synchronization. | Every publication equation and workflow statement maps to current code and a stable reference. |

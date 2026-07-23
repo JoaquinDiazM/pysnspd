@@ -29,6 +29,9 @@ import matplotlib.tri as mtri
 from matplotlib.colors import LogNorm, SymLogNorm
 
 from pysnspd.analysis.snapshots import compute_snapshot_joule_power_density
+from pysnspd.plotting.style import THESIS_DPI, THESIS_WIDTH_IN, apply_thesis_style
+
+apply_thesis_style()
 
 MEV_J = 1.602176634e-22
 
@@ -39,7 +42,7 @@ def make_ss_snapshot_power_figures(
     dataset: Mapping[str, Any],
     raw_ss: str | Path,
     output_dir: str | Path,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> dict[str, Path]:
     """Create additional snapshot/power figures for a completed SS run.
 
@@ -118,7 +121,7 @@ def plot_ss_snapshot_state_atlas(
     dataset: Mapping[str, Any],
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot the dynamic SS state at all stored snapshots.
 
@@ -215,7 +218,7 @@ def plot_ss_snapshot_power_energy_maps(
     dataset: Mapping[str, Any],
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot catalogue-derived power, Joule, escape, and transport maps."""
     output = _prepare_output(output_path)
@@ -281,7 +284,7 @@ def plot_ss_snapshot_power_balance_maps(
     output_path: str | Path,
     *,
     snapshots: Mapping[str, np.ndarray] | None = None,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot diagnostic local energy-balance tendencies at snapshots.
 
@@ -367,7 +370,7 @@ def plot_ss_snapshot_runtime_metrics(
     dataset: Mapping[str, Any],
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot compact scalar metrics extracted from snapshot maps and history."""
     output = _prepare_output(output_path)
@@ -422,7 +425,12 @@ def plot_ss_snapshot_runtime_metrics(
     )
 
     nrows = 3 if thermal_hist_present or te_snap.size or tph_snap.size else 2
-    fig, axes = plt.subplots(nrows, 2, figsize=(10.4, 3.2 * nrows), constrained_layout=False)
+    fig, axes = plt.subplots(
+        nrows,
+        2,
+        figsize=(THESIS_WIDTH_IN, 3.2 * nrows),
+        constrained_layout=False,
+    )
     fig.subplots_adjust(left=0.090, right=0.970, bottom=0.080, top=0.925, wspace=0.30, hspace=0.36)
     fig.suptitle(f"SS snapshot/runtime diagnostics: {dataset.get('run_name', '')}", y=0.975)
 
@@ -535,7 +543,7 @@ def plot_ss_snapshot_catalog_indices(
     dataset: Mapping[str, Any],
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Visualize which PRE-table bins are being queried at the final snapshot."""
     output = _prepare_output(output_path)
@@ -555,7 +563,12 @@ def plot_ss_snapshot_catalog_indices(
     if not fields:
         raise ValueError("snapshot_power_energy_diagnostics.npz lacks catalogue index maps")
 
-    fig, axes = plt.subplots(1, len(fields), figsize=(3.1 * len(fields), 3.2), constrained_layout=False)
+    fig, axes = plt.subplots(
+        1,
+        len(fields),
+        figsize=(THESIS_WIDTH_IN, 3.2),
+        constrained_layout=False,
+    )
     axes = np.asarray(axes, dtype=object).reshape(1, -1)
     fig.subplots_adjust(left=0.055, right=0.965, bottom=0.145, top=0.845, wspace=0.32)
     fig.suptitle(f"PRE catalogue indices at final SS snapshot: {dataset.get('run_name', '')}", y=0.960)
@@ -586,7 +599,7 @@ def plot_ss_snapshot_profile_comparison(
     dataset: Mapping[str, Any],
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot x-binned profiles at first/middle/final snapshot.
 
@@ -639,7 +652,13 @@ def plot_ss_snapshot_profile_comparison(
     elif p_balance.size:
         rows.append((r"$P_J+P_{diff}-P_{ep}$", p_balance))
 
-    fig, axes = plt.subplots(len(rows), 1, figsize=(9.2, 2.0 * len(rows) + 0.8), sharex=True, constrained_layout=False)
+    fig, axes = plt.subplots(
+        len(rows),
+        1,
+        figsize=(THESIS_WIDTH_IN, 2.0 * len(rows) + 0.8),
+        sharex=True,
+        constrained_layout=False,
+    )
     axes = np.atleast_1d(axes)
     fig.subplots_adjust(left=0.105, right=0.970, bottom=0.070, top=0.945, hspace=0.30)
     fig.suptitle(f"SS x-profile evolution: {dataset.get('run_name', '')}", y=0.985)

@@ -14,6 +14,15 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import matplotlib.tri as mtri
 
+from pysnspd.plotting.style import (
+    THESIS_DOUBLE_FIGSIZE,
+    THESIS_DPI,
+    THESIS_WIDTH_IN,
+    apply_thesis_style,
+)
+
+apply_thesis_style()
+
 EV_J = 1.602176634e-19
 
 
@@ -22,7 +31,7 @@ def make_photon_run_figures(
     history: Mapping[str, np.ndarray],
     summary: Mapping[str, Any] | None,
     output_dir: str | Path,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     mesh: Any | None = None,
     snapshots: Mapping[str, np.ndarray] | None = None,
     scalar_times_ps: Sequence[float] | None = None,
@@ -64,7 +73,7 @@ def plot_photon_circuit_response(
     history: Mapping[str, np.ndarray],
     summary: Mapping[str, Any] | None,
     output_path: str | Path,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot coupled-circuit response for a pipeline 03 transient."""
 
@@ -112,7 +121,7 @@ def plot_photon_circuit_response(
     else:
         photon_time_ps = _event_time_from_history(history)
 
-    fig, ax = plt.subplots(1, 1, figsize=(8.4, 4.35), constrained_layout=False)
+    fig, ax = plt.subplots(1, 1, figsize=THESIS_DOUBLE_FIGSIZE, constrained_layout=False)
     fig.subplots_adjust(left=0.120, right=0.870, bottom=0.170, top=0.900)
     ax_r = ax.twinx()
 
@@ -133,13 +142,12 @@ def plot_photon_circuit_response(
     )
     h_Vout, = ax_r.plot(t_ps, V_out_uV, color=Vout_color, linewidth=1.9, label=r"$V_{\rm out}$")
 
-    ax.set_xlabel("t [ps]", fontsize=14)
-    ax.set_ylabel(r"$\Delta I_s,\ I_{\rm RF}$ [nA]", color=hot_axis_color, fontsize=14)
-    ax_r.set_ylabel(r"$V_{\rm TDGL}^{center},\ V_{\rm out}$ [$\mu$V]", color=cold_axis_color, fontsize=14)
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$\Delta I_s,\ I_{\rm RF}$ [nA]", color=hot_axis_color)
+    ax_r.set_ylabel(r"$V_{\rm TDGL}^{center},\ V_{\rm out}$ [$\mu$V]", color=cold_axis_color)
 
-    ax.tick_params(axis="x", labelsize=14)
-    ax.tick_params(axis="y", colors=hot_axis_color, labelsize=14)
-    ax_r.tick_params(axis="y", colors=cold_axis_color, labelsize=14)
+    ax.tick_params(axis="y", colors=hot_axis_color)
+    ax_r.tick_params(axis="y", colors=cold_axis_color)
 
     ax.grid(False)
     ax_r.grid(False)
@@ -157,7 +165,6 @@ def plot_photon_circuit_response(
         columnspacing=1.1,
         handlelength=2.5,
         borderaxespad=0.3,
-        fontsize=14,
     )
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.05)
@@ -173,7 +180,7 @@ def plot_photon_center_scalar_snapshot_rows(
     requested_times_ps: Sequence[float],
     output_path: str | Path,
     center_width_nm: float = 100.0,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot center-strip scalar maps for the snapshots nearest requested times."""
 
@@ -232,7 +239,7 @@ def plot_photon_center_scalar_snapshot_rows(
 
     n_rows = len(indices)
     fig_height = max(3.15, 0.50 + 2.70 * n_rows)
-    fig = plt.figure(figsize=(18.4, fig_height), constrained_layout=False)
+    fig = plt.figure(figsize=(THESIS_WIDTH_IN, fig_height), constrained_layout=False)
     gs = fig.add_gridspec(
         n_rows + 1,
         5,
@@ -260,24 +267,30 @@ def plot_photon_center_scalar_snapshot_rows(
             )
             if r == 0:
                 cbar = fig.colorbar(mappable, cax=caxes[col], orientation="horizontal")
-                cbar.set_label(str(column_specs[col]["label"]), labelpad=2.0)
+                cbar.set_label(
+                    str(column_specs[col]["label"]),
+                    labelpad=1.5,
+                    fontsize=8.4,
+                )
                 cbar.ax.xaxis.set_ticks_position("top")
                 cbar.ax.xaxis.set_label_position("top")
                 cbar.ax.xaxis.set_major_locator(mticker.MaxNLocator(nbins=3))
+                cbar.ax.tick_params(labelsize=6.8, pad=0.8, length=2.0)
 
             ax.set_xlim(*xlim)
             ax.set_ylim(*ylim)
             ax.set_aspect("equal", adjustable="box")
             ax.grid(False)
+            ax.tick_params(labelsize=6.8, length=2.0, pad=1.0)
 
             if r == n_rows - 1:
-                ax.set_xlabel("x [nm]", fontsize=12)
+                ax.set_xlabel("x [nm]", fontsize=8.5)
             else:
                 ax.set_xlabel("")
                 ax.tick_params(axis="x", labelbottom=False)
 
             if col == 0:
-                ax.set_ylabel("y [nm]", fontsize=12)
+                ax.set_ylabel("y [nm]", fontsize=8.5)
             else:
                 ax.set_ylabel("")
                 ax.tick_params(axis="y", labelleft=False)
@@ -291,7 +304,7 @@ def plot_photon_center_scalar_snapshot_rows(
                     ha="left",
                     va="center",
                     rotation=270,
-                    fontsize=13,
+                    fontsize=7.1,
                     color="black",
                     clip_on=False,
                 )

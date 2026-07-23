@@ -16,14 +16,16 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, apply_thesis_style
+from pysnspd.plotting.style import THESIS_DOUBLE_FIGSIZE, THESIS_DPI, apply_thesis_style
+
+apply_thesis_style()
 
 
 def plot_eliashberg_spectrum(
     spectrum: Any,
     output_path: str | Path,
     *,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot the full Eliashberg spectral function and phonon DOS.
 

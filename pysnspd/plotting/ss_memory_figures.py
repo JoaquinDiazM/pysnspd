@@ -19,7 +19,10 @@ from matplotlib.lines import Line2D
 import matplotlib.ticker as mticker
 import matplotlib.tri as mtri
 
+from pysnspd.plotting.style import THESIS_DPI, THESIS_WIDTH_IN, apply_thesis_style
 from pysnspd.plotting.ss_power_helpers import _snapshot_diffusion_power_density
+
+apply_thesis_style()
 
 
 def make_ss_memory_figures(
@@ -28,7 +31,7 @@ def make_ss_memory_figures(
     dataset: Mapping[str, Any],
     raw_ss: str | Path,
     output_dir: str | Path,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
     center_width_nm: float = 100.0,
 ) -> dict[str, Path]:
     out = Path(output_dir)
@@ -83,7 +86,7 @@ def plot_ss_final_center_current_maps(
     output_path: str | Path,
     *,
     center_width_nm: float = 100.0,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     output = _prepare_output(output_path)
     tri = _triangulation(mesh, dataset)
@@ -130,7 +133,7 @@ def plot_ss_final_center_current_maps(
         raise ValueError("central-strip current map does not contain finite current values")
     vmax = max(1.0, float(np.nanmax(np.concatenate(finite_for_scale))))
 
-    fig = plt.figure(figsize=(10.8, 3.0), constrained_layout=False)
+    fig = plt.figure(figsize=(THESIS_WIDTH_IN, 3.0), constrained_layout=False)
     gs = fig.add_gridspec(1, 4, width_ratios=[1.0, 1.0, 1.0, 0.07], wspace=0.08)
     axes = [fig.add_subplot(gs[0, k]) for k in range(3)]
     cax = fig.add_subplot(gs[0, 3])
@@ -163,7 +166,6 @@ def plot_ss_final_center_current_maps(
             ha="left",
             va="top",
             color="white",
-            fontsize=14,
             fontweight="bold",
             bbox=dict(
                 boxstyle="round,pad=0.22",
@@ -198,7 +200,7 @@ def plot_ss_snapshot_thermal_scalars(
     output_path: str | Path,
     *,
     center_width_nm: float = 100.0,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     """Plot compact memory-ready thermal scalar diagnostics.
 
@@ -335,7 +337,12 @@ def plot_ss_snapshot_thermal_scalars(
 
     prethermal_t_ps = 2.0
 
-    fig, axes = plt.subplots(1, 3, figsize=(15.6, 4.10), constrained_layout=False)
+    fig, axes = plt.subplots(
+        1,
+        3,
+        figsize=(THESIS_WIDTH_IN, 4.10),
+        constrained_layout=False,
+    )
     fig.subplots_adjust(left=0.070, right=0.955, bottom=0.18, top=0.86, wspace=0.66)
 
     # ------------------------------------------------------------------
@@ -348,12 +355,11 @@ def plot_ss_snapshot_thermal_scalars(
     h_te = _plot_series_pair(ax, te_t, te_mean, te_max, color=te_color, take_abs=False)
     h_tph = _plot_series_pair(ax_r, tph_t, tph_mean, tph_max, color=tph_color, take_abs=False)
 
-    ax.set_xlabel("t [ps]", fontsize=14)
-    ax.set_ylabel(r"$T_e$ [K]", color=te_color, fontsize=14)
-    ax_r.set_ylabel(r"$T_{ph}$ [K]", color=tph_color, fontsize=14)
-    ax.tick_params(axis="x", labelsize=14)
-    ax.tick_params(axis="y", colors=te_color, labelsize=14)
-    ax_r.tick_params(axis="y", colors=tph_color, labelsize=14)
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$T_e$ [K]", color=te_color)
+    ax_r.set_ylabel(r"$T_{ph}$ [K]", color=tph_color)
+    ax.tick_params(axis="y", colors=te_color)
+    ax_r.tick_params(axis="y", colors=tph_color)
     ax.grid(False)
     ax_r.grid(False)
     _clean_twin_axis(ax, ax_r)
@@ -372,7 +378,6 @@ def plot_ss_snapshot_thermal_scalars(
         columnspacing=1.0,
         handlelength=2.4,
         borderaxespad=0.4,
-        fontsize=14,
     )
 
     # ------------------------------------------------------------------
@@ -388,12 +393,11 @@ def plot_ss_snapshot_thermal_scalars(
     h_pep = _plot_single_series(ax_r, pep_t, np.abs(pep_max), color=pep_color)
     h_pesc = _plot_single_series(ax_r, pesc_t, np.abs(pesc_max), color=pesc_color)
 
-    ax.set_xlabel("t [ps]", fontsize=14)
-    ax.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]", fontsize=14, color=hot_color)
-    ax_r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", fontsize=14, color=cold_color)
-    ax.tick_params(axis="x", labelsize=14)
-    ax.tick_params(axis="y", colors=hot_color, labelsize=14)
-    ax_r.tick_params(axis="y", colors=cold_color, labelsize=14)
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$P_J,\ P_{diff}$ [W m$^{-3}$]", color=hot_color)
+    ax_r.set_ylabel(r"$P_{ep},\ P_{esc}$ [W m$^{-3}$]", color=cold_color)
+    ax.tick_params(axis="y", colors=hot_color)
+    ax_r.tick_params(axis="y", colors=cold_color)
 
     ax.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax))
     ax_r.set_yscale("symlog", linthresh=_linthresh_from_axes_lines(ax_r))
@@ -420,7 +424,6 @@ def plot_ss_snapshot_thermal_scalars(
         columnspacing=1.1,
         handlelength=2.5,
         borderaxespad=0.3,
-        fontsize=14,
     )
 
     # ------------------------------------------------------------------
@@ -433,13 +436,12 @@ def plot_ss_snapshot_thermal_scalars(
     h_uph = _plot_single_series(ax, uph_t, uph_mean, color=uph_color)
     h_ue = _plot_single_series(ax_r, ue_t, ue_mean, color=ue_color)
 
-    ax.set_xlabel("t [ps]", fontsize=14)
-    ax.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color=uph_color, fontsize=14)
-    ax_r.set_ylabel(r"$u_e$ [J m$^{-3}$]", color=ue_color, fontsize=14)
+    ax.set_xlabel("t [ps]")
+    ax.set_ylabel(r"$u_{ph}$ [J m$^{-3}$]", color=uph_color)
+    ax_r.set_ylabel(r"$u_e$ [J m$^{-3}$]", color=ue_color)
 
-    ax.tick_params(axis="x", labelsize=14)
-    ax.tick_params(axis="y", colors=uph_color, labelsize=14)
-    ax_r.tick_params(axis="y", colors=ue_color, labelsize=14)
+    ax.tick_params(axis="y", colors=uph_color)
+    ax_r.tick_params(axis="y", colors=ue_color)
 
     _center_linear_axis(ax, [uph_mean], frac=0.25)
     _center_linear_axis(ax_r, [ue_mean], frac=0.10)
@@ -467,7 +469,7 @@ def plot_ss_final_center_scalar_maps(
     output_path: str | Path,
     *,
     center_width_nm: float = 100.0,
-    dpi: int = 480,
+    dpi: int = THESIS_DPI,
 ) -> Path:
     output = _prepare_output(output_path)
     tri = _triangulation(mesh, dataset)
@@ -643,7 +645,7 @@ def plot_ss_final_center_scalar_maps(
         },
     ]
 
-    fig = plt.figure(figsize=(18.4, 3.75), constrained_layout=False)
+    fig = plt.figure(figsize=(THESIS_WIDTH_IN, 3.75), constrained_layout=False)
     gs = fig.add_gridspec(2, 5, height_ratios=[0.10, 1.00], wspace=0.24, hspace=0.12)
     caxes = [fig.add_subplot(gs[0, k]) for k in range(5)]
     axes = [fig.add_subplot(gs[1, k]) for k in range(5)]
