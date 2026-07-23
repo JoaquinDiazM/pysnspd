@@ -169,7 +169,7 @@ def _plot_dos_curves(
     if np.isfinite(T_ratio):
         temp_line = rf"$T/T_c={T_ratio:.3f}$"
     elif np.isfinite(T_bias_K):
-        temp_line = rf"$T={T_bias_K:.2f}$ K"
+        temp_line = rf"$T={T_bias_K:.2f}$ [K]"
     else:
         temp_line = ""
 

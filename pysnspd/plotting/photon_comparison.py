@@ -120,7 +120,7 @@ def plot_photon_position_field_comparison(
         figsize=(THESIS_WIDTH_IN, max(4.8, 0.58 * n_rows + 1.0)),
         squeeze=False,
     )
-    fig.subplots_adjust(left=0.066, right=0.985, bottom=0.055, top=0.905, wspace=0.08, hspace=0.12)
+    fig.subplots_adjust(left=0.078, right=0.985, bottom=0.072, top=0.905, wspace=0.08, hspace=0.12)
 
     mappables = []
     for col, (key, label, cmap, _, _) in enumerate(field_specs):
@@ -142,17 +142,13 @@ def plot_photon_position_field_comparison(
                 ax.plot(impact_x, impact_y, marker="x", markersize=3.6, markeredgewidth=0.8, color="white")
             if row_index < n_rows - 1:
                 ax.tick_params(axis="x", labelbottom=False)
-            else:
-                ax.set_xlabel(r"$x$ [nm]", labelpad=1.0)
-            if col == 0:
-                ax.set_ylabel(r"$y$ [nm]", labelpad=1.0)
-            else:
+            if col != 0:
                 ax.tick_params(axis="y", labelleft=False)
             if col == len(field_specs) - 1:
                 ax.text(
                     0.975,
                     0.88,
-                    rf"{row['label']}, {row['stored_time_ps']:.3g} ps",
+                    rf"{row['label']}, $t={row['stored_time_ps']:.3g}$ [ps]",
                     transform=ax.transAxes,
                     va="top",
                     ha="right",
@@ -161,6 +157,9 @@ def plot_photon_position_field_comparison(
                     bbox={"facecolor": "0.1", "edgecolor": "none", "alpha": 0.65, "pad": 1.0},
                 )
         mappables.append((mappable, label))
+
+    fig.supxlabel(r"$x$ [nm]", y=0.018, fontsize=8.5)
+    fig.supylabel(r"$y$ [nm]", x=0.016, fontsize=8.5)
 
     fig.canvas.draw()
     for col, (mappable, label) in enumerate(mappables):

@@ -1016,9 +1016,9 @@ def _draw_full_delta_panel(
     index = int(inset.get("index", 0))
     current = float(inset.get("actual_current_uA", np.nan))
     requested = float(inset.get("requested_current_uA", np.nan))
-    label = rf"#{index}  {current:.0f} $\mu$A"
+    label = rf"#{index}  {current:.0f} [$\mu$A]"
     if np.isfinite(requested) and abs(requested - current) > 0.05:
-        label += rf" (requested {requested:.0f})"
+        label += rf" (requested {requested:.0f} [$\mu$A])"
     ax.text(
         0.985,
         0.93,
@@ -1177,9 +1177,9 @@ def _draw_delta_inset(
     current = float(inset.get("actual_current_uA", np.nan))
     requested = float(inset.get("requested_current_uA", np.nan))
     if np.isfinite(requested) and abs(requested - current) > 0.05:
-        label = f"#{idx}  {current:.0f} μA\n(req {requested:.0f})"
+        label = f"#{idx}  {current:.0f} [μA]\n(req {requested:.0f} [μA])"
     else:
-        label = f"#{idx}  {current:.0f} μA"
+        label = f"#{idx}  {current:.0f} [μA]"
     ax.text(
         0.965,
         0.965,

@@ -146,7 +146,7 @@ def plot_phasecg_snapshot_fields(
         figsize=(THESIS_WIDTH_IN, max(4.7, 0.49 * n_rows + 1.0)),
         squeeze=False,
     )
-    fig.subplots_adjust(left=0.064, right=0.948, bottom=0.055, top=0.910, wspace=0.08, hspace=0.10)
+    fig.subplots_adjust(left=0.076, right=0.948, bottom=0.072, top=0.910, wspace=0.08, hspace=0.10)
 
     column_mappables = []
     for col, (values, label, cmap, symmetric, forced_min, forced_max) in enumerate(fields):
@@ -170,17 +170,13 @@ def plot_phasecg_snapshot_fields(
             _format_strip_axis(ax, tri)
             if row < n_rows - 1:
                 ax.tick_params(axis="x", labelbottom=False)
-            else:
-                ax.set_xlabel(r"$x$ [nm]", labelpad=1.0)
-            if col == 0:
-                ax.set_ylabel(r"$y$ [nm]", labelpad=1.0)
-            else:
+            if col != 0:
                 ax.tick_params(axis="y", labelleft=False)
             if col == n_cols - 1:
                 ax.text(
                     1.05,
                     0.5,
-                    rf"$t={times[row]:.3g}$ ps",
+                    rf"$t={times[row]:.3g}$ [ps]",
                     transform=ax.transAxes,
                     rotation=-90,
                     va="center",
@@ -188,6 +184,9 @@ def plot_phasecg_snapshot_fields(
                     fontsize=7.2,
                 )
         column_mappables.append((mappable, label))
+
+    fig.supxlabel(r"$x$ [nm]", y=0.018, fontsize=8.5)
+    fig.supylabel(r"$y$ [nm]", x=0.016, fontsize=8.5)
 
     fig.canvas.draw()
     for col, (mappable, label) in enumerate(column_mappables):
@@ -283,7 +282,7 @@ def plot_phasecg_physical_evolution(
         color="tab:red",
         label=r"$|I_n/I_{\mathrm{tot}}|$",
     )
-    fraction_axis.set_ylabel("Normal-current fraction", color="tab:red")
+    fraction_axis.set_ylabel("Normal-current fraction [-]", color="tab:red")
     fraction_axis.tick_params(axis="y", colors="tab:red")
     _combined_legend(axes[3], fraction_axis, ncol=2)
 
@@ -334,7 +333,7 @@ def plot_current_conversion_profiles(
     fig.subplots_adjust(left=0.115, right=0.870, bottom=0.120, top=0.975, hspace=0.16)
 
     axes[0].plot(x_profile, jtot, label=r"$j_{\mathrm{tot},x}/j_{\mathrm{avg}}$")
-    axes[0].plot(x_profile, js, label=r"$j_{s,x}^{\mathrm{Us}}/j_{\mathrm{avg}}$")
+    axes[0].plot(x_profile, js, color="tab:purple", label=r"$j_{s,x}^{\mathrm{Us}}/j_{\mathrm{avg}}$")
     axes[0].plot(x_profile, jn, label=r"$j_{n,x}/j_{\mathrm{avg}}$")
     for side, color in (("left", "0.25"), ("right", "0.45")):
         fitted = _fit_conversion_exponential(x_profile, jn, side=side)
@@ -346,9 +345,10 @@ def plot_current_conversion_profiles(
                 linestyle="--",
                 color=color,
                 linewidth=0.9,
-                label=rf"{side.capitalize()} exponential guide, $\ell_Q={length_nm:.1f}$ nm",
+                #label=rf"{side.capitalize()} exponential guide, $\ell_Q={length_nm:.1f}$ [nm]",
+                label=rf"{side.capitalize()} exponential guide",
             )
-    axes[0].set_ylabel(r"Current density / $j_{\mathrm{avg}}$")
+    axes[0].set_ylabel(r"$j / j_{\mathrm{avg}}$")
     axes[0].legend(frameon=False, ncol=2, loc="best")
 
     axes[1].plot(x_profile, delta, color="tab:blue", label=r"$|\Delta|/\Delta_{\mathrm{BCS}}(0)$")
@@ -414,7 +414,7 @@ def plot_ss_thermal_balance(
             ax.tick_params(axis="y", labelleft=False)
         ax.set_title(label)
         cbar = fig.colorbar(mappable, ax=ax, orientation="horizontal", fraction=0.075, pad=0.18)
-        cbar.set_label(r"W m$^{-3}$", fontsize=8.0, labelpad=1.0)
+        cbar.set_label(r"[W m$^{-3}$]", fontsize=8.0, labelpad=1.0)
         cbar.ax.tick_params(labelsize=6.8, pad=1.0)
         max_abs = float(np.nanmax(np.abs(final))) if np.isfinite(final).any() else np.nan
         ax.text(
@@ -436,7 +436,7 @@ def plot_ss_thermal_balance(
     joule_axis.set_ylabel(r"$\max |P_J|$ [W m$^{-3}$]")
     joule_axis.grid(True)
     joule_axis.legend(frameon=False, loc="best")
-    joule_axis.text(0.99, 0.06, rf"Final snapshot: $t={final_time:.3g}$ ps", transform=joule_axis.transAxes, ha="right", fontsize=8.0)
+    joule_axis.text(0.99, 0.06, rf"Final snapshot: $t={final_time:.3g}$ [ps]", transform=joule_axis.transAxes, ha="right", fontsize=8.0)
 
     exchange_axis = fig.add_subplot(grid[1, 2])
     electron_phonon_max = np.nanmax(np.abs(electron_phonon), axis=1)
@@ -487,7 +487,7 @@ def plot_phasecg_numerical_diagnostics(
     _plot_decimated(ax, t, dataset.get("adaptive_retries"), "Retries")
     rejected_axis = ax.twinx()
     _plot_decimated(rejected_axis, t, dataset.get("cumulative_rejected_attempts"), "Cumulative rejected", color="tab:red")
-    ax.set_ylabel("Count / accepted step")
+    ax.set_ylabel("Count per accepted step [count]")
     rejected_axis.tick_params(axis="y", labelright=False, right=False)
     ax.set_title("Nonlinear solve effort")
     _combined_legend(ax, rejected_axis, fontsize=7.0)
@@ -498,6 +498,7 @@ def plot_phasecg_numerical_diagnostics(
     rate_axis = ax.twinx()
     _plot_decimated(rate_axis, t, dataset.get("thermal_max_rate_K_per_ps_history"), "Max thermal rate", positive=True, color="tab:red")
     ax.set_ylabel("Temperature [K]")
+    rate_axis.set_ylabel(r"Thermal rate [K ps$^{-1}$]", color="tab:red")
     rate_axis.tick_params(axis="y", colors="tab:red")
     rate_axis.set_yscale("log")
     ax.set_title("Thermal evolution")
@@ -534,7 +535,7 @@ def plot_phasecg_numerical_diagnostics(
     iteration_axis = ax.twinx()
     _plot_decimated(iteration_axis, t, dataset.get("allmaras_phase_convergence_iterations"), "CG iterations", color="tab:red")
     ax.set_yscale("log")
-    ax.set_ylabel("Relative residual")
+    ax.set_ylabel("Relative residual [-]")
     iteration_axis.tick_params(axis="y", labelright=False, right=False)
     ax.set_title("Harmonic continuation")
     _combined_legend(ax, iteration_axis, fontsize=7.0)
@@ -543,7 +544,7 @@ def plot_phasecg_numerical_diagnostics(
     _plot_decimated(ax, t, dataset.get("allmaras_phase_direct_node_count"), "Direct nodes")
     _plot_decimated(ax, t, dataset.get("allmaras_phase_continued_node_count"), "Continued nodes")
     _plot_decimated(ax, t, dataset.get("allmaras_phase_zero_amplitude_node_count"), "Zero-amplitude nodes")
-    ax.set_ylabel("Nodes")
+    ax.set_ylabel("Nodes [count]")
     ax.set_title("Continuation domains")
     ax.legend(frameon=False, fontsize=7.0)
 
@@ -559,7 +560,7 @@ def plot_phasecg_numerical_diagnostics(
     mismatch = np.asarray(dataset.get("usadel_vs_gl_relative_l2_snapshot", []), dtype=float)
     if mismatch.size:
         mismatch_axis.plot(snap_t[: mismatch.size], mismatch, "s--", color="tab:red", label="Usadel-GL mismatch")
-    mismatch_axis.set_ylabel("Relative mismatch", color="tab:red")
+    mismatch_axis.set_ylabel("Relative mismatch [-]", color="tab:red")
     mismatch_axis.tick_params(axis="y", colors="tab:red")
     ax.set_title("Current-law correction")
     _combined_legend(ax, mismatch_axis, fontsize=7.0)

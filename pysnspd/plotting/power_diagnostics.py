@@ -213,7 +213,7 @@ def plot_power_total_Delta_q_maps(
         iT = _nearest_index(catalog.Te_values_K, Te_target)
         iP = _nearest_index(catalog.Tph_values_K, Tph_target)
         arr = catalog.P_total_W_m3[iT, iP, :, :]
-        label = rf"$T_e={catalog.Te_values_K[iT]:.2f}$ K, $T_{{ph}}={catalog.Tph_values_K[iP]:.2f}$ K"
+        label = rf"$T_e={catalog.Te_values_K[iT]:.2f}$ [K], $T_{{ph}}={catalog.Tph_values_K[iP]:.2f}$ [K]"
         slices.append((arr, label))
 
     vmax = _robust_symmetric_vmax([arr for arr, _ in slices])
@@ -280,7 +280,7 @@ def plot_power_total_Te_curves(
         color="0.20",
         linewidth=0.9,
         linestyle=":",
-        label=rf"Bath temperature, $T_b={T_bath_K:.2f}$ K",
+        label=rf"Bath temperature, $T_b={T_bath_K:.2f}$ [K]",
     )
     if np.isfinite(Tc_K):
         ax.axvline(
@@ -288,21 +288,25 @@ def plot_power_total_Te_curves(
             color="0.35",
             linewidth=0.9,
             linestyle="--",
-            label=rf"Critical temperature, $T_c={Tc_K:.2f}$ K",
+            label=rf"Critical temperature, $T_c={Tc_K:.2f}$ [K]",
         )
     if positive_values:
         positive = np.concatenate(positive_values)
         y_min = max(float(np.nanmin(positive)) * 0.55, 1.0e-300)
         y_max = float(np.nanmax(positive)) * 1.8
-        ax.set_yscale("log")
-        ax.set_ylim(y_min, y_max)
+        ax.set_yscale("symlog", linthresh=1.0e11)
+        ax.set_ylim(0.0, 1.0e17)
+        ax.set_yticks([0.0, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17])
+        #ax.set_yscale("log")
+        #ax.set_ylim(y_min, y_max)
     ax.set_xlabel(r"$T_e$ [K]")
     ax.set_ylabel(r"$P_S+P_R$ [W m$^{-3}$]")
     T_min_K = float(np.nanmin(catalog.Te_values_K))
     T_max_K = float(np.nanmax(catalog.Te_values_K))
     T_margin_K = 0.02 * max(T_max_K - T_min_K, 1.0)
     ax.set_xlim(max(0.0, T_min_K - T_margin_K), T_max_K)
-    ax.legend(loc="best", fontsize=7.0, ncol=2)
+    # ax.legend(loc="best", fontsize=7.0, ncol=2)
+    ax.legend(loc="best", ncol=2)
     ax.grid(True, linewidth=0.35, alpha=0.28)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
@@ -369,11 +373,13 @@ def plot_energy_heat_capacity_curves(
     ax_u.set_title(r"Energy densities")
     ax_u.set_xlabel(r"Temperature [$T_e$ or $T_{ph}$] [K]")
     ax_u.set_ylabel(r"Energy density [J m$^{-3}$]")
-    ax_u.set_ylim(bottom=0.0)
+    #ax_u.set_ylim(bottom=0.0)
+    ax_u.set_ylim(-1.5e3, 40.0e3)
     ax_u.yaxis.set_major_locator(MultipleLocator(2.0e4))
     ax_u.yaxis.set_major_formatter(FuncFormatter(_format_thousands_tick))
     ax_u.grid(True, linewidth=0.35, alpha=0.28)
-    ax_u.legend(loc="best", fontsize=7.0)
+    # ax_u.legend(loc="best", fontsize=7.0)
+    ax_u.legend(loc="best")
 
     ax_c.set_title(r"Heat capacities")
     ax_c.set_xlabel(r"Temperature [$T_e$ or $T_{ph}$] [K]")
@@ -384,7 +390,8 @@ def plot_energy_heat_capacity_curves(
     max_c = float(np.nanmax(finite_c)) if finite_c.size else 1.0
     ax_c.set_yscale("symlog", linthresh=max(1.0e-3, 1.0e-4 * max_c))
     ax_c.grid(True, linewidth=0.35, alpha=0.28)
-    ax_c.legend(loc="best", fontsize=7.0)
+    # ax_c.legend(loc="best", fontsize=7.0)
+    ax_c.legend(loc="best")
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
@@ -410,12 +417,13 @@ def plot_electronic_thermal_conductivity_curves(
         y = catalog.kappa_s_W_m_K[:, i_delta]
         kappa_at_tc = _interpolate_finite(catalog.Te_values_K, y, Tc_K)
         kappa_at_tmax = _interpolate_finite(catalog.Te_values_K, y, T_max_K)
-        label = (
-            _delta_label(catalog, prefix, i_delta)
-            + "\n"
-            + rf"$\kappa_s(T_c)={_format_compact_value(kappa_at_tc)}$, "
-            + rf"$\kappa_s(T_{{\max}})={_format_compact_value(kappa_at_tmax)}$ W m$^{{-1}}$ K$^{{-1}}$"
-        )
+        # label = (
+        #     _delta_label(catalog, prefix, i_delta)
+        #     + "\n"
+        #     + rf"$\kappa_s(T_c)={_format_compact_value(kappa_at_tc)}$, "
+        #     + rf"$\kappa_s(T_{{\max}})={_format_compact_value(kappa_at_tmax)}$ [W m$^{{-1}}$ K$^{{-1}}$]"
+        # )
+        label = prefix
         ax.plot(
             catalog.Te_values_K,
             y,
@@ -431,7 +439,8 @@ def plot_electronic_thermal_conductivity_curves(
     if positive.size and float(np.nanmax(positive) / max(np.nanmin(positive), 1.0e-300)) > 50.0:
         ax.set_yscale("log")
     ax.grid(True, linewidth=0.35, alpha=0.28)
-    ax.legend(loc="best", fontsize=6.8, labelspacing=0.55)
+    # ax.legend(loc="best", fontsize=6.8, labelspacing=0.55)
+    ax.legend(loc="best", labelspacing=0.55)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
@@ -475,10 +484,14 @@ def _representative_state_indices(catalog: PowerTablePlotCatalog) -> list[tuple[
     i_q_mid = _nearest_index(catalog.q_values_m_inv, 0.5 * float(np.nanmax(catalog.q_values_m_inv)))
     i_q_high = _nearest_index(catalog.q_values_m_inv, 0.85 * float(np.nanmax(catalog.q_values_m_inv)))
     return [
-        (_state_label(catalog, "Normal-like", i_delta0, i_q0), i_delta0, i_q0),
-        (_state_label(catalog, "SC, q=0", i_delta_max, i_q0), i_delta_max, i_q0),
-        (_state_label(catalog, "SC, intermediate q", i_delta_max, i_q_mid), i_delta_max, i_q_mid),
-        (_state_label(catalog, "Reduced gap, high q", i_delta_half, i_q_high), i_delta_half, i_q_high),
+        # (_state_label(catalog, "Normal-like", i_delta0, i_q0), i_delta0, i_q0),
+        # (_state_label(catalog, "SC, q=0", i_delta_max, i_q0), i_delta_max, i_q0),
+        # (_state_label(catalog, "SC, intermediate q", i_delta_max, i_q_mid), i_delta_max, i_q_mid),
+        # (_state_label(catalog, "Reduced gap, high q", i_delta_half, i_q_high), i_delta_half, i_q_high),
+        ("Normal-like", i_delta0, i_q0),
+        ("SC, q=0", i_delta_max, i_q0),
+        ("SC, intermediate q", i_delta_max, i_q_mid),
+        ("Reduced gap, high q", i_delta_half, i_q_high),
     ]
 
 
@@ -497,14 +510,16 @@ def _representative_delta_indices(catalog: PowerTablePlotCatalog) -> list[tuple[
 
 def _delta_label(catalog: PowerTablePlotCatalog, prefix: str, i_delta: int) -> str:
     delta_meV = float(_joule_to_mev(catalog.delta_values_J[i_delta]))
-    return rf"{prefix}: $|\Delta|={delta_meV:.2f}$ meV"
+    # return rf"{prefix}: $|\Delta|={delta_meV:.2f}$ [meV]"
+    return prefix
 
 
 
 def _state_label(catalog: PowerTablePlotCatalog, prefix: str, i_delta: int, i_q: int) -> str:
     delta_meV = float(_joule_to_mev(catalog.delta_values_J[i_delta]))
     q_1e7 = float(catalog.q_values_m_inv[i_q] / 1.0e7)
-    return rf"{prefix}: $|\Delta|={delta_meV:.2f}$ meV, $q={q_1e7:.2f}$"
+    # return rf"{prefix}: $|\Delta|={delta_meV:.2f}$ [meV], $q={q_1e7:.2f}$ [$10^7$ m$^{{-1}}$]"
+    return prefix
 
 
 

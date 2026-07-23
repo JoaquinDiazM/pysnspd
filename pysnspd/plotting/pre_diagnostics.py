@@ -273,7 +273,7 @@ def plot_usadel_supercurrent_curve(
             color=current_color,
             alpha=0.95,
             zorder=2,
-            label=rf"Target $I_c={target_uA:.2f}\,\mu$A",
+            label=rf"Target $I_c={target_uA:.2f}$ [$\mu$A]",
         )
 
     ax_d = ax_i.twinx()
@@ -356,7 +356,7 @@ def plot_usadel_supercurrent_curve(
     D_value = _find_diffusivity_value(metadata)
     if D_value is not None:
         D_cm2_s = 1.0e4 * D_value
-        legend_lines.append(rf"Calibrated $D={D_cm2_s:.3f}$ cm$^2$/s")
+        legend_lines.append(rf"Calibrated $D={D_cm2_s:.3f}$ [cm$^2$ s$^{{-1}}$]")
 
     # Esta es la línea que agregaba el resumen:
     # D = ..., sigma_n = ..., Delta_0 = ...
@@ -527,11 +527,11 @@ def plot_usadel_equilibrium_dos_map(
     if np.isfinite(T_bias_K) and np.isfinite(Tc_K) and Tc_K > 0.0:
         title = (
             rf"Usadel DOS along $\Delta_{{\rm eq}}(q)$ "
-            rf"at $T={T_bias_K:.2f}$ K "
+            rf"at $T={T_bias_K:.2f}$ [K] "
             rf"$(T/T_c={T_bias_K / Tc_K:.3f})$"
         )
     elif np.isfinite(T_bias_K):
-        title = rf"Usadel DOS along $\Delta_{{\rm eq}}(q)$ at $T={T_bias_K:.2f}$ K"
+        title = rf"Usadel DOS along $\Delta_{{\rm eq}}(q)$ at $T={T_bias_K:.2f}$ [K]"
     else:
         title = r"Usadel DOS along $\Delta_{\rm eq}(q)$"
 
@@ -1158,9 +1158,9 @@ def _metadata_float(metadata: Any, key: str) -> float:
 def _temperature_label(T_bias_K: float, Tc_K: float) -> str:
     if np.isfinite(T_bias_K) and np.isfinite(Tc_K) and Tc_K > 0.0:
         #return rf"$T={T_bias_K:.2f}$ K ($T/T_c={T_bias_K / Tc_K:.3f}$)"
-        return rf"$T={T_bias_K:.2f}$ K"
+        return rf"$T={T_bias_K:.2f}$ [K]"
     if np.isfinite(T_bias_K):
-        return rf"$T={T_bias_K:.2f}$ K"
+        return rf"$T={T_bias_K:.2f}$ [K]"
     return "configured bias temperature"
 
 
@@ -1168,9 +1168,9 @@ def _temperature_suffix(metadata: Any) -> str:
     T_bias_K = _metadata_float(metadata, "T_bias_K")
     Tc_K = _metadata_float(metadata, "Tc_K")
     if np.isfinite(T_bias_K) and np.isfinite(Tc_K) and Tc_K > 0.0:
-        return rf" at $T={T_bias_K:.2f}$ K ($T/T_c={T_bias_K / Tc_K:.3f}$)"
+        return rf" at $T={T_bias_K:.2f}$ [K] ($T/T_c={T_bias_K / Tc_K:.3f}$)"
     if np.isfinite(T_bias_K):
-        return rf" at $T={T_bias_K:.2f}$ K"
+        return rf" at $T={T_bias_K:.2f}$ [K]"
     return ""
 
 
@@ -1182,11 +1182,11 @@ def _usadel_metadata_summary(metadata: Any) -> str:
     sigma = _metadata_float(metadata, "sigma_n_S_m")
     delta0 = _metadata_float(metadata, "delta0_meV")
     if np.isfinite(D):
-        parts.append(rf"$D={1.0e4 * D:.3g}$ cm$^2$/s")
+        parts.append(rf"$D={1.0e4 * D:.3g}$ [cm$^2$ s$^{{-1}}$]")
     if np.isfinite(sigma):
-        parts.append(rf"$\sigma_n={sigma:.3g}$ S/m")
+        parts.append(rf"$\sigma_n={sigma:.3g}$ [S m$^{{-1}}$]")
     if np.isfinite(delta0):
-        parts.append(rf"$\Delta_0={delta0:.3f}$ meV")
+        parts.append(rf"$\Delta_0={delta0:.3f}$ [meV]")
     return ", ".join(parts)
 
 

@@ -477,9 +477,9 @@ def _draw_stats_box(
         f"Edges: {int(n_edges)}",
     ]
     if np.isfinite(length) and np.isfinite(width):
-        lines.append(f"L x W: {_fmt_number(length)} x {_fmt_number(width)} {coordinate_unit}")
+        lines.append(f"L x W: {_fmt_number(length)} x {_fmt_number(width)} [{coordinate_unit}]")
     if np.isfinite(spacing):
-        lines.append(f"Target h: {_fmt_number(spacing)} {coordinate_unit}")
+        lines.append(f"Target h: {_fmt_number(spacing)} [{coordinate_unit}]")
 
     x, y, ha, va = _text_anchor(location)
     y_stats = y if va == "top" else min(0.28, y + 0.23)

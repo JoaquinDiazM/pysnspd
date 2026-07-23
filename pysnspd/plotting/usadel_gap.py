@@ -519,7 +519,7 @@ def plot_gap_eq_vs_temperature(
         linestyle="--",
         linewidth=1.0,
         zorder=1,
-        label=rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
+        label=rf"$T_c={Tc_K:.2f}$ [K]",
     )
 
     for q_value, curve in zip(q_targets, curves):
@@ -537,7 +537,7 @@ def plot_gap_eq_vs_temperature(
     handles.extend([tc_line, bcs_line])
     labels.extend(
         [
-            rf"$T_c={Tc_K:.2f}\,\mathrm{{K}}$",
+            rf"$T_c={Tc_K:.2f}$ [K]",
             r"$\Delta_{\mathrm{BCS}}(0)$",
         ]
     )
