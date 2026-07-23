@@ -17,7 +17,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from pysnspd.gtdgl.material import GTDGLMaterial
-from pysnspd.gtdgl.operators import (
+from pysnspd.mesh.operators import (
     FVOperators,
     divergence_from_edge_scalar,
     edge_average,

@@ -37,17 +37,6 @@ class EdgeMesh:
         self.edge_lengths = np.asarray(edge_lengths)
         self.dual_edge_lengths = np.asarray(dual_edge_lengths)
 
-    @property
-    def x(self) -> np.ndarray:
-        """The x-coordinates of the edge centers."""
-
-        return self.centers[:, 0]
-
-    @property
-    def y(self) -> np.ndarray:
-        """The y-coordinates of the edge centers."""
-
-        return self.centers[:, 1]
 
     @staticmethod
     def from_mesh(
@@ -77,36 +66,4 @@ class EdgeMesh:
             directions,
             edge_lengths,
             dual_edge_lengths,
-        )
-
-    def to_hdf5(self, h5group: h5py.Group) -> None:
-        """Save the data to a HDF5 file."""
-
-        h5group["centers"] = self.centers
-        h5group["edges"] = self.edges
-        h5group["boundary_edge_indices"] = self.boundary_edge_indices
-        h5group["directions"] = self.directions
-        h5group["edge_lengths"] = self.edge_lengths
-        h5group["dual_edge_lengths"] = self.dual_edge_lengths
-
-    @classmethod
-    def from_hdf5(cls, h5group: h5py.Group) -> "EdgeMesh":
-        """Load edge mesh from file."""
-
-        if not (
-            "centers" in h5group
-            and "edges" in h5group
-            and "boundary_edge_indices" in h5group
-            and "directions" in h5group
-            and "edge_lengths" in h5group
-            and "dual_edge_lengths" in h5group
-        ):
-            raise IOError("Could not load edge mesh due to missing data.")
-        return EdgeMesh(
-            centers=np.array(h5group["centers"]),
-            edges=np.array(h5group["edges"], dtype=np.int64),
-            boundary_edge_indices=np.array(h5group["boundary_edge_indices"], np.int64),
-            directions=np.array(h5group["directions"]),
-            edge_lengths=np.array(h5group["edge_lengths"]),
-            dual_edge_lengths=np.array(h5group["dual_edge_lengths"]),
         )

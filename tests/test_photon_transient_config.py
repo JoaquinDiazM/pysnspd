@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from pysnspd.gtdgl.photon_transient import CoupledTransientConfig
+from pysnspd.solver.transient import CoupledTransientConfig
 
 
 def _config(**kwargs) -> CoupledTransientConfig:

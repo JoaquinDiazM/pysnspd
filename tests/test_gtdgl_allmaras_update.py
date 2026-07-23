@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
+from pysnspd.solver.stationary import solve_stationary_pytdgl_like
 from pysnspd.gtdgl.allmaras import (
     PhaseDriveContinuationSolver,
     compute_allmaras_forcing_dimensionless,

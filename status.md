@@ -10,7 +10,7 @@ Baseline branch: `main`
 
 Baseline parent: `523c53d`
 
-Baseline commit: the commit that first introduces this file
+Baseline commit: `23ea557657d890b1c902f5962a669d3fb845fd93`
 
 ## Executive status
 
@@ -22,11 +22,56 @@ auditable multiscale chain; the publication objective is to turn that chain
 into a numerically defensible and experimentally comparable prediction of
 detection threshold and latency.
 
-This baseline freezes the production tree on Geminga before the publication
-campaign begins. It includes the current plotting work but does not include a
-new physics run, a refactor, a directory reorganization, or a complete
-migration of every plot to the thesis style. Those are tracked below and must
-be introduced as explicit post-baseline changes.
+The production tree on Geminga was frozen before the publication campaign in
+commit `23ea557`. The first post-baseline change reorganizes the library
+without introducing a new physics model or running an expensive PRE, SS, or
+photon case. It removes pipeline-unreachable implementation, makes package
+ownership explicit, and preserves the complete production-reachable call
+graph.
+
+## Week 1 architecture cleanup record
+
+The deletion and placement policy is now versioned in
+`docs/ARCHITECTURE_POLICY.md` and enforced by the audit utilities under
+`tools/`. The reviewed reachability graph starts from all scripts in
+`pipelines/` and `plot_pipelines/`, follows direct and transitive references,
+and conservatively accounts for dynamically typed method/property access.
+
+The cleanup:
+
+- removed 205 unreachable definitions and seven fully dead modules rather than
+  moving them to a legacy folder;
+- consolidated all finite-volume meshes, geometry, compatibility objects, and
+  discrete operators under `pysnspd.mesh`;
+- separated orchestration into `pysnspd.solver`, thermal evolution into
+  `pysnspd.thermal`, and photon deposition into `pysnspd.excitation`;
+- retained gTDGL constitutive physics under `pysnspd.gtdgl`;
+- split the oversized plotting and solver modules by responsibility;
+- replaced package-level compatibility re-exports with imports from defining
+  modules;
+- merged the two surviving helpers from `kinetic/powers.py` into
+  `kinetic/power_table.py`.
+
+The final static audit covers 80 library modules and 765 definitions. All 765
+production definitions are reachable, Jedi reports zero resolution failures,
+and the only unreachable modules are intentionally empty package
+`__init__.py` files. No production library module exceeds 800 lines; the
+largest is 784 lines.
+
+Test maintenance removed five obsolete test cases: three that protected the
+flat `gtdgl` facade and two that protected unused mesh/device convenience
+behavior. Assertions for two deleted operator helpers and the deleted
+power-table reload API were also removed from otherwise surviving tests.
+Imports in the remaining tests were updated to their owning packages.
+
+Validation on Geminga:
+
+- `compileall`: passed for library, pipelines, plot pipelines, tests, and
+  tools;
+- pipeline smoke tests: all 11 production and plotting entry points accept
+  `--help`;
+- pytest: `103 passed in 13.26s`;
+- no PRE, SS, photon, sweep, or publication plot was regenerated.
 
 ## Frozen change inventory
 
@@ -87,7 +132,7 @@ debt; P3 is cleanup that can wait until the scientific path is stable.
 | PKG-001 | P2 | Open | `pyproject.toml` has an incomplete dependency declaration and is not a complete installation recipe. | A clean environment can install the package and run the lightweight validation path from documented commands. |
 | REPRO-001 | P2 | Open | Machine-specific Geminga configurations and data paths remain mixed with public examples. | Public templates are portable; machine-local overrides are clearly isolated and ignored where appropriate. |
 | REPRO-002 | P2 | Open | No small public demo dataset or lightweight end-to-end smoke case exists. | A versioned, documented example exercises the official workflow without production-scale data. |
-| ARCH-001 | P3 | Open | Official, diagnostic, exploratory, and legacy code is not yet classified; several modules exceed 1,000 lines. | Files are inventoried first, then reorganized without changing baseline results. |
+| ARCH-001 | P3 | Closed | Production reachability is classified, dead code is deleted, package ownership is explicit, and all production library modules are below 800 lines. | Closed by the Week 1 architecture cleanup; policy and validation evidence are recorded above. |
 | PHYS-002 | P3 | Scoped out | Full spatial nonthermal kinetics and stochastic observables are not implemented. | Reserve for a second article after the deterministic threshold/latency result is established. |
 
 ## Publication acceptance targets

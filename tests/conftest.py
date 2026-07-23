@@ -9,7 +9,7 @@ import pytest
 from pysnspd.mesh.delaunay import MeshData
 from pysnspd.mesh.edges import build_edge_data
 from pysnspd.gtdgl.material import GTDGLMaterial, K_B_J_K
-from pysnspd.gtdgl.operators import build_fv_operators
+from pysnspd.mesh.operators import build_fv_operators
 
 
 @pytest.fixture()

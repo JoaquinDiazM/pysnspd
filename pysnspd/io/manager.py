@@ -204,50 +204,6 @@ def write_manifest(
     return manifest_path
 
 
-def read_manifest(
-    config: Mapping[str, Any],
-    run_name: str | None = None,
-    *,
-    stage: str = "project",
-) -> dict[str, Any]:
-    """
-    Read a previously written YAML manifest.
-
-    Parameters
-    ----------
-    config:
-        Valid pySNSPD configuration dictionary.
-    run_name:
-        Run identifier. If None, ``project.default_run_name`` is used.
-    stage:
-        One of ``project``, ``pre``, ``ss``, ``photon`` or ``plots``.
-
-    Returns
-    -------
-    dict
-        Manifest contents.
-    """
-    cfg = validate_config(config, require_big_data_root_exists=False)
-    layout = create_run_layout(cfg, run_name)
-    stage = _normalize_stage(stage)
-
-    path = _manifest_path_from_layout(layout, stage)
-
-    if not path.exists():
-        raise StorageError(f"Manifest does not exist: {path}")
-
-    with path.open("r", encoding="utf-8") as f:
-        manifest = yaml.safe_load(f)
-
-    if manifest is None:
-        raise StorageError(f"Manifest is empty: {path}")
-
-    if not isinstance(manifest, dict):
-        raise StorageError(f"Manifest must contain a YAML mapping: {path}")
-
-    return manifest
-
-
 def build_manifest(
     config: Mapping[str, Any],
     layout: Mapping[str, str],
@@ -289,63 +245,6 @@ def build_manifest(
         manifest["extra"] = deepcopy(dict(extra))
 
     return manifest
-
-
-def resolve_stage_path(
-    config: Mapping[str, Any],
-    run_name: str | None = None,
-    *,
-    stage: str = "project",
-) -> Path:
-    """
-    Resolve the raw-data path associated with a run stage.
-    """
-    cfg = validate_config(config, require_big_data_root_exists=False)
-    layout = create_run_layout(cfg, run_name)
-    stage = _normalize_stage(stage)
-
-    if stage == "project":
-        return Path(layout["raw_run"])
-    if stage == "pre":
-        return Path(layout["raw_pre"])
-    if stage == "ss":
-        return Path(layout["raw_ss"])
-    if stage == "photon":
-        return Path(layout["raw_photon"])
-    if stage == "plots":
-        return Path(layout["plots_run"])
-
-    raise StorageError(f"Unknown stage: {stage}")
-
-
-def resolve_plot_path(
-    config: Mapping[str, Any],
-    run_name: str | None = None,
-    *,
-    subfolder: str | None = None,
-) -> Path:
-    """
-    Resolve the plot path associated with a run.
-
-    Parameters
-    ----------
-    subfolder:
-        Optional subfolder inside the run plot directory. Common values are
-        ``figures``, ``mesh``, ``diagnostics`` and ``comparisons``.
-    """
-    cfg = validate_config(config, require_big_data_root_exists=False)
-    layout = create_run_layout(cfg, run_name)
-    base = Path(layout["plots_run"])
-
-    if subfolder is None:
-        return base
-
-    safe = validate_run_name(subfolder)
-    path = base / safe
-    path.mkdir(parents=True, exist_ok=True)
-    _assert_writable(path)
-
-    return path
 
 
 def validate_run_name(run_name: str) -> str:

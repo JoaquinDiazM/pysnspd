@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 
 from pysnspd.gtdgl.material import GTDGLMaterial
-from pysnspd.gtdgl.ss_targets import (
+from pysnspd.solver.targets import (
     apply_terminal_proximity_seed,
     contact_recovery_diagnostics,
     dynamic_stationarity_diagnostics,

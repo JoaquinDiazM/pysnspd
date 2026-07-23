@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
+from pysnspd.solver.stationary import solve_stationary_pytdgl_like
 
 
 def _strict_3d_catalog(material) -> SimpleNamespace:

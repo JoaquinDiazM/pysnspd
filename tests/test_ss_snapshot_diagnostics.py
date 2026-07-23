@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from pysnspd.gtdgl.snapshot_diagnostics import (
+from pysnspd.analysis.snapshots import (
     compute_ss_snapshot_power_diagnostics,
     save_ss_snapshot_bundle_npz,
 )

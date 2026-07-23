@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from pysnspd.gtdgl.solver import TDGLSolver
+from pysnspd.solver.core import TDGLSolver
 from pysnspd.plotting.ss_run import plot_ss_adaptive_timestep_history
 
 

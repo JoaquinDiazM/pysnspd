@@ -312,34 +312,6 @@ def summarize_config(config: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def configure_project(config_path: str | Path) -> dict[str, Any]:
-    """
-    Convenience function used by early pipelines.
-
-    It loads, validates and returns a normalized configuration. It does not
-    create folders.
-    """
-    cfg = load_config(config_path)
-    return validate_config(cfg)
-
-
-def get_big_data_root(config: Mapping[str, Any]) -> Path:
-    """
-    Return ``project.big_data_root`` as a pathlib Path.
-    """
-    cfg = validate_config(config, require_big_data_root_exists=False)
-    return Path(cfg["project"]["big_data_root"])
-
-
-def get_default_run_name(config: Mapping[str, Any]) -> str:
-    """
-    Return the default run name from the configuration.
-    """
-    cfg = validate_config(config, require_big_data_root_exists=False)
-    return str(cfg["project"]["default_run_name"])
-
-
-
 def _validate_optional_time_parameter(
     config: Mapping[str, Any],
     *,

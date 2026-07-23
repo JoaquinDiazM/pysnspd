@@ -27,15 +27,41 @@ import numpy as np
 from pysnspd.config import validate_config
 from pysnspd.kinetic.eliashberg import EliashbergSpectrum, j_to_mev
 from pysnspd.kinetic.phase_space import PhaseSpaceCatalog, fermi_positive_energy
-from pysnspd.kinetic.powers import (
-    bose_positive_energy,
-    electronic_density_of_states_from_sigma_D,
-)
 from pysnspd.usadel.catalog import UsadelCatalog, J_to_meV
 from pysnspd.usadel.parameters import HBAR_J_S, K_B_J_K
 
 MEV_J = 1.602176634e-22
+E_CHARGE_C = 1.602176634e-19
 H_J_S = 2.0 * np.pi * HBAR_J_S
+
+
+def electronic_density_of_states_from_sigma_D(
+    sigma_n_S_m: float,
+    D_m2_s: float,
+) -> float:
+    """Return the single-spin density of states from the Einstein relation."""
+    if sigma_n_S_m <= 0.0:
+        raise ValueError("sigma_n_S_m must be positive.")
+    if D_m2_s <= 0.0:
+        raise ValueError("D_m2_s must be positive.")
+    return float(sigma_n_S_m / (2.0 * E_CHARGE_C**2 * D_m2_s))
+
+
+def bose_positive_energy(omega_J: np.ndarray, T_K: float) -> np.ndarray:
+    """Return the Bose-Einstein occupation for positive phonon energy."""
+    if T_K <= 0.0:
+        raise ValueError("Temperature must be positive.")
+
+    omega = np.asarray(omega_J, dtype=float)
+    out = np.zeros_like(omega, dtype=float)
+    positive = omega > 0.0
+    x = omega[positive] / (K_B_J_K * float(T_K))
+    vals = np.zeros_like(x)
+    small = x < 1.0e-6
+    vals[small] = 1.0 / x[small] - 0.5 + x[small] / 12.0
+    vals[~small] = 1.0 / np.expm1(np.clip(x[~small], 0.0, 700.0))
+    out[positive] = vals
+    return out
 
 
 @dataclass(frozen=True)
@@ -69,14 +95,6 @@ class PowerTableCatalog:
     u_ph_weighted_J: np.ndarray
     C_ph_weighted_J_K: np.ndarray
     metadata: dict[str, Any]
-
-    @property
-    def power_shape(self) -> tuple[int, int, int, int]:
-        return tuple(int(v) for v in self.P_total_W_m3.shape)
-
-    @property
-    def energy_shape(self) -> tuple[int, int, int]:
-        return tuple(int(v) for v in self.u_e_J_m3.shape)
 
 
 def build_power_table_catalog(
@@ -479,20 +497,6 @@ def _phonon_energy_density_simon(
     return out
 
 
-def _phonon_weighted_energy(
-    omega_J: np.ndarray,
-    phdos: np.ndarray,
-    Tph_values_K: np.ndarray,
-) -> np.ndarray:
-    """Legacy non-volume-normalized phonon diagnostic retained for compatibility."""
-    return _phonon_energy_density_simon(
-        omega_J,
-        phdos,
-        Tph_values_K,
-        ion_density_m3=1.0,
-    )
-
-
 def _temperature_gradient(values: np.ndarray, axis_values_K: np.ndarray, *, axis: int) -> np.ndarray:
     vals = np.asarray(values, dtype=float)
     x = np.asarray(axis_values_K, dtype=float)
@@ -529,34 +533,6 @@ def save_power_table_catalog_npz(catalog: PowerTableCatalog, path: str | Path) -
         metadata=np.array(catalog.metadata, dtype=object),
     )
     return output
-
-
-def load_power_table_catalog_npz(path: str | Path) -> PowerTableCatalog:
-    """Load a power-table catalogue saved by :func:`save_power_table_catalog_npz`."""
-    source = Path(path)
-    with np.load(source, allow_pickle=True) as data:
-        return PowerTableCatalog(
-            Te_values_K=np.asarray(data["Te_values_K"], dtype=float),
-            Tph_values_K=np.asarray(data["Tph_values_K"], dtype=float),
-            delta_values_J=np.asarray(data["delta_values_J"], dtype=float),
-            gamma_values_J=np.asarray(data["gamma_values_J"], dtype=float),
-            q_values_m_inv=np.asarray(data["q_values_m_inv"], dtype=float),
-            omega_values_J=np.asarray(data["omega_values_J"], dtype=float),
-            alpha2F=np.asarray(data["alpha2F"], dtype=float),
-            phdos_states_per_THz=np.asarray(data["phdos_states_per_THz"], dtype=float),
-            P_S_W_m3=np.asarray(data["P_S_W_m3"], dtype=float),
-            P_R_W_m3=np.asarray(data["P_R_W_m3"], dtype=float),
-            P_total_W_m3=np.asarray(data["P_total_W_m3"], dtype=float),
-            u_e_J_m3=np.asarray(data["u_e_J_m3"], dtype=float),
-            C_e_J_m3_K=np.asarray(data["C_e_J_m3_K"], dtype=float),
-            kappa_s_W_m_K=np.asarray(data.get("kappa_s_W_m_K", np.zeros((data["Te_values_K"].size, data["delta_values_J"].size))), dtype=float),
-            u_ph_J_m3=np.asarray(data.get("u_ph_J_m3", data.get("u_ph_weighted_J")), dtype=float),
-            C_ph_J_m3_K=np.asarray(data.get("C_ph_J_m3_K", data.get("C_ph_weighted_J_K")), dtype=float),
-            P_esc_W_m3=np.asarray(data.get("P_esc_W_m3", np.zeros_like(data.get("u_ph_weighted_J"))), dtype=float),
-            u_ph_weighted_J=np.asarray(data.get("u_ph_weighted_J", data.get("u_ph_J_m3")), dtype=float),
-            C_ph_weighted_J_K=np.asarray(data.get("C_ph_weighted_J_K", data.get("C_ph_J_m3_K")), dtype=float),
-            metadata=dict(data["metadata"].item()),
-        )
 
 
 def power_table_summary(catalog: PowerTableCatalog) -> dict[str, Any]:
@@ -775,8 +751,9 @@ class _PowerTableProgress:
 
 __all__ = [
     "PowerTableCatalog",
+    "bose_positive_energy",
     "build_power_table_catalog",
-    "load_power_table_catalog_npz",
+    "electronic_density_of_states_from_sigma_D",
     "power_table_summary",
     "save_power_table_catalog_npz",
 ]

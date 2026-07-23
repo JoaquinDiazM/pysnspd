@@ -8,7 +8,7 @@ from typing import Sequence
 import numpy as np
 
 from pysnspd.gtdgl.material import GTDGLMaterial
-from pysnspd.gtdgl.operators import FVOperators
+from pysnspd.mesh.operators import FVOperators
 
 
 @dataclass(frozen=True)

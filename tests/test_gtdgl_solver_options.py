@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import pytest
 
-from pysnspd.gtdgl.options import SolverOptions, SolverOptionsError, SparseSolver
-from pysnspd.gtdgl.solver import TDGLSolver, validate_terminal_currents
+from pysnspd.solver.options import SolverOptions, SolverOptionsError, SparseSolver
+from pysnspd.solver.core import TDGLSolver, validate_terminal_currents
 
 
 def test_solver_options_default_superlu_validates():

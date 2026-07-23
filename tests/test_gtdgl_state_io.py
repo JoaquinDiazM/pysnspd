@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 
 from pysnspd.gtdgl.state import CurrentFields, GTDGLStationaryState
-from pysnspd.gtdgl.state_io import save_relaxation_history_npz, save_stationary_state_npz
+from pysnspd.solver.state_io import save_relaxation_history_npz, save_stationary_state_npz
 
 
 def _zero_currents(n_nodes: int, n_edges: int) -> CurrentFields:

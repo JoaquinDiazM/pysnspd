@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.gtdgl.geometry import box, ensure_unique
-from pysnspd.gtdgl.tdgl_compat import Device, Layer, Polygon
+from pysnspd.mesh.geometry import box, ensure_unique
 from pysnspd.mesh.pytdgl_like import rectangular_boundary_points
 
 
@@ -61,44 +60,3 @@ def test_rectangular_boundary_unique_points_still_define_box_extent():
     assert np.isclose(unique[:, 0].max(), 2.4e-7)
     assert np.isclose(unique[:, 1].min(), -0.6e-7)
     assert np.isclose(unique[:, 1].max(), 0.6e-7)
-
-
-def test_minimal_pytdgl_device_copy_and_contains_points():
-    film = Polygon(
-        "film",
-        points=rectangular_boundary_points(
-            length_m=2.4e-7,
-            width_m=1.2e-7,
-            points=101,
-        ),
-    )
-
-    device = Device(
-        "test",
-        layer=Layer(
-            london_lambda=1.0,
-            coherence_length=1.0,
-            thickness=1.0,
-        ),
-        film=film,
-        length_units="m",
-    )
-
-    points = np.array(
-        [
-            [1.2e-7, 0.0],
-            [4.0e-7, 0.0],
-        ]
-    )
-
-    mask = device.contains_points(points)
-
-    assert mask.dtype == np.bool_
-    assert mask.tolist() == [True, False]
-
-    clone = device.copy(with_mesh=False)
-
-    assert clone is not device
-    assert clone.mesh is None
-    assert clone.name == device.name
-    assert np.allclose(clone.film.points, device.film.points)

@@ -13,6 +13,7 @@ from __future__ import annotations
 from typing import Optional, Tuple
 
 import numpy as np
+from scipy.spatial import ConvexHull, QhullError
 
 
 def rotation_matrix(angle_radians: float) -> np.ndarray:
@@ -31,41 +32,6 @@ def rotate(coords: np.ndarray, angle_degrees: float) -> np.ndarray:
     assert coords.shape[1] == 2
     R = rotation_matrix(np.radians(angle_degrees))
     return (R @ coords.T).T
-
-
-def ellipse(
-    a: float,
-    b: float,
-    points: int = 100,
-    center: Tuple[float, float] = (0, 0),
-    angle: float = 0,
-) -> np.ndarray:
-    """Returns coordinates for an ellipse."""
-
-    x0, y0 = center
-    theta = np.linspace(0, 2 * np.pi, points, endpoint=False)
-    xs = a * np.cos(theta)
-    ys = b * np.sin(theta)
-    coords = np.array([xs, ys]).T + np.array([[x0, y0]])
-    if angle:
-        coords = rotate(coords, angle)
-    return coords
-
-
-def circle(
-    radius: float,
-    points: int = 100,
-    center: Tuple[float, float] = (0, 0),
-) -> np.ndarray:
-    """Returns coordinates for a circle."""
-
-    return ellipse(
-        radius,
-        radius,
-        points=points,
-        center=center,
-        angle=0,
-    )
 
 
 def box(
@@ -132,17 +98,16 @@ def ensure_unique(coords: np.ndarray) -> np.ndarray:
     return coords
 
 
-def unit_vector(vector: np.ndarray) -> np.ndarray:
-    """Normalizes ``vector``."""
+def get_convex_polygon_area(coords: np.ndarray) -> tuple[float, bool]:
+    """Compute a convex polygon's area, or the area of its convex hull."""
+    try:
+        hull = ConvexHull(coords)
+    except QhullError:
+        return 0.0, True
+    return float(hull.volume), len(hull.vertices) == len(coords)
 
-    return vector / np.linalg.norm(vector, axis=-1)[:, np.newaxis]
 
-
-def path_vectors(path: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """Computes edge lengths and unit normals along a path."""
-
-    dr = np.diff(path, axis=0)
-    normals = np.cross(dr, [0, 0, 1])
-    unit_normals = unit_vector(normals)
-    edge_lengths = np.linalg.norm(dr, axis=1)
-    return edge_lengths, unit_normals[:, :2]
+def orient_convex_polygon(vertices: np.ndarray) -> np.ndarray:
+    """Return counterclockwise-oriented vertices for a convex polygon."""
+    diffs = vertices - vertices.mean(axis=0)
+    return vertices[np.argsort(np.arctan2(diffs[:, 1], diffs[:, 0]))]

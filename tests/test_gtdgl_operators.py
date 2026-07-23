@@ -3,12 +3,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.gtdgl.operators import (
+from pysnspd.mesh.operators import (
     divergence_from_edge_scalar,
     edge_average,
     edge_phase_gradient_from_psi,
-    edge_scalar_gradient,
-    laplacian,
     terminal_voltage,
 )
 
@@ -17,9 +15,7 @@ def test_basic_operator_shapes(small_strip_mesh_bundle):
     mesh, _, ops = small_strip_mesh_bundle
     values = np.linspace(0.0, 1.0, mesh.n_nodes)
     assert edge_average(values, ops).shape == (ops.n_edges,)
-    assert edge_scalar_gradient(values, ops).shape == (ops.n_edges,)
     assert divergence_from_edge_scalar(np.zeros(ops.n_edges), ops).shape == (ops.n_nodes,)
-    assert laplacian(values, ops).shape == (ops.n_nodes,)
 
 
 def test_phase_gradient_recovers_uniform_ramp(small_strip_mesh_bundle):

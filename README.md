@@ -2,14 +2,16 @@
 
 **Multiscale research code for superconducting nanowire single-photon detector (SNSPD) simulations.**
 
-This README documents the frozen, dirty-but-functional research version of `pySNSPD` used to obtain the main thermal-photon result of the thesis work.
+This README documents the production research workflow of `pySNSPD` used to
+obtain the main thermal-photon result of the thesis work. The publication
+baseline, open defects, and current validation record live in `status.md`.
 
 ```text
-Frozen SHA : 9aeeab333dd01952c94bc28286d028ccef1d7445
-Git tag    : dirty-functional-thermal-photon-v1
-Repository : github.com/JoaquinDiazM/pysnspd
-Status     : research prototype, functional, not yet cleaned
-Date       : 2026-07-05
+Publication baseline : 23ea557657d890b1c902f5962a669d3fb845fd93
+Historical tag       : dirty-functional-thermal-photon-v1
+Repository           : github.com/JoaquinDiazM/pysnspd
+Status               : research prototype, production pipeline validated
+Date                 : 2026-07-23
 ```
 
 ---
@@ -223,7 +225,7 @@ Scripts:
 python plot_pipelines/01_plot_prerun.py --help
 python plot_pipelines/02_plot_ss_run.py --help
 python plot_pipelines/03_plot_photon_run.py --help
-python plot_pipelines/Z1_current_sweep_analysis.py --help
+python plot_pipelines/Z2_current_sweep_analysis.py --help
 ```
 
 Role:
@@ -332,7 +334,7 @@ The code converts the frequency axis to an energy axis internally. Keep the raw 
 
 ---
 
-## 8. Repository structure at the frozen SHA
+## 8. Repository structure after the Week 1 cleanup
 
 The top-level structure is approximately:
 
@@ -348,22 +350,31 @@ plot_pipelines/
   01_plot_prerun.py
   02_plot_ss_run.py
   03_plot_photon_run.py
-  Z1_current_sweep_analysis.py
+  Z2_current_sweep_analysis.py
 pysnspd/
   config.py
+  analysis/
+  circuit/
+  excitation/
   io/
-  mesh/
-  usadel/
   kinetic/
+  mesh/
   gtdgl/
   plotting/
+  solver/
+  thermal/
+  usadel/
 tests/
+tools/
 pyproject.toml
 README.md
 LICENSE
 ```
 
-Important note: this structure is functional, not final. Several names still reflect the historical order in which the thesis objectives were implemented.
+Finite-volume infrastructure now lives entirely under `mesh/`; stationary and
+transient orchestration lives under `solver/`; thermal evolution and photon
+deposition have their own packages. The governing placement and deletion rules
+are documented in `docs/ARCHITECTURE_POLICY.md`.
 
 ---
 

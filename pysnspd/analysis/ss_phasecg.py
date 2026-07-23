@@ -8,7 +8,7 @@ from typing import Any, Mapping
 import numpy as np
 
 from pysnspd.analysis.ss_run import SSRunData, build_ss_plot_dataset
-from pysnspd.gtdgl.operators import (
+from pysnspd.mesh.operators import (
     build_fv_operators,
     edge_scalar_to_node_vector_least_squares,
 )

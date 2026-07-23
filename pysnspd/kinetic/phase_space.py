@@ -525,25 +525,6 @@ def save_phase_space_catalog_npz(catalog: PhaseSpaceCatalog, path: str | Path) -
     return output
 
 
-def load_phase_space_catalog_npz(path: str | Path) -> PhaseSpaceCatalog:
-    """Load a phase-space catalogue saved by :func:`save_phase_space_catalog_npz`."""
-    source = Path(path)
-    with np.load(source, allow_pickle=True) as data:
-        metadata = data["metadata"].item()
-        return PhaseSpaceCatalog(
-            Te_values_K=np.asarray(data["Te_values_K"], dtype=float),
-            omega_values_J=np.asarray(data["omega_values_J"], dtype=float),
-            delta_values_J=np.asarray(data["delta_values_J"], dtype=float),
-            gamma_values_J=np.asarray(data["gamma_values_J"], dtype=float),
-            q_values_m_inv=np.asarray(data["q_values_m_inv"], dtype=float),
-            J_S_TdqO_J=np.asarray(data["J_S_TdqO_J"], dtype=float),
-            J_R_TdqO_J=np.asarray(data["J_R_TdqO_J"], dtype=float),
-            delta_indices=np.asarray(data["delta_indices"], dtype=np.int64),
-            q_indices=np.asarray(data["q_indices"], dtype=np.int64),
-            metadata=dict(metadata),
-        )
-
-
 def _select_axis_indices(n_total: int, n_requested: int) -> np.ndarray:
     """Select approximately evenly spaced indices from an axis."""
     if n_total <= 0:
@@ -648,5 +629,4 @@ __all__ = [
     "phase_space_summary",
     "phase_space_energy_window_summary",
     "save_phase_space_catalog_npz",
-    "load_phase_space_catalog_npz",
 ]

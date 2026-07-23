@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
+from pysnspd.solver.stationary import solve_stationary_pytdgl_like
 from pysnspd.gtdgl.allmaras import (
     allmaras_coefficients,
     compute_allmaras_appendix_b_diagnostic,

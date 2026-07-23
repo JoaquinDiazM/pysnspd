@@ -22,9 +22,9 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from pysnspd.gtdgl.finite_volume import Mesh
-from pysnspd.gtdgl.geometry import box
-from pysnspd.gtdgl.tdgl_compat import Device, Layer, Polygon
+from pysnspd.mesh.finite_volume.mesh import Mesh
+from pysnspd.mesh.geometry import box
+from pysnspd.mesh.tdgl_compat import Device, Layer, Polygon
 from pysnspd.mesh.delaunay import MeshData, orient_triangles_counterclockwise
 
 
@@ -212,68 +212,6 @@ def rectangular_boundary_points(
         center=(0.5 * length, 0.0),
         angle=0,
     )
-
-
-def save_pytdgl_like_mesh_npz(mesh: Mesh, path: str | Path) -> Path:
-    """Save full pyTDGL-like finite-volume mesh arrays to ``.npz``."""
-
-    output = Path(path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    polygons = mesh.voronoi_polygons or []
-    if polygons:
-        split_indices = np.cumsum([len(p) for p in polygons[:-1]])
-        polygons_flat = np.concatenate(polygons, axis=0)
-    else:
-        split_indices = np.array([], dtype=np.int64)
-        polygons_flat = np.empty((0, 2), dtype=float)
-
-    edge_mesh = mesh.edge_mesh
-    if edge_mesh is None:
-        raise ValueError("Mesh must have edge_mesh to save pyTDGL-like full mesh.")
-
-    np.savez_compressed(
-        output,
-        sites=mesh.sites,
-        elements=mesh.elements,
-        boundary_indices=mesh.boundary_indices,
-        areas=mesh.areas,
-        dual_sites=mesh.dual_sites,
-        voronoi_polygons_flat=polygons_flat,
-        voronoi_split_indices=split_indices,
-        edge_centers=edge_mesh.centers,
-        edge_edges=edge_mesh.edges,
-        edge_boundary_edge_indices=edge_mesh.boundary_edge_indices,
-        edge_directions=edge_mesh.directions,
-        edge_lengths=edge_mesh.edge_lengths,
-        edge_dual_edge_lengths=edge_mesh.dual_edge_lengths,
-    )
-
-    return output
-
-
-def build_pytdgl_like_mesh_summary(mesh: Mesh) -> dict[str, Any]:
-    """Summary for the full pyTDGL-like finite-volume mesh."""
-
-    edge_mesh = mesh.edge_mesh
-    if edge_mesh is None:
-        raise ValueError("Mesh must include an EdgeMesh.")
-
-    return {
-        "backend": "pytdgl_device_make_mesh_box_generate_mesh_exact_fv_v1",
-        "n_sites": int(len(mesh.sites)),
-        "n_elements": int(len(mesh.elements)),
-        "n_boundary_sites": int(len(mesh.boundary_indices)),
-        "n_edges": int(len(edge_mesh.edges)),
-        "n_boundary_edges": int(len(edge_mesh.boundary_edge_indices)),
-        "area_sum_m2": float(np.sum(mesh.areas)),
-        "area_min_m2": float(np.min(mesh.areas)),
-        "area_max_m2": float(np.max(mesh.areas)),
-        "edge_length_min_m": float(np.min(edge_mesh.edge_lengths)),
-        "edge_length_max_m": float(np.max(edge_mesh.edge_lengths)),
-        "dual_edge_length_min_m": float(np.min(edge_mesh.dual_edge_lengths)),
-        "dual_edge_length_max_m": float(np.max(edge_mesh.dual_edge_lengths)),
-    }
 
 
 def _validate_parameters(params: PyTDGLLikeMeshParameters) -> None:

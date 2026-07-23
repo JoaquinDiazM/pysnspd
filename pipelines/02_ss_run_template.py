@@ -1,8 +1,8 @@
-"""Stationary gTDGL--Poisson SS-run using the flat gTDGL backend.
+"""Stationary gTDGL--Poisson SS-run using the multiphysics solver package.
 
 This pipeline loads PRE-run outputs, builds the analytic stationary seed, and
-relaxes it with ``pysnspd.gtdgl.solve_stationary_pytdgl_like`` promoted to the
-package root.  The preferred supercurrent law is the Matsubara Usadel table
+relaxes it with ``pysnspd.solver.stationary.solve_stationary_pytdgl_like``.
+The preferred supercurrent law is the Matsubara Usadel table
 stored by ``01_prerun_template.py``.
 
 The pipeline can also run a current sweep.  In that mode the base current is run
@@ -33,10 +33,12 @@ from pysnspd.io.manager import create_run_layout, write_manifest
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.mesh.edges import load_edges_npz
 from pysnspd.usadel.catalog import load_usadel_catalog_npz
-from pysnspd.gtdgl import build_fv_operators, build_gtdgl_material, solve_stationary_pytdgl_like
-from pysnspd.gtdgl.seed import build_stationary_seed, save_stationary_seed_npz, seed_summary
-from pysnspd.gtdgl.state_io import save_relaxation_history_npz, save_stationary_state_npz
-from pysnspd.gtdgl.snapshot_diagnostics import (
+from pysnspd.gtdgl.material import build_gtdgl_material
+from pysnspd.mesh.operators import build_fv_operators
+from pysnspd.solver.stationary import solve_stationary_pytdgl_like
+from pysnspd.solver.seed import build_stationary_seed, save_stationary_seed_npz, seed_summary
+from pysnspd.solver.state_io import save_relaxation_history_npz, save_stationary_state_npz
+from pysnspd.analysis.snapshots import (
     save_ss_snapshot_bundle_npz,
     write_ss_snapshot_power_diagnostics,
 )

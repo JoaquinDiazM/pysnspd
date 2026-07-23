@@ -25,9 +25,6 @@ class PhotonBubbleParams:
     sigma_m: float = 10.0e-9
     enabled: bool = True
 
-    def as_dict(self) -> dict[str, float | bool | None]:
-        return asdict(self)
-
 
 def inject_phonon_bubble(
     *,

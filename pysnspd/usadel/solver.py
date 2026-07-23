@@ -318,25 +318,3 @@ def dos_diagnostics(
 
 
 # Backward-compatible names from OE3 v1.
-def dynes_bcs_dos(
-    energy_J: np.ndarray,
-    *,
-    delta_J: float,
-    gamma_J: float = 0.0,
-    eta_J: float = 0.0,
-) -> np.ndarray:
-    """Backward-compatible alias for :func:`usadel_dos`."""
-
-    return usadel_dos(energy_J, delta_J=delta_J, gamma_J=gamma_J, eta_J=eta_J)
-
-
-def anomalous_proxy(
-    energy_J: np.ndarray,
-    *,
-    delta_J: float,
-    gamma_J: float = 0.0,
-    eta_J: float = 0.0,
-) -> np.ndarray:
-    """Backward-compatible alias for :func:`usadel_anomalous_abs`."""
-
-    return usadel_anomalous_abs(energy_J, delta_J=delta_J, gamma_J=gamma_J, eta_J=eta_J)

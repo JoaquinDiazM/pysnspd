@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from pysnspd.gtdgl.snapshot_diagnostics import compute_snapshot_joule_power_density
+from pysnspd.analysis.snapshots import compute_snapshot_joule_power_density
 from pysnspd.plotting.ss_power_figures import (
     plot_ss_snapshot_power_balance_maps,
     plot_ss_snapshot_power_energy_maps,

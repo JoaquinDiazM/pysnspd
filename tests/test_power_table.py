@@ -4,11 +4,10 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from pysnspd.kinetic.eliashberg import build_debye_reference_spectrum
+from pysnspd.kinetic.eliashberg import EliashbergSpectrum
 from pysnspd.kinetic.phase_space import PhaseSpaceCatalog
 from pysnspd.kinetic.power_table import (
     build_power_table_catalog,
-    load_power_table_catalog_npz,
     power_table_summary,
     save_power_table_catalog_npz,
 )
@@ -83,10 +82,12 @@ def test_power_table_catalog_smoke(tmp_path):
         },
     )
 
-    spectrum = build_debye_reference_spectrum(
-        omega,
-        lambda_ep=0.1,
-        omega_D_J=float(omega[-1]),
+    spectrum = EliashbergSpectrum(
+        frequency_THz=np.linspace(0.0, 1.0, omega.size),
+        omega_J=omega,
+        alpha2F=np.linspace(0.0, 0.1, omega.size),
+        phdos_states_per_THz=np.linspace(0.0, 1.0, omega.size),
+        metadata={"backend": "synthetic-test"},
     )
 
     catalog = build_power_table_catalog(
@@ -130,9 +131,4 @@ def test_power_table_catalog_smoke(tmp_path):
     assert summary["P_esc_is_finite"] is True
 
     path = save_power_table_catalog_npz(catalog, tmp_path / "power_table_catalog.npz")
-    loaded = load_power_table_catalog_npz(path)
-    assert loaded.P_total_W_m3.shape == catalog.P_total_W_m3.shape
-    assert np.allclose(loaded.P_total_W_m3, catalog.P_total_W_m3)
-    assert np.allclose(loaded.kappa_s_W_m_K, catalog.kappa_s_W_m_K)
-    assert np.allclose(loaded.u_ph_J_m3, catalog.u_ph_J_m3)
-    assert np.allclose(loaded.P_esc_W_m3, catalog.P_esc_W_m3)
+    assert path.exists()

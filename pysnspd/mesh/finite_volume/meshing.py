@@ -20,7 +20,7 @@ from meshpy import triangle
 from scipy import spatial
 from shapely.geometry.polygon import Polygon
 
-from pysnspd.gtdgl.geometry import ensure_unique
+from pysnspd.mesh.geometry import ensure_unique
 
 from .util import get_max_edge_length
 

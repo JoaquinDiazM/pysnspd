@@ -442,20 +442,6 @@ def interpolate_gap_curves(
     return q_targets, temperature, curves
 
 
-def _legend_column_major_order(n_items: int, ncols: int) -> list[int]:
-    """Return handle order that makes Matplotlib's column-major legend read row-wise."""
-
-    ncols = max(1, int(ncols))
-    nrows = int(np.ceil(n_items / ncols))
-    order: list[int] = []
-    for col in range(ncols):
-        for row in range(nrows):
-            idx = row * ncols + col
-            if idx < n_items:
-                order.append(idx)
-    return order
-
-
 def plot_gap_eq_vs_temperature(
     catalog: UsadelGapCatalog,
     output_path: str | Path,

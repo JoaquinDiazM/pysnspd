@@ -271,12 +271,6 @@ def J_to_meV(value_J: float) -> float:
     return float(value_J / 1.602176634e-22)
 
 
-def meV_axis(values_J: np.ndarray) -> np.ndarray:
-    """Convert a Joule energy axis to meV."""
-
-    return np.asarray(values_J, dtype=float) / 1.602176634e-22
-
-
 def _resolve_parallel(
     cfg: Mapping[str, Any],
     workers: int | None,

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
+from pysnspd.solver.stationary import solve_stationary_pytdgl_like
 
 
 def test_solve_stationary_returns_relaxation_result(small_strip_mesh_bundle, gtdgl_material, stationary_seed_factory):

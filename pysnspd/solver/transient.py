@@ -24,9 +24,9 @@ from pysnspd.circuit.readout import (
     initialize_circuit_from_ss,
     step_circuit_rk2,
 )
-from pysnspd.gtdgl import solve_stationary_pytdgl_like
-from pysnspd.gtdgl.photon import PhotonBubbleParams, inject_phonon_bubble
-from pysnspd.gtdgl.snapshot_diagnostics import save_ss_snapshot_bundle_npz
+from pysnspd.solver.stationary import solve_stationary_pytdgl_like
+from pysnspd.excitation.photon import PhotonBubbleParams, inject_phonon_bubble
+from pysnspd.analysis.snapshots import save_ss_snapshot_bundle_npz
 
 
 @dataclass(frozen=True)

@@ -18,10 +18,15 @@ from typing import List, Tuple
 
 import numpy as np
 import scipy.sparse as sp
-from scipy.spatial import ConvexHull, Delaunay, QhullError
+from scipy.spatial import Delaunay
 from shapely.geometry import MultiLineString
 from shapely.ops import orient, polygonize
 from tqdm import tqdm
+
+from pysnspd.mesh.geometry import (
+    get_convex_polygon_area,
+    orient_convex_polygon,
+)
 
 logger = logging.getLogger("tdgl.finite_volume")
 
@@ -41,13 +46,6 @@ def get_edges(elements: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     edges = np.sort(edges, axis=1)
     edges, counts = np.unique(edges, return_counts=True, axis=0)
     return edges, counts == 1
-
-
-def get_edge_lengths(points: np.ndarray, elements: np.ndarray) -> np.ndarray:
-    """Returns the lengths of all edges in a triangulation."""
-
-    edges, _ = get_edges(elements)
-    return np.linalg.norm(np.diff(points[edges], axis=1), axis=2).squeeze()
 
 
 def get_max_edge_length(points: np.ndarray, elements: np.ndarray) -> float:
@@ -187,56 +185,3 @@ def compute_voronoi_polygon_areas(
             areas[site] -= triangle_area
         voronoi_sites.append(poly)
     return areas, voronoi_sites
-
-
-def get_convex_polygon_area(coords: np.ndarray) -> Tuple[float, bool]:
-    """Compute the area of a convex polygon or the area of its convex hull."""
-
-    try:
-        hull = ConvexHull(coords)
-    except QhullError:
-        return 0, True
-    else:
-        is_convex = len(hull.vertices) == len(coords)
-        return hull.volume, is_convex
-
-
-def triangle_areas(points: np.ndarray, triangles: np.ndarray) -> np.ndarray:
-    """Calculates the area of each triangle."""
-
-    xy = points[triangles]
-    s = xy[:, [2, 0]] - xy[:, [1, 2]]
-    a = np.linalg.det(s)
-    return a * 0.5
-
-
-def orient_convex_polygon(vertices: np.ndarray) -> np.ndarray:
-    """Returns counterclockwise-oriented vertices for a convex polygon."""
-
-    diffs = vertices - vertices.mean(axis=0)
-    return vertices[np.argsort(np.arctan2(diffs[:, 1], diffs[:, 0]))]
-
-
-def convex_polygon_centroid(points: np.ndarray) -> Tuple[float, float]:
-    """Calculates the ``(x, y)`` position of the centroid of a convex polygon."""
-
-    triangles = Delaunay(points).simplices
-    areas = triangle_areas(points, triangles)
-    centroids = points[triangles].mean(axis=1)
-    return np.average(centroids, weights=areas, axis=0)
-
-
-def get_oriented_boundary(
-    points: np.ndarray, boundary_edges: np.ndarray
-) -> List[np.ndarray]:
-    """Returns arrays of boundary vertex indices, ordered counterclockwise."""
-
-    points_list = [tuple(xy) for xy in points]
-    edges = MultiLineString([points[edge, :] for edge in boundary_edges])
-    polygons = list(polygonize(edges))
-    polygon_indices = []
-    for p in polygons:
-        polygon = orient(p)
-        indices = np.array([points_list.index(xy) for xy in polygon.exterior.coords])
-        polygon_indices.append(indices[:-1])
-    return polygon_indices

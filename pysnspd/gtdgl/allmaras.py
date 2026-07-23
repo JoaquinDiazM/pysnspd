@@ -16,7 +16,7 @@ import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 
 from pysnspd.gtdgl.material import GTDGLMaterial, K_B_J_K
-from pysnspd.gtdgl.operators import (
+from pysnspd.mesh.operators import (
     FVOperators,
     divergence_from_edge_scalar,
     edge_average,

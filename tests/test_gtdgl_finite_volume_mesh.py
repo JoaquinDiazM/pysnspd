@@ -1,10 +1,9 @@
-"""Finite-volume mesh infrastructure promoted to ``pysnspd.gtdgl``.
+"""Finite-volume mesh infrastructure consolidated under ``pysnspd.mesh``.
 
 These tests follow the pyTDGL-style finite-volume split:
 
     geometry.close_curve
     finite_volume.util.get_edges
-    finite_volume.util.triangle_areas
     finite_volume.Mesh.from_triangulation
 
 The local pySNSPD package keeps coordinates in the caller units, but the
@@ -15,9 +14,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.gtdgl.finite_volume import Mesh
-from pysnspd.gtdgl.finite_volume.util import get_edges, triangle_areas
-from pysnspd.gtdgl.geometry import close_curve
+from pysnspd.mesh.delaunay import triangle_areas
+from pysnspd.mesh.finite_volume.mesh import Mesh
+from pysnspd.mesh.finite_volume.util import get_edges
+from pysnspd.mesh.geometry import close_curve
 
 
 def _square_with_center_mesh() -> tuple[np.ndarray, np.ndarray]:
@@ -86,11 +86,3 @@ def test_mesh_boundary_indices_are_square_corners():
 
     assert set(mesh.boundary_indices.tolist()) == {0, 1, 2, 3}
     assert 4 not in set(mesh.boundary_indices.tolist())
-
-
-def test_mesh_center_of_mass_is_square_center():
-    sites, elements = _square_with_center_mesh()
-
-    mesh = Mesh.from_triangulation(sites, elements)
-
-    assert np.allclose(mesh.center_of_mass, (0.5, 0.5))

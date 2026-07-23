@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.gtdgl.finite_volume import Mesh
-from pysnspd.gtdgl.finite_volume.edge_mesh import EdgeMesh
-from pysnspd.gtdgl.finite_volume.util import (
+from pysnspd.mesh.finite_volume.edge_mesh import EdgeMesh
+from pysnspd.mesh.finite_volume.mesh import Mesh
+from pysnspd.mesh.finite_volume.util import (
     generate_voronoi_vertices,
     get_edges,
     get_voronoi_polygon_indices,

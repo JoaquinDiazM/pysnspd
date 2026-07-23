@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import inspect
 
-from pysnspd.gtdgl.adapter import solve_stationary_pytdgl_like
-from pysnspd.gtdgl.solver import TDGLSolver
+from pysnspd.solver.stationary import solve_stationary_pytdgl_like
+from pysnspd.solver.core import TDGLSolver
 
 
 def test_solver_exposes_explicit_stop_on_convergence_policy():

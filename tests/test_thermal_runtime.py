@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from pysnspd.gtdgl.thermal import (
+from pysnspd.thermal.evolution import (
     PowerTableRuntimeInterpolator,
     ThermalRuntimeConfig,
     ThermalRuntimeController,

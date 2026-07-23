@@ -12,7 +12,7 @@ from typing import Callable, Tuple, Union
 import numpy as np
 import scipy.sparse as sp
 
-from .options import SparseSolver
+from pysnspd.solver.options import SparseSolver
 
 
 def build_divergence(mesh) -> sp.csr_array:

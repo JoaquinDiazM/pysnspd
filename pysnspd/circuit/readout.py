@@ -33,9 +33,6 @@ class CircuitParams:
             raise ValueError("V_bias_V must be finite when provided.")
         return self
 
-    def as_dict(self) -> dict[str, float | None]:
-        return asdict(self)
-
 
 @dataclass(frozen=True)
 class CircuitState:

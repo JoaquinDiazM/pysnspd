@@ -30,43 +30,6 @@ class MeshData:
     def n_triangles(self) -> int:
         return int(self.triangles.shape[0])
 
-    @property
-    def extent_m(self) -> tuple[float, float, float, float]:
-        return (0.0, self.length_m, -0.5 * self.width_m, 0.5 * self.width_m)
-
-
-def geometry_from_config(config: Mapping[str, Any]) -> dict[str, float]:
-    """Resolve the rectangular nanowire geometry from a full or minimal config."""
-
-    material = config.get("material", {})
-    mesh_cfg = config.get("mesh", {})
-    geometry = config.get("geometry", {}) if isinstance(config.get("geometry", {}), Mapping) else {}
-
-    width_m = float(material.get("width_m", mesh_cfg.get("width_m", 0.0)))
-    spacing_m = float(mesh_cfg.get("target_spacing_m", material.get("target_spacing_m", 0.0)))
-    seed = int(mesh_cfg.get("seed", 12345))
-
-    if "length_m" in mesh_cfg:
-        length_m = float(mesh_cfg["length_m"])
-    elif "length_m" in geometry:
-        length_m = float(geometry["length_m"])
-    else:
-        length_m = 2.0 * width_m
-
-    if length_m <= 0.0:
-        raise ValueError("Nanowire length_m must be positive.")
-    if width_m <= 0.0:
-        raise ValueError("Nanowire width_m must be positive.")
-    if spacing_m <= 0.0:
-        raise ValueError("mesh.target_spacing_m must be positive.")
-
-    return {
-        "length_m": length_m,
-        "width_m": width_m,
-        "target_spacing_m": spacing_m,
-        "seed": seed,
-    }
-
 
 def generate_rectangular_delaunay_mesh(
     config: Mapping[str, Any],

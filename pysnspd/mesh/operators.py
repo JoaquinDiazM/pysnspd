@@ -156,22 +156,6 @@ def triangle_areas(nodes: np.ndarray, triangles: np.ndarray) -> np.ndarray:
     )
 
 
-def barycentric_node_areas(
-    nodes: np.ndarray,
-    triangles: np.ndarray,
-    triangle_area_m2: np.ndarray | None = None,
-) -> np.ndarray:
-    """Return the legacy barycentric node areas, retained for diagnostics."""
-
-    n_nodes = int(np.asarray(nodes).shape[0])
-    tri = np.asarray(triangles, dtype=np.int64)
-    area = triangle_areas(nodes, tri) if triangle_area_m2 is None else np.asarray(triangle_area_m2, dtype=float)
-    out = np.zeros(n_nodes, dtype=float)
-    for local in range(3):
-        np.add.at(out, tri[:, local], area / 3.0)
-    return out
-
-
 def circumcentric_node_areas_from_edge_duals(
     *,
     edges: np.ndarray,
@@ -301,30 +285,12 @@ def edge_average(values: np.ndarray, ops: FVOperators) -> np.ndarray:
     return 0.5 * (v[ops.edge_i] + v[ops.edge_j])
 
 
-def edge_scalar_gradient(values: np.ndarray, ops: FVOperators) -> np.ndarray:
-    """Directional scalar gradient from edge_i to edge_j."""
-
-    v = np.asarray(values)
-    return (v[ops.edge_j] - v[ops.edge_i]) / ops.edge_length_m
-
-
 def edge_phase_gradient_from_psi(psi: np.ndarray, ops: FVOperators) -> np.ndarray:
     """Gauge-safe phase gradient from the complex order parameter."""
 
     z = np.asarray(psi, dtype=np.complex128)
     dtheta = np.angle(z[ops.edge_j] * np.conjugate(z[ops.edge_i]))
     return dtheta / ops.edge_length_m
-
-
-def laplacian(values: np.ndarray, ops: FVOperators) -> np.ndarray:
-    """Graph FV Laplacian of a node scalar/complex field."""
-
-    v = np.asarray(values)
-    out = np.zeros(ops.n_nodes, dtype=np.result_type(v, np.complex128))
-    flux = ops.dual_face_length_m * (v[ops.edge_j] - v[ops.edge_i]) / ops.edge_length_m
-    np.add.at(out, ops.edge_i, flux)
-    np.add.at(out, ops.edge_j, -flux)
-    return out / ops.node_area_m2
 
 
 def edge_flux_accumulator_A_m(edge_current_i_to_j_A_m2: np.ndarray, ops: FVOperators) -> np.ndarray:
@@ -428,54 +394,6 @@ def terminal_boundary_accum_A_m(
     return out
 
 
-def unwrap_phase_graph(
-    psi: np.ndarray,
-    edges: np.ndarray,
-    *,
-    seed_index: int | None = None,
-    subtract_mean: bool = False,
-) -> np.ndarray:
-    """Unwrap phase by walking the mesh graph."""
-
-    z = np.asarray(psi, dtype=np.complex128).reshape(-1)
-    edges = np.asarray(edges, dtype=np.int64)
-    n = int(z.size)
-    if n == 0:
-        return np.array([], dtype=float)
-    if seed_index is None:
-        seed_index = 0
-    seed_index = int(seed_index)
-
-    adj: list[list[tuple[int, float]]] = [[] for _ in range(n)]
-    dtheta = np.angle(z[edges[:, 1]] * np.conjugate(z[edges[:, 0]]))
-    for (i, j), dth in zip(edges, dtheta):
-        ii = int(i)
-        jj = int(j)
-        adj[ii].append((jj, float(dth)))
-        adj[jj].append((ii, -float(dth)))
-
-    theta = np.full(n, np.nan, dtype=float)
-    visited = np.zeros(n, dtype=bool)
-    starts = [seed_index] + [i for i in range(n) if i != seed_index]
-    for start in starts:
-        if visited[start]:
-            continue
-        theta[start] = float(np.angle(z[start]))
-        visited[start] = True
-        stack = [start]
-        while stack:
-            i = stack.pop()
-            for j, dth in adj[i]:
-                if not visited[j]:
-                    theta[j] = theta[i] + dth
-                    visited[j] = True
-                    stack.append(j)
-
-    if subtract_mean:
-        theta -= float(np.nanmean(theta))
-    return theta
-
-
 def edge_scalar_to_node_vector(
     edge_current_i_to_j: np.ndarray,
     ops: FVOperators,
@@ -575,35 +493,6 @@ def boundary_currents_from_edge_scalar_least_squares(
         jy_A_m2=jy,
         thickness_m=thickness_m,
     )
-
-
-def strip_transport_current_profile_from_node_vectors(
-    *,
-    mesh,
-    jx_A_m2: np.ndarray,
-    thickness_m: float,
-    n_bins: int = 41,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Estimate I(x)=d*w*<jx>_strip as a diagnostic profile."""
-
-    nodes = np.asarray(mesh.nodes, dtype=float)
-    jx = np.asarray(jx_A_m2, dtype=float)
-    x = nodes[:, 0]
-    xmin = float(np.min(x))
-    xmax = float(np.max(x))
-    if n_bins < 2:
-        raise ValueError("n_bins must be at least 2.")
-    edges_x = np.linspace(xmin, xmax, int(n_bins) + 1)
-    centers = 0.5 * (edges_x[:-1] + edges_x[1:])
-    current_A = np.full(int(n_bins), np.nan, dtype=float)
-    for k in range(int(n_bins)):
-        if k == int(n_bins) - 1:
-            mask = (x >= edges_x[k]) & (x <= edges_x[k + 1])
-        else:
-            mask = (x >= edges_x[k]) & (x < edges_x[k + 1])
-        if np.any(mask):
-            current_A[k] = float(thickness_m * mesh.width_m * np.mean(jx[mask]))
-    return centers, current_A
 
 
 def terminal_voltage(nodes: np.ndarray, phi_V: np.ndarray, *, length_m: float) -> float:

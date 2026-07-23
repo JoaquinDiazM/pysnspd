@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.gtdgl.device import build_pytdgl_like_device
-from pysnspd.gtdgl.options import SolverOptions
-from pysnspd.gtdgl.solver import TDGLSolver
+from pysnspd.mesh.device import build_pytdgl_like_device
+from pysnspd.solver.options import SolverOptions
+from pysnspd.solver.core import TDGLSolver
 
 
 def test_device_adapter_uses_si_current_conversion(small_strip_mesh_bundle, gtdgl_material):

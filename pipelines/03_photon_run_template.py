@@ -24,9 +24,10 @@ from pysnspd.io.manager import create_run_layout, write_manifest
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.mesh.edges import load_edges_npz
 from pysnspd.usadel.catalog import load_usadel_catalog_npz
-from pysnspd.gtdgl import build_fv_operators, build_gtdgl_material
-from pysnspd.gtdgl.photon import PhotonBubbleParams
-from pysnspd.gtdgl.photon_transient import CoupledTransientConfig, run_coupled_transient
+from pysnspd.gtdgl.material import build_gtdgl_material
+from pysnspd.mesh.operators import build_fv_operators
+from pysnspd.excitation.photon import PhotonBubbleParams
+from pysnspd.solver.transient import CoupledTransientConfig, run_coupled_transient
 from pysnspd.gtdgl.usadel_current import (
     attach_usadel_supercurrent_table_from_npz,
     validate_strict_usadel_supercurrent_table_npz,

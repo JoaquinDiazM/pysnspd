@@ -276,46 +276,6 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     return dataset
 
 
-def compute_x_profiles(dataset: Mapping[str, Any], *, n_bins: int = 51) -> tuple[np.ndarray, dict[str, np.ndarray]]:
-    x_nm = np.asarray(dataset["x_nm"], dtype=float)
-    if x_nm.size == 0:
-        return np.array([], dtype=float), {}
-
-    bins = np.linspace(float(np.nanmin(x_nm)), float(np.nanmax(x_nm)), int(n_bins) + 1)
-    centers = 0.5 * (bins[:-1] + bins[1:])
-    idx = np.digitize(x_nm, bins) - 1
-    idx = np.clip(idx, 0, centers.size - 1)
-
-    profiles: dict[str, np.ndarray] = {}
-    keys = [
-        "delta_over_delta0",
-        "phi_mV",
-        "Te_K",
-        "Tph_K",
-        "jtot_mag_A_m2",
-        "js_us_mag_A_m2",
-        "jn_mag_A_m2",
-        "pairbreaking_ratio",
-    ]
-    scale = float(dataset.get("javg_A_m2", 1.0))
-
-    for key in keys:
-        values = np.asarray(dataset.get(key, []), dtype=float)
-        if values.size != x_nm.size:
-            continue
-        out = np.full(centers.shape, np.nan, dtype=float)
-        for k in range(centers.size):
-            mask = idx == k
-            if np.any(mask):
-                out[k] = float(np.nanmean(values[mask]))
-        if key.endswith("_A_m2") and scale > 0.0:
-            profiles[key + "_over_javg"] = out / scale
-        else:
-            profiles[key] = out
-
-    return centers, profiles
-
-
 def summarize_ss_npz_contents(
     *,
     state: Mapping[str, np.ndarray] | None = None,

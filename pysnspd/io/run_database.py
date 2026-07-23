@@ -42,11 +42,6 @@ def raw_root_from_config(config: Mapping[str, Any]) -> Path:
     return big_data_root_from_config(config) / "raw"
 
 
-def plots_root_from_config(config: Mapping[str, Any]) -> Path:
-    """Return ``project.big_data_root/plots``."""
-    return big_data_root_from_config(config) / "plots"
-
-
 def discover_raw_run_records(
     config: Mapping[str, Any],
     *,

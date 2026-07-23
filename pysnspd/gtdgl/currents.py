@@ -21,7 +21,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from pysnspd.gtdgl.material import GTDGLMaterial
-from pysnspd.gtdgl.operators import (
+from pysnspd.mesh.operators import (
     FVOperators,
     boundary_currents_from_edge_scalar_least_squares,
     divergence_from_edge_scalar,

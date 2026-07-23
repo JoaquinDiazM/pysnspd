@@ -1,1 +1,1 @@
-"""io subpackage for pySNSPD."""
+"""Run layouts, manifests, and simulation data access."""

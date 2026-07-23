@@ -56,7 +56,6 @@ class PowerTablePlotCatalog:
     metadata: dict[str, Any]
 
 
-
 def write_power_table_diagnostic_plots(
     *,
     power_table_npz: str | Path,
@@ -103,7 +102,6 @@ def write_power_table_diagnostic_plots(
     return {key: str(value) for key, value in paths.items()}
 
 
-
 def load_power_table_plot_catalog(path: str | Path) -> PowerTablePlotCatalog:
     """Load a plotting-facing view of ``power_table_catalog.npz``."""
     with np.load(Path(path), allow_pickle=True) as data:
@@ -140,7 +138,6 @@ def load_power_table_plot_catalog(path: str | Path) -> PowerTablePlotCatalog:
             phdos_states_per_THz=np.asarray(data.get("phdos_states_per_THz", np.array([], dtype=float)), dtype=float),
             metadata=metadata,
         )
-
 
 
 def plot_power_channels_Te_Tph_maps(
@@ -189,7 +186,6 @@ def plot_power_channels_Te_Tph_maps(
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
-
 
 
 def plot_power_total_Delta_q_maps(
@@ -243,7 +239,6 @@ def plot_power_total_Delta_q_maps(
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
     return output
-
 
 
 def plot_power_total_Te_curves(
@@ -314,14 +309,13 @@ def plot_power_total_Te_curves(
     return output
 
 
-
 def plot_energy_heat_capacity_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
     dpi: int = 480,
 ) -> Path:
-    """Plot electronic/phononic energy and heat capacity curves.
+    r"""Plot electronic/phononic energy and heat capacity curves.
 
     Electronic curves are shown for representative $(|\Delta|, q)$ states, while
     the phonon subsystem is overplotted as a single volume-normalized reference
@@ -398,7 +392,6 @@ def plot_energy_heat_capacity_curves(
     return output
 
 
-
 def plot_electronic_thermal_conductivity_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
@@ -447,7 +440,6 @@ def plot_electronic_thermal_conductivity_curves(
     return output
 
 
-
 def plot_equal_temperature_residual(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
@@ -475,7 +467,6 @@ def plot_equal_temperature_residual(
     return output
 
 
-
 def _representative_state_indices(catalog: PowerTablePlotCatalog) -> list[tuple[str, int, int]]:
     i_delta0 = _nearest_index(catalog.delta_values_J, 0.0)
     i_delta_max = int(np.nanargmax(catalog.delta_values_J))
@@ -495,7 +486,6 @@ def _representative_state_indices(catalog: PowerTablePlotCatalog) -> list[tuple[
     ]
 
 
-
 def _representative_delta_indices(catalog: PowerTablePlotCatalog) -> list[tuple[str, int]]:
     i_delta0 = _nearest_index(catalog.delta_values_J, 0.0)
     i_delta_half = _nearest_index(catalog.delta_values_J, 0.5 * float(np.nanmax(catalog.delta_values_J)))
@@ -505,22 +495,6 @@ def _representative_delta_indices(catalog: PowerTablePlotCatalog) -> list[tuple[
         ("Intermediate gap", i_delta_half),
         ("Maximum gap", i_delta_max),
     ]
-
-
-
-def _delta_label(catalog: PowerTablePlotCatalog, prefix: str, i_delta: int) -> str:
-    delta_meV = float(_joule_to_mev(catalog.delta_values_J[i_delta]))
-    # return rf"{prefix}: $|\Delta|={delta_meV:.2f}$ [meV]"
-    return prefix
-
-
-
-def _state_label(catalog: PowerTablePlotCatalog, prefix: str, i_delta: int, i_q: int) -> str:
-    delta_meV = float(_joule_to_mev(catalog.delta_values_J[i_delta]))
-    q_1e7 = float(catalog.q_values_m_inv[i_q] / 1.0e7)
-    # return rf"{prefix}: $|\Delta|={delta_meV:.2f}$ [meV], $q={q_1e7:.2f}$ [$10^7$ m$^{{-1}}$]"
-    return prefix
-
 
 
 def _matched_temperature_indices(Te: np.ndarray, Tph: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -538,7 +512,6 @@ def _matched_temperature_indices(Te: np.ndarray, Tph: np.ndarray) -> tuple[np.nd
     return common, iTe, iTph
 
 
-
 def _metadata_from_npz(data: Any) -> dict[str, Any]:
     if "metadata" not in data.files:
         return {}
@@ -550,11 +523,9 @@ def _metadata_from_npz(data: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
-
 def _nearest_index(values: np.ndarray, target: float) -> int:
     arr = np.asarray(values, dtype=float)
     return int(np.nanargmin(np.abs(arr - float(target))))
-
 
 
 def _robust_symmetric_vmax(arrays: list[np.ndarray]) -> float:
@@ -571,11 +542,9 @@ def _robust_symmetric_vmax(arrays: list[np.ndarray]) -> float:
     return max(vmax, float(np.nanmax(all_abs)), 1.0)
 
 
-
 def _symmetric_log_norm(vmax: float) -> SymLogNorm:
     vmax = max(float(vmax), 1.0)
     return SymLogNorm(linthresh=max(1.0e-6 * vmax, 1.0), vmin=-vmax, vmax=vmax, base=10.0)
-
 
 
 def _imshow_extent(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float, float]:
@@ -598,10 +567,8 @@ def _imshow_extent(x: np.ndarray, y: np.ndarray) -> tuple[float, float, float, f
     return xmin, xmax, ymin, ymax
 
 
-
 def _joule_to_mev(values_J: np.ndarray | float) -> np.ndarray | float:
     return np.asarray(values_J, dtype=float) / MEV_J
-
 
 
 def _metadata_float(metadata: dict[str, Any], key: str) -> float:
@@ -633,24 +600,10 @@ def _interpolate_finite(x: np.ndarray, y: np.ndarray, target: float) -> float:
     return float(np.interp(float(target), x_values[mask][order], y_values[mask][order]))
 
 
-def _format_compact_value(value: float) -> str:
-    if not np.isfinite(value):
-        return r"\mathrm{n/a}"
-    magnitude = abs(float(value))
-    if magnitude == 0.0:
-        return "0"
-    if 1.0e-2 <= magnitude < 1.0e3:
-        return f"{value:.3g}"
-    exponent = int(np.floor(np.log10(magnitude)))
-    mantissa = float(value) / 10.0**exponent
-    return rf"{mantissa:.2f}\times10^{{{exponent}}}"
-
-
 def _format_thousands_tick(value: float, _position: float) -> str:
     if np.isclose(value, 0.0):
         return "0"
     return f"{value / 1.0e3:g}k"
-
 
 
 def _prepare_output(path: str | Path) -> Path:

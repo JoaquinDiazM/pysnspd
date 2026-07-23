@@ -59,10 +59,6 @@ class GTDGLMaterial:
         tau = self.tau_sc_s(Te_K)
         return np.sqrt(1.0 + 4.0 * R**2 * tau**2 / HBAR_J_S**2)
 
-    def alpha_kwt_J_inv2(self, Te_K: np.ndarray | float) -> np.ndarray:
-        """Coefficient multiplying d|Delta|^2/dt in the KWT update."""
-        tau = self.tau_sc_s(Te_K)
-        return 2.0 * tau**2 / HBAR_J_S**2
 
     def xi_mod_squared_m2(self, Te_K: np.ndarray | float) -> np.ndarray:
         """Modified coherence-length scale appearing in Appendix B."""
@@ -84,16 +80,6 @@ class GTDGLMaterial:
         out[below] = bcs_gap_J_array(Te[below], self.Tc_K, self.delta0_J) ** 2 / one_minus_t[below]
         out[~below] = self.delta0_J**2
         return np.maximum(out, (1.0e-12 * self.delta0_J) ** 2)
-
-    def allmaras_C(self, Te_K: np.ndarray | float) -> np.ndarray:
-        """Coefficient multiplying div(j_Us)-div(j_GL) in the gTDGL correction."""
-        Te = _positive_temperature(Te_K)
-        return (
-            HBAR_J_S
-            * E_CHARGE_C
-            * self.D_m2_s
-            / (self.sigma_n_S_m * math.sqrt(2.0) * np.sqrt(1.0 + Te / self.Tc_K))
-        )
 
 
 def build_gtdgl_material(
