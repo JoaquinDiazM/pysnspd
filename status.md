@@ -1,10 +1,10 @@
 # pySNSPD publication status
 
-Last updated: 2026-07-23
+Last updated: 2026-07-24
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: Week 1 - baseline freeze
+Current phase: Week 1 - detection and recovery criteria
 
 Baseline branch: `main`
 
@@ -23,11 +23,14 @@ into a numerically defensible and experimentally comparable prediction of
 detection threshold and latency.
 
 The production tree on Geminga was frozen before the publication campaign in
-commit `23ea557`. The first post-baseline change reorganizes the library
+commit `23ea557`. The first post-baseline change reorganized the library
 without introducing a new physics model or running an expensive PRE, SS, or
-photon case. It removes pipeline-unreachable implementation, makes package
-ownership explicit, and preserves the complete production-reachable call
-graph.
+photon case. It removed pipeline-unreachable implementation, made package
+ownership explicit, and preserved the complete production-reachable call
+graph. Plotting was then unified under the thesis style in commit `618103c`.
+The baseline-freeze task is complete; the active Week 1 task is to freeze
+operational definitions of detection latency and recovery before implementing
+them.
 
 ## Week 1 architecture cleanup record
 
@@ -105,6 +108,161 @@ Validation on Geminga:
   checked for clipping, overlap, and legibility;
 - no production PRE, SS, photon, sweep, or publication dataset was modified.
 
+## Baseline acceptance update
+
+On 2026-07-24 the production smoke and test results were accepted by the
+project owner. The additional manual validation passed except for the long
+16 ps, 80 ps, and 800 ps normal-pipeline runs. Those runs are intentionally
+deferred until the latency/recovery implementation, when their outputs will
+exercise the new criteria. This is a planned validation deferral rather than a
+baseline-freeze blocker.
+
+## Detection and recovery definition study
+
+Status: criteria proposed from literature and an existing 800 ps production
+run; no implementation has been started.
+
+The production case
+`photon_phasecg_I30uA_0p8eV_sigma10nm_t50ps_800ps_01` is sufficient for
+post-processing. Its lightweight history stores time, circuit observables,
+thermal and condensate summaries, and a one-row `photon_applied` marker; its
+snapshot archive stores the spatial mesoscopic and thermal fields. Therefore
+latency and recovery can be recomputed under revised criteria without rerunning
+the coupled simulation.
+
+### Proposed latency contract
+
+The canonical operational latency is
+
+`t_lat = t_cross(V_out, V_threshold) - t_gamma`,
+
+where `t_gamma` is the recorded photon-deposition time and `t_cross` is the
+first leading-edge crossing of a declared physical output-voltage threshold.
+The extractor should:
+
+- estimate the pre-photon baseline robustly and apply an explicit pulse
+  polarity rather than silently using an absolute value;
+- linearly interpolate between stored samples;
+- require the expected edge direction plus a short confirmation
+  window/hysteresis to reject chatter;
+- record the threshold value, reference plane, baseline window, polarity,
+  interpolation method, and confirmation rule beside every result;
+- return a detected flag and a null/right-censored latency when the threshold
+  is not crossed before the stored trajectory ends.
+
+An absolute leading-edge threshold is required to classify detection because
+it represents the comparator and can reject a physically negligible pulse.
+Constant-fraction times should also be reported for waveform comparison and
+future jitter studies, but not used alone as the detection classifier: a
+fraction of a pulse's own future maximum is noncausal for early termination
+and would classify arbitrarily small pulses as detections. Constant-fraction
+timing is nevertheless valuable because it reduces amplitude-dependent
+time-walk.
+
+The same event extractor naturally extends to stochastic physics. A
+deterministic run yields one latency; an ensemble will yield a detection
+probability and the conditional distribution of `t_lat`, including quantiles
+and jitter, while non-detections remain censored observations rather than
+being assigned the simulation end time.
+
+In the inspected run, `t_gamma = 50 ps` and the baseline-subtracted
+`V_out` peak is approximately `0.942 mV` at `115.1 ps`. The resulting latency
+depends materially on the declared threshold: about `2.26`, `4.09`, `5.66`,
+and `19.49 ps` for `10`, `50`, `100`, and `500 microV`, respectively; the
+10% and 50% constant-fraction values are about `5.49 ps` and `18.24 ps`.
+Consequently, a latency number without its threshold definition is not an
+auditable result.
+
+### Proposed recovery contract
+
+The literature's operational reset time generally tracks current recovery or,
+more directly, recovery of detection efficiency. pySNSPD should publish that
+comparable quantity and keep it distinct from a stricter full-state recovery:
+
+1. `t_rec,DE90`: first time the inferred or directly sampled detection
+   efficiency reaches 90% of its pre-event value. This is the primary
+   experiment-comparable reset metric once a defensible `DE(I)` map exists.
+2. `t_rec,electrical`: return of detector/readout observables to their declared
+   circuit tolerance, including `I_b`, `I_s`, `I_rf`, `V_out`, `V_tdgl`, the
+   internal capacitor state, and circuit-equation residuals.
+3. `t_rec,state`: return of circuit, thermal, and mesoscopic state families to
+   the accepted steady-state neighbourhood. This is the strict metric for
+   early termination and numerical claims.
+
+For each state variable or field diagnostic `x_i`, define a dimensionless
+acceptance residual from a declared absolute-plus-relative tolerance around
+the pre-photon stationary reference. Tolerances must be larger than resolved
+baseline noise and discretization error and must be accompanied by a
+sensitivity table; normalization only by the photon-induced peak is unsuitable
+as the final rule because peaks can be singular or arbitrarily small. Spatial
+fields should use an RMS/quantile norm plus a hard maximum guard, and raw phase
+or scalar potential should be replaced by gauge-invariant or centered
+quantities.
+
+Let the family residual be the maximum of its normalized component residuals.
+Recovery is the earliest post-event time at which every required family is
+inside tolerance for a declared hold window and its rates/residual equations
+also indicate stationarity. If the stored run ends before this can be
+confirmed, the result is `not_recovered` with
+`t_rec > t_end - t_gamma`; the last timestamp must not be reported as a
+recovery time. A non-detecting transient may still have a relaxation time, but
+should not silently be labeled detector reset.
+
+Online early termination should use the same contract on lightweight scalar
+history and solver residuals, with sparse spatial checks. Plotting pipelines
+03 and E3 should independently recompute the more complete post-processed
+metrics from saved history/snapshots, report the criterion and censored state,
+and annotate the threshold crossing and recovery acceptance interval.
+
+The 800 ps example illustrates why the tiers are necessary. `V_out` finishes
+only about `6.5 microV` from its pre-photon baseline and the plotted thermal
+maxima are within 1% of their photon-induced excursions about `210 ps` after
+absorption. However, the unplotted capacitor state `v_c` finishes roughly
+`41.2 microV` from its initial value, near its largest excursion, and the mean
+gap remains about 6.2% of its peak excursion away from baseline. The existing
+E3 figure therefore supports near-recovery of the displayed output variables,
+but the strict all-state result is presently right-censored:
+`t_rec,state > 750 ps` under even the provisional peak-normalized audit.
+
+### Literature basis
+
+- [Allmaras et al., *Intrinsic Timing Jitter and Latency in Superconducting
+  Nanowire Single-photon Detectors* (2019)](https://doi.org/10.1103/PhysRevApplied.11.034062)
+  connects intrinsic jitter to fluctuations of microscopic detection latency.
+- [Korzh et al., *Demonstration of sub-3 ps temporal resolution with a
+  superconducting nanowire single-photon detector*
+  (2020)](https://doi.org/10.1038/s41566-020-0589-x) experimentally probes
+  detection latency and its material dependence.
+- [Schuck et al., *Waveguide integrated low noise NbTiN nanowire
+  single-photon detectors with milli-Hz dark count rate*
+  (2013)](https://doi.org/10.1038/srep01893) uses a trigger near half pulse
+  height at the maximum rising-edge slope.
+- [Gras et al., *Fast single-photon detectors and real-time key distillation
+  enable high secret-key-rate quantum key distribution systems*
+  (2023)](https://doi.org/10.1038/s41566-023-01168-2) shows why
+  constant-fraction discrimination reduces amplitude-dependent timing error.
+- [Kerman et al., *Kinetic-inductance-limited reset time of superconducting
+  nanowire photon counters*
+  (2006)](https://doi.org/10.1063/1.2183810) relates current recovery to kinetic
+  inductance and reports reset through 90% recovery of detection efficiency.
+- [Annunziata et al., *Reset dynamics and latching in niobium superconducting
+  nanowire single-photon detectors*
+  (2010)](https://doi.org/10.1063/1.3498809) separates hotspot cooling from the
+  slower inductive current reset and identifies the latching condition.
+- [Burenkov et al., *Investigations of afterpulsing and detection efficiency
+  recovery in superconducting nanowire single-photon detectors*
+  (2013)](https://doi.org/10.1063/1.4807833) demonstrates that readout dynamics
+  can make recovery non-monotonic.
+- [Autebert et al., *Direct measurement of the recovery time of SNSPDs and its
+  application for quantum communication*
+  (2019)](https://doi.org/10.1364/QIM.2019.S1D.3) treats recovery of detection
+  efficiency as the operational quantity.
+- [Wang et al., *Timing Jitter Induced by Stochastic Baseline Fluctuations in
+  High-Count-Rate SNSPDs*
+  (accepted 2026)](https://doi.org/10.1103/8yf7-blyh) shows that finite-memory
+  readout baselines directly perturb threshold-extracted times in the
+  stochastic/high-rate regime.
+
 ## Frozen change inventory
 
 The production diff at the freeze contains nine plotting modules, with 83
@@ -146,7 +304,7 @@ debt; P3 is cleanup that can wait until the scientific path is stable.
 
 | ID | Priority | Status | Defect, risk, or limitation | Closure criterion |
 | --- | --- | --- | --- | --- |
-| NUM-001 | P0 | Open | Detection/recovery classification is not yet frozen as one automatic, tolerance-independent criterion. | A documented classifier gives the same outcome under the accepted numerical refinements. |
+| NUM-001 | P0 | Definition proposed | Detection latency, experiment-comparable reset, and strict all-state recovery are not yet implemented as separate, auditable metrics. | Accept and implement the documented threshold, censoring, hold-window, tolerance, and sensitivity contracts; classifications remain stable under accepted numerical refinements. |
 | NUM-002 | P0 | Open | Convergence is not yet demonstrated jointly for mesh, time step, thermal subcycling, thermal-domain size, and terminal length. | Refined runs change detection current by less than 2-3% and latency by less than 5%. |
 | CONS-001 | P0 | Open | Accumulated energy closure is not yet demonstrated; omitted or reduced terms such as `P_Delta` and `P_q` must be included or bounded. | Energy imbalance remains below 1-2%, with every omitted term quantified. |
 | CONS-002 | P1 | Open | Current-continuity and energy errors are not yet reported through the most violent part of the transient. | Time-resolved residuals are plotted and remain below declared tolerances. |
