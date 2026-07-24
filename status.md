@@ -302,11 +302,11 @@ latency, and recovery/censoring on the circuit figures. Changing an analysis
 threshold or recovery tier therefore does not require rerunning the coupled
 simulation.
 
-Lightweight validation on 2026-07-24:
+Lightweight validation on Geminga on 2026-07-24:
 
 - `compileall` passed for the library, pipelines, plot pipelines, and tests;
 - all 11 production and plotting entry points passed `--help` smoke tests;
-- pytest passed: `121 passed in 82.76s`;
+- pytest passed: `121 passed in 13.39s`;
 - direct synthetic audits passed for interpolated latency, three recovery
   tiers, censoring, circuit activation time, and circuit stationarity;
 - no PRE, SS, photon, sweep, or publication plotting pipeline was executed.
