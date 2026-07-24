@@ -22,12 +22,19 @@ def test_photon_transient_can_freeze_thermal_dynamics():
     assert cfg.thermal_enabled is False
 
 
+def test_photon_transient_defaults_to_electrical_recovery_stop():
+    cfg = _config().validated()
+    assert cfg.early_stop_mode == "recovery"
+    assert cfg.recovery_criteria.mode == "electrical"
+
+
 @pytest.mark.parametrize(
     ("key", "value"),
     [
         ("allmaras_phase_direct_amplitude_fraction", 0.0),
         ("allmaras_phase_convergence_tol", 0.0),
         ("allmaras_phase_convergence_max_iterations", 0),
+        ("early_stop_mode", "invalid"),
     ],
 )
 def test_photon_transient_rejects_invalid_phase_continuation_controls(key, value):

@@ -50,6 +50,232 @@ class CircuitState:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class CircuitRuntimeConfig:
+    """Runtime activation and stationarity policy for an SS circuit."""
+
+    start_time_s: float = 5.0e-12
+    hold_time_s: float = 5.0e-12
+    current_relative_tolerance: float = 1.0e-2
+    current_absolute_tolerance_A: float = 0.05e-6
+    voltage_relative_tolerance: float = 1.0e-2
+    voltage_absolute_tolerance_V: float = 10.0e-6
+
+    def validated(self) -> "CircuitRuntimeConfig":
+        if not np.isfinite(self.start_time_s) or self.start_time_s < 0.0:
+            raise ValueError("Circuit start time must be finite and non-negative.")
+        if not np.isfinite(self.hold_time_s) or self.hold_time_s <= 0.0:
+            raise ValueError("Circuit hold time must be positive and finite.")
+        for name in (
+            "current_relative_tolerance",
+            "current_absolute_tolerance_A",
+            "voltage_relative_tolerance",
+            "voltage_absolute_tolerance_V",
+        ):
+            value = float(getattr(self, name))
+            if not np.isfinite(value) or value < 0.0:
+                raise ValueError(f"{name} must be finite and non-negative.")
+        return self
+
+
+class CircuitRuntimeController:
+    """Evolve the lumped circuit inside a monolithic SS solver."""
+
+    def __init__(
+        self,
+        *,
+        I_ss_A: float,
+        V_tdgl_ss_V: float,
+        params: CircuitParams,
+        config: CircuitRuntimeConfig,
+    ) -> None:
+        self.config = config.validated()
+        self.state, self.params = initialize_circuit_from_ss(
+            I_ss_A=float(I_ss_A),
+            V_tdgl_ss_V=float(V_tdgl_ss_V),
+            params=params,
+        )
+        self.initial_state = self.state
+        self.last_V_tdgl_V = float(V_tdgl_ss_V)
+        self.last_diagnostics = self._diagnostics(
+            time_s=0.0,
+            active=False,
+            V_tdgl_V=float(V_tdgl_ss_V),
+        )
+
+    def terminal_current_A(self, time_s: float) -> float:
+        if float(time_s) < float(self.config.start_time_s):
+            return float(self.initial_state.I_s_A)
+        return float(self.state.I_s_A)
+
+    def step(
+        self,
+        *,
+        time_s: float,
+        dt_s: float,
+        V_tdgl_V: float,
+    ) -> dict[str, float | bool]:
+        end_s = float(time_s)
+        start_s = end_s - float(dt_s)
+        active_dt = max(0.0, end_s - max(start_s, float(self.config.start_time_s)))
+        active = active_dt > 0.0
+        if active:
+            self.state = step_circuit_rk2(
+                self.state,
+                V_tdgl_V=float(V_tdgl_V),
+                dt_s=active_dt,
+                params=self.params,
+            )
+        self.last_V_tdgl_V = float(V_tdgl_V)
+        self.last_diagnostics = self._diagnostics(
+            time_s=end_s,
+            active=active,
+            V_tdgl_V=float(V_tdgl_V),
+        )
+        return dict(self.last_diagnostics)
+
+    def snapshot_payload(self) -> dict[str, np.ndarray]:
+        obs = circuit_observables(
+            self.state,
+            params=self.params,
+            V_tdgl_V=self.last_V_tdgl_V,
+        )
+        return {
+            "circuit_I_b_A_snapshot": np.asarray(float(obs["I_b_A"])),
+            "circuit_I_s_A_snapshot": np.asarray(float(obs["I_s_A"])),
+            "circuit_I_rf_A_snapshot": np.asarray(float(obs["I_rf_A"])),
+            "circuit_V_out_V_snapshot": np.asarray(float(obs["V_out_V"])),
+            "circuit_v_c_V_snapshot": np.asarray(float(obs["v_c_V"])),
+            "circuit_V_tdgl_center_V_snapshot": np.asarray(
+                float(obs["V_tdgl_center_V"])
+            ),
+        }
+
+    def _diagnostics(
+        self,
+        *,
+        time_s: float,
+        active: bool,
+        V_tdgl_V: float,
+    ) -> dict[str, float | bool]:
+        obs = circuit_observables(
+            self.state,
+            params=self.params,
+            V_tdgl_V=V_tdgl_V,
+        )
+        rhs = circuit_rhs(self.state, V_tdgl_V=V_tdgl_V, params=self.params)
+        return {
+            "circuit_time_s": float(time_s),
+            "circuit_enabled": True,
+            "circuit_active": bool(
+                active or time_s >= float(self.config.start_time_s)
+            ),
+            **{f"circuit_{key}": float(value) for key, value in obs.items()},
+            "circuit_dI_b_A_s": float(rhs.I_b_A),
+            "circuit_dI_s_A_s": float(rhs.I_s_A),
+            "circuit_dv_c_V_s": float(rhs.v_c_V),
+        }
+
+
+def circuit_stationarity_diagnostics(
+    history: Mapping[str, Any],
+    *,
+    config: CircuitRuntimeConfig,
+) -> dict[str, Any]:
+    """Classify a stationary circuit tail using values and circuit RHS."""
+
+    cfg = config.validated()
+    time = np.asarray(history.get("circuit_time_s", []), dtype=float).reshape(-1)
+    active = np.asarray(history.get("circuit_active", []), dtype=bool).reshape(-1)
+    if time.size == 0 or active.size == 0:
+        return {
+            "passes": False,
+            "reason": "circuit runtime history is unavailable",
+            "sufficient_history": False,
+        }
+    n = min(time.size, active.size)
+    time = time[:n]
+    active = active[:n]
+    end_s = float(time[-1])
+    time_slack_s = max(1.0e-24, float(cfg.hold_time_s) * 1.0e-12)
+    tail = active & (
+        time >= end_s - float(cfg.hold_time_s) - time_slack_s
+    )
+    duration_s = (
+        float(time[tail][-1] - time[tail][0]) if np.count_nonzero(tail) >= 2 else 0.0
+    )
+    sufficient = bool(duration_s >= 0.999 * float(cfg.hold_time_s))
+
+    initial_I = abs(
+        float(np.asarray(history.get("circuit_I_s_A", [0.0]), dtype=float).reshape(-1)[0])
+    )
+    current_tol = max(
+        float(cfg.current_absolute_tolerance_A),
+        float(cfg.current_relative_tolerance) * initial_I,
+    )
+    voltage_scale = abs(
+        float(
+            np.asarray(
+                history.get("circuit_V_tdgl_center_V", [0.0]),
+                dtype=float,
+            ).reshape(-1)[0]
+        )
+    )
+    voltage_tol = max(
+        float(cfg.voltage_absolute_tolerance_V),
+        float(cfg.voltage_relative_tolerance) * voltage_scale,
+    )
+    component_tolerances = {
+        "circuit_I_b_A": current_tol,
+        "circuit_I_s_A": current_tol,
+        "circuit_I_rf_A": current_tol,
+        "circuit_V_out_V": voltage_tol,
+        "circuit_v_c_V": voltage_tol,
+        "circuit_V_tdgl_center_V": voltage_tol,
+    }
+    spans: dict[str, float] = {}
+    values_pass = sufficient
+    for key, tolerance in component_tolerances.items():
+        values = np.asarray(history.get(key, []), dtype=float).reshape(-1)[:n]
+        if values.size != n or not np.any(tail):
+            span = float("inf")
+        else:
+            span = float(np.nanmax(values[tail]) - np.nanmin(values[tail]))
+        spans[key] = span
+        values_pass = bool(values_pass and np.isfinite(span) and span <= tolerance)
+
+    rhs_tolerances = {
+        "circuit_dI_b_A_s": current_tol / float(cfg.hold_time_s),
+        "circuit_dI_s_A_s": current_tol / float(cfg.hold_time_s),
+        "circuit_dv_c_V_s": voltage_tol / float(cfg.hold_time_s),
+    }
+    final_rhs: dict[str, float] = {}
+    rhs_pass = True
+    for key, tolerance in rhs_tolerances.items():
+        values = np.asarray(history.get(key, []), dtype=float).reshape(-1)
+        value = abs(float(values[min(values.size, n) - 1])) if values.size else float("inf")
+        final_rhs[key] = value
+        rhs_pass = bool(rhs_pass and np.isfinite(value) and value <= tolerance)
+
+    passes = bool(sufficient and values_pass and rhs_pass)
+    return {
+        "diagnostic": "lumped_circuit_stationarity_v1",
+        "passes": passes,
+        "reason": (
+            "circuit values and RHS are stationary over the hold window"
+            if passes
+            else "circuit stationarity tolerances are not all satisfied"
+        ),
+        "sufficient_history": sufficient,
+        "tail_duration_ps": duration_s / 1.0e-12,
+        "hold_time_ps": float(cfg.hold_time_s / 1.0e-12),
+        "component_spans": spans,
+        "component_tolerances": component_tolerances,
+        "final_rhs_absolute": final_rhs,
+        "rhs_tolerances": rhs_tolerances,
+    }
+
+
 def initialize_circuit_from_ss(
     *,
     I_ss_A: float,
@@ -207,9 +433,12 @@ def circuit_observables(
 
 __all__ = [
     "CircuitParams",
+    "CircuitRuntimeConfig",
+    "CircuitRuntimeController",
     "CircuitState",
     "central_tdgl_voltage_V",
     "circuit_observables",
+    "circuit_stationarity_diagnostics",
     "initialize_circuit_from_ss",
     "step_circuit_rk2",
 ]

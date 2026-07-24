@@ -8,7 +8,7 @@ and saves a compact transient history.
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Mapping
@@ -27,6 +27,11 @@ from pysnspd.circuit.readout import (
 from pysnspd.solver.stationary import solve_stationary_pytdgl_like
 from pysnspd.excitation.photon import PhotonBubbleParams, inject_phonon_bubble
 from pysnspd.analysis.snapshots import save_ss_snapshot_bundle_npz
+from pysnspd.analysis.timing import (
+    DetectionCriteria,
+    RecoveryCriteria,
+    analyze_photon_timing,
+)
 
 
 @dataclass(frozen=True)
@@ -48,6 +53,10 @@ class CoupledTransientConfig:
     allmaras_phase_direct_amplitude_fraction: float = 1.0e-2
     allmaras_phase_convergence_tol: float = 1.0e-3
     allmaras_phase_convergence_max_iterations: int = 64
+    early_stop_mode: str = "recovery"
+    timing_evaluation_interval_s: float = 0.5e-12
+    detection_criteria: DetectionCriteria = field(default_factory=DetectionCriteria)
+    recovery_criteria: RecoveryCriteria = field(default_factory=RecoveryCriteria)
     progress: bool = False
 
     def validated(self) -> "CoupledTransientConfig":
@@ -63,6 +72,15 @@ class CoupledTransientConfig:
             raise ValueError("allmaras_phase_convergence_tol must be positive.")
         if int(self.allmaras_phase_convergence_max_iterations) < 1:
             raise ValueError("allmaras_phase_convergence_max_iterations must be at least one.")
+        if self.early_stop_mode not in {"none", "latency", "recovery"}:
+            raise ValueError("early_stop_mode must be none, latency, or recovery.")
+        if (
+            not np.isfinite(self.timing_evaluation_interval_s)
+            or self.timing_evaluation_interval_s <= 0.0
+        ):
+            raise ValueError("timing_evaluation_interval_s must be positive and finite.")
+        self.detection_criteria.validated()
+        self.recovery_criteria.validated()
         return self
 
 
@@ -86,6 +104,7 @@ def run_coupled_transient(
     out.mkdir(parents=True, exist_ok=True)
 
     current = _load_initial_state_as_seed(initial_state_npz)
+    reference_state = _copy_seed(current)
     nodes_m = np.asarray(mesh.nodes, dtype=float)[:, :2]
 
     V_tdgl0 = central_tdgl_voltage_V(
@@ -95,11 +114,28 @@ def run_coupled_transient(
         probe_band_m=cfg.center_voltage_probe_band_m,
     )
 
-    circuit, circuit_params = initialize_circuit_from_ss(
-        I_ss_A=float(initial_current_A),
-        V_tdgl_ss_V=float(V_tdgl0),
-        params=circuit_params,
-    )
+    stored_circuit_state = getattr(current, "circuit_state", None)
+    stored_circuit_params = dict(getattr(current, "circuit_params", {}) or {})
+    if circuit_params.V_bias_V is None and "V_bias_V" in stored_circuit_params:
+        circuit_params = CircuitParams(
+            R_load_ohm=float(circuit_params.R_load_ohm),
+            R_bias_ohm=float(circuit_params.R_bias_ohm),
+            L_bias_H=float(circuit_params.L_bias_H),
+            L_k_H=float(circuit_params.L_k_H),
+            C_couple_F=float(circuit_params.C_couple_F),
+            V_bias_V=float(stored_circuit_params["V_bias_V"]),
+        )
+    if stored_circuit_state is not None:
+        circuit = stored_circuit_state
+        circuit_params = circuit_params.validated()
+        circuit_initialization = "stored_ss_circuit_state"
+    else:
+        circuit, circuit_params = initialize_circuit_from_ss(
+            I_ss_A=float(initial_current_A),
+            V_tdgl_ss_V=float(V_tdgl0),
+            params=circuit_params,
+        )
+        circuit_initialization = "legacy_ss_fixed_point"
 
     snapshot_times = np.linspace(0.0, float(cfg.total_time_s), max(2, int(cfg.n_snapshots)))
     next_snapshot = 0
@@ -128,6 +164,12 @@ def run_coupled_transient(
         "max_pairbreaking_ratio": [],
         "max_Te_K": [],
         "max_Tph_K": [],
+        "state_delta_rms_relative": [],
+        "state_Te_quantile_abs_K": [],
+        "state_Tph_quantile_abs_K": [],
+        "state_delta_max_relative": [],
+        "state_Te_max_abs_K": [],
+        "state_Tph_max_abs_K": [],
     }
 
     photon_applied = False
@@ -156,6 +198,9 @@ def run_coupled_transient(
 
     max_loop_count = int(np.ceil(float(cfg.total_time_s) / max(float(cfg.chunk_time_s), 1.0e-30))) + 8
     loop_count = 0
+    next_timing_evaluation_s = float(photon_params.time_s)
+    stop_reason = "requested_time_reached"
+    timing: dict[str, Any] = {}
 
     while t < float(cfg.total_time_s) - 1.0e-30:
         loop_count += 1
@@ -232,7 +277,17 @@ def run_coupled_transient(
                 params=circuit_params,
             )
             obs = circuit_observables(circuit, params=circuit_params, V_tdgl_V=V_tdgl)
-            _append_history(history, t=t, obs=obs, state=state, material=material, dt_chunk=dt_chunk, photon_applied=False)
+            _append_history(
+                history,
+                t=t,
+                obs=obs,
+                state=state,
+                material=material,
+                dt_chunk=dt_chunk,
+                photon_applied=False,
+                reference_state=reference_state,
+                spatial_quantile=float(cfg.recovery_criteria.spatial_quantile),
+            )
             progress.update(
                 dt_ps=float(dt_chunk) / 1.0e-12,
                 I_s_uA=float(obs["I_s_A"]) * 1.0e6,
@@ -249,6 +304,26 @@ def run_coupled_transient(
                 snapshots=snapshots,
             )
             next_snapshot = len(snapshots["snapshot_t_s"])
+
+            if (
+                photon_applied
+                and cfg.early_stop_mode != "none"
+                and t >= next_timing_evaluation_s - 1.0e-30
+            ):
+                timing = analyze_photon_timing(
+                    history,
+                    detection=cfg.detection_criteria,
+                    recovery=cfg.recovery_criteria,
+                )
+                next_timing_evaluation_s = t + float(cfg.timing_evaluation_interval_s)
+                ready_key = (
+                    "latency_ready"
+                    if cfg.early_stop_mode == "latency"
+                    else "recovery_ready"
+                )
+                if bool(timing.get("termination", {}).get(ready_key, False)):
+                    stop_reason = f"early_{cfg.early_stop_mode}_criterion"
+                    break
 
         if bool(photon_params.enabled) and not photon_applied and t >= float(photon_params.time_s) - 1.0e-30:
             if power_table_npz is None:
@@ -285,12 +360,25 @@ def run_coupled_transient(
             history["max_pairbreaking_ratio"].append(float("nan"))
             history["max_Te_K"].append(float(np.nanmax(current.node_Te_K)))
             history["max_Tph_K"].append(float(np.nanmax(current.node_Tph_K)))
+            _append_spatial_recovery_diagnostics(
+                history,
+                current,
+                reference_state=reference_state,
+                quantile=float(cfg.recovery_criteria.spatial_quantile),
+            )
             progress.mark_photon(float(t) / 1.0e-12, photon_metadata)
 
     progress.close()
 
     # Always append final state.
-    _append_snapshot_force(float(cfg.total_time_s), current, material=material, snapshots=snapshots)
+    _append_snapshot_force(float(t), current, material=material, snapshots=snapshots)
+
+    timing = analyze_photon_timing(
+        history,
+        snapshots=snapshots,
+        detection=cfg.detection_criteria,
+        recovery=cfg.recovery_criteria,
+    )
 
     final_state_npz = _save_final_state_like_stationary(current, out / "final_state.npz")
     history_npz = _save_transient_history(history, out / "transient_history.npz")
@@ -301,21 +389,29 @@ def run_coupled_transient(
         "initial_state_npz": str(initial_state_npz),
         "initial_current_A": float(initial_current_A),
         "initial_V_tdgl_center_V": float(V_tdgl0),
-        "final_time_ps": float(cfg.total_time_s / 1.0e-12),
+        "final_time_ps": float(t / 1.0e-12),
+        "requested_final_time_ps": float(cfg.total_time_s / 1.0e-12),
+        "stop_reason": stop_reason,
         "n_history_rows": int(len(history["t_s"])),
         "n_snapshots": int(len(snapshots["snapshot_t_s"])),
         "config": asdict(cfg),
         "circuit": {
+            "initialization": circuit_initialization,
             "params": circuit_params.as_dict(),
             "final_state": circuit.as_dict(),
         },
         "photon": photon_metadata,
+        "timing": timing,
         "outputs": {
             "final_state_npz": str(final_state_npz),
             "transient_history_npz": str(history_npz),
             "transient_snapshots_npz": str(snapshots_npz),
         },
     }
+    timing_path = out / "timing_summary.yaml"
+    with timing_path.open("w", encoding="utf-8") as f:
+        yaml.safe_dump(timing, f, sort_keys=False, allow_unicode=True)
+    summary["outputs"]["timing_summary_yaml"] = str(timing_path)
     summary_path = out / "photon_summary.yaml"
     with summary_path.open("w", encoding="utf-8") as f:
         yaml.safe_dump(summary, f, sort_keys=False, allow_unicode=True)
@@ -329,12 +425,26 @@ def _load_initial_state_as_seed(path: str | Path) -> SimpleNamespace:
         raise FileNotFoundError(f"Missing SS stationary state: {p}")
     with np.load(p, allow_pickle=True) as data:
         psi = np.asarray(data["psi_real_J"], dtype=float) + 1j * np.asarray(data["psi_imag_J"], dtype=float)
+        circuit_state = None
+        if all(key in data for key in ("circuit_I_b_A", "circuit_I_s_A", "circuit_v_c_V")):
+            circuit_state = CircuitState(
+                I_b_A=float(np.asarray(data["circuit_I_b_A"]).reshape(())),
+                I_s_A=float(np.asarray(data["circuit_I_s_A"]).reshape(())),
+                v_c_V=float(np.asarray(data["circuit_v_c_V"]).reshape(())),
+            )
+        circuit_params = {
+            key.removeprefix("circuit_param_"): float(np.asarray(data[key]).reshape(()))
+            for key in data.files
+            if key.startswith("circuit_param_")
+        }
         return SimpleNamespace(
             node_psi_real_J=np.real(psi).copy(),
             node_psi_imag_J=np.imag(psi).copy(),
             node_phi_electric_V=np.asarray(data["phi_V"], dtype=float).copy(),
             node_Te_K=np.asarray(data.get("Te_K", np.zeros_like(np.real(psi))), dtype=float).copy(),
             node_Tph_K=np.asarray(data.get("Tph_K", np.zeros_like(np.real(psi))), dtype=float).copy(),
+            circuit_state=circuit_state,
+            circuit_params=circuit_params,
         )
 
 
@@ -362,6 +472,16 @@ def _copy_seed_with_Tph(seed: SimpleNamespace, Tph_K: np.ndarray) -> SimpleNames
     )
 
 
+def _copy_seed(seed: SimpleNamespace) -> SimpleNamespace:
+    return SimpleNamespace(
+        node_psi_real_J=np.asarray(seed.node_psi_real_J, dtype=float).copy(),
+        node_psi_imag_J=np.asarray(seed.node_psi_imag_J, dtype=float).copy(),
+        node_phi_electric_V=np.asarray(seed.node_phi_electric_V, dtype=float).copy(),
+        node_Te_K=np.asarray(seed.node_Te_K, dtype=float).copy(),
+        node_Tph_K=np.asarray(seed.node_Tph_K, dtype=float).copy(),
+    )
+
+
 def _append_history(
     history: dict[str, list],
     *,
@@ -371,6 +491,8 @@ def _append_history(
     material: Any,
     dt_chunk: float,
     photon_applied: bool,
+    reference_state: SimpleNamespace,
+    spatial_quantile: float,
 ) -> None:
     history["t_s"].append(float(t))
     history["I_b_A"].append(float(obs["I_b_A"]))
@@ -390,6 +512,73 @@ def _append_history(
         history["max_pairbreaking_ratio"].append(float("nan"))
     history["max_Te_K"].append(float(np.nanmax(state.Te_K)))
     history["max_Tph_K"].append(float(np.nanmax(state.Tph_K)))
+    _append_spatial_recovery_diagnostics(
+        history,
+        _state_to_seed(state),
+        reference_state=reference_state,
+        quantile=spatial_quantile,
+    )
+
+
+def _append_spatial_recovery_diagnostics(
+    history: dict[str, list],
+    seed: SimpleNamespace,
+    *,
+    reference_state: SimpleNamespace,
+    quantile: float,
+) -> None:
+    psi = np.hypot(
+        np.asarray(seed.node_psi_real_J, dtype=float),
+        np.asarray(seed.node_psi_imag_J, dtype=float),
+    )
+    psi0 = np.hypot(
+        np.asarray(reference_state.node_psi_real_J, dtype=float),
+        np.asarray(reference_state.node_psi_imag_J, dtype=float),
+    )
+    scale = max(float(np.sqrt(np.nanmean(psi0 * psi0))), 1.0e-300)
+    delta_rms = float(np.sqrt(np.nanmean((psi - psi0) ** 2)) / scale)
+    delta_max = float(np.nanmax(np.abs(psi - psi0)) / scale)
+    q = float(np.clip(quantile, 0.5, 1.0))
+    te_abs = float(
+        np.nanquantile(
+            np.abs(
+                np.asarray(seed.node_Te_K, dtype=float)
+                - np.asarray(reference_state.node_Te_K, dtype=float)
+            ),
+            q,
+        )
+    )
+    tph_abs = float(
+        np.nanquantile(
+            np.abs(
+                np.asarray(seed.node_Tph_K, dtype=float)
+                - np.asarray(reference_state.node_Tph_K, dtype=float)
+            ),
+            q,
+        )
+    )
+    te_max = float(
+        np.nanmax(
+            np.abs(
+                np.asarray(seed.node_Te_K, dtype=float)
+                - np.asarray(reference_state.node_Te_K, dtype=float)
+            )
+        )
+    )
+    tph_max = float(
+        np.nanmax(
+            np.abs(
+                np.asarray(seed.node_Tph_K, dtype=float)
+                - np.asarray(reference_state.node_Tph_K, dtype=float)
+            )
+        )
+    )
+    history["state_delta_rms_relative"].append(delta_rms)
+    history["state_Te_quantile_abs_K"].append(te_abs)
+    history["state_Tph_quantile_abs_K"].append(tph_abs)
+    history["state_delta_max_relative"].append(delta_max)
+    history["state_Te_max_abs_K"].append(te_max)
+    history["state_Tph_max_abs_K"].append(tph_max)
 
 
 def _append_snapshot_if_due(

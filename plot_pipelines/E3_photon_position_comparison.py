@@ -15,6 +15,11 @@ from pysnspd.io.manager import create_run_layout
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.plotting.photon_comparison import make_photon_position_figures
 from pysnspd.plotting.style import THESIS_DPI
+from pysnspd.analysis.timing import analyze_photon_timing
+from pysnspd.analysis.timing_cli import (
+    add_timing_analysis_arguments,
+    timing_criteria_from_args,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -39,6 +44,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--figures-subdir", default="figures")
     parser.add_argument("--dpi", type=int, default=THESIS_DPI)
+    add_timing_analysis_arguments(parser)
     return parser.parse_args()
 
 
@@ -64,6 +70,19 @@ def main() -> int:
     edge_snapshots = _load_npz(_require_file(edge_raw / "transient_snapshots.npz", "edge snapshots"))
     edge_summary = _read_yaml(_require_file(edge_raw / "photon_summary.yaml", "edge summary"))
     delta0_meV = _read_delta0_meV(raw_pre)
+    detection_criteria, recovery_criteria = timing_criteria_from_args(args)
+    center_timing = analyze_photon_timing(
+        center_history,
+        snapshots=center_snapshots,
+        detection=detection_criteria,
+        recovery=recovery_criteria,
+    )
+    edge_timing = analyze_photon_timing(
+        edge_history,
+        snapshots=edge_snapshots,
+        detection=detection_criteria,
+        recovery=recovery_criteria,
+    )
 
     saved = make_photon_position_figures(
         mesh=mesh,
@@ -77,6 +96,8 @@ def main() -> int:
         requested_times_ps=args.times_ps,
         output_dir=output_dir,
         dpi=int(args.dpi),
+        center_timing=center_timing,
+        edge_timing=edge_timing,
     )
     manifest_path = _write_manifest(
         args=args,
@@ -90,6 +111,8 @@ def main() -> int:
         edge_history=edge_history,
         center_snapshots=center_snapshots,
         edge_snapshots=edge_snapshots,
+        center_timing=center_timing,
+        edge_timing=edge_timing,
     )
 
     print("E3 photon-position comparison")
@@ -97,6 +120,16 @@ def main() -> int:
     print(f" edge_run:   {args.edge_run_name}")
     print(f" output_dir: {output_dir}")
     print(f" Delta_BCS(0): {delta0_meV:.9g} meV")
+    print(
+        " center timing: "
+        f"t_lat={dict(center_timing.get('latency', {})).get('t_lat_ps', 'censored')} ps, "
+        f"t_rec={dict(dict(center_timing.get('recovery', {})).get('selected', {})).get('t_rec_ps', 'censored')} ps"
+    )
+    print(
+        " edge timing:   "
+        f"t_lat={dict(edge_timing.get('latency', {})).get('t_lat_ps', 'censored')} ps, "
+        f"t_rec={dict(dict(edge_timing.get('recovery', {})).get('selected', {})).get('t_rec_ps', 'censored')} ps"
+    )
     print("Figures")
     for key, path in saved.items():
         print(f" {key}: {path}")
@@ -118,6 +151,8 @@ def _write_manifest(
     edge_history: Mapping[str, Any],
     center_snapshots: Mapping[str, Any],
     edge_snapshots: Mapping[str, Any],
+    center_timing: Mapping[str, Any],
+    edge_timing: Mapping[str, Any],
 ) -> Path:
     manifest = {
         "schema_version": 1,
@@ -136,6 +171,8 @@ def _write_manifest(
         "delta0_meV": float(delta0_meV),
         "center_photon_time_ps": _photon_time(center_history),
         "edge_photon_time_ps": _photon_time(edge_history),
+        "center_timing": dict(center_timing),
+        "edge_timing": dict(edge_timing),
         "figures": {key: str(path) for key, path in saved.items()},
     }
     path = output_dir / "E3_photon_position_manifest.yaml"

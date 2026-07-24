@@ -28,7 +28,15 @@ from pysnspd.gtdgl.allmaras import (
 from pysnspd.mesh.device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
 from .core import TDGLSolver
+from .steady_gate import build_total_stationarity_callback
 from pysnspd.thermal.evolution import ThermalRuntimeConfig, ThermalRuntimeController, thermal_stationarity_diagnostics
+from pysnspd.circuit.readout import (
+    CircuitParams,
+    CircuitRuntimeConfig,
+    CircuitRuntimeController,
+    central_tdgl_voltage_V,
+    circuit_stationarity_diagnostics,
+)
 from .targets import (
     apply_terminal_proximity_seed,
     contact_recovery_diagnostics,
@@ -101,6 +109,12 @@ def solve_stationary_pytdgl_like(
     thermal_max_step_K: float = 0.05,
     thermal_max_substeps: int = 64,
     thermal_stationarity_rate_K_per_ps: float = 1.0e-2,
+    circuit_enabled: bool = False,
+    circuit_params: CircuitParams | None = None,
+    circuit_runtime_config: CircuitRuntimeConfig | None = None,
+    center_voltage_width_m: float = 100.0e-9,
+    center_voltage_probe_band_m: float | None = None,
+    stop_on_total_stationarity: bool = False,
 ) -> RelaxationResult:
     """Run the essential pyTDGL-like stationary solver on a pySNSPD seed.
 
@@ -124,6 +138,16 @@ def solve_stationary_pytdgl_like(
         target_current_A = seed_target_current_A(seed)
     target_current_A = float(target_current_A)
     supercurrent_law = _normalize_supercurrent_law(supercurrent_law)
+    phase_gradient_rel_tol = (
+        float(stationarity_phase_gradient_rel)
+        if stationarity_phase_gradient_rel is not None
+        else (float(stationarity_delta_rel) if stationarity_delta_rel is not None else 1.0e-4)
+    )
+    phi_gradient_rel_tol = (
+        float(stationarity_phi_gradient_rel)
+        if stationarity_phi_gradient_rel is not None
+        else (float(stationarity_phi_rel) if stationarity_phi_rel is not None else 1.0e-4)
+    )
 
     psi0_J = (
         np.asarray(seed.node_psi_real_J, dtype=float)
@@ -214,11 +238,36 @@ def solve_stationary_pytdgl_like(
     device.layer.gamma = gamma
     gamma_report = float(np.nanmedian(gamma)) if gamma.size else 0.0
 
+    circuit_controller = None
+    circuit_runtime = (
+        circuit_runtime_config or CircuitRuntimeConfig(start_time_s=thermal_start_time_s)
+    ).validated()
+    if circuit_enabled:
+        initial_center_voltage = central_tdgl_voltage_V(
+            nodes_m=np.asarray(mesh.nodes, dtype=float)[:, :2],
+            phi_V=phi0_V,
+            center_width_m=float(center_voltage_width_m),
+            probe_band_m=center_voltage_probe_band_m,
+        )
+        circuit_controller = CircuitRuntimeController(
+            I_ss_A=target_current_A,
+            V_tdgl_ss_V=initial_center_voltage,
+            params=circuit_params or CircuitParams(),
+            config=circuit_runtime,
+        )
+
     # pySNSPD policy: terminal currents are always SI amperes.  The
     # pyTDGL-like solver converts these physical currents to the internal
     # Neumann value needed by its Poisson operator using sigma_n, film
     # thickness and the Josephson voltage scale.
-    terminal_currents_A = {"left": -target_current_A, "right": target_current_A}
+    if circuit_controller is None:
+        terminal_currents_A = {"left": -target_current_A, "right": target_current_A}
+    else:
+        def terminal_currents_A(time_dimensionless: float) -> dict[str, float]:
+            current_A = circuit_controller.terminal_current_A(
+                float(time_dimensionless) * tau0
+            )
+            return {"left": -current_A, "right": current_A}
 
     psi0 = psi0_J / material.delta0_J
     psi0, proximity_seed_diag = apply_terminal_proximity_seed(
@@ -305,6 +354,64 @@ def solve_stationary_pytdgl_like(
 
         thermal_snapshot_callback = thermal_controller.snapshot_payload
 
+    circuit_step_callback = None
+    circuit_snapshot_callback = None
+    if circuit_controller is not None:
+        def circuit_step_callback(**kwargs):
+            phi_V = np.asarray(kwargs["mu"], dtype=float) * device.voltage_scale_V
+            phi_V = phi_V - float(np.mean(phi_V))
+            V_tdgl = central_tdgl_voltage_V(
+                nodes_m=np.asarray(mesh.nodes, dtype=float)[:, :2],
+                phi_V=phi_V,
+                center_width_m=float(center_voltage_width_m),
+                probe_band_m=center_voltage_probe_band_m,
+            )
+            return circuit_controller.step(
+                time_s=float(kwargs["time"]) * tau0,
+                dt_s=float(kwargs["dt"]) * tau0,
+                V_tdgl_V=V_tdgl,
+            )
+
+        circuit_snapshot_callback = circuit_controller.snapshot_payload
+
+    early_stop_state: dict[str, Any] = {}
+    early_stop_callback = None
+    if stop_on_total_stationarity:
+        early_stop_callback = build_total_stationarity_callback(
+            mesh=mesh,
+            edge_data=edge_data,
+            ops=ops,
+            material=material,
+            device=device,
+            target_current_A=target_current_A,
+            circuit_controller=circuit_controller,
+            circuit_runtime=circuit_runtime,
+            thermal_config=thermal_config,
+            Te_K=Te,
+            Tph_K=Tph,
+            terminal_healing_fraction=terminal_healing_fraction,
+            recovery_min_xi=recovery_min_xi,
+            recovery_max_xi=recovery_max_xi,
+            stationarity_phase_gradient_rel=phase_gradient_rel_tol,
+            stationarity_phi_gradient_rel=phi_gradient_rel_tol,
+            stationarity_q_abs_m_inv=stationarity_q_abs_m_inv,
+            stationarity_phi_gradient_abs_V_m=stationarity_phi_gradient_abs_V_m,
+            stationarity_edge_active_threshold=stationarity_edge_active_threshold,
+            stationarity_bulk_exclusion_xi=stationarity_bulk_exclusion_xi,
+            dynamic_stationarity_tail_snapshots=dynamic_stationarity_tail_snapshots,
+            dynamic_stationarity_minimum_tail_ps=dynamic_stationarity_minimum_tail_ps,
+            dynamic_stationarity_profile_rel=dynamic_stationarity_profile_rel,
+            dynamic_stationarity_voltage_rel=dynamic_stationarity_voltage_rel,
+            dynamic_stationarity_psl_threshold=dynamic_stationarity_psl_threshold,
+            continuity_rms_tol=continuity_rms_tol,
+            continuity_max_tol=continuity_max_tol,
+            continuity_poisson_tol=continuity_poisson_tol,
+            thermal_stationarity_rate_K_per_ps=thermal_stationarity_rate_K_per_ps,
+            requested_total_time_s=float(total_time_s),
+            tau0=tau0,
+            state=early_stop_state,
+        )
+
     solver = TDGLSolver(
         device=device,
         options=options,
@@ -318,6 +425,9 @@ def solve_stationary_pytdgl_like(
         allmaras_forcing_callback=allmaras_forcing_callback,
         thermal_step_callback=thermal_step_callback,
         thermal_snapshot_callback=thermal_snapshot_callback,
+        circuit_step_callback=circuit_step_callback,
+        circuit_snapshot_callback=circuit_snapshot_callback,
+        early_stop_callback=early_stop_callback,
         stop_eta=float(stationarity_eta) if stationarity_eta is not None and stationarity_eta > 0.0 else None,
         stop_min_steps=int(convergence_min_steps),
         stop_on_convergence=bool(stop_on_convergence),
@@ -334,6 +444,15 @@ def solve_stationary_pytdgl_like(
     phi_final_V = mu_final * device.voltage_scale_V
     phi_final_V = phi_final_V - float(np.mean(phi_final_V))
 
+    final_target_current_A = (
+        float(circuit_controller.state.I_s_A)
+        if circuit_controller is not None
+        else target_current_A
+    )
+    final_terminal_currents_A = {
+        "left": -final_target_current_A,
+        "right": final_target_current_A,
+    }
     currents, native_diag = native_edge_currents_to_current_fields(
         psi_dimensionless=psi_final,
         native_supercurrent=solution.tdgl_data.supercurrent,
@@ -344,7 +463,7 @@ def solve_stationary_pytdgl_like(
         ops=ops,
         material=material,
         Te_K=Te,
-        target_current_A=target_current_A,
+        target_current_A=final_target_current_A,
     )
 
     history = _build_history(
@@ -358,7 +477,7 @@ def solve_stationary_pytdgl_like(
         psi_final_J=psi_final_J,
         phi_final_V=phi_final_V,
         currents=currents,
-        target_current_A=target_current_A,
+        target_current_A=final_target_current_A,
         usadel_catalog=usadel_catalog,
         n_snapshots=n_snapshots,
         stationarity_bulk_exclusion_xi=float(stationarity_bulk_exclusion_xi),
@@ -411,7 +530,7 @@ def solve_stationary_pytdgl_like(
         currents=currents,
         mesh=mesh,
         material=material,
-        target_current_A=target_current_A,
+        target_current_A=final_target_current_A,
         history=history,
         rms_tol=float(continuity_rms_tol),
         max_tol=float(continuity_max_tol),
@@ -424,11 +543,21 @@ def solve_stationary_pytdgl_like(
         requested_total_time_s=float(total_time_s),
         rate_tol_K_per_ps=float(thermal_config.stationarity_rate_K_per_ps),
     )
+    circuit_stationarity_diag = circuit_stationarity_diagnostics(
+        history,
+        config=circuit_runtime,
+    ) if circuit_controller is not None else {
+        "enabled": False,
+        "passes": True,
+        "reason": "circuit coupling disabled",
+    }
     magic_ready = bool(
         stationarity_diag.passes
+        and dynamic_stationarity_diag.passes
         and recovery_diag.passes
         and continuity_diag.passes
         and bool(thermal_stationarity_diag.get("passes", False))
+        and bool(circuit_stationarity_diag.get("passes", False))
     )
 
     jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
@@ -506,6 +635,22 @@ def solve_stationary_pytdgl_like(
         "contact_recovery": recovery_diag.as_dict(),
         "continuity": continuity_diag.as_dict(),
         "thermal_stationarity": thermal_stationarity_diag,
+        "circuit_stationarity": circuit_stationarity_diag,
+        "circuit_runtime": {
+            "enabled": circuit_controller is not None,
+            "start_time_ps": float(circuit_runtime.start_time_s / 1.0e-12),
+            "params": (
+                circuit_controller.params.as_dict()
+                if circuit_controller is not None
+                else None
+            ),
+            "final_state": (
+                circuit_controller.state.as_dict()
+                if circuit_controller is not None
+                else None
+            ),
+            "early_stop_diagnostics": dict(early_stop_state),
+        },
         "thermal_runtime": {
             "enabled": bool(thermal_config.enabled),
             "power_table_npz": None if thermal_power_table_npz is None else str(thermal_power_table_npz),
@@ -529,7 +674,7 @@ def solve_stationary_pytdgl_like(
         ),
         "target_current_A": target_current_A,
         "terminal_voltage_V": terminal_voltage(mesh.nodes, phi_final_V, length_m=mesh.length_m),
-        "current_residual": float(current_residual(currents, mesh, material, target_current_A)),
+        "current_residual": float(current_residual(currents, mesh, material, final_target_current_A)),
         "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
         "native_si_residual_no_boundary_rms_A_m3": float(native_diag.residual_no_boundary_rms_A_m3),
         "native_si_residual_plus_boundary_rms_A_m3": float(native_diag.residual_plus_boundary_rms_A_m3),
@@ -552,9 +697,9 @@ def solve_stationary_pytdgl_like(
         "normal_current_fraction_max": float(jn_max_A_m2 / max(jt_max_A_m2, 1.0e-300)),
         "delta0_meV": float(material.delta0_J / MEV_J),
         "boundary_currents_A": {
-            "left_A": float(terminal_currents_A.get("left", 0.0)),
-            "right_A": float(terminal_currents_A.get("right", 0.0)),
-            "net_A": float(sum(terminal_currents_A.values())),
+            "left_A": float(final_terminal_currents_A["left"]),
+            "right_A": float(final_terminal_currents_A["right"]),
+            "net_A": float(sum(final_terminal_currents_A.values())),
         },
         "terminal_neumann_current_unit_A": float(device.terminal_neumann_current_unit_A),
         "native_poisson_residual_rel_final": float(history.get("pytdgl_like_poisson_residual_rel", np.array([float("nan")]))[-1]),
@@ -600,9 +745,24 @@ def solve_stationary_pytdgl_like(
             "contact_recovery": recovery_diag.as_dict(),
             "continuity": continuity_diag.as_dict(),
             "thermal_stationarity": thermal_stationarity_diag,
+            "circuit_stationarity": circuit_stationarity_diag,
+            "circuit_runtime": {
+                "enabled": circuit_controller is not None,
+                "params": (
+                    circuit_controller.params.as_dict()
+                    if circuit_controller is not None
+                    else None
+                ),
+                "final_state": (
+                    circuit_controller.state.as_dict()
+                    if circuit_controller is not None
+                    else None
+                ),
+            },
         },
     )
     return RelaxationResult(state=state, history=history, summary=summary)
+
 
 from pysnspd.solver.callbacks import (
     _build_allmaras_forcing_callback,

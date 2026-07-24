@@ -28,9 +28,9 @@ without introducing a new physics model or running an expensive PRE, SS, or
 photon case. It removed pipeline-unreachable implementation, made package
 ownership explicit, and preserved the complete production-reachable call
 graph. Plotting was then unified under the thesis style in commit `618103c`.
-The baseline-freeze task is complete; the active Week 1 task is to freeze
-operational definitions of detection latency and recovery before implementing
-them.
+The baseline-freeze task is complete. The Week 1 latency/recovery contract is
+now implemented in the solver and photon plotting paths; production-scale
+200 ps SS and 1.5 ns photon runs remain the acceptance step.
 
 ## Week 1 architecture cleanup record
 
@@ -119,8 +119,8 @@ baseline-freeze blocker.
 
 ## Detection and recovery definition study
 
-Status: criteria proposed from literature and an existing 800 ps production
-run; no implementation has been started.
+Status: criteria accepted and implemented; long-run numerical acceptance is
+pending.
 
 The production case
 `photon_phasecg_I30uA_0p8eV_sigma10nm_t50ps_800ps_01` is sufficient for
@@ -263,6 +263,66 @@ but the strict all-state result is presently right-censored:
   readout baselines directly perturb threshold-extracted times in the
   stochastic/high-rate regime.
 
+## Detection and recovery implementation record
+
+The operational contract is implemented in `pysnspd.analysis.timing` as a
+solver-independent analyzer that accepts either live lightweight histories or
+the saved `transient_history.npz` and `transient_snapshots.npz` artifacts. It
+records the photon event, robust pre-event baselines, explicit pulse polarity,
+interpolated and confirmed absolute-threshold latency, constant-fraction
+diagnostics, recovery tolerances and hold windows, and right-censored outcomes.
+This keeps the deterministic result usable now while allowing later stochastic
+ensembles to reuse the same event and censoring schema.
+
+The default photon termination policy is electrical recovery. The alternatives
+are explicit flags for a 90% detector-current proxy and strict circuit,
+thermal, and mesoscopic state recovery. A latency-only termination mode waits
+for a confirmed output-voltage maximum and then preserves a 10 ps safety tail.
+The pre-photon interval remains intact: the default photon is still deposited
+at 50 ps, and neither online criterion can terminate before that event.
+
+Pipeline 03 now defaults to the validated production controls
+(`dt=0.75 fs`, `100 fs` coupling, 0.8 eV photon, 10 nm bubble,
+30 uA-compatible circuit parameters, and the selected thermal/Allmaras
+controls), a 1.5 ns maximum horizon, and approximately 10 stored snapshots per
+picosecond. The actual termination time and reason are distinct from the
+requested horizon, and every run writes `timing_summary.yaml`.
+
+The SS-run now activates thermal and circuit dynamics together through
+`--circuit-and-thermal-start-ps` (5 ps by default). Its circuit state and
+parameters are persisted in `stationary_state.npz`; pipeline 03 inherits that
+state and continues evolving it during the full pre-photon interval. SS early
+termination requires the existing gauge-fixed, dynamic-attractor, contact,
+continuity, and thermal checks plus circuit value/RHS stationarity. Both SS and
+photon runs default to approximately 10 snapshots per picosecond.
+
+Plot pipelines 03 and E3 autonomously recompute the chosen timing contract from
+raw saved data, include it in their manifests, and annotate threshold crossing,
+latency, and recovery/censoring on the circuit figures. Changing an analysis
+threshold or recovery tier therefore does not require rerunning the coupled
+simulation.
+
+Lightweight validation on 2026-07-24:
+
+- `compileall` passed for the library, pipelines, plot pipelines, and tests;
+- all 11 production and plotting entry points passed `--help` smoke tests;
+- pytest passed: `121 passed in 82.76s`;
+- direct synthetic audits passed for interpolated latency, three recovery
+  tiers, censoring, circuit activation time, and circuit stationarity;
+- no PRE, SS, photon, sweep, or publication plotting pipeline was executed.
+
+The remaining acceptance evidence is deliberately deferred to the prepared
+200 ps SS and maximum-1.5 ns photon production runs. Early termination should
+make the requested horizon an upper bound rather than the normal cost. The
+isolated linear circuit at the production parameters has approximate decay
+constants of 99 ps, 211 ps, and 4.79 ns, so the 1.5 ns run is an initial search
+horizon and may correctly return a censored electrical recovery if the slow
+capacitive mode is appreciably excited.
+
+`/home/jdiaz/GEMINGA_COMMANDS.md` now contains the corresponding 200 ps SS and
+maximum-1.5 ns photon commands, including shared circuit/thermal activation,
+early-stop policy, production numerical controls, and 10 snapshots/ps.
+
 ## Frozen change inventory
 
 The production diff at the freeze contains nine plotting modules, with 83
@@ -304,7 +364,7 @@ debt; P3 is cleanup that can wait until the scientific path is stable.
 
 | ID | Priority | Status | Defect, risk, or limitation | Closure criterion |
 | --- | --- | --- | --- | --- |
-| NUM-001 | P0 | Definition proposed | Detection latency, experiment-comparable reset, and strict all-state recovery are not yet implemented as separate, auditable metrics. | Accept and implement the documented threshold, censoring, hold-window, tolerance, and sensitivity contracts; classifications remain stable under accepted numerical refinements. |
+| NUM-001 | P0 | Implemented; validation pending | Detection latency, electrical/DE90/full-state recovery, censoring, persistence, plot annotation, and online termination now share one auditable contract; long production trajectories and sensitivity remain pending. | Production classifications remain stable under accepted threshold/tolerance and numerical refinements. |
 | NUM-002 | P0 | Open | Convergence is not yet demonstrated jointly for mesh, time step, thermal subcycling, thermal-domain size, and terminal length. | Refined runs change detection current by less than 2-3% and latency by less than 5%. |
 | CONS-001 | P0 | Open | Accumulated energy closure is not yet demonstrated; omitted or reduced terms such as `P_Delta` and `P_q` must be included or bounded. | Energy imbalance remains below 1-2%, with every omitted term quantified. |
 | CONS-002 | P1 | Open | Current-continuity and energy errors are not yet reported through the most violent part of the transient. | Time-resolved residuals are plotted and remain below declared tolerances. |
@@ -314,7 +374,7 @@ debt; P3 is cleanup that can wait until the scientific path is stable.
 | MAT-001 | P1 | Open | `D_eff = 1.581 cm^2 s^-1` is calibrated to the critical-current scale and then reused in transport predictions, creating potential circularity. | Parameter provenance is explicit and `D_eff` is independently constrained or propagated as an uncertainty interval. |
 | MAT-002 | P1 | Open | Cross-consistency among `D`, `sigma_n`, sheet resistance, `N(0)`, `T_c`, thickness, and `I_c` is not yet presented as one audit. | A single material table reports source, uncertainty, inference path, and consistency checks for every parameter. |
 | MAT-003 | P1 | Open | The phonon escape time is not yet constrained by data or a defensible material/interface range. | `tau_esc` is tied to evidence or treated in a sensitivity analysis. |
-| PERF-001 | P1 | Open | A representative trajectory costs roughly 40-45 hours, making the full threshold map infeasible without acceleration. | Early termination, continuation, bisection, and coarse-to-fine search provide an effective 5-10x campaign speedup. |
+| PERF-001 | P1 | Partial | SS total-stationarity termination and photon latency/recovery termination are implemented; continuation, bisection, coarse search, and measured campaign speedup remain open. | Early termination, continuation, bisection, and coarse-to-fine search provide an effective 5-10x campaign speedup. |
 | PLOT-001 | P2 | Closed | Every plotting producer uses the shared thesis style API; all plotting pipelines share one DPI default and no deprecated style TODO remains. | Closed by the plot-style unification record above, including static enforcement and representative visual review. |
 | PLOT-002 | P2 | Open | `power_diagnostics.py` contains hard-coded axis ranges, commented alternatives, and simplified labels whose general validity is not documented. | Dataset-driven defaults are restored or the publication-specific choices become named, documented options. |
 | DOC-001 | P2 | Open | README examples and implementation have drifted, including the documented `Z1_current_sweep_analysis.py` versus tracked `Z2_current_sweep_analysis.py`. | All documented commands are checked against tracked entry points. |

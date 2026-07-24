@@ -36,6 +36,7 @@ def make_photon_run_figures(
     snapshots: Mapping[str, np.ndarray] | None = None,
     scalar_times_ps: Sequence[float] | None = None,
     center_width_nm: float = 100.0,
+    timing: Mapping[str, Any] | None = None,
 ) -> dict[str, Path]:
     """Create photon/circuit transient figures."""
 
@@ -48,6 +49,7 @@ def make_photon_run_figures(
         summary=summary or {},
         output_path=out / "photon_circuit_response.png",
         dpi=dpi,
+        timing=timing,
     )
 
     if scalar_times_ps is not None and len(list(scalar_times_ps)) > 0:
@@ -74,6 +76,7 @@ def plot_photon_circuit_response(
     summary: Mapping[str, Any] | None,
     output_path: str | Path,
     dpi: int = THESIS_DPI,
+    timing: Mapping[str, Any] | None = None,
 ) -> Path:
     """Plot coupled-circuit response for a pipeline 03 transient."""
 
@@ -141,6 +144,50 @@ def plot_photon_circuit_response(
         label=r"$V_{\rm TDGL}^{center}$",
     )
     h_Vout, = ax_r.plot(t_ps, V_out_uV, color=Vout_color, linewidth=1.9, label=r"$V_{\rm out}$")
+
+    latency = dict((timing or {}).get("latency", {}))
+    recovery = dict(dict((timing or {}).get("recovery", {})).get("selected", {}))
+    crossing_ps = latency.get("crossing_time_ps")
+    recovery_ps = recovery.get("entry_time_ps")
+    if crossing_ps is not None and np.isfinite(float(crossing_ps)):
+        ax.axvline(
+            float(crossing_ps),
+            color=Vout_color,
+            linestyle="--",
+            linewidth=1.1,
+            alpha=0.9,
+        )
+    if recovery_ps is not None and np.isfinite(float(recovery_ps)):
+        ax.axvline(
+            float(recovery_ps),
+            color="#198754",
+            linestyle="-.",
+            linewidth=1.1,
+            alpha=0.9,
+        )
+    timing_lines = [
+        (
+            rf"$t_{{lat}}={float(latency['t_lat_ps']):.3g}$ ps"
+            if latency.get("t_lat_ps") is not None
+            else r"$t_{lat}$: censored"
+        ),
+        (
+            rf"$t_{{rec}}^{{{recovery.get('mode', 'electrical')}}}="
+            rf"{float(recovery['t_rec_ps']):.3g}$ ps"
+            if recovery.get("t_rec_ps") is not None
+            else rf"$t_{{rec}}^{{{recovery.get('mode', 'electrical')}}}$: censored"
+        ),
+    ]
+    ax.text(
+        0.015,
+        0.965,
+        "\n".join(timing_lines),
+        transform=ax.transAxes,
+        ha="left",
+        va="top",
+        fontsize=8.0,
+        bbox={"facecolor": "white", "edgecolor": "0.7", "alpha": 0.82, "pad": 2.0},
+    )
 
     ax.set_xlabel("t [ps]")
     ax.set_ylabel(r"$\Delta I_s,\ I_{\rm RF}$ [nA]", color=hot_axis_color)

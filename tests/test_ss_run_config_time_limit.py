@@ -41,7 +41,7 @@ def _base_config() -> dict:
 def test_ss_run_total_time_does_not_require_max_steps() -> None:
     cfg = validate_config(_base_config(), require_big_data_root_exists=False)
     assert cfg["ss_run"]["total_time_ps"] == 20.0
-    assert cfg["ss_run"]["snapshots"] == 8
+    assert cfg["ss_run"]["snapshots_per_ps"] == 10.0
     assert "max_steps" not in cfg["ss_run"]
 
 

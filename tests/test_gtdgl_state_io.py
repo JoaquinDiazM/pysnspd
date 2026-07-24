@@ -52,3 +52,26 @@ def test_save_relaxation_history_npz(tmp_path):
     assert out.exists()
     with np.load(out) as data:
         assert np.array_equal(data["t_s"], np.array([0.0, 1.0]))
+
+
+def test_save_stationary_state_persists_runtime_circuit(tmp_path, small_strip_mesh_bundle, gtdgl_material):
+    mesh, _, ops = small_strip_mesh_bundle
+    state = GTDGLStationaryState(
+        psi_J=np.full(mesh.n_nodes, gtdgl_material.delta0_J, dtype=np.complex128),
+        phi_V=np.zeros(mesh.n_nodes),
+        Te_K=np.full(mesh.n_nodes, 0.9),
+        Tph_K=np.full(mesh.n_nodes, 0.9),
+        currents=_zero_currents(mesh.n_nodes, ops.n_edges),
+        metadata={
+            "circuit_runtime": {
+                "final_state": {"I_b_A": 30.0e-6, "I_s_A": 29.0e-6, "v_c_V": 2.0e-6},
+                "params": {"R_load_ohm": 50.0, "V_bias_V": 0.3},
+            }
+        },
+    )
+
+    out = save_stationary_state_npz(state, tmp_path / "state-with-circuit.npz")
+
+    with np.load(out) as data:
+        assert float(data["circuit_I_s_A"]) == 29.0e-6
+        assert float(data["circuit_param_V_bias_V"]) == 0.3

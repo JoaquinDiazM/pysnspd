@@ -51,6 +51,9 @@ class TDGLSolver:
         allmaras_forcing_callback: Optional[Callable[[np.ndarray, sp.spmatrix], np.ndarray]] = None,
         thermal_step_callback: Optional[Callable[..., dict[str, float]]] = None,
         thermal_snapshot_callback: Optional[Callable[[], dict[str, np.ndarray]]] = None,
+        circuit_step_callback: Optional[Callable[..., dict[str, float]]] = None,
+        circuit_snapshot_callback: Optional[Callable[[], dict[str, np.ndarray]]] = None,
+        early_stop_callback: Optional[Callable[..., str | None]] = None,
         stop_eta: Optional[float] = None,
         stop_min_steps: int = 0,
         stop_on_convergence: bool = False,
@@ -66,6 +69,10 @@ class TDGLSolver:
         self.allmaras_forcing_callback = allmaras_forcing_callback
         self.thermal_step_callback = thermal_step_callback
         self.thermal_snapshot_callback = thermal_snapshot_callback
+        self.circuit_step_callback = circuit_step_callback
+        self.circuit_snapshot_callback = circuit_snapshot_callback
+        self.early_stop_callback = early_stop_callback
+        self.early_stop_reason: str | None = None
         self.last_allmaras_forcing_dimensionless = None
         self.last_allmaras_convergence_diagnostics: dict[str, float | int | bool] = {}
         self.last_thermal_diagnostics: dict[str, float] = {}
@@ -473,6 +480,17 @@ class TDGLSolver:
                 normal_current=normal_current,
             ) or {}
             self.last_thermal_diagnostics = dict(thermal_diag)
+        circuit_diag: dict[str, float] = {}
+        if self.circuit_step_callback is not None:
+            circuit_diag = self.circuit_step_callback(
+                step=step,
+                time=float(time) + float(dt),
+                dt=float(dt),
+                psi=psi,
+                mu=mu,
+                supercurrent=supercurrent,
+                normal_current=normal_current,
+            ) or {}
 
         running_state.append("dt", dt)
         running_state.append("max_abs_psi", float(np.max(np.abs(psi))))
@@ -525,6 +543,8 @@ class TDGLSolver:
         running_state.append("div_supercurrent_norm", float(np.linalg.norm(div_s)) if div_s.size else 0.0)
         running_state.append("boundary_rhs_norm", float(np.linalg.norm(b_rhs)) if b_rhs.size else 0.0)
         running_state.append("mu_boundary_max_abs", float(np.max(np.abs(mu_b))) if mu_b.size else 0.0)
+        for key, value in circuit_diag.items():
+            running_state.append(str(key), value)
 
         if options.adaptive:
             d_abs_sq = float(np.absolute(abs_sq_psi - old_sq_psi).max())
@@ -642,6 +662,17 @@ class TDGLSolver:
             if self.thermal_snapshot_callback is not None:
                 for key, value in (self.thermal_snapshot_callback() or {}).items():
                     running_state.append(str(key), value)
+            if self.circuit_snapshot_callback is not None:
+                for key, value in (self.circuit_snapshot_callback() or {}).items():
+                    running_state.append(str(key), value)
+            if self.early_stop_callback is not None:
+                reason = self.early_stop_callback(
+                    time=float(time_value),
+                    frame=frame,
+                    running_state=running_state,
+                )
+                if reason:
+                    self.early_stop_reason = str(reason)
 
         append_snapshot(0.0, result)
         next_snapshot = 1
@@ -694,6 +725,12 @@ class TDGLSolver:
             while next_snapshot < snapshot_times.size and float(state["time"]) >= float(snapshot_times[next_snapshot]):
                 append_snapshot(float(state["time"]), result)
                 next_snapshot += 1
+
+            if self.early_stop_reason:
+                self.converged = True
+                self.convergence_reason = self.early_stop_reason
+                self.stop_reason = self.early_stop_reason
+                break
 
             emit_progress()
 

@@ -28,6 +28,7 @@ from pysnspd.gtdgl.material import build_gtdgl_material
 from pysnspd.mesh.operators import build_fv_operators
 from pysnspd.excitation.photon import PhotonBubbleParams
 from pysnspd.solver.transient import CoupledTransientConfig, run_coupled_transient
+from pysnspd.analysis.timing import DetectionCriteria, RecoveryCriteria
 from pysnspd.gtdgl.usadel_current import (
     attach_usadel_supercurrent_table_from_npz,
     validate_strict_usadel_supercurrent_table_npz,
@@ -44,16 +45,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--pre-run-name", required=True, help="PRE run name used by the SS run.")
     parser.add_argument("--ss-run-name", required=True, help="Existing SS run name to initialize from.")
 
-    parser.add_argument("--total-time-ps", type=float, default=5.0)
-    parser.add_argument("--gtdgl-dt-fs", type=float, default=0.50)
+    parser.add_argument("--total-time-ps", type=float, default=1500.0)
+    parser.add_argument("--gtdgl-dt-fs", type=float, default=0.75)
     parser.add_argument(
         "--coupling-step-fs",
         type=float,
-        default=200.0,
+        default=100.0,
         help="Chunk size for gTDGL/circuit splitting. Keep this small for production.",
     )
-    parser.add_argument("--snapshots", type=int, default=6)
-    parser.add_argument("--progress", action="store_true")
+    parser.add_argument(
+        "--snapshots",
+        type=int,
+        default=None,
+        help="Stored snapshots. Default: total_time_ps * 10 (about 10 snapshots/ps).",
+    )
+    parser.add_argument("--progress", dest="progress", action="store_true", default=True)
+    parser.add_argument("--no-progress", dest="progress", action="store_false")
 
     parser.add_argument("--center-voltage-width-nm", type=float, default=100.0)
     parser.add_argument("--center-voltage-probe-band-nm", type=float, default=None)
@@ -72,12 +79,12 @@ def parse_args() -> argparse.Namespace:
         help="Freeze Te/Tph during mesoscopic chunks; a photon event can still set the initial Tph bubble.",
     )
     parser.add_argument("--thermal-window-nm", type=float, default=100.0)
-    parser.add_argument("--thermal-max-step-K", type=float, default=0.05)
-    parser.add_argument("--thermal-max-substeps", type=int, default=64)
+    parser.add_argument("--thermal-max-step-K", type=float, default=0.20)
+    parser.add_argument("--thermal-max-substeps", type=int, default=32)
 
-    parser.add_argument("--allmaras-direct-amplitude-fraction", type=float, default=1.0e-2)
-    parser.add_argument("--allmaras-convergence-tol", type=float, default=1.0e-3)
-    parser.add_argument("--allmaras-convergence-max-iterations", type=int, default=64)
+    parser.add_argument("--allmaras-direct-amplitude-fraction", type=float, default=2.0e-2)
+    parser.add_argument("--allmaras-convergence-tol", type=float, default=3.0e-3)
+    parser.add_argument("--allmaras-convergence-max-iterations", type=int, default=32)
 
     parser.add_argument("--terminal-psi", type=float, default=0.0)
     parser.add_argument(
@@ -102,11 +109,49 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--photon-enable", dest="photon_enable", action="store_true", default=True)
     parser.add_argument("--photon-disable", dest="photon_enable", action="store_false")
-    parser.add_argument("--photon-time-ps", type=float, default=2.0)
-    parser.add_argument("--photon-energy-eV", type=float, default=0.0)
+    parser.add_argument("--photon-time-ps", type=float, default=50.0)
+    parser.add_argument("--photon-energy-eV", type=float, default=0.8)
     parser.add_argument("--photon-x-nm", type=float, default=None, help="Default: mesh center.")
     parser.add_argument("--photon-y-nm", type=float, default=0.0)
     parser.add_argument("--photon-sigma-nm", type=float, default=10.0)
+
+    parser.add_argument(
+        "--early-stop-mode",
+        choices=("none", "latency", "recovery"),
+        default="recovery",
+        help=(
+            "none: run to total time; latency: stop after a confirmed V_out peak plus "
+            "the safety tail; recovery: stop when the selected recovery criterion is held."
+        ),
+    )
+    parser.add_argument(
+        "--recovery-mode",
+        choices=("electrical", "efficiency90", "state"),
+        default="electrical",
+        help="Recovery classifier used by --early-stop-mode recovery.",
+    )
+    parser.add_argument("--detection-threshold-uV", type=float, default=100.0)
+    parser.add_argument(
+        "--detection-polarity",
+        choices=("positive", "negative", "auto"),
+        default="positive",
+    )
+    parser.add_argument("--detection-baseline-window-ps", type=float, default=10.0)
+    parser.add_argument("--detection-confirmation-ps", type=float, default=0.5)
+    parser.add_argument("--detection-hysteresis-fraction", type=float, default=0.10)
+    parser.add_argument("--peak-confirmation-ps", type=float, default=2.0)
+    parser.add_argument("--post-peak-safety-ps", type=float, default=10.0)
+    parser.add_argument("--recovery-hold-ps", type=float, default=10.0)
+    parser.add_argument("--recovery-efficiency-fraction", type=float, default=0.90)
+    parser.add_argument("--recovery-current-rel-tol", type=float, default=1.0e-2)
+    parser.add_argument("--recovery-current-abs-uA", type=float, default=0.05)
+    parser.add_argument("--recovery-voltage-rel-tol", type=float, default=1.0e-2)
+    parser.add_argument("--recovery-voltage-abs-uV", type=float, default=10.0)
+    parser.add_argument("--recovery-temperature-abs-K", type=float, default=0.05)
+    parser.add_argument("--recovery-condensate-rel-tol", type=float, default=2.0e-2)
+    parser.add_argument("--recovery-spatial-quantile", type=float, default=0.995)
+    parser.add_argument("--recovery-spatial-max-guard-factor", type=float, default=4.0)
+    parser.add_argument("--timing-evaluation-interval-ps", type=float, default=0.5)
 
     return parser.parse_args()
 
@@ -114,6 +159,11 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     cfg = validate_config(load_config(args.config))
+    n_snapshots = (
+        int(args.snapshots)
+        if args.snapshots is not None
+        else max(2, int(round(float(args.total_time_ps) * 10.0)))
+    )
 
     out_layout = create_run_layout(cfg, args.run_name)
     pre_layout = create_run_layout(cfg, args.pre_run_name)
@@ -176,7 +226,7 @@ def main() -> int:
         total_time_s=float(args.total_time_ps) * 1.0e-12,
         mesoscopic_dt_s=float(args.gtdgl_dt_fs) * 1.0e-15,
         chunk_time_s=float(args.coupling_step_fs) * 1.0e-15,
-        n_snapshots=int(args.snapshots),
+        n_snapshots=n_snapshots,
         center_voltage_width_m=float(args.center_voltage_width_nm) * 1.0e-9,
         center_voltage_probe_band_m=(
             None if args.center_voltage_probe_band_nm is None else float(args.center_voltage_probe_band_nm) * 1.0e-9
@@ -192,6 +242,30 @@ def main() -> int:
         allmaras_phase_direct_amplitude_fraction=float(args.allmaras_direct_amplitude_fraction),
         allmaras_phase_convergence_tol=float(args.allmaras_convergence_tol),
         allmaras_phase_convergence_max_iterations=int(args.allmaras_convergence_max_iterations),
+        early_stop_mode=str(args.early_stop_mode),
+        timing_evaluation_interval_s=float(args.timing_evaluation_interval_ps) * 1.0e-12,
+        detection_criteria=DetectionCriteria(
+            threshold_V=float(args.detection_threshold_uV) * 1.0e-6,
+            polarity=str(args.detection_polarity),
+            baseline_window_s=float(args.detection_baseline_window_ps) * 1.0e-12,
+            confirmation_s=float(args.detection_confirmation_ps) * 1.0e-12,
+            hysteresis_fraction=float(args.detection_hysteresis_fraction),
+            peak_confirmation_s=float(args.peak_confirmation_ps) * 1.0e-12,
+            post_peak_safety_s=float(args.post_peak_safety_ps) * 1.0e-12,
+        ),
+        recovery_criteria=RecoveryCriteria(
+            mode=str(args.recovery_mode),
+            hold_s=float(args.recovery_hold_ps) * 1.0e-12,
+            efficiency_fraction=float(args.recovery_efficiency_fraction),
+            current_relative_tolerance=float(args.recovery_current_rel_tol),
+            current_absolute_tolerance_A=float(args.recovery_current_abs_uA) * 1.0e-6,
+            voltage_relative_tolerance=float(args.recovery_voltage_rel_tol),
+            voltage_absolute_tolerance_V=float(args.recovery_voltage_abs_uV) * 1.0e-6,
+            temperature_absolute_tolerance_K=float(args.recovery_temperature_abs_K),
+            condensate_relative_tolerance=float(args.recovery_condensate_rel_tol),
+            spatial_quantile=float(args.recovery_spatial_quantile),
+            spatial_max_guard_factor=float(args.recovery_spatial_max_guard_factor),
+        ),
         progress=bool(args.progress),
     )
 
@@ -236,11 +310,21 @@ def main() -> int:
     print(f" total_time_ps: {float(args.total_time_ps):.6g}")
     print(f" coupling_step_fs: {float(args.coupling_step_fs):.6g}")
     print(f" gtdgl_dt_fs: {float(args.gtdgl_dt_fs):.6g}")
+    print(f" snapshots: {n_snapshots}")
     print(f" thermal_enabled: {bool(args.thermal_enable)}")
     print(f" initial_current_uA: {float(initial_current_A) * 1.0e6:.6g}")
     print(f" initial_V_tdgl_center_uV: {float(summary['initial_V_tdgl_center_V']) * 1.0e6:.6g}")
     print(f" photon_energy_eV: {float(args.photon_energy_eV):.6g}")
     print(f" photon_time_ps: {float(args.photon_time_ps):.6g}")
+    print(f" early_stop_mode: {args.early_stop_mode}")
+    print(f" recovery_mode: {args.recovery_mode}")
+    print(f" stop_reason: {summary.get('stop_reason', 'n/a')}")
+    timing = dict(summary.get("timing", {}))
+    print(f" t_lat_ps: {dict(timing.get('latency', {})).get('t_lat_ps', 'n/a')}")
+    print(
+        " t_rec_ps: "
+        f"{dict(dict(timing.get('recovery', {})).get('selected', {})).get('t_rec_ps', 'censored')}"
+    )
     print()
     print("Outputs")
     for key, value in dict(summary.get("outputs", {})).items():
@@ -253,6 +337,7 @@ def main() -> int:
 
 def _initial_current_A(ss_summary: dict[str, Any]) -> float:
     for path in (
+        ("solver", "circuit_runtime", "final_state", "I_s_A"),
         ("solver", "target_current_A"),
         ("seed", "simulation_target_current_A"),
         ("target_current_A",),

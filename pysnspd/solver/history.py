@@ -156,6 +156,11 @@ def _build_history(
         "thermal_max_P_diff_W_m3",
     ):
         hist[key] = _raw_series(key, 0.0)
+    for key, value in raw.items():
+        if str(key).startswith("circuit_") and not str(key).endswith("_snapshot"):
+            arr = np.asarray(value)
+            if arr.ndim == 1 and arr.size == t_s.size:
+                hist[str(key)] = arr.copy()
 
     # Store actual lightweight trajectory snapshots captured by TDGLSolver.
     # If the solver did not capture frames for any reason, fall back to the
@@ -173,6 +178,10 @@ def _build_history(
     native_brhs_snap = np.asarray(raw.get("boundary_rhs_snapshot", []), dtype=float)
     Te_snap_raw = np.asarray(raw.get("Te_snapshot_K", []), dtype=float)
     Tph_snap_raw = np.asarray(raw.get("Tph_snapshot_K", []), dtype=float)
+    circuit_I_s_snap = np.asarray(
+        raw.get("circuit_I_s_A_snapshot", []),
+        dtype=float,
+    ).reshape(-1)
 
     if psi_snap.ndim != 2 or psi_snap.shape[1] != mesh.n_nodes or raw_snap_t.size == 0:
         ns = max(2, int(n_snapshots))
@@ -216,6 +225,11 @@ def _build_history(
     native_diags = []
     usadel_diags = []
     allmaras_diags = []
+    snapshot_target_currents_A = (
+        circuit_I_s_snap[: psi_snap_J.shape[0]]
+        if circuit_I_s_snap.size >= psi_snap_J.shape[0]
+        else np.full(psi_snap_J.shape[0], float(target_current_A), dtype=float)
+    )
     for k in range(psi_snap_J.shape[0]):
         psi_dim = psi_snap_J[k] / material.delta0_J
         c, d = native_edge_currents_to_current_fields(
@@ -228,7 +242,7 @@ def _build_history(
             ops=ops,
             material=material,
             Te_K=Te_frames[k],
-            target_current_A=target_current_A,
+            target_current_A=float(snapshot_target_currents_A[k]),
         )
         udiag = compute_usadel_supercurrent_diagnostic(
             usadel_catalog=usadel_catalog,
@@ -424,8 +438,14 @@ def _build_history(
         "allmaras_bulk_mask_policy": np.array(["terminal_nodes_excluded_only"]),
         "edge_i": edge_i,
         "edge_j": edge_j,
+        "target_current_snapshot_A": snapshot_target_currents_A,
     }.items():
         hist[key] = np.asarray(arr)
+    for key, value in raw.items():
+        if str(key).startswith("circuit_") and str(key).endswith("_snapshot"):
+            arr = np.asarray(value)
+            if arr.shape[0] >= ns:
+                hist[str(key)] = arr[:ns].copy()
 
     # Native pyTDGL-like solver snapshots, kept in the internal operator units.
     # These are for debugging the sparse Poisson system and should not be

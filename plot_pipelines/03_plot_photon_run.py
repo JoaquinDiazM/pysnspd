@@ -13,6 +13,11 @@ from pysnspd.io.manager import create_run_layout
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.plotting.photon_figures import load_npz_dict, make_photon_run_figures
 from pysnspd.plotting.style import THESIS_DPI
+from pysnspd.analysis.timing import analyze_photon_timing
+from pysnspd.analysis.timing_cli import (
+    add_timing_analysis_arguments,
+    timing_criteria_from_args,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -41,6 +46,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional subdirectory inside plots/<run-name>/figures.",
     )
+    add_timing_analysis_arguments(parser)
     return parser.parse_args()
 
 
@@ -63,7 +69,7 @@ def main() -> int:
     summary = _read_yaml(summary_path)
 
     mesh = None
-    snapshots = None
+    snapshots = load_npz_dict(snapshots_path) if snapshots_path.exists() else None
     scalar_times_ps = args.scalar_times_ps
 
     if scalar_times_ps is not None and len(scalar_times_ps) > 0:
@@ -78,7 +84,14 @@ def main() -> int:
             raise FileNotFoundError(f"Missing transient snapshots: {snapshots_path}")
 
         mesh = load_mesh_npz(mesh_path)
-        snapshots = load_npz_dict(snapshots_path)
+
+    detection_criteria, recovery_criteria = timing_criteria_from_args(args)
+    timing = analyze_photon_timing(
+        history,
+        snapshots=snapshots,
+        detection=detection_criteria,
+        recovery=recovery_criteria,
+    )
 
     saved = make_photon_run_figures(
         history=history,
@@ -89,6 +102,7 @@ def main() -> int:
         snapshots=snapshots,
         scalar_times_ps=scalar_times_ps,
         center_width_nm=float(args.center_width_nm),
+        timing=timing,
     )
 
     manifest_path = _write_plot_manifest(
@@ -101,6 +115,7 @@ def main() -> int:
         scalar_times_ps=scalar_times_ps,
         center_width_nm=float(args.center_width_nm),
         pre_run_name=args.pre_run_name,
+        timing=timing,
     )
 
     print("Photon plotting pipeline")
@@ -111,6 +126,11 @@ def main() -> int:
     print(f" figures_dir: {figures_dir}")
     if scalar_times_ps:
         print(f" scalar_times_ps: {', '.join(f'{t:g}' for t in scalar_times_ps)}")
+    print(f" t_lat_ps: {dict(timing.get('latency', {})).get('t_lat_ps', 'censored')}")
+    print(
+        " t_rec_ps: "
+        f"{dict(dict(timing.get('recovery', {})).get('selected', {})).get('t_rec_ps', 'censored')}"
+    )
     print()
     print("Figures")
     for key, path in saved.items():
@@ -140,6 +160,7 @@ def _write_plot_manifest(
     scalar_times_ps: list[float] | None,
     center_width_nm: float,
     pre_run_name: str | None,
+    timing: dict[str, Any],
 ) -> Path:
     manifest = {
         "schema_version": 2,
@@ -154,6 +175,7 @@ def _write_plot_manifest(
         "figures": {key: str(path) for key, path in saved.items()},
         "history_keys": sorted(str(key) for key in history.keys()),
         "summary_keys": sorted(str(key) for key in summary.keys()),
+        "timing": timing,
     }
     out = figures_dir / "plot_manifest.yaml"
     with out.open("w", encoding="utf-8") as f:

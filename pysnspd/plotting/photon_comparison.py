@@ -30,14 +30,20 @@ def make_photon_position_figures(
     requested_times_ps: Sequence[float],
     output_dir: str | Path,
     dpi: int = THESIS_DPI,
+    center_timing: Mapping[str, Any] | None = None,
+    edge_timing: Mapping[str, Any] | None = None,
 ) -> dict[str, Path]:
     """Create matched field and circuit-response comparisons."""
 
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
+    center_summary_with_timing = dict(center_summary)
+    center_summary_with_timing["_timing"] = dict(center_timing or {})
+    edge_summary_with_timing = dict(edge_summary)
+    edge_summary_with_timing["_timing"] = dict(edge_timing or {})
     runs = (
-        ("Center", center_history, center_snapshots, center_summary),
-        ("Edge", edge_history, edge_snapshots, edge_summary),
+        ("Center", center_history, center_snapshots, center_summary_with_timing),
+        ("Edge", edge_history, edge_snapshots, edge_summary_with_timing),
     )
     return {
         "field_comparison": plot_photon_position_field_comparison(
@@ -190,7 +196,8 @@ def plot_photon_position_circuit_comparison(
     colors = {"Center": "tab:blue", "Edge": "tab:red"}
     photon_times = []
 
-    for label, history, _, _ in runs:
+    timing_rows: list[str] = []
+    for label, history, _, summary in runs:
         time = np.asarray(history.get("t_ps", []), dtype=float)
         if time.size == 0:
             raise ValueError(f"{label} run has no photon history.")
@@ -210,6 +217,29 @@ def plot_photon_position_circuit_comparison(
         axes[2].plot(time, history.get("max_Tph_K"), color=color, linestyle="--", label=rf"{label}: max $T_{{ph}}$")
         axes[3].plot(time, history.get("mean_delta_over_delta0"), color=color, label=label)
         photon_times.append(_photon_time_ps(history))
+        timing = dict(summary.get("_timing", {}))
+        latency = dict(timing.get("latency", {}))
+        recovery = dict(dict(timing.get("recovery", {})).get("selected", {}))
+        crossing = latency.get("crossing_time_ps")
+        recovery_entry = recovery.get("entry_time_ps")
+        if crossing is not None and np.isfinite(float(crossing)):
+            axes[1].axvline(float(crossing), color=color, linestyle=":", linewidth=0.8)
+        if recovery_entry is not None and np.isfinite(float(recovery_entry)):
+            axes[1].axvline(float(recovery_entry), color=color, linestyle="-.", linewidth=0.8)
+        latency_text = (
+            f"{float(latency['t_lat_ps']):.3g} ps"
+            if latency.get("t_lat_ps") is not None
+            else "censored"
+        )
+        recovery_text = (
+            f"{float(recovery['t_rec_ps']):.3g} ps"
+            if recovery.get("t_rec_ps") is not None
+            else "censored"
+        )
+        timing_rows.append(
+            f"{label}: t_lat={latency_text}; "
+            f"t_rec[{recovery.get('mode', 'electrical')}]={recovery_text}"
+        )
 
     axes[0].set_ylabel(r"Current [$\mu$A]")
     axes[1].set_ylabel("Voltage [mV]")
@@ -230,6 +260,16 @@ def plot_photon_position_circuit_comparison(
         ax.grid(True)
         ax.set_xlim(left=0.0)
         ax.legend(frameon=False, ncol=3 if index == 0 else 2, loc="best", fontsize=8.0)
+    axes[3].text(
+        0.01,
+        0.04,
+        "\n".join(timing_rows),
+        transform=axes[3].transAxes,
+        ha="left",
+        va="bottom",
+        fontsize=7.0,
+        bbox={"facecolor": "white", "edgecolor": "0.75", "alpha": 0.82, "pad": 1.5},
+    )
 
     fig.savefig(output, dpi=dpi)
     plt.close(fig)

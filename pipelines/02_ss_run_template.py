@@ -42,6 +42,7 @@ from pysnspd.analysis.snapshots import (
     save_ss_snapshot_bundle_npz,
     write_ss_snapshot_power_diagnostics,
 )
+from pysnspd.circuit.readout import CircuitParams, CircuitRuntimeConfig
 from pysnspd.gtdgl.usadel_current import (
     attach_usadel_supercurrent_table_from_npz,
     validate_strict_usadel_supercurrent_table_npz,
@@ -69,14 +70,9 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--phase-origin", choices=("center", "left"), default="center")
 
-    # Default SS target constructed from the first useful metallic-contact
-    # Usadel-Poisson runs:
-    #
-    #   I = 20 uA
-    #   physical run time = 20 ps
-    #   dt_init = 0.30 fs
-    #   metallic terminals with smooth 2.5 xi seed healing
-    #   stationarity measured only in the superconducting bulk.
+    # Production SS defaults use the validated 30 uA Geminga operating point,
+    # metallic terminals with smooth 2.5 xi seed healing, and stationarity
+    # measured only in the superconducting bulk.
     parser.add_argument(
         "--ss-time-ps",
         type=float,
@@ -93,7 +89,7 @@ def parse_args() -> argparse.Namespace:
             "Initial SS time step in fs. If omitted, use ss_run.dt_s from the YAML."
         ),
     )
-    parser.add_argument("--ss-target-current-uA", type=float, default=20.0)
+    parser.add_argument("--ss-target-current-uA", type=float, default=30.0)
     parser.add_argument(
         "--ss-overcritical-seed-policy",
         choices=("clamp-to-ic", "error"),
@@ -152,7 +148,10 @@ def parse_args() -> argparse.Namespace:
         dest="thermal_enable",
         action="store_true",
         default=True,
-        help="Enable runtime Te/Tph coupling after --thermal-start-ps. Enabled by default.",
+        help=(
+            "Enable runtime Te/Tph coupling after "
+            "--circuit-and-thermal-start-ps. Enabled by default."
+        ),
     )
     parser.add_argument(
         "--thermal-disable",
@@ -167,21 +166,24 @@ def parse_args() -> argparse.Namespace:
         help="Central x-window in nm where Te/Tph are dynamic. Outside, Te=Tph=Tbath.",
     )
     parser.add_argument(
-        "--thermal-start-ps",
+        "--circuit-and-thermal-start-ps",
         type=float,
-        default=2.0,
-        help="Start thermal coupling after this physical time in ps; before that, run frozen-thermal gTDGL.",
+        default=5.0,
+        help=(
+            "Activate the readout circuit and thermal coupling together after "
+            "this physical time; before it, run fixed-current frozen-thermal gTDGL."
+        ),
     )
     parser.add_argument(
         "--thermal-max-step-K",
         type=float,
-        default=0.05,
+        default=0.20,
         help="Maximum explicit thermal temperature increment per substep.",
     )
     parser.add_argument(
         "--thermal-max-substeps",
         type=int,
-        default=64,
+        default=32,
         help="Maximum thermal substeps inside one accepted gTDGL step.",
     )
     parser.add_argument(
@@ -301,7 +303,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ss-dynamic-stationarity-min-tail-ps",
         type=float,
-        default=2.0,
+        default=5.0,
         help="Minimum physical duration covered by the dynamic-stationarity snapshot tail.",
     )
     parser.add_argument(
@@ -356,6 +358,47 @@ def parse_args() -> argparse.Namespace:
             "records eta convergence as a diagnostic."
         ),
     )
+    parser.add_argument(
+        "--ss-early-stop",
+        dest="ss_early_stop",
+        action="store_true",
+        default=True,
+        help=(
+            "Stop when mesoscopic, contact, continuity, thermal, and circuit "
+            "stationarity criteria all pass. Enabled by default."
+        ),
+    )
+    parser.add_argument(
+        "--ss-no-early-stop",
+        dest="ss_early_stop",
+        action="store_false",
+        help="Run until --ss-time-ps even if all total-stationarity criteria pass.",
+    )
+    parser.add_argument(
+        "--circuit-enable",
+        dest="circuit_enable",
+        action="store_true",
+        default=True,
+        help="Evolve the readout circuit with the SS run. Enabled by default.",
+    )
+    parser.add_argument(
+        "--circuit-disable",
+        dest="circuit_enable",
+        action="store_false",
+    )
+    parser.add_argument("--center-voltage-width-nm", type=float, default=100.0)
+    parser.add_argument("--center-voltage-probe-band-nm", type=float, default=None)
+    parser.add_argument("--circuit-Rload-ohm", type=float, default=50.0)
+    parser.add_argument("--circuit-Rbias-ohm", type=float, default=1.0e4)
+    parser.add_argument("--circuit-Lbias-nH", type=float, default=1000.0)
+    parser.add_argument("--circuit-Lk-nH", type=float, default=10.0)
+    parser.add_argument("--circuit-Ccouple-pF", type=float, default=100.0)
+    parser.add_argument("--circuit-Vbias-uV", type=float, default=None)
+    parser.add_argument("--circuit-stationarity-hold-ps", type=float, default=5.0)
+    parser.add_argument("--circuit-current-rel-tol", type=float, default=1.0e-2)
+    parser.add_argument("--circuit-current-abs-uA", type=float, default=0.05)
+    parser.add_argument("--circuit-voltage-rel-tol", type=float, default=1.0e-2)
+    parser.add_argument("--circuit-voltage-abs-uV", type=float, default=10.0)
 
     # These already pass with large margin; keep them strict.
     parser.add_argument("--ss-continuity-rms-tol", type=float, default=1.0e-6)
@@ -419,14 +462,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ss-allmaras-direct-amplitude-fraction",
         type=float,
-        default=1.0e-2,
+        default=2.0e-2,
         help=(
             "Evaluate the normalized Allmaras phase quotient directly above this |Delta|/Delta0. "
             "Below it, use controlled harmonic continuation on the FV graph."
         ),
     )
-    parser.add_argument("--ss-allmaras-convergence-tol", type=float, default=1.0e-3)
-    parser.add_argument("--ss-allmaras-convergence-max-iterations", type=int, default=64)
+    parser.add_argument("--ss-allmaras-convergence-tol", type=float, default=3.0e-3)
+    parser.add_argument("--ss-allmaras-convergence-max-iterations", type=int, default=32)
 
     parser.add_argument("--dpi", type=int, default=480, help="DPI for SS diagnostic plots.")
 
@@ -440,7 +483,7 @@ def main() -> int:
     base_layout = create_run_layout(cfg, args.run_name)
     base_run_name = base_layout["run_name"]
     pre_name = args.pre_run_name or base_run_name
-    base_current_uA = float(args.ss_target_current_uA) if args.ss_target_current_uA is not None else 20.0
+    base_current_uA = float(args.ss_target_current_uA) if args.ss_target_current_uA is not None else 30.0
     extra_offsets = _resolve_extra_current_specs(
         base_current_uA=base_current_uA,
         specs=[str(value) for value in (args.extra_currents_uA or [])],
@@ -626,9 +669,13 @@ def _run_single_current_case(
     if dt_s <= 0.0:
         raise ValueError("--ss-dt-fs or ss_run.dt_s must be positive.")
 
-    n_snapshots = int(args.ss_snapshots if args.ss_snapshots is not None else ss_run_cfg.get("snapshots", 8))
+    if args.ss_snapshots is not None:
+        n_snapshots = int(args.ss_snapshots)
+    else:
+        snapshots_per_ps = float(ss_run_cfg.get("snapshots_per_ps", 10.0))
+        n_snapshots = max(2, int(round(total_time_ps * snapshots_per_ps)))
     if n_snapshots <= 0:
-        raise ValueError("--ss-snapshots or ss_run.snapshots must be positive.")
+        raise ValueError("--ss-snapshots or ss_run.snapshots_per_ps must be positive.")
 
     power_table_path = raw_pre / "power_table_catalog.npz"
     thermal_power_table_npz = power_table_path if bool(args.thermal_enable) and power_table_path.exists() else None
@@ -718,7 +765,7 @@ def _run_single_current_case(
                     str(thermal_power_table_npz) if thermal_power_table_npz is not None else None
                 ),
                 thermal_window_m=float(args.thermal_window_nm) * 1.0e-9,
-                thermal_start_time_s=float(args.thermal_start_ps) * 1.0e-12,
+                thermal_start_time_s=float(args.circuit_and_thermal_start_ps) * 1.0e-12,
                 thermal_bath_K=float(np.nanmedian(seed.node_Tph_K)),
                 thermal_min_K=float(np.nanmedian(seed.node_Tph_K)),
                 thermal_max_K=None,
@@ -727,6 +774,34 @@ def _run_single_current_case(
                 thermal_stationarity_rate_K_per_ps=float(
                     args.thermal_stationarity_rate_K_per_ps
                 ),
+                circuit_enabled=bool(args.circuit_enable),
+                circuit_params=CircuitParams(
+                    R_load_ohm=float(args.circuit_Rload_ohm),
+                    R_bias_ohm=float(args.circuit_Rbias_ohm),
+                    L_bias_H=float(args.circuit_Lbias_nH) * 1.0e-9,
+                    L_k_H=float(args.circuit_Lk_nH) * 1.0e-9,
+                    C_couple_F=float(args.circuit_Ccouple_pF) * 1.0e-12,
+                    V_bias_V=(
+                        None
+                        if args.circuit_Vbias_uV is None
+                        else float(args.circuit_Vbias_uV) * 1.0e-6
+                    ),
+                ),
+                circuit_runtime_config=CircuitRuntimeConfig(
+                    start_time_s=float(args.circuit_and_thermal_start_ps) * 1.0e-12,
+                    hold_time_s=float(args.circuit_stationarity_hold_ps) * 1.0e-12,
+                    current_relative_tolerance=float(args.circuit_current_rel_tol),
+                    current_absolute_tolerance_A=float(args.circuit_current_abs_uA) * 1.0e-6,
+                    voltage_relative_tolerance=float(args.circuit_voltage_rel_tol),
+                    voltage_absolute_tolerance_V=float(args.circuit_voltage_abs_uV) * 1.0e-6,
+                ),
+                center_voltage_width_m=float(args.center_voltage_width_nm) * 1.0e-9,
+                center_voltage_probe_band_m=(
+                    None
+                    if args.center_voltage_probe_band_nm is None
+                    else float(args.center_voltage_probe_band_nm) * 1.0e-9
+                ),
+                stop_on_total_stationarity=bool(args.ss_early_stop),
             )
 
     state_npz = save_stationary_state_npz(result.state, raw_ss / "stationary_state.npz")

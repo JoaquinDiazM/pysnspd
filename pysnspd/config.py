@@ -246,9 +246,9 @@ def validate_config(
     _require_positive_number(ss_run, "total_time_ps", "ss_run")
     _require_positive_number(ss_run, "dt_s", "ss_run")
     _require_positive_number(ss_run, "convergence_tol", "ss_run")
-    if "snapshots" not in ss_run:
-        ss_run["snapshots"] = 8
-    _require_positive_int(ss_run, "snapshots", "ss_run")
+    if "snapshots_per_ps" not in ss_run:
+        ss_run["snapshots_per_ps"] = 10.0
+    _require_positive_number(ss_run, "snapshots_per_ps", "ss_run")
 
     photon_run = _require_section(cfg, "photon_run")
     _require_positive_number(photon_run, "photon_wavelength_m", "photon_run")

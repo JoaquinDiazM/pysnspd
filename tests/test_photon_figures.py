@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from pysnspd.plotting.photon_figures import (
+    plot_photon_circuit_response,
     plot_photon_center_scalar_snapshot_rows,
 )
 
@@ -56,6 +57,37 @@ def test_plot_photon_center_scalar_snapshot_rows(tmp_path: Path):
         requested_times_ps=[0.0, 1.0],
         output_path=tmp_path / "photon_center_scalar_snapshots.png",
         center_width_nm=100.0,
+        dpi=60,
+    )
+
+    assert output.exists()
+    assert output.stat().st_size > 0
+
+
+def test_plot_photon_circuit_response_with_timing_annotations(tmp_path: Path):
+    t_ps = np.linspace(0.0, 80.0, 161)
+    pulse = np.exp(-0.5 * ((t_ps - 35.0) / 8.0) ** 2)
+    output = plot_photon_circuit_response(
+        history={
+            "t_ps": t_ps,
+            "photon_applied": t_ps >= 20.0,
+            "I_s_A": 30.0e-6 - 5.0e-6 * pulse,
+            "I_rf_A": 5.0e-6 * pulse,
+            "V_tdgl_center_V": 0.2e-3 * pulse,
+            "V_out_V": 0.25e-3 * pulse,
+        },
+        summary={},
+        timing={
+            "latency": {"crossing_time_ps": 24.0, "t_lat_ps": 4.0},
+            "recovery": {
+                "selected": {
+                    "mode": "electrical",
+                    "entry_time_ps": 60.0,
+                    "t_rec_ps": 40.0,
+                }
+            },
+        },
+        output_path=tmp_path / "photon-circuit-timing.png",
         dpi=60,
     )
 
