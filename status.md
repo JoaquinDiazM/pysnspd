@@ -1,10 +1,10 @@
 # pySNSPD publication status
 
-Last updated: 2026-07-24
+Last updated: 2026-07-25
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: Week 1 - detection and recovery criteria
+Current phase: Week 1 - detection/recovery acceptance and Usadel regularization diagnosis
 
 Baseline branch: `main`
 
@@ -30,7 +30,10 @@ ownership explicit, and preserved the complete production-reachable call
 graph. Plotting was then unified under the thesis style in commit `618103c`.
 The baseline-freeze task is complete. The Week 1 latency/recovery contract is
 now implemented in the solver and photon plotting paths; production-scale
-200 ps SS and 1.5 ns photon runs remain the acceptance step.
+200 ps SS and 1.5 ns photon runs remain the acceptance step. A read-only D1
+diagnostic has now confirmed a separate low-amplitude interpolation defect in
+the Usadel/Allmaras interface; its production correction is intentionally not
+part of this diagnostic change.
 
 ## Week 1 architecture cleanup record
 
@@ -107,6 +110,77 @@ Validation on Geminga:
   snapshot power maps, runtime metrics, and photon scalar maps were visually
   checked for clipping, overlap, and legibility;
 - no production PRE, SS, photon, sweep, or publication dataset was modified.
+
+## Low-amplitude Usadel/Allmaras diagnostic
+
+Status: defect confirmed; candidate constitutive correction validated in
+isolation; production implementation pending.
+
+The document `Regularizacion_Usadel_Allmaras_pySNSPD.pdf` was checked against
+the implementation frozen at `e173835`. Its central algebra is consistent with
+the dirty-limit Matsubara current used by pySNSPD. For fixed `T_e` and `q`,
+the anomalous Matsubara amplitude is linear in `|Delta|` as
+`|Delta| -> 0`; consequently,
+`j_s = kappa_0(T_e,q) |Delta|^2 q + O(|Delta|^4 q)`.
+
+The current PRE/runtime interface violates that limit in its first amplitude
+cell. `supercurrent_table.py` writes an exact zero-current row at
+`|Delta|=0`, while `usadel_current.py` interpolates `j_s` linearly in
+`|Delta|`. It therefore produces `j_s = O(|Delta|)` between zero and the
+first positive table node. The audit also confirmed the document's secondary
+observations: the current code takes the Usadel and GL divergences separately,
+uses a 1% amplitude threshold for harmonic phase continuation, and replaces
+some non-finite results by zero.
+
+Temporary pipeline
+`plot_pipelines/D1_usadel_low_amplitude_diagnostic.py` and helper module
+`pysnspd.analysis.usadel_low_amplitude_diagnostic` compare, without changing
+PRE generation or either solver:
+
+- the current trilinear interpolation of `j_s(T_e,|Delta|,q)`;
+- a diagnostic candidate that interpolates
+  `kappa=j_s/(|Delta|^2 q)` over `(T_e,|Delta|^2,|q|)` and uses the exact
+  zero-amplitude and zero-`q` anchors;
+- direct Matsubara evaluations at every plotted amplitude.
+
+The D1 run reused
+`pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01`.
+Its strict current table has shape `(81, 101, 121)`, 500 Matsubara terms, and
+its first positive amplitude node is `|Delta|_1/Delta_0 = 0.01`. Nine cases
+cover `T_e = 0.9, 4.325, 7.3525 K` and
+`q/q_c = 0.2, 0.5, 0.8`.
+
+Measured evidence:
+
+- the current interpolation has median low-amplitude exponent
+  `d ln(j_s)/d ln(|Delta|) = 1.0`;
+- both the stiffness candidate and direct Matsubara reference give exponent
+  `2.0` in all nine cases;
+- when the amplitude reaches `10^-4 |Delta|_1`, the present interpolation's
+  maximum relative error is about `1.00e4`, as expected from the wrong power
+  law;
+- the stiffness candidate's worst relative error below the first PRE node is
+  `9.67e-4`;
+- in a smooth one-dimensional notch crossing the first PRE interval, the peak
+  proxy `|d(j_s^Us-j_s^GL)/dx|/|Delta|` is `117.15` times the direct reference
+  with the current interpolation, but `1.0018` times with the stiffness
+  candidate; relative RMS errors are `20.78` and `1.80e-3`, respectively.
+
+The generated figures and YAML summary live under
+`plots/<pre-run>/figures/D1_usadel_low_amplitude/` on Geminga. They use only
+line plots and the shared thesis style; no colormap is used. Final validation
+on Geminga compiled the library, all pipelines, plotting pipelines, and tests;
+all 12 entry points passed `--help`; and the complete suite passed
+(`124 passed in 18.03s`). No PRE, SS, photon, or long-running screen was
+executed, attached, or modified.
+
+Interpretation: the ambiguity is real, numerically large exactly where the
+condensate approaches zero, and is a credible mechanism for the small notches
+and kinks seen around current-cutoff regions. This is not yet proof that every
+2D notch has this single cause: the real-mesh pair-flow discretization,
+difference-before-divergence rule, exact-zero convention, and full coupled
+solver still require implementation and an old/new PRE plus SS/photon
+comparison. The D1 result is sufficient to justify that next change.
 
 ## Baseline acceptance update
 
@@ -370,7 +444,8 @@ debt; P3 is cleanup that can wait until the scientific path is stable.
 | CONS-002 | P1 | Open | Current-continuity and energy errors are not yet reported through the most violent part of the transient. | Time-resolved residuals are plotted and remain below declared tolerances. |
 | THERM-001 | P1 | Open | A true thermal steady state before photon injection has not yet been demonstrated for the publication cases. | Pre-injection thermal rates and residuals satisfy a documented stationary threshold. |
 | GTDGL-001 | P1 | Open | Center and edge cases have used non-identical phase-solver tolerances, leaving a numerical confounder in spatial comparisons. | All spatial cases use one justified tolerance policy and retain their classification after refinement. |
-| PHYS-001 | P1 | Open | Small notch-like structures appear before or far from the photon impact in the thesis diagnostics. | The structures disappear under correction/refinement or are explained and shown to be physical. |
+| PHYS-001 | P1 | Diagnosed; correction pending | Small notch-like structures appear before or far from the photon impact in the thesis diagnostics. D1 shows that the low-amplitude Usadel interpolation can amplify the corresponding phase-source proxy by 117x, but a coupled 2D old/new comparison remains pending. | The structures disappear under correction/refinement or are explained and shown to be physical. |
+| GTDGL-002 | P1 | Confirmed; correction pending | Linear interpolation of `j_s` in `|Delta|` produces `j_s=O(|Delta|)` below the first PRE node, violating the Usadel `O(|Delta|^2 q)` limit. The isolated stiffness candidate matches direct Matsubara below 0.1% in D1. | Regenerate a stiffness-based PRE, use a regular gauge-covariant pair flow and difference-before-divergence, then pass constitutive, exact-zero, mesh, SS, and photon regression tests. |
 | MAT-001 | P1 | Open | `D_eff = 1.581 cm^2 s^-1` is calibrated to the critical-current scale and then reused in transport predictions, creating potential circularity. | Parameter provenance is explicit and `D_eff` is independently constrained or propagated as an uncertainty interval. |
 | MAT-002 | P1 | Open | Cross-consistency among `D`, `sigma_n`, sheet resistance, `N(0)`, `T_c`, thickness, and `I_c` is not yet presented as one audit. | A single material table reports source, uncertainty, inference path, and consistency checks for every parameter. |
 | MAT-003 | P1 | Open | The phonon escape time is not yet constrained by data or a defensible material/interface range. | `tau_esc` is tied to evidence or treated in a sensitivity analysis. |
