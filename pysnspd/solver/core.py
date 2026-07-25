@@ -708,6 +708,11 @@ class TDGLSolver:
         emit_progress()
 
         while float(state["time"]) < options.solve_time:
+            remaining_time = float(options.solve_time) - float(state["time"])
+            if options.adaptive:
+                self.tentative_dt = min(float(self.tentative_dt), remaining_time)
+            else:
+                dt = min(float(dt), remaining_time)
             result = self.update(
                 state,
                 running_state,

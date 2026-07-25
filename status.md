@@ -397,6 +397,62 @@ capacitive mode is appreciably excited.
 maximum-1.5 ns photon commands, including shared circuit/thermal activation,
 early-stop policy, production numerical controls, and 10 snapshots/ps.
 
+## SS/photon finalization incident and functional smoke
+
+Status: finalization failure fixed; both current pipelines pass functional
+PRE-backed smoke runs; long production reruns remain pending.
+
+The 20 uA, 200 ps SS run
+`ss_phasecg_I20uA_200ps_circuitthermal_01` completed 2,625,762 accepted
+integration steps in 16:27:53 and then failed while constructing its final
+summary. `CircuitState` exposed `as_dict()`, but `CircuitParams` did not, even
+though both the SS and photon finalization paths called that method. The
+previous validation had exercised the CLI parsers and isolated circuit
+dynamics, but not the post-solve serialization path. Because the solver kept
+its trajectory in memory and the pipeline writes the durable SS artifacts only
+after the solver returns, that completed process cannot be recovered from the
+terminated Python process.
+
+`CircuitParams.as_dict()` is now part of the shared circuit contract. New
+regressions execute a tiny circuit-enabled stationary solve through summary
+construction and state metadata, and execute the coupled photon driver through
+all final NPZ/YAML outputs. This makes removal or drift of the serialization
+interface fail in seconds rather than after a production trajectory.
+
+The audit also found that the adaptive mesoscopic integrator could let its last
+step cross the requested solve horizon. That is negligible as a fraction of a
+200 ps SS run, but it is not acceptable inside pipeline 03: the mesoscopic
+state could advance beyond a coupling-chunk boundary while the circuit advanced
+by only the requested chunk. The final adaptive step is now capped by the
+remaining time, and a regression requires exact closure at a non-integral
+chunk horizon.
+
+Two real-data functional smokes reused the standard strict PRE on Geminga:
+
+- `smoke_ss_circuitthermal_finalize_v2_20260725` ran pipeline 02 at 20 uA with
+  Usadel-Poisson current, thermal and circuit dynamics active, adaptive
+  stepping, and a 0.003 ps horizon. It ended exactly at 0.003 ps and wrote the
+  seed, stationary state, history, snapshots, power diagnostics, plot, summary,
+  and manifest. The persisted circuit block contains all six parameters and
+  the final three-component state.
+- `smoke_photon_circuitthermal_finalize_v2_20260725` initialized pipeline 03
+  from that saved SS state, used 1.5 fs coupling chunks, applied a 0.8 eV,
+  10 nm photon at 0.003 ps, and ended at 0.006 ps. Its summary records
+  `stored_ss_circuit_state`, photon application, zero reconstructed photon
+  energy error, censored timing as expected for the deliberately microscopic
+  horizon, and all final state/history/snapshot/timing/manifest outputs.
+
+These smokes validate orchestration, shared-state inheritance, exact temporal
+splitting, photon-energy deposition, and final persistence. Their physical
+stationarity and detection diagnostics are intentionally not acceptance
+results because the horizons are only a few femtoseconds. The 200 ps SS and
+long photon trajectories are still required for scientific acceptance.
+
+Final validation on Geminga compiled the library, pipelines, plotting
+pipelines, and tests; all 12 entry points passed `--help`; the focused
+SS/circuit/photon closure set passed (`10 passed`); and the complete suite
+passed (`128 passed in 14.80s`).
+
 ## Frozen change inventory
 
 The production diff at the freeze contains nine plotting modules, with 83
@@ -440,6 +496,7 @@ debt; P3 is cleanup that can wait until the scientific path is stable.
 | --- | --- | --- | --- | --- |
 | NUM-001 | P0 | Implemented; validation pending | Detection latency, electrical/DE90/full-state recovery, censoring, persistence, plot annotation, and online termination now share one auditable contract; long production trajectories and sensitivity remain pending. | Production classifications remain stable under accepted threshold/tolerance and numerical refinements. |
 | NUM-002 | P0 | Open | Convergence is not yet demonstrated jointly for mesh, time step, thermal subcycling, thermal-domain size, and terminal length. | Refined runs change detection current by less than 2-3% and latency by less than 5%. |
+| RUN-001 | P0 | Closed | A 200 ps SS process lost its in-memory result after 16:27:53 because `CircuitParams.as_dict()` was first exercised during final summary construction; adaptive mesoscopic chunks could also overshoot their circuit boundary. | Closed by the shared serialization contract, exact final-step cap, unit/functional regressions, and PRE-backed SS/photon finalization smokes recorded above. |
 | CONS-001 | P0 | Open | Accumulated energy closure is not yet demonstrated; omitted or reduced terms such as `P_Delta` and `P_q` must be included or bounded. | Energy imbalance remains below 1-2%, with every omitted term quantified. |
 | CONS-002 | P1 | Open | Current-continuity and energy errors are not yet reported through the most violent part of the transient. | Time-resolved residuals are plotted and remain below declared tolerances. |
 | THERM-001 | P1 | Open | A true thermal steady state before photon injection has not yet been demonstrated for the publication cases. | Pre-injection thermal rates and residuals satisfy a documented stationary threshold. |

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from pysnspd.circuit.readout import CircuitParams, CircuitRuntimeConfig
 from pysnspd.solver.stationary import solve_stationary_pytdgl_like
 
 
@@ -72,6 +73,70 @@ def test_adapter_keeps_terminal_currents_in_amperes(small_strip_mesh_bundle, gtd
     assert result.summary["terminal_neumann_current_unit_A"] > 0.0
     assert result.summary["native_si_current_scale_A_m2"] > 0.0
     assert "native_si_boundary_currents_from_total_A" in result.summary
+
+
+def test_stationary_adapter_serializes_circuit_after_final_step(
+    small_strip_mesh_bundle,
+    gtdgl_material,
+    stationary_seed_factory,
+):
+    mesh, edge_data, ops = small_strip_mesh_bundle
+    seed = stationary_seed_factory(mesh, gtdgl_material)
+    result = solve_stationary_pytdgl_like(
+        mesh=mesh,
+        edge_data=edge_data,
+        seed=seed,
+        material=gtdgl_material,
+        ops=ops,
+        steps=2,
+        dt_s=1.0e-18,
+        target_current_A=0.0,
+        terminal_psi=None,
+        adaptive=False,
+        n_snapshots=2,
+        circuit_enabled=True,
+        circuit_params=CircuitParams(),
+        circuit_runtime_config=CircuitRuntimeConfig(start_time_s=0.0),
+    )
+
+    circuit = result.summary["circuit_runtime"]
+    assert circuit["enabled"] is True
+    assert circuit["params"]["R_load_ohm"] == 50.0
+    assert circuit["params"]["V_bias_V"] == 0.0
+    assert circuit["final_state"]["I_s_A"] == 0.0
+    state_circuit = result.state.metadata["circuit_runtime"]
+    assert state_circuit["params"] == circuit["params"]
+    assert state_circuit["final_state"] == circuit["final_state"]
+
+
+def test_adaptive_solver_stops_exactly_at_requested_chunk_boundary(
+    small_strip_mesh_bundle,
+    gtdgl_material,
+    stationary_seed_factory,
+):
+    mesh, edge_data, ops = small_strip_mesh_bundle
+    seed = stationary_seed_factory(mesh, gtdgl_material)
+    requested_time_s = 3.25e-18
+    result = solve_stationary_pytdgl_like(
+        mesh=mesh,
+        edge_data=edge_data,
+        seed=seed,
+        material=gtdgl_material,
+        ops=ops,
+        total_time_s=requested_time_s,
+        dt_s=1.0e-18,
+        target_current_A=0.0,
+        terminal_psi=None,
+        adaptive=True,
+        n_snapshots=2,
+    )
+
+    assert np.isclose(
+        result.summary["final_time_ps"],
+        requested_time_s / 1.0e-12,
+        rtol=1.0e-12,
+        atol=1.0e-18,
+    )
 
 
 def test_adapter_rejects_usadel_poisson_without_catalog(small_strip_mesh_bundle, gtdgl_material, stationary_seed_factory):

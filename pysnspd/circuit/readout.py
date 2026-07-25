@@ -1,8 +1,7 @@
 """Minimal readout-circuit model for pySNSPD photon transients.
 
-The circuit is deliberately small and SI-only.  It is used by
-``pipelines/03_photon_run_template.py`` and does not alter the existing SS
-pipeline.
+The circuit is deliberately small and SI-only.  It is shared by the SS and
+photon pipelines so both stages evolve and persist the same circuit contract.
 """
 
 from __future__ import annotations
@@ -32,6 +31,11 @@ class CircuitParams:
         if self.V_bias_V is not None and not np.isfinite(float(self.V_bias_V)):
             raise ValueError("V_bias_V must be finite when provided.")
         return self
+
+    def as_dict(self) -> dict[str, float | None]:
+        """Return a serialization-safe mapping shared by SS and photon outputs."""
+
+        return asdict(self)
 
 
 @dataclass(frozen=True)

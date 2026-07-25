@@ -30,6 +30,19 @@ def test_runtime_circuit_stays_fixed_before_shared_start():
     assert controller.state == controller.initial_state
 
 
+def test_circuit_params_are_serializable_for_ss_and_photon_summaries():
+    params = CircuitParams(V_bias_V=0.3)
+
+    assert params.as_dict() == {
+        "R_load_ohm": 50.0,
+        "R_bias_ohm": 1.0e4,
+        "L_bias_H": 1.0e-6,
+        "L_k_H": 10.0e-9,
+        "C_couple_F": 100.0e-12,
+        "V_bias_V": 0.3,
+    }
+
+
 def test_runtime_circuit_uses_only_post_start_fraction_of_crossing_step():
     controller = CircuitRuntimeController(
         I_ss_A=30.0e-6,
