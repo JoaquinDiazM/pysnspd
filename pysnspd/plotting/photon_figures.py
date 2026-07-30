@@ -540,6 +540,23 @@ def _phase_gradient_q_abs_m_inv(
     return q_abs
 
 
+def phase_gradient_q_abs_m_inv(
+    tri: mtri.Triangulation,
+    psi: np.ndarray,
+    *,
+    x_nm: np.ndarray,
+    y_nm: np.ndarray,
+) -> np.ndarray:
+    """Return the wrapped-phase least-squares superfluid momentum magnitude."""
+
+    return _phase_gradient_q_abs_m_inv(
+        tri,
+        psi,
+        x_nm=x_nm,
+        y_nm=y_nm,
+    )
+
+
 def _triangulation(mesh: Any) -> mtri.Triangulation:
     nodes = np.asarray(mesh.nodes, dtype=float)
     if nodes.ndim != 2 or nodes.shape[1] < 2:

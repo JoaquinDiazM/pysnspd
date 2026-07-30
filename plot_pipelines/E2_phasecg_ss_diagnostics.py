@@ -47,6 +47,17 @@ def parse_args() -> argparse.Namespace:
             "attempt-count estimate because this run format stores no step timings."
         ),
     )
+    parser.add_argument(
+        "--times-ps",
+        nargs="+",
+        type=float,
+        default=(0.0, 5.0, 10.0, 15.0, 20.0, 30.0, 50.0),
+        help=(
+            "Requested times for the snapshot-field atlas in ps. "
+            "The nearest stored snapshot is used for each requested time; "
+            "duplicate resolved snapshots are plotted only once."
+        ),
+    )
     parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     parser.add_argument(
         "--figures-subdir",
@@ -77,12 +88,14 @@ def main() -> int:
         dataset=dataset,
         output_dir=figures_dir,
         dpi=int(args.dpi),
+        requested_snapshot_times_ps=args.times_ps,
     )
     manifest_path = _write_manifest(
         run=run,
         figures_dir=figures_dir,
         saved=saved,
         dataset=dataset,
+        requested_times_ps=args.times_ps,
     )
 
     print("E2 phase-CG stationary-run diagnostics")
@@ -91,6 +104,12 @@ def main() -> int:
     print(f" raw_ss:         {run.raw_ss}")
     print(f" figures_dir:    {figures_dir}")
     print(f" center_probe:   {float(args.center_width_nm):.6g} nm")
+    resolved_times = _resolved_unique_times(dataset, args.times_ps)
+    print(
+        " snapshot_times: "
+        f"requested={', '.join(f'{float(t):g}' for t in args.times_ps)} ps; "
+        f"resolved={', '.join(f'{t:g}' for t in resolved_times)} ps"
+    )
     if args.wall_time_seconds is not None:
         print(
             " wall_time:      "
@@ -112,6 +131,7 @@ def _write_manifest(
     figures_dir: Path,
     saved: Mapping[str, Path],
     dataset: Mapping[str, Any],
+    requested_times_ps: list[float] | tuple[float, ...],
 ) -> Path:
     phase_converged = np.asarray(
         dataset.get("allmaras_phase_convergence_converged", []),
@@ -152,6 +172,11 @@ def _write_manifest(
         "raw_ss": str(run.raw_ss),
         "figures_dir": str(figures_dir),
         "figures": {key: str(path) for key, path in saved.items()},
+        "snapshot_selection": {
+            "requested_times_ps": [float(value) for value in requested_times_ps],
+            "resolved_times_ps": _resolved_unique_times(dataset, requested_times_ps),
+            "policy": "nearest stored snapshot; duplicate resolved indices omitted",
+        },
         "normalizations": {
             "current_density": "j / j_avg",
             "current_divergence": "xi * div(j_total) / j_avg",
@@ -221,6 +246,25 @@ def _attach_snapshot_power_diagnostics(dataset: dict[str, Any], raw_ss: Path) ->
         for key in requested:
             if key in stored.files:
                 dataset[key] = np.asarray(stored[key])
+
+
+def _resolved_unique_times(
+    dataset: Mapping[str, Any],
+    requested_times_ps: list[float] | tuple[float, ...],
+) -> list[float]:
+    stored = np.asarray(dataset.get("snapshot_t_ps", []), dtype=float).reshape(-1)
+    if stored.size == 0:
+        return []
+    resolved: list[float] = []
+    seen: set[int] = set()
+    for requested in requested_times_ps:
+        if not np.isfinite(float(requested)):
+            continue
+        index = int(np.nanargmin(np.abs(stored - float(requested))))
+        if index not in seen:
+            seen.add(index)
+            resolved.append(float(stored[index]))
+    return resolved
 
 
 def _last_finite(values: np.ndarray) -> float | None:

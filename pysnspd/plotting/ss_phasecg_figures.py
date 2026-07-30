@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 import matplotlib
 
@@ -23,6 +23,7 @@ def make_phasecg_ss_figures(
     dataset: Mapping[str, Any],
     output_dir: str | Path,
     dpi: int = THESIS_DPI,
+    requested_snapshot_times_ps: Sequence[float] | None = None,
 ) -> dict[str, Path]:
     """Create the final E2 physical and numerical figures from stored data."""
 
@@ -33,6 +34,7 @@ def make_phasecg_ss_figures(
             dataset,
             out / "E2_ss_snapshot_fields.pdf",
             dpi=dpi,
+            requested_times_ps=requested_snapshot_times_ps,
         ),
         "physical_evolution": plot_phasecg_physical_evolution(
             dataset,
@@ -71,17 +73,24 @@ def plot_phasecg_snapshot_fields(
     output_path: str | Path,
     *,
     dpi: int = THESIS_DPI,
+    requested_times_ps: Sequence[float] | None = None,
 ) -> Path:
-    """Plot six fundamental fields at every stored SS snapshot."""
+    """Plot six fundamental fields at selected stored SS snapshots."""
 
     output = _prepare_output(output_path)
-    times = np.asarray(dataset.get("snapshot_t_ps", []), dtype=float)
-    if times.size == 0:
+    stored_times = np.asarray(dataset.get("snapshot_t_ps", []), dtype=float)
+    if stored_times.size == 0:
         raise ValueError("No snapshot times are available for the E2 field figure.")
+    indices = _nearest_unique_snapshot_indices(stored_times, requested_times_ps)
+    times = stored_times[indices]
 
     tri = _triangulation(dataset)
-    delta_field = np.asarray(dataset["delta_snapshot_over_delta0"], dtype=float)
-    Te_field = np.asarray(dataset.get("Te_snapshot_K", np.zeros_like(delta_field)), dtype=float)
+    delta_field = np.asarray(dataset["delta_snapshot_over_delta0"], dtype=float)[indices]
+    Te_values = np.asarray(
+        dataset.get("Te_snapshot_K", np.zeros_like(np.asarray(dataset["delta_snapshot_over_delta0"]))),
+        dtype=float,
+    )
+    Te_field = Te_values[indices]
     Tc_K = _critical_temperature_K(dataset)
     finite_Te = Te_field[np.isfinite(Te_field)]
     Te_vmax = float(np.nanpercentile(finite_Te, 99.7)) if finite_Te.size else 1.0
@@ -97,7 +106,7 @@ def plot_phasecg_snapshot_fields(
             1.0,
         ),
         (
-            np.asarray(dataset["phi_snapshot_mV"], dtype=float),
+            np.asarray(dataset["phi_snapshot_mV"], dtype=float)[indices],
             r"$\phi$ [mV]",
             "coolwarm",
             True,
@@ -105,7 +114,7 @@ def plot_phasecg_snapshot_fields(
             None,
         ),
         (
-            np.asarray(dataset["qxi_snapshot"], dtype=float),
+            np.asarray(dataset["qxi_snapshot"], dtype=float)[indices],
             r"$|\mathbf{q}|\xi$",
             "magma",
             False,
@@ -121,7 +130,7 @@ def plot_phasecg_snapshot_fields(
             Te_vmax,
         ),
         (
-            np.asarray(dataset["js_snapshot_over_javg"], dtype=float),
+            np.asarray(dataset["js_snapshot_over_javg"], dtype=float)[indices],
             r"$|\mathbf{j}_s^{\mathrm{Us}}|/j_{\mathrm{avg}}$",
             "viridis",
             False,
@@ -129,7 +138,7 @@ def plot_phasecg_snapshot_fields(
             None,
         ),
         (
-            np.asarray(dataset["jn_snapshot_over_javg"], dtype=float),
+            np.asarray(dataset["jn_snapshot_over_javg"], dtype=float)[indices],
             r"$|\mathbf{j}_n|/j_{\mathrm{avg}}$",
             "plasma",
             False,
@@ -210,6 +219,31 @@ def plot_phasecg_snapshot_fields(
     fig.savefig(output, dpi=dpi)
     plt.close(fig)
     return output
+
+
+def _nearest_unique_snapshot_indices(
+    stored_times_ps: np.ndarray,
+    requested_times_ps: Sequence[float] | None,
+) -> np.ndarray:
+    stored = np.asarray(stored_times_ps, dtype=float).reshape(-1)
+    if stored.size == 0:
+        raise ValueError("No stored snapshot times are available.")
+    if requested_times_ps is None:
+        return np.arange(stored.size, dtype=np.int64)
+
+    requested = np.asarray(list(requested_times_ps), dtype=float).reshape(-1)
+    requested = requested[np.isfinite(requested)]
+    if requested.size == 0:
+        raise ValueError("At least one finite snapshot time must be requested.")
+
+    indices: list[int] = []
+    seen: set[int] = set()
+    for value in requested:
+        index = int(np.nanargmin(np.abs(stored - float(value))))
+        if index not in seen:
+            seen.add(index)
+            indices.append(index)
+    return np.asarray(indices, dtype=np.int64)
 
 
 def plot_phasecg_physical_evolution(

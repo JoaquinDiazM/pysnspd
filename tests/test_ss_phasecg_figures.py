@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import numpy as np
 
-from pysnspd.plotting.ss_phasecg_figures import make_phasecg_ss_figures
+from pysnspd.plotting.ss_phasecg_figures import (
+    _nearest_unique_snapshot_indices,
+    make_phasecg_ss_figures,
+)
 
 
 def test_make_phasecg_ss_figures(tmp_path):
@@ -75,3 +78,12 @@ def test_make_phasecg_ss_figures(tmp_path):
     for path in saved.values():
         assert path.exists()
         assert path.stat().st_size > 0
+
+
+def test_nearest_unique_snapshot_indices_omits_duplicate_matches():
+    indices = _nearest_unique_snapshot_indices(
+        np.array([0.0, 5.0, 10.0, 20.0]),
+        [0.1, 4.8, 5.2, 50.0],
+    )
+
+    np.testing.assert_array_equal(indices, np.array([0, 1, 3]))

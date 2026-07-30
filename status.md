@@ -1,10 +1,10 @@
 # pySNSPD publication status
 
-Last updated: 2026-07-25
+Last updated: 2026-07-30
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: Week 1 - detection/recovery acceptance and Usadel regularization diagnosis
+Current phase: Week 2 - stationarity, convergence protocol, and localized-artifact regularization
 
 Baseline branch: `main`
 
@@ -23,17 +23,43 @@ into a numerically defensible and experimentally comparable prediction of
 detection threshold and latency.
 
 The production tree on Geminga was frozen before the publication campaign in
-commit `23ea557`. The first post-baseline change reorganized the library
-without introducing a new physics model or running an expensive PRE, SS, or
-photon case. It removed pipeline-unreachable implementation, made package
-ownership explicit, and preserved the complete production-reachable call
-graph. Plotting was then unified under the thesis style in commit `618103c`.
-The baseline-freeze task is complete. The Week 1 latency/recovery contract is
-now implemented in the solver and photon plotting paths; production-scale
-200 ps SS and 1.5 ns photon runs remain the acceptance step. A read-only D1
-diagnostic has now confirmed a separate low-amplitude interpolation defect in
-the Usadel/Allmaras interface; its production correction is intentionally not
-part of this diagnostic change.
+commit `23ea557`; the baseline freeze, architecture cleanup, shared thesis
+style, and Week 1 latency/recovery contract are complete. Week 2 is now under
+way. The active work combines a numerical stationarity/convergence protocol
+with identification and removal of localized low-amplitude artifacts before
+the production threshold campaign is expanded.
+
+The SS solver now evolves the readout circuit together with the thermal state,
+so photon runs inherit a more faithful stationary circuit initial condition.
+Visual review of the completed 30 uA, 200 ps case shows almost no change in the
+stationary spatial fields or scalar response relative to the previous
+thermal-state baseline. This is encouraging, but it is not yet a quantitative
+equivalence or convergence claim.
+
+The low-amplitude diagnostic has isolated a constitutive interpolation error:
+the current table interface produces the wrong linear amplitude scaling below
+its first positive node, whereas the stiffness formulation recovers the
+quadratic Usadel limit and agrees closely with direct Matsubara evaluation.
+Diagnostic plotting was also extended so long SS archives can select only the
+nearest requested snapshots and a single photon run can be audited through
+circuit/thermal scalars and fields including dimensionless superfluid
+momentum.
+
+## Week 2 kickoff
+
+Status: in progress; stationarity and localized-artifact tasks have both
+advanced beyond initial scoping.
+
+- The circuit, thermal, condensate, current-continuity, and phase-convergence
+  histories can now be inspected together without rerunning the dynamics.
+- The isolated low-amplitude study demonstrates a credible numerical origin
+  for the notch-like structures and validates the candidate constitutive
+  correction before it is coupled back into the 2D solver.
+- SS and single-photon diagnostics now remain practical for runs with thousands
+  of stored times and record requested/resolved snapshot selections for audit.
+- Real-data post-processing completed successfully for the selected 200 ps SS
+  and 800 ps photon cases; visual QA passed and the complete suite reached
+  `131 passed`.
 
 ## Week 1 architecture cleanup record
 
@@ -116,71 +142,24 @@ Validation on Geminga:
 Status: defect confirmed; candidate constitutive correction validated in
 isolation; production implementation pending.
 
-The document `Regularizacion_Usadel_Allmaras_pySNSPD.pdf` was checked against
-the implementation frozen at `e173835`. Its central algebra is consistent with
-the dirty-limit Matsubara current used by pySNSPD. For fixed `T_e` and `q`,
-the anomalous Matsubara amplitude is linear in `|Delta|` as
-`|Delta| -> 0`; consequently,
-`j_s = kappa_0(T_e,q) |Delta|^2 q + O(|Delta|^4 q)`.
+For fixed temperature and superfluid momentum, dirty-limit Matsubara theory
+requires `j_s = O(|Delta|^2 q)` as the condensate vanishes. The current
+interface instead interpolates `j_s` linearly between zero and the first
+positive amplitude node, producing `O(|Delta|)` behavior precisely where the
+notch-like structures appear.
 
-The current PRE/runtime interface violates that limit in its first amplitude
-cell. `supercurrent_table.py` writes an exact zero-current row at
-`|Delta|=0`, while `usadel_current.py` interpolates `j_s` linearly in
-`|Delta|`. It therefore produces `j_s = O(|Delta|)` between zero and the
-first positive table node. The audit also confirmed the document's secondary
-observations: the current code takes the Usadel and GL divergences separately,
-uses a 1% amplitude threshold for harmonic phase continuation, and replaces
-some non-finite results by zero.
+Across nine temperature/momentum cases, the current interpolation has
+low-amplitude exponent `1`, while both direct Matsubara evaluation and the
+stiffness candidate have exponent `2`. The candidate remains within `0.1%`
+below the first table node. In the smooth-notch proxy it reduces a `117x`
+phase-source amplification to approximately unity and lowers the relative RMS
+error from about `20.8` to `1.8e-3`.
 
-Temporary pipeline
-`plot_pipelines/D1_usadel_low_amplitude_diagnostic.py` and helper module
-`pysnspd.analysis.usadel_low_amplitude_diagnostic` compare, without changing
-PRE generation or either solver:
-
-- the current trilinear interpolation of `j_s(T_e,|Delta|,q)`;
-- a diagnostic candidate that interpolates
-  `kappa=j_s/(|Delta|^2 q)` over `(T_e,|Delta|^2,|q|)` and uses the exact
-  zero-amplitude and zero-`q` anchors;
-- direct Matsubara evaluations at every plotted amplitude.
-
-The D1 run reused
-`pre_oe6_v3_ultra_L360nm_mesh4p0nm_smooth50_js81T101D121Q_phase200T31D41Q2400W_power200Tph_01`.
-Its strict current table has shape `(81, 101, 121)`, 500 Matsubara terms, and
-its first positive amplitude node is `|Delta|_1/Delta_0 = 0.01`. Nine cases
-cover `T_e = 0.9, 4.325, 7.3525 K` and
-`q/q_c = 0.2, 0.5, 0.8`.
-
-Measured evidence:
-
-- the current interpolation has median low-amplitude exponent
-  `d ln(j_s)/d ln(|Delta|) = 1.0`;
-- both the stiffness candidate and direct Matsubara reference give exponent
-  `2.0` in all nine cases;
-- when the amplitude reaches `10^-4 |Delta|_1`, the present interpolation's
-  maximum relative error is about `1.00e4`, as expected from the wrong power
-  law;
-- the stiffness candidate's worst relative error below the first PRE node is
-  `9.67e-4`;
-- in a smooth one-dimensional notch crossing the first PRE interval, the peak
-  proxy `|d(j_s^Us-j_s^GL)/dx|/|Delta|` is `117.15` times the direct reference
-  with the current interpolation, but `1.0018` times with the stiffness
-  candidate; relative RMS errors are `20.78` and `1.80e-3`, respectively.
-
-The generated figures and YAML summary live under
-`plots/<pre-run>/figures/D1_usadel_low_amplitude/` on Geminga. They use only
-line plots and the shared thesis style; no colormap is used. Final validation
-on Geminga compiled the library, all pipelines, plotting pipelines, and tests;
-all 12 entry points passed `--help`; and the complete suite passed
-(`124 passed in 18.03s`). No PRE, SS, photon, or long-running screen was
-executed, attached, or modified.
-
-Interpretation: the ambiguity is real, numerically large exactly where the
-condensate approaches zero, and is a credible mechanism for the small notches
-and kinks seen around current-cutoff regions. This is not yet proof that every
-2D notch has this single cause: the real-mesh pair-flow discretization,
-difference-before-divergence rule, exact-zero convention, and full coupled
-solver still require implementation and an old/new PRE plus SS/photon
-comparison. The D1 result is sufficient to justify that next change.
+This establishes a credible numerical mechanism, not yet a complete
+explanation of every 2D structure. The next closure step is to implement the
+regular gauge-covariant pair flow and difference-before-divergence policy,
+regenerate the constitutive data, and compare old/new SS and photon solutions
+under the same numerical controls.
 
 ## Baseline acceptance update
 
