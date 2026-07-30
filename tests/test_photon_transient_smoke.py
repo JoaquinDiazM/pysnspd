@@ -32,8 +32,10 @@ def test_coupled_transient_reaches_final_serialization(
 
     usadel_catalog = SimpleNamespace(
         js_A_m2=np.zeros((2, 2, 2), dtype=float),
+        js_stiffness_A_per_m_J2=np.ones((2, 2, 2), dtype=float) * 1.0e48,
         Te_axis_K=np.array([0.9, 1.0]),
         delta_axis_J=np.array([0.0, gtdgl_material.delta0_J]),
+        delta2_axis_J2=np.array([0.0, gtdgl_material.delta0_J**2]),
         q_axis_m_inv=np.array([0.0, 1.0e8]),
     )
     output_dir = tmp_path / "photon"

@@ -1,4 +1,4 @@
-"""Stationary adapter tests for the strict 3D Usadel-Poisson supercurrent law."""
+"""Stationary adapter tests for the strict 3D Usadel-Poisson stiffness law."""
 
 from __future__ import annotations
 
@@ -14,15 +14,16 @@ def _strict_3d_catalog(material) -> SimpleNamespace:
     q_axis = np.array([0.0, 1.0e7, 2.0e7, 4.0e7], dtype=float)
     delta_axis = np.array([0.0, 0.5, 0.9, 1.0], dtype=float) * material.delta0_J
     Te_axis = np.array([0.5, 0.9, 1.2], dtype=float)
-    js = np.empty((Te_axis.size, delta_axis.size, q_axis.size), dtype=float)
+    stiffness = np.empty((Te_axis.size, delta_axis.size, q_axis.size), dtype=float)
     for iT, T in enumerate(Te_axis):
         temp_factor = 1.0 - 0.05 * (T - 0.9)
-        for iD, delta in enumerate(delta_axis):
-            js[iT, iD, :] = temp_factor * (delta / material.delta0_J) * 1.0e3 * q_axis
+        for iD, _delta in enumerate(delta_axis):
+            stiffness[iT, iD, :] = temp_factor * 1.0e48 * (1.0 + 0.01 * q_axis / q_axis[-1])
     return SimpleNamespace(
-        js_A_m2=js,
+        js_stiffness_A_per_m_J2=stiffness,
         Te_axis_K=Te_axis,
         delta_axis_J=delta_axis,
+        delta2_axis_J2=delta_axis**2,
         q_axis_m_inv=q_axis,
     )
 
@@ -55,7 +56,7 @@ def test_usadel_poisson_law_accepts_strict_3d_catalog_table(
     assert result.summary["supercurrent_law"] == "usadel_poisson"
     assert result.summary["usadel_current_available"] is True
     assert "Te" in result.summary["usadel_current_backend"]
-    assert "delta" in result.summary["usadel_current_backend"]
+    assert "delta2" in result.summary["usadel_current_backend"]
     assert "q" in result.summary["usadel_current_backend"]
     assert "edge_js_usadel_snapshot_A_m2" in result.history
     assert result.history["edge_js_usadel_snapshot_A_m2"].shape == (2, ops.n_edges)
@@ -73,7 +74,7 @@ def test_usadel_poisson_law_rejects_legacy_delta_q_table(
     js = np.outer(delta_axis / gtdgl_material.delta0_J, 1.0e3 * q_axis)
     catalog = SimpleNamespace(js_A_m2=js, q_axis_m_inv=q_axis, delta_axis_J=delta_axis)
 
-    with pytest.raises(RuntimeError, match="3D|Te_axis|supercurrent table"):
+    with pytest.raises(RuntimeError, match="stiffness|table"):
         solve_stationary_pytdgl_like(
             mesh=mesh,
             edge_data=edge_data,

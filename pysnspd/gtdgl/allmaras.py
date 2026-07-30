@@ -20,8 +20,11 @@ from pysnspd.mesh.operators import (
     FVOperators,
     divergence_from_edge_scalar,
     edge_average,
-    edge_phase_gradient_from_psi,
     edge_scalar_to_node_vector_least_squares,
+)
+from pysnspd.gtdgl.usadel_current import (
+    gauge_invariant_edge_pair_flow_J2_m_inv,
+    gauge_invariant_edge_q_m_inv,
 )
 
 HBAR_J_S = 1.054571817e-34
@@ -54,7 +57,8 @@ class PhaseDriveConvergenceInfo:
     direct_node_count: int
     continued_node_count: int
     zero_amplitude_node_count: int
-    direct_amplitude_fraction: float
+    machine_tolerance_factor: float
+    direct_amplitude_threshold: float
     tolerance: float
     max_iterations: int
 
@@ -190,6 +194,9 @@ def compute_allmaras_appendix_b_diagnostic(
     terminal_node_mask: np.ndarray | None = None,
     blocked_edge_mask: np.ndarray | None = None,
     edge_js_usadel_A_m2: np.ndarray | None = None,
+    edge_js_gl_A_m2: np.ndarray | None = None,
+    edge_js_mismatch_A_m2: np.ndarray | None = None,
+    edge_link_variable: np.ndarray | None = None,
     phase_drive_continuation: PhaseDriveContinuationSolver | None = None,
 ) -> AllmarasDiagnosticFields:
     """Compute the Appendix-B current-divergence correction as a diagnostic.
@@ -203,30 +210,46 @@ def compute_allmaras_appendix_b_diagnostic(
     Te = np.asarray(Te_K, dtype=float).reshape(-1)
     coeff = allmaras_coefficients(psi_dimensionless=psi, material=material, Te_K=Te)
 
-    Q = edge_phase_gradient_from_psi(psi, ops)
+    Q = gauge_invariant_edge_q_m_inv(
+        psi_dimensionless=psi,
+        ops=ops,
+        edge_link_variable=edge_link_variable,
+    )
+    pair_flow = gauge_invariant_edge_pair_flow_J2_m_inv(
+        delta_node_J=psi * float(material.delta0_J),
+        ops=ops,
+        edge_link_variable=edge_link_variable,
+    )
     R_node_J = np.abs(psi) * float(material.delta0_J)
-    R_edge_J = edge_average(R_node_J, ops)
+    R_edge_J = np.sqrt(R_node_J[ops.edge_i] * R_node_J[ops.edge_j])
     Te_edge = np.maximum(edge_average(Te, ops), 1.0e-12)
 
     if edge_js_usadel_A_m2 is None:
-        # Analytic Allmaras fallback retained for diagnostics and tests.  The
-        # production usadel_poisson path supplies the Matsubara-table current
-        # through ``edge_js_usadel_A_m2``.
-        js_us = analytic_allmaras_usadel_current_edges(
-            edge_Q_m_inv=Q,
+        kappa_us = analytic_allmaras_usadel_stiffness_edges(
             edge_R_J=R_edge_J,
             edge_Te_K=Te_edge,
             material=material,
         )
+        js_us = kappa_us * pair_flow
     else:
         js_us = np.asarray(edge_js_usadel_A_m2, dtype=float).reshape(-1)
         if js_us.shape != (ops.n_edges,):
             raise ValueError(f"edge_js_usadel_A_m2 must have shape ({ops.n_edges},), got {js_us.shape}.")
-    js_gl = gl_supercurrent_edges(
-        edge_Q_m_inv=Q,
-        edge_R_J=R_edge_J,
-        material=material,
+    if edge_js_gl_A_m2 is None:
+        js_gl = gl_stiffness_A_per_m_J2(material=material) * pair_flow
+    else:
+        js_gl = np.asarray(edge_js_gl_A_m2, dtype=float).reshape(-1)
+        if js_gl.shape != (ops.n_edges,):
+            raise ValueError(f"edge_js_gl_A_m2 must have shape ({ops.n_edges},), got {js_gl.shape}.")
+    mismatch_edge = (
+        np.asarray(edge_js_mismatch_A_m2, dtype=float).reshape(-1)
+        if edge_js_mismatch_A_m2 is not None
+        else js_us - js_gl
     )
+    if mismatch_edge.shape != (ops.n_edges,):
+        raise ValueError(
+            f"edge_js_mismatch_A_m2 must have shape ({ops.n_edges},), got {mismatch_edge.shape}."
+        )
 
     if blocked_edge_mask is not None:
         mask = np.asarray(blocked_edge_mask, dtype=bool).reshape(-1)
@@ -235,14 +258,16 @@ def compute_allmaras_appendix_b_diagnostic(
         if np.any(mask):
             js_us = js_us.copy()
             js_gl = js_gl.copy()
+            mismatch_edge = mismatch_edge.copy()
             js_us[mask] = 0.0
             js_gl[mask] = 0.0
+            mismatch_edge[mask] = 0.0
 
     js_us_x, js_us_y = edge_scalar_to_node_vector_least_squares(js_us, ops)
     js_gl_x, js_gl_y = edge_scalar_to_node_vector_least_squares(js_gl, ops)
     div_us = divergence_from_edge_scalar(js_us, ops)
     div_gl = divergence_from_edge_scalar(js_gl, ops)
-    mismatch = div_us - div_gl
+    mismatch = divergence_from_edge_scalar(mismatch_edge, ops)
 
     terminal_mask = (
         np.zeros(ops.n_nodes, dtype=bool)
@@ -286,49 +311,35 @@ def compute_allmaras_appendix_b_diagnostic(
 
 
 
-def analytic_allmaras_usadel_current_edges(
+def analytic_allmaras_usadel_stiffness_edges(
     *,
-    edge_Q_m_inv: np.ndarray,
     edge_R_J: np.ndarray,
     edge_Te_K: np.ndarray,
     material: GTDGLMaterial,
 ) -> np.ndarray:
-    """Analytic Allmaras current closure on edges.
+    """Return the finite analytic Allmaras stiffness used by GL-only tests."""
 
-    This is kept as a fallback diagnostic.  The production path for the present
-    thesis uses the PRE Matsubara/Usadel table instead.
-    """
-
-    Q = np.asarray(edge_Q_m_inv, dtype=float)
     R = np.asarray(edge_R_J, dtype=float)
     Te = np.maximum(np.asarray(edge_Te_K, dtype=float), 1.0e-12)
+    scale = np.pi * float(material.sigma_n_S_m) / (2.0 * E_ABS_C)
+    out = np.empty(np.broadcast_shapes(R.shape, Te.shape), dtype=float)
+    Rb, Teb = np.broadcast_arrays(R, Te)
+    zero = Rb == 0.0
+    out[zero] = scale / (2.0 * K_B_J_K * Teb[zero])
+    nonzero = ~zero
+    out[nonzero] = scale * np.tanh(Rb[nonzero] / (2.0 * K_B_J_K * Teb[nonzero])) / Rb[nonzero]
+    if np.any(~np.isfinite(out)) or np.any(out <= 0.0):
+        raise FloatingPointError("Analytic Allmaras stiffness produced invalid values.")
+    return out
+
+
+def gl_stiffness_A_per_m_J2(*, material: GTDGLMaterial) -> float:
+    """Return the constant GL stiffness used in the Allmaras mismatch."""
+
     return (
         np.pi
         * float(material.sigma_n_S_m)
-        / (2.0 * E_ABS_C)
-        * R
-        * np.tanh(R / (2.0 * K_B_J_K * Te))
-        * Q
-    )
-
-
-def gl_supercurrent_edges(
-    *,
-    edge_Q_m_inv: np.ndarray,
-    edge_R_J: np.ndarray,
-    material: GTDGLMaterial,
-) -> np.ndarray:
-    """Auxiliary GL supercurrent used only in the Allmaras mismatch."""
-
-    Q = np.asarray(edge_Q_m_inv, dtype=float)
-    R = np.asarray(edge_R_J, dtype=float)
-    return (
-        np.pi
-        * float(material.sigma_n_S_m)
-        * R
-        * R
         / (4.0 * E_ABS_C * K_B_J_K * float(material.Tc_K))
-        * Q
     )
 
 
@@ -348,25 +359,24 @@ class PhaseDriveContinuationSolver:
     """
 
     graph_laplacian: sp.csr_matrix
-    direct_amplitude_fraction: float = 1.0e-2
+    machine_tolerance_factor: float = 64.0
     tolerance: float = 1.0e-3
     max_iterations: int = 64
-    zero_amplitude_fraction: float = 1.0e-12
 
     @classmethod
     def from_operators(
         cls,
         ops: FVOperators,
         *,
-        direct_amplitude_fraction: float = 1.0e-2,
+        machine_tolerance_factor: float = 64.0,
         tolerance: float = 1.0e-3,
         max_iterations: int = 64,
     ) -> "PhaseDriveContinuationSolver":
-        direct = float(direct_amplitude_fraction)
+        machine_factor = float(machine_tolerance_factor)
         tol = float(tolerance)
         iterations = int(max_iterations)
-        if not np.isfinite(direct) or not (0.0 < direct < 1.0):
-            raise ValueError("direct_amplitude_fraction must lie in (0, 1).")
+        if not np.isfinite(machine_factor) or not (16.0 <= machine_factor <= 256.0):
+            raise ValueError("machine_tolerance_factor must lie in [16, 256].")
         if not np.isfinite(tol) or tol <= 0.0:
             raise ValueError("phase-drive convergence tolerance must be positive and finite.")
         if iterations < 1:
@@ -394,7 +404,7 @@ class PhaseDriveContinuationSolver:
         graph_laplacian = (sp.diags(degree, format="csr") - adjacency).tocsr()
         return cls(
             graph_laplacian=graph_laplacian,
-            direct_amplitude_fraction=direct,
+            machine_tolerance_factor=machine_factor,
             tolerance=tol,
             max_iterations=iterations,
         )
@@ -419,15 +429,16 @@ class PhaseDriveContinuationSolver:
         if correction.shape != psi.shape:
             raise ValueError("correction_C_J2_m3_A must be scalar or node shaped.")
         if np.any(~np.isfinite(psi)) or np.any(~np.isfinite(mismatch)) or np.any(~np.isfinite(correction)):
-            raise ValueError("Phase-drive continuation inputs must be finite.")
+            raise FloatingPointError("Phase-drive continuation inputs must be finite.")
 
         delta0 = float(delta0_J)
         if not np.isfinite(delta0) or delta0 <= 0.0:
             raise ValueError("delta0_J must be positive and finite.")
 
         amplitude = np.abs(psi)
-        direct_mask = amplitude >= float(self.direct_amplitude_fraction)
-        zero_mask = amplitude <= float(self.zero_amplitude_fraction)
+        direct_threshold = float(self.machine_tolerance_factor) * np.sqrt(np.finfo(float).eps)
+        direct_mask = amplitude >= direct_threshold
+        zero_mask = amplitude == 0.0
         continuation_mask = ~direct_mask
 
         quotient = np.zeros(psi.shape, dtype=np.complex128)
@@ -441,7 +452,7 @@ class PhaseDriveContinuationSolver:
         # A bounded Tikhonov estimate gives CG a local, finite initial guess.
         # The converged harmonic extension is independent of this initialization.
         if np.any(continuation_mask):
-            threshold2 = float(self.direct_amplitude_fraction) ** 2
+            threshold2 = direct_threshold * direct_threshold
             quotient[continuation_mask] = (
                 mismatch[continuation_mask]
                 * psi[continuation_mask]
@@ -523,7 +534,7 @@ class PhaseDriveContinuationSolver:
 
         phase_drive = 1j * correction * quotient / (delta0 * delta0)
         if np.any(~np.isfinite(phase_drive)):
-            raise RuntimeError("Controlled Allmaras phase-drive continuation produced non-finite values.")
+            raise FloatingPointError("Controlled Allmaras phase-drive continuation produced non-finite values.")
 
         info = PhaseDriveConvergenceInfo(
             converged=bool(converged),
@@ -532,7 +543,8 @@ class PhaseDriveContinuationSolver:
             direct_node_count=int(np.count_nonzero(direct_mask)),
             continued_node_count=int(np.count_nonzero(continuation_mask)),
             zero_amplitude_node_count=int(np.count_nonzero(zero_mask)),
-            direct_amplitude_fraction=float(self.direct_amplitude_fraction),
+            machine_tolerance_factor=float(self.machine_tolerance_factor),
+            direct_amplitude_threshold=float(direct_threshold),
             tolerance=float(self.tolerance),
             max_iterations=int(self.max_iterations),
         )
@@ -548,7 +560,10 @@ def compute_allmaras_forcing_dimensionless(
     ops: FVOperators,
     length_scale_m: float,
     edge_js_usadel_A_m2: np.ndarray | None = None,
+    edge_js_gl_A_m2: np.ndarray | None = None,
+    edge_js_mismatch_A_m2: np.ndarray | None = None,
     blocked_edge_mask: np.ndarray | None = None,
+    edge_link_variable: np.ndarray | None = None,
     phase_drive_continuation: PhaseDriveContinuationSolver | None = None,
     r_epsilon_fraction: float = 1.0e-6,
 ) -> AllmarasForcingFields:
@@ -587,24 +602,50 @@ def compute_allmaras_forcing_dimensionless(
         raise ValueError("length_scale_m must be positive and finite.")
 
     coeff = allmaras_coefficients(psi_dimensionless=psi, material=material, Te_K=Te)
-    Q = edge_phase_gradient_from_psi(psi, ops)
+    if np.any(~np.isfinite(psi)) or np.any(~np.isfinite(lap)) or np.any(~np.isfinite(Te)):
+        raise FloatingPointError("Allmaras forcing inputs must be finite.")
+
+    Q = gauge_invariant_edge_q_m_inv(
+        psi_dimensionless=psi,
+        ops=ops,
+        edge_link_variable=edge_link_variable,
+    )
     Delta_J = psi * float(material.delta0_J)
     R_node_J = np.abs(Delta_J)
-    R_edge_J = edge_average(R_node_J, ops)
+    R_edge_J = np.sqrt(R_node_J[ops.edge_i] * R_node_J[ops.edge_j])
     Te_edge = np.maximum(edge_average(Te, ops), 1.0e-12)
+    pair_flow = gauge_invariant_edge_pair_flow_J2_m_inv(
+        delta_node_J=Delta_J,
+        ops=ops,
+        edge_link_variable=edge_link_variable,
+    )
 
     if edge_js_usadel_A_m2 is None:
-        js_us = analytic_allmaras_usadel_current_edges(
-            edge_Q_m_inv=Q,
+        kappa_us = analytic_allmaras_usadel_stiffness_edges(
             edge_R_J=R_edge_J,
             edge_Te_K=Te_edge,
             material=material,
         )
+        js_us = kappa_us * pair_flow
     else:
         js_us = np.asarray(edge_js_usadel_A_m2, dtype=float).reshape(-1)
         if js_us.shape != (ops.n_edges,):
             raise ValueError(f"edge_js_usadel_A_m2 must have shape ({ops.n_edges},), got {js_us.shape}.")
-    js_gl = gl_supercurrent_edges(edge_Q_m_inv=Q, edge_R_J=R_edge_J, material=material)
+    if edge_js_gl_A_m2 is None:
+        js_gl = gl_stiffness_A_per_m_J2(material=material) * pair_flow
+    else:
+        js_gl = np.asarray(edge_js_gl_A_m2, dtype=float).reshape(-1)
+        if js_gl.shape != (ops.n_edges,):
+            raise ValueError(f"edge_js_gl_A_m2 must have shape ({ops.n_edges},), got {js_gl.shape}.")
+    mismatch_edge = (
+        np.asarray(edge_js_mismatch_A_m2, dtype=float).reshape(-1)
+        if edge_js_mismatch_A_m2 is not None
+        else js_us - js_gl
+    )
+    if mismatch_edge.shape != (ops.n_edges,):
+        raise ValueError(
+            f"edge_js_mismatch_A_m2 must have shape ({ops.n_edges},), got {mismatch_edge.shape}."
+        )
 
     if blocked_edge_mask is not None:
         mask = np.asarray(blocked_edge_mask, dtype=bool).reshape(-1)
@@ -613,12 +654,14 @@ def compute_allmaras_forcing_dimensionless(
         if np.any(mask):
             js_us = js_us.copy()
             js_gl = js_gl.copy()
+            mismatch_edge = mismatch_edge.copy()
             js_us[mask] = 0.0
             js_gl[mask] = 0.0
+            mismatch_edge[mask] = 0.0
 
     div_us = divergence_from_edge_scalar(js_us, ops)
     div_gl = divergence_from_edge_scalar(js_gl, ops)
-    mismatch = div_us - div_gl
+    mismatch = divergence_from_edge_scalar(mismatch_edge, ops)
 
     diffusion = (coeff.xi_mod2_m2 / (L0 * L0)) * lap
 
@@ -638,7 +681,16 @@ def compute_allmaras_forcing_dimensionless(
 
     forcing = diffusion + reaction + phase_drive
     forcing = np.asarray(forcing, dtype=np.complex128)
-    forcing[~np.isfinite(forcing)] = 0.0
+    if (
+        np.any(~np.isfinite(js_us))
+        or np.any(~np.isfinite(js_gl))
+        or np.any(~np.isfinite(mismatch))
+        or np.any(~np.isfinite(diffusion))
+        or np.any(~np.isfinite(reaction))
+        or np.any(~np.isfinite(phase_drive))
+        or np.any(~np.isfinite(forcing))
+    ):
+        raise FloatingPointError("Allmaras forcing contains non-finite values; reject the step.")
 
     return AllmarasForcingFields(
         coefficients=coeff,

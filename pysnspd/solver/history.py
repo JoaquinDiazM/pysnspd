@@ -260,6 +260,8 @@ def _build_history(
             terminal_node_mask=terminal_site_mask,
             blocked_edge_mask=blocked_edge_mask,
             edge_js_usadel_A_m2=(udiag.edge_js_usadel_A_m2 if udiag.available else None),
+            edge_js_gl_A_m2=(udiag.edge_js_gl_A_m2 if udiag.available else None),
+            edge_js_mismatch_A_m2=(udiag.edge_js_mismatch_A_m2 if udiag.available else None),
             phase_drive_continuation=phase_drive_continuation,
         )
         current_frames.append(c)

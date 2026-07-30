@@ -11,7 +11,7 @@ from pysnspd.gtdgl.allmaras import (
     compute_allmaras_forcing_dimensionless,
 )
 
-ALLMARAS_UPDATE_BACKEND = "appendix_b_normalized_phase_drive_harmonic_continuation_v2"
+ALLMARAS_UPDATE_BACKEND = "appendix_b_regular_edge_stiffness_phase_drive_v3"
 
 
 def test_normalized_phase_drive_matches_exact_direct_formula(small_strip_mesh_bundle, gtdgl_material):
@@ -38,11 +38,11 @@ def test_low_amplitude_phase_drive_is_continued_to_convergence(small_strip_mesh_
     mesh, _, ops = small_strip_mesh_bundle
     psi = np.ones(mesh.n_nodes, dtype=np.complex128)
     low_node = mesh.n_nodes // 2
-    psi[low_node] = 1.0e-4
+    psi[low_node] = 1.0e-8
     delta0 = float(gtdgl_material.delta0_J)
     continuation = PhaseDriveContinuationSolver.from_operators(
         ops,
-        direct_amplitude_fraction=1.0e-2,
+        machine_tolerance_factor=64.0,
         tolerance=1.0e-8,
         max_iterations=24,
     )
@@ -82,6 +82,38 @@ def test_zero_amplitude_node_is_inside_continuation_domain(small_strip_mesh_bund
     assert info.continued_node_count == 1
     assert info.zero_amplitude_node_count == 1
     assert np.isclose(drive[zero_node], 1j, rtol=1.0e-6, atol=1.0e-6)
+
+
+@pytest.mark.parametrize("machine_factor", [16.0, 64.0, 256.0])
+def test_machine_tolerance_sweep_has_finite_zero_amplitude_limit(
+    machine_factor,
+    small_strip_mesh_bundle,
+    gtdgl_material,
+):
+    mesh, _, ops = small_strip_mesh_bundle
+    psi = np.ones(mesh.n_nodes, dtype=np.complex128)
+    zero_node = mesh.n_nodes // 2
+    psi[zero_node] = 0.0
+    delta0 = float(gtdgl_material.delta0_J)
+    continuation = PhaseDriveContinuationSolver.from_operators(
+        ops,
+        machine_tolerance_factor=machine_factor,
+        tolerance=1.0e-8,
+        max_iterations=24,
+    )
+
+    drive, info = continuation.solve(
+        psi_dimensionless=psi,
+        mismatch_divergence_A_m3=np.ones(mesh.n_nodes),
+        correction_C_J2_m3_A=np.full(mesh.n_nodes, delta0 * delta0),
+        delta0_J=delta0,
+    )
+
+    assert info.direct_amplitude_threshold == pytest.approx(
+        machine_factor * np.sqrt(np.finfo(float).eps)
+    )
+    assert np.all(np.isfinite(drive))
+    assert drive[zero_node] == pytest.approx(1j, rel=1.0e-6, abs=1.0e-6)
 
 
 def test_phase_drive_refuses_unconverged_harmonic_extension(small_strip_mesh_bundle, gtdgl_material):

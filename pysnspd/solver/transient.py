@@ -50,7 +50,7 @@ class CoupledTransientConfig:
     terminal_healing_xi: float | None = None
     terminal_healing_fraction: float = 0.95
     supercurrent_law: str = "usadel_poisson"
-    allmaras_phase_direct_amplitude_fraction: float = 1.0e-2
+    allmaras_phase_machine_tolerance_factor: float = 64.0
     allmaras_phase_convergence_tol: float = 1.0e-3
     allmaras_phase_convergence_max_iterations: int = 64
     early_stop_mode: str = "recovery"
@@ -66,8 +66,8 @@ class CoupledTransientConfig:
                 raise ValueError(f"{key} must be positive and finite.")
         if int(self.n_snapshots) <= 0:
             raise ValueError("n_snapshots must be positive.")
-        if not (0.0 < float(self.allmaras_phase_direct_amplitude_fraction) < 1.0):
-            raise ValueError("allmaras_phase_direct_amplitude_fraction must lie in (0, 1).")
+        if not (16.0 <= float(self.allmaras_phase_machine_tolerance_factor) <= 256.0):
+            raise ValueError("allmaras_phase_machine_tolerance_factor must lie in [16, 256].")
         if float(self.allmaras_phase_convergence_tol) <= 0.0:
             raise ValueError("allmaras_phase_convergence_tol must be positive.")
         if int(self.allmaras_phase_convergence_max_iterations) < 1:
@@ -246,7 +246,9 @@ def run_coupled_transient(
                 stationarity_eta=1.0e-5,
                 convergence_min_steps=500,
                 stop_on_convergence=False,
-                allmaras_phase_direct_amplitude_fraction=float(cfg.allmaras_phase_direct_amplitude_fraction),
+                allmaras_phase_machine_tolerance_factor=float(
+                    cfg.allmaras_phase_machine_tolerance_factor
+                ),
                 allmaras_phase_convergence_tol=float(cfg.allmaras_phase_convergence_tol),
                 allmaras_phase_convergence_max_iterations=int(cfg.allmaras_phase_convergence_max_iterations),
                 thermal_enabled=bool(cfg.thermal_enabled and power_table_npz is not None),

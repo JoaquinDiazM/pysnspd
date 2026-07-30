@@ -58,3 +58,7 @@ def test_supercurrent_table_parallel_matches_serial():
     assert parallel.metadata["workers"] == 2
     assert parallel.metadata["parallel_backend"] == "process"
     assert np.allclose(parallel.js_T_delta_q_A_m2, serial.js_T_delta_q_A_m2)
+    assert np.allclose(
+        parallel.js_stiffness_T_delta2_q_A_per_m_J2,
+        serial.js_stiffness_T_delta2_q_A_per_m_J2,
+    )

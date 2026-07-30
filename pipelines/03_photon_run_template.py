@@ -82,7 +82,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--thermal-max-step-K", type=float, default=0.20)
     parser.add_argument("--thermal-max-substeps", type=int, default=32)
 
-    parser.add_argument("--allmaras-direct-amplitude-fraction", type=float, default=2.0e-2)
+    parser.add_argument("--allmaras-machine-tolerance-factor", type=float, default=64.0)
     parser.add_argument("--allmaras-convergence-tol", type=float, default=3.0e-3)
     parser.add_argument("--allmaras-convergence-max-iterations", type=int, default=32)
 
@@ -239,7 +239,9 @@ def main() -> int:
         terminal_healing_xi=args.terminal_healing_xi,
         terminal_healing_fraction=float(args.terminal_healing_fraction),
         supercurrent_law="usadel_poisson",
-        allmaras_phase_direct_amplitude_fraction=float(args.allmaras_direct_amplitude_fraction),
+        allmaras_phase_machine_tolerance_factor=float(
+            args.allmaras_machine_tolerance_factor
+        ),
         allmaras_phase_convergence_tol=float(args.allmaras_convergence_tol),
         allmaras_phase_convergence_max_iterations=int(args.allmaras_convergence_max_iterations),
         early_stop_mode=str(args.early_stop_mode),

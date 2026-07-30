@@ -58,6 +58,52 @@ def test_adaptive_euler_records_retry_shrink_diagnostics():
     assert solver.last_adaptive_rejected_attempts == 1
 
 
+def test_nonfinite_allmaras_forcing_rejects_and_retries_step():
+    solver = TDGLSolver.__new__(TDGLSolver)
+    solver.options = SimpleNamespace(
+        adaptive=True,
+        max_solve_retries=3,
+        adaptive_time_step_multiplier=0.5,
+    )
+    solver.operators = SimpleNamespace(psi_laplacian=object())
+    solver.device = SimpleNamespace(layer=SimpleNamespace(gamma=0.0, u=1.0))
+    solver.terminal_psi_value = None
+    solver.normal_boundary_index = np.array([], dtype=np.int64)
+    solver.apply_terminal_psi = lambda psi: psi
+    forcing_calls = []
+
+    def forcing_callback(psi, _laplacian):
+        forcing_calls.append(1)
+        if len(forcing_calls) == 1:
+            return np.full(np.asarray(psi).shape, np.nan + 0.0j)
+        return np.zeros(np.asarray(psi).shape, dtype=np.complex128)
+
+    forcing_callback.last_convergence_diagnostics = {}
+    solver.allmaras_forcing_callback = forcing_callback
+
+    def fake_solve_for_psi_squared(**kwargs):
+        psi = np.asarray(kwargs["psi"], dtype=np.complex128)
+        return psi, np.abs(psi) ** 2
+
+    solver.solve_for_psi_squared = fake_solve_for_psi_squared
+    psi0 = np.array([1.0 + 0.0j, 0.5 + 0.1j], dtype=np.complex128)
+
+    psi1, _, dt = TDGLSolver.adaptive_euler_step(
+        solver,
+        step=2,
+        psi=psi0,
+        abs_sq_psi=np.abs(psi0) ** 2,
+        mu=np.zeros(psi0.size),
+        epsilon=np.ones(psi0.size),
+        dt=1.0,
+    )
+
+    assert np.array_equal(psi1, psi0)
+    assert len(forcing_calls) == 2
+    assert dt == 0.5
+    assert solver.last_adaptive_rejected_attempts == 1
+
+
 def test_adaptive_timestep_plot_smoke(tmp_path):
     t_s = np.linspace(0.0, 2.0e-12, 5)
     history = {

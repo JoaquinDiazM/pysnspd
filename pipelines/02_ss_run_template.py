@@ -450,22 +450,12 @@ def parse_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--ss-supercurrent-law",
-        choices=("auto", "gl", "usadel-poisson"),
-        default="usadel-poisson",
-        help=(
-            "Default is strict usadel-poisson. SS refuses legacy 1D/2D current tables; "
-            "PRE must provide js_A_m2[Te,delta,q]."
-        ),
-    )
-
-    parser.add_argument(
-        "--ss-allmaras-direct-amplitude-fraction",
+        "--ss-allmaras-machine-tolerance-factor",
         type=float,
-        default=2.0e-2,
+        default=64.0,
         help=(
-            "Evaluate the normalized Allmaras phase quotient directly above this |Delta|/Delta0. "
-            "Below it, use controlled harmonic continuation on the FV graph."
+            "Multiplier of sqrt(machine epsilon) that defines the harmonic-continuation "
+            "threshold; the audited range is 16 through 256."
         ),
     )
     parser.add_argument("--ss-allmaras-convergence-tol", type=float, default=3.0e-3)
@@ -620,7 +610,6 @@ def _run_single_current_case(
     base_usadel_catalog = load_usadel_catalog_npz(usadel_path)
     usadel_catalog = attach_usadel_supercurrent_table_from_npz(base_usadel_catalog, usadel_path)
     supercurrent_law, supercurrent_policy = _resolve_supercurrent_law(
-        requested=args.ss_supercurrent_law,
         strict_table_summary=strict_table_summary,
     )
 
@@ -753,8 +742,8 @@ def _run_single_current_case(
                 continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
                 recovery_min_xi=float(args.ss_recovery_min_xi),
                 recovery_max_xi=float(args.ss_recovery_max_xi),
-                allmaras_phase_direct_amplitude_fraction=float(
-                    args.ss_allmaras_direct_amplitude_fraction
+                allmaras_phase_machine_tolerance_factor=float(
+                    args.ss_allmaras_machine_tolerance_factor
                 ),
                 allmaras_phase_convergence_tol=float(args.ss_allmaras_convergence_tol),
                 allmaras_phase_convergence_max_iterations=int(
@@ -1239,21 +1228,15 @@ def _print_single_case_report(
     print("Status: OK")
 
 
-def _resolve_supercurrent_law(*, requested: str, strict_table_summary: dict[str, Any]) -> tuple[str, dict[str, Any]]:
-    requested_norm = requested.strip().lower().replace("_", "-")
-    if requested_norm == "auto":
-        requested_norm = "usadel-poisson"
-    if requested_norm != "usadel-poisson":
-        raise RuntimeError(
-            "This SS pipeline is configured to require the strict PRE table "
-            "js_A_m2[Te,delta,q].  Use a separate legacy/debug script for GL-only tests."
-        )
+def _resolve_supercurrent_law(*, strict_table_summary: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     return "usadel_poisson", {
-        "requested": requested,
         "resolved": "usadel_poisson",
-        "has_strict_3d_table": True,
+        "has_strict_stiffness_table": True,
         "strict_table": strict_table_summary,
-        "reason": "SS requires the strict PRE Matsubara Usadel table js_A_m2[Te,delta,q].",
+        "reason": (
+            "SS requires the PRE Matsubara stiffness table "
+            "js_stiffness_A_per_m_J2[Te,delta2,q]."
+        ),
     }
 
 

@@ -5,7 +5,7 @@ and photon runs:
 
 1. the 2D nanowire mesh and boundary edge table;
 2. the dirty-limit Usadel/DOS catalogue;
-3. a Matsubara Usadel supercurrent-density table saved into the same NPZ;
+3. Matsubara Usadel stiffness and current-density tables saved into the same NPZ;
 4. the superconducting phase-space catalogue used by the kinetic layer;
 5. the projected power/energy/transport catalogue used by the OE6 thermal layer.
 
@@ -103,36 +103,36 @@ def parse_args() -> argparse.Namespace:
         ),
     )
 
-    # Strict 3D Usadel supercurrent table for SS.
+    # Strict 3D Usadel stiffness table for temporal runs.
     parser.add_argument(
-        "--js-table-n-Te",
+        "--stiffness-n-Te",
         type=int,
         default=3,
-        help="Number of electronic-temperature points for js_A_m2[Te,delta,q]. Use 1 for a cheap smoke PRE-run.",
+        help="Number of electronic-temperature points for kappa[Te,delta2,q].",
     )
     parser.add_argument(
-        "--js-table-Te-min-K",
+        "--stiffness-Te-min-K",
         type=float,
         default=None,
-        help="Minimum Te for the 3D Usadel supercurrent table. Defaults to bias T.",
+        help="Minimum Te for the 3D Usadel stiffness table. Defaults to bias T.",
     )
     parser.add_argument(
-        "--js-table-Te-max-K",
+        "--stiffness-Te-max-K",
         type=float,
         default=None,
-        help="Maximum Te for the 3D Usadel supercurrent table. Defaults near Tc when n_Te > 1.",
+        help="Maximum Te for the 3D Usadel stiffness table. Defaults near Tc when n_Te > 1.",
     )
     parser.add_argument(
-        "--js-table-n-delta",
+        "--stiffness-n-delta",
         type=int,
         default=None,
-        help="Number of |Delta| points for the strict current table. Defaults to catalogs.dos.n_delta.",
+        help="Number of |Delta|^2 points for the stiffness table. Defaults to catalogs.dos.n_delta.",
     )
     parser.add_argument(
-        "--js-table-n-q",
+        "--stiffness-n-q",
         type=int,
         default=None,
-        help="Number of q points for the strict current table. Defaults to catalogs.dos.n_q.",
+        help="Number of |q| points for the stiffness table. Defaults to catalogs.dos.n_q.",
     )
 
     # Phase space / OE4.
@@ -224,16 +224,16 @@ def main() -> int:
     )
     usadel_npz = save_usadel_catalog_npz(usadel_catalog, raw_pre / "usadel_dos_catalog.npz")
 
-    js_n_delta = int(args.js_table_n_delta or usadel_catalog.delta_values_J.size)
-    js_n_q = int(args.js_table_n_q or usadel_catalog.q_values_m_inv.size)
+    js_n_delta = int(args.stiffness_n_delta or usadel_catalog.delta_values_J.size)
+    js_n_q = int(args.stiffness_n_q or usadel_catalog.q_values_m_inv.size)
     js_delta_axis = np.linspace(0.0, float(np.max(usadel_catalog.delta_values_J)), js_n_delta)
     js_q_axis = np.linspace(0.0, float(np.max(usadel_catalog.q_values_m_inv)), js_n_q)
     js_Te_axis = temperature_axis_from_request(
         T_bias_K=float(usadel_catalog.metadata["T_bias_K"]),
         Tc_K=float(usadel_catalog.metadata["Tc_K"]),
-        n_Te=int(args.js_table_n_Te),
-        Te_min_K=args.js_table_Te_min_K,
-        Te_max_K=args.js_table_Te_max_K,
+        n_Te=int(args.stiffness_n_Te),
+        Te_min_K=args.stiffness_Te_min_K,
+        Te_max_K=args.stiffness_Te_max_K,
     )
     js_table = build_matsubara_supercurrent_table_3d(
         Te_axis_K=js_Te_axis,
@@ -258,11 +258,12 @@ def main() -> int:
     }
     usadel_summary["supercurrent_table"] = {
         "stored_in": str(usadel_npz),
-        "table_key": "js_A_m2",
-        "layout": "Te,delta,q",
-        "axis_keys": ["Te_axis_K", "delta_axis_J", "q_axis_m_inv"],
-        "source": "Matsubara Usadel local-current table over q, |Delta| and Te.",
-        "purpose": "Required by SS usadel_poisson; legacy 1D j_s(q) tables are rejected.",
+        "runtime_table_key": "js_stiffness_A_per_m_J2",
+        "diagnostic_current_key": "js_A_m2",
+        "layout": "Te,delta2,q",
+        "axis_keys": ["Te_axis_K", "delta2_axis_J2", "q_axis_m_inv"],
+        "source": "Matsubara Usadel stiffness over |q|, |Delta|^2 and Te.",
+        "purpose": "Required by SS and photon runs; current-only PRE catalogues are rejected.",
         **js_summary,
     }
     usadel_summary_path = raw_pre / "usadel_dos_summary.yaml"
@@ -278,7 +279,7 @@ def main() -> int:
             },
         },
     )
-    progress.advance("Usadel catalogue and strict 3D Matsubara current table ready")
+    progress.advance("Usadel catalogue and strict 3D Matsubara stiffness table ready")
 
     outputs: dict[str, str] = {
         "mesh_npz": str(mesh_npz),
@@ -408,7 +409,7 @@ def main() -> int:
         stage="pre",
         extra={
             "pipeline": "01_prerun_template.py",
-            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara current table, parallel phase-space catalogue, and projected power/energy/transport catalogue.",
+            "purpose": "Official PRE-run: pyTDGL-style mesh, parallel dirty-limit Usadel, strict 3D Matsubara stiffness/current resources, parallel phase-space catalogue, and projected power/energy/transport catalogue.",
             "workers": int(workers),
             "parallel_backend": str(parallel_backend),
             "allmaras_diffusion_factor": float(allmaras_diffusion_factor),

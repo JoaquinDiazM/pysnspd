@@ -96,7 +96,7 @@ def solve_stationary_pytdgl_like(
     continuity_poisson_tol: float = 1.0e-9,
     recovery_min_xi: float = 1.5,
     recovery_max_xi: float = 4.0,
-    allmaras_phase_direct_amplitude_fraction: float = 1.0e-2,
+    allmaras_phase_machine_tolerance_factor: float = 64.0,
     allmaras_phase_convergence_tol: float = 1.0e-3,
     allmaras_phase_convergence_max_iterations: int = 64,
     thermal_enabled: bool = False,
@@ -323,7 +323,7 @@ def solve_stationary_pytdgl_like(
 
     phase_drive_continuation = PhaseDriveContinuationSolver.from_operators(
         ops,
-        direct_amplitude_fraction=float(allmaras_phase_direct_amplitude_fraction),
+        machine_tolerance_factor=float(allmaras_phase_machine_tolerance_factor),
         tolerance=float(allmaras_phase_convergence_tol),
         max_iterations=int(allmaras_phase_convergence_max_iterations),
     )
@@ -608,10 +608,13 @@ def solve_stationary_pytdgl_like(
         "pytdgl_u": u,
         "pytdgl_gamma": gamma_report,
         "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
-        "allmaras_update_backend": "appendix_b_normalized_phase_drive_harmonic_continuation_v2",
+        "allmaras_update_backend": "appendix_b_regular_edge_stiffness_phase_drive_v3",
         "allmaras_phase_continuation": {
             "method": "jacobi_preconditioned_cg_harmonic_continuation",
-            "direct_amplitude_fraction": float(allmaras_phase_direct_amplitude_fraction),
+            "machine_tolerance_factor": float(allmaras_phase_machine_tolerance_factor),
+            "direct_amplitude_threshold": float(
+                allmaras_phase_machine_tolerance_factor * np.sqrt(np.finfo(float).eps)
+            ),
             "tolerance": float(allmaras_phase_convergence_tol),
             "max_iterations": int(allmaras_phase_convergence_max_iterations),
             "final_converged": bool(history.get("allmaras_phase_convergence_converged", np.array([False]))[-1]),

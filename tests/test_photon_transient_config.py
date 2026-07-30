@@ -31,7 +31,8 @@ def test_photon_transient_defaults_to_electrical_recovery_stop():
 @pytest.mark.parametrize(
     ("key", "value"),
     [
-        ("allmaras_phase_direct_amplitude_fraction", 0.0),
+        ("allmaras_phase_machine_tolerance_factor", 8.0),
+        ("allmaras_phase_machine_tolerance_factor", 512.0),
         ("allmaras_phase_convergence_tol", 0.0),
         ("allmaras_phase_convergence_max_iterations", 0),
         ("early_stop_mode", "invalid"),

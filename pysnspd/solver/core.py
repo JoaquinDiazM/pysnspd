@@ -317,52 +317,70 @@ class TDGLSolver:
         """Updates the order parameter and time step in an adaptive Euler step."""
 
         options = self.options
-        forcing_dimensionless = None
-        if self.allmaras_forcing_callback is not None:
-            forcing_dimensionless = self.allmaras_forcing_callback(
-                np.asarray(psi, dtype=np.complex128),
-                self.operators.psi_laplacian,
-            )
-            forcing_dimensionless = np.asarray(forcing_dimensionless, dtype=np.complex128)
-            if forcing_dimensionless.shape != psi.shape:
-                raise ValueError(
-                    "allmaras_forcing_callback returned shape "
-                    f"{forcing_dimensionless.shape}, expected {psi.shape}."
-                )
-            self.last_allmaras_forcing_dimensionless = forcing_dimensionless.copy()
-            self.last_allmaras_convergence_diagnostics = dict(
-                getattr(self.allmaras_forcing_callback, "last_convergence_diagnostics", {}) or {}
-            )
-
-        kwargs = dict(
-            psi=psi,
-            abs_sq_psi=abs_sq_psi,
-            mu=mu,
-            epsilon=epsilon,
-            gamma=self.device.layer.gamma,
-            u=self.device.layer.u,
-            dt=dt,
-            psi_laplacian=self.operators.psi_laplacian,
-            forcing_dimensionless=forcing_dimensionless,
-        )
         self.last_adaptive_dt_attempt = float(dt)
         self.last_adaptive_dt_accepted = float(dt)
         self.last_adaptive_retries = 0
         self.last_adaptive_rejected_attempts = 0
 
-        result = self.solve_for_psi_squared(**kwargs)
+        def attempt(current_dt: float):
+            forcing_dimensionless = None
+            if self.allmaras_forcing_callback is not None:
+                forcing_dimensionless = self.allmaras_forcing_callback(
+                    np.asarray(psi, dtype=np.complex128),
+                    self.operators.psi_laplacian,
+                )
+                forcing_dimensionless = np.asarray(forcing_dimensionless, dtype=np.complex128)
+                if forcing_dimensionless.shape != psi.shape:
+                    raise ValueError(
+                        "allmaras_forcing_callback returned shape "
+                        f"{forcing_dimensionless.shape}, expected {psi.shape}."
+                    )
+                if np.any(~np.isfinite(forcing_dimensionless)):
+                    raise FloatingPointError(
+                        "allmaras_forcing_callback returned non-finite values"
+                    )
+                self.last_allmaras_forcing_dimensionless = forcing_dimensionless.copy()
+                self.last_allmaras_convergence_diagnostics = dict(
+                    getattr(self.allmaras_forcing_callback, "last_convergence_diagnostics", {}) or {}
+                )
+            return self.solve_for_psi_squared(
+                psi=psi,
+                abs_sq_psi=abs_sq_psi,
+                mu=mu,
+                epsilon=epsilon,
+                gamma=self.device.layer.gamma,
+                u=self.device.layer.u,
+                dt=current_dt,
+                psi_laplacian=self.operators.psi_laplacian,
+                forcing_dimensionless=forcing_dimensionless,
+            )
+
+        nonfinite_error: FloatingPointError | None = None
+        try:
+            result = attempt(float(dt))
+        except FloatingPointError as exc:
+            result = None
+            nonfinite_error = exc
         retries_used = 0
         for retries in itertools.count():
             if result is not None:
                 retries_used = int(retries)
                 break
-            if not options.adaptive or retries > options.max_solve_retries:
-                raise RuntimeError(
+            if not options.adaptive or retries >= options.max_solve_retries:
+                error = RuntimeError(
                     f"Solver failed to converge in {options.max_solve_retries} retries "
                     f"at step {step} with dt = {dt:.2e}. Try using a smaller dt_init."
                 )
-            kwargs["dt"] = dt = dt * options.adaptive_time_step_multiplier
-            result = self.solve_for_psi_squared(**kwargs)
+                if nonfinite_error is not None:
+                    raise error from nonfinite_error
+                raise error
+            dt = dt * options.adaptive_time_step_multiplier
+            try:
+                result = attempt(float(dt))
+                nonfinite_error = None
+            except FloatingPointError as exc:
+                result = None
+                nonfinite_error = exc
 
         self.last_adaptive_dt_accepted = float(dt)
         self.last_adaptive_retries = int(retries_used)
@@ -401,7 +419,7 @@ class TDGLSolver:
                     f"{supercurrent.shape}, expected {gl_supercurrent.shape}."
                 )
             if not np.all(np.isfinite(supercurrent)):
-                raise ValueError("supercurrent_override returned non-finite values.")
+                raise FloatingPointError("supercurrent_override returned non-finite values.")
 
         div_supercurrent = operators.divergence @ (supercurrent - dA_dt)
         boundary_rhs = operators.mu_boundary_laplacian @ self.mu_boundary

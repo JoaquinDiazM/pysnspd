@@ -1,16 +1,16 @@
-"""Matsubara Usadel supercurrent tables for the gTDGL backend.
+"""Matsubara Usadel constitutive tables for the gTDGL backend.
 
-The SS solver needs a local constitutive closure
+The temporal solvers interpolate the finite stiffness
 
-    j_s = J(q, |Delta|, T_e) q_hat
+    kappa(T_e, |Delta|^2, |q|),        j_s = kappa |Delta|^2 q,
 
-instead of the older calibration-only one-dimensional relation J(q, T_bias).
-This module builds that table from the same Matsubara dirty-limit equation used
-by the critical-current calibration.  The table is deliberately independent of
-BCS self-consistency: |Delta| is an axis supplied by the local gTDGL field.
+instead of interpolating ``j_s`` itself.  This preserves the dirty-limit
+``j_s = O(|Delta|^2 q)`` asymptotic law below the first nonzero amplitude node.
+The current-density table is stored alongside the stiffness because it is cheap
+to form during PRE and remains useful for diagnostics and plotting.
 
-All table rows ``(T_e, |Delta|)`` are independent and are therefore evaluated in
-parallel when ``workers > 1``.
+All table rows ``(T_e, |Delta|)`` are independent and are evaluated in parallel
+when ``workers > 1``.
 """
 from __future__ import annotations
 
@@ -29,25 +29,27 @@ from pysnspd.usadel.parameters import E_CHARGE_C, HBAR_J_S, K_B_J_K
 
 @dataclass(frozen=True)
 class SupercurrentTable3D:
-    """Container for a strict 3D Usadel/Matsubara supercurrent table.
+    """Container for strict 3D Usadel/Matsubara constitutive tables.
 
     Canonical storage layout:
 
-        js_T_delta_q_A_m2[iT, iDelta, iq]
+        js_stiffness_T_delta2_q_A_per_m_J2[iT, iDelta2, iq]
 
-    The q-axis is nonnegative.  Interpolators recover odd-in-q behavior by
-    interpolating ``|q|`` and multiplying by ``sign(q)``.
+    The ``delta_axis_J`` and ``delta2_axis_J2`` entries have the same indices.
+    The q-axis is nonnegative because the stiffness is even in q.
     """
 
     Te_axis_K: np.ndarray
     delta_axis_J: np.ndarray
+    delta2_axis_J2: np.ndarray
     q_axis_m_inv: np.ndarray
     js_T_delta_q_A_m2: np.ndarray
+    js_stiffness_T_delta2_q_A_per_m_J2: np.ndarray
     metadata: dict[str, Any]
 
     @property
     def shape(self) -> tuple[int, int, int]:
-        return tuple(int(v) for v in self.js_T_delta_q_A_m2.shape)
+        return tuple(int(v) for v in self.js_stiffness_T_delta2_q_A_per_m_J2.shape)
 
 
 def build_matsubara_supercurrent_table_3d(
@@ -61,7 +63,7 @@ def build_matsubara_supercurrent_table_3d(
     workers: int = 1,
     backend: str = "process",
 ) -> SupercurrentTable3D:
-    """Build ``J(q, |Delta|, T)`` from the Matsubara Usadel equation.
+    """Build ``kappa(T, |Delta|^2, |q|)`` and ``j_s`` from Matsubara Usadel.
 
     For every table point we solve, for all positive Matsubara energies,
 
@@ -69,9 +71,16 @@ def build_matsubara_supercurrent_table_3d(
 
     then evaluate
 
-        j_s = (2*pi*k_B*T/|e|) sigma_n q sum_n s_n^2.
+        kappa = (2*pi*k_B*T/|e|) sigma_n sum_n s_n^2 / |Delta|^2,
+        j_s = kappa |Delta|^2 q.
 
-    ``|Delta|`` is a local-field axis, not a self-consistent BCS solution.
+    At exact ``|Delta|=0`` the finite analytic limit
+
+        kappa_0 = (2*pi*k_B*T/|e|) sigma_n
+                  sum_n (epsilon_n + Gamma_q)^-2
+
+    is used.  ``|Delta|`` is a local-field axis, not a self-consistent BCS
+    solution.
     """
 
     Te_axis = _clean_axis_1d(Te_axis_K, name="Te_axis_K", positive=True)
@@ -95,7 +104,8 @@ def build_matsubara_supercurrent_table_3d(
     if mode == "serial":
         n_workers = 1
 
-    table = np.zeros((Te_axis.size, delta_axis.size, q_axis.size), dtype=float)
+    current = np.zeros((Te_axis.size, delta_axis.size, q_axis.size), dtype=float)
+    stiffness = np.zeros_like(current)
     tasks = list(_current_row_tasks(Te_axis, delta_axis, q_axis, D, sigma, n_m))
 
     if n_workers == 1 or len(tasks) <= 1:
@@ -105,14 +115,19 @@ def build_matsubara_supercurrent_table_3d(
         with executor_cls(max_workers=n_workers) as pool:
             rows = list(pool.map(_compute_current_row, tasks))
 
-    for iT, iD, row in rows:
-        table[iT, iD, :] = row
-    table[~np.isfinite(table)] = 0.0
+    for iT, iD, current_row, stiffness_row in rows:
+        current[iT, iD, :] = current_row
+        stiffness[iT, iD, :] = stiffness_row
+    if np.any(~np.isfinite(current)) or np.any(~np.isfinite(stiffness)):
+        raise FloatingPointError("Matsubara constitutive table contains non-finite values.")
+    if np.any(stiffness <= 0.0):
+        raise FloatingPointError("Matsubara stiffness table must be strictly positive.")
 
     metadata = {
-        "backend": "matsubara_usadel_supercurrent_table_3d_v1",
-        "layout": "js_T_delta_q_A_m2[Te, delta, q]",
+        "backend": "matsubara_usadel_stiffness_table_3d_v2",
+        "layout": "js_stiffness_T_delta2_q_A_per_m_J2[Te, delta2, q]",
         "current_relation": "j_s=(2*pi*k_B*T/|e|)*sigma_n*q*sum_n(s_n^2)",
+        "stiffness_relation": "kappa=j_s/(|Delta|^2*q), with the analytic |Delta|->0 limit",
         "gamma_definition": "Gamma_q=hbar*D*q^2/2",
         "self_consistency": "not imposed; |Delta| is an explicit gTDGL local-field axis",
         "n_Te": int(Te_axis.size),
@@ -132,25 +147,30 @@ def build_matsubara_supercurrent_table_3d(
     return SupercurrentTable3D(
         Te_axis_K=Te_axis,
         delta_axis_J=delta_axis,
+        delta2_axis_J2=delta_axis * delta_axis,
         q_axis_m_inv=q_axis,
-        js_T_delta_q_A_m2=table,
+        js_T_delta_q_A_m2=current,
+        js_stiffness_T_delta2_q_A_per_m_J2=stiffness,
         metadata=metadata,
     )
 
 
 def append_supercurrent_table_3d_to_npz(npz_path: str, table: SupercurrentTable3D) -> None:
-    """Append the strict 3D supercurrent table to an existing PRE NPZ."""
+    """Append strict 3D stiffness/current resources to an existing PRE NPZ."""
 
     with np.load(npz_path, allow_pickle=True) as data:
         arrays = {key: data[key] for key in data.files}
 
     arrays["js_A_m2"] = np.asarray(table.js_T_delta_q_A_m2, dtype=float)
-    arrays["j_s_A_m2"] = arrays["js_A_m2"]
-    arrays["js_T_delta_q_A_m2"] = arrays["js_A_m2"]
+    arrays["js_stiffness_A_per_m_J2"] = np.asarray(
+        table.js_stiffness_T_delta2_q_A_per_m_J2,
+        dtype=float,
+    )
     arrays["q_axis_m_inv"] = np.asarray(table.q_axis_m_inv, dtype=float)
     arrays["delta_axis_J"] = np.asarray(table.delta_axis_J, dtype=float)
+    arrays["delta2_axis_J2"] = np.asarray(table.delta2_axis_J2, dtype=float)
     arrays["Te_axis_K"] = np.asarray(table.Te_axis_K, dtype=float)
-    arrays["js_table_layout"] = np.array("Te,delta,q")
+    arrays["js_table_layout"] = np.array("Te,delta2,q")
     arrays["js_table_backend"] = np.array(str(table.metadata["backend"]))
     arrays["js_table_n_matsubara"] = np.array(int(table.metadata["n_matsubara"]), dtype=np.int64)
     arrays["js_table_n_Te"] = np.array(int(table.metadata["n_Te"]), dtype=np.int64)
@@ -165,17 +185,18 @@ def append_supercurrent_table_3d_to_npz(npz_path: str, table: SupercurrentTable3
 def supercurrent_table_summary(table: SupercurrentTable3D) -> dict[str, Any]:
     """Return a manifest-friendly summary."""
 
-    arr = np.asarray(table.js_T_delta_q_A_m2, dtype=float)
-    finite = arr[np.isfinite(arr)]
-    max_abs = float(np.max(np.abs(finite))) if finite.size else float("nan")
+    current = np.asarray(table.js_T_delta_q_A_m2, dtype=float)
+    stiffness = np.asarray(table.js_stiffness_T_delta2_q_A_per_m_J2, dtype=float)
     return {
         **table.metadata,
-        "table_key": "js_A_m2",
-        "alias_keys": ["j_s_A_m2", "js_T_delta_q_A_m2"],
-        "axis_keys": ["Te_axis_K", "delta_axis_J", "q_axis_m_inv"],
+        "runtime_table_key": "js_stiffness_A_per_m_J2",
+        "diagnostic_current_key": "js_A_m2",
+        "axis_keys": ["Te_axis_K", "delta2_axis_J2", "q_axis_m_inv"],
         "shape": list(table.shape),
-        "js_max_abs_A_m2": max_abs,
-        "strict_required_by_ss": True,
+        "js_max_abs_A_m2": float(np.max(np.abs(current))),
+        "stiffness_min_A_per_m_J2": float(np.min(stiffness)),
+        "stiffness_max_A_per_m_J2": float(np.max(stiffness)),
+        "strict_required_by_temporal_runs": True,
     }
 
 
@@ -194,25 +215,26 @@ def _current_row_tasks(
 
 def _compute_current_row(
     task: tuple[int, int, float, float, np.ndarray, float, float, int],
-) -> tuple[int, int, np.ndarray]:
+) -> tuple[int, int, np.ndarray, np.ndarray]:
     iT, iD, T, delta, q_axis, D, sigma, n_m = task
-    row = np.zeros(q_axis.size, dtype=float)
-    if delta <= 0.0:
-        return iT, iD, row
-
+    current = np.zeros(q_axis.size, dtype=float)
+    stiffness = np.empty(q_axis.size, dtype=float)
     eps = matsubara_energy_axis_J(T_K=float(T), n_matsubara=int(n_m))
     gamma_axis = 0.5 * HBAR_J_S * D * q_axis * q_axis
     prefactor = 2.0 * np.pi * K_B_J_K * float(T) * sigma / E_CHARGE_C
     for j, (q, gamma) in enumerate(zip(q_axis, gamma_axis)):
-        if q <= 0.0:
-            continue
-        s = solve_matsubara_s_values(
-            delta_J=float(delta),
-            gamma_J=float(gamma),
-            eps_n_J=eps,
-        )
-        row[j] = prefactor * float(q) * float(np.sum(s * s))
-    return iT, iD, row
+        if delta == 0.0:
+            kappa = prefactor * float(np.sum(1.0 / np.square(eps + float(gamma))))
+        else:
+            s = solve_matsubara_s_values(
+                delta_J=float(delta),
+                gamma_J=float(gamma),
+                eps_n_J=eps,
+            )
+            kappa = prefactor * float(np.sum(s * s)) / (float(delta) * float(delta))
+        stiffness[j] = kappa
+        current[j] = kappa * float(delta) * float(delta) * float(q)
+    return iT, iD, current, stiffness
 
 
 def _clean_axis_1d(

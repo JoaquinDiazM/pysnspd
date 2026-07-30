@@ -108,8 +108,8 @@ def _build_usadel_poisson_supercurrent_override(
         )
         if not diag.available:
             raise RuntimeError(
-                "--ss-supercurrent-law usadel-poisson requires a PRE Usadel "
-                f"supercurrent table. Diagnostic reason: {diag.reason}"
+                "The production Usadel-Poisson closure requires a PRE Usadel "
+                f"stiffness table. Diagnostic reason: {diag.reason}"
             )
         return np.asarray(diag.edge_js_usadel_A_m2, dtype=float) / max(scale, 1.0e-300)
 
@@ -130,7 +130,7 @@ def _build_allmaras_forcing_callback(
     """Build the Appendix-B forcing callback used by ``TDGLSolver``.
 
     The callback is explicit in the current order parameter.  For the official
-    ``usadel_poisson`` path it uses the PRE Matsubara/Usadel supercurrent table
+    ``usadel_poisson`` path it uses the PRE Matsubara/Usadel stiffness table
     for both Poisson and the Allmaras current-divergence correction.
     """
 
@@ -140,6 +140,8 @@ def _build_allmaras_forcing_callback(
     def callback(psi_dimensionless: np.ndarray, psi_laplacian) -> np.ndarray:
         psi = np.asarray(psi_dimensionless, dtype=np.complex128)
         edge_js = None
+        edge_js_gl = None
+        edge_js_mismatch = None
         if require_usadel:
             diag = compute_usadel_supercurrent_diagnostic(
                 usadel_catalog=usadel_catalog,
@@ -152,9 +154,11 @@ def _build_allmaras_forcing_callback(
             if not diag.available:
                 raise RuntimeError(
                     "Appendix-B Allmaras update with usadel_poisson requires a PRE "
-                    f"Matsubara supercurrent table. Diagnostic reason: {diag.reason}"
+                    f"Matsubara stiffness table. Diagnostic reason: {diag.reason}"
                 )
             edge_js = diag.edge_js_usadel_A_m2
+            edge_js_gl = diag.edge_js_gl_A_m2
+            edge_js_mismatch = diag.edge_js_mismatch_A_m2
 
         forcing = compute_allmaras_forcing_dimensionless(
             psi_dimensionless=psi,
@@ -164,6 +168,8 @@ def _build_allmaras_forcing_callback(
             ops=ops,
             length_scale_m=L0,
             edge_js_usadel_A_m2=edge_js,
+            edge_js_gl_A_m2=edge_js_gl,
+            edge_js_mismatch_A_m2=edge_js_mismatch,
             blocked_edge_mask=blocked_edge_mask,
             phase_drive_continuation=phase_drive_continuation,
         )
@@ -175,6 +181,8 @@ def _build_allmaras_forcing_callback(
             "direct_node_count": int(info.direct_node_count),
             "continued_node_count": int(info.continued_node_count),
             "zero_amplitude_node_count": int(info.zero_amplitude_node_count),
+            "machine_tolerance_factor": float(info.machine_tolerance_factor),
+            "direct_amplitude_threshold": float(info.direct_amplitude_threshold),
         }
         return np.asarray(forcing.forcing_dimensionless, dtype=np.complex128)
 

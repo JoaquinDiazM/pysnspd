@@ -11,7 +11,7 @@ from pysnspd.gtdgl.allmaras import (
     nonterminal_node_mask,
 )
 
-ALLMARAS_UPDATE_BACKEND = "appendix_b_normalized_phase_drive_harmonic_continuation_v2"
+ALLMARAS_UPDATE_BACKEND = "appendix_b_regular_edge_stiffness_phase_drive_v3"
 
 
 def test_allmaras_coefficients_are_appendix_b_shapes_and_positive(
