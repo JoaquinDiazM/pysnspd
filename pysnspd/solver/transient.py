@@ -135,7 +135,7 @@ def run_coupled_transient(
             V_tdgl_ss_V=float(V_tdgl0),
             params=circuit_params,
         )
-        circuit_initialization = "legacy_ss_fixed_point"
+        circuit_initialization = "inferred_from_ss_electrical_state"
 
     snapshot_times = np.linspace(0.0, float(cfg.total_time_s), max(2, int(cfg.n_snapshots)))
     next_snapshot = 0
@@ -243,9 +243,6 @@ def run_coupled_transient(
                 supercurrent_law=str(cfg.supercurrent_law),
                 terminal_healing_xi=cfg.terminal_healing_xi,
                 terminal_healing_fraction=float(cfg.terminal_healing_fraction),
-                stationarity_eta=1.0e-5,
-                convergence_min_steps=500,
-                stop_on_convergence=False,
                 allmaras_phase_machine_tolerance_factor=float(
                     cfg.allmaras_phase_machine_tolerance_factor
                 ),

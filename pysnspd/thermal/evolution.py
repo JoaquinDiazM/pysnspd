@@ -27,7 +27,10 @@ class ThermalRuntimeConfig:
     max_K: float | None = None
     max_step_K: float = 0.05
     max_substeps: int = 64
-    stationarity_rate_K_per_ps: float = 1.0e-2
+    stationarity_relative_tolerance: float = 3.0e-3
+    stationarity_p99_tolerance_K: float = 3.0e-3
+    stationarity_projection_horizon_ps: float = 20.0
+    stationarity_projection_relative_tolerance: float = 1.0e-2
 
 
 @dataclass(frozen=True)
@@ -350,47 +353,216 @@ def thermal_stationarity_diagnostics(
     *,
     enabled: bool,
     start_time_s: float,
-    requested_total_time_s: float,
-    rate_tol_K_per_ps: float,
+    bath_K: float,
+    minimum_tail_duration_ps: float = 5.0,
+    relative_tolerance: float = 3.0e-3,
+    p99_tolerance_K: float = 3.0e-3,
+    projection_horizon_ps: float = 20.0,
+    projection_relative_tolerance: float = 1.0e-2,
+    absolute_scale_K: float = 0.1,
 ) -> dict[str, Any]:
+    """Classify a bounded thermal tail from stored temperature fields.
+
+    The former gate used the largest instantaneous nodal RHS over the final
+    ten percent of accepted solver steps.  That statistic measures explicit
+    substep jitter and remains large even when the temperature field has a
+    stable envelope.  Photon initialization instead depends on the persisted
+    ``Te``/``Tph`` fields, so stationarity is evaluated directly on their
+    drift, fluctuation, robust pointwise change, and projected slow trend.
+    """
+
     if not enabled:
         return {
             "enabled": False,
             "passes": True,
             "reason": "thermal coupling disabled",
-            "rate_tol_K_per_ps": float(rate_tol_K_per_ps),
+            "diagnostic": "thermal_field_tail_stationarity_v2",
         }
-    rate = np.asarray(history.get("thermal_max_rate_K_per_ps", []), dtype=float)
-    t_s = np.asarray(history.get("t_s", []), dtype=float)
-    if rate.size == 0 or t_s.size == 0 or float(requested_total_time_s) <= float(start_time_s):
+
+    t_s = np.asarray(
+        history.get("snapshot_t_s", history.get("delta_snapshot_t_s", [])),
+        dtype=float,
+    ).reshape(-1)
+    Te = _thermal_snapshot_matrix(history.get("Te_snapshot_K", []))
+    Tph = _thermal_snapshot_matrix(history.get("Tph_snapshot_K", []))
+    n_available = min(t_s.size, Te.shape[0], Tph.shape[0])
+    if n_available < 3:
         return {
             "enabled": True,
             "passes": False,
-            "reason": "no active thermal relaxation interval was recorded",
-            "rate_tol_K_per_ps": float(rate_tol_K_per_ps),
+            "reason": "temperature-field snapshots are unavailable",
+            "diagnostic": "thermal_field_tail_stationarity_v2",
         }
-    if rate.size != t_s.size:
-        rate = np.resize(rate, t_s.size)
-    active = t_s >= float(start_time_s)
-    if not np.any(active):
+
+    t_s = t_s[-n_available:]
+    Te = Te[-n_available:]
+    Tph = Tph[-n_available:]
+    end_s = float(t_s[-1])
+    minimum_duration_s = float(minimum_tail_duration_ps) * 1.0e-12
+    active_start = int(np.searchsorted(t_s, float(start_time_s), side="left"))
+    requested_start_s = max(float(start_time_s), end_s - minimum_duration_s)
+    bracket_start = max(
+        active_start,
+        int(np.searchsorted(t_s, requested_start_s, side="right")) - 1,
+    )
+    tail = np.arange(bracket_start, t_s.size, dtype=np.int64)
+    tail_duration_ps = (
+        float((t_s[tail[-1]] - t_s[tail[0]]) / 1.0e-12)
+        if tail.size >= 2
+        else 0.0
+    )
+    sufficient = bool(
+        tail.size >= 3
+        and tail_duration_ps >= 0.999 * float(minimum_tail_duration_ps)
+    )
+    if not sufficient:
         return {
             "enabled": True,
             "passes": False,
-            "reason": "thermal start time was not reached",
-            "rate_tol_K_per_ps": float(rate_tol_K_per_ps),
+            "reason": "insufficient temperature-field tail duration",
+            "diagnostic": "thermal_field_tail_stationarity_v2",
+            "tail_snapshot_count": int(tail.size),
+            "tail_duration_ps": tail_duration_ps,
+            "minimum_tail_duration_ps": float(minimum_tail_duration_ps),
         }
-    idx = np.flatnonzero(active)
-    tail_n = max(4, int(np.ceil(0.10 * idx.size)))
-    tail = rate[idx[-tail_n:]]
-    tail_rate = float(np.nanmax(tail)) if tail.size else float("inf")
+
+    tail_t_ps = t_s[tail] / 1.0e-12
+    field_metrics = {
+        "Te": _thermal_field_tail_metrics(
+            Te[tail],
+            tail_t_ps,
+            bath_K=float(bath_K),
+            absolute_scale_K=float(absolute_scale_K),
+            projection_horizon_ps=float(projection_horizon_ps),
+        ),
+        "Tph": _thermal_field_tail_metrics(
+            Tph[tail],
+            tail_t_ps,
+            bath_K=float(bath_K),
+            absolute_scale_K=float(absolute_scale_K),
+            projection_horizon_ps=float(projection_horizon_ps),
+        ),
+    }
+    finite = all(bool(item["finite"]) for item in field_metrics.values())
+    relative_drift = max(float(item["relative_rms_drift"]) for item in field_metrics.values())
+    relative_fluctuation = max(
+        float(item["relative_rms_fluctuation"]) for item in field_metrics.values()
+    )
+    p99_drift_K = max(float(item["p99_abs_drift_K"]) for item in field_metrics.values())
+    projected_relative_drift = max(
+        float(item["projected_relative_rms_drift"]) for item in field_metrics.values()
+    )
+    passes = bool(
+        finite
+        and relative_drift <= float(relative_tolerance)
+        and relative_fluctuation <= float(relative_tolerance)
+        and p99_drift_K <= float(p99_tolerance_K)
+        and projected_relative_drift <= float(projection_relative_tolerance)
+    )
     return {
+        "diagnostic": "thermal_field_tail_stationarity_v2",
         "enabled": True,
-        "passes": bool(np.isfinite(tail_rate) and tail_rate <= float(rate_tol_K_per_ps)),
-        "reason": "tail thermal rate below tolerance" if np.isfinite(tail_rate) and tail_rate <= float(rate_tol_K_per_ps) else "tail thermal rate above tolerance",
-        "rate_tol_K_per_ps": float(rate_tol_K_per_ps),
-        "tail_max_rate_K_per_ps": tail_rate,
-        "tail_window_steps": int(tail_n),
+        "passes": passes,
+        "reason": (
+            "temperature fields are stationary over the physical tail window"
+            if passes
+            else "temperature-field drift or fluctuation exceeds tolerance"
+        ),
+        "tail_snapshot_count": int(tail.size),
+        "tail_duration_ps": tail_duration_ps,
+        "minimum_tail_duration_ps": float(minimum_tail_duration_ps),
         "start_time_ps": float(start_time_s) / 1.0e-12,
+        "relative_rms_drift": relative_drift,
+        "relative_rms_fluctuation": relative_fluctuation,
+        "p99_abs_drift_K": p99_drift_K,
+        "projected_relative_rms_drift": projected_relative_drift,
+        "relative_tolerance": float(relative_tolerance),
+        "p99_tolerance_K": float(p99_tolerance_K),
+        "projection_horizon_ps": float(projection_horizon_ps),
+        "projection_relative_tolerance": float(projection_relative_tolerance),
+        "absolute_scale_K": float(absolute_scale_K),
+        "fields": field_metrics,
+    }
+
+
+def _thermal_snapshot_matrix(value: Any) -> np.ndarray:
+    arr = np.asarray(value, dtype=float)
+    if arr.ndim == 1:
+        arr = arr.reshape(1, -1)
+    if arr.ndim != 2:
+        return np.empty((0, 0), dtype=float)
+    return arr
+
+
+def _thermal_field_tail_metrics(
+    field_K: np.ndarray,
+    time_ps: np.ndarray,
+    *,
+    bath_K: float,
+    absolute_scale_K: float,
+    projection_horizon_ps: float,
+) -> dict[str, float | int | bool]:
+    field = np.asarray(field_K, dtype=float)
+    time = np.asarray(time_ps, dtype=float).reshape(-1)
+    if field.ndim != 2 or field.shape[0] != time.size or field.shape[0] < 3:
+        return {
+            "finite": False,
+            "active_node_count": 0,
+            "relative_rms_drift": float("inf"),
+            "relative_rms_fluctuation": float("inf"),
+            "p99_abs_drift_K": float("inf"),
+            "projected_relative_rms_drift": float("inf"),
+        }
+
+    finite_nodes = np.all(np.isfinite(field), axis=0)
+    active_nodes = finite_nodes & np.any(
+        np.abs(field - float(bath_K)) > 1.0e-12,
+        axis=0,
+    )
+    if not np.any(active_nodes):
+        return {
+            "finite": bool(np.all(np.isfinite(field))),
+            "active_node_count": 0,
+            "rms_excess_K": 0.0,
+            "rms_drift_K": 0.0,
+            "relative_rms_drift": 0.0,
+            "relative_rms_fluctuation": 0.0,
+            "p99_abs_drift_K": 0.0,
+            "projected_relative_rms_drift": 0.0,
+        }
+
+    values = field[:, active_nodes]
+    final_excess = values[-1] - float(bath_K)
+    rms_excess = float(np.sqrt(np.mean(final_excess * final_excess)))
+    scale = max(rms_excess, float(absolute_scale_K), 1.0e-300)
+    drift = values[-1] - values[0]
+    rms_drift = float(np.sqrt(np.mean(drift * drift)))
+    mean_field = np.mean(values, axis=0)
+    snapshot_deviation = np.sqrt(
+        np.mean((values - mean_field[None, :]) ** 2, axis=1)
+    )
+
+    centered_time = time - float(np.mean(time))
+    denominator = float(np.dot(centered_time, centered_time))
+    if denominator > 0.0:
+        slopes_K_per_ps = (
+            centered_time[:, None] * (values - mean_field[None, :])
+        ).sum(axis=0) / denominator
+        rms_slope = float(np.sqrt(np.mean(slopes_K_per_ps * slopes_K_per_ps)))
+    else:
+        rms_slope = float("inf")
+
+    return {
+        "finite": True,
+        "active_node_count": int(np.count_nonzero(active_nodes)),
+        "rms_excess_K": rms_excess,
+        "rms_drift_K": rms_drift,
+        "relative_rms_drift": rms_drift / scale,
+        "relative_rms_fluctuation": float(np.max(snapshot_deviation)) / scale,
+        "p99_abs_drift_K": float(np.percentile(np.abs(drift), 99.0)),
+        "projected_relative_rms_drift": (
+            float(projection_horizon_ps) * rms_slope / scale
+        ),
     }
 
 

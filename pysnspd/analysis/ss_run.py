@@ -522,7 +522,8 @@ def _summary_scalars(summary: Mapping[str, Any]) -> dict[str, Any]:
     thermal_runtime = _as_mapping(solver.get("thermal_runtime", {}))
 
     keys = [
-        "first_magic_ready",
+        "photon_ready",
+        "mesoscopic_stationarity_mode",
         "accepted_steps",
         "rejected_steps",
         "final_time_ps",
@@ -539,8 +540,12 @@ def _summary_scalars(summary: Mapping[str, Any]) -> dict[str, Any]:
     out["continuity_passes"] = continuity.get("passes")
     out["thermal_stationarity_passes"] = thermal_stationarity.get("passes")
     out["thermal_stationarity_reason"] = thermal_stationarity.get("reason")
-    out["thermal_tail_max_rate_K_per_ps"] = thermal_stationarity.get("tail_max_rate_K_per_ps")
-    out["thermal_rate_tol_K_per_ps"] = thermal_stationarity.get("rate_tol_K_per_ps")
+    out["thermal_relative_rms_drift"] = thermal_stationarity.get("relative_rms_drift")
+    out["thermal_relative_rms_fluctuation"] = thermal_stationarity.get("relative_rms_fluctuation")
+    out["thermal_p99_abs_drift_K"] = thermal_stationarity.get("p99_abs_drift_K")
+    out["thermal_projected_relative_rms_drift"] = thermal_stationarity.get(
+        "projected_relative_rms_drift"
+    )
     out["thermal_runtime_enabled"] = thermal_runtime.get("enabled")
     out["thermal_window_nm"] = thermal_runtime.get("window_nm")
     out["thermal_start_time_ps"] = thermal_runtime.get("start_time_ps")

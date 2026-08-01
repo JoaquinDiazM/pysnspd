@@ -36,7 +36,7 @@ def _tiny_config() -> dict:
             "dos": {"n_delta": 2, "n_q": 2, "n_energy": 8, "n_matsubara": 20},
             "phase_space": {"n_Te": 2, "n_Tph": 2, "n_delta": 2, "n_q": 2, "n_omega": 16},
         },
-        "ss_run": {"max_steps": 1, "dt_s": 1e-15, "convergence_tol": 1e-7},
+        "ss_run": {"total_time_ps": 0.001, "dt_s": 1e-15},
         "photon_run": {"photon_wavelength_m": 1064e-9, "max_steps": 1, "dt_s": 1e-15, "bubble_radius_m": 10e-9},
         "circuit": {"R_load_ohm": 50.0, "L_bias_H": 1e-6, "C_rf_F": 1e-12},
     }

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from pysnspd.config import validate_config
+import pytest
+
+from pysnspd.config import ConfigError, validate_config
 
 
 def _base_config() -> dict:
@@ -27,7 +29,7 @@ def _base_config() -> dict:
             "dos": {"n_delta": 2, "n_q": 2, "n_energy": 8, "n_matsubara": 8},
             "phase_space": {"n_Te": 2, "n_Tph": 2, "n_delta": 2, "n_q": 2, "n_omega": 8},
         },
-        "ss_run": {"total_time_ps": 20.0, "dt_s": 1.0e-15, "convergence_tol": 1.0e-7},
+        "ss_run": {"total_time_ps": 20.0, "dt_s": 1.0e-15},
         "photon_run": {
             "photon_wavelength_m": 1064.0e-9,
             "max_steps": 10,
@@ -45,8 +47,8 @@ def test_ss_run_total_time_does_not_require_max_steps() -> None:
     assert "max_steps" not in cfg["ss_run"]
 
 
-def test_legacy_ss_run_max_steps_is_converted_to_physical_time() -> None:
+def test_obsolete_ss_run_max_steps_is_rejected() -> None:
     old = _base_config()
-    old["ss_run"] = {"max_steps": 1000, "dt_s": 2.0e-15, "convergence_tol": 1.0e-7}
-    cfg = validate_config(old, require_big_data_root_exists=False)
-    assert cfg["ss_run"]["total_time_ps"] == 2.0
+    old["ss_run"] = {"max_steps": 1000, "dt_s": 2.0e-15}
+    with pytest.raises(ConfigError, match="total_time_ps"):
+        validate_config(old, require_big_data_root_exists=False)

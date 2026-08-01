@@ -1,18 +1,15 @@
 """Adapters between pySNSPD OE7 data and the pyTDGL-like solver core."""
 from __future__ import annotations
 
-from types import SimpleNamespace
 from typing import Any
 
 import numpy as np
 
 from pysnspd.gtdgl.material import GTDGLMaterial
-from pysnspd.mesh.operators import FVOperators, terminal_voltage, edge_scalar_to_node_vector_least_squares
-from pysnspd.gtdgl.state import GTDGLStationaryState, RelaxationResult
+from pysnspd.mesh.operators import FVOperators, edge_scalar_to_node_vector_least_squares
 from pysnspd.solver.diagnostics import (
     current_residual,
     current_density_maxima_A_m2,
-    seed_target_current_A,
     target_current_density_A_m2,
 )
 from pysnspd.gtdgl.currents import native_edge_currents_to_current_fields, native_current_scale_A_m2
@@ -25,18 +22,6 @@ from pysnspd.gtdgl.allmaras import (
     rms as _allmaras_rms,
     max_abs as _allmaras_max_abs,
 )
-from pysnspd.mesh.device import build_pytdgl_like_device
-from .options import SolverOptions, SparseSolver
-from .core import TDGLSolver
-from pysnspd.thermal.evolution import ThermalRuntimeConfig, ThermalRuntimeController, thermal_stationarity_diagnostics
-from .targets import (
-    apply_terminal_proximity_seed,
-    contact_recovery_diagnostics,
-    continuity_diagnostics,
-    dynamic_stationarity_diagnostics,
-    stationarity_diagnostics,
-)
-
 MEV_J = 1.602176634e-22
 
 from pysnspd.solver.callbacks import (

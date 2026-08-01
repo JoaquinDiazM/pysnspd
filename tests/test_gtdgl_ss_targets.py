@@ -264,11 +264,12 @@ def test_dynamic_stationarity_accepts_stable_psl_morphology_with_small_oscillati
         history=history,
         nodes_m=nodes,
         delta0_J=material.delta0_J,
-        tail_snapshots=4,
         minimum_tail_duration_ps=2.0,
     )
 
     assert diag.passes
+    assert diag.tail_snapshot_count == 3
+    assert diag.tail_duration_ps == 2.0
     assert diag.topology_count_stable
     assert not diag.new_suppressed_band_in_tail
     assert diag.psl_count_final == 2
@@ -282,10 +283,34 @@ def test_dynamic_stationarity_rejects_new_psl_in_tail():
         history=history,
         nodes_m=nodes,
         delta0_J=material.delta0_J,
-        tail_snapshots=4,
         minimum_tail_duration_ps=2.0,
     )
 
     assert not diag.passes
     assert diag.new_suppressed_band_in_tail
     assert not diag.topology_count_stable
+
+
+def test_dynamic_stationarity_window_includes_bracketing_snapshot():
+    nodes = np.column_stack((np.linspace(0.0, 20.0e-9, 6), np.zeros(6)))
+    # Adaptive stepping emits frames just after their nominal targets.  The
+    # selected tail must nevertheless span the requested physical duration.
+    t_s = (np.arange(7, dtype=float) + 1.0e-3) * 1.0e-12
+    psi = np.ones((t_s.size, nodes.shape[0]))
+    history = {
+        "snapshot_t_s": t_s,
+        "psi_snapshot_real_J": psi,
+        "psi_snapshot_imag_J": np.zeros_like(psi),
+        "t_s": t_s,
+        "terminal_voltage_V": np.zeros_like(t_s),
+        "stationarity_xi_m": np.array([1.0e-9]),
+    }
+    diag = dynamic_stationarity_diagnostics(
+        history=history,
+        nodes_m=nodes,
+        delta0_J=1.0,
+        minimum_tail_duration_ps=5.0,
+    )
+
+    assert diag.sufficient_history
+    assert diag.tail_duration_ps >= 5.0

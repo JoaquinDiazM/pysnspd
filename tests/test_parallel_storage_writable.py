@@ -31,7 +31,7 @@ def _minimal_config(root: Path) -> dict:
             "dos": {"n_delta": 3, "n_q": 3, "n_energy": 32, "n_matsubara": 16},
             "phase_space": {"n_Te": 3, "n_Tph": 3, "n_delta": 3, "n_q": 3, "n_omega": 16},
         },
-        "ss_run": {"max_steps": 10, "dt_s": 1.0e-15, "convergence_tol": 1.0e-7},
+        "ss_run": {"total_time_ps": 0.01, "dt_s": 1.0e-15},
         "photon_run": {
             "photon_wavelength_m": 1064.0e-9,
             "max_steps": 10,

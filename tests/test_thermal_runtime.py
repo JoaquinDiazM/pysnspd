@@ -107,16 +107,41 @@ def test_thermal_runtime_controller_heats_only_active_nodes(tmp_path: Path):
     assert float(np.max(Te[controller.mask])) >= 0.9
 
 
-def test_thermal_stationarity_diagnostics_tail_rate():
+def test_thermal_stationarity_uses_temperature_fields_not_instantaneous_rhs():
+    t_s = np.linspace(0.0, 10e-12, 21)
+    tail_drift = np.linspace(0.0, 1.0e-3, t_s.size)
     hist = {
-        "t_s": np.linspace(0.0, 10e-12, 20),
-        "thermal_max_rate_K_per_ps": np.r_[np.ones(10) * 1.0, np.ones(10) * 1.0e-3],
+        "snapshot_t_s": t_s,
+        "Te_snapshot_K": 1.4 + tail_drift[:, None] * np.ones((1, 4)),
+        "Tph_snapshot_K": np.full((t_s.size, 4), 0.9),
+        "thermal_max_rate_K_per_ps": np.full(t_s.size, 1.0e3),
     }
     diag = thermal_stationarity_diagnostics(
         hist,
         enabled=True,
         start_time_s=2e-12,
-        requested_total_time_s=10e-12,
-        rate_tol_K_per_ps=1.0e-2,
+        bath_K=0.9,
+        minimum_tail_duration_ps=5.0,
     )
     assert diag["passes"] is True
+    assert diag["diagnostic"] == "thermal_field_tail_stationarity_v2"
+    assert diag["relative_rms_drift"] < 3.0e-3
+    assert diag["projected_relative_rms_drift"] < 1.0e-2
+
+
+def test_thermal_stationarity_rejects_slow_field_drift():
+    t_s = np.linspace(0.0, 10e-12, 21)
+    hist = {
+        "snapshot_t_s": t_s,
+        "Te_snapshot_K": np.linspace(1.2, 1.5, t_s.size)[:, None] * np.ones((1, 4)),
+        "Tph_snapshot_K": np.full((t_s.size, 4), 0.9),
+    }
+    diag = thermal_stationarity_diagnostics(
+        hist,
+        enabled=True,
+        start_time_s=2e-12,
+        bath_K=0.9,
+        minimum_tail_duration_ps=5.0,
+    )
+    assert diag["passes"] is False
+    assert diag["projected_relative_rms_drift"] > 1.0e-2

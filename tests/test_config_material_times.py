@@ -32,7 +32,7 @@ def _minimal_config(material_extra=None):
             "dos": {"n_delta": 3, "n_q": 4, "n_energy": 8, "n_matsubara": 5},
             "phase_space": {"n_Te": 3, "n_Tph": 3, "n_delta": 3, "n_q": 4, "n_omega": 8},
         },
-        "ss_run": {"max_steps": 10, "dt_s": 1.0e-15, "convergence_tol": 1.0e-7},
+        "ss_run": {"total_time_ps": 0.01, "dt_s": 1.0e-15},
         "photon_run": {"photon_wavelength_m": 1064.0e-9, "max_steps": 10, "dt_s": 1.0e-15, "bubble_radius_m": 10.0e-9},
         "circuit": {"R_load_ohm": 50.0, "L_bias_H": 1.0e-6, "C_rf_F": 1.0e-12},
     }

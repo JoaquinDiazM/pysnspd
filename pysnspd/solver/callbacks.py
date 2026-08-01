@@ -1,43 +1,18 @@
 """Adapters between pySNSPD OE7 data and the pyTDGL-like solver core."""
 from __future__ import annotations
 
-from types import SimpleNamespace
 from typing import Any
 
 import numpy as np
 
 from pysnspd.gtdgl.material import GTDGLMaterial
-from pysnspd.mesh.operators import FVOperators, terminal_voltage, edge_scalar_to_node_vector_least_squares
-from pysnspd.gtdgl.state import GTDGLStationaryState, RelaxationResult
-from pysnspd.solver.diagnostics import (
-    current_residual,
-    current_density_maxima_A_m2,
-    seed_target_current_A,
-    target_current_density_A_m2,
-)
-from pysnspd.gtdgl.currents import native_edge_currents_to_current_fields, native_current_scale_A_m2
+from pysnspd.mesh.operators import FVOperators
+from pysnspd.gtdgl.currents import native_current_scale_A_m2
 from pysnspd.gtdgl.usadel_current import compute_usadel_supercurrent_diagnostic
 from pysnspd.gtdgl.allmaras import (
     PhaseDriveContinuationSolver,
-    allmaras_coefficients,
-    compute_allmaras_appendix_b_diagnostic,
     compute_allmaras_forcing_dimensionless,
-    rms as _allmaras_rms,
-    max_abs as _allmaras_max_abs,
 )
-from pysnspd.mesh.device import build_pytdgl_like_device
-from .options import SolverOptions, SparseSolver
-from .core import TDGLSolver
-from pysnspd.thermal.evolution import ThermalRuntimeConfig, ThermalRuntimeController, thermal_stationarity_diagnostics
-from .targets import (
-    apply_terminal_proximity_seed,
-    contact_recovery_diagnostics,
-    continuity_diagnostics,
-    dynamic_stationarity_diagnostics,
-    stationarity_diagnostics,
-)
-
-MEV_J = 1.602176634e-22
 
 def _terminal_site_mask_from_device(device, n_nodes: int) -> np.ndarray:
     """Return a boolean mask for metallic normal-terminal sites."""
@@ -69,20 +44,13 @@ def _terminal_edge_mask_from_device(device, ops: FVOperators) -> np.ndarray:
 
 def _normalize_supercurrent_law(value: str) -> str:
     law = str(value).strip().lower().replace("-", "_")
-    aliases = {
-        "gl": "gl",
-        "pytdgl": "gl",
-        "native_gl": "gl",
-        "usadel": "usadel_poisson",
-        "usadel_poisson": "usadel_poisson",
-        "poisson_usadel": "usadel_poisson",
-    }
-    if law not in aliases:
+    supported = {"gl", "usadel_poisson"}
+    if law not in supported:
         raise ValueError(
             "supercurrent_law must be one of gl or usadel_poisson "
             f"(got {value!r})."
         )
-    return aliases[law]
+    return law
 
 
 def _build_usadel_poisson_supercurrent_override(

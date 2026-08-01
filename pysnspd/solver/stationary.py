@@ -28,7 +28,7 @@ from pysnspd.gtdgl.allmaras import (
 from pysnspd.mesh.device import build_pytdgl_like_device
 from .options import SolverOptions, SparseSolver
 from .core import TDGLSolver
-from .steady_gate import build_total_stationarity_callback
+from .steady_gate import build_total_stationarity_callback, classify_photon_readiness
 from pysnspd.thermal.evolution import ThermalRuntimeConfig, ThermalRuntimeController, thermal_stationarity_diagnostics
 from pysnspd.circuit.readout import (
     CircuitParams,
@@ -72,25 +72,17 @@ def solve_stationary_pytdgl_like(
     supercurrent_law: str = "gl",
     terminal_healing_xi: float | None = None,
     terminal_healing_fraction: float = 0.95,
-    stationarity_eta: float = 1.0e-5,
-    stationarity_phase_gradient_rel: float | None = None,
-    stationarity_phi_gradient_rel: float | None = None,
-    stationarity_q_abs_m_inv: float = 1.0e3,
-    stationarity_phi_gradient_abs_V_m: float = 1.0e2,
+    stationarity_phase_gradient_rel: float = 3.0e-1,
+    stationarity_phi_gradient_rel: float = 2.5e-1,
+    stationarity_q_abs_m_inv: float = 6.0e6,
+    stationarity_phi_gradient_abs_V_m: float = 2.0e3,
     stationarity_edge_active_threshold: float = 0.05,
     stationarity_bulk_exclusion_xi: float = 4.0,
-    dynamic_stationarity_tail_snapshots: int = 4,
-    dynamic_stationarity_minimum_tail_ps: float = 2.0,
-    dynamic_stationarity_profile_rel: float = 5.0e-2,
-    dynamic_stationarity_voltage_rel: float = 5.0e-2,
+    dynamic_stationarity_minimum_tail_ps: float = 5.0,
+    dynamic_stationarity_profile_rel: float = 1.0e-2,
+    dynamic_stationarity_voltage_rel: float = 2.0e-2,
     dynamic_stationarity_psl_threshold: float = 0.75,
-    # Deprecated aliases from the pre-gauge-gradient diagnostic.  If the new
-    # tolerances are not provided, these values are used as compatibility
-    # aliases for phase-gradient and phi-gradient relative tolerances.
-    stationarity_delta_rel: float | None = None,
-    stationarity_phi_rel: float | None = None,
-    convergence_min_steps: int = 50,
-    stop_on_convergence: bool = False,
+    photon_ready_consecutive_evaluations: int = 5,
     continuity_rms_tol: float = 1.0e-6,
     continuity_max_tol: float = 1.0e-3,
     continuity_poisson_tol: float = 1.0e-9,
@@ -108,7 +100,10 @@ def solve_stationary_pytdgl_like(
     thermal_max_K: float | None = None,
     thermal_max_step_K: float = 0.05,
     thermal_max_substeps: int = 64,
-    thermal_stationarity_rate_K_per_ps: float = 1.0e-2,
+    thermal_stationarity_relative_tolerance: float = 3.0e-3,
+    thermal_stationarity_p99_tolerance_K: float = 3.0e-3,
+    thermal_stationarity_projection_horizon_ps: float = 20.0,
+    thermal_stationarity_projection_relative_tolerance: float = 1.0e-2,
     circuit_enabled: bool = False,
     circuit_params: CircuitParams | None = None,
     circuit_runtime_config: CircuitRuntimeConfig | None = None,
@@ -134,21 +129,26 @@ def solve_stationary_pytdgl_like(
         total_time_s = int(steps) * float(dt_s)
     if float(total_time_s) <= 0:
         raise ValueError("total_time_s must be positive.")
+    if int(photon_ready_consecutive_evaluations) < 1:
+        raise ValueError("photon_ready_consecutive_evaluations must be positive.")
+    positive_parameters = {
+        "dynamic_stationarity_minimum_tail_ps": dynamic_stationarity_minimum_tail_ps,
+        "dynamic_stationarity_profile_rel": dynamic_stationarity_profile_rel,
+        "dynamic_stationarity_voltage_rel": dynamic_stationarity_voltage_rel,
+        "thermal_stationarity_relative_tolerance": thermal_stationarity_relative_tolerance,
+        "thermal_stationarity_p99_tolerance_K": thermal_stationarity_p99_tolerance_K,
+        "thermal_stationarity_projection_horizon_ps": thermal_stationarity_projection_horizon_ps,
+        "thermal_stationarity_projection_relative_tolerance": (
+            thermal_stationarity_projection_relative_tolerance
+        ),
+    }
+    for name, value in positive_parameters.items():
+        if not np.isfinite(float(value)) or float(value) <= 0.0:
+            raise ValueError(f"{name} must be finite and positive.")
     if target_current_A is None:
         target_current_A = seed_target_current_A(seed)
     target_current_A = float(target_current_A)
     supercurrent_law = _normalize_supercurrent_law(supercurrent_law)
-    phase_gradient_rel_tol = (
-        float(stationarity_phase_gradient_rel)
-        if stationarity_phase_gradient_rel is not None
-        else (float(stationarity_delta_rel) if stationarity_delta_rel is not None else 1.0e-4)
-    )
-    phi_gradient_rel_tol = (
-        float(stationarity_phi_gradient_rel)
-        if stationarity_phi_gradient_rel is not None
-        else (float(stationarity_phi_rel) if stationarity_phi_rel is not None else 1.0e-4)
-    )
-
     psi0_J = (
         np.asarray(seed.node_psi_real_J, dtype=float)
         + 1j * np.asarray(seed.node_psi_imag_J, dtype=float)
@@ -167,7 +167,18 @@ def solve_stationary_pytdgl_like(
         max_K=thermal_max_K,
         max_step_K=float(thermal_max_step_K),
         max_substeps=int(thermal_max_substeps),
-        stationarity_rate_K_per_ps=float(thermal_stationarity_rate_K_per_ps),
+        stationarity_relative_tolerance=float(
+            thermal_stationarity_relative_tolerance
+        ),
+        stationarity_p99_tolerance_K=float(
+            thermal_stationarity_p99_tolerance_K
+        ),
+        stationarity_projection_horizon_ps=float(
+            thermal_stationarity_projection_horizon_ps
+        ),
+        stationarity_projection_relative_tolerance=float(
+            thermal_stationarity_projection_relative_tolerance
+        ),
     )
     if thermal_config.enabled:
         thermal_controller = ThermalRuntimeController(
@@ -398,7 +409,6 @@ def solve_stationary_pytdgl_like(
             stationarity_phi_gradient_abs_V_m=stationarity_phi_gradient_abs_V_m,
             stationarity_edge_active_threshold=stationarity_edge_active_threshold,
             stationarity_bulk_exclusion_xi=stationarity_bulk_exclusion_xi,
-            dynamic_stationarity_tail_snapshots=dynamic_stationarity_tail_snapshots,
             dynamic_stationarity_minimum_tail_ps=dynamic_stationarity_minimum_tail_ps,
             dynamic_stationarity_profile_rel=dynamic_stationarity_profile_rel,
             dynamic_stationarity_voltage_rel=dynamic_stationarity_voltage_rel,
@@ -406,8 +416,21 @@ def solve_stationary_pytdgl_like(
             continuity_rms_tol=continuity_rms_tol,
             continuity_max_tol=continuity_max_tol,
             continuity_poisson_tol=continuity_poisson_tol,
-            thermal_stationarity_rate_K_per_ps=thermal_stationarity_rate_K_per_ps,
-            requested_total_time_s=float(total_time_s),
+            thermal_stationarity_relative_tolerance=(
+                thermal_stationarity_relative_tolerance
+            ),
+            thermal_stationarity_p99_tolerance_K=(
+                thermal_stationarity_p99_tolerance_K
+            ),
+            thermal_stationarity_projection_horizon_ps=(
+                thermal_stationarity_projection_horizon_ps
+            ),
+            thermal_stationarity_projection_relative_tolerance=(
+                thermal_stationarity_projection_relative_tolerance
+            ),
+            photon_ready_consecutive_evaluations=(
+                photon_ready_consecutive_evaluations
+            ),
             tau0=tau0,
             state=early_stop_state,
         )
@@ -428,9 +451,6 @@ def solve_stationary_pytdgl_like(
         circuit_step_callback=circuit_step_callback,
         circuit_snapshot_callback=circuit_snapshot_callback,
         early_stop_callback=early_stop_callback,
-        stop_eta=float(stationarity_eta) if stationarity_eta is not None and stationarity_eta > 0.0 else None,
-        stop_min_steps=int(convergence_min_steps),
-        stop_on_convergence=bool(stop_on_convergence),
     )
     solver.snapshot_count = max(2, int(n_snapshots))
     solution = solver.solve()
@@ -484,32 +504,20 @@ def solve_stationary_pytdgl_like(
         phase_drive_continuation=phase_drive_continuation,
     )
 
-    phase_gradient_rel_tol = (
-        float(stationarity_phase_gradient_rel)
-        if stationarity_phase_gradient_rel is not None
-        else (float(stationarity_delta_rel) if stationarity_delta_rel is not None else 1.0e-4)
-    )
-    phi_gradient_rel_tol = (
-        float(stationarity_phi_gradient_rel)
-        if stationarity_phi_gradient_rel is not None
-        else (float(stationarity_phi_rel) if stationarity_phi_rel is not None else 1.0e-4)
-    )
     stationarity_diag = stationarity_diagnostics(
         history=history,
         material=material,
-        phase_gradient_rel_tol=phase_gradient_rel_tol,
-        phi_gradient_rel_tol=phi_gradient_rel_tol,
+        phase_gradient_rel_tol=float(stationarity_phase_gradient_rel),
+        phi_gradient_rel_tol=float(stationarity_phi_gradient_rel),
         phase_gradient_abs_tol_m_inv=float(stationarity_q_abs_m_inv),
         phi_gradient_abs_tol_V_m=float(stationarity_phi_gradient_abs_V_m),
         edge_active_threshold=float(stationarity_edge_active_threshold),
         bulk_exclusion_xi=float(stationarity_bulk_exclusion_xi),
-        eta_tol=float(stationarity_eta),
     )
     dynamic_stationarity_diag = dynamic_stationarity_diagnostics(
         history=history,
         nodes_m=np.asarray(mesh.nodes, dtype=float)[:, :2],
         delta0_J=float(material.delta0_J),
-        tail_snapshots=int(dynamic_stationarity_tail_snapshots),
         minimum_tail_duration_ps=float(dynamic_stationarity_minimum_tail_ps),
         profile_relative_tolerance=float(dynamic_stationarity_profile_rel),
         voltage_relative_tolerance=float(dynamic_stationarity_voltage_rel),
@@ -540,8 +548,18 @@ def solve_stationary_pytdgl_like(
         history,
         enabled=bool(thermal_config.enabled),
         start_time_s=float(thermal_config.start_time_s),
-        requested_total_time_s=float(total_time_s),
-        rate_tol_K_per_ps=float(thermal_config.stationarity_rate_K_per_ps),
+        bath_K=float(thermal_config.bath_K),
+        minimum_tail_duration_ps=float(dynamic_stationarity_minimum_tail_ps),
+        relative_tolerance=float(
+            thermal_config.stationarity_relative_tolerance
+        ),
+        p99_tolerance_K=float(thermal_config.stationarity_p99_tolerance_K),
+        projection_horizon_ps=float(
+            thermal_config.stationarity_projection_horizon_ps
+        ),
+        projection_relative_tolerance=float(
+            thermal_config.stationarity_projection_relative_tolerance
+        ),
     )
     circuit_stationarity_diag = circuit_stationarity_diagnostics(
         history,
@@ -551,14 +569,29 @@ def solve_stationary_pytdgl_like(
         "passes": True,
         "reason": "circuit coupling disabled",
     }
-    magic_ready = bool(
-        stationarity_diag.passes
-        and dynamic_stationarity_diag.passes
-        and recovery_diag.passes
-        and continuity_diag.passes
-        and bool(thermal_stationarity_diag.get("passes", False))
-        and bool(circuit_stationarity_diag.get("passes", False))
+    phase_convergence = np.asarray(
+        history.get("allmaras_phase_convergence_converged", []),
+        dtype=bool,
+    ).reshape(-1)
+    phase_drive_converged = bool(
+        phase_convergence.size and phase_convergence[-1]
     )
+    readiness = classify_photon_readiness(
+        strict_stationarity_passes=stationarity_diag.passes,
+        dynamic_stationarity_passes=dynamic_stationarity_diag.passes,
+        contact_recovery_passes=recovery_diag.passes,
+        continuity_passes=continuity_diag.passes,
+        thermal_stationarity_passes=bool(
+            thermal_stationarity_diag.get("passes", False)
+        ),
+        circuit_stationarity_passes=bool(
+            circuit_stationarity_diag.get("passes", False)
+        ),
+        phase_drive_converged=phase_drive_converged,
+    )
+    mesoscopic_passes = bool(readiness["mesoscopic_passes"])
+    mesoscopic_mode = str(readiness["mesoscopic_mode"])
+    photon_ready = bool(readiness["passes"])
 
     jn_max_A_m2, jt_max_A_m2 = current_density_maxima_A_m2(currents)
     summary: dict[str, Any] = {
@@ -567,11 +600,10 @@ def solve_stationary_pytdgl_like(
         "converged": bool(solution.history.get("converged", np.array([False], dtype=bool))[0]),
         "convergence_reason": str(solution.history.get("convergence_reason", np.array(["not_reported"], dtype=object))[0]),
         "stop_reason": str(solution.history.get("stop_reason", np.array(["not_reported"], dtype=object))[0]),
-        "stop_on_convergence": bool(solution.history.get("stop_on_convergence", np.array([False], dtype=bool))[0]),
-        "eta_converged": bool(solution.history.get("eta_converged", np.array([False], dtype=bool))[0]),
-        "eta_convergence_step": int(solution.history.get("eta_convergence_step", np.array([-1], dtype=int))[0]),
-        "eta_convergence_time_ps": float(solution.history.get("eta_convergence_time", np.array([float("nan")]))[0] * tau0 / 1.0e-12),
-        "first_magic_ready": magic_ready,
+        "photon_ready": photon_ready,
+        "mesoscopic_stationarity_passes": mesoscopic_passes,
+        "mesoscopic_stationarity_mode": mesoscopic_mode,
+        "phase_drive_converged": phase_drive_converged,
         "dynamic_stationarity_passes": bool(dynamic_stationarity_diag.passes),
         "accepted_steps": int(solution.history.get("final_step", np.array([0]))[0]),
         "rejected_steps": int(solution.history.get("total_rejected_attempts", np.array([0]))[0]),
@@ -738,10 +770,13 @@ def solve_stationary_pytdgl_like(
             "current_scale_A": float(device.current_scale_A),
             "native_si_current_scale_A_m2": float(native_diag.current_scale_A_m2),
             "allmaras_coefficients_backend": "appendix_b_allmaras_wz_update_v1",
-            "allmaras_update_backend": "appendix_b_normalized_phase_drive_harmonic_continuation_v2",
+            "allmaras_update_backend": "appendix_b_regular_edge_stiffness_phase_drive_v3",
             "allmaras_phase_continuation_method": "jacobi_preconditioned_cg_harmonic_continuation",
             "pytdgl_reference": "loganbvh/py-tdgl solver/operator structure, MIT license",
-            "first_magic_ready": magic_ready,
+            "photon_ready": photon_ready,
+            "mesoscopic_stationarity_passes": mesoscopic_passes,
+            "mesoscopic_stationarity_mode": mesoscopic_mode,
+            "phase_drive_converged": phase_drive_converged,
             "dynamic_stationarity_passes": bool(dynamic_stationarity_diag.passes),
             "stationarity": stationarity_diag.as_dict(),
             "dynamic_stationarity": dynamic_stationarity_diag.as_dict(),

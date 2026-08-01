@@ -18,6 +18,45 @@ from pysnspd.solver.targets import (
 from pysnspd.thermal.evolution import thermal_stationarity_diagnostics
 
 
+def classify_photon_readiness(
+    *,
+    strict_stationarity_passes: bool,
+    dynamic_stationarity_passes: bool,
+    contact_recovery_passes: bool,
+    continuity_passes: bool,
+    thermal_stationarity_passes: bool,
+    circuit_stationarity_passes: bool,
+    phase_drive_converged: bool,
+) -> dict[str, bool | str]:
+    """Combine hard validity gates with alternative mesoscopic SS modes."""
+
+    mesoscopic_passes = bool(
+        strict_stationarity_passes or dynamic_stationarity_passes
+    )
+    mesoscopic_mode = (
+        "strict_fixed_point"
+        if strict_stationarity_passes
+        else (
+            "weak_dynamic_attractor"
+            if dynamic_stationarity_passes
+            else "none"
+        )
+    )
+    passes = bool(
+        mesoscopic_passes
+        and contact_recovery_passes
+        and continuity_passes
+        and thermal_stationarity_passes
+        and circuit_stationarity_passes
+        and phase_drive_converged
+    )
+    return {
+        "passes": passes,
+        "mesoscopic_passes": mesoscopic_passes,
+        "mesoscopic_mode": mesoscopic_mode,
+    }
+
+
 def build_total_stationarity_callback(
     *,
     mesh,
@@ -40,7 +79,6 @@ def build_total_stationarity_callback(
     stationarity_phi_gradient_abs_V_m: float,
     stationarity_edge_active_threshold: float,
     stationarity_bulk_exclusion_xi: float,
-    dynamic_stationarity_tail_snapshots: int,
     dynamic_stationarity_minimum_tail_ps: float,
     dynamic_stationarity_profile_rel: float,
     dynamic_stationarity_voltage_rel: float,
@@ -48,14 +86,16 @@ def build_total_stationarity_callback(
     continuity_rms_tol: float,
     continuity_max_tol: float,
     continuity_poisson_tol: float,
-    thermal_stationarity_rate_K_per_ps: float,
-    requested_total_time_s: float,
+    thermal_stationarity_relative_tolerance: float,
+    thermal_stationarity_p99_tolerance_K: float,
+    thermal_stationarity_projection_horizon_ps: float,
+    thermal_stationarity_projection_relative_tolerance: float,
+    photon_ready_consecutive_evaluations: int,
     tau0: float,
     state: dict[str, Any],
 ):
     """Build the snapshot-rate gate used for SS early termination."""
 
-    del Tph_K
     nodes = np.asarray(mesh.nodes, dtype=float)[:, :2]
     edge_i = np.asarray(ops.edge_i, dtype=np.int64)
     edge_j = np.asarray(ops.edge_j, dtype=np.int64)
@@ -78,9 +118,17 @@ def build_total_stationarity_callback(
         "phi": [],
         "edge_q": [],
         "terminal_voltage": [],
+        "Te": [],
+        "Tph": [],
     }
     state["last_evaluation_time_ps"] = None
     state["passes"] = False
+    state["instantaneous_passes"] = False
+    state["consecutive_passes"] = 0
+    state["required_consecutive_passes"] = max(
+        1,
+        int(photon_ready_consecutive_evaluations),
+    )
 
     def callback(*, time: float, frame, running_state) -> str | None:
         time_s = float(time) * float(tau0)
@@ -109,13 +157,14 @@ def build_total_stationarity_callback(
         frames["phi"].append(phi_V)
         frames["edge_q"].append(np.asarray(currents.edge_Q_m_inv, dtype=float))
         frames["terminal_voltage"].append(float(np.ptp(phi_V)))
-        retain_count = max(3, int(dynamic_stationarity_tail_snapshots))
+        frames["Te"].append(np.asarray(Te_K, dtype=float).copy())
+        frames["Tph"].append(np.asarray(Tph_K, dtype=float).copy())
         retain_window_s = max(
             float(dynamic_stationarity_minimum_tail_ps) * 1.0e-12,
             float(circuit_runtime.hold_time_s),
         ) + 1.0e-12
         while (
-            len(frames["t_s"]) > retain_count
+            len(frames["t_s"]) > 3
             and float(frames["t_s"][1]) < time_s - retain_window_s
         ):
             for values in frames.values():
@@ -140,8 +189,6 @@ def build_total_stationarity_callback(
         xi2 = np.asarray(material.xi_mod_squared_m2(Te_K), dtype=float)
         xi_m = float(np.sqrt(np.nanmedian(np.maximum(xi2, 1.0e-300))))
         raw = running_state.data
-        dt_dimless = np.asarray(raw.get("dt", []), dtype=float)
-        step_t_s = np.cumsum(dt_dimless) * tau0
         online_history = {
             "snapshot_t_s": np.asarray(frames["t_s"], dtype=float),
             "psi_snapshot_real_J": np.asarray(frames["psi_real"], dtype=float),
@@ -152,6 +199,8 @@ def build_total_stationarity_callback(
                 dtype=float,
             ),
             "terminal_voltage_V": np.asarray(frames["terminal_voltage"], dtype=float),
+            "Te_snapshot_K": np.asarray(frames["Te"], dtype=float),
+            "Tph_snapshot_K": np.asarray(frames["Tph"], dtype=float),
             "edge_i": edge_i,
             "edge_j": edge_j,
             "edge_length_m": edge_length,
@@ -179,7 +228,6 @@ def build_total_stationarity_callback(
             history=online_history,
             nodes_m=nodes,
             delta0_J=float(material.delta0_J),
-            tail_snapshots=int(dynamic_stationarity_tail_snapshots),
             minimum_tail_duration_ps=float(dynamic_stationarity_minimum_tail_ps),
             profile_relative_tolerance=float(dynamic_stationarity_profile_rel),
             voltage_relative_tolerance=float(dynamic_stationarity_voltage_rel),
@@ -206,33 +254,57 @@ def build_total_stationarity_callback(
             max_tol=float(continuity_max_tol),
             poisson_tol=float(continuity_poisson_tol),
         )
-        thermal_history = {"t_s": step_t_s}
-        for key, value in raw.items():
-            if str(key).startswith("thermal_"):
-                thermal_history[str(key)] = np.asarray(value)
         thermal = thermal_stationarity_diagnostics(
-            thermal_history,
+            online_history,
             enabled=bool(thermal_config.enabled),
             start_time_s=float(thermal_config.start_time_s),
-            requested_total_time_s=float(requested_total_time_s),
-            rate_tol_K_per_ps=float(thermal_stationarity_rate_K_per_ps),
+            bath_K=float(thermal_config.bath_K),
+            minimum_tail_duration_ps=float(dynamic_stationarity_minimum_tail_ps),
+            relative_tolerance=float(thermal_stationarity_relative_tolerance),
+            p99_tolerance_K=float(thermal_stationarity_p99_tolerance_K),
+            projection_horizon_ps=float(thermal_stationarity_projection_horizon_ps),
+            projection_relative_tolerance=float(
+                thermal_stationarity_projection_relative_tolerance
+            ),
         )
         circuit = (
             circuit_stationarity_diagnostics(raw, config=circuit_runtime)
             if circuit_controller is not None
             else {"enabled": False, "passes": True}
         )
-        passes = bool(
-            stationarity.passes
-            and dynamic_stationarity.passes
-            and contact.passes
-            and continuity.passes
-            and bool(thermal.get("passes", False))
-            and bool(circuit.get("passes", False))
+        phase_convergence = np.asarray(
+            raw.get("allmaras_phase_convergence_converged", []),
+            dtype=bool,
+        ).reshape(-1)
+        phase_converged = bool(
+            phase_convergence.size and phase_convergence[-1]
         )
+        readiness = classify_photon_readiness(
+            strict_stationarity_passes=stationarity.passes,
+            dynamic_stationarity_passes=dynamic_stationarity.passes,
+            contact_recovery_passes=contact.passes,
+            continuity_passes=continuity.passes,
+            thermal_stationarity_passes=bool(thermal.get("passes", False)),
+            circuit_stationarity_passes=bool(circuit.get("passes", False)),
+            phase_drive_converged=phase_converged,
+        )
+        mesoscopic_passes = bool(readiness["mesoscopic_passes"])
+        instantaneous_passes = bool(readiness["passes"])
+        consecutive = (
+            int(state.get("consecutive_passes", 0)) + 1
+            if instantaneous_passes
+            else 0
+        )
+        required = int(state["required_consecutive_passes"])
+        passes = bool(instantaneous_passes and consecutive >= required)
         state.update(
             {
                 "passes": passes,
+                "instantaneous_passes": instantaneous_passes,
+                "consecutive_passes": consecutive,
+                "phase_drive_converged": phase_converged,
+                "mesoscopic_passes": mesoscopic_passes,
+                "mesoscopic_mode": str(readiness["mesoscopic_mode"]),
                 "stationarity": stationarity.as_dict(),
                 "dynamic_stationarity": dynamic_stationarity.as_dict(),
                 "contact_recovery": contact.as_dict(),
@@ -246,4 +318,4 @@ def build_total_stationarity_callback(
     return callback
 
 
-__all__ = ["build_total_stationarity_callback"]
+__all__ = ["build_total_stationarity_callback", "classify_photon_readiness"]

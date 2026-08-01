@@ -187,10 +187,28 @@ def parse_args() -> argparse.Namespace:
         help="Maximum thermal substeps inside one accepted gTDGL step.",
     )
     parser.add_argument(
-        "--thermal-stationarity-rate-K-per-ps",
+        "--thermal-stationarity-relative-tol",
+        type=float,
+        default=3.0e-3,
+        help="Relative RMS drift/fluctuation tolerance for the Te/Tph tail fields.",
+    )
+    parser.add_argument(
+        "--thermal-stationarity-p99-mK",
+        type=float,
+        default=3.0,
+        help="99th-percentile nodal temperature-drift tolerance over the tail.",
+    )
+    parser.add_argument(
+        "--thermal-stationarity-projection-ps",
+        type=float,
+        default=20.0,
+        help="Horizon used to project the fitted slow thermal trend.",
+    )
+    parser.add_argument(
+        "--thermal-stationarity-projection-rel",
         type=float,
         default=1.0e-2,
-        help="Fourth run-effective criterion: max final thermal rate tolerance in K/ps.",
+        help="Maximum projected RMS thermal drift over the projection horizon.",
     )
 
     parser.add_argument(
@@ -230,22 +248,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--ss-terminal-healing-fraction", type=float, default=0.95)
 
-    # eta_R is kept only as a diagnostic; the SS target now uses gauge-fixed
-    # edge gradients in the superconducting bulk.
-    parser.add_argument(
-        "--ss-stationarity-eta",
-        type=float,
-        default=1.0e-5,
-        help=(
-            "Info-only solver amplitude residual stored in the summary; "
-            "no longer gates SS target pass/fail."
-        ),
-    )
-
-    # Operational quasi-SS defaults for the central superconducting bulk.
-    # These are intentionally looser than the earlier strict residual target;
-    # they are meant to pass the small-tau quasi-stationary state in about 20 ps
-    # while still rejecting the long-tau contact-conversion-dominated branch.
+    # Strict fixed-point criteria for the central superconducting bulk.  These
+    # remain one photon-readiness route; the complementary time-window
+    # diagnostic accepts a stable weakly dynamic attractor.
     parser.add_argument(
         "--ss-stationarity-phase-gradient-rel",
         type=float,
@@ -295,12 +300,6 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
-        "--ss-dynamic-stationarity-tail-snapshots",
-        type=int,
-        default=4,
-        help="Number of final snapshots used to classify a dynamic stationary state.",
-    )
-    parser.add_argument(
         "--ss-dynamic-stationarity-min-tail-ps",
         type=float,
         default=5.0,
@@ -309,13 +308,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--ss-dynamic-stationarity-profile-rel",
         type=float,
-        default=5.0e-2,
+        default=1.0e-2,
         help="Relative tolerance for fluctuation and drift of the transverse-median gap profile.",
     )
     parser.add_argument(
         "--ss-dynamic-stationarity-voltage-rel",
         type=float,
-        default=5.0e-2,
+        default=2.0e-2,
         help="Relative tolerance for the late terminal-voltage envelope and drift.",
     )
     parser.add_argument(
@@ -328,34 +327,13 @@ def parse_args() -> argparse.Namespace:
         ),
     )
 
-    # Deprecated aliases kept for compatibility with older command lines.
     parser.add_argument(
-        "--ss-stationarity-delta-rel",
-        type=float,
-        default=None,
+        "--ss-photon-ready-consecutive-evaluations",
+        type=int,
+        default=5,
         help=(
-            "Deprecated alias: used as --ss-stationarity-phase-gradient-rel "
-            "if the new flag is omitted."
-        ),
-    )
-    parser.add_argument(
-        "--ss-stationarity-phi-rel",
-        type=float,
-        default=None,
-        help=(
-            "Deprecated alias: used as --ss-stationarity-phi-gradient-rel "
-            "if the new flag is omitted."
-        ),
-    )
-
-    parser.add_argument("--ss-convergence-min-steps", type=int, default=500)
-    parser.add_argument(
-        "--ss-stop-on-convergence",
-        action="store_true",
-        help=(
-            "Stop early when the info-only max_d_abs_sq_psi threshold is reached. "
-            "By default the solver now always runs until --ss-time-ps and only "
-            "records eta convergence as a diagnostic."
+            "Number of consecutive 0.5 ps stationarity evaluations required "
+            "before photon-ready early termination."
         ),
     )
     parser.add_argument(
@@ -364,8 +342,8 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         default=True,
         help=(
-            "Stop when mesoscopic, contact, continuity, thermal, and circuit "
-            "stationarity criteria all pass. Enabled by default."
+            "Stop when strict-or-dynamic mesoscopic readiness plus contact, "
+            "continuity, thermal, circuit, and phase-solve gates persist."
         ),
     )
     parser.add_argument(
@@ -559,7 +537,7 @@ def main() -> int:
             f"  {item['target_current_uA']:8.3f} uA  "
             f"seed={item.get('seed_current_uA', float('nan')):8.3f} uA  "
             f"clamped={item.get('seed_is_overcritical_clamped', False)}  "
-            f"dynamic_SS={item.get('dynamic_stationarity_passes', False)}  "
+            f"photon_ready={item.get('photon_ready', False)}  "
             f"run={item['run_name']}  raw_ss={item['raw_ss']}"
         )
     if failed_results:
@@ -647,7 +625,7 @@ def _run_single_current_case(
     if args.ss_time_ps is not None:
         total_time_ps = float(args.ss_time_ps)
     else:
-        total_time_ps = float(ss_run_cfg.get("total_time_ps", ss_run_cfg.get("physical_time_ps", 20.0)))
+        total_time_ps = float(ss_run_cfg["total_time_ps"])
     if total_time_ps <= 0.0:
         raise ValueError("--ss-time-ps or ss_run.total_time_ps must be positive.")
 
@@ -707,7 +685,6 @@ def _run_single_current_case(
                 supercurrent_law=supercurrent_law,
                 terminal_healing_xi=args.ss_terminal_healing_xi,
                 terminal_healing_fraction=float(args.ss_terminal_healing_fraction),
-                stationarity_eta=float(args.ss_stationarity_eta),
                 stationarity_phase_gradient_rel=args.ss_stationarity_phase_gradient_rel,
                 stationarity_phi_gradient_rel=args.ss_stationarity_phi_gradient_rel,
                 stationarity_q_abs_m_inv=float(args.ss_stationarity_q_abs_m_inv),
@@ -718,9 +695,6 @@ def _run_single_current_case(
                     args.ss_stationarity_edge_active_threshold
                 ),
                 stationarity_bulk_exclusion_xi=float(args.ss_stationarity_bulk_exclusion_xi),
-                dynamic_stationarity_tail_snapshots=int(
-                    args.ss_dynamic_stationarity_tail_snapshots
-                ),
                 dynamic_stationarity_minimum_tail_ps=float(
                     args.ss_dynamic_stationarity_min_tail_ps
                 ),
@@ -733,10 +707,9 @@ def _run_single_current_case(
                 dynamic_stationarity_psl_threshold=float(
                     args.ss_dynamic_stationarity_psl_threshold
                 ),
-                stationarity_delta_rel=args.ss_stationarity_delta_rel,
-                stationarity_phi_rel=args.ss_stationarity_phi_rel,
-                convergence_min_steps=int(args.ss_convergence_min_steps),
-                stop_on_convergence=bool(args.ss_stop_on_convergence),
+                photon_ready_consecutive_evaluations=int(
+                    args.ss_photon_ready_consecutive_evaluations
+                ),
                 continuity_rms_tol=float(args.ss_continuity_rms_tol),
                 continuity_max_tol=float(args.ss_continuity_max_tol),
                 continuity_poisson_tol=float(args.ss_continuity_poisson_tol),
@@ -760,8 +733,17 @@ def _run_single_current_case(
                 thermal_max_K=None,
                 thermal_max_step_K=float(args.thermal_max_step_K),
                 thermal_max_substeps=int(args.thermal_max_substeps),
-                thermal_stationarity_rate_K_per_ps=float(
-                    args.thermal_stationarity_rate_K_per_ps
+                thermal_stationarity_relative_tolerance=float(
+                    args.thermal_stationarity_relative_tol
+                ),
+                thermal_stationarity_p99_tolerance_K=float(
+                    args.thermal_stationarity_p99_mK
+                ) * 1.0e-3,
+                thermal_stationarity_projection_horizon_ps=float(
+                    args.thermal_stationarity_projection_ps
+                ),
+                thermal_stationarity_projection_relative_tolerance=float(
+                    args.thermal_stationarity_projection_rel
                 ),
                 circuit_enabled=bool(args.circuit_enable),
                 circuit_params=CircuitParams(
@@ -890,7 +872,7 @@ def _run_single_current_case(
         "seed_is_overcritical_clamped": bool(seed_current_policy.get("seed_is_overcritical_clamped", False)),
         "summary_path": str(summary_path),
         "manifest_path": str(manifest_path),
-        "first_magic_ready": bool(result.summary.get("first_magic_ready", False)),
+        "photon_ready": bool(result.summary.get("photon_ready", False)),
         "dynamic_stationarity_passes": bool(
             dict(result.summary.get("dynamic_stationarity", {})).get("passes", False)
         ),
@@ -1174,6 +1156,7 @@ def _print_single_case_report(
     seed_policy = dict(seed_summary_data.get("overcritical_seed_policy", {}))
     stationarity = dict(solver_summary.get("stationarity", {}))
     dynamic_stationarity = dict(solver_summary.get("dynamic_stationarity", {}))
+    thermal_stationarity = dict(solver_summary.get("thermal_stationarity", {}))
     continuity = dict(solver_summary.get("continuity", {}))
     contact = dict(solver_summary.get("contact_recovery", {}))
 
@@ -1196,6 +1179,9 @@ def _print_single_case_report(
     print(f"  continuity_passes:     {continuity.get('passes', 'n/a')}")
     print(f"  stationarity_passes:   {stationarity.get('passes', 'n/a')}")
     print(f"  dynamic_SS_passes:     {dynamic_stationarity.get('passes', 'n/a')}")
+    print(f"  photon_ready:          {solver_summary.get('photon_ready', 'n/a')}")
+    print(f"  mesoscopic_mode:       {solver_summary.get('mesoscopic_stationarity_mode', 'n/a')}")
+    print(f"  thermal_ready:         {thermal_stationarity.get('passes', 'n/a')}")
     print(f"  dynamic_SS_regime:     {dynamic_stationarity.get('morphology_regime', 'n/a')}")
     print(f"  dynamic_SS_PSL_count:  {dynamic_stationarity.get('psl_count_final', 'n/a')}")
     print(f"  contact_recovery:      {contact.get('passes', 'n/a')}")

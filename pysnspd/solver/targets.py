@@ -382,11 +382,6 @@ def stationarity_diagnostics(
     edge_active_threshold: float = 0.05,
     bulk_exclusion_xi: float = 4.0,
     eta_window: int = 20,
-    # Deprecated aliases kept so older tests/calls fail softly instead of
-    # changing semantics silently.  They are ignored for the pass/fail gate.
-    delta_rel_tol: float | None = None,
-    phi_rel_tol: float | None = None,
-    eta_tol: float | None = None,
 ) -> StationarityDiagnostics:
     """Evaluate gauge-fixed temporal stationarity from final snapshots.
 
@@ -410,7 +405,7 @@ def stationarity_diagnostics(
     where a physical conversion field and normal current are expected.
     """
 
-    del material, delta_rel_tol, phi_rel_tol, eta_tol
+    del material
 
     q_edge = _snapshot_2d(
         history.get("edge_phase_gradient_snapshot_m_inv", history.get("edge_Q_snapshot_m_inv", []))
@@ -486,10 +481,9 @@ def dynamic_stationarity_diagnostics(
     history: dict[str, np.ndarray],
     nodes_m: np.ndarray,
     delta0_J: float,
-    tail_snapshots: int = 4,
-    minimum_tail_duration_ps: float = 2.0,
-    profile_relative_tolerance: float = 5.0e-2,
-    voltage_relative_tolerance: float = 5.0e-2,
+    minimum_tail_duration_ps: float = 5.0,
+    profile_relative_tolerance: float = 1.0e-2,
+    voltage_relative_tolerance: float = 2.0e-2,
     voltage_absolute_scale_V: float = 1.0e-4,
     psl_threshold_over_delta0: float = 0.75,
     normal_like_fraction_threshold: float = 0.85,
@@ -531,14 +525,24 @@ def dynamic_stationarity_diagnostics(
         delta_over_delta0 = delta_meV / max(delta0_meV, 1.0e-300)
 
     n_available = min(snap_t_s.size, delta_over_delta0.shape[0])
-    requested_tail = max(3, int(tail_snapshots))
-    n_tail = min(requested_tail, n_available)
-    if n_tail > 0:
-        tail_t_s = snap_t_s[n_available - n_tail : n_available]
-        tail_delta = delta_over_delta0[n_available - n_tail : n_available]
+    if n_available > 0:
+        available_t_s = snap_t_s[:n_available]
+        minimum_duration_s = float(minimum_tail_duration_ps) * 1.0e-12
+        tail_start_s = float(available_t_s[-1]) - minimum_duration_s
+        # Include the frame bracketing the requested start from below.  With
+        # adaptive stepping, snapshots land just after their nominal times;
+        # selecting only ``t >= end - duration`` would make every tail a
+        # fraction of one snapshot interval too short.
+        tail_start = max(
+            0,
+            int(np.searchsorted(available_t_s, tail_start_s, side="right")) - 1,
+        )
+        tail_t_s = available_t_s[tail_start:n_available]
+        tail_delta = delta_over_delta0[tail_start:n_available]
     else:
         tail_t_s = np.array([], dtype=float)
         tail_delta = np.empty((0, x_m.size), dtype=float)
+    n_tail = int(tail_t_s.size)
     tail_duration_ps = (
         float((tail_t_s[-1] - tail_t_s[0]) / 1.0e-12) if tail_t_s.size >= 2 else 0.0
     )

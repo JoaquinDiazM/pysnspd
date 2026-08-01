@@ -65,7 +65,7 @@ def test_build_ss_plot_dataset_and_figures(tmp_path):
     }
     summary = {
         "solver": {
-            "first_magic_ready": True,
+            "photon_ready": True,
             "target_current_A": 1.0e-6,
             "stationarity": {"passes": True, "bulk_exclusion_length_m": 2.0e-9},
             "contact_recovery": {"passes": True},

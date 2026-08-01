@@ -228,24 +228,8 @@ def validate_config(
         _require_positive_int(phase_space, key, "catalogs.phase_space")
 
     ss_run = _require_section(cfg, "ss_run")
-    # SS runs are controlled by physical time, not by a maximum step count.
-    # ``max_steps`` is deliberately not required here.  Older YAML files are
-    # tolerated, but the canonical key is ``total_time_ps``.
-    if "total_time_ps" not in ss_run:
-        if "physical_time_ps" in ss_run:
-            ss_run["total_time_ps"] = _require_positive_number(ss_run, "physical_time_ps", "ss_run")
-        elif "max_steps" in ss_run:
-            # Backward compatibility only: convert old max_steps*dt_s to ps.
-            # This keeps legacy configs loadable without keeping max_steps as
-            # a control parameter in the SS pipeline.
-            old_steps = _require_positive_int(ss_run, "max_steps", "ss_run")
-            old_dt_s = _require_positive_number(ss_run, "dt_s", "ss_run")
-            ss_run["total_time_ps"] = float(old_steps) * float(old_dt_s) * 1.0e12
-        else:
-            ss_run["total_time_ps"] = 20.0
     _require_positive_number(ss_run, "total_time_ps", "ss_run")
     _require_positive_number(ss_run, "dt_s", "ss_run")
-    _require_positive_number(ss_run, "convergence_tol", "ss_run")
     if "snapshots_per_ps" not in ss_run:
         ss_run["snapshots_per_ps"] = 10.0
     _require_positive_number(ss_run, "snapshots_per_ps", "ss_run")
