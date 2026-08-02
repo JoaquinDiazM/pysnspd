@@ -1,11 +1,11 @@
 # pySNSPD publication status
 
-Last updated: 2026-07-30
+Last updated: 2026-08-02
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: Week 2 — stationarity, convergence, and localized-artifact
-regularization
+Current phase: Week 2 closure - stationarity, localized artifacts, and E1
+figure consolidation
 
 ## Executive status
 
@@ -13,19 +13,30 @@ pySNSPD is a functional multiscale research prototype coupling dirty-limit
 Usadel material data, finite-volume gTDGL/Poisson dynamics, two-temperature
 evolution, photon deposition, and circuit observables in physical units.
 
-Week 2 is active. The stationarity diagnostics and the investigation of
-localized low-amplitude artifacts are both advanced. The constitutive
-regularization identified by the isolated diagnostic has now been implemented
-through PRE, stationary, and photon execution paths. Engineering validation is
-complete at smoke-test scale; long simulations have not yet been run with the
-new catalogues, so neither the weekly scientific task nor the disappearance of
-the 2D notches is considered resolved.
+The stationarity and localized low-amplitude artifact tasks have reached a
+satisfactory technical closure. The corrected stiffness catalogue has been
+used by the production PRE and long SS runs, and the former temporary isolated
+diagnostic pipeline has been removed. The remaining Week 2 acceptance step is
+visual inspection of the I-V curve after the current sweep running in screen
+`code3` completes.
 
-The SS stage also evolves the readout circuit together with the thermal state,
-providing photon runs with a more faithful initial circuit condition. The
-inspected 30 uA stationary result changed very little visually relative to the
-previous thermal-only initialization, but a quantitative equivalence and
-convergence claim is still pending.
+The inspected 30 uA, 200 ps stationary result is photon-ready under the new
+strict-fixed-point OR weak-dynamic-attractor policy. Contact recovery, current
+continuity, phase continuation, thermal fields, and the circuit remain hard
+validity gates.
+
+## Stationarity closure
+
+- Dynamic stationarity now uses a physical 5 ps tail rather than a fixed count
+  of snapshots. The reference run supplies 51 frames over 5.002 ps.
+- Its late profile drift is 0.0082% against a 1% limit and its voltage span is
+  1.697% against a 2% limit.
+- Thermal readiness is evaluated from stored Te/Tph fields rather than the
+  instantaneous explicit RHS. The reference RMS thermal drift is 0.1018%
+  against a 0.3% limit; p99 nodal drift is 1.376 mK against 3 mK.
+- Early termination additionally requires five consecutive successful
+  evaluations separated by 0.5 ps. The old eta-residual stop and obsolete
+  command/config aliases have been removed.
 
 ## Low-amplitude constitutive result
 
@@ -44,8 +55,9 @@ The isolated diagnostic established:
   `117x` to `1.0018x` the direct result, with relative RMS error reduced from
   about `20.8` to `1.8e-3`.
 
-This validates the numerical mechanism and motivates the correction, but does
-not prove that it is the sole cause of every notch in the coupled 2D maps.
+Together with the long-run field inspection, this closes the low-amplitude
+artifact mechanism at the current scope. Mesh/time convergence remains a
+separate publication requirement.
 
 ## Implemented regularization
 
@@ -74,13 +86,15 @@ not prove that it is the sole cause of every notch in the coupled 2D maps.
 - The Laplacian, finite-volume geometry, and local quadratic `|psi|^2` update
   were deliberately left unchanged.
 
-No plotting source or plotting pipeline was modified. Existing E2 and
-single-run E3 diagnostics successfully consumed the new smoke-run archives, so
-no plotting migration task is currently required.
+E1 plotting now reports the Dynes spectral broadening used by each DOS curve,
+marks q_c on the Usadel supercurrent branch, and stores the mesh presentation
+and quality diagnostics under the run's `mesh/` folder. The temporary
+low-amplitude plotting path and its dedicated analysis code/tests were removed.
 
 ## Validation completed
 
-- Complete test suite on Geminga: `143 passed`.
+- Previous complete suite on Geminga: `147 passed`; the updated E1/mesh suite
+  is being rerun before the next commit.
 - Focused constitutive suite: exact zero-amplitude Matsubara limit, quadratic
   amplitude power, q parity, stiffness interpolation, discrete plane wave,
   exact-zero edge current, gauge invariance, difference-before-divergence,
@@ -106,14 +120,12 @@ detection, recovery, or notch-removal evidence.
 
 ## Immediate work and acceptance gates
 
-1. Run the prepared refined, parallel PRE command on Geminga.
-2. Run the prepared classical 30 uA, 200 ps SS case from that PRE.
-3. Run the prepared classical 0.8 eV photon case from the new stationary state.
-4. Compare stationary and photon 2D fields against the previous baseline under
-   identical numerical controls.
-5. Close the artifact task only if the notches disappear or are quantitatively
-   explained; close stationarity only after current, thermal, circuit, phase,
-   and dynamic-attractor criteria pass.
+1. Let the isothermal/no-circuit SS current sweep in screen `code3` finish.
+2. Generate and visually validate its I-V curve and investigate any outlier
+   before accepting the sweep.
+3. Merge `codex/ss-photon-ready-stationarity` into `main` after that review.
+4. Start the planned mesh/time/thermal convergence campaign using the new mesh
+   edge-length and triangle-quality baselines.
 
 The wider publication gates remain unchanged: mesh/time/thermal convergence,
 time-resolved current continuity, accumulated energy closure, material

@@ -582,6 +582,14 @@ def _draw_zoom_inset(
     bounds = _inset_bounds(location)
     inset = ax.inset_axes(bounds)
     inset.set_aspect("equal", adjustable="box")
+    inset.set_anchor(
+        {
+            "upper right": "NE",
+            "upper left": "NW",
+            "lower right": "SE",
+            "lower left": "SW",
+        }[location.lower().strip()]
+    )
     inset.set_facecolor("white")
 
     cx, cy = center
