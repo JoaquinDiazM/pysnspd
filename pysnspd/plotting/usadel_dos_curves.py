@@ -116,6 +116,7 @@ def _plot_dos_curves(
     T_bias_K = _metadata_float(metadata, "T_bias_K")
     Tc_K = _metadata_float(metadata, "Tc_K")
     T_ratio = T_bias_K / Tc_K if np.isfinite(T_bias_K) and np.isfinite(Tc_K) and Tc_K > 0.0 else np.nan
+    eta_line = _eta_legend_line(usadel_catalog)
 
     if mode == "equilibrium_gap":
         state_label = r"$\Delta=\Delta_{\mathrm{eq}}(q)$"
@@ -175,9 +176,13 @@ def _plot_dos_curves(
     else:
         temp_line = ""
 
-    legend_title = state_label + "\n" + r"$I_s/I_c$"
+    title_lines = [state_label]
     if temp_line:
-        legend_title = state_label + "\n" + temp_line + "\n" + r"$I_s/I_c$"
+        title_lines.append(temp_line)
+    if eta_line:
+        title_lines.append(eta_line)
+    title_lines.append(r"$I_s/I_c$")
+    legend_title = "\n".join(title_lines)
 
     legend = ax.legend(
         handles,
@@ -461,6 +466,34 @@ def _metadata_float(metadata: Any, key: str) -> float:
         return float(metadata[key])
     except Exception:
         return float("nan")
+
+
+def _eta_legend_line(usadel_catalog: Any) -> str:
+    """Return the compact Dynes/lifetime broadening used by the DOS solver.
+
+    The real-axis calculation replaces ``E`` by ``E + i*eta``.  In the
+    superconductivity literature ``eta`` is commonly called the Dynes
+    parameter or phenomenological quasiparticle lifetime broadening; in the
+    simplest convention its energy scale corresponds to ``tau ~ hbar/eta``.
+    It should not be interpreted as a literal waiting time for an electron to
+    form a Cooper pair.
+    """
+
+    raw = getattr(usadel_catalog, "eta_J", None)
+    if raw is None:
+        metadata = getattr(usadel_catalog, "metadata", {})
+        raw = metadata.get("eta_J") if isinstance(metadata, dict) else None
+    try:
+        eta_J = float(np.asarray(raw).reshape(-1)[0])
+    except (TypeError, ValueError, IndexError):
+        return ""
+    if not np.isfinite(eta_J) or eta_J < 0.0:
+        return ""
+
+    eta_meV = eta_J / MEV_J
+    if eta_meV < 1.0e-2:
+        return rf"$\eta={1.0e3 * eta_meV:.3f}\,\mu\mathrm{{eV}}$"
+    return rf"$\eta={eta_meV:.3f}\,\mathrm{{meV}}$"
 
 
 def _prepare_output(output_path: str | Path) -> Path:

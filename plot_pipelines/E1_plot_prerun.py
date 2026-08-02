@@ -15,7 +15,9 @@ expensive Delta_eq(T) figure:
 - E1_power_exchange_vs_temperature.pdf
 - E1_energy_heat_capacity_curves.pdf
 - E1_electronic_thermal_conductivity_curves.pdf
-- mesh_pytdgl_style.pdf
+- mesh/mesh_pytdgl_style.pdf
+- mesh/mesh_edge_length_histograms.pdf
+- mesh/mesh_triangle_quality.pdf
 
 Use --with-gap-plot only when the additional Delta_eq(T) figure is needed.
 """
@@ -39,7 +41,11 @@ from pysnspd.io.manager import create_run_layout
 from pysnspd.kinetic.eliashberg import load_simon_eliashberg_dat
 from pysnspd.mesh.delaunay import load_mesh_npz
 from pysnspd.plotting.eliashberg_spectrum import plot_eliashberg_spectrum
-from pysnspd.plotting.mesh import plot_mesh_pytdgl_style
+from pysnspd.plotting.mesh import (
+    plot_mesh_edge_length_histograms,
+    plot_mesh_pytdgl_style,
+    plot_mesh_triangle_quality,
+)
 from pysnspd.plotting.pre_diagnostics import plot_usadel_supercurrent_curve
 from pysnspd.plotting.power_diagnostics import (
     load_power_table_plot_catalog,
@@ -90,6 +96,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help="Optional output directory; defaults to plots/<pre-run-name>/figures/E1_prerun.",
+    )
+    parser.add_argument(
+        "--mesh-output-dir",
+        type=Path,
+        default=None,
+        help="Optional mesh output directory; defaults to plots/<pre-run-name>/mesh.",
     )
     parser.add_argument(
         "--eliashberg-dat",
@@ -267,6 +279,12 @@ def main() -> int:
         else args.output_dir.expanduser().resolve()
     )
     figures_dir.mkdir(parents=True, exist_ok=True)
+    mesh_dir = (
+        Path(layout["plots_mesh"])
+        if args.mesh_output_dir is None
+        else args.mesh_output_dir.expanduser().resolve()
+    )
+    mesh_dir.mkdir(parents=True, exist_ok=True)
 
     catalog_path = (
         args.catalog_npz.expanduser().resolve()
@@ -282,9 +300,20 @@ def main() -> int:
     mesh_path = raw_pre / "mesh.npz"
     if not mesh_path.exists():
         raise FileNotFoundError(f"PRE mesh not found: {mesh_path}")
+    mesh = load_mesh_npz(mesh_path)
     saved["mesh_pytdgl_style_pdf"] = plot_mesh_pytdgl_style(
-        load_mesh_npz(mesh_path),
-        figures_dir / "mesh_pytdgl_style.pdf",
+        mesh,
+        mesh_dir / "mesh_pytdgl_style.pdf",
+        dpi=int(args.dpi),
+    )
+    saved["mesh_edge_length_histograms_pdf"] = plot_mesh_edge_length_histograms(
+        mesh,
+        mesh_dir / "mesh_edge_length_histograms.pdf",
+        dpi=int(args.dpi),
+    )
+    saved["mesh_triangle_quality_pdf"] = plot_mesh_triangle_quality(
+        mesh,
+        mesh_dir / "mesh_triangle_quality.pdf",
         dpi=int(args.dpi),
     )
 
@@ -385,6 +414,7 @@ def main() -> int:
         pre_run_name=args.pre_run_name,
         raw_pre=raw_pre,
         figures_dir=figures_dir,
+        mesh_dir=mesh_dir,
         catalog_path=catalog_path,
         saved=saved,
         skip_dos_curves=bool(args.skip_dos_curves),
@@ -422,6 +452,7 @@ def main() -> int:
     print(f" pre_run_name: {args.pre_run_name}")
     print(f" raw_pre: {raw_pre}")
     print(f" figures_dir: {figures_dir}")
+    print(f" mesh_dir: {mesh_dir}")
     print(f" catalog_npz: {catalog_path}")
     print()
     print("Figures")
@@ -450,6 +481,7 @@ def _write_manifest(
     pre_run_name: str,
     raw_pre: Path,
     figures_dir: Path,
+    mesh_dir: Path,
     catalog_path: Path,
     saved: dict[str, Path],
     skip_dos_curves: bool,
@@ -464,12 +496,13 @@ def _write_manifest(
     gap_settings: dict[str, Any],
 ) -> Path:
     manifest: dict[str, Any] = {
-        "schema_version": 4,
+        "schema_version": 5,
         "pipeline": "plot_pipelines/E1_plot_prerun.py",
         "purpose": "E-type PRE figures in PDF format: supercurrent curve, DOS curves, Eliashberg/PhDOS spectrum, and optional Delta_eq(T,q).",
         "pre_run_name": pre_run_name,
         "raw_pre": str(raw_pre),
         "figures_dir": str(figures_dir),
+        "mesh_dir": str(mesh_dir),
         "catalog_npz": str(catalog_path),
         "figures": {key: str(path) for key, path in saved.items()},
         "skip_dos_curves": bool(skip_dos_curves),

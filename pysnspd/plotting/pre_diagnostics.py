@@ -190,6 +190,17 @@ def plot_usadel_supercurrent_curve(
     i_plot = current_uA[finite_i]
     i_max = int(np.nanargmax(i_plot))
     ic_uA = float(i_plot[i_max])
+    q_c_plot = float(q_plot[i_max])
+
+    q_c_line = ax_i.axvline(
+        q_c_plot,
+        color="0.48",
+        linestyle="-",
+        linewidth=1.0,
+        alpha=0.85,
+        zorder=2,
+        label=r"$q_c$",
+    )
 
     line_i, = ax_i.plot(
         q_plot,
@@ -247,7 +258,7 @@ def plot_usadel_supercurrent_curve(
 
     ax_i.grid(True, linewidth=0.4, alpha=0.25, zorder=1)
 
-    handles = [line_i]
+    handles = [line_i, q_c_line]
     if target_line is not None:
         handles.append(target_line)
     if gap_line is not None:

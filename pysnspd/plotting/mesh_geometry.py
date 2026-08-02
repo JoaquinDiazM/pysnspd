@@ -247,28 +247,16 @@ def _maybe_scaled_attr(mesh: Any, name: str, coordinate_scale: float) -> float:
 def _inset_bounds(location: str) -> list[float]:
     loc = location.lower().strip()
     mapping = {
-        "upper right": [0.772, 0.555, 0.205, 0.385],
-        "upper left": [0.025, 0.555, 0.205, 0.385],
-        "lower right": [0.772, 0.060, 0.205, 0.385],
-        "lower left": [0.025, 0.060, 0.205, 0.385],
+        "upper right": [0.780, 0.600, 0.205, 0.385],
+        "upper left": [0.015, 0.600, 0.205, 0.385],
+        "lower right": [0.780, 0.015, 0.205, 0.385],
+        "lower left": [0.015, 0.015, 0.205, 0.385],
     }
     if loc not in mapping:
         raise ValueError(
             "inset_location must be one of: upper right, upper left, lower right, lower left."
         )
     return mapping[loc]
-
-
-
-def _opposite_location(location: str) -> str:
-    loc = location.lower().strip()
-    mapping = {
-        "upper right": "upper left",
-        "upper left": "upper right",
-        "lower right": "upper left",
-        "lower left": "upper right",
-    }
-    return mapping.get(loc, "upper left")
 
 
 
