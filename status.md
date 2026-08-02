@@ -93,8 +93,9 @@ low-amplitude plotting path and its dedicated analysis code/tests were removed.
 
 ## Validation completed
 
-- Previous complete suite on Geminga: `147 passed`; the updated E1/mesh suite
-  is being rerun before the next commit.
+- Complete suite on Geminga after the E1/mesh update: `147 passed`.
+- E1 was regenerated from the production PRE and its six affected PDFs were
+  rendered and visually inspected without clipping, overlap, or illegible text.
 - Focused constitutive suite: exact zero-amplitude Matsubara limit, quadratic
   amplitude power, q parity, stiffness interpolation, discrete plane wave,
   exact-zero edge current, gauge invariance, difference-before-divergence,
