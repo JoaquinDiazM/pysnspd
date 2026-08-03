@@ -1,10 +1,10 @@
 # pySNSPD publication status
 
-Last updated: 2026-08-02
+Last updated: 2026-08-03
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: Week 2 closure - stationarity, localized artifacts, and E1/E2
+Current phase: Week 2 closure - stationarity, localized artifacts, and E1/E2/E3
 figure consolidation
 
 ## Executive status
@@ -104,9 +104,25 @@ thermal diffusion), and electronic/phononic energy densities and heat
 capacities. New runs persist diffusion power directly; old runs reconstruct it
 exactly from stored fields and operators without rerunning the simulation.
 
+E3 photon plotting now derives every field-atlas color scale from all persisted
+snapshots, while rendering only the requested seven times. The exact full-run
+extrema are fingerprinted in the figure manifest and reused on unchanged data,
+so later plotting passes do not repeat the multi-gigabyte scan. Photon power
+and energy/heat-capacity atlases use the same reconstructed constitutive and
+finite-volume quantities as E2. A conditional four-panel recovery diagnostic
+is emitted only for detected but right-censored runs. For the 30 uA reference,
+it reports `t_lat = 5.872 ps`, `t_rec > 1450 ps`, final normalized recovery
+residuals of `0.0097x` (bias current), `2.1x` (strip current), `12x` (readout
+current), `3.0x` (terminal voltage), `4.7x` (capacitor voltage), and `0.2x`
+(TDGL voltage), and overdamped circuit decay times of `4791.24`, `210.70`, and
+`99.06 ps`. The post-photon window covers only `30.3%` of the slowest mode, so
+the absence of `t_rec` is diagnosed as insufficient horizon rather than silently
+treated as failed physics.
+
 ## Validation completed
 
-- Complete suite on Geminga after the E2 update: `147 passed`.
+- Complete suite on Geminga after the E3 update: `149 passed`; the focused
+  photon/E2 plotting set passes all `5` tests.
 - The SS early-stop callback now forwards the public phase-gradient tolerance
   names correctly. Its focused adapter/stop/target regression set passes all
   `18` tests without launching a production run.
@@ -116,6 +132,12 @@ exactly from stored fields and operators without rerunning the simulation.
   `ss_phasecg_I30uA_200ps_circuitthermal_stiffness_01`; all seven replacement
   PDFs were rendered and visually inspected. The three obsolete combined
   outputs are removed only after their replacements save successfully.
+- E3 was regenerated from
+  `photon_phasecg_I30uA_0p8eV_sigma10nm_t50ps_1500ps_stiffness_01`; the scalar
+  history, globally scaled field atlas, power atlas, energy/heat-capacity atlas,
+  and conditional censored-recovery diagnostic were rendered and visually
+  inspected. E2 snapshot arrows were also regenerated and checked with one
+  shared current scale.
 - Focused constitutive suite: exact zero-amplitude Matsubara limit, quadratic
   amplitude power, q parity, stiffness interpolation, discrete plane wave,
   exact-zero edge current, gauge invariance, difference-before-divergence,

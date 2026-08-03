@@ -12,6 +12,7 @@ import numpy as np
 import yaml
 
 from pysnspd.analysis.timing import analyze_photon_timing
+from pysnspd.analysis.photon_snapshots import compute_photon_snapshot_plot_diagnostics
 from pysnspd.analysis.timing_cli import (
     add_timing_analysis_arguments,
     timing_criteria_from_args,
@@ -19,11 +20,14 @@ from pysnspd.analysis.timing_cli import (
 from pysnspd.config import load_config, validate_config
 from pysnspd.io.manager import create_run_layout
 from pysnspd.mesh.delaunay import load_mesh_npz
+from pysnspd.mesh.edges import load_edges_npz
+from pysnspd.mesh.operators import build_fv_operators
 from pysnspd.plotting.photon_diagnostics import (
     make_photon_run_diagnostic_figures,
     nearest_unique_snapshot_indices,
 )
 from pysnspd.plotting.style import THESIS_DPI
+from pysnspd.thermal.evolution import build_central_thermal_mask
 
 HBAR_J_S = 1.054571817e-34
 K_B_J_K = 1.380649e-23
@@ -77,15 +81,20 @@ def main() -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     mesh = load_mesh_npz(_require_file(raw_pre / "mesh.npz", "PRE mesh"))
+    edge_data = load_edges_npz(_require_file(raw_pre / "edges.npz", "PRE edges"))
     pre_summary = _read_yaml(
         _require_file(raw_pre / "usadel_dos_summary.yaml", "Usadel summary")
     )
     history = _load_npz(
         _require_file(raw_photon / "transient_history.npz", "photon history")
     )
-    snapshots = _load_npz(
-        _require_file(raw_photon / "transient_snapshots.npz", "photon snapshots")
+    snapshots_path = _require_file(
+        raw_photon / "transient_snapshots.npz", "photon snapshots"
     )
+    power_table_path = _require_file(
+        raw_pre / "power_table_catalog.npz", "PRE power table"
+    )
+    snapshots = _load_npz(snapshots_path)
     summary = _read_yaml(
         _require_file(raw_photon / "photon_summary.yaml", "photon summary")
     )
@@ -107,6 +116,45 @@ def main() -> int:
         detection=detection_criteria,
         recovery=recovery_criteria,
     )
+    selected_indices = nearest_unique_snapshot_indices(
+        _snapshot_times(snapshots), args.times_ps
+    )
+    transient_config = dict(summary.get("config", {}))
+    thermal_enabled = bool(transient_config.get("thermal_enabled", False))
+    thermal_window_m = float(transient_config.get("thermal_window_m", 100.0e-9))
+    thermal_mask = (
+        build_central_thermal_mask(
+            np.asarray(mesh.nodes, dtype=float),
+            window_m=thermal_window_m,
+        )
+        if thermal_enabled
+        else np.zeros(np.asarray(mesh.nodes).shape[0], dtype=bool)
+    )
+    snapshot_diagnostics = compute_photon_snapshot_plot_diagnostics(
+        snapshots=snapshots,
+        selected_indices=selected_indices,
+        power_table_npz=str(power_table_path),
+        ops=build_fv_operators(mesh, edge_data),
+        sigma_n_S_m=float(cfg["material"]["sigma_n_S_m"]),
+        thermal_active_mask=thermal_mask,
+        thermal_bath_K=_initial_snapshot_field_temperature(
+            snapshots, "Tph_snapshot_K"
+        ),
+        global_limits_override=_reusable_global_limits(
+            output_dir / "E3_photon_diagnostics_manifest.yaml",
+            snapshots_path=snapshots_path,
+            power_table_path=power_table_path,
+            requested_times_ps=args.times_ps,
+        ),
+        progress_callback=_snapshot_diagnostic_progress(),
+    )
+    snapshot_diagnostics.update(
+        {
+            "nodes_x_nm": 1.0e9 * np.asarray(mesh.nodes, dtype=float)[:, 0],
+            "nodes_y_nm": 1.0e9 * np.asarray(mesh.nodes, dtype=float)[:, 1],
+            "triangles": np.asarray(mesh.triangles, dtype=np.int64),
+        }
+    )
     saved = make_photon_run_diagnostic_figures(
         mesh=mesh,
         history=history,
@@ -118,6 +166,7 @@ def main() -> int:
         output_dir=output_dir,
         dpi=int(args.dpi),
         timing=timing,
+        snapshot_diagnostics=snapshot_diagnostics,
     )
     manifest_path = _write_manifest(
         args=args,
@@ -130,6 +179,9 @@ def main() -> int:
         xi_source=xi_source,
         snapshots=snapshots,
         timing=timing,
+        snapshot_diagnostics=snapshot_diagnostics,
+        snapshots_path=snapshots_path,
+        power_table_path=power_table_path,
     )
 
     resolved_times = _resolved_times(snapshots, args.times_ps)
@@ -149,6 +201,14 @@ def main() -> int:
         " timing:         "
         f"t_lat={dict(timing.get('latency', {})).get('t_lat_ps', 'censored')} ps, "
         f"t_rec={dict(dict(timing.get('recovery', {})).get('selected', {})).get('t_rec_ps', 'censored')} ps"
+    )
+    print(
+        " global_scales:  "
+        + (
+            "reused from matching manifest"
+            if bool(snapshot_diagnostics.get("global_limits_reused", False))
+            else "scanned over all persisted snapshots"
+        )
     )
     print("Figures")
     for key, path in saved.items():
@@ -170,9 +230,12 @@ def _write_manifest(
     xi_source: str,
     snapshots: Mapping[str, Any],
     timing: Mapping[str, Any],
+    snapshot_diagnostics: Mapping[str, Any],
+    snapshots_path: Path,
+    power_table_path: Path,
 ) -> Path:
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "pipeline": "plot_pipelines/E3_photon_run_diagnostics.py",
         "purpose": "Scalar and selected-field diagnostics for one completed photon run.",
         "run_name": str(args.run_name),
@@ -188,6 +251,20 @@ def _write_manifest(
         "normalizations": {
             "order_parameter": "abs(Delta) / Delta_BCS(0)",
             "superfluid_momentum": "abs(q) * xi",
+        },
+        "snapshot_scale_policy": str(
+            snapshot_diagnostics.get("global_scale_policy", "unavailable")
+        ),
+        "snapshot_scale_schema": "photon_snapshot_thermodynamics_v1_multilinear",
+        "snapshot_global_limits": {
+            key: [float(value) for value in np.asarray(bounds, dtype=float).reshape(-1)]
+            for key, bounds in dict(
+                snapshot_diagnostics.get("snapshot_global_limits", {})
+            ).items()
+        },
+        "source_fingerprints": {
+            "transient_snapshots": _file_fingerprint(snapshots_path),
+            "power_table_catalog": _file_fingerprint(power_table_path),
         },
         "delta0_meV": float(delta0_meV),
         "xi_m": float(xi_m),
@@ -280,6 +357,38 @@ def _initial_snapshot_temperature(snapshots: Mapping[str, Any]) -> float:
     return float(np.nanmedian(finite)) if finite.size else np.nan
 
 
+def _initial_snapshot_field_temperature(
+    snapshots: Mapping[str, Any], key: str
+) -> float:
+    values = np.asarray(snapshots.get(key, []), dtype=float)
+    if values.ndim != 2 or values.shape[0] == 0:
+        raise ValueError(f"Photon snapshots lack initial {key} values.")
+    finite = values[0][np.isfinite(values[0]) & (values[0] > 0.0)]
+    if finite.size == 0:
+        raise ValueError(f"Photon snapshots have no positive finite initial {key} values.")
+    return float(np.nanmedian(finite))
+
+
+def _snapshot_times(snapshots: Mapping[str, Any]) -> np.ndarray:
+    if "snapshot_t_ps" in snapshots:
+        return np.asarray(snapshots["snapshot_t_ps"], dtype=float).reshape(-1)
+    return np.asarray(snapshots.get("snapshot_t_s", []), dtype=float).reshape(-1) / 1.0e-12
+
+
+def _snapshot_diagnostic_progress():
+    state = {"bucket": -1}
+
+    def report(completed: int, total: int) -> None:
+        if total <= 0:
+            return
+        bucket = min(10, int(10 * completed / total))
+        if bucket > state["bucket"]:
+            state["bucket"] = bucket
+            print(f" snapshot thermodynamics: {10 * bucket}% ({completed}/{total})")
+
+    return report
+
+
 def _first_positive(*values: Any) -> float:
     for value in values:
         try:
@@ -329,6 +438,86 @@ def _require_file(path: Path, label: str) -> Path:
     if not path.exists():
         raise FileNotFoundError(f"Missing {label}: {path}")
     return path
+
+
+def _reusable_global_limits(
+    manifest_path: Path,
+    *,
+    snapshots_path: Path,
+    power_table_path: Path,
+    requested_times_ps: list[float] | tuple[float, ...],
+) -> dict[str, np.ndarray] | None:
+    """Reuse a completed all-snapshot scan only when its inputs still match."""
+
+    if not manifest_path.exists():
+        return None
+    try:
+        manifest = _read_yaml(manifest_path)
+        if int(manifest.get("schema_version", 0)) < 2:
+            return None
+        scale_schema = manifest.get("snapshot_scale_schema")
+        if scale_schema not in (
+            None,
+            "photon_snapshot_thermodynamics_v1_multilinear",
+        ):
+            return None
+        previous = np.asarray(
+            dict(manifest.get("snapshot_selection", {})).get(
+                "requested_times_ps", []
+            ),
+            dtype=float,
+        )
+        requested = np.asarray(requested_times_ps, dtype=float)
+        if previous.shape != requested.shape or not np.allclose(
+            previous, requested, rtol=0.0, atol=1.0e-12
+        ):
+            return None
+        fingerprints = dict(manifest.get("source_fingerprints", {}))
+        if fingerprints:
+            if fingerprints.get("transient_snapshots") != _file_fingerprint(
+                snapshots_path
+            ):
+                return None
+            if fingerprints.get("power_table_catalog") != _file_fingerprint(
+                power_table_path
+            ):
+                return None
+        elif manifest_path.stat().st_mtime_ns < max(
+            snapshots_path.stat().st_mtime_ns,
+            power_table_path.stat().st_mtime_ns,
+        ):
+            return None
+        raw_limits = dict(manifest.get("snapshot_global_limits", {}))
+        required = {
+            "q_abs_snapshot_m_inv",
+            "joule_snapshot_W_m3",
+            "P_S_snapshot_W_m3",
+            "P_R_snapshot_W_m3",
+            "P_total_snapshot_W_m3",
+            "P_diff_snapshot_W_m3",
+            "P_esc_snapshot_W_m3",
+            "u_e_snapshot_J_m3",
+            "u_ph_snapshot_J_m3",
+            "C_e_snapshot_J_m3_K",
+            "C_ph_snapshot_J_m3_K",
+            "kappa_s_snapshot_W_m_K",
+        }
+        if not required.issubset(raw_limits):
+            return None
+        limits = {
+            key: np.asarray(raw_limits[key], dtype=float).reshape(-1)
+            for key in required
+        }
+        if not all(values.size == 2 and np.all(np.isfinite(values)) for values in limits.values()):
+            return None
+        return limits
+    except (OSError, TypeError, ValueError):
+        return None
+
+
+def _file_fingerprint(path: Path) -> dict[str, int]:
+    stat = path.stat()
+    return {"size_bytes": int(stat.st_size), "mtime_ns": int(stat.st_mtime_ns)}
 
 
 if __name__ == "__main__":

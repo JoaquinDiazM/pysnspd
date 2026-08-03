@@ -13,6 +13,10 @@ import matplotlib.tri as mtri
 import numpy as np
 
 from pysnspd.plotting.photon_figures import phase_gradient_q_abs_m_inv
+from pysnspd.plotting.ss_phasecg_figures import (
+    plot_ss_energy_heat_capacity_snapshots,
+    plot_ss_power_density_snapshots,
+)
 from pysnspd.plotting.style import THESIS_DPI, THESIS_WIDTH_IN, apply_thesis_style
 
 apply_thesis_style()
@@ -32,12 +36,14 @@ def make_photon_run_diagnostic_figures(
     output_dir: str | Path,
     dpi: int = THESIS_DPI,
     timing: Mapping[str, Any] | None = None,
+    snapshot_diagnostics: Mapping[str, Any] | None = None,
 ) -> dict[str, Path]:
     """Create scalar-evolution and selected-field figures for one photon run."""
 
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
-    return {
+    diagnostics = dict(snapshot_diagnostics or {})
+    saved = {
         "scalar_evolution": plot_photon_scalar_evolution(
             history=history,
             summary=summary,
@@ -52,10 +58,35 @@ def make_photon_run_diagnostic_figures(
             delta0_meV=delta0_meV,
             xi_m=xi_m,
             requested_times_ps=requested_times_ps,
+            snapshot_diagnostics=diagnostics,
             output_path=out / "E3_photon_field_evolution.pdf",
             dpi=dpi,
         ),
     }
+    if diagnostics:
+        saved["power_density_snapshots"] = plot_ss_power_density_snapshots(
+            diagnostics,
+            out / "E3_photon_power_density_snapshots.pdf",
+            dpi=dpi,
+        )
+        saved["energy_heat_capacity_snapshots"] = plot_ss_energy_heat_capacity_snapshots(
+            diagnostics,
+            out / "E3_photon_energy_heat_capacity_snapshots.pdf",
+            dpi=dpi,
+        )
+
+    recovery_path = out / "E3_photon_censored_recovery_diagnostics.pdf"
+    if _is_detected_but_unrecovered(timing or {}):
+        saved["censored_recovery_diagnostics"] = plot_photon_censored_recovery_diagnostics(
+            history=history,
+            summary=summary,
+            timing=timing or {},
+            output_path=recovery_path,
+            dpi=dpi,
+        )
+    elif recovery_path.exists():
+        recovery_path.unlink()
+    return saved
 
 
 def plot_photon_scalar_evolution(
@@ -134,7 +165,7 @@ def plot_photon_scalar_evolution(
             linestyle=":",
             label="Max pair-breaking ratio",
         )
-        pair_axis.set_ylabel("Pair breaking [-]", color="tab:red")
+        pair_axis.set_ylabel("Pair breaking", color="tab:red")
         pair_axis.tick_params(axis="y", colors="tab:red")
         positive_pairbreaking = pairbreaking[
             np.isfinite(pairbreaking) & (pairbreaking > 0.0)
@@ -172,7 +203,12 @@ def plot_photon_scalar_evolution(
 
     for index, axis in enumerate(axes):
         if index == 3 and pair_axis is not None:
-            _combined_legend(axis, pair_axis)
+            _combined_legend(
+                axis,
+                pair_axis,
+                loc="lower center",
+                bbox_to_anchor=(0.48, 0.20),
+            )
         else:
             axis.legend(frameon=False, ncol=3 if index == 0 else 2, loc="best")
 
@@ -204,6 +240,7 @@ def plot_photon_field_evolution(
     delta0_meV: float,
     xi_m: float,
     requested_times_ps: Sequence[float],
+    snapshot_diagnostics: Mapping[str, Any] | None = None,
     output_path: str | Path,
     dpi: int = THESIS_DPI,
 ) -> Path:
@@ -221,40 +258,34 @@ def plot_photon_field_evolution(
     selected_times = times[indices]
     n_nodes = tri.x.size
 
-    delta = _snapshot_matrix(snapshots, "delta_snapshot_meV", n_nodes)[indices] / delta0_meV
-    phi = 1.0e3 * _snapshot_matrix(snapshots, "phi_snapshot_V", n_nodes)[indices]
-    Te = _snapshot_matrix(snapshots, "Te_snapshot_K", n_nodes)[indices]
-    Tph = _snapshot_matrix(snapshots, "Tph_snapshot_K", n_nodes)[indices]
+    delta_all = _snapshot_matrix(snapshots, "delta_snapshot_meV", n_nodes)
+    phi_all = _snapshot_matrix(snapshots, "phi_snapshot_V", n_nodes)
+    Te_all = _snapshot_matrix(snapshots, "Te_snapshot_K", n_nodes)
+    Tph_all = _snapshot_matrix(snapshots, "Tph_snapshot_K", n_nodes)
+    delta = delta_all[indices] / delta0_meV
+    phi = 1.0e3 * phi_all[indices]
+    Te = Te_all[indices]
+    Tph = Tph_all[indices]
     real = _snapshot_matrix(snapshots, "psi_real_snapshot_J", n_nodes, required=False)
     imag = _snapshot_matrix(snapshots, "psi_imag_snapshot_J", n_nodes, required=False)
 
-    qxi_rows = []
-    for index in indices:
-        if real.size and imag.size:
-            psi = real[index] + 1j * imag[index]
-        else:
-            psi = (
-                _snapshot_matrix(snapshots, "delta_snapshot_meV", n_nodes)[index]
-                * MEV_J
-                + 0.0j
-            )
-        qxi_rows.append(
-            xi_m
-            * phase_gradient_q_abs_m_inv(
-                tri,
-                psi,
-                x_nm=np.asarray(tri.x, dtype=float),
-                y_nm=np.asarray(tri.y, dtype=float),
-            )
-        )
-    qxi = np.asarray(qxi_rows, dtype=float)
+    qxi, qxi_limits = _selected_qxi_and_global_limits(
+        tri=tri,
+        snapshots=snapshots,
+        snapshot_diagnostics=snapshot_diagnostics or {},
+        selected_indices=indices,
+        xi_m=xi_m,
+        real=real,
+        imag=imag,
+        n_nodes=n_nodes,
+    )
 
     fields = (
-        (delta, r"$|\Delta|/\Delta_{\mathrm{BCS}}(0)$", "viridis", False, 0.0, 1.0),
-        (phi, r"$\phi$ [mV]", "coolwarm", True, None, None),
-        (qxi, r"$|\mathbf{q}|\xi$", "magma", False, 0.0, None),
-        (Te, r"$T_e$ [K]", "inferno", False, None, None),
-        (Tph, r"$T_{ph}$ [K]", "inferno", False, None, None),
+        (delta, r"$|\Delta|/\Delta_{\mathrm{BCS}}(0)$", "viridis", False, 0.0, None, _finite_limits(delta_all) / delta0_meV),
+        (phi, r"$\phi$ [mV]", "coolwarm", True, None, None, 1.0e3 * _finite_limits(phi_all)),
+        (qxi, r"$|\mathbf{q}|\xi$", "magma", False, 0.0, None, qxi_limits),
+        (Te, r"$T_e$ [K]", "inferno", False, None, None, _finite_limits(Te_all)),
+        (Tph, r"$T_{ph}$ [K]", "inferno", False, None, None, _finite_limits(Tph_all)),
     )
     impact = _impact_coordinates_nm(summary)
     n_rows = len(indices)
@@ -267,12 +298,13 @@ def plot_photon_field_evolution(
     fig.subplots_adjust(left=0.078, right=0.965, bottom=0.072, top=0.905, wspace=0.08, hspace=0.12)
 
     mappables = []
-    for col, (values, label, cmap, symmetric, forced_min, forced_max) in enumerate(fields):
+    for col, (values, label, cmap, symmetric, forced_min, forced_max, global_limits) in enumerate(fields):
         vmin, vmax = _field_limits(
             values,
             symmetric=symmetric,
             forced_min=forced_min,
             forced_max=forced_max,
+            global_limits=global_limits,
         )
         for row in range(n_rows):
             axis = axes[row, col]
@@ -329,6 +361,218 @@ def plot_photon_field_evolution(
     fig.savefig(output, dpi=dpi)
     plt.close(fig)
     return output
+
+
+def plot_photon_censored_recovery_diagnostics(
+    *,
+    history: Mapping[str, Any],
+    summary: Mapping[str, Any],
+    timing: Mapping[str, Any],
+    output_path: str | Path,
+    dpi: int = THESIS_DPI,
+) -> Path:
+    """Diagnose a detected transient whose selected recovery stayed censored."""
+
+    output = _prepare_output(output_path)
+    time_ps = _history_time_ps(history)
+    event_ps = _photon_time_ps(history, summary)
+    if time_ps.size < 2 or not np.isfinite(event_ps):
+        raise ValueError("Censored-recovery diagnostics require a photon event and history.")
+    post = np.isfinite(time_ps) & (time_ps >= event_ps)
+    relative_time = time_ps[post] - event_ps
+    baseline = dict(timing.get("baseline", {})).get("values", {})
+    recovery = dict(dict(timing.get("recovery", {})).get("selected", {}))
+    tolerances = dict(recovery.get("absolute_tolerances", {}))
+    if not isinstance(baseline, Mapping) or not tolerances:
+        raise ValueError("Electrical recovery baselines and tolerances are unavailable.")
+
+    current_keys = ("I_b_A", "I_s_A", "I_rf_A")
+    voltage_keys = ("V_out_V", "v_c_V", "V_tdgl_center_V")
+    labels = {
+        "I_b_A": r"$I_b$",
+        "I_s_A": r"$I_s$",
+        "I_rf_A": r"$I_{\mathrm{RF}}$",
+        "V_out_V": r"$V_{\mathrm{out}}$",
+        "v_c_V": r"$v_c$",
+        "V_tdgl_center_V": r"$V_{\mathrm{TDGL}}$",
+    }
+    ratios: dict[str, np.ndarray] = {}
+    for key in current_keys + voltage_keys:
+        tolerance = float(tolerances.get(key, np.nan))
+        reference = float(baseline.get(key, np.nan))
+        values = _series(history, key, time_ps.size)
+        ratios[key] = np.abs(values[post] - reference) / max(tolerance, 1.0e-300)
+
+    fig, axes = plt.subplots(2, 2, figsize=(THESIS_WIDTH_IN, 5.35))
+    fig.subplots_adjust(left=0.115, right=0.965, bottom=0.105, top=0.900, wspace=0.40, hspace=0.32)
+    colors = ("tab:blue", "tab:orange", "tab:green")
+    for axis, keys, title in (
+        (axes[0, 0], current_keys, "Current recovery margins"),
+        (axes[0, 1], voltage_keys, "Voltage recovery margins"),
+    ):
+        for color, key in zip(colors, keys):
+            axis.plot(
+                relative_time,
+                np.maximum(ratios[key], 1.0e-6),
+                color=color,
+                linewidth=1.0,
+                label=labels[key],
+            )
+        axis.axhline(1.0, color="0.2", linestyle="--", linewidth=0.9, label="Tolerance")
+        axis.set_yscale("log")
+        axis.set_xlabel(r"$t-t_\gamma$ [ps]")
+        axis.set_ylabel("Residual / tolerance")
+        axis.set_title(title)
+        axis.legend(frameon=False, fontsize=7.2, ncol=2, loc="upper right")
+        axis.grid(True)
+        axis.set_xlim(left=0.0)
+
+    final_keys = current_keys + voltage_keys
+    final_ratios = np.asarray(
+        [float(ratios[key][-1]) if ratios[key].size else np.nan for key in final_keys],
+        dtype=float,
+    )
+    axis = axes[1, 0]
+    y = np.arange(len(final_keys))
+    bar_values = np.maximum(final_ratios, 1.0e-4)
+    bar_colors = ["#d1495b" if value > 1.0 else "#2a9d62" for value in final_ratios]
+    axis.barh(y, bar_values, color=bar_colors, alpha=0.88)
+    axis.axvline(1.0, color="0.2", linestyle="--", linewidth=0.9)
+    axis.set_xscale("log")
+    axis.set_yticks(y)
+    axis.set_yticklabels([labels[key] for key in final_keys])
+    axis.invert_yaxis()
+    axis.set_xlabel("Final residual / tolerance")
+    axis.set_title("Distance from electrical recovery")
+    axis.grid(True, axis="x")
+    for row, value in enumerate(final_ratios):
+        if np.isfinite(value):
+            axis.text(
+                max(value, 1.0e-4) * 1.08,
+                row,
+                f"{value:.2g}x",
+                va="center",
+                fontsize=7.0,
+            )
+
+    axis = axes[1, 1]
+    mode_labels, mode_values, mode_colors = _circuit_timescale_bars(
+        summary=summary,
+        timing=timing,
+        post_photon_window_ps=float(relative_time[-1]),
+    )
+    if mode_values:
+        row = np.arange(len(mode_values))
+        axis.barh(row, mode_values, color=mode_colors, alpha=0.88)
+        axis.set_xscale("log")
+        axis.set_yticks(row)
+        axis.set_yticklabels(mode_labels, fontsize=7.2)
+        axis.invert_yaxis()
+        axis.set_xlabel("Timescale [ps]")
+        axis.grid(True, axis="x")
+        for index, value in enumerate(mode_values):
+            axis.text(value * 1.08, index, f"{value:.3g}", va="center", fontsize=6.8)
+        decay_values = [
+            value for label, value in zip(mode_labels, mode_values) if "decay" in label
+        ]
+        if decay_values and np.isfinite(post_window := float(relative_time[-1])):
+            axis.text(
+                0.98,
+                0.02,
+                f"window / slowest decay = {post_window / max(decay_values):.3f}",
+                transform=axis.transAxes,
+                ha="right",
+                va="bottom",
+                fontsize=6.8,
+            )
+    else:
+        axis.text(0.5, 0.5, "Circuit parameters unavailable", transform=axis.transAxes, ha="center", va="center")
+        axis.set_xticks([])
+        axis.set_yticks([])
+    axis.set_title(
+        "Overdamped modes vs available window"
+        if mode_labels and not any("Osc." in label for label in mode_labels)
+        else "Circuit modes vs available window"
+    )
+
+    latency = dict(timing.get("latency", {}))
+    t_lat = latency.get("t_lat_ps")
+    lower_bound = recovery.get("lower_bound_ps")
+    title = (
+        rf"Detected: $t_{{\mathrm{{lat}}}}={float(t_lat):.3g}$ ps; "
+        rf"electrical recovery censored beyond {float(lower_bound):.3g} ps"
+        if t_lat is not None and lower_bound is not None
+        else "Detected transient with censored electrical recovery"
+    )
+    fig.suptitle(title, y=0.975, fontsize=10.0)
+    fig.savefig(output, dpi=dpi)
+    plt.close(fig)
+    return output
+
+
+def _is_detected_but_unrecovered(timing: Mapping[str, Any]) -> bool:
+    latency = dict(timing.get("latency", {}))
+    recovery = dict(dict(timing.get("recovery", {})).get("selected", {}))
+    detected = bool(latency.get("detected", latency.get("t_lat_ps") is not None))
+    recovered = bool(recovery.get("recovered", recovery.get("t_rec_ps") is not None))
+    return bool(detected and not recovered)
+
+
+def _circuit_timescale_bars(
+    *,
+    summary: Mapping[str, Any],
+    timing: Mapping[str, Any],
+    post_photon_window_ps: float,
+) -> tuple[list[str], list[float], list[str]]:
+    params = dict(dict(summary.get("circuit", {})).get("params", {}))
+    try:
+        Rl = float(params["R_load_ohm"])
+        Rb = float(params["R_bias_ohm"])
+        Lb = float(params["L_bias_H"])
+        Lk = float(params["L_k_H"])
+        capacitance = float(params["C_couple_F"])
+    except (KeyError, TypeError, ValueError):
+        return [], [], []
+    if not all(np.isfinite(value) and value > 0.0 for value in (Rl, Rb, Lb, Lk, capacitance)):
+        return [], [], []
+
+    matrix = np.asarray(
+        [
+            [-(Rb + Rl) / Lb, Rl / Lb, -1.0 / Lb],
+            [Rl / Lk, -Rl / Lk, 1.0 / Lk],
+            [1.0 / capacitance, -1.0 / capacitance, 0.0],
+        ],
+        dtype=float,
+    )
+    eigenvalues = np.linalg.eigvals(matrix)
+    real_modes = [value for value in eigenvalues if abs(float(np.imag(value))) <= 1.0e-8 * max(abs(value), 1.0)]
+    complex_modes = [value for value in eigenvalues if float(np.imag(value)) > 0.0]
+    labels: list[str] = []
+    values: list[float] = []
+    colors: list[str] = []
+    for index, value in enumerate(sorted(real_modes, key=lambda item: abs(float(np.real(item))))):
+        if float(np.real(value)) < 0.0:
+            labels.append(f"Mode {index + 1}: decay")
+            values.append(-1.0e12 / float(np.real(value)))
+            colors.append("tab:blue")
+    for index, value in enumerate(complex_modes):
+        if float(np.real(value)) < 0.0:
+            labels.append(f"Osc. mode {index + 1}: decay")
+            values.append(-1.0e12 / float(np.real(value)))
+            colors.append("tab:purple")
+        labels.append(f"Osc. mode {index + 1}: period")
+        values.append(2.0 * np.pi * 1.0e12 / abs(float(np.imag(value))))
+        colors.append("tab:orange")
+    hold_ps = 1.0e12 * float(dict(timing.get("recovery_criteria", {})).get("hold_s", np.nan))
+    if np.isfinite(hold_ps) and hold_ps > 0.0:
+        labels.append("Recovery hold")
+        values.append(hold_ps)
+        colors.append("tab:green")
+    if np.isfinite(post_photon_window_ps) and post_photon_window_ps > 0.0:
+        labels.append("Post-photon window")
+        values.append(post_photon_window_ps)
+        colors.append("0.35")
+    return labels, values, colors
 
 
 def nearest_unique_snapshot_indices(
@@ -410,27 +654,110 @@ def _field_limits(
     symmetric: bool,
     forced_min: float | None,
     forced_max: float | None,
+    global_limits: np.ndarray | None = None,
 ) -> tuple[float, float]:
-    finite = np.asarray(values, dtype=float)
-    finite = finite[np.isfinite(finite)]
+    limits = np.asarray(global_limits if global_limits is not None else [], dtype=float).reshape(-1)
+    if limits.size == 2 and np.all(np.isfinite(limits)):
+        finite = limits
+    else:
+        finite = np.asarray(values, dtype=float)
+        finite = finite[np.isfinite(finite)]
     if finite.size == 0:
         return (-1.0, 1.0) if symmetric else (0.0, 1.0)
     if symmetric:
-        limit = max(float(np.nanpercentile(np.abs(finite), 99.8)), 1.0e-30)
+        limit = max(float(np.nanmax(np.abs(finite))), 1.0e-30)
         return -limit, limit
     lower = (
         float(forced_min)
         if forced_min is not None
-        else float(np.nanpercentile(finite, 0.1))
+        else float(np.nanmin(finite))
     )
     upper = (
         float(forced_max)
         if forced_max is not None
-        else float(np.nanpercentile(finite, 99.9))
+        else float(np.nanmax(finite))
     )
     if not np.isfinite(upper) or upper <= lower:
         upper = lower + 1.0
     return lower, upper
+
+
+def _selected_qxi_and_global_limits(
+    *,
+    tri: mtri.Triangulation,
+    snapshots: Mapping[str, Any],
+    snapshot_diagnostics: Mapping[str, Any],
+    selected_indices: np.ndarray,
+    xi_m: float,
+    real: np.ndarray,
+    imag: np.ndarray,
+    n_nodes: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    diagnostic_indices = np.asarray(
+        snapshot_diagnostics.get("selected_indices", []), dtype=np.int64
+    ).reshape(-1)
+    diagnostic_q = np.asarray(
+        snapshot_diagnostics.get("q_abs_snapshot_m_inv", []), dtype=float
+    )
+    global_limits = snapshot_diagnostics.get("snapshot_global_limits", {})
+    if (
+        np.array_equal(diagnostic_indices, np.asarray(selected_indices, dtype=np.int64))
+        and diagnostic_q.shape == (selected_indices.size, n_nodes)
+        and isinstance(global_limits, Mapping)
+        and "q_abs_snapshot_m_inv" in global_limits
+    ):
+        limits = np.asarray(global_limits["q_abs_snapshot_m_inv"], dtype=float).reshape(-1)
+        if limits.size == 2 and np.all(np.isfinite(limits)):
+            return xi_m * diagnostic_q, xi_m * limits
+
+    q_selected = np.empty((selected_indices.size, n_nodes), dtype=float)
+    selected_position = {
+        int(index): position for position, index in enumerate(selected_indices)
+    }
+    extrema = [float("inf"), float("-inf")]
+    delta = _snapshot_matrix(snapshots, "delta_snapshot_meV", n_nodes)
+    for index in range(delta.shape[0]):
+        if real.size and imag.size:
+            psi = real[index] + 1j * imag[index]
+        else:
+            psi = delta[index] * MEV_J + 0.0j
+        q_abs = phase_gradient_q_abs_m_inv(
+            tri,
+            psi,
+            x_nm=np.asarray(tri.x, dtype=float),
+            y_nm=np.asarray(tri.y, dtype=float),
+        )
+        _update_pair_extrema(extrema, q_abs)
+        if index in selected_position:
+            q_selected[selected_position[index]] = q_abs
+    limits = np.asarray(extrema, dtype=float)
+    if not np.all(np.isfinite(limits)):
+        limits = np.asarray([0.0, 1.0], dtype=float)
+    return xi_m * q_selected, xi_m * limits
+
+
+def _finite_limits(values: np.ndarray) -> np.ndarray:
+    array = np.asarray(values, dtype=float)
+    lo = float("inf")
+    hi = float("-inf")
+    rows = array.shape[0] if array.ndim else 1
+    for start in range(0, rows, 64):
+        chunk = array[start : start + 64] if array.ndim else array.reshape(1)
+        finite = chunk[np.isfinite(chunk)]
+        if finite.size:
+            lo = min(lo, float(np.min(finite)))
+            hi = max(hi, float(np.max(finite)))
+    if not np.isfinite(lo) or not np.isfinite(hi):
+        return np.asarray([0.0, 1.0], dtype=float)
+    return np.asarray([lo, hi], dtype=float)
+
+
+def _update_pair_extrema(bounds: list[float], values: np.ndarray) -> None:
+    finite = np.asarray(values, dtype=float)
+    finite = finite[np.isfinite(finite)]
+    if finite.size:
+        bounds[0] = min(bounds[0], float(np.min(finite)))
+        bounds[1] = max(bounds[1], float(np.max(finite)))
 
 
 def _format_strip_axis(axis: plt.Axes, tri: mtri.Triangulation) -> None:
@@ -487,7 +814,13 @@ def _timing_value(mapping: Mapping[str, Any], key: str) -> str:
     return f"{float(value):.3g} ps" if value is not None else "censored"
 
 
-def _combined_legend(axis: plt.Axes, twin: plt.Axes) -> None:
+def _combined_legend(
+    axis: plt.Axes,
+    twin: plt.Axes,
+    *,
+    loc: str = "best",
+    bbox_to_anchor: tuple[float, float] | None = None,
+) -> None:
     handles_a, labels_a = axis.get_legend_handles_labels()
     handles_b, labels_b = twin.get_legend_handles_labels()
     axis.legend(
@@ -495,7 +828,8 @@ def _combined_legend(axis: plt.Axes, twin: plt.Axes) -> None:
         labels_a + labels_b,
         frameon=False,
         ncol=2,
-        loc="best",
+        loc=loc,
+        bbox_to_anchor=bbox_to_anchor,
     )
 
 
@@ -510,6 +844,7 @@ def _prepare_output(path: str | Path) -> Path:
 __all__ = [
     "make_photon_run_diagnostic_figures",
     "nearest_unique_snapshot_indices",
+    "plot_photon_censored_recovery_diagnostics",
     "plot_photon_field_evolution",
     "plot_photon_scalar_evolution",
 ]

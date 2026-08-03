@@ -187,7 +187,7 @@ def plot_phasecg_snapshot_fields(
         dataset.get("node_area_m2", np.ones(np.asarray(dataset["nodes_x_nm"]).size)),
         dtype=float,
     )
-    current_vectors: dict[int, tuple[np.ndarray, np.ndarray, float]] = {}
+    current_vectors: dict[int, tuple[np.ndarray, np.ndarray]] = {}
     for column, x_key, y_key in (
         (4, "js_x_snapshot_over_javg", "js_y_snapshot_over_javg"),
         (5, "jn_x_snapshot_over_javg", "jn_y_snapshot_over_javg"),
@@ -197,8 +197,12 @@ def plot_phasecg_snapshot_fields(
         if x_values.ndim == 2 and y_values.shape == x_values.shape:
             mean_x = _weighted_rows_for_plot(x_values[indices], node_weights)
             mean_y = _weighted_rows_for_plot(y_values[indices], node_weights)
-            max_magnitude = max(float(np.nanmax(np.hypot(mean_x, mean_y))), 1.0e-300)
-            current_vectors[column] = (mean_x, mean_y, max_magnitude)
+            current_vectors[column] = (mean_x, mean_y)
+    shared_current_scale = max(
+        _global_limits(fields[4][0], symmetric=False, forced_min=0.0, forced_max=None)[1],
+        _global_limits(fields[5][0], symmetric=False, forced_min=0.0, forced_max=None)[1],
+        1.0e-300,
+    )
 
     n_rows = times.size
     n_cols = len(fields)
@@ -231,13 +235,13 @@ def plot_phasecg_snapshot_fields(
             )
             _format_strip_axis(ax, tri)
             if col in current_vectors:
-                mean_x, mean_y, max_magnitude = current_vectors[col]
+                mean_x, mean_y = current_vectors[col]
                 _add_current_direction_arrow(
                     ax,
                     tri,
                     mean_x=float(mean_x[row]),
                     mean_y=float(mean_y[row]),
-                    reference_magnitude=max_magnitude,
+                    reference_magnitude=shared_current_scale,
                 )
             if row < n_rows - 1:
                 ax.tick_params(axis="x", labelbottom=False)
@@ -499,24 +503,28 @@ def plot_ss_power_density_snapshots(
             r"$P_J$ [W m$^{-3}$]",
             "magma",
             True,
+            _snapshot_global_limits(dataset, "joule_snapshot_W_m3"),
         ),
         (
             np.asarray(dataset.get("P_total_snapshot_W_m3", []), dtype=float)[indices],
             r"$P_{e\mathrm{-}ph}=P_S+P_R$ [W m$^{-3}$]",
             "coolwarm",
             False,
+            _snapshot_global_limits(dataset, "P_total_snapshot_W_m3"),
         ),
         (
             diffusion_all[indices],
             r"$P_{\mathrm{diff}}$ [W m$^{-3}$]",
             "PuOr_r",
             False,
+            _snapshot_global_limits(dataset, "P_diff_snapshot_W_m3"),
         ),
         (
             escape_all[indices],
             r"$P_{\mathrm{esc}}$ [W m$^{-3}$]",
             "cividis",
             True,
+            _snapshot_global_limits(dataset, "P_esc_snapshot_W_m3"),
         ),
     ]
     return _plot_snapshot_scalar_atlas(
@@ -545,24 +553,28 @@ def plot_ss_energy_heat_capacity_snapshots(
             r"$u_e$ [J m$^{-3}$]",
             "coolwarm",
             False,
+            _snapshot_global_limits(dataset, "u_e_snapshot_J_m3"),
         ),
         (
             np.asarray(dataset.get("u_ph_snapshot_J_m3", []), dtype=float)[indices],
             r"$u_{ph}$ [J m$^{-3}$]",
             "viridis",
             True,
+            _snapshot_global_limits(dataset, "u_ph_snapshot_J_m3"),
         ),
         (
             np.asarray(dataset.get("C_e_snapshot_J_m3_K", []), dtype=float)[indices],
             r"$C_e$ [J m$^{-3}$ K$^{-1}$]",
             "magma",
             True,
+            _snapshot_global_limits(dataset, "C_e_snapshot_J_m3_K"),
         ),
         (
             np.asarray(dataset.get("C_ph_snapshot_J_m3_K", []), dtype=float)[indices],
             r"$C_{ph}$ [J m$^{-3}$ K$^{-1}$]",
             "cividis",
             True,
+            _snapshot_global_limits(dataset, "C_ph_snapshot_J_m3_K"),
         ),
     ]
     return _plot_snapshot_scalar_atlas(
@@ -856,7 +868,7 @@ def _plot_snapshot_scalar_atlas(
     dataset: Mapping[str, Any],
     output_path: str | Path,
     times_ps: np.ndarray,
-    channels: Sequence[tuple[np.ndarray, str, str, bool]],
+    channels: Sequence[tuple[np.ndarray, str, str, bool, np.ndarray | None]],
     dpi: int,
 ) -> Path:
     output = _prepare_output(output_path)
@@ -874,11 +886,11 @@ def _plot_snapshot_scalar_atlas(
     )
     fig.subplots_adjust(left=0.078, right=0.948, bottom=0.070, top=0.900, wspace=0.08, hspace=0.10)
     column_mappables = []
-    for column, (values, label, cmap, positive) in enumerate(channels):
+    for column, (values, label, cmap, positive, global_limits) in enumerate(channels):
         field = np.asarray(values, dtype=float)
         if field.shape != (n_rows, tri.x.size):
             raise ValueError(f"Snapshot channel {label} has shape {field.shape}, expected {(n_rows, tri.x.size)}.")
-        norm = _scalar_field_norm(field, positive=positive)
+        norm = _scalar_field_norm(field, positive=positive, global_limits=global_limits)
         for row in range(n_rows):
             axis = axes[row, column]
             mappable = axis.tripcolor(
@@ -896,18 +908,19 @@ def _plot_snapshot_scalar_atlas(
                 axis.tick_params(axis="y", labelleft=False)
             if column == n_cols - 1:
                 axis.text(1.05, 0.5, rf"$t={times[row]:.3g}$ [ps]", transform=axis.transAxes, rotation=-90, va="center", ha="left", fontsize=7.2)
-        column_mappables.append((mappable, label, field))
+        column_mappables.append((mappable, label, field, global_limits))
     fig.supxlabel(r"$x$ [nm]", y=0.017, fontsize=8.5)
     fig.supylabel(r"$y$ [nm]", x=0.016, fontsize=8.5)
     fig.canvas.draw()
-    for column, (mappable, label, field) in enumerate(column_mappables):
+    for column, (mappable, label, field, global_limits) in enumerate(column_mappables):
         position = axes[0, column].get_position()
         color_axis = fig.add_axes([position.x0, position.y1 + 0.009, position.width, 0.010])
         colorbar = fig.colorbar(mappable, cax=color_axis, orientation="horizontal")
         color_axis.xaxis.set_ticks_position("top")
         color_axis.xaxis.set_label_position("top")
         colorbar.set_label(label, labelpad=1.5, fontsize=7.8)
-        _set_compact_colorbar_ticks(colorbar, field)
+        tick_source = global_limits if global_limits is not None else field
+        _set_compact_colorbar_ticks(colorbar, np.asarray(tick_source, dtype=float))
         color_axis.tick_params(labelsize=6.6, pad=0.8, length=2.0)
         tick_labels = colorbar.ax.get_xticklabels()
         if len(tick_labels) >= 2:
@@ -918,22 +931,40 @@ def _plot_snapshot_scalar_atlas(
     return output
 
 
-def _scalar_field_norm(values: np.ndarray, *, positive: bool):
+def _scalar_field_norm(
+    values: np.ndarray,
+    *,
+    positive: bool,
+    global_limits: np.ndarray | None = None,
+):
     finite = np.asarray(values, dtype=float)
     finite = finite[np.isfinite(finite)]
-    if finite.size == 0 or float(np.nanmax(finite) - np.nanmin(finite)) == 0.0:
-        center = float(finite[0]) if finite.size else 0.0
+    limits = np.asarray(global_limits if global_limits is not None else [], dtype=float).reshape(-1)
+    if limits.size == 2 and np.all(np.isfinite(limits)):
+        limit_finite = np.asarray([float(limits[0]), float(limits[1])], dtype=float)
+    else:
+        limit_finite = finite
+    if limit_finite.size == 0 or float(np.nanmax(limit_finite) - np.nanmin(limit_finite)) == 0.0:
+        center = float(limit_finite[0]) if limit_finite.size else 0.0
         width = max(abs(center) * 0.05, 1.0)
         return Normalize(vmin=center - width, vmax=center + width)
-    if positive or float(np.nanmin(finite)) >= 0.0:
+    if positive or float(np.nanmin(limit_finite)) >= 0.0:
         positive_values = finite[finite > 0.0]
-        vmax = float(np.nanpercentile(finite, 99.7))
+        vmax = float(np.nanmax(limit_finite))
         if positive_values.size and vmax / max(float(np.nanpercentile(positive_values, 1.0)), 1.0e-300) >= 30.0:
             vmin = max(float(np.nanpercentile(positive_values, 1.0)), vmax * 1.0e-8)
             return LogNorm(vmin=vmin, vmax=max(vmax, vmin * 10.0))
-        return Normalize(vmin=max(0.0, float(np.nanpercentile(finite, 0.3))), vmax=vmax)
-    vmax = max(float(np.nanpercentile(np.abs(finite), 99.7)), 1.0e-300)
+        return Normalize(vmin=max(0.0, float(np.nanmin(limit_finite))), vmax=vmax)
+    vmax = max(float(np.nanmax(np.abs(limit_finite))), 1.0e-300)
     return SymLogNorm(linthresh=max(vmax * 1.0e-5, 1.0e-300), vmin=-vmax, vmax=vmax, base=10.0)
+
+
+def _snapshot_global_limits(dataset: Mapping[str, Any], key: str) -> np.ndarray | None:
+    stored = dataset.get("snapshot_global_limits", {})
+    if not isinstance(stored, Mapping) or key not in stored:
+        return None
+    values = np.asarray(stored[key], dtype=float).reshape(-1)
+    return values if values.size == 2 else None
 
 
 def _set_compact_colorbar_ticks(colorbar, values: np.ndarray) -> None:
@@ -997,16 +1028,44 @@ def _add_current_direction_arrow(
     uy = mean_y / magnitude
     length = float(np.ptp(tri.x))
     width = float(np.ptp(tri.y))
-    arrow_length = 0.20 * length * min(magnitude / max(reference_magnitude, 1.0e-300), 1.0)
+    arrow_length = 0.34 * length * min(magnitude / max(reference_magnitude, 1.0e-300), 1.0)
     if abs(uy) > 1.0e-12:
         arrow_length = min(arrow_length, 0.65 * width / abs(uy))
     center_x = 0.5 * (float(np.nanmin(tri.x)) + float(np.nanmax(tri.x)))
     center_y = 0.5 * (float(np.nanmin(tri.y)) + float(np.nanmax(tri.y)))
     start = (center_x - 0.5 * ux * arrow_length, center_y - 0.5 * uy * arrow_length)
     stop = (center_x + 0.5 * ux * arrow_length, center_y + 0.5 * uy * arrow_length)
-    arrow = FancyArrowPatch(start, stop, arrowstyle="-|>", mutation_scale=8.5, linewidth=1.2, color="white", zorder=8)
-    arrow.set_path_effects([path_effects.Stroke(linewidth=2.2, foreground="0.1"), path_effects.Normal()])
-    ax.add_patch(arrow)
+    tail = ax.plot(
+        [start[0], stop[0]],
+        [start[1], stop[1]],
+        color="white",
+        linewidth=1.2,
+        solid_capstyle="round",
+        zorder=8,
+    )[0]
+    tail.set_path_effects(
+        [path_effects.Stroke(linewidth=2.2, foreground="0.1"), path_effects.Normal()]
+    )
+    head_outline = FancyArrowPatch(
+        start,
+        stop,
+        arrowstyle="-|>",
+        mutation_scale=10.0,
+        linewidth=0.0,
+        color="0.1",
+        zorder=8.1,
+    )
+    head = FancyArrowPatch(
+        start,
+        stop,
+        arrowstyle="-|>",
+        mutation_scale=8.5,
+        linewidth=0.0,
+        color="white",
+        zorder=8.2,
+    )
+    ax.add_patch(head_outline)
+    ax.add_patch(head)
 
 
 def _binned_statistics(x: Any, y: Any, *, n_bins: int = 320) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
