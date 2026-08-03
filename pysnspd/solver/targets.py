@@ -423,7 +423,9 @@ def stationarity_diagnostics(
     eta = np.asarray(history.get("eta_R", []), dtype=float).reshape(-1)
     eta_final = float(eta[-1]) if eta.size else float("nan")
     w = max(1, int(eta_window))
-    eta_window_max = float(np.nanmax(eta[-w:])) if eta.size else float("nan")
+    eta_tail = eta[-w:]
+    eta_finite = eta_tail[np.isfinite(eta_tail)]
+    eta_window_max = float(np.max(eta_finite)) if eta_finite.size else float("nan")
 
     xi_hist = np.asarray(history.get("stationarity_xi_m", []), dtype=float).reshape(-1)
     xi_m = float(xi_hist[0]) if xi_hist.size and np.isfinite(xi_hist[0]) else float("nan")

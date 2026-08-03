@@ -44,6 +44,9 @@ def write_ss_snapshot_power_diagnostics(
     power_table_npz: str | Path,
     output_path: str | Path,
     sigma_n_S_m: float | None = None,
+    ops: Any | None = None,
+    thermal_active_mask: np.ndarray | None = None,
+    thermal_bath_K: float | None = None,
 ) -> Path:
     """Evaluate PRE energy/power tables on all stored SS snapshots and save NPZ.
 
@@ -56,6 +59,9 @@ def write_ss_snapshot_power_diagnostics(
         state=state,
         power_table_npz=power_table_npz,
         sigma_n_S_m=sigma_n_S_m,
+        ops=ops,
+        thermal_active_mask=thermal_active_mask,
+        thermal_bath_K=thermal_bath_K,
     )
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -69,6 +75,9 @@ def compute_ss_snapshot_power_diagnostics(
     state: Any,
     power_table_npz: str | Path,
     sigma_n_S_m: float | None = None,
+    ops: Any | None = None,
+    thermal_active_mask: np.ndarray | None = None,
+    thermal_bath_K: float | None = None,
 ) -> dict[str, np.ndarray]:
     """Return node maps of PRE power/energy quantities at SS snapshot times."""
     cat = _load_power_table_npz(power_table_npz)
@@ -142,6 +151,49 @@ def compute_ss_snapshot_power_diagnostics(
     joule = _snapshot_joule_power_density(history, sigma_n_S_m=sigma_n_S_m, n_snap=n_snap, n_nodes=n_nodes)
     if joule is not None:
         out["joule_snapshot_W_m3"] = joule
+    if (
+        ops is not None
+        and thermal_active_mask is not None
+        and thermal_bath_K is not None
+    ):
+        out["P_diff_snapshot_W_m3"] = compute_snapshot_diffusion_power_density(
+            Te_node,
+            kappa_s,
+            active_mask=thermal_active_mask,
+            bath_K=float(thermal_bath_K),
+            ops=ops,
+        )
+    return out
+
+
+def compute_snapshot_diffusion_power_density(
+    Te_snapshot_K: np.ndarray,
+    kappa_snapshot_W_m_K: np.ndarray,
+    *,
+    active_mask: np.ndarray,
+    bath_K: float,
+    ops: Any,
+) -> np.ndarray:
+    """Evaluate the runtime finite-volume diffusion power on stored snapshots."""
+
+    from pysnspd.thermal.evolution import thermal_diffusion_power_density
+
+    Te = np.asarray(Te_snapshot_K, dtype=float)
+    kappa = np.asarray(kappa_snapshot_W_m_K, dtype=float)
+    active = np.asarray(active_mask, dtype=bool).reshape(-1)
+    if Te.ndim != 2 or kappa.shape != Te.shape:
+        raise ValueError("Te and kappa snapshots must share shape (n_snap,n_nodes).")
+    if active.size != Te.shape[1]:
+        raise ValueError("thermal active mask must have one value per mesh node.")
+    out = np.empty_like(Te, dtype=float)
+    for index in range(Te.shape[0]):
+        out[index] = thermal_diffusion_power_density(
+            Te[index],
+            kappa[index],
+            active,
+            bath_K=float(bath_K),
+            ops=ops,
+        )
     return out
 
 
@@ -357,6 +409,7 @@ def _diagnostic_metadata_json(cat: Mapping[str, Any], power_table_npz: str | Pat
 __all__ = [
     "save_ss_snapshot_bundle_npz",
     "compute_snapshot_joule_power_density",
+    "compute_snapshot_diffusion_power_density",
     "compute_ss_snapshot_power_diagnostics",
     "write_ss_snapshot_power_diagnostics",
 ]

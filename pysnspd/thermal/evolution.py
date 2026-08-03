@@ -671,11 +671,36 @@ def _thermal_diffusion_power_density(
     return out / np.maximum(np.asarray(ops.node_area_m2, dtype=float), 1.0e-300)
 
 
+def thermal_diffusion_power_density(
+    Te_K: np.ndarray,
+    kappa_s_W_m_K: np.ndarray,
+    active_mask: np.ndarray,
+    *,
+    bath_K: float,
+    ops: Any,
+) -> np.ndarray:
+    """Public diagnostic wrapper for the runtime finite-volume diffusion term.
+
+    Plotting and persistence code must use the exact same discretization as the
+    thermal RHS; this wrapper avoids a visually plausible but misaligned
+    reconstruction of ``P_diff``.
+    """
+
+    return _thermal_diffusion_power_density(
+        Te_K,
+        kappa_s_W_m_K,
+        active_mask,
+        bath_K=bath_K,
+        ops=ops,
+    )
+
+
 __all__ = [
     "PowerTableRuntimeInterpolator",
     "ThermalLookupResult",
     "ThermalRuntimeConfig",
     "ThermalRuntimeController",
     "build_central_thermal_mask",
+    "thermal_diffusion_power_density",
     "thermal_stationarity_diagnostics",
 ]

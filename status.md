@@ -4,7 +4,7 @@ Last updated: 2026-08-02
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: Week 2 closure - stationarity, localized artifacts, and E1
+Current phase: Week 2 closure - stationarity, localized artifacts, and E1/E2
 figure consolidation
 
 ## Executive status
@@ -37,6 +37,9 @@ validity gates.
 - Early termination additionally requires five consecutive successful
   evaluations separated by 0.5 ps. The old eta-residual stop and obsolete
   command/config aliases have been removed.
+- Reanalysis of the legacy 30 uA run with the current policy first reaches and
+  latches `photon_ready` at 104.452 ps. Its stored legacy value remains `null`
+  and is reported separately rather than rewritten.
 
 ## Low-amplitude constitutive result
 
@@ -91,11 +94,25 @@ marks q_c on the Usadel supercurrent branch, and stores the mesh presentation
 and quality diagnostics under the run's `mesh/` folder. The temporary
 low-amplitude plotting path and its dedicated analysis code/tests were removed.
 
+E2 plotting now separates solver procedure from physical stationarity, removes
+dense snapshot markers from histories, and uses paired electron/phonon axes
+where their scales differ. The final longitudinal profile includes total,
+superfluid, normal-current fits, order parameter, potential, Te, and Tph.
+Snapshot atlases use the seven standard times from 0 to 200 ps and include
+current-direction arrows, four power-density channels (including finite-volume
+thermal diffusion), and electronic/phononic energy densities and heat
+capacities. New runs persist diffusion power directly; old runs reconstruct it
+exactly from stored fields and operators without rerunning the simulation.
+
 ## Validation completed
 
-- Complete suite on Geminga after the E1/mesh update: `147 passed`.
+- Complete suite on Geminga after the E2 update: `147 passed`.
 - E1 was regenerated from the production PRE and its six affected PDFs were
   rendered and visually inspected without clipping, overlap, or illegible text.
+- E2 was regenerated from
+  `ss_phasecg_I30uA_200ps_circuitthermal_stiffness_01`; all seven replacement
+  PDFs were rendered and visually inspected. The three obsolete combined
+  outputs are removed only after their replacements save successfully.
 - Focused constitutive suite: exact zero-amplitude Matsubara limit, quadratic
   amplitude power, q parity, stiffness interpolation, discrete plane wave,
   exact-zero edge current, gauge invariance, difference-before-divergence,
@@ -112,8 +129,7 @@ low-amplitude plotting path and its dedicated analysis code/tests were removed.
 - A 6 fs photon smoke inherited that SS state, deposited a 0.8 eV photon at
   3 fs, evolved circuit and thermal state, reached the requested horizon, and
   wrote all state, history, snapshot, timing, summary, and manifest outputs.
-- The unchanged E2 and E3 pipelines generated their complete diagnostic figure
-  sets from those archives.
+- E3 generated its complete diagnostic figure set from those archives.
 
 These runs validate interfaces, discrete identities, orchestration, and
 serialization only. Their femtosecond horizons are not physical stationarity,
@@ -124,7 +140,8 @@ detection, recovery, or notch-removal evidence.
 1. Let the isothermal/no-circuit SS current sweep in screen `code3` finish.
 2. Generate and visually validate its I-V curve and investigate any outlier
    before accepting the sweep.
-3. Merge `codex/ss-photon-ready-stationarity` into `main` after that review.
+3. Continue subsequent development directly on `main`; the former feature
+   branch history is already preserved upstream.
 4. Start the planned mesh/time/thermal convergence campaign using the new mesh
    edge-length and triangle-quality baselines.
 

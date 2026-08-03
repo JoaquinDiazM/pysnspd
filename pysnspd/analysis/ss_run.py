@@ -258,6 +258,19 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
         "thermal_mean_u_e_J_m3_history": _resize_to_time(_history_array(history, "thermal_mean_u_e_J_m3"), t_ps),
         "thermal_max_u_ph_J_m3_history": _resize_to_time(_history_array(history, "thermal_max_u_ph_J_m3"), t_ps),
         "thermal_mean_u_ph_J_m3_history": _resize_to_time(_history_array(history, "thermal_mean_u_ph_J_m3"), t_ps),
+        "circuit_time_ps": _resize_to_time(_history_array(history, "circuit_time_s") / 1.0e-12, t_ps),
+        "circuit_active_history": _resize_to_time(_history_array(history, "circuit_active"), t_ps),
+        "circuit_I_b_A_history": _resize_to_time(_history_array(history, "circuit_I_b_A"), t_ps),
+        "circuit_I_s_A_history": _resize_to_time(_history_array(history, "circuit_I_s_A"), t_ps),
+        "circuit_I_rf_A_history": _resize_to_time(_history_array(history, "circuit_I_rf_A"), t_ps),
+        "circuit_V_out_V_history": _resize_to_time(_history_array(history, "circuit_V_out_V"), t_ps),
+        "circuit_v_c_V_history": _resize_to_time(_history_array(history, "circuit_v_c_V"), t_ps),
+        "circuit_V_tdgl_center_V_history": _resize_to_time(
+            _history_array(history, "circuit_V_tdgl_center_V"), t_ps
+        ),
+        "circuit_dI_b_A_s_history": _resize_to_time(_history_array(history, "circuit_dI_b_A_s"), t_ps),
+        "circuit_dI_s_A_s_history": _resize_to_time(_history_array(history, "circuit_dI_s_A_s"), t_ps),
+        "circuit_dv_c_V_s_history": _resize_to_time(_history_array(history, "circuit_dv_c_V_s"), t_ps),
         "summary_scalars": _summary_scalars(summary),
         "npz_keys": summarize_ss_npz_contents(state=state, history=history),
     }

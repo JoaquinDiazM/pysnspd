@@ -48,6 +48,7 @@ from pysnspd.gtdgl.usadel_current import (
     validate_strict_usadel_supercurrent_table_npz,
 )
 from pysnspd.plotting.ss_run import plot_ss_adaptive_timestep_history
+from pysnspd.thermal.evolution import build_central_thermal_mask
 
 
 def parse_args() -> argparse.Namespace:
@@ -781,12 +782,23 @@ def _run_single_current_case(
     snapshots_npz = save_ss_snapshot_bundle_npz(history, raw_ss / "stationary_snapshots.npz")
     snapshot_power_npz = None
     if power_table_path.exists():
+        thermal_active_mask = (
+            build_central_thermal_mask(
+                np.asarray(mesh.nodes, dtype=float),
+                window_m=float(args.thermal_window_nm) * 1.0e-9,
+            )
+            if bool(args.thermal_enable)
+            else np.zeros(np.asarray(mesh.nodes).shape[0], dtype=bool)
+        )
         snapshot_power_npz = write_ss_snapshot_power_diagnostics(
             history=history,
             state=result.state,
             power_table_npz=power_table_path,
             output_path=raw_ss / "snapshot_power_energy_diagnostics.npz",
             sigma_n_S_m=float(material.sigma_n_S_m),
+            ops=ops,
+            thermal_active_mask=thermal_active_mask,
+            thermal_bath_K=float(np.nanmedian(seed.node_Tph_K)),
         )
 
     plots_dir = raw_ss / "plots_diagnostics"

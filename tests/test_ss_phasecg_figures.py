@@ -29,9 +29,18 @@ def test_make_phasecg_ss_figures(tmp_path):
         "delta_snapshot_over_delta0": snapshot_field,
         "phi_snapshot_mV": snapshot_field - 0.8,
         "qxi_snapshot": snapshot_field,
+        "Te_snapshot_K": 0.9 + 0.2 * snapshot_field,
+        "Tph_snapshot_K": 0.9 + 0.02 * snapshot_field,
         "js_snapshot_over_javg": snapshot_field,
         "jn_snapshot_over_javg": 1.0 - snapshot_field,
         "jtot_snapshot_over_javg": np.ones_like(snapshot_field),
+        "jtot_x_snapshot_over_javg": np.ones_like(snapshot_field),
+        "js_x_snapshot_over_javg": snapshot_field,
+        "jn_x_snapshot_over_javg": 1.0 - snapshot_field,
+        "jtot_y_snapshot_over_javg": np.zeros_like(snapshot_field),
+        "js_y_snapshot_over_javg": np.zeros_like(snapshot_field),
+        "jn_y_snapshot_over_javg": np.zeros_like(snapshot_field),
+        "node_area_m2": np.ones(nodes_x_nm.size),
         "div_j_snapshot_normalized": 1.0e-10 * (snapshot_field - 0.8),
         "target_current_uA": 43.0,
         "current_total_snapshot_uA": np.array([43.0, 43.0]),
@@ -71,10 +80,61 @@ def test_make_phasecg_ss_figures(tmp_path):
         "allmaras_phase_convergence_converged": np.ones(5, dtype=bool),
         "continuity_passes": True,
         "stationarity_passes": False,
+        "stationarity_eval_t_ps": np.array([0.0, 0.5, 1.0]),
+        "strict_q_tolerance_margin": np.array([np.nan, 2.0, 0.8]),
+        "strict_phi_tolerance_margin": np.array([np.nan, 1.5, 0.7]),
+        "dynamic_profile_tolerance_margin": np.array([np.nan, 1.2, 0.4]),
+        "dynamic_voltage_tolerance_margin": np.array([np.nan, 1.1, 0.5]),
+        "continuity_rms_tolerance_margin": np.array([0.2, 0.1, 0.1]),
+        "continuity_max_tolerance_margin": np.array([0.3, 0.2, 0.2]),
+        "poisson_tolerance_margin": np.array([0.1, 0.1, 0.1]),
+        "phase_cg_tolerance_margin": np.array([0.8, 0.7, 0.6]),
+        "thermal_relative_tolerance_margin": np.array([2.0, 0.8, 0.5]),
+        "thermal_p99_tolerance_margin": np.array([2.0, 0.7, 0.4]),
+        "thermal_projected_tolerance_margin": np.array([2.0, 0.9, 0.6]),
+        "circuit_value_tolerance_margin": np.array([2.0, 0.8, 0.5]),
+        "circuit_rhs_tolerance_margin": np.array([2.0, 0.7, 0.4]),
+        "photon_ready_reanalysis_summary": {
+            "passes": True,
+            "first_ready_time_ps": 1.0,
+            "stored_photon_ready": None,
+        },
     }
+    for key in (
+        "strict_stationarity_pass_history",
+        "dynamic_stationarity_pass_history",
+        "mesoscopic_stationarity_pass_history",
+        "contact_recovery_pass_history",
+        "continuity_pass_history",
+        "thermal_stationarity_pass_history",
+        "circuit_stationarity_pass_history",
+        "phase_cg_pass_history",
+        "photon_ready_history",
+    ):
+        dataset[key] = np.array([False, False, True])
+    dataset.update(
+        {
+            "joule_snapshot_W_m3": 1.0e12 * snapshot_field,
+            "P_total_snapshot_W_m3": 1.0e8 * (snapshot_field - 0.8),
+            "P_diff_snapshot_W_m3": 1.0e7 * (snapshot_field - 0.85),
+            "P_esc_snapshot_W_m3": np.zeros_like(snapshot_field),
+            "u_e_snapshot_J_m3": 10.0 * (snapshot_field - 0.9),
+            "u_ph_snapshot_J_m3": 2.0 + snapshot_field,
+            "C_e_snapshot_J_m3_K": 20.0 + snapshot_field,
+            "C_ph_snapshot_J_m3_K": 40.0 + snapshot_field,
+        }
+    )
 
     saved = make_phasecg_ss_figures(dataset=dataset, output_dir=tmp_path, dpi=40)
-    assert set(saved) == {"snapshot_fields", "physical_evolution", "numerical_diagnostics"}
+    assert set(saved) == {
+        "snapshot_fields",
+        "physical_evolution",
+        "numerical_procedure",
+        "stationarity_evolution",
+        "final_longitudinal_profiles",
+        "power_density_snapshots",
+        "energy_heat_capacity_snapshots",
+    }
     for path in saved.values():
         assert path.exists()
         assert path.stat().st_size > 0

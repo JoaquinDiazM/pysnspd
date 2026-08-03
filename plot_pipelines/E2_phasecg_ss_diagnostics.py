@@ -14,11 +14,17 @@ from typing import Any, Mapping
 import numpy as np
 import yaml
 
+from pysnspd.analysis.snapshots import compute_snapshot_diffusion_power_density
 from pysnspd.analysis.ss_phasecg import build_phasecg_diagnostic_dataset
 from pysnspd.analysis.ss_run import load_ss_run
 from pysnspd.config import load_config, validate_config
+from pysnspd.mesh.operators import build_fv_operators
 from pysnspd.plotting.ss_phasecg_figures import make_phasecg_ss_figures
 from pysnspd.plotting.style import THESIS_DPI
+from pysnspd.thermal.evolution import build_central_thermal_mask
+
+
+DEFAULT_SNAPSHOT_TIMES_PS = (0.0, 0.2, 0.5, 2.0, 20.0, 100.0, 200.0)
 
 
 def parse_args() -> argparse.Namespace:
@@ -51,7 +57,7 @@ def parse_args() -> argparse.Namespace:
         "--times-ps",
         nargs="+",
         type=float,
-        default=(0.0, 5.0, 10.0, 15.0, 20.0, 30.0, 50.0),
+        default=DEFAULT_SNAPSHOT_TIMES_PS,
         help=(
             "Requested times for the snapshot-field atlas in ps. "
             "The nearest stored snapshot is used for each requested time; "
@@ -81,7 +87,7 @@ def main() -> int:
         center_width_m=float(args.center_width_nm) * 1.0e-9,
         measured_wall_time_s=args.wall_time_seconds,
     )
-    _attach_snapshot_power_diagnostics(dataset, run.raw_ss)
+    _attach_snapshot_power_diagnostics(dataset, run)
 
     figures_dir = run.figures_dir / str(args.figures_subdir)
     saved = make_phasecg_ss_figures(
@@ -161,7 +167,7 @@ def _write_manifest(
         )
     )
     manifest = {
-        "schema_version": 2,
+        "schema_version": 3,
         "pipeline": "plot_pipelines/E2_phasecg_ss_diagnostics.py",
         "purpose": (
             "Focused validation of the normalized Allmaras phase-drive continuation, "
@@ -204,6 +210,9 @@ def _write_manifest(
                 dataset.get("thermal_stationarity_passes", False)
             ),
             "thermal_enabled": bool(dataset.get("thermal_enabled", False)),
+            "photon_ready_reanalysis": dict(
+                dataset.get("photon_ready_reanalysis_summary", {})
+            ),
             "phase_cg_converged_all_accepted_steps": bool(
                 phase_converged.size and np.all(phase_converged)
             ),
@@ -224,10 +233,10 @@ def _write_manifest(
     return out
 
 
-def _attach_snapshot_power_diagnostics(dataset: dict[str, Any], raw_ss: Path) -> None:
-    """Attach the stored thermal balance without recomputing catalogue lookups."""
+def _attach_snapshot_power_diagnostics(dataset: dict[str, Any], run: Any) -> None:
+    """Attach stored thermal maps and reconstruct only missing diffusion maps."""
 
-    path = Path(raw_ss) / "snapshot_power_energy_diagnostics.npz"
+    path = Path(run.raw_ss) / "snapshot_power_energy_diagnostics.npz"
     if not path.exists():
         return
     requested = (
@@ -237,15 +246,47 @@ def _attach_snapshot_power_diagnostics(dataset: dict[str, Any], raw_ss: Path) ->
         "P_R_snapshot_W_m3",
         "P_total_snapshot_W_m3",
         "P_esc_snapshot_W_m3",
+        "P_diff_snapshot_W_m3",
         "u_e_snapshot_J_m3",
         "u_ph_snapshot_J_m3",
         "C_e_snapshot_J_m3_K",
         "C_ph_snapshot_J_m3_K",
+        "kappa_s_snapshot_W_m_K",
     )
     with np.load(path, allow_pickle=True) as stored:
         for key in requested:
             if key in stored.files:
                 dataset[key] = np.asarray(stored[key])
+
+    if np.asarray(dataset.get("P_diff_snapshot_W_m3", [])).size:
+        return
+    Te = np.asarray(dataset.get("Te_snapshot_K", []), dtype=float)
+    kappa = np.asarray(dataset.get("kappa_s_snapshot_W_m_K", []), dtype=float)
+    if Te.ndim != 2 or kappa.shape != Te.shape:
+        return
+    thermal_runtime = dict(
+        dataset.get("summary_scalars", {})
+    )
+    window_nm = float(thermal_runtime.get("thermal_window_nm", np.nan))
+    bath_K = float(thermal_runtime.get("thermal_bath_K", np.nan))
+    enabled = bool(thermal_runtime.get("thermal_runtime_enabled", False))
+    if not np.isfinite(window_nm) or window_nm <= 0.0 or not np.isfinite(bath_K):
+        return
+    active = (
+        build_central_thermal_mask(
+            np.asarray(run.mesh.nodes, dtype=float),
+            window_m=window_nm * 1.0e-9,
+        )
+        if enabled
+        else np.zeros(Te.shape[1], dtype=bool)
+    )
+    dataset["P_diff_snapshot_W_m3"] = compute_snapshot_diffusion_power_density(
+        Te,
+        kappa,
+        active_mask=active,
+        bath_K=bath_K,
+        ops=build_fv_operators(run.mesh, run.edge_data),
+    )
 
 
 def _resolved_unique_times(

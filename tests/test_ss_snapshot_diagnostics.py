@@ -49,12 +49,22 @@ def test_ss_snapshot_power_diagnostics_shapes(tmp_path: Path) -> None:
         "dual_face_length_m": np.array([1.0]),
     }
     state = SimpleNamespace(Te_K=np.array([0.9, 4.0]), Tph_K=np.array([0.9, 4.0]))
+    ops = SimpleNamespace(
+        edge_i=np.array([0], dtype=np.int64),
+        edge_j=np.array([1], dtype=np.int64),
+        edge_length_m=np.array([1.0]),
+        dual_face_length_m=np.array([1.0]),
+        node_area_m2=np.array([1.0, 1.0]),
+    )
 
     out = compute_ss_snapshot_power_diagnostics(
         history=history,
         state=state,
         power_table_npz=cat,
         sigma_n_S_m=2.0,
+        ops=ops,
+        thermal_active_mask=np.array([True, True]),
+        thermal_bath_K=0.9,
     )
 
     assert out["P_total_snapshot_W_m3"].shape == (3, 2)
@@ -62,6 +72,8 @@ def test_ss_snapshot_power_diagnostics_shapes(tmp_path: Path) -> None:
     assert out["kappa_s_snapshot_W_m_K"].shape == (3, 2)
     assert out["P_esc_snapshot_W_m3"].shape == (3, 2)
     assert out["joule_snapshot_W_m3"].shape == (3, 2)
+    assert out["P_diff_snapshot_W_m3"].shape == (3, 2)
+    np.testing.assert_allclose(np.sum(out["P_diff_snapshot_W_m3"], axis=1), 0.0)
     assert np.all(np.isfinite(out["P_total_snapshot_W_m3"]))
 
     snapshots = save_ss_snapshot_bundle_npz(history, tmp_path / "stationary_snapshots.npz")
