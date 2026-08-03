@@ -57,14 +57,12 @@ def parse_args() -> argparse.Namespace:
         help="Subdirectory under plots/<output-run-name> for inventory files and figures.",
     )
     parser.add_argument(
-        "--no-npz-keys",
+        "--deep-inventory",
         action="store_true",
-        help="List NPZ files but do not open them to read key/shape/dtype metadata.",
-    )
-    parser.add_argument(
-        "--no-yaml-data",
-        action="store_true",
-        help="List YAML/JSON files but do not parse their contents.",
+        help=(
+            "Opt in to NPZ key/shape inspection and full YAML/JSON inventory data. "
+            "The default is intentionally shallow because sweep histories can be many GB."
+        ),
     )
     parser.add_argument(
         "--voltage-probe-offset-nm",
@@ -112,6 +110,16 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Do not prepend the synthetic (I,V)=(0,0) point.",
     )
+    parser.add_argument(
+        "--ohmic-relative-tolerance",
+        type=float,
+        default=0.10,
+        help=(
+            "Classify a completed point as approximately ohmic when both central "
+            "and terminal |V|/V_N ratios lie within this relative tolerance of 1. "
+            "Default: 0.10."
+        ),
+    )
     parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     return parser.parse_args()
 
@@ -130,8 +138,8 @@ def main() -> int:
         run_names=args.run_names,
         run_prefixes=[] if args.run_names else args.run_prefix,
         stages=args.stage,
-        include_npz_keys=not args.no_npz_keys,
-        include_yaml_data=not args.no_yaml_data,
+        include_npz_keys=bool(args.deep_inventory),
+        include_yaml_data=bool(args.deep_inventory),
     )
     summary = summarize_inventory(records)
     inventory_paths = write_database_inventory(records, output_dir)
@@ -146,6 +154,7 @@ def main() -> int:
         include_origin=not args.no_origin,
         delta_inset_currents_uA=args.delta_inset_currents_uA,
         terminal_delta_inset_currents_uA=args.terminal_delta_inset_currents_uA,
+        ohmic_relative_tolerance=float(args.ohmic_relative_tolerance),
     )
 
     manifest_path = _write_z2_manifest(
@@ -175,6 +184,8 @@ def main() -> int:
     for key in (
         "iv_curve",
         "terminal_iv_curve",
+        "regime_summary_curve",
+        "regime_summary_yaml",
         "iv_points_csv",
         "iv_points_yaml",
         "iv_skipped_yaml",
@@ -199,6 +210,12 @@ def main() -> int:
         print(f" delta inset resolved [uA]: {iv_summary.get('delta_inset_resolved_currents_uA', [])}")
         print(f" terminal delta requests [uA]: {iv_summary.get('terminal_delta_inset_currents_uA', [])}")
         print(f" terminal delta resolved [uA]: {iv_summary.get('terminal_delta_inset_resolved_currents_uA', [])}")
+        counts = iv_summary.get("regime_counts", {})
+        ranges = iv_summary.get("sampled_ranges", {})
+        print(f" completed/discovered: {counts.get('complete', 0)}/{counts.get('discovered', 0)}")
+        print(f" photon-ready sampled currents [uA]: {_range_currents(ranges, 'photon_ready')}")
+        print(f" dynamic-SS sampled currents [uA]: {_range_currents(ranges, 'dynamic_stationary')}")
+        print(f" approx-ohmic sampled currents [uA]: {_range_currents(ranges, 'approximately_ohmic')}")
     print("Status: OK")
     return 0
 
@@ -214,11 +231,12 @@ def _write_z2_manifest(
     figure_outputs: dict[str, Any],
 ) -> Path:
     manifest = {
-        "schema_version": 5,
+        "schema_version": 6,
         "pipeline": "plot_pipelines/Z2_current_sweep_analysis.py",
         "purpose": (
             "Multi-run current-sweep inventory with central TDGL and terminal-voltage "
-            "IV PDFs, full-length normal-state reference, and |Delta| snapshots."
+            "IV PDFs, full-length normal-state reference, |Delta| snapshots, and a "
+            "four-panel coverage/stationarity/regime summary using lightweight endpoint reads."
         ),
         "config_path": str(config_path),
         "args": args,
@@ -233,6 +251,15 @@ def _write_z2_manifest(
     with out.open("w", encoding="utf-8") as f:
         yaml.safe_dump(manifest, f, sort_keys=False, allow_unicode=True, default_flow_style=False)
     return out
+
+
+def _range_currents(ranges: Any, key: str) -> list[float]:
+    if not isinstance(ranges, dict):
+        return []
+    item = ranges.get(key, {})
+    if not isinstance(item, dict):
+        return []
+    return [float(value) for value in item.get("currents_uA", [])]
 
 
 if __name__ == "__main__":

@@ -37,7 +37,15 @@ def load_ss_run(
     config_path: str | Path,
     run_name: str,
     pre_run_name: str | None = None,
+    load_history: bool = True,
 ) -> SSRunData:
+    """Load an SS run, optionally omitting the potentially huge history NPZ.
+
+    Final-state comparisons such as current sweeps need the mesh, summary, and
+    stationary state, but not gigabytes of node-resolved time history.  Keeping
+    this switch at the loader boundary prevents plotting code from
+    accidentally decompressing those arrays.
+    """
     cfg = validate_config(load_config(config_path))
     ss_layout = create_run_layout(cfg, run_name)
     raw_ss = Path(ss_layout["raw_ss"])
@@ -53,7 +61,7 @@ def load_ss_run(
     mesh = load_mesh_npz(raw_pre / "mesh.npz")
     edge_data = load_edges_npz(raw_pre / "edges.npz")
     state = _load_npz_dict(state_path)
-    history = _load_npz_dict(history_path)
+    history = _load_npz_dict(history_path) if load_history else {}
 
     figures_dir = Path(ss_layout["plots_figures"])
     figures_dir.mkdir(parents=True, exist_ok=True)
@@ -71,7 +79,12 @@ def load_ss_run(
     )
 
 
-def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
+def build_ss_plot_dataset(
+    run: SSRunData,
+    *,
+    load_snapshots: bool = True,
+) -> dict[str, Any]:
+    """Build plotting arrays, optionally omitting the large snapshot archive."""
     mesh = run.mesh
     nodes = np.asarray(mesh.nodes, dtype=float)
     x_m = nodes[:, 0]
@@ -282,9 +295,10 @@ def build_ss_plot_dataset(run: SSRunData) -> dict[str, Any]:
     if dataset["dt_next_fs"].size == 0 and dt_fs.size:
         dataset["dt_next_fs"] = _resize_to_time(dt_fs, t_ps)
 
-    probe = _center_probe_voltage_from_snapshots(run.raw_ss / "stationary_snapshots.npz", x_m)
-    if probe:
-        dataset.update(probe)
+    if load_snapshots:
+        probe = _center_probe_voltage_from_snapshots(run.raw_ss / "stationary_snapshots.npz", x_m)
+        if probe:
+            dataset.update(probe)
 
     return dataset
 

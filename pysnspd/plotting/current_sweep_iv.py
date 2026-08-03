@@ -53,9 +53,18 @@ def plot_current_sweep_iv(
     valid = np.isfinite(x_data) & np.isfinite(y_data)
     x_valid = x_data[valid]
     y_valid = y_data[valid]
+    physical = np.asarray(
+        [str(item.get("run_name", "")) != "synthetic_origin" for item in points],
+        dtype=bool,
+    )
+    physical_valid = valid & physical
 
     normal_x, normal_y = _extract_normal_curve(points)
-    fit_x, fit_y = _monotone_fit_curve(x_valid, y_valid)
+    fit_x, fit_y = (
+        _monotone_fit_curve(x_valid, y_valid)
+        if np.count_nonzero(physical_valid) >= 2
+        else (np.array([], dtype=float), np.array([], dtype=float))
+    )
 
     fig, ax = plt.subplots(figsize=THESIS_DOUBLE_FIGSIZE, constrained_layout=False)
     fig.subplots_adjust(left=0.105, right=0.975, bottom=0.125, top=0.965)
@@ -83,9 +92,9 @@ def plot_current_sweep_iv(
             zorder=2.6,
         )
     raw_scatter = ax.scatter(
-        x_valid,
-        y_valid,
-        s=22.0,
+        x_data[physical_valid],
+        y_data[physical_valid],
+        s=30.0,
         color="tab:blue",
         label="Raw data points",
         zorder=3.0,
@@ -93,6 +102,17 @@ def plot_current_sweep_iv(
 
     if include_origin:
         ax.scatter([0.0], [0.0], s=26.0, color="tab:orange", zorder=4.0)
+    if np.count_nonzero(physical_valid) < 2:
+        ax.text(
+            0.03,
+            0.95,
+            f"Only {np.count_nonzero(physical_valid)} completed sweep point; no I-V fit",
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            fontsize=7.2,
+            bbox={"facecolor": "white", "edgecolor": "0.55", "alpha": 0.92, "pad": 3.0},
+        )
 
     snapshot_handle = None
     if delta_insets:
@@ -135,7 +155,7 @@ def plot_current_sweep_iv(
     legend = ax.legend(
         handles,
         labels,
-        loc="lower right",
+        loc="upper right" if np.count_nonzero(physical_valid) < 2 else "lower right",
         frameon=True,
     )
     legend.get_frame().set_alpha(0.95)
@@ -161,24 +181,44 @@ def plot_terminal_current_sweep_iv(
     valid = np.isfinite(x_data) & np.isfinite(y_data)
     x_valid = x_data[valid]
     y_valid = y_data[valid]
+    physical = np.asarray(
+        [str(item.get("run_name", "")) != "synthetic_origin" for item in points],
+        dtype=bool,
+    )
+    physical_valid = valid & physical
     normal_x, normal_y = _extract_normal_curve(
         points,
         voltage_key="normal_terminal_voltage_mV",
     )
-    fit_x, fit_y = _monotone_fit_curve(x_valid, y_valid)
+    fit_x, fit_y = (
+        _monotone_fit_curve(x_valid, y_valid)
+        if np.count_nonzero(physical_valid) >= 2
+        else (np.array([], dtype=float), np.array([], dtype=float))
+    )
 
     fig = plt.figure(figsize=THESIS_DOUBLE_FIGSIZE, constrained_layout=False)
-    outer = fig.add_gridspec(
-        1,
-        2,
-        width_ratios=(1.7, 1.0),
-        left=0.075,
-        right=0.975,
-        bottom=0.105,
-        top=0.955,
-        wspace=0.18,
-    )
-    ax = fig.add_subplot(outer[0, 0])
+    if delta_insets:
+        outer = fig.add_gridspec(
+            1,
+            2,
+            width_ratios=(1.7, 1.0),
+            left=0.075,
+            right=0.975,
+            bottom=0.105,
+            top=0.955,
+            wspace=0.18,
+        )
+        ax = fig.add_subplot(outer[0, 0])
+    else:
+        outer = fig.add_gridspec(
+            1,
+            1,
+            left=0.105,
+            right=0.975,
+            bottom=0.125,
+            top=0.965,
+        )
+        ax = fig.add_subplot(outer[0, 0])
 
     fit_line = None
     normal_line = None
@@ -203,15 +243,26 @@ def plot_terminal_current_sweep_iv(
             zorder=2.6,
         )
     raw_scatter = ax.scatter(
-        x_valid,
-        y_valid,
-        s=25.0,
+        x_data[physical_valid],
+        y_data[physical_valid],
+        s=32.0,
         color="tab:blue",
         label="Raw data points",
         zorder=3.0,
     )
     if include_origin:
         ax.scatter([0.0], [0.0], s=29.0, color="tab:orange", zorder=4.0)
+    if np.count_nonzero(physical_valid) < 2:
+        ax.text(
+            0.03,
+            0.95,
+            f"Only {np.count_nonzero(physical_valid)} completed sweep point; no I-V fit",
+            transform=ax.transAxes,
+            ha="left",
+            va="top",
+            fontsize=7.2,
+            bbox={"facecolor": "white", "edgecolor": "0.55", "alpha": 0.92, "pad": 3.0},
+        )
 
     snapshot_handle = None
     if delta_insets:
@@ -222,9 +273,6 @@ def plot_terminal_current_sweep_iv(
             voltage_key="terminal_voltage_mV",
         )
         _add_terminal_delta_panels(fig, outer[0, 1], delta_insets)
-    else:
-        empty_ax = fig.add_subplot(outer[0, 1])
-        empty_ax.axis("off")
 
     ax.set_xlabel(r"$I_{\mathrm{bias}}$ [$\mu$A]")
     ax.set_ylabel(r"$V_{\mathrm{terminal}}$ [mV]")
@@ -243,7 +291,12 @@ def plot_terminal_current_sweep_iv(
     if snapshot_handle is not None:
         handles.append(snapshot_handle)
         labels.append("Order-parameter snapshots")
-    legend = ax.legend(handles, labels, loc="lower right", frameon=True)
+    legend = ax.legend(
+        handles,
+        labels,
+        loc="upper right" if np.count_nonzero(physical_valid) < 2 else "lower right",
+        frameon=True,
+    )
     legend.get_frame().set_alpha(0.95)
 
     fig.savefig(output, dpi=dpi, bbox_inches="tight", pad_inches=0.06)
@@ -285,7 +338,12 @@ def write_current_sweep_iv_csv(points: Sequence[Mapping[str, Any]], output_path:
         "probe_left_x_nm", "probe_right_x_nm", "probe_left_phi_mV", "probe_right_phi_mV",
         "profile_x_center_nm", "profile_x_min_nm", "profile_x_max_nm",
         "voltage_probe_offset_nm", "voltage_probe_half_window_nm",
-        "pre_run_name", "raw_ss", "source",
+        "pre_run_name", "raw_ss", "source", "complete",
+        "strict_stationarity_passes", "dynamic_stationarity_passes", "photon_ready",
+        "photon_ready_source", "approximately_ohmic", "normal_voltage_ratio",
+        "terminal_normal_voltage_ratio", "mean_delta_over_delta0",
+        "normal_like_fraction_final", "accepted_steps", "rejected_steps",
+        "rejected_over_accepted", "final_time_ps",
     ]
     with path.open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -339,19 +397,33 @@ def _build_iv_point(
     current_uA = _infer_bias_current_uA(run_name=run_name, summary=getattr(run, "summary", {}), dataset=dataset)
     x_profile = np.asarray(dataset.get("x_profile_nm", []), dtype=float)
     profiles = dataset.get("profiles", {})
-    has_profile = (
+    has_binned_profile = (
         x_profile.size > 0
         and isinstance(profiles, Mapping)
         and np.asarray(profiles.get("phi_mV", [])).size > 0
     )
-    if has_profile:
+    node_x_nm = np.asarray(dataset.get("x_nm", []), dtype=float)
+    node_phi_mV = np.asarray(dataset.get("phi_mV", []), dtype=float)
+    has_final_field = (
+        node_x_nm.size > 0
+        and node_phi_mV.size == node_x_nm.size
+        and np.any(np.isfinite(node_phi_mV))
+    )
+    if has_binned_profile or has_final_field:
+        probe_dataset = dataset
+        central_source = "x_profile_phi_mV"
+        if not has_binned_profile:
+            probe_dataset = {
+                "x_profile_nm": node_x_nm,
+                "profiles": {"phi_mV": node_phi_mV},
+            }
+            central_source = "stationary_state_phi_mV"
         left_phi, right_phi, left_x, right_x, half_window_nm = _extract_profile_probe_values(
-            dataset,
+            probe_dataset,
             voltage_probe_offset_nm=voltage_probe_offset_nm,
             voltage_probe_half_window_nm=voltage_probe_half_window_nm,
         )
         central_voltage_mV = float(right_phi - left_phi)
-        central_source = "x_profile_phi_mV"
     else:
         central_voltage_mV = _last_finite(dataset.get("tdgl_probe_voltage_mV"))
         left_x = float(dataset.get("tdgl_probe_left_x_nm", np.nan))
@@ -379,12 +451,25 @@ def _build_iv_point(
         project_config=project_config,
     )
     terminal_voltage_mV = _last_finite(dataset.get("terminal_voltage_mV"))
+    terminal_source = "terminal_voltage_mV_history_final"
     if not np.isfinite(terminal_voltage_mV):
+        run_summary = getattr(run, "summary", {})
+        solver_summary = (
+            run_summary.get("solver", {})
+            if isinstance(run_summary, Mapping)
+            else {}
+        )
         terminal_voltage_V = _find_numeric_recursive(
-            getattr(run, "summary", {}),
+            solver_summary,
             keys=("terminal_voltage_V",),
         )
+        if not np.isfinite(terminal_voltage_V):
+            terminal_voltage_V = _find_numeric_recursive(
+                run_summary,
+                keys=("terminal_voltage_V",),
+            )
         terminal_voltage_mV = 1.0e3 * terminal_voltage_V if np.isfinite(terminal_voltage_V) else np.nan
+        terminal_source = "ss_summary_terminal_voltage_V"
     normal_terminal_voltage_mV = (
         1.0e-3 * float(current_uA) * float(rn_terminal_ohm)
         if np.isfinite(rn_terminal_ohm)
@@ -411,7 +496,7 @@ def _build_iv_point(
         "voltage_probe_half_window_nm": float(half_window_nm),
         "pre_run_name": getattr(run, "pre_run_name", None),
         "raw_ss": str(getattr(run, "raw_ss", "")) if getattr(run, "raw_ss", None) is not None else None,
-        "source": central_source + "_and_terminal_voltage_mV_history_final",
+        "source": central_source + "_and_" + terminal_source,
     }
     return point, float(half_window_nm), float(rn_probe_ohm), float(rn_terminal_ohm)
 

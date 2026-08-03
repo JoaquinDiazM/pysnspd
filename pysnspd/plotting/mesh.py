@@ -67,7 +67,7 @@ def plot_mesh_pytdgl_style(
     title: str | None = None,
     inset_location: str = "lower right",
     extra_inset_location: str = "upper right",
-    extra_inset_center: tuple[float, float] = (220.0, 10.0),
+    extra_inset_center: tuple[float, float] = (210.0, 15.0),
     inset_radius: float | None = None,
 ) -> Path:
     """Save a compact pyTDGL-style mesh figure.
@@ -105,7 +105,7 @@ def plot_mesh_pytdgl_style(
         ``"lower left"``.
     extra_inset_center:
         Center of the second inset in plotted coordinates.  With the default
-        SI-to-nm scale this is ``(220 nm, 10 nm)``.
+        SI-to-nm scale this is ``(210 nm, 15 nm)``.
     inset_radius:
         Circular inset radius in plotted coordinates. If omitted, a radius is
         inferred from the mesh spacing and strip width.

@@ -30,6 +30,11 @@ import yaml
 
 from pysnspd.analysis.ss_run import build_ss_plot_dataset, load_ss_run
 from pysnspd.plotting.style import THESIS_DPI
+from pysnspd.plotting.current_sweep_summary import (
+    build_current_sweep_regime_summary,
+    plot_current_sweep_regime_summary,
+    write_current_sweep_regime_summary,
+)
 
 MEV_J = 1.602176634e-22
 
@@ -52,6 +57,7 @@ def make_current_sweep_figures(
     include_origin: bool = True,
     delta_inset_currents_uA: Sequence[float] | None = None,
     terminal_delta_inset_currents_uA: Sequence[float] | None = None,
+    ohmic_relative_tolerance: float = 0.10,
 ) -> dict[str, Any]:
     """Create current-sweep inventory products and figures."""
     out = Path(output_dir)
@@ -66,6 +72,7 @@ def make_current_sweep_figures(
         voltage_probe_offset_nm=voltage_probe_offset_nm,
         voltage_probe_half_window_nm=voltage_probe_half_window_nm,
         include_origin=include_origin,
+        ohmic_relative_tolerance=ohmic_relative_tolerance,
     )
     inset_runs: list[dict[str, Any]] = []
     if delta_inset_currents_uA is not None:
@@ -97,6 +104,22 @@ def make_current_sweep_figures(
         dpi=dpi,
         include_origin=include_origin,
         delta_insets=terminal_inset_runs,
+    )
+    regime_summary = build_current_sweep_regime_summary(
+        points,
+        skipped,
+        ohmic_relative_tolerance=ohmic_relative_tolerance,
+    )
+    saved["regime_summary_curve"] = plot_current_sweep_regime_summary(
+        points,
+        skipped,
+        out / "Z2_sweep_regime_summary.pdf",
+        dpi=dpi,
+        ohmic_relative_tolerance=ohmic_relative_tolerance,
+    )
+    saved["regime_summary_yaml"] = write_current_sweep_regime_summary(
+        regime_summary,
+        out / "Z2_sweep_regime_summary.yaml",
     )
     saved["iv_points_csv"] = write_current_sweep_iv_csv(points, out / "Z2_iv_points.csv")
     saved["iv_points_yaml"] = write_current_sweep_iv_yaml(points, meta, out / "Z2_iv_points.yaml")
@@ -130,6 +153,9 @@ def make_current_sweep_figures(
         "terminal_delta_inset_resolved_currents_uA": [
             float(item["actual_current_uA"]) for item in terminal_inset_runs
         ],
+        "ohmic_relative_tolerance": float(ohmic_relative_tolerance),
+        "regime_counts": dict(regime_summary.get("counts", {})),
+        "sampled_ranges": dict(regime_summary.get("sampled_ranges", {})),
     }
     return saved
 
@@ -143,6 +169,7 @@ def collect_current_sweep_iv_points(
     voltage_probe_offset_nm: float = 50.0,
     voltage_probe_half_window_nm: float | None = None,
     include_origin: bool = True,
+    ohmic_relative_tolerance: float = 0.10,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     points: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
@@ -150,16 +177,32 @@ def collect_current_sweep_iv_points(
     normal_resistance_ohm: float | None = None
     normal_resistance_terminal_ohm: float | None = None
 
+    if not np.isfinite(ohmic_relative_tolerance) or not 0.0 < ohmic_relative_tolerance < 1.0:
+        raise ValueError("ohmic_relative_tolerance must lie strictly between 0 and 1.")
+
     for record in records:
         run_name = str(record.get("run_name", ""))
         stages = record.get("stages", {})
         stage_ss = stages.get("ss", {}) if isinstance(stages, Mapping) else {}
         if not isinstance(stage_ss, Mapping) or not stage_ss.get("exists", False):
-            skipped.append({"run_name": run_name, "reason": "ss stage not found"})
+            skipped.append(_incomplete_case(run_name, "ss stage not found"))
+            continue
+        missing = _missing_required_endpoint_outputs(stage_ss)
+        if missing:
+            skipped.append(
+                _incomplete_case(
+                    run_name,
+                    "missing required endpoint outputs: " + ", ".join(missing),
+                )
+            )
             continue
         try:
-            run = load_ss_run(config_path=config_path, run_name=run_name)
-            dataset = build_ss_plot_dataset(run)
+            run = load_ss_run(
+                config_path=config_path,
+                run_name=run_name,
+                load_history=False,
+            )
+            dataset = build_ss_plot_dataset(run, load_snapshots=False)
             point, half_window_nm, rn_probe, rn_terminal = _build_iv_point(
                 run_name=run_name,
                 run=run,
@@ -168,6 +211,15 @@ def collect_current_sweep_iv_points(
                 voltage_probe_offset_nm=voltage_probe_offset_nm,
                 voltage_probe_half_window_nm=voltage_probe_half_window_nm,
             )
+            point.update(_summary_diagnostics(run.summary))
+            if point.get("complete") is not True:
+                skipped.append(
+                    {
+                        **_incomplete_case(run_name, "requested simulation horizon was not reached"),
+                        **point,
+                    }
+                )
+                continue
             if used_half_window_nm is None and np.isfinite(half_window_nm):
                 used_half_window_nm = float(half_window_nm)
             if normal_resistance_ohm is None and np.isfinite(rn_probe):
@@ -176,13 +228,19 @@ def collect_current_sweep_iv_points(
                 normal_resistance_terminal_ohm = float(rn_terminal)
             points.append(point)
         except Exception as exc:
-            skipped.append({"run_name": run_name, "reason": f"{type(exc).__name__}: {exc}"})
+            skipped.append(
+                _incomplete_case(run_name, f"{type(exc).__name__}: {exc}")
+            )
 
     points.sort(key=lambda item: (float(item.get("current_uA", np.nan)), str(item.get("run_name", ""))))
     sign_flipped = _orient_positive_voltage(points)
     terminal_sign_flipped = _orient_positive_voltage(
         points,
         voltage_key="terminal_voltage_mV",
+    )
+    _annotate_normal_voltage_ratios(
+        points,
+        ohmic_relative_tolerance=float(ohmic_relative_tolerance),
     )
 
     if include_origin:
@@ -226,8 +284,196 @@ def collect_current_sweep_iv_points(
             if normal_resistance_terminal_ohm is not None
             else np.nan
         ),
+        "ohmic_relative_tolerance": float(ohmic_relative_tolerance),
     }
     return points, skipped, meta
+
+
+def _missing_required_endpoint_outputs(stage_ss: Mapping[str, Any]) -> list[str]:
+    npz_names = {
+        Path(str(item.get("path") or item.get("relative_path") or "")).name
+        for item in stage_ss.get("npz_files", []) or []
+        if isinstance(item, Mapping)
+    }
+    summary_names = {
+        Path(str(item.get("path") or item.get("relative_path") or "")).name
+        for item in stage_ss.get("summary_files", []) or []
+        if isinstance(item, Mapping)
+    }
+    missing: list[str] = []
+    if "ss_summary.yaml" not in summary_names:
+        missing.append("ss_summary.yaml")
+    if "stationary_state.npz" not in npz_names:
+        missing.append("stationary_state.npz")
+    return missing
+
+
+def _incomplete_case(run_name: str, reason: str) -> dict[str, Any]:
+    return {
+        "run_name": str(run_name),
+        "current_uA": _current_from_run_name(run_name),
+        "complete": False,
+        "reason": str(reason),
+        "strict_stationarity_passes": None,
+        "dynamic_stationarity_passes": None,
+        "photon_ready": None,
+        "approximately_ohmic": None,
+    }
+
+
+def _current_from_run_name(run_name: str) -> float:
+    matches = re.findall(r"(?:^|_)I([-+]?\d+(?:\.\d+)?)uA(?:_|$)", str(run_name))
+    if matches:
+        return float(matches[-1])
+    sweep = re.search(r"(?:^|_)I([-+]?\d+(?:\.\d+)?)to[-+]?\d+(?:\.\d+)?uA", str(run_name))
+    return float(sweep.group(1)) if sweep else float("nan")
+
+
+def _summary_diagnostics(summary: Mapping[str, Any]) -> dict[str, Any]:
+    solver = summary.get("solver", {})
+    if not isinstance(solver, Mapping):
+        solver = {}
+    strict = _nested_optional_bool(solver, "stationarity", "passes")
+    dynamic = _first_optional_bool(
+        solver.get("dynamic_stationarity_passes"),
+        _nested_value(solver, "dynamic_stationarity", "passes"),
+    )
+    contact = _nested_optional_bool(solver, "contact_recovery", "passes")
+    continuity = _nested_optional_bool(solver, "continuity", "passes")
+    thermal = _nested_optional_bool(solver, "thermal_stationarity", "passes")
+    circuit = _nested_optional_bool(solver, "circuit_stationarity", "passes")
+    phase = _first_optional_bool(
+        solver.get("phase_drive_converged"),
+        _nested_value(solver, "allmaras_phase_continuation", "final_converged"),
+    )
+    stored_ready = _optional_bool(solver.get("photon_ready"))
+    if stored_ready is None:
+        mesoscopic = _logical_or_optional(strict, dynamic)
+        final_ready = _logical_and_optional(
+            mesoscopic,
+            contact,
+            continuity,
+            thermal,
+            circuit,
+            phase,
+        )
+        ready_source = "reconstructed_final_gate" if final_ready is not None else "unavailable"
+    else:
+        final_ready = stored_ready
+        ready_source = "stored"
+
+    requested_time = _finite_or_nan(solver.get("requested_time_ps"))
+    final_time = _finite_or_nan(solver.get("final_time_ps"))
+    reached = _optional_bool(solver.get("requested_time_reached"))
+    if reached is None and np.isfinite(requested_time) and requested_time > 0.0 and np.isfinite(final_time):
+        reached = bool(final_time >= 0.999999 * requested_time)
+    accepted = _finite_or_nan(solver.get("accepted_steps"))
+    rejected = _finite_or_nan(solver.get("rejected_steps"))
+    rejected_ratio = (
+        rejected / accepted
+        if np.isfinite(accepted) and accepted > 0.0 and np.isfinite(rejected)
+        else np.nan
+    )
+    return {
+        "complete": bool(reached) if reached is not None else False,
+        "strict_stationarity_passes": strict,
+        "dynamic_stationarity_passes": dynamic,
+        "photon_ready": final_ready,
+        "photon_ready_source": ready_source,
+        "contact_recovery_passes": contact,
+        "continuity_passes": continuity,
+        "thermal_stationarity_passes": thermal,
+        "circuit_stationarity_passes": circuit,
+        "phase_drive_converged": phase,
+        "mean_delta_over_delta0": _finite_or_nan(solver.get("mean_delta_over_delta0")),
+        "normal_like_fraction_final": _finite_or_nan(
+            _nested_value(solver, "dynamic_stationarity", "normal_like_fraction_final")
+        ),
+        "accepted_steps": accepted,
+        "rejected_steps": rejected,
+        "rejected_over_accepted": rejected_ratio,
+        "final_time_ps": final_time,
+    }
+
+
+def _annotate_normal_voltage_ratios(
+    points: Sequence[dict[str, Any]],
+    *,
+    ohmic_relative_tolerance: float,
+) -> None:
+    for point in points:
+        central = _safe_ratio(point.get("voltage_mV"), point.get("normal_voltage_mV"))
+        terminal = _safe_ratio(
+            point.get("terminal_voltage_mV"),
+            point.get("normal_terminal_voltage_mV"),
+        )
+        point["normal_voltage_ratio"] = central
+        point["terminal_normal_voltage_ratio"] = terminal
+        point["approximately_ohmic"] = (
+            bool(
+                abs(central - 1.0) <= ohmic_relative_tolerance
+                and abs(terminal - 1.0) <= ohmic_relative_tolerance
+            )
+            if np.isfinite(central) and np.isfinite(terminal)
+            else None
+        )
+
+
+def _safe_ratio(value: Any, reference: Any) -> float:
+    numerator = _finite_or_nan(value)
+    denominator = _finite_or_nan(reference)
+    if not np.isfinite(numerator) or not np.isfinite(denominator) or abs(denominator) <= 0.0:
+        return float("nan")
+    return float(abs(numerator) / abs(denominator))
+
+
+def _finite_or_nan(value: Any) -> float:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return float("nan")
+    return number if np.isfinite(number) else float("nan")
+
+
+def _nested_value(mapping: Mapping[str, Any], *keys: str) -> Any:
+    value: Any = mapping
+    for key in keys:
+        if not isinstance(value, Mapping) or key not in value:
+            return None
+        value = value[key]
+    return value
+
+
+def _optional_bool(value: Any) -> bool | None:
+    return bool(value) if isinstance(value, (bool, np.bool_)) else None
+
+
+def _nested_optional_bool(mapping: Mapping[str, Any], *keys: str) -> bool | None:
+    return _optional_bool(_nested_value(mapping, *keys))
+
+
+def _first_optional_bool(*values: Any) -> bool | None:
+    for value in values:
+        parsed = _optional_bool(value)
+        if parsed is not None:
+            return parsed
+    return None
+
+
+def _logical_or_optional(left: bool | None, right: bool | None) -> bool | None:
+    if left is True or right is True:
+        return True
+    if left is False and right is False:
+        return False
+    return None
+
+
+def _logical_and_optional(*values: bool | None) -> bool | None:
+    if any(value is False for value in values):
+        return False
+    if all(value is True for value in values):
+        return True
+    return None
 
 
 
@@ -253,8 +499,12 @@ def select_delta_inset_runs(
     for idx, req in enumerate(requested, start=1):
         nearest = min(available, key=lambda item: abs(float(item.get("current_uA", np.nan)) - req))
         run_name = str(nearest.get("run_name", ""))
-        run = load_ss_run(config_path=config_path, run_name=run_name)
-        dataset = build_ss_plot_dataset(run)
+        run = load_ss_run(
+            config_path=config_path,
+            run_name=run_name,
+            load_history=False,
+        )
+        dataset = build_ss_plot_dataset(run, load_snapshots=False)
         resolved.append(
             {
                 "index": int(idx),
@@ -306,14 +556,18 @@ def _select_nearest_delta_runs(
             key=lambda item: abs(float(item.get("current_uA", np.nan)) - float(requested)),
         )
         run_name = str(nearest.get("run_name", ""))
-        run = load_ss_run(config_path=config_path, run_name=run_name)
+        run = load_ss_run(
+            config_path=config_path,
+            run_name=run_name,
+            load_history=False,
+        )
         resolved.append(
             {
                 "index": int(index),
                 "requested_current_uA": float(requested),
                 "actual_current_uA": float(nearest.get("current_uA", np.nan)),
                 "run_name": run_name,
-                "dataset": build_ss_plot_dataset(run),
+                "dataset": build_ss_plot_dataset(run, load_snapshots=False),
             }
         )
     return resolved

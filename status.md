@@ -119,9 +119,31 @@ current), `3.0x` (terminal voltage), `4.7x` (capacitor voltage), and `0.2x`
 the absence of `t_rec` is diagnosed as insufficient horizon rather than silently
 treated as failed physics.
 
+Z2 current-sweep analysis now performs a shallow inventory by default and
+loads only `ss_summary.yaml`, `stationary_state.npz`, and the shared PRE mesh
+for completed endpoints. It no longer opens multi-gigabyte relaxation or
+snapshot archives merely to construct a final I-V point. On the `_01` sweep,
+the complete pipeline dropped from more than three minutes without finishing
+to `0.92 s` wall time and `84.9 MB` peak RSS. The new four-panel regime summary
+separates missing data from physical gate failures, reports exact sampled
+currents for strict SS, dynamic SS, photon readiness, and an electrical ohmic
+approximation, and stores the same classification in YAML.
+
+The completed `code3` sweep is not a completed physical sweep: only the 20 uA
+base case has a summary and final state. The 25 uA history is not a valid NPZ;
+the 30 uA history reaches 200 ps but has no summary; the remaining ten cases
+retain only their seeds. All twelve are classified as unavailable rather than
+failed stationarity. Consequently there is no defensible I-V curve or current
+range yet. At 20 uA, the central and terminal voltages are only `0.00470` and
+`0.1916` of their respective normal-state references, mean
+`|Delta|/Delta0 = 0.9193`, and strict SS, dynamic SS, photon readiness, and the
+10% two-voltage ohmic criterion all fail. The source of the previously zero
+terminal ratio was also corrected: Z2 now prioritizes the final solver voltage
+(`3.91089 mV`) over the zero-voltage analytic seed stored earlier in the YAML.
+
 ## Validation completed
 
-- Complete suite on Geminga after the E3 update: `149 passed`; the focused
+- Complete suite on Geminga after the Z2 update: `154 passed`; the focused
   photon/E2 plotting set passes all `5` tests.
 - The SS early-stop callback now forwards the public phase-gradient tolerance
   names correctly. Its focused adapter/stop/target regression set passes all
@@ -138,6 +160,9 @@ treated as failed physics.
   and conditional censored-recovery diagnostic were rendered and visually
   inspected. E2 snapshot arrows were also regenerated and checked with one
   shared current scale.
+- Z2 focused tests pass all `10` cases. Its central I-V, terminal I-V, and
+  four-panel coverage/regime PDF were regenerated and visually inspected from
+  the partial `_01` sweep without opening its large histories.
 - Focused constitutive suite: exact zero-amplitude Matsubara limit, quadratic
   amplitude power, q parity, stiffness interpolation, discrete plane wave,
   exact-zero edge current, gauge invariance, difference-before-divergence,
@@ -162,9 +187,13 @@ detection, recovery, or notch-removal evidence.
 
 ## Immediate work and acceptance gates
 
-1. Let the isothermal/no-circuit SS current sweep in screen `code3` finish.
-2. Generate and visually validate its I-V curve and investigate any outlier
-   before accepting the sweep.
+1. Rerun the isothermal/no-circuit sweep under a new `_02` name with the bounded
+   401-snapshot, eight-worker command recorded in `GEMINGA_COMMANDS.md`; the
+   13-worker `_01` run ended with `BrokenProcessPool` and is not reusable as a
+   sweep.
+2. Generate and visually validate the I-V curve only after Z2 reports adequate
+   completed-current coverage; the present `_01` PDFs are coverage diagnostics,
+   not an accepted I-V result.
 3. Continue subsequent development directly on `main`; the former feature
    branch history is already preserved upstream.
 4. Start the planned mesh/time/thermal convergence campaign using the new mesh
