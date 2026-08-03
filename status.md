@@ -141,6 +141,19 @@ range yet. At 20 uA, the central and terminal voltages are only `0.00470` and
 terminal ratio was also corrected: Z2 now prioritizes the final solver voltage
 (`3.91089 mV`) over the zero-voltage analytic seed stored earlier in the YAML.
 
+The `code3` failure has now been correlated with Geminga's host telemetry. The
+machine did not reboot, but from 06:20 to 06:32 UTC its RAM usage rose from
+76.4% to 98.1%, swap reached 100%, load reached 51.5, and committed memory
+reached 103.3% while several cases serialized multi-gigabyte NPZ archives. The
+kernel counters contain OOM kills, although the unprivileged account cannot
+timestamp the exact victim from the journal. This makes an OOM-killed worker,
+followed by `ProcessPoolExecutor` invalidating every outstanding future, the
+high-confidence cause of `BrokenProcessPool`. The simultaneous Grafana
+`DatasourceNoData` alert is a symptom of host memory/I/O starvation, not a
+credible cause: an SSH disconnect cannot terminate work running in `screen`.
+The earlier 16 ps sweeps succeeded because their completed case directories are
+only about 241--247 MB, versus about 26 GB for the completed 200 ps base case.
+
 ## Validation completed
 
 - Complete suite on Geminga after the Z2 update: `154 passed`; the focused
@@ -187,9 +200,12 @@ detection, recovery, or notch-removal evidence.
 
 ## Immediate work and acceptance gates
 
-1. Rerun the isothermal/no-circuit sweep under a new `_02` name with the bounded
-   401-snapshot, eight-worker command recorded in `GEMINGA_COMMANDS.md`; the
-   13-worker `_01` run ended with `BrokenProcessPool` and is not reusable as a
+1. Rerun the isothermal/no-circuit sweep under the new 150 ps name recorded in
+   `GEMINGA_COMMANDS.md`: 15 currents (adding 40 and 44 uA around the transition),
+   301 snapshots, 14 child workers plus the base process, and one thread per
+   case. This leaves one of Geminga's 16 physical cores nominally free while
+   reducing retained field history to 15% of the failed 2000-snapshot run. The
+   13-case `_01` run ended with `BrokenProcessPool` and is not reusable as a
    sweep.
 2. Generate and visually validate the I-V curve only after Z2 reports adequate
    completed-current coverage; the present `_01` PDFs are coverage diagnostics,
