@@ -139,6 +139,34 @@ def test_adaptive_solver_stops_exactly_at_requested_chunk_boundary(
     )
 
 
+def test_stationary_adapter_builds_total_stationarity_gate(
+    small_strip_mesh_bundle,
+    gtdgl_material,
+    stationary_seed_factory,
+):
+    mesh, edge_data, ops = small_strip_mesh_bundle
+    seed = stationary_seed_factory(mesh, gtdgl_material)
+    result = solve_stationary_pytdgl_like(
+        mesh=mesh,
+        edge_data=edge_data,
+        seed=seed,
+        material=gtdgl_material,
+        ops=ops,
+        steps=2,
+        dt_s=1.0e-18,
+        target_current_A=0.0,
+        terminal_psi=None,
+        adaptive=False,
+        n_snapshots=2,
+        stop_on_total_stationarity=True,
+        stationarity_phase_gradient_rel=0.123,
+        stationarity_phi_gradient_rel=0.234,
+    )
+
+    assert result.summary["accepted_steps"] >= 1
+    assert "photon_ready" in result.summary
+
+
 def test_adapter_rejects_usadel_poisson_without_catalog(small_strip_mesh_bundle, gtdgl_material, stationary_seed_factory):
     mesh, edge_data, ops = small_strip_mesh_bundle
     seed = stationary_seed_factory(mesh, gtdgl_material, q0_m_inv=1.0e7)

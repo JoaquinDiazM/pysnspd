@@ -107,6 +107,9 @@ exactly from stored fields and operators without rerunning the simulation.
 ## Validation completed
 
 - Complete suite on Geminga after the E2 update: `147 passed`.
+- The SS early-stop callback now forwards the public phase-gradient tolerance
+  names correctly. Its focused adapter/stop/target regression set passes all
+  `18` tests without launching a production run.
 - E1 was regenerated from the production PRE and its six affected PDFs were
   rendered and visually inspected without clipping, overlap, or illegible text.
 - E2 was regenerated from
