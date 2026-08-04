@@ -119,6 +119,18 @@ current), `3.0x` (terminal voltage), `4.7x` (capacitor voltage), and `0.2x`
 the absence of `t_rec` is diagnosed as insufficient horizon rather than silently
 treated as failed physics.
 
+The E3 center/edge comparison now uses four default snapshots at `50, 51, 52,
+53 ps`, adds `|q| xi` to the matched physical fields, and emits matched power
+and energy/heat-capacity atlases. Every color scale is shared between positions
+and uses exact extrema from all persisted snapshots in both runs; unchanged
+single-run E3 manifests supply fingerprint-validated limits so only the four
+selected maps are reconstructed. A conditional four-panel numerical comparison
+shows recovery margins, final residual/tolerance ratios, circuit modes, and the
+available window. On the reference pair, `xi = 8.591 nm`, the central and edge
+latencies are `5.872` and `6.743 ps`, and both recoveries remain censored. The
+documented lateral run name was corrected from the nonexistent `_eg` suffix to
+the completed `_edge` run.
+
 Z2 current-sweep analysis now performs a shallow inventory by default and
 loads only `ss_summary.yaml`, `stationary_state.npz`, and the shared PRE mesh
 for completed endpoints. It no longer opens multi-gigabyte relaxation or
@@ -156,7 +168,7 @@ only about 241--247 MB, versus about 26 GB for the completed 200 ps base case.
 
 ## Validation completed
 
-- Complete suite on Geminga after the Z2 update: `154 passed`; the focused
+- Complete suite on Geminga after the E3 comparison update: `155 passed`; the focused
   photon/E2 plotting set passes all `5` tests.
 - The SS early-stop callback now forwards the public phase-gradient tolerance
   names correctly. Its focused adapter/stop/target regression set passes all
@@ -173,6 +185,11 @@ only about 241--247 MB, versus about 26 GB for the completed 200 ps base case.
   and conditional censored-recovery diagnostic were rendered and visually
   inspected. E2 snapshot arrows were also regenerated and checked with one
   shared current scale.
+- The E3 position comparison was regenerated from the central and lateral
+  30 uA references. Its five one-page PDFs (fields, circuit, power,
+  energy/heat capacity, and four-panel censored recovery) were rendered and
+  visually inspected; the focused comparison/photon diagnostic set passes all
+  `4` tests.
 - Z2 focused tests pass all `10` cases. Its central I-V, terminal I-V, and
   four-panel coverage/regime PDF were regenerated and visually inspected from
   the partial `_01` sweep without opening its large histories.
