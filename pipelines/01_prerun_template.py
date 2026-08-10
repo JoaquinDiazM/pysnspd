@@ -91,6 +91,16 @@ def parse_args() -> argparse.Namespace:
     # Usadel / OE3.
     parser.add_argument("--eta-fraction", type=float, default=1.0e-3)
     parser.add_argument("--gamma-max-fraction", type=float, default=0.80)
+    parser.add_argument(
+        "--dos-n-q",
+        type=int,
+        default=None,
+        help=(
+            "Override catalogs.dos.n_q for this PRE. Use together with "
+            "--gamma-max-fraction when widening the |q| catalogue without "
+            "silently reducing its sampling density."
+        ),
+    )
     parser.add_argument("--energy-max-factor", type=float, default=30.0)
     parser.add_argument(
         "--allmaras-diffusion-factor",
@@ -174,6 +184,10 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     cfg = validate_config(load_config(args.config))
+    if args.dos_n_q is not None:
+        if int(args.dos_n_q) <= 0:
+            raise ValueError("--dos-n-q must be positive.")
+        cfg["catalogs"]["dos"]["n_q"] = int(args.dos_n_q)
     workers, parallel_backend = _resolve_parallel(cfg, args.workers)
 
     allmaras_diffusion_factor = float(args.allmaras_diffusion_factor)

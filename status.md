@@ -1,11 +1,11 @@
 # pySNSPD publication status
 
-Last updated: 2026-08-03
+Last updated: 2026-08-10
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: Week 2 closure - stationarity, localized artifacts, and E1/E2/E3
-figure consolidation
+Current phase: D3 energy-projection checkpoint archived; commission changes to
+the undergraduate thesis precede any scientific framework update
 
 ## Executive status
 
@@ -24,6 +24,49 @@ The inspected 30 uA, 200 ps stationary result is photon-ready under the new
 strict-fixed-point OR weak-dynamic-attractor policy. Contact recovery, current
 continuity, phase continuation, thermal fields, and the circuit remain hard
 validity gates.
+
+## D3 energy-projection checkpoint
+
+D3 now diagnoses the electronic spectral-storage term directly from the saved
+full photon trajectory; it does not rerun or alter the solver. In the central
+100 nm, the full spectral term is transiently large and almost reversible, its
+finite-step split is dominated by the gap contribution rather than the
+spectral-q contribution, and the omitted-energy residual follows the full
+spectral term closely. These observations justify further diagnosis, but not
+activation of independent `P_delta` and `P_q` sources.
+
+The present kinetic catalogue reaches only `q*xi = 1.221`. D3 records a maximum
+catalogue-clipped central fraction of `28.8%` for `41.2 ps`; no clipping is
+seen in `Te`, `Tph`, or `Delta`. The snapshot-wise maximum reaches an isolated
+`q*xi = 9.832`, while 99% of those temporal maxima remain below `2.792`.
+`GEMINGA_COMMANDS.md` therefore queues the user-run-only PRE
+`pre_qwide_01`, with `gamma_max_fraction=5.0`, nominal coverage to
+`q*xi ~= 3.05`, 64 DOS/phase q nodes, and 351 stiffness q nodes. This expands
+the range by 2.5 while retaining the nominal q-point density. It deliberately
+does not size the expensive phase/power catalogue around the single extreme;
+the follow-up D3 run must report the residual clipping before any physics is
+changed.
+
+The framework update is archived at this checkpoint. When resumed, the first
+candidate is a conservative electronic-energy update in `u_e`, compared
+against the existing temperature update without changing the rest of the
+splitting. Independent `P_delta`/`P_q` sources remain blocked until the wider
+catalogue, temporal refinement, closed-cycle energy balance, and
+gTDGL/circuit double-counting checks are complete.
+
+Before that work, the commission changes currently pending in
+`/home/jdiaz/memoria` must be incorporated. Changing the scientific model while
+the submitted manuscript is being corrected would obscure which equations and
+results the supervisors are reviewing. The thesis working tree is therefore
+left untouched by this checkpoint.
+
+The undergraduate-thesis simulation reference is commit `523c53d` (the last
+pySNSPD commit before the 20 July delivery). The later publication checkpoint
+`23ea557` changes plotting and adds `status.md`, but does not change the
+simulation implementation relative to `523c53d`. The commit that archives D3
+is a later diagnostic/implementation descendant and is intentionally not the
+final thesis-reference commit: pending visualization changes and the commission
+edits must be incorporated before that reference is frozen.
 
 ## Stationarity closure
 
@@ -168,8 +211,10 @@ only about 241--247 MB, versus about 26 GB for the completed 200 ps base case.
 
 ## Validation completed
 
-- Complete suite on Geminga after the E3 comparison update: `155 passed`; the focused
-  photon/E2 plotting set passes all `5` tests.
+- Complete suite on Geminga at the D3 checkpoint: `157 passed`. The focused
+  energy-projection diagnostic set passes both tests, the PRE CLI exposes the
+  explicit `--dos-n-q` override, and `compileall` succeeds without launching a
+  solver or production catalogue.
 - The SS early-stop callback now forwards the public phase-gradient tolerance
   names correctly. Its focused adapter/stop/target regression set passes all
   `18` tests without launching a production run.
@@ -217,19 +262,29 @@ detection, recovery, or notch-removal evidence.
 
 ## Immediate work and acceptance gates
 
-1. Rerun the isothermal/no-circuit sweep under the new 150 ps name recorded in
+1. The user runs `pre_qwide_01` from `GEMINGA_COMMANDS.md`; no agent launches
+   this production PRE. Verify `Status: OK`, the realized q axes, file sizes,
+   and absence of host-memory pressure before using it downstream.
+2. Incorporate and review the commission changes in `/home/jdiaz/memoria`,
+   including the pending visualization edits, before changing framework
+   science or freezing the final undergraduate-thesis reference commit.
+3. Resume D3 only after the wider PRE exists. Recompute catalogue coverage,
+   the `P_delta`/`P_q` split, path sensitivity, accumulated energy closure, and
+   the possible overlap with gTDGL/circuit energy. Decide between a conservative
+   `u_e` update and explicit sources only from those checks.
+4. Rerun the isothermal/no-circuit sweep under the new 150 ps name recorded in
    `GEMINGA_COMMANDS.md`: 15 currents (adding 40 and 44 uA around the transition),
    301 snapshots, 14 child workers plus the base process, and one thread per
    case. This leaves one of Geminga's 16 physical cores nominally free while
    reducing retained field history to 15% of the failed 2000-snapshot run. The
    13-case `_01` run ended with `BrokenProcessPool` and is not reusable as a
    sweep.
-2. Generate and visually validate the I-V curve only after Z2 reports adequate
+5. Generate and visually validate the I-V curve only after Z2 reports adequate
    completed-current coverage; the present `_01` PDFs are coverage diagnostics,
    not an accepted I-V result.
-3. Continue subsequent development directly on `main`; the former feature
+6. Continue subsequent development directly on `main`; the former feature
    branch history is already preserved upstream.
-4. Start the planned mesh/time/thermal convergence campaign using the new mesh
+7. Start the planned mesh/time/thermal convergence campaign using the new mesh
    edge-length and triangle-quality baselines.
 
 The wider publication gates remain unchanged: mesh/time/thermal convergence,
