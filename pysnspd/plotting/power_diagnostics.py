@@ -454,7 +454,7 @@ def plot_power_total_Te_curves(
                 color="black",
                 linestyle=":",
                 linewidth=1.35,
-                label="Debye/Vodolazov normal-state reference",
+                label="Debye/Vodolazov reference",
             )
     Tc_K = _critical_temperature_K(catalog)
     ax.axvline(
@@ -462,7 +462,7 @@ def plot_power_total_Te_curves(
         color="0.20",
         linewidth=0.9,
         linestyle=":",
-        label=rf"Bath temperature, $T_b={T_bath_K:.2f}$ [K]",
+        label=rf"$T_b={T_bath_K:.2f}$ [K]",
     )
     if np.isfinite(Tc_K):
         ax.axvline(
@@ -470,7 +470,7 @@ def plot_power_total_Te_curves(
             color="0.35",
             linewidth=0.9,
             linestyle="--",
-            label=rf"Critical temperature, $T_c={Tc_K:.2f}$ [K]",
+            label=rf"$T_c={Tc_K:.2f}$ [K]",
         )
     if positive_values:
         positive = np.concatenate(positive_values)
@@ -482,8 +482,12 @@ def plot_power_total_Te_curves(
     T_max_K = float(np.nanmax(catalog.Te_values_K))
     T_margin_K = 0.02 * max(T_max_K - T_min_K, 1.0)
     ax.set_xlim(max(0.0, T_min_K - T_margin_K), T_max_K)
-    # ax.legend(loc="best", fontsize=7.0, ncol=2)
-    ax.legend(loc="best", ncol=2)
+    ax.legend(
+        loc="lower center",
+        bbox_to_anchor=(0.5, 1.02),
+        borderaxespad=0.0,
+        ncol=3,
+    )
     ax.grid(True, linewidth=0.35, alpha=0.28)
     fig.tight_layout()
     fig.savefig(output, dpi=dpi, bbox_inches="tight")
