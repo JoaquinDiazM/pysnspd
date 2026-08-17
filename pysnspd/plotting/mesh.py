@@ -174,6 +174,7 @@ def plot_mesh_pytdgl_style(
             radius=radius,
             location=inset_location,
             label="Center zoom",
+            label_above=True,
             show_sites=show_sites,
             show_edges=show_edges,
             show_dual_edges=show_dual_edges,
@@ -203,6 +204,7 @@ def plot_mesh_pytdgl_style(
             radius=radius,
             location=extra_inset_location,
             label="Extra zoom",
+            label_above=False,
             show_sites=show_sites,
             show_edges=show_edges,
             show_dual_edges=show_dual_edges,
@@ -317,7 +319,7 @@ def plot_mesh_triangle_quality(
     axes[0].set_xlabel(r"minimum triangle angle [$^\circ$]")
     axes[0].set_ylabel("count")
     axes[0].set_title("Minimum-angle sanity")
-    axes[0].legend(loc="upper left", fontsize=7.5)
+    axes[0].legend(loc="upper left")
 
     axes[1].hist(
         shape_factor,
@@ -334,7 +336,7 @@ def plot_mesh_triangle_quality(
     axes[1].set_xlabel(r"shape factor $4\sqrt{3}A/\sum_i \ell_i^2$")
     axes[1].set_ylabel("count")
     axes[1].set_title("Element shape quality")
-    axes[1].legend(loc="upper left", fontsize=7.5)
+    axes[1].legend(loc="upper left")
 
     for axis in axes:
         axis.grid(True, linewidth=0.35, alpha=0.20)
@@ -377,9 +379,8 @@ def _draw_length_histogram(
         transform=ax.transAxes,
         ha="right",
         va="top",
-        fontsize=7.3,
     )
-    ax.legend(loc="upper left", fontsize=7.5)
+    ax.legend(loc="upper left")
     ax.grid(True, linewidth=0.35, alpha=0.20)
     ax.tick_params(direction="in")
 
@@ -562,6 +563,7 @@ def _draw_zoom_inset(
     radius: float,
     location: str,
     label: str,
+    label_above: bool,
     show_sites: bool,
     show_edges: bool,
     show_dual_edges: bool,
@@ -698,15 +700,15 @@ def _draw_zoom_inset(
 
     inset.text(
         0.5,
-        0.04,
+        1.035 if label_above else -0.035,
         label,
         transform=inset.transAxes,
         ha="center",
-        va="bottom",
-        fontsize=6.5,
+        va="bottom" if label_above else "top",
         color="0.20",
         bbox={"boxstyle": "round,pad=0.14", "facecolor": "white", "edgecolor": "none", "alpha": 0.82},
-        zorder=11,
+        clip_on=False,
+        zorder=12,
     )
 
 
@@ -745,7 +747,6 @@ def _draw_stats_box(
         transform=ax.transAxes,
         ha=ha,
         va=va,
-        fontsize=7.0,
         linespacing=1.18,
         color="0.08",
         bbox={
@@ -800,8 +801,6 @@ def _draw_node_class_legend(
         title="Node classes",
         loc=legend_loc,
         bbox_to_anchor=bbox,
-        fontsize=6.7,
-        title_fontsize=6.9,
         frameon=True,
         facecolor="white",
         edgecolor="0.25",
@@ -823,7 +822,7 @@ def _format_mesh_axes(
     coordinate_unit: str,
     title: str,
 ) -> None:
-    #ax.set_title(title, fontsize=13) # For now commenting out the title to keep the figure compact
+    # The production overview intentionally omits a title; the caption supplies it.
     ax.set_xlabel(f"x [{coordinate_unit}]")
     ax.set_ylabel(f"y [{coordinate_unit}]")
     ax.grid(False)

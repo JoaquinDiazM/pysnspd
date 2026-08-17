@@ -30,6 +30,7 @@ def test_energy_projection_closes_storage_decomposition_and_writes_three_pdfs(
 ) -> None:
     snapshots_path = tmp_path / "snapshots.npz"
     table_path = tmp_path / "power_table.npz"
+    current_table_path = tmp_path / "usadel_current.npz"
     nodes, triangles, ops = _small_mesh()
     n_snapshots = 6
     time_ps = np.asarray([0.0, 1.0, 2.0, 3.0, 4.0, 4.0])
@@ -50,6 +51,7 @@ def test_energy_projection_closes_storage_decomposition_and_writes_three_pdfs(
         Tph_snapshot_K=Tph,
     )
     _write_small_power_table(table_path)
+    _write_small_current_table(current_table_path)
     history = {
         "t_ps": time_ps,
         "V_tdgl_center_V": np.asarray([0.0, 0.2, 1.0, 0.4, 0.1, 0.1]),
@@ -59,6 +61,7 @@ def test_energy_projection_closes_storage_decomposition_and_writes_three_pdfs(
     result = extract_energy_projection_diagnostics(
         snapshots_npz=snapshots_path,
         power_table_npz=table_path,
+        usadel_current_npz=current_table_path,
         history=history,
         nodes_m=nodes,
         triangles=triangles,
@@ -86,6 +89,10 @@ def test_energy_projection_closes_storage_decomposition_and_writes_three_pdfs(
         np.abs(psi[-1]) / 2.0,
     )
     assert not bool(result["truncated"][0])
+    assert float(result["strict_q_max_m_inv"][0]) == 0.25
+    assert np.nanmax(result["strict_q_clipped_fraction"]) > 0.0
+    finite_ratios = result["strict_q_clipped_js_p95_over_catalog_max"]
+    assert np.all((finite_ratios[np.isfinite(finite_ratios)] >= 0.0))
 
     saved = write_energy_projection_figures(result, tmp_path / "figures", dpi=72)
     assert set(saved) == {"colormaps", "temporal", "profiles"}
@@ -148,4 +155,22 @@ def _write_small_power_table(path: Path) -> None:
             },
             dtype=object,
         ),
+    )
+
+
+def _write_small_current_table(path: Path) -> None:
+    Te = np.asarray([1.0, 2.0, 3.0])
+    delta = np.asarray([0.0, 1.0, 2.0])
+    q = np.asarray([0.0, 0.125, 0.25])
+    js = (
+        (1.0 + Te[:, None, None])
+        * (1.0 + delta[None, :, None])
+        * q[None, None, :]
+    )
+    np.savez_compressed(
+        path,
+        Te_axis_K=Te,
+        delta_axis_J=delta,
+        q_axis_m_inv=q,
+        js_A_m2=js,
     )

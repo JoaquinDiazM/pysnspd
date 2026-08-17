@@ -25,6 +25,7 @@ Use --with-gap-plot only when the additional Delta_eq(T) figure is needed.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import sys
 from pathlib import Path
 from typing import Any
@@ -53,6 +54,7 @@ from pysnspd.plotting.power_diagnostics import (
     plot_energy_heat_capacity_curves,
     plot_power_channels_Te_Tph_maps,
     plot_power_total_Te_curves,
+    resolve_debye_reference_parameters,
 )
 from pysnspd.plotting.style import THESIS_DPI
 from pysnspd.plotting.usadel_dos_curves import (
@@ -134,6 +136,34 @@ def parse_args() -> argparse.Namespace:
         "--skip-power-table-figures",
         action="store_true",
         help="Skip the four E1 thermodynamic and projected-power figures.",
+    )
+    parser.add_argument(
+        "--debye-reference",
+        dest="debye_reference",
+        action="store_true",
+        default=True,
+        help=(
+            "Add the explicitly reconstructed Debye/Vodolazov limiting reference "
+            "to the energy, heat-capacity, and power figures."
+        ),
+    )
+    parser.add_argument(
+        "--no-debye-reference",
+        dest="debye_reference",
+        action="store_false",
+        help="Do not add the Debye/Vodolazov limiting reference.",
+    )
+    parser.add_argument(
+        "--debye-cutoff-meV",
+        type=float,
+        default=30.0,
+        help="Explicit Debye cutoff used only by the Vodolazov comparison curve.",
+    )
+    parser.add_argument(
+        "--normal-dos-spin-convention",
+        choices=("single_spin",),
+        default="single_spin",
+        help="Declared spin convention of N0_J_m3 used by the reference formula.",
     )
 
     parser.add_argument(
@@ -345,9 +375,28 @@ def main() -> int:
         )
         saved["usadel_dos_curves_delta0_pdf"] = dos_delta0_output
 
-    if not args.skip_eliashberg_spectrum:
-        eliashberg_path = _resolve_eliashberg_path(cfg, args.eliashberg_dat)
+    eliashberg_path = _resolve_eliashberg_path(cfg, args.eliashberg_dat)
+    needs_complete_spectrum = (
+        not args.skip_eliashberg_spectrum
+        or (not args.skip_power_table_figures and bool(args.debye_reference))
+    )
+    spectrum = None
+    lambda_provenance: dict[str, Any] = {}
+    if needs_complete_spectrum:
         spectrum = load_simon_eliashberg_dat(eliashberg_path)
+        lambda_provenance = {
+            "definition": "2*integral(alpha2F(nu)/nu dnu) over the complete source spectrum",
+            "loader": "pysnspd.kinetic.eliashberg.load_simon_eliashberg_dat",
+            "source_path": str(eliashberg_path),
+            "sha256": _sha256(eliashberg_path),
+            "n_points": int(spectrum.metadata["n_points"]),
+            "frequency_min_THz": float(spectrum.metadata["frequency_min_THz"]),
+            "frequency_max_THz": float(spectrum.metadata["frequency_max_THz"]),
+        }
+
+    if not args.skip_eliashberg_spectrum:
+        if spectrum is None:
+            raise RuntimeError("the requested Eliashberg plot has no loaded source spectrum")
         eliashberg_output = plot_eliashberg_spectrum(
             spectrum,
             figures_dir / _ensure_pdf_name(args.eliashberg_pdf_name),
@@ -360,10 +409,35 @@ def main() -> int:
         if args.power_table_npz is not None
         else raw_pre / "power_table_catalog.npz"
     )
+    debye_reference = None
+    debye_reference_settings: dict[str, Any] = {
+        "requested": bool(args.debye_reference),
+        "enabled": False,
+    }
     if not args.skip_power_table_figures:
         if not power_table_path.exists():
             raise FileNotFoundError(f"PRE power table not found: {power_table_path}")
         power_catalog = load_power_table_plot_catalog(power_table_path)
+        if args.debye_reference:
+            try:
+                debye_reference = resolve_debye_reference_parameters(
+                    power_catalog,
+                    ion_density_m3=1.0e27 * float(cfg["material"]["ion_density_nm3"]),
+                    Tc_K=float(cfg["material"]["Tc_K"]),
+                    omega_D_J=float(args.debye_cutoff_meV) * 1.602176634e-22,
+                    normal_dos_spin_convention=str(args.normal_dos_spin_convention),
+                    lambda_ep=float(spectrum.metadata["lambda_ep"]),
+                    lambda_provenance=lambda_provenance,
+                )
+                debye_reference_settings = debye_reference.manifest_dict()
+                debye_reference_settings["requested"] = True
+            except (KeyError, TypeError, ValueError) as exc:
+                debye_reference_settings = {
+                    "requested": True,
+                    "enabled": False,
+                    "reason": str(exc),
+                    "policy": "reference omitted rather than filled with an implicit constant",
+                }
         saved["power_channels_Te_Tph_pdf"] = plot_power_channels_Te_Tph_maps(
             power_catalog,
             figures_dir / "E1_power_channels_Te_Tph_maps.pdf",
@@ -372,11 +446,13 @@ def main() -> int:
         saved["power_exchange_vs_temperature_pdf"] = plot_power_total_Te_curves(
             power_catalog,
             figures_dir / "E1_power_exchange_vs_temperature.pdf",
+            debye_reference=debye_reference,
             dpi=int(args.dpi),
         )
         saved["energy_heat_capacity_pdf"] = plot_energy_heat_capacity_curves(
             power_catalog,
             figures_dir / "E1_energy_heat_capacity_curves.pdf",
+            debye_reference=debye_reference,
             dpi=int(args.dpi),
         )
         saved["electronic_thermal_conductivity_pdf"] = plot_electronic_thermal_conductivity_curves(
@@ -425,14 +501,17 @@ def main() -> int:
         },
         skip_eliashberg_spectrum=bool(args.skip_eliashberg_spectrum),
         eliashberg_settings={
-            "dat_path": str(_resolve_eliashberg_path(cfg, args.eliashberg_dat))
-            if not args.skip_eliashberg_spectrum
-            else None,
+            "dat_path": str(eliashberg_path) if needs_complete_spectrum else None,
             "pdf_name": _ensure_pdf_name(args.eliashberg_pdf_name),
+            "loaded_for_debye_reference": bool(
+                args.debye_reference and not args.skip_power_table_figures
+            ),
+            "lambda_provenance": lambda_provenance or None,
         },
         power_table_settings={
             "skipped": bool(args.skip_power_table_figures),
             "catalog_path": str(power_table_path),
+            "debye_reference": debye_reference_settings,
         },
         with_gap_plot=bool(args.with_gap_plot),
         gap_source=gap_source,
@@ -476,6 +555,14 @@ def _ensure_pdf_name(name: str | Path) -> str:
     return raw if raw.lower().endswith(".pdf") else f"{raw}.pdf"
 
 
+def _sha256(path: Path, *, chunk_bytes: int = 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        while chunk := stream.read(chunk_bytes):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _write_manifest(
     *,
     pre_run_name: str,
@@ -496,7 +583,7 @@ def _write_manifest(
     gap_settings: dict[str, Any],
 ) -> Path:
     manifest: dict[str, Any] = {
-        "schema_version": 5,
+        "schema_version": 7,
         "pipeline": "plot_pipelines/E1_plot_prerun.py",
         "purpose": "E-type PRE figures in PDF format: supercurrent curve, DOS curves, Eliashberg/PhDOS spectrum, and optional Delta_eq(T,q).",
         "pre_run_name": pre_run_name,

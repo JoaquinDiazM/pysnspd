@@ -19,9 +19,9 @@ import matplotlib
 matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 from matplotlib.colors import SymLogNorm
-from matplotlib.ticker import FuncFormatter, MultipleLocator
 import numpy as np
-from scipy.constants import Boltzmann
+from scipy.constants import Boltzmann, hbar
+from scipy.special import zeta
 
 from pysnspd.plotting.style import (
     THESIS_DOUBLE_FIGSIZE,
@@ -33,6 +33,167 @@ from pysnspd.plotting.style import (
 apply_thesis_style()
 
 MEV_J = 1.602176634e-22
+
+
+@dataclass(frozen=True)
+class DebyeReferenceParameters:
+    """Explicit parameters for the Debye/Vodolazov comparison curves.
+
+    ``N0_J_m3`` follows the single-spin convention used by the Simon and
+    Vodolazov equations quoted in the thesis.  The reference is deliberately
+    separate from the production spectral catalogue.
+    """
+
+    N0_J_m3: float
+    ion_density_m3: float
+    Tc_K: float
+    omega_D_J: float
+    lambda_ep: float
+    tau0_s: float
+    normal_dos_spin_convention: str
+    lambda_provenance: dict[str, Any]
+    runtime_catalog_spectrum: dict[str, Any]
+    sources: dict[str, str]
+
+    def manifest_dict(self) -> dict[str, Any]:
+        return {
+            "enabled": True,
+            "model": "normal-state Debye/Vodolazov limiting reference",
+            "N0_J_m3": float(self.N0_J_m3),
+            "ion_density_m3": float(self.ion_density_m3),
+            "Tc_K": float(self.Tc_K),
+            "omega_D_J": float(self.omega_D_J),
+            "omega_D_meV": float(self.omega_D_J / MEV_J),
+            "lambda_ep": float(self.lambda_ep),
+            "tau0_s": float(self.tau0_s),
+            "normal_dos_spin_convention": self.normal_dos_spin_convention,
+            "lambda_provenance": dict(self.lambda_provenance),
+            "runtime_catalog_spectrum": dict(self.runtime_catalog_spectrum),
+            "sources": dict(self.sources),
+            "energy_formula": "u_ph_D=(3*pi^4/5)*Ni*kB*T*(kB*T/OmegaD)^3",
+            "heat_capacity_formula": "C_ph_D=(12*pi^4/5)*Ni*kB*(kB*T/OmegaD)^3",
+            "power_formula": "P_D=96*zeta(5)*N0*kB^2*(Te^5-Tph^5)/(tau0*Tc^3)",
+        }
+
+
+def resolve_debye_reference_parameters(
+    catalog: "PowerTablePlotCatalog",
+    *,
+    ion_density_m3: float,
+    Tc_K: float,
+    omega_D_J: float,
+    normal_dos_spin_convention: str,
+    lambda_ep: float,
+    lambda_provenance: dict[str, Any],
+) -> DebyeReferenceParameters:
+    """Recover every Debye-reference constant from declared stored sources.
+
+    The routine raises instead of silently substituting a literature value for
+    a missing production constant.  ``omega_D_J`` is the one intentionally
+    external comparison parameter and must be supplied by the caller.
+    """
+
+    convention = str(normal_dos_spin_convention).strip().lower().replace("-", "_")
+    if convention != "single_spin":
+        raise ValueError(
+            "The Vodolazov reference requires the single-spin N(0) convention; "
+            f"received {normal_dos_spin_convention!r}."
+        )
+    N0_J_m3 = _metadata_float_recursive(catalog.metadata, "N0_J_m3")
+    if not np.isfinite(N0_J_m3) or N0_J_m3 <= 0.0:
+        raise ValueError("power-table metadata do not contain a positive N0_J_m3")
+    if not np.isfinite(ion_density_m3) or ion_density_m3 <= 0.0:
+        raise ValueError("ion_density_m3 must be recovered explicitly from the material configuration")
+    if not np.isfinite(Tc_K) or Tc_K <= 0.0:
+        raise ValueError("Tc_K must be recovered explicitly from the material configuration")
+    if not np.isfinite(omega_D_J) or omega_D_J <= 0.0:
+        raise ValueError("omega_D_J must be finite and positive")
+
+    if not np.isfinite(lambda_ep) or lambda_ep <= 0.0:
+        raise ValueError("lambda_ep from the complete Eliashberg source must be positive")
+    required_provenance = {
+        "source_path",
+        "sha256",
+        "n_points",
+        "frequency_min_THz",
+        "frequency_max_THz",
+        "definition",
+    }
+    missing_provenance = sorted(required_provenance.difference(lambda_provenance))
+    if missing_provenance:
+        raise ValueError(
+            "lambda_provenance is missing required fields: "
+            + ", ".join(missing_provenance)
+        )
+
+    runtime_catalog_spectrum = _runtime_catalog_spectrum_diagnostic(catalog)
+
+    tau0_s = float(
+        1.0
+        / (
+            np.pi
+            * lambda_ep
+            * (Boltzmann * float(Tc_K) / float(omega_D_J)) ** 2
+            * (Boltzmann * float(Tc_K) / hbar)
+        )
+    )
+    return DebyeReferenceParameters(
+        N0_J_m3=float(N0_J_m3),
+        ion_density_m3=float(ion_density_m3),
+        Tc_K=float(Tc_K),
+        omega_D_J=float(omega_D_J),
+        lambda_ep=lambda_ep,
+        tau0_s=tau0_s,
+        normal_dos_spin_convention="single_spin",
+        lambda_provenance=dict(lambda_provenance),
+        runtime_catalog_spectrum=runtime_catalog_spectrum,
+        sources={
+            "N0_J_m3": "power_table_catalog.npz metadata",
+            "normal_dos_spin_convention": "declared single-spin catalogue contract",
+            "ion_density_m3": "validated project material configuration",
+            "Tc_K": "validated project material configuration",
+            "lambda_ep": "complete Simon Eliashberg DAT loaded by load_simon_eliashberg_dat",
+            "omega_D_J": "explicit Vodolazov comparison cutoff supplied to E1",
+            "tau0_s": "Annex B.5 mapping from lambda_ep, Omega_D, and Tc",
+        },
+    )
+
+
+def _runtime_catalog_spectrum_diagnostic(
+    catalog: "PowerTablePlotCatalog",
+) -> dict[str, Any]:
+    """Describe the truncated runtime quadrature grid without using it for lambda."""
+
+    omega = np.asarray(catalog.omega_values_J, dtype=float).reshape(-1)
+    alpha2F = np.asarray(catalog.alpha2F, dtype=float).reshape(-1)
+    count = min(omega.size, alpha2F.size)
+    valid = (
+        np.isfinite(omega[:count])
+        & np.isfinite(alpha2F[:count])
+        & (omega[:count] > 0.0)
+    )
+    diagnostic_lambda = float("nan")
+    if np.count_nonzero(valid) >= 2:
+        order = np.argsort(omega[:count][valid])
+        omega_valid = omega[:count][valid][order]
+        alpha_valid = alpha2F[:count][valid][order]
+        diagnostic_lambda = float(
+            2.0 * np.trapezoid(alpha_valid / omega_valid, omega_valid)
+        )
+    finite_omega = omega[np.isfinite(omega)]
+    return {
+        "role": "truncated runtime quadrature grid; never authoritative for lambda_ep",
+        "n_points": int(count),
+        "energy_min_J": (
+            float(np.nanmin(finite_omega)) if finite_omega.size else None
+        ),
+        "energy_max_J": (
+            float(np.nanmax(finite_omega)) if finite_omega.size else None
+        ),
+        "lambda_if_reintegrated_diagnostic_only": (
+            diagnostic_lambda if np.isfinite(diagnostic_lambda) else None
+        ),
+    }
 
 
 @dataclass(frozen=True)
@@ -160,9 +321,9 @@ def plot_power_channels_Te_Tph_maps(
     i_q = _nearest_index(catalog.q_values_m_inv, 0.0)
 
     channels = [
-        (catalog.P_S_W_m3[:, :, i_delta, i_q], r"$P_S$ scattering"),
-        (catalog.P_R_W_m3[:, :, i_delta, i_q], r"$P_R$ recombination"),
-        (catalog.P_total_W_m3[:, :, i_delta, i_q], r"$P_S+P_R$ total"),
+        (catalog.P_S_W_m3[:, :, i_delta, i_q], r"$P_{e\text{-}ph}^{S}$ scattering"),
+        (catalog.P_R_W_m3[:, :, i_delta, i_q], r"$P_{e\text{-}ph}^{R}$ recombination"),
+        (catalog.P_total_W_m3[:, :, i_delta, i_q], r"$P_{e\text{-}ph}$ total"),
     ]
     vmax = _robust_symmetric_vmax([arr for arr, _ in channels])
     norm = _symmetric_log_norm(vmax)
@@ -253,9 +414,10 @@ def plot_power_total_Te_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
+    debye_reference: DebyeReferenceParameters | None = None,
     dpi: int = THESIS_DPI,
 ) -> Path:
-    """Plot total power versus Te at bath phonon temperature for representative states."""
+    """Plot production power slices and one optional Debye limiting reference."""
     apply_thesis_style()
     output = _prepare_output(output_path)
     iTph = _nearest_index(catalog.Tph_values_K, float(np.nanmin(catalog.Tph_values_K)))
@@ -277,6 +439,23 @@ def plot_power_total_Te_curves(
                 label=label,
             )
     T_bath_K = float(catalog.Tph_values_K[iTph])
+    if debye_reference is not None:
+        reference_power = _debye_power_density(
+            catalog.Te_values_K,
+            T_bath_K,
+            debye_reference,
+        )
+        mask = np.isfinite(reference_power) & (reference_power > 0.0)
+        if np.any(mask):
+            positive_values.append(reference_power[mask])
+            ax.plot(
+                catalog.Te_values_K[mask],
+                reference_power[mask],
+                color="black",
+                linestyle=":",
+                linewidth=1.35,
+                label="Debye/Vodolazov normal-state reference",
+            )
     Tc_K = _critical_temperature_K(catalog)
     ax.axvline(
         T_bath_K,
@@ -295,13 +474,8 @@ def plot_power_total_Te_curves(
         )
     if positive_values:
         positive = np.concatenate(positive_values)
-        y_min = max(float(np.nanmin(positive)) * 0.55, 1.0e-300)
-        y_max = float(np.nanmax(positive)) * 1.8
         ax.set_yscale("symlog", linthresh=1.0e11)
-        ax.set_ylim(0.0, 1.0e17)
-        ax.set_yticks([0.0, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17])
-        #ax.set_yscale("log")
-        #ax.set_ylim(y_min, y_max)
+        ax.set_ylim(0.0, 1.15 * float(np.nanmax(positive)))
     ax.set_xlabel(r"$T_e$ [K]")
     ax.set_ylabel(r"$P_S+P_R$ [W m$^{-3}$]")
     T_min_K = float(np.nanmin(catalog.Te_values_K))
@@ -321,6 +495,7 @@ def plot_energy_heat_capacity_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
+    debye_reference: DebyeReferenceParameters | None = None,
     dpi: int = THESIS_DPI,
 ) -> Path:
     r"""Plot electronic/phononic energy and heat capacity curves.
@@ -371,14 +546,31 @@ def plot_energy_heat_capacity_curves(
             linewidth=1.35,
             label=r"Phonons: $C_{ph}(T_{ph})$",
         )
+    if debye_reference is not None:
+        u_debye, C_debye = _debye_phonon_storage(
+            catalog.Tph_values_K,
+            debye_reference,
+        )
+        ax_u.plot(
+            catalog.Tph_values_K,
+            u_debye,
+            color="black",
+            linestyle=":",
+            linewidth=1.35,
+            label=r"Debye reference: $u_{ph}^{D}$",
+        )
+        ax_c.plot(
+            catalog.Tph_values_K,
+            C_debye,
+            color="black",
+            linestyle=":",
+            linewidth=1.35,
+            label=r"Debye reference: $C_{ph}^{D}$",
+        )
 
     ax_u.set_title(r"Energy densities")
     ax_u.set_xlabel(r"Temperature [$T_e$ or $T_{ph}$] [K]")
     ax_u.set_ylabel(r"Energy density [J m$^{-3}$]")
-    #ax_u.set_ylim(bottom=0.0)
-    ax_u.set_ylim(-1.5e3, 40.0e3)
-    ax_u.yaxis.set_major_locator(MultipleLocator(2.0e4))
-    ax_u.yaxis.set_major_formatter(FuncFormatter(_format_thousands_tick))
     ax_u.grid(True, linewidth=0.35, alpha=0.28)
     # ax_u.legend(loc="best", fontsize=7.0)
     ax_u.legend(loc="best")
@@ -478,19 +670,10 @@ def plot_equal_temperature_residual(
 def _representative_state_indices(catalog: PowerTablePlotCatalog) -> list[tuple[str, int, int]]:
     i_delta0 = _nearest_index(catalog.delta_values_J, 0.0)
     i_delta_max = int(np.nanargmax(catalog.delta_values_J))
-    i_delta_half = _nearest_index(catalog.delta_values_J, 0.5 * float(np.nanmax(catalog.delta_values_J)))
     i_q0 = _nearest_index(catalog.q_values_m_inv, 0.0)
-    i_q_mid = _nearest_index(catalog.q_values_m_inv, 0.5 * float(np.nanmax(catalog.q_values_m_inv)))
-    i_q_high = _nearest_index(catalog.q_values_m_inv, 0.85 * float(np.nanmax(catalog.q_values_m_inv)))
     return [
-        # (_state_label(catalog, "Normal-like", i_delta0, i_q0), i_delta0, i_q0),
-        # (_state_label(catalog, "SC, q=0", i_delta_max, i_q0), i_delta_max, i_q0),
-        # (_state_label(catalog, "SC, intermediate q", i_delta_max, i_q_mid), i_delta_max, i_q_mid),
-        # (_state_label(catalog, "Reduced gap, high q", i_delta_half, i_q_high), i_delta_half, i_q_high),
         ("Normal-like", i_delta0, i_q0),
         ("SC, q=0", i_delta_max, i_q0),
-        ("SC, intermediate q", i_delta_max, i_q_mid),
-        ("Reduced gap, high q", i_delta_half, i_q_high),
     ]
 
 
@@ -588,6 +771,66 @@ def _metadata_float(metadata: dict[str, Any], key: str) -> float:
         return float("nan")
 
 
+def _metadata_float_recursive(metadata: dict[str, Any], key: str) -> float:
+    """Find a scalar in nested catalogue metadata without guessing aliases."""
+
+    if not isinstance(metadata, dict):
+        return float("nan")
+    if key in metadata:
+        try:
+            return float(metadata[key])
+        except (TypeError, ValueError):
+            return float("nan")
+    for value in metadata.values():
+        if isinstance(value, dict):
+            found = _metadata_float_recursive(value, key)
+            if np.isfinite(found):
+                return found
+    return float("nan")
+
+
+def _debye_phonon_storage(
+    temperature_K: np.ndarray,
+    reference: DebyeReferenceParameters,
+) -> tuple[np.ndarray, np.ndarray]:
+    temperature = np.asarray(temperature_K, dtype=float)
+    reduced = Boltzmann * temperature / float(reference.omega_D_J)
+    energy = (
+        3.0
+        * np.pi**4
+        / 5.0
+        * float(reference.ion_density_m3)
+        * Boltzmann
+        * temperature
+        * reduced**3
+    )
+    heat_capacity = (
+        12.0
+        * np.pi**4
+        / 5.0
+        * float(reference.ion_density_m3)
+        * Boltzmann
+        * reduced**3
+    )
+    return np.asarray(energy, dtype=float), np.asarray(heat_capacity, dtype=float)
+
+
+def _debye_power_density(
+    electron_temperature_K: np.ndarray,
+    phonon_temperature_K: float,
+    reference: DebyeReferenceParameters,
+) -> np.ndarray:
+    electron_temperature = np.asarray(electron_temperature_K, dtype=float)
+    coefficient = (
+        96.0
+        * float(zeta(5.0, 1.0))
+        * float(reference.N0_J_m3)
+        * Boltzmann**2
+        / (float(reference.tau0_s) * float(reference.Tc_K) ** 3)
+    )
+    return coefficient * (electron_temperature**5 - float(phonon_temperature_K) ** 5)
+
+
 def _critical_temperature_K(catalog: PowerTablePlotCatalog) -> float:
     Tc_K = _metadata_float(catalog.metadata, "Tc_K")
     if np.isfinite(Tc_K) and Tc_K > 0.0:
@@ -608,12 +851,6 @@ def _interpolate_finite(x: np.ndarray, y: np.ndarray, target: float) -> float:
     return float(np.interp(float(target), x_values[mask][order], y_values[mask][order]))
 
 
-def _format_thousands_tick(value: float, _position: float) -> str:
-    if np.isclose(value, 0.0):
-        return "0"
-    return f"{value / 1.0e3:g}k"
-
-
 def _prepare_output(path: str | Path) -> Path:
     output = Path(path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -621,8 +858,10 @@ def _prepare_output(path: str | Path) -> Path:
 
 
 __all__ = [
+    "DebyeReferenceParameters",
     "PowerTablePlotCatalog",
     "load_power_table_plot_catalog",
+    "resolve_debye_reference_parameters",
     "write_power_table_diagnostic_plots",
     "plot_power_channels_Te_Tph_maps",
     "plot_power_total_Delta_q_maps",

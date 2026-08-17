@@ -93,25 +93,52 @@ def analyze_photon_timing(
     snapshots: Mapping[str, Any] | None = None,
     detection: DetectionCriteria | None = None,
     recovery: RecoveryCriteria | None = None,
+    detection_signal_key: str = "V_out_V",
 ) -> dict[str, Any]:
-    """Return latency, recovery, and early-stop readiness from saved data."""
+    """Return latency, recovery, and early-stop readiness from saved data.
+
+    ``detection_signal_key`` makes the operational latency observable explicit.
+    The same criterion can therefore be applied to the measured load voltage
+    ``V_out_V`` and the internal mesoscopic voltage ``V_tdgl_center_V`` without
+    changing the crossing algorithm.
+    """
 
     det = (detection or DetectionCriteria()).validated()
     rec = (recovery or RecoveryCriteria()).validated()
+    signal_key = str(detection_signal_key)
+    if signal_key not in {"V_out_V", "V_tdgl_center_V"}:
+        raise ValueError(
+            "detection_signal_key must be V_out_V or V_tdgl_center_V"
+        )
     t_s = _history_time_s(history)
     n = t_s.size
     if n == 0:
-        return _unavailable_result(det, rec, "history has no time samples")
+        return _unavailable_result(
+            det,
+            rec,
+            "history has no time samples",
+            detection_signal_key=signal_key,
+        )
 
     event_index = _event_index(history, n)
     if event_index is None:
-        return _unavailable_result(det, rec, "photon event is not present in history")
+        return _unavailable_result(
+            det,
+            rec,
+            "photon event is not present in history",
+            detection_signal_key=signal_key,
+        )
     event_s = float(t_s[event_index])
     baseline_mask = (t_s >= event_s - det.baseline_window_s) & (t_s < event_s)
     if not np.any(baseline_mask):
         baseline_mask = np.arange(n) < event_index
     if not np.any(baseline_mask):
-        return _unavailable_result(det, rec, "history has no pre-photon baseline")
+        return _unavailable_result(
+            det,
+            rec,
+            "history has no pre-photon baseline",
+            detection_signal_key=signal_key,
+        )
 
     baselines = {
         key: _robust_baseline(history, key, baseline_mask, n)
@@ -128,12 +155,12 @@ def analyze_photon_timing(
             "max_Tph_K",
         )
     }
-    voltage = _series(history, "V_out_V", n)
+    voltage = _series(history, signal_key, n)
     polarity = _resolve_polarity(
         det.polarity,
-        voltage[event_index:] - baselines["V_out_V"],
+        voltage[event_index:] - baselines[signal_key],
     )
-    signal = polarity * (voltage - baselines["V_out_V"])
+    signal = polarity * (voltage - baselines[signal_key])
     detection_result = _detection_result(
         t_s,
         signal,
@@ -206,7 +233,16 @@ def analyze_photon_timing(
     latency_stop_s = detection_result.get("latency_stop_ready_time_s")
     recovery_stop_s = selected.get("confirmed_time_s")
     return {
-        "schema_version": 1,
+        "schema_version": 2,
+        "detection_observable": {
+            "history_key": signal_key,
+            "role": (
+                "measured load voltage"
+                if signal_key == "V_out_V"
+                else "internal mesoscopic voltage"
+            ),
+            "baseline_relative": True,
+        },
         "event": {
             "photon_time_s": event_s,
             "photon_time_ps": event_s / 1.0e-12,
@@ -745,9 +781,19 @@ def _unavailable_result(
     detection: DetectionCriteria,
     recovery: RecoveryCriteria,
     reason: str,
+    *,
+    detection_signal_key: str,
 ) -> dict[str, Any]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
+        "detection_observable": {
+            "history_key": str(detection_signal_key),
+            "role": (
+                "measured load voltage"
+                if detection_signal_key == "V_out_V"
+                else "internal mesoscopic voltage"
+            ),
+        },
         "available": False,
         "reason": reason,
         "detection_criteria": asdict(detection),

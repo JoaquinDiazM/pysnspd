@@ -88,7 +88,7 @@ def plot_current_sweep_iv(
             linewidth=1.9,
             color="tab:orange",
             alpha=0.98,
-            label="Ohmic behavior",
+            label="Ohmic reference",
             zorder=2.6,
         )
     raw_scatter = ax.scatter(
@@ -147,7 +147,7 @@ def plot_current_sweep_iv(
         labels.append("Monotone fit")
     if normal_line is not None:
         handles.append(normal_line)
-        labels.append("Ohmic behavior")
+        labels.append("Ohmic reference")
     if snapshot_handle is not None:
         handles.append(snapshot_handle)
         labels.append("Order-parameter snapshots")
@@ -239,7 +239,7 @@ def plot_terminal_current_sweep_iv(
             linewidth=1.9,
             color="tab:orange",
             alpha=0.98,
-            label="Ohmic behavior",
+            label="Ohmic reference",
             zorder=2.6,
         )
     raw_scatter = ax.scatter(
@@ -287,7 +287,7 @@ def plot_terminal_current_sweep_iv(
         labels.append("Monotone fit")
     if normal_line is not None:
         handles.append(normal_line)
-        labels.append("Ohmic behavior")
+        labels.append("Ohmic reference")
     if snapshot_handle is not None:
         handles.append(snapshot_handle)
         labels.append("Order-parameter snapshots")

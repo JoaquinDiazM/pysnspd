@@ -11,11 +11,24 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 from matplotlib.colors import LogNorm, Normalize, SymLogNorm
+from matplotlib.lines import Line2D
 import numpy as np
 
 from pysnspd.plotting.style import THESIS_DPI, THESIS_WIDTH_IN, apply_thesis_style
 
 apply_thesis_style()
+
+
+def _format_snapshot_time_ps(value: float) -> str:
+    """Keep integral stored times readable, including the 1500 ps endpoint."""
+
+    numeric = float(value)
+    nearest = round(numeric)
+    if np.isfinite(numeric) and np.isclose(
+        numeric, nearest, rtol=0.0, atol=5.0e-4
+    ):
+        return str(int(nearest))
+    return f"{numeric:.3g}"
 
 
 def make_photon_position_figures(
@@ -36,6 +49,7 @@ def make_photon_position_figures(
     edge_timing: Mapping[str, Any] | None = None,
     center_snapshot_diagnostics: Mapping[str, Any] | None = None,
     edge_snapshot_diagnostics: Mapping[str, Any] | None = None,
+    field_only: bool = False,
 ) -> dict[str, Path]:
     """Create matched field, thermodynamic and circuit comparisons."""
 
@@ -70,7 +84,12 @@ def make_photon_position_figures(
             requested_times_ps=requested_times_ps,
             output_path=out / "E3_photon_position_field_comparison.pdf",
             dpi=dpi,
-        ),
+        )
+    }
+    if field_only:
+        return saved
+    saved.update(
+        {
         "circuit_comparison": plot_photon_position_circuit_comparison(
             runs,
             output_path=out / "E3_photon_position_circuit_comparison.pdf",
@@ -94,7 +113,8 @@ def make_photon_position_figures(
                 dpi=dpi,
             )
         ),
-    }
+        }
+    )
     recovery_path = out / "E3_photon_position_censored_recovery_diagnostics.pdf"
     if any(_is_detected_but_unrecovered(run[3].get("_timing", {})) for run in runs):
         saved["censored_recovery_diagnostics"] = (
@@ -198,7 +218,7 @@ def plot_photon_position_field_comparison(
         figsize=(THESIS_WIDTH_IN, max(4.8, 0.58 * n_rows + 1.0)),
         squeeze=False,
     )
-    fig.subplots_adjust(left=0.078, right=0.985, bottom=0.072, top=0.905, wspace=0.08, hspace=0.12)
+    fig.subplots_adjust(left=0.078, right=0.958, bottom=0.072, top=0.905, wspace=0.08, hspace=0.12)
 
     mappables = []
     for col, (key, label, cmap, _, _) in enumerate(field_specs):
@@ -224,15 +244,14 @@ def plot_photon_position_field_comparison(
                 ax.tick_params(axis="y", labelleft=False)
             if col == len(field_specs) - 1:
                 ax.text(
-                    0.975,
-                    0.88,
-                    rf"{row['label']}, $t={row['stored_time_ps']:.3g}$ [ps]",
+                    1.05,
+                    0.5,
+                    rf"$t={_format_snapshot_time_ps(row['stored_time_ps'])}$ [ps]",
                     transform=ax.transAxes,
-                    va="top",
-                    ha="right",
-                    fontsize=7.1,
-                    color="white",
-                    bbox={"facecolor": "0.1", "edgecolor": "none", "alpha": 0.65, "pad": 1.0},
+                    rotation=-90,
+                    va="center",
+                    ha="left",
+                    fontsize=7.2,
                 )
         mappables.append((mappable, label))
 
@@ -489,15 +508,14 @@ def _plot_photon_position_diagnostic_atlas(
                 axis.tick_params(axis="y", labelleft=False)
             if col == len(channels) - 1:
                 axis.text(
-                    0.975,
-                    0.88,
-                    rf"{row['label']}, $t={row['stored_time_ps']:.3g}$ [ps]",
+                    1.05,
+                    0.5,
+                    rf"$t={_format_snapshot_time_ps(row['stored_time_ps'])}$ [ps]",
                     transform=axis.transAxes,
-                    va="top",
-                    ha="right",
-                    fontsize=7.1,
-                    color="white",
-                    bbox={"facecolor": "0.1", "edgecolor": "none", "alpha": 0.65, "pad": 1.0},
+                    rotation=-90,
+                    va="center",
+                    ha="left",
+                    fontsize=7.2,
                 )
         mappables.append((mappable, label))
     fig.supxlabel(r"$x$ [nm]", y=0.018, fontsize=8.5)
@@ -555,8 +573,15 @@ def plot_photon_position_censored_recovery_diagnostics(
     }
     colors = {"Center": "tab:blue", "Edge": "tab:red"}
     styles = ("-", "--", ":")
-    fig, axes = plt.subplots(2, 2, figsize=(THESIS_WIDTH_IN, 5.35))
-    fig.subplots_adjust(left=0.115, right=0.965, bottom=0.105, top=0.900, wspace=0.40, hspace=0.32)
+    fig, axes = plt.subplots(2, 2, figsize=(THESIS_WIDTH_IN, 6.6))
+    fig.subplots_adjust(
+        left=0.125,
+        right=0.975,
+        bottom=0.085,
+        top=0.915,
+        wspace=0.52,
+        hspace=0.60,
+    )
     for axis, keys, title in (
         (axes[0, 0], current_keys, "Current recovery margins"),
         (axes[0, 1], voltage_keys, "Voltage recovery margins"),
@@ -568,15 +593,30 @@ def plot_photon_position_censored_recovery_diagnostics(
                     np.maximum(payload["ratios"][key], 1.0e-6),
                     color=colors.get(payload["label"]),
                     linestyle=style,
-                    linewidth=1.0,
-                    label=f"{payload['label']}: {labels[key]}",
+                    linewidth=1.1,
                 )
-        axis.axhline(1.0, color="0.2", linestyle="--", linewidth=0.9, label="Tolerance")
+        axis.axhline(1.0, color="0.2", linestyle="--", linewidth=0.9)
         axis.set_yscale("log")
         axis.set_xlabel(r"$t-t_\gamma$ [ps]")
         axis.set_ylabel("Residual / tolerance")
         axis.set_title(title)
-        axis.legend(frameon=False, fontsize=6.2, ncol=2, loc="upper right")
+        legend_handles = [
+            Line2D([], [], color=colors["Center"], linewidth=1.5, label="Center"),
+            Line2D([], [], color=colors["Edge"], linewidth=1.5, label="Near edge"),
+            *[
+                Line2D([], [], color="0.25", linestyle=style, linewidth=1.1, label=labels[key])
+                for style, key in zip(styles, keys)
+            ],
+            Line2D([], [], color="0.2", linestyle="--", linewidth=0.9, label="Tolerance"),
+        ]
+        axis.legend(
+            handles=legend_handles,
+            frameon=False,
+            ncol=2,
+            loc="upper right",
+            handlelength=2.0,
+            columnspacing=0.8,
+        )
         axis.grid(True)
         axis.set_xlim(left=0.0)
 
@@ -602,7 +642,7 @@ def plot_photon_position_censored_recovery_diagnostics(
     axis.invert_yaxis()
     axis.set_xlabel("Final residual / tolerance")
     axis.set_title("Distance from electrical recovery")
-    axis.legend(frameon=False, fontsize=7.0)
+    axis.legend(frameon=False)
     axis.grid(True, axis="x")
 
     axis = axes[1, 1]
@@ -613,7 +653,7 @@ def plot_photon_position_censored_recovery_diagnostics(
         axis.barh(row, mode_values, color=[item[2] for item in mode_rows], alpha=0.88)
         axis.set_xscale("log")
         axis.set_yticks(row)
-        axis.set_yticklabels([item[0] for item in mode_rows], fontsize=7.0)
+        axis.set_yticklabels([item[0] for item in mode_rows])
         axis.invert_yaxis()
         axis.set_xlabel("Timescale [ps]")
         axis.grid(True, axis="x")
@@ -627,20 +667,15 @@ def plot_photon_position_censored_recovery_diagnostics(
                 va="center",
                 ha="right" if inside else "left",
                 color="white" if inside else "black",
-                fontsize=6.6,
             )
-        axis.set_xlim(right=largest_mode * 1.25)
+        axis.set_xlim(right=largest_mode * 1.45)
     else:
         axis.text(0.5, 0.5, "Circuit parameters unavailable", transform=axis.transAxes, ha="center", va="center")
         axis.set_xticks([])
         axis.set_yticks([])
-    axis.set_title("Circuit modes vs available windows")
+    axis.set_title("Circuit timescales and observation windows")
     censored = [payload["label"] for payload in payloads if payload["censored"]]
-    fig.suptitle(
-        "Detected transient; recovery censored: " + ", ".join(censored),
-        y=0.975,
-        fontsize=10.0,
-    )
+    fig.suptitle("Detected transients; recovery remains right-censored", y=0.982)
     fig.savefig(output, dpi=dpi)
     plt.close(fig)
     return output

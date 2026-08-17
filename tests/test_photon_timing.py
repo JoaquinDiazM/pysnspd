@@ -96,3 +96,22 @@ def test_no_threshold_crossing_is_reported_as_right_censored():
     assert result["latency"]["censored"] is True
     assert result["recovery"]["selected"]["recovered"] is False
     assert result["termination"]["recovery_ready"] is False
+
+
+def test_internal_and_output_latencies_share_the_same_crossing_algorithm():
+    history = _synthetic_detected_history()
+    history["V_tdgl_center_V"] = np.roll(history["V_out_V"], 4)
+    history["V_tdgl_center_V"][:4] = 0.0
+
+    output = analyze_photon_timing(history, detection_signal_key="V_out_V")
+    internal = analyze_photon_timing(
+        history,
+        detection_signal_key="V_tdgl_center_V",
+    )
+
+    assert output["detection_observable"]["history_key"] == "V_out_V"
+    assert internal["detection_observable"]["history_key"] == "V_tdgl_center_V"
+    assert np.isclose(
+        internal["latency"]["t_lat_ps"] - output["latency"]["t_lat_ps"],
+        2.0,
+    )

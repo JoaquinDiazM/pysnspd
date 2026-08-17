@@ -171,6 +171,81 @@ class EnergyProjectionCatalog:
         return result
 
 
+@dataclass(frozen=True)
+class SupercurrentProjectionCatalog:
+    """Strict PRE supercurrent table used to audit out-of-axis momentum states."""
+
+    Te_axis_K: np.ndarray
+    delta_axis_J: np.ndarray
+    q_axis_m_inv: np.ndarray
+    js_A_m2: np.ndarray
+
+    @classmethod
+    def load(cls, path: str | Path) -> "SupercurrentProjectionCatalog":
+        with np.load(Path(path), allow_pickle=True) as data:
+            Te_axis = _first_npz_array(data, ("Te_axis_K", "Te_values_K", "T_axis_K"))
+            delta_axis = _first_npz_array(
+                data,
+                ("delta_axis_J", "delta_values_J", "Delta_axis_J"),
+            )
+            q_axis = _first_npz_array(data, ("q_axis_m_inv", "q_values_m_inv"))
+            table = _first_npz_array(data, ("js_A_m2", "j_s_A_m2", "js_T_delta_q_A_m2"))
+        expected = (Te_axis.size, delta_axis.size, q_axis.size)
+        if table.shape != expected:
+            raise ValueError(
+                "strict supercurrent table must have layout js_A_m2[Te,delta,q] "
+                f"with shape {expected}; received {table.shape}"
+            )
+        if any(axis.size == 0 or np.any(~np.isfinite(axis)) for axis in (Te_axis, delta_axis, q_axis)):
+            raise ValueError("strict supercurrent axes must be finite and nonempty")
+        if any(np.any(np.diff(axis) < 0.0) for axis in (Te_axis, delta_axis, q_axis)):
+            raise ValueError("strict supercurrent axes must be monotonically increasing")
+        if np.any(~np.isfinite(table)):
+            raise ValueError("strict supercurrent table contains non-finite values")
+        return cls(
+            Te_axis_K=Te_axis,
+            delta_axis_J=delta_axis,
+            q_axis_m_inv=q_axis,
+            js_A_m2=table,
+        )
+
+    @property
+    def q_max_m_inv(self) -> float:
+        return float(self.q_axis_m_inv[-1])
+
+    @property
+    def js_reference_A_m2(self) -> float:
+        return float(np.nanmax(np.abs(self.js_A_m2)))
+
+    def evaluate_abs(
+        self,
+        Te_K: np.ndarray,
+        delta_J: np.ndarray,
+        q_abs_m_inv: np.ndarray,
+    ) -> np.ndarray:
+        Te = np.clip(np.asarray(Te_K, dtype=float), self.Te_axis_K[0], self.Te_axis_K[-1])
+        delta = np.clip(
+            np.asarray(delta_J, dtype=float),
+            self.delta_axis_J[0],
+            self.delta_axis_J[-1],
+        )
+        q_abs = np.clip(
+            np.asarray(q_abs_m_inv, dtype=float),
+            self.q_axis_m_inv[0],
+            self.q_axis_m_inv[-1],
+        )
+        return np.abs(
+            np.asarray(
+                _interp_nd(
+                    self.js_A_m2,
+                    (self.Te_axis_K, self.delta_axis_J, self.q_axis_m_inv),
+                    (Te, delta, q_abs),
+                ),
+                dtype=float,
+            )
+        )
+
+
 class CompressedNpzRowStream:
     """Read selected 2D ``.npy`` members of a compressed NPZ by row chunks.
 
@@ -234,6 +309,7 @@ def extract_energy_projection_diagnostics(
     *,
     snapshots_npz: str | Path,
     power_table_npz: str | Path,
+    usadel_current_npz: str | Path,
     history: Mapping[str, Any],
     nodes_m: np.ndarray,
     triangles: np.ndarray,
@@ -311,6 +387,7 @@ def extract_energy_projection_diagnostics(
     volume_total = float(np.sum(volume_weights))
 
     catalog = EnergyProjectionCatalog.load(power_table_npz)
+    current_catalog = SupercurrentProjectionCatalog.load(usadel_current_npz)
     projector = _SnapshotProjector(ops)
     bath_K = float(catalog.bath_K)
     if not np.isfinite(bath_K) or bath_K <= 0.0:
@@ -351,6 +428,7 @@ def extract_energy_projection_diagnostics(
         derived = _derive_states(
             raw=chunk,
             catalog=catalog,
+            current_catalog=current_catalog,
             projector=projector,
             center_indices=center_indices,
             central_mask=central_mask,
@@ -429,6 +507,10 @@ def extract_energy_projection_diagnostics(
         "xi_m": np.asarray([float(xi_m)], dtype=float),
         "Tc_K": np.asarray([float(Tc_K)], dtype=float),
         "delta0_J": np.asarray([float(catalog.delta0_J)], dtype=float),
+        "strict_q_max_m_inv": np.asarray([current_catalog.q_max_m_inv], dtype=float),
+        "strict_js_reference_A_m2": np.asarray(
+            [current_catalog.js_reference_A_m2], dtype=float
+        ),
         "thickness_m": np.asarray([float(thickness_m)], dtype=float),
         "total_snapshot_count": np.asarray([total_snapshots], dtype=np.int64),
         "processed_snapshot_count": np.asarray([stop], dtype=np.int64),
@@ -495,6 +577,12 @@ _TEMPORAL_KEYS = (
     "catalog_Tph_clipped_fraction",
     "catalog_delta_clipped_fraction",
     "catalog_q_clipped_fraction",
+    "strict_q_clipped_fraction",
+    "strict_q_clipped_js_median_A_m2",
+    "strict_q_clipped_js_p95_A_m2",
+    "strict_q_clipped_js_max_A_m2",
+    "strict_q_clipped_js_p95_over_catalog_max",
+    "strict_q_clipped_js_near_zero_fraction",
 )
 
 
@@ -502,6 +590,7 @@ def _derive_states(
     *,
     raw: Mapping[str, np.ndarray],
     catalog: EnergyProjectionCatalog,
+    current_catalog: SupercurrentProjectionCatalog,
     projector: _SnapshotProjector,
     center_indices: np.ndarray,
     central_mask: np.ndarray,
@@ -543,6 +632,12 @@ def _derive_states(
         delta_full[:, center_indices],
         q_full[:, center_indices],
     )
+    strict_q_clip_center = q_full[:, center_indices] > current_catalog.q_max_m_inv
+    js_abs_center = current_catalog.evaluate_abs(
+        Te_full[:, center_indices],
+        delta_full[:, center_indices],
+        q_full[:, center_indices],
+    )
     return {
         "q_full": q_full,
         "delta_full": delta_full,
@@ -558,6 +653,11 @@ def _derive_states(
         "P_diff_center": P_diff_full[:, center_indices],
         "P_J_center": P_J_full[:, center_indices],
         "u_cond_center": u_cond_center,
+        "strict_q_clip_center": strict_q_clip_center,
+        "js_abs_center_A_m2": js_abs_center,
+        "js_reference_A_m2": np.asarray(
+            [current_catalog.js_reference_A_m2], dtype=float
+        ),
         "clip_center": catalog.clipping_mask(
             Te_full[:, center_indices],
             Tph_full[:, center_indices],
@@ -716,6 +816,49 @@ def _append_temporal_metrics(
         target[f"catalog_{component}_clipped_fraction"].append(
             np.mean(component_clip[1:], axis=1)
         )
+    strict_clip = np.asarray(derived["strict_q_clip_center"], dtype=bool)[1:]
+    js_abs = np.asarray(derived["js_abs_center_A_m2"], dtype=float)[1:]
+    js_reference = float(
+        np.asarray(derived["js_reference_A_m2"], dtype=float).reshape(-1)[0]
+    )
+    target["strict_q_clipped_fraction"].append(np.mean(strict_clip, axis=1))
+    conditional_median: list[float] = []
+    conditional_p95: list[float] = []
+    conditional_max: list[float] = []
+    conditional_p95_ratio: list[float] = []
+    conditional_near_zero: list[float] = []
+    for row_mask, row_current in zip(strict_clip, js_abs):
+        selected = np.abs(row_current[row_mask & np.isfinite(row_current)])
+        if selected.size == 0:
+            conditional_median.append(np.nan)
+            conditional_p95.append(np.nan)
+            conditional_max.append(np.nan)
+            conditional_p95_ratio.append(np.nan)
+            conditional_near_zero.append(np.nan)
+            continue
+        p95 = float(np.nanpercentile(selected, 95.0))
+        conditional_median.append(float(np.nanmedian(selected)))
+        conditional_p95.append(p95)
+        conditional_max.append(float(np.nanmax(selected)))
+        conditional_p95_ratio.append(p95 / max(js_reference, 1.0e-300))
+        conditional_near_zero.append(
+            float(np.mean(selected <= 1.0e-3 * max(js_reference, 1.0e-300)))
+        )
+    target["strict_q_clipped_js_median_A_m2"].append(
+        np.asarray(conditional_median, dtype=float)
+    )
+    target["strict_q_clipped_js_p95_A_m2"].append(
+        np.asarray(conditional_p95, dtype=float)
+    )
+    target["strict_q_clipped_js_max_A_m2"].append(
+        np.asarray(conditional_max, dtype=float)
+    )
+    target["strict_q_clipped_js_p95_over_catalog_max"].append(
+        np.asarray(conditional_p95_ratio, dtype=float)
+    )
+    target["strict_q_clipped_js_near_zero_fraction"].append(
+        np.asarray(conditional_near_zero, dtype=float)
+    )
 
 
 def _full_state_maps(
@@ -898,8 +1041,16 @@ def _read_exact(stream: Any, nbytes: int) -> bytes:
     return b"".join(blocks)
 
 
+def _first_npz_array(data: Any, keys: Sequence[str]) -> np.ndarray:
+    for key in keys:
+        if key in data.files:
+            return np.asarray(data[key], dtype=float)
+    raise KeyError(f"None of the required NPZ arrays is present: {', '.join(keys)}")
+
+
 __all__ = [
     "CompressedNpzRowStream",
     "EnergyProjectionCatalog",
+    "SupercurrentProjectionCatalog",
     "extract_energy_projection_diagnostics",
 ]

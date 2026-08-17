@@ -37,6 +37,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--center-run-name", required=True, help="Completed central-impact photon run.")
     parser.add_argument("--edge-run-name", required=True, help="Completed edge-impact photon run.")
     parser.add_argument(
+        "--center-summary-path",
+        default=None,
+        help="Optional explicit path to the center-run photon summary YAML.",
+    )
+    parser.add_argument(
+        "--edge-summary-path",
+        default=None,
+        help="Optional explicit path to the near-edge-run photon summary YAML.",
+    )
+    parser.add_argument(
         "--times-ps",
         nargs="+",
         type=float,
@@ -61,6 +71,32 @@ def parse_args() -> argparse.Namespace:
         help="Run-like directory under big_data_root/plots.",
     )
     parser.add_argument("--figures-subdir", default="figures")
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help=(
+            "Optional absolute output directory. When omitted, figures are written "
+            "under the configured plots run."
+        ),
+    )
+    parser.add_argument(
+        "--field-output-name",
+        default=None,
+        help="Optional filename for this invocation's field-comparison PDF.",
+    )
+    parser.add_argument(
+        "--manifest-output-name",
+        default="E3_photon_position_manifest.yaml",
+        help="Filename for the provenance manifest written by this invocation.",
+    )
+    parser.add_argument(
+        "--field-only",
+        action="store_true",
+        help=(
+            "Write only the time-window field comparison and its manifest. "
+            "Use one full invocation for window-independent circuit diagnostics."
+        ),
+    )
     parser.add_argument("--dpi", type=int, default=THESIS_DPI)
     add_timing_analysis_arguments(parser)
     return parser.parse_args()
@@ -77,7 +113,11 @@ def main() -> int:
     raw_pre = Path(pre_layout["raw_pre"])
     center_raw = Path(center_layout["raw_photon"])
     edge_raw = Path(edge_layout["raw_photon"])
-    output_dir = Path(output_layout["plots_run"]) / str(args.figures_subdir)
+    output_dir = (
+        Path(args.output_dir)
+        if args.output_dir
+        else Path(output_layout["plots_run"]) / str(args.figures_subdir)
+    )
     output_dir.mkdir(parents=True, exist_ok=True)
 
     mesh = load_mesh_npz(_require_file(raw_pre / "mesh.npz", "PRE mesh"))
@@ -94,13 +134,27 @@ def main() -> int:
         center_raw / "transient_snapshots.npz", "center snapshots"
     )
     center_snapshots = _load_npz(center_snapshots_path)
-    center_summary = _read_yaml(_require_file(center_raw / "photon_summary.yaml", "center summary"))
+    center_summary = _read_yaml(
+        _require_file(
+            Path(args.center_summary_path)
+            if args.center_summary_path
+            else center_raw / "photon_summary.yaml",
+            "center summary",
+        )
+    )
     edge_history = _load_npz(_require_file(edge_raw / "transient_history.npz", "edge history"))
     edge_snapshots_path = _require_file(
         edge_raw / "transient_snapshots.npz", "edge snapshots"
     )
     edge_snapshots = _load_npz(edge_snapshots_path)
-    edge_summary = _read_yaml(_require_file(edge_raw / "photon_summary.yaml", "edge summary"))
+    edge_summary = _read_yaml(
+        _require_file(
+            Path(args.edge_summary_path)
+            if args.edge_summary_path
+            else edge_raw / "photon_summary.yaml",
+            "edge summary",
+        )
+    )
     delta0_meV = _read_delta0_meV(raw_pre)
     xi_m, xi_source = _resolve_xi_m(
         cfg=cfg,
@@ -114,12 +168,28 @@ def main() -> int:
         snapshots=center_snapshots,
         detection=detection_criteria,
         recovery=recovery_criteria,
+        detection_signal_key="V_out_V",
     )
     edge_timing = analyze_photon_timing(
         edge_history,
         snapshots=edge_snapshots,
         detection=detection_criteria,
         recovery=recovery_criteria,
+        detection_signal_key="V_out_V",
+    )
+    center_tdgl_timing = analyze_photon_timing(
+        center_history,
+        snapshots=center_snapshots,
+        detection=detection_criteria,
+        recovery=recovery_criteria,
+        detection_signal_key="V_tdgl_center_V",
+    )
+    edge_tdgl_timing = analyze_photon_timing(
+        edge_history,
+        snapshots=edge_snapshots,
+        detection=detection_criteria,
+        recovery=recovery_criteria,
+        detection_signal_key="V_tdgl_center_V",
     )
     center_diagnostics = _snapshot_diagnostics(
         label="center",
@@ -171,7 +241,17 @@ def main() -> int:
         edge_timing=edge_timing,
         center_snapshot_diagnostics=center_diagnostics,
         edge_snapshot_diagnostics=edge_diagnostics,
+        field_only=bool(args.field_only),
     )
+    saved = dict(saved)
+    if args.field_output_name:
+        source = Path(saved["field_comparison"])
+        destination = output_dir / str(args.field_output_name)
+        if destination.suffix.lower() != ".pdf":
+            destination = destination.with_suffix(".pdf")
+        source.replace(destination)
+        saved["field_comparison"] = destination
+
     manifest_path = _write_manifest(
         args=args,
         raw_pre=raw_pre,
@@ -188,6 +268,8 @@ def main() -> int:
         edge_snapshots=edge_snapshots,
         center_timing=center_timing,
         edge_timing=edge_timing,
+        center_tdgl_timing=center_tdgl_timing,
+        edge_tdgl_timing=edge_tdgl_timing,
         center_snapshot_diagnostics=center_diagnostics,
         edge_snapshot_diagnostics=edge_diagnostics,
         center_snapshots_path=center_snapshots_path,
@@ -241,6 +323,8 @@ def _write_manifest(
     edge_snapshots: Mapping[str, Any],
     center_timing: Mapping[str, Any],
     edge_timing: Mapping[str, Any],
+    center_tdgl_timing: Mapping[str, Any],
+    edge_tdgl_timing: Mapping[str, Any],
     center_snapshot_diagnostics: Mapping[str, Any],
     edge_snapshot_diagnostics: Mapping[str, Any],
     center_snapshots_path: Path,
@@ -248,17 +332,28 @@ def _write_manifest(
     power_table_path: Path,
 ) -> Path:
     manifest = {
-        "schema_version": 2,
+        "schema_version": 3,
         "pipeline": "plot_pipelines/E3_photon_position_comparison.py",
         "purpose": "Matched center/edge photon-impact field and circuit-response PDFs.",
         "pre_run_name": str(args.pre_run_name),
         "center_run_name": str(args.center_run_name),
         "edge_run_name": str(args.edge_run_name),
+        "center_summary_path": str(
+            Path(args.center_summary_path)
+            if args.center_summary_path
+            else center_raw / "photon_summary.yaml"
+        ),
+        "edge_summary_path": str(
+            Path(args.edge_summary_path)
+            if args.edge_summary_path
+            else edge_raw / "photon_summary.yaml"
+        ),
         "raw_pre": str(raw_pre),
         "center_raw_photon": str(center_raw),
         "edge_raw_photon": str(edge_raw),
         "output_dir": str(output_dir),
         "requested_times_ps": [float(value) for value in args.times_ps],
+        "field_only": bool(args.field_only),
         "center_resolved_times_ps": _resolved_times(center_snapshots, args.times_ps),
         "edge_resolved_times_ps": _resolved_times(edge_snapshots, args.times_ps),
         "delta0_meV": float(delta0_meV),
@@ -284,9 +379,24 @@ def _write_manifest(
         "edge_photon_time_ps": _photon_time(edge_history),
         "center_timing": dict(center_timing),
         "edge_timing": dict(edge_timing),
+        "voltage_latency_comparison": {
+            "definition": (
+                "baseline-relative first confirmed crossing; identical threshold, "
+                "polarity, baseline window, hysteresis, and confirmation time for "
+                "V_out and V_TDGL"
+            ),
+            "center": {
+                "V_out": dict(center_timing.get("latency", {})),
+                "V_TDGL": dict(center_tdgl_timing.get("latency", {})),
+            },
+            "edge": {
+                "V_out": dict(edge_timing.get("latency", {})),
+                "V_TDGL": dict(edge_tdgl_timing.get("latency", {})),
+            },
+        },
         "figures": {key: str(path) for key, path in saved.items()},
     }
-    path = output_dir / "E3_photon_position_manifest.yaml"
+    path = output_dir / str(args.manifest_output_name)
     with path.open("w", encoding="utf-8") as stream:
         yaml.safe_dump(manifest, stream, sort_keys=False, allow_unicode=True, default_flow_style=False)
     return path
