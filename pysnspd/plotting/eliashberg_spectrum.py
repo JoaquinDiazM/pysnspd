@@ -88,7 +88,7 @@ def plot_eliashberg_spectrum(
     )
 
     ax_a.set_xlabel(r"Phonon energy $\Omega$ [meV]", fontsize=label_fs)
-    ax_a.set_ylabel(r"$\alpha^2F(\Omega)$ [meV]", fontsize=label_fs, color=alpha_color)
+    ax_a.set_ylabel(r"$\alpha^2F(\Omega)$", fontsize=label_fs, color=alpha_color)
     ax_p.set_ylabel(r"PhDOS [states/THz]", fontsize=label_fs, color=phdos_color)
 
     ax_a.tick_params(axis="x", which="both", direction="in", labelsize=tick_fs)

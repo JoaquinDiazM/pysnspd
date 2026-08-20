@@ -20,8 +20,7 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 from matplotlib.colors import SymLogNorm
 import numpy as np
-from scipy.constants import Boltzmann, hbar
-from scipy.special import zeta
+from scipy.constants import Boltzmann, h
 
 from pysnspd.plotting.style import (
     THESIS_DOUBLE_FIGSIZE,
@@ -36,164 +35,268 @@ MEV_J = 1.602176634e-22
 
 
 @dataclass(frozen=True)
-class DebyeReferenceParameters:
-    """Explicit parameters for the Debye/Vodolazov comparison curves.
+class AllmarasReferenceParameters:
+    """Allmaras 2019 normal-state two-temperature plotting reference.
 
-    ``N0_J_m3`` follows the single-spin convention used by the Simon and
-    Vodolazov equations quoted in the thesis.  The reference is deliberately
-    separate from the production spectral catalogue.
+    ``N0_J_m3`` is the production catalogue density of states for one spin.
+    The published Allmaras parameters set the compact constitutive closure;
+    no Debye cutoff, Eliashberg coupling, ion density, or reconstructed
+    relaxation time participates in these curves.
     """
 
     N0_J_m3: float
-    ion_density_m3: float
     Tc_K: float
-    omega_D_J: float
-    lambda_ep: float
-    tau0_s: float
+    gamma_heat_capacity: float
+    tau_ep_Tc_s: float
+    tau_esc_s: float
     normal_dos_spin_convention: str
-    lambda_provenance: dict[str, Any]
-    runtime_catalog_spectrum: dict[str, Any]
+    normal_limit_validation: dict[str, Any]
     sources: dict[str, str]
+
+    @property
+    def Ec_J_m3(self) -> float:
+        """Allmaras volumetric energy scale, ``4 N(0) k_B^2 T_c^2``."""
+
+        return float(4.0 * self.N0_J_m3 * Boltzmann**2 * self.Tc_K**2)
+
+    @property
+    def phonon_storage_coefficient_J_m3_K4(self) -> float:
+        """Coefficient ``A_A`` in ``u_ph=A_A T_ph^4``."""
+
+        return float(
+            self.Ec_J_m3
+            * np.pi**4
+            / (15.0 * self.gamma_heat_capacity * self.Tc_K**4)
+        )
+
+    @property
+    def electron_phonon_coupling_W_m3_K5(self) -> float:
+        """Coefficient ``Sigma_A`` in ``P_eph=Sigma_A(Te^5-Tph^5)``."""
+
+        return float(
+            2.0
+            * np.pi**2
+            * self.N0_J_m3
+            * Boltzmann**2
+            / (15.0 * self.tau_ep_Tc_s * self.Tc_K**3)
+        )
+
+    def u_e_normal_J_m3(self, temperature_K: np.ndarray | float) -> np.ndarray:
+        temperature = np.asarray(temperature_K, dtype=float)
+        return (
+            np.pi**2
+            * self.N0_J_m3
+            * Boltzmann**2
+            * temperature**2
+            / 3.0
+        )
+
+    def C_e_normal_J_m3_K(self, temperature_K: np.ndarray | float) -> np.ndarray:
+        temperature = np.asarray(temperature_K, dtype=float)
+        return (
+            2.0
+            * np.pi**2
+            * self.N0_J_m3
+            * Boltzmann**2
+            * temperature
+            / 3.0
+        )
+
+    def u_ph_J_m3(self, temperature_K: np.ndarray | float) -> np.ndarray:
+        temperature = np.asarray(temperature_K, dtype=float)
+        return self.phonon_storage_coefficient_J_m3_K4 * temperature**4
+
+    def C_ph_J_m3_K(self, temperature_K: np.ndarray | float) -> np.ndarray:
+        temperature = np.asarray(temperature_K, dtype=float)
+        return 4.0 * self.phonon_storage_coefficient_J_m3_K4 * temperature**3
+
+    def P_eph_W_m3(
+        self,
+        electron_temperature_K: np.ndarray | float,
+        phonon_temperature_K: np.ndarray | float,
+    ) -> np.ndarray:
+        electron_temperature = np.asarray(electron_temperature_K, dtype=float)
+        phonon_temperature = np.asarray(phonon_temperature_K, dtype=float)
+        return self.electron_phonon_coupling_W_m3_K5 * (
+            electron_temperature**5 - phonon_temperature**5
+        )
+
+    def phonon_temperature_fourth_power_rate_K4_s(
+        self,
+        electron_temperature_K: np.ndarray | float,
+        phonon_temperature_K: np.ndarray | float,
+        bath_temperature_K: np.ndarray | float,
+    ) -> np.ndarray:
+        electron_temperature = np.asarray(electron_temperature_K, dtype=float)
+        phonon_temperature = np.asarray(phonon_temperature_K, dtype=float)
+        bath_temperature = np.asarray(bath_temperature_K, dtype=float)
+        return (
+            self.gamma_heat_capacity
+            * (electron_temperature**5 - phonon_temperature**5)
+            / (2.0 * np.pi**2 * self.tau_ep_Tc_s * self.Tc_K)
+            - (phonon_temperature**4 - bath_temperature**4) / self.tau_esc_s
+        )
 
     def manifest_dict(self) -> dict[str, Any]:
         return {
             "enabled": True,
-            "model": "normal-state Debye/Vodolazov limiting reference",
+            "model": "Allmaras 2019 normal-state two-temperature reference",
+            "material_normalization": "production N0 and Tc",
             "N0_J_m3": float(self.N0_J_m3),
-            "ion_density_m3": float(self.ion_density_m3),
             "Tc_K": float(self.Tc_K),
-            "omega_D_J": float(self.omega_D_J),
-            "omega_D_meV": float(self.omega_D_J / MEV_J),
-            "lambda_ep": float(self.lambda_ep),
-            "tau0_s": float(self.tau0_s),
+            "gamma_heat_capacity": float(self.gamma_heat_capacity),
+            "tau_ep_Tc_s": float(self.tau_ep_Tc_s),
+            "tau_esc_s": float(self.tau_esc_s),
+            "published_gamma": 60.0,
+            "published_tau_ep_Tc_ps": 24.7,
+            "published_tau_esc_ps": 20.0,
+            "evaluated_gamma": float(self.gamma_heat_capacity),
+            "evaluated_tau_ep_Tc_ps": float(self.tau_ep_Tc_s / 1.0e-12),
+            "evaluated_tau_esc_ps": float(self.tau_esc_s / 1.0e-12),
+            "Ec_J_m3": float(self.Ec_J_m3),
+            "phonon_storage_coefficient_J_m3_K4": float(
+                self.phonon_storage_coefficient_J_m3_K4
+            ),
+            "electron_phonon_coupling_W_m3_K5": float(
+                self.electron_phonon_coupling_W_m3_K5
+            ),
             "normal_dos_spin_convention": self.normal_dos_spin_convention,
-            "lambda_provenance": dict(self.lambda_provenance),
-            "runtime_catalog_spectrum": dict(self.runtime_catalog_spectrum),
+            "reference_role": "plotting-only benchmark; not used by runtime thermal tables",
+            "doi": "10.1103/PhysRevApplied.11.034062",
+            "normal_limit_validation": dict(self.normal_limit_validation),
             "sources": dict(self.sources),
-            "energy_formula": "u_ph_D=(3*pi^4/5)*Ni*kB*T*(kB*T/OmegaD)^3",
-            "heat_capacity_formula": "C_ph_D=(12*pi^4/5)*Ni*kB*(kB*T/OmegaD)^3",
-            "power_formula": "P_D=96*zeta(5)*N0*kB^2*(Te^5-Tph^5)/(tau0*Tc^3)",
+            "energy_formula": "u_ph_A=4*pi^4*N0*kB^2*Tph^4/(15*gamma_heat_capacity*Tc^2)",
+            "heat_capacity_formula": "C_ph_A=16*pi^4*N0*kB^2*Tph^3/(15*gamma_heat_capacity*Tc^2)",
+            "power_formula": "P_A=2*pi^2*N0*kB^2*(Te^5-Tph^5)/(15*tau_ep_A(Tc)*Tc^3)",
         }
 
 
-def resolve_debye_reference_parameters(
+def resolve_allmaras_reference_parameters(
     catalog: "PowerTablePlotCatalog",
     *,
-    ion_density_m3: float,
     Tc_K: float,
-    omega_D_J: float,
     normal_dos_spin_convention: str,
-    lambda_ep: float,
-    lambda_provenance: dict[str, Any],
-) -> DebyeReferenceParameters:
-    """Recover every Debye-reference constant from declared stored sources.
+    gamma_heat_capacity: float = 60.0,
+    tau_ep_Tc_s: float = 24.7e-12,
+    tau_esc_s: float = 20.0e-12,
+) -> AllmarasReferenceParameters:
+    """Build the Allmaras reference from its published parametrization.
 
-    The routine raises instead of silently substituting a literature value for
-    a missing production constant.  ``omega_D_J`` is the one intentionally
-    external comparison parameter and must be supplied by the caller.
+    The production catalogue supplies the single-spin ``N(0)``.  The caller
+    supplies the validated production ``T_c``; every other numerical input is
+    an explicit Allmaras 2019 parameter.  A gross mismatch between the stored
+    normal-like electronic curve and its analytic normal limit is rejected.
     """
 
     convention = str(normal_dos_spin_convention).strip().lower().replace("-", "_")
     if convention != "single_spin":
         raise ValueError(
-            "The Vodolazov reference requires the single-spin N(0) convention; "
+            "The Allmaras reference requires the single-spin N(0) convention; "
             f"received {normal_dos_spin_convention!r}."
         )
     N0_J_m3 = _metadata_float_recursive(catalog.metadata, "N0_J_m3")
     if not np.isfinite(N0_J_m3) or N0_J_m3 <= 0.0:
         raise ValueError("power-table metadata do not contain a positive N0_J_m3")
-    if not np.isfinite(ion_density_m3) or ion_density_m3 <= 0.0:
-        raise ValueError("ion_density_m3 must be recovered explicitly from the material configuration")
-    if not np.isfinite(Tc_K) or Tc_K <= 0.0:
-        raise ValueError("Tc_K must be recovered explicitly from the material configuration")
-    if not np.isfinite(omega_D_J) or omega_D_J <= 0.0:
-        raise ValueError("omega_D_J must be finite and positive")
-
-    if not np.isfinite(lambda_ep) or lambda_ep <= 0.0:
-        raise ValueError("lambda_ep from the complete Eliashberg source must be positive")
-    required_provenance = {
-        "source_path",
-        "sha256",
-        "n_points",
-        "frequency_min_THz",
-        "frequency_max_THz",
-        "definition",
-    }
-    missing_provenance = sorted(required_provenance.difference(lambda_provenance))
-    if missing_provenance:
+    stored_Tc_K = _metadata_float_recursive(catalog.metadata, "Tc_K")
+    stored_delta0_J = _metadata_float_recursive(catalog.metadata, "delta0_J")
+    catalog_Tc_K = _critical_temperature_K(catalog)
+    if np.isfinite(catalog_Tc_K) and catalog_Tc_K > 0.0:
+        if not np.isclose(float(Tc_K), float(catalog_Tc_K), rtol=1.0e-6, atol=0.0):
+            raise ValueError(
+                "configured Tc_K does not match the power-table catalogue: "
+                f"{Tc_K!r} versus {catalog_Tc_K!r} K"
+            )
+        Tc_K = float(catalog_Tc_K)
+        if np.isfinite(stored_Tc_K) and stored_Tc_K > 0.0:
+            Tc_source = (
+                "power_table_catalog.npz Tc_K metadata, cross-checked against "
+                "configuration"
+            )
+        elif np.isfinite(stored_delta0_J) and stored_delta0_J > 0.0:
+            Tc_source = (
+                "power_table_catalog.npz delta0_J via the production weak-coupling "
+                "relation Delta_BCS(0)=1.764 k_B Tc, cross-checked against configuration"
+            )
+        else:
+            raise ValueError(
+                "power-table catalogue does not persist Tc_K or a positive delta0_J "
+                "for the required material cross-check"
+            )
+    else:
         raise ValueError(
-            "lambda_provenance is missing required fields: "
-            + ", ".join(missing_provenance)
+            "power-table catalogue does not persist Tc_K or a positive delta0_J "
+            "for the required material cross-check"
         )
+    positive_inputs = {
+        "Tc_K": Tc_K,
+        "gamma_heat_capacity": gamma_heat_capacity,
+        "tau_ep_Tc_s": tau_ep_Tc_s,
+        "tau_esc_s": tau_esc_s,
+    }
+    for name, value in positive_inputs.items():
+        if not np.isfinite(value) or float(value) <= 0.0:
+            raise ValueError(f"{name} must be finite and positive")
 
-    runtime_catalog_spectrum = _runtime_catalog_spectrum_diagnostic(catalog)
-
-    tau0_s = float(
-        1.0
-        / (
-            np.pi
-            * lambda_ep
-            * (Boltzmann * float(Tc_K) / float(omega_D_J)) ** 2
-            * (Boltzmann * float(Tc_K) / hbar)
+    provisional = AllmarasReferenceParameters(
+        N0_J_m3=float(N0_J_m3),
+        Tc_K=float(Tc_K),
+        gamma_heat_capacity=float(gamma_heat_capacity),
+        tau_ep_Tc_s=float(tau_ep_Tc_s),
+        tau_esc_s=float(tau_esc_s),
+        normal_dos_spin_convention="single_spin",
+        normal_limit_validation={},
+        sources={},
+    )
+    validation = _normal_electronic_limit_validation(catalog, provisional)
+    if not validation["passed"]:
+        raise ValueError(
+            "normal-like production storage is inconsistent with the single-spin "
+            "Allmaras normal limit: "
+            f"max relative errors u_e={validation['max_relative_error_u_e']:.3g}, "
+            f"C_e={validation['max_relative_error_C_e']:.3g}"
+        )
+    gamma_source = (
+        "Allmaras et al. 2019, published gamma=60"
+        if np.isclose(float(gamma_heat_capacity), 60.0, rtol=0.0, atol=0.0)
+        else (
+            "evaluated CLI override; Allmaras et al. 2019 published gamma=60, "
+            f"whereas this diagnostic evaluates gamma={float(gamma_heat_capacity):.16g}"
         )
     )
-    return DebyeReferenceParameters(
+    tau_ep_source = (
+        "Allmaras et al. 2019, published tau_ep(Tc)=24.7 ps"
+        if np.isclose(float(tau_ep_Tc_s), 24.7e-12, rtol=0.0, atol=0.0)
+        else (
+            "evaluated CLI override; Allmaras et al. 2019 published "
+            "tau_ep(Tc)=24.7 ps, whereas this diagnostic evaluates "
+            f"{float(tau_ep_Tc_s) / 1.0e-12:.16g} ps"
+        )
+    )
+    tau_esc_source = (
+        "Allmaras et al. 2019, published tau_esc=20 ps; documentary for static plots"
+        if np.isclose(float(tau_esc_s), 20.0e-12, rtol=0.0, atol=0.0)
+        else (
+            "evaluated CLI override; Allmaras et al. 2019 published tau_esc=20 ps, "
+            "whereas this diagnostic evaluates "
+            f"{float(tau_esc_s) / 1.0e-12:.16g} ps"
+        )
+    )
+    return AllmarasReferenceParameters(
         N0_J_m3=float(N0_J_m3),
-        ion_density_m3=float(ion_density_m3),
         Tc_K=float(Tc_K),
-        omega_D_J=float(omega_D_J),
-        lambda_ep=lambda_ep,
-        tau0_s=tau0_s,
+        gamma_heat_capacity=float(gamma_heat_capacity),
+        tau_ep_Tc_s=float(tau_ep_Tc_s),
+        tau_esc_s=float(tau_esc_s),
         normal_dos_spin_convention="single_spin",
-        lambda_provenance=dict(lambda_provenance),
-        runtime_catalog_spectrum=runtime_catalog_spectrum,
+        normal_limit_validation=validation,
         sources={
             "N0_J_m3": "power_table_catalog.npz metadata",
-            "normal_dos_spin_convention": "declared single-spin catalogue contract",
-            "ion_density_m3": "validated project material configuration",
-            "Tc_K": "validated project material configuration",
-            "lambda_ep": "complete Simon Eliashberg DAT loaded by load_simon_eliashberg_dat",
-            "omega_D_J": "explicit Vodolazov comparison cutoff supplied to E1",
-            "tau0_s": "Annex B.5 mapping from lambda_ep, Omega_D, and Tc",
+            "Tc_K": Tc_source,
+            "gamma_heat_capacity": gamma_source,
+            "tau_ep_Tc_s": tau_ep_source,
+            "tau_esc_s": tau_esc_source,
         },
     )
-
-
-def _runtime_catalog_spectrum_diagnostic(
-    catalog: "PowerTablePlotCatalog",
-) -> dict[str, Any]:
-    """Describe the truncated runtime quadrature grid without using it for lambda."""
-
-    omega = np.asarray(catalog.omega_values_J, dtype=float).reshape(-1)
-    alpha2F = np.asarray(catalog.alpha2F, dtype=float).reshape(-1)
-    count = min(omega.size, alpha2F.size)
-    valid = (
-        np.isfinite(omega[:count])
-        & np.isfinite(alpha2F[:count])
-        & (omega[:count] > 0.0)
-    )
-    diagnostic_lambda = float("nan")
-    if np.count_nonzero(valid) >= 2:
-        order = np.argsort(omega[:count][valid])
-        omega_valid = omega[:count][valid][order]
-        alpha_valid = alpha2F[:count][valid][order]
-        diagnostic_lambda = float(
-            2.0 * np.trapezoid(alpha_valid / omega_valid, omega_valid)
-        )
-    finite_omega = omega[np.isfinite(omega)]
-    return {
-        "role": "truncated runtime quadrature grid; never authoritative for lambda_ep",
-        "n_points": int(count),
-        "energy_min_J": (
-            float(np.nanmin(finite_omega)) if finite_omega.size else None
-        ),
-        "energy_max_J": (
-            float(np.nanmax(finite_omega)) if finite_omega.size else None
-        ),
-        "lambda_if_reintegrated_diagnostic_only": (
-            diagnostic_lambda if np.isfinite(diagnostic_lambda) else None
-        ),
-    }
 
 
 @dataclass(frozen=True)
@@ -414,10 +517,10 @@ def plot_power_total_Te_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    debye_reference: DebyeReferenceParameters | None = None,
+    allmaras_reference: AllmarasReferenceParameters | None = None,
     dpi: int = THESIS_DPI,
 ) -> Path:
-    """Plot production power slices and one optional Debye limiting reference."""
+    """Plot production power slices and the optional Allmaras reference."""
     apply_thesis_style()
     output = _prepare_output(output_path)
     iTph = _nearest_index(catalog.Tph_values_K, float(np.nanmin(catalog.Tph_values_K)))
@@ -439,11 +542,9 @@ def plot_power_total_Te_curves(
                 label=label,
             )
     T_bath_K = float(catalog.Tph_values_K[iTph])
-    if debye_reference is not None:
-        reference_power = _debye_power_density(
-            catalog.Te_values_K,
-            T_bath_K,
-            debye_reference,
+    if allmaras_reference is not None:
+        reference_power = allmaras_reference.P_eph_W_m3(
+            catalog.Te_values_K, T_bath_K
         )
         mask = np.isfinite(reference_power) & (reference_power > 0.0)
         if np.any(mask):
@@ -454,7 +555,7 @@ def plot_power_total_Te_curves(
                 color="black",
                 linestyle=":",
                 linewidth=1.35,
-                label="Debye/Vodolazov reference",
+                label="Allmaras normal-state reference",
             )
     Tc_K = _critical_temperature_K(catalog)
     ax.axvline(
@@ -499,7 +600,7 @@ def plot_energy_heat_capacity_curves(
     catalog: PowerTablePlotCatalog,
     output_path: str | Path,
     *,
-    debye_reference: DebyeReferenceParameters | None = None,
+    allmaras_reference: AllmarasReferenceParameters | None = None,
     dpi: int = THESIS_DPI,
 ) -> Path:
     r"""Plot electronic/phononic energy and heat capacity curves.
@@ -539,7 +640,7 @@ def plot_energy_heat_capacity_curves(
             color="black",
             linestyle="--",
             linewidth=1.35,
-            label=r"Phonons: $u_{ph}(T_{ph})$",
+            label=r"Production phonons: $u_{ph}(T_{ph})$",
         )
     if catalog.C_ph_J_m3_K.size:
         ax_c.plot(
@@ -548,28 +649,26 @@ def plot_energy_heat_capacity_curves(
             color="black",
             linestyle="--",
             linewidth=1.35,
-            label=r"Phonons: $C_{ph}(T_{ph})$",
+            label=r"Production phonons: $C_{ph}(T_{ph})$",
         )
-    if debye_reference is not None:
-        u_debye, C_debye = _debye_phonon_storage(
-            catalog.Tph_values_K,
-            debye_reference,
-        )
+    if allmaras_reference is not None:
+        u_allmaras = allmaras_reference.u_ph_J_m3(catalog.Tph_values_K)
+        C_allmaras = allmaras_reference.C_ph_J_m3_K(catalog.Tph_values_K)
         ax_u.plot(
             catalog.Tph_values_K,
-            u_debye,
+            u_allmaras,
             color="black",
             linestyle=":",
             linewidth=1.35,
-            label=r"Debye reference: $u_{ph}^{D}$",
+            label=r"Allmaras reference: $u_{ph}^{\mathrm{A}}$",
         )
         ax_c.plot(
             catalog.Tph_values_K,
-            C_debye,
+            C_allmaras,
             color="black",
             linestyle=":",
             linewidth=1.35,
-            label=r"Debye reference: $C_{ph}^{D}$",
+            label=r"Allmaras reference: $C_{ph}^{\mathrm{A}}$",
         )
 
     ax_u.set_title(r"Energy densities")
@@ -676,8 +775,8 @@ def _representative_state_indices(catalog: PowerTablePlotCatalog) -> list[tuple[
     i_delta_max = int(np.nanargmax(catalog.delta_values_J))
     i_q0 = _nearest_index(catalog.q_values_m_inv, 0.0)
     return [
-        ("Normal-like", i_delta0, i_q0),
-        ("SC, q=0", i_delta_max, i_q0),
+        ("Production: normal-like", i_delta0, i_q0),
+        ("Production: superconducting", i_delta_max, i_q0),
     ]
 
 
@@ -793,46 +892,101 @@ def _metadata_float_recursive(metadata: dict[str, Any], key: str) -> float:
     return float("nan")
 
 
-def _debye_phonon_storage(
-    temperature_K: np.ndarray,
-    reference: DebyeReferenceParameters,
-) -> tuple[np.ndarray, np.ndarray]:
-    temperature = np.asarray(temperature_K, dtype=float)
-    reduced = Boltzmann * temperature / float(reference.omega_D_J)
-    energy = (
-        3.0
-        * np.pi**4
-        / 5.0
-        * float(reference.ion_density_m3)
-        * Boltzmann
-        * temperature
-        * reduced**3
+def _normal_electronic_limit_validation(
+    catalog: PowerTablePlotCatalog,
+    reference: AllmarasReferenceParameters,
+    *,
+    energy_relative_tolerance: float = 3.0e-2,
+    heat_capacity_relative_tolerance: float = 2.5e-1,
+) -> dict[str, Any]:
+    """Compare the stored normal-like slice with the analytic normal limit.
+
+    The looser heat-capacity tolerance accounts for the one-sided derivative
+    at the ends of the production temperature grid.  The test is intentionally
+    sensitive to a factor-of-two spin-convention error while allowing the
+    declared energy quadrature and numerical differentiation errors.
+    """
+
+    i_delta = _nearest_index(catalog.delta_values_J, 0.0)
+    i_q = _nearest_index(catalog.q_values_m_inv, 0.0)
+    temperatures = np.asarray(catalog.Te_values_K, dtype=float)
+    stored_energy = np.asarray(catalog.u_e_J_m3[:, i_delta, i_q], dtype=float)
+    stored_capacity = np.asarray(catalog.C_e_J_m3_K[:, i_delta, i_q], dtype=float)
+    analytic_energy = reference.u_e_normal_J_m3(temperatures)
+    analytic_capacity = reference.C_e_normal_J_m3_K(temperatures)
+
+    valid_energy = (
+        np.isfinite(stored_energy)
+        & np.isfinite(analytic_energy)
+        & (analytic_energy > 0.0)
     )
-    heat_capacity = (
-        12.0
-        * np.pi**4
-        / 5.0
-        * float(reference.ion_density_m3)
-        * Boltzmann
-        * reduced**3
+    valid_capacity = (
+        np.isfinite(stored_capacity)
+        & np.isfinite(analytic_capacity)
+        & (analytic_capacity > 0.0)
     )
-    return np.asarray(energy, dtype=float), np.asarray(heat_capacity, dtype=float)
+    if not np.any(valid_energy) or not np.any(valid_capacity):
+        raise ValueError("normal-like catalogue slice has no finite positive validation points")
+
+    energy_error = np.abs(
+        stored_energy[valid_energy] / analytic_energy[valid_energy] - 1.0
+    )
+    capacity_error = np.abs(
+        stored_capacity[valid_capacity] / analytic_capacity[valid_capacity] - 1.0
+    )
+    max_energy_error = float(np.max(energy_error))
+    max_capacity_error = float(np.max(capacity_error))
+    passed = bool(
+        max_energy_error <= energy_relative_tolerance
+        and max_capacity_error <= heat_capacity_relative_tolerance
+    )
+    return {
+        "passed": passed,
+        "delta_index": int(i_delta),
+        "q_index": int(i_q),
+        "delta_value_J": float(catalog.delta_values_J[i_delta]),
+        "q_value_m_inv": float(catalog.q_values_m_inv[i_q]),
+        "n_energy_points": int(np.count_nonzero(valid_energy)),
+        "n_heat_capacity_points": int(np.count_nonzero(valid_capacity)),
+        "max_relative_error_u_e": max_energy_error,
+        "max_relative_error_C_e": max_capacity_error,
+        "relative_tolerance_u_e": float(energy_relative_tolerance),
+        "relative_tolerance_C_e": float(heat_capacity_relative_tolerance),
+        "interpretation": "quadrature and numerical-temperature-derivative normalization check",
+    }
 
 
-def _debye_power_density(
-    electron_temperature_K: np.ndarray,
-    phonon_temperature_K: float,
-    reference: DebyeReferenceParameters,
-) -> np.ndarray:
-    electron_temperature = np.asarray(electron_temperature_K, dtype=float)
-    coefficient = (
-        96.0
-        * float(zeta(5.0, 1.0))
-        * float(reference.N0_J_m3)
-        * Boltzmann**2
-        / (float(reference.tau0_s) * float(reference.Tc_K) ** 3)
+def phonon_dos_normalization_diagnostic(
+    catalog: PowerTablePlotCatalog,
+) -> dict[str, Any]:
+    """Integrate the stored PhDOS without renormalizing the production data."""
+
+    energy_J = np.asarray(catalog.omega_values_J, dtype=float).reshape(-1)
+    phdos_per_THz = np.asarray(
+        catalog.phdos_states_per_THz, dtype=float
+    ).reshape(-1)
+    count = min(energy_J.size, phdos_per_THz.size)
+    valid = (
+        np.isfinite(energy_J[:count])
+        & np.isfinite(phdos_per_THz[:count])
+        & (energy_J[:count] >= 0.0)
     )
-    return coefficient * (electron_temperature**5 - float(phonon_temperature_K) ** 5)
+    if np.count_nonzero(valid) < 2:
+        raise ValueError("PhDOS catalogue has fewer than two finite normalization points")
+    frequency_THz = energy_J[:count][valid] / h / 1.0e12
+    phdos = phdos_per_THz[:count][valid]
+    order = np.argsort(frequency_THz)
+    integral = float(np.trapezoid(phdos[order], frequency_THz[order]))
+    if not np.isfinite(integral):
+        raise ValueError("PhDOS normalization integral is not finite")
+    return {
+        "integral_F_dnu_states_per_material_entity": integral,
+        "integration_coordinate": "ordinary phonon frequency in THz derived from stored energy as nu=Omega/h",
+        "stored_phdos_units": "states/THz",
+        "material_entity": "ion, following the production u_ph=N_i integral F(Omega) Omega n_B dOmega contract",
+        "n_points": int(np.count_nonzero(valid)),
+        "policy": "diagnostic only; production PhDOS values are not rescaled to match Allmaras",
+    }
 
 
 def _critical_temperature_K(catalog: PowerTablePlotCatalog) -> float:
@@ -862,10 +1016,11 @@ def _prepare_output(path: str | Path) -> Path:
 
 
 __all__ = [
-    "DebyeReferenceParameters",
+    "AllmarasReferenceParameters",
     "PowerTablePlotCatalog",
     "load_power_table_plot_catalog",
-    "resolve_debye_reference_parameters",
+    "resolve_allmaras_reference_parameters",
+    "phonon_dos_normalization_diagnostic",
     "write_power_table_diagnostic_plots",
     "plot_power_channels_Te_Tph_maps",
     "plot_power_total_Delta_q_maps",

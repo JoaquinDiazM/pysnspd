@@ -294,7 +294,7 @@ def plot_terminal_current_sweep_iv(
     legend = ax.legend(
         handles,
         labels,
-        loc="upper right" if np.count_nonzero(physical_valid) < 2 else "lower right",
+        loc="upper left",
         frameon=True,
     )
     legend.get_frame().set_alpha(0.95)

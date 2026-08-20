@@ -50,11 +50,12 @@ from pysnspd.plotting.mesh import (
 from pysnspd.plotting.pre_diagnostics import plot_usadel_supercurrent_curve
 from pysnspd.plotting.power_diagnostics import (
     load_power_table_plot_catalog,
+    phonon_dos_normalization_diagnostic,
     plot_electronic_thermal_conductivity_curves,
     plot_energy_heat_capacity_curves,
     plot_power_channels_Te_Tph_maps,
     plot_power_total_Te_curves,
-    resolve_debye_reference_parameters,
+    resolve_allmaras_reference_parameters,
 )
 from pysnspd.plotting.style import THESIS_DPI
 from pysnspd.plotting.usadel_dos_curves import (
@@ -138,26 +139,41 @@ def parse_args() -> argparse.Namespace:
         help="Skip the four E1 thermodynamic and projected-power figures.",
     )
     parser.add_argument(
-        "--debye-reference",
-        dest="debye_reference",
+        "--allmaras-reference",
+        dest="allmaras_reference",
         action="store_true",
         default=True,
         help=(
-            "Add the explicitly reconstructed Debye/Vodolazov limiting reference "
-            "to the energy, heat-capacity, and power figures."
+            "Add the Allmaras 2019 normal-state two-temperature reference to "
+            "the energy, heat-capacity, and power figures."
         ),
     )
     parser.add_argument(
-        "--no-debye-reference",
-        dest="debye_reference",
+        "--no-allmaras-reference",
+        dest="allmaras_reference",
         action="store_false",
-        help="Do not add the Debye/Vodolazov limiting reference.",
+        help="Do not add the Allmaras 2019 plotting reference.",
     )
     parser.add_argument(
-        "--debye-cutoff-meV",
+        "--allmaras-gamma",
         type=float,
-        default=30.0,
-        help="Explicit Debye cutoff used only by the Vodolazov comparison curve.",
+        default=60.0,
+        help="Published Allmaras heat-capacity parameter gamma_A.",
+    )
+    parser.add_argument(
+        "--allmaras-tau-ep-Tc-ps",
+        type=float,
+        default=24.7,
+        help="Published Allmaras electron-phonon time at Tc in ps.",
+    )
+    parser.add_argument(
+        "--allmaras-tau-esc-ps",
+        type=float,
+        default=20.0,
+        help=(
+            "Published Allmaras escape time in ps, persisted for the complete "
+            "phonon equation but unused by the static comparison curves."
+        ),
     )
     parser.add_argument(
         "--normal-dos-spin-convention",
@@ -303,6 +319,41 @@ def main() -> int:
     layout = create_run_layout(cfg, args.pre_run_name)
 
     raw_pre = Path(layout["raw_pre"])
+    power_table_path = (
+        args.power_table_npz.expanduser().resolve()
+        if args.power_table_npz is not None
+        else raw_pre / "power_table_catalog.npz"
+    )
+    power_catalog = None
+    allmaras_reference = None
+    allmaras_reference_settings: dict[str, Any] = {
+        "requested": bool(args.allmaras_reference),
+        "enabled": False,
+    }
+    phonon_dos_audit: dict[str, Any] = {
+        "available": False,
+        "reason": "power-table figures skipped",
+    }
+    if not args.skip_power_table_figures:
+        if not power_table_path.exists():
+            raise FileNotFoundError(f"PRE power table not found: {power_table_path}")
+        power_catalog = load_power_table_plot_catalog(power_table_path)
+        phonon_dos_audit = {
+            "available": True,
+            **phonon_dos_normalization_diagnostic(power_catalog),
+        }
+        if args.allmaras_reference:
+            allmaras_reference = resolve_allmaras_reference_parameters(
+                power_catalog,
+                Tc_K=float(cfg["material"]["Tc_K"]),
+                normal_dos_spin_convention=str(args.normal_dos_spin_convention),
+                gamma_heat_capacity=float(args.allmaras_gamma),
+                tau_ep_Tc_s=float(args.allmaras_tau_ep_Tc_ps) * 1.0e-12,
+                tau_esc_s=float(args.allmaras_tau_esc_ps) * 1.0e-12,
+            )
+            allmaras_reference_settings = allmaras_reference.manifest_dict()
+            allmaras_reference_settings["requested"] = True
+
     figures_dir = (
         Path(layout["plots_figures"]) / "E1_prerun"
         if args.output_dir is None
@@ -376,10 +427,7 @@ def main() -> int:
         saved["usadel_dos_curves_delta0_pdf"] = dos_delta0_output
 
     eliashberg_path = _resolve_eliashberg_path(cfg, args.eliashberg_dat)
-    needs_complete_spectrum = (
-        not args.skip_eliashberg_spectrum
-        or (not args.skip_power_table_figures and bool(args.debye_reference))
-    )
+    needs_complete_spectrum = not args.skip_eliashberg_spectrum
     spectrum = None
     lambda_provenance: dict[str, Any] = {}
     if needs_complete_spectrum:
@@ -404,40 +452,7 @@ def main() -> int:
         )
         saved["eliashberg_spectral_function_phdos_pdf"] = eliashberg_output
 
-    power_table_path = (
-        args.power_table_npz.expanduser().resolve()
-        if args.power_table_npz is not None
-        else raw_pre / "power_table_catalog.npz"
-    )
-    debye_reference = None
-    debye_reference_settings: dict[str, Any] = {
-        "requested": bool(args.debye_reference),
-        "enabled": False,
-    }
-    if not args.skip_power_table_figures:
-        if not power_table_path.exists():
-            raise FileNotFoundError(f"PRE power table not found: {power_table_path}")
-        power_catalog = load_power_table_plot_catalog(power_table_path)
-        if args.debye_reference:
-            try:
-                debye_reference = resolve_debye_reference_parameters(
-                    power_catalog,
-                    ion_density_m3=1.0e27 * float(cfg["material"]["ion_density_nm3"]),
-                    Tc_K=float(cfg["material"]["Tc_K"]),
-                    omega_D_J=float(args.debye_cutoff_meV) * 1.602176634e-22,
-                    normal_dos_spin_convention=str(args.normal_dos_spin_convention),
-                    lambda_ep=float(spectrum.metadata["lambda_ep"]),
-                    lambda_provenance=lambda_provenance,
-                )
-                debye_reference_settings = debye_reference.manifest_dict()
-                debye_reference_settings["requested"] = True
-            except (KeyError, TypeError, ValueError) as exc:
-                debye_reference_settings = {
-                    "requested": True,
-                    "enabled": False,
-                    "reason": str(exc),
-                    "policy": "reference omitted rather than filled with an implicit constant",
-                }
+    if power_catalog is not None:
         saved["power_channels_Te_Tph_pdf"] = plot_power_channels_Te_Tph_maps(
             power_catalog,
             figures_dir / "E1_power_channels_Te_Tph_maps.pdf",
@@ -446,13 +461,13 @@ def main() -> int:
         saved["power_exchange_vs_temperature_pdf"] = plot_power_total_Te_curves(
             power_catalog,
             figures_dir / "E1_power_exchange_vs_temperature.pdf",
-            debye_reference=debye_reference,
+            allmaras_reference=allmaras_reference,
             dpi=int(args.dpi),
         )
         saved["energy_heat_capacity_pdf"] = plot_energy_heat_capacity_curves(
             power_catalog,
             figures_dir / "E1_energy_heat_capacity_curves.pdf",
-            debye_reference=debye_reference,
+            allmaras_reference=allmaras_reference,
             dpi=int(args.dpi),
         )
         saved["electronic_thermal_conductivity_pdf"] = plot_electronic_thermal_conductivity_curves(
@@ -503,15 +518,14 @@ def main() -> int:
         eliashberg_settings={
             "dat_path": str(eliashberg_path) if needs_complete_spectrum else None,
             "pdf_name": _ensure_pdf_name(args.eliashberg_pdf_name),
-            "loaded_for_debye_reference": bool(
-                args.debye_reference and not args.skip_power_table_figures
-            ),
+            "loaded_for_spectral_figure": bool(not args.skip_eliashberg_spectrum),
             "lambda_provenance": lambda_provenance or None,
         },
         power_table_settings={
             "skipped": bool(args.skip_power_table_figures),
             "catalog_path": str(power_table_path),
-            "debye_reference": debye_reference_settings,
+            "allmaras_reference": allmaras_reference_settings,
+            "phonon_dos_normalization_audit": phonon_dos_audit,
         },
         with_gap_plot=bool(args.with_gap_plot),
         gap_source=gap_source,
@@ -583,7 +597,7 @@ def _write_manifest(
     gap_settings: dict[str, Any],
 ) -> Path:
     manifest: dict[str, Any] = {
-        "schema_version": 7,
+        "schema_version": 8,
         "pipeline": "plot_pipelines/E1_plot_prerun.py",
         "purpose": "E-type PRE figures in PDF format: supercurrent curve, DOS curves, Eliashberg/PhDOS spectrum, and optional Delta_eq(T,q).",
         "pre_run_name": pre_run_name,
