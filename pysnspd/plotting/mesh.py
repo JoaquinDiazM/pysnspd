@@ -381,7 +381,13 @@ def _draw_length_histogram(
     ax.set_xlabel(f"edge length [{coordinate_unit}]")
     ax.set_ylabel("count")
     ax.set_title(title)
-    ax.legend(loc="upper right")
+    ax.legend(
+        loc="upper right",
+        frameon=True,
+        framealpha=1.0,
+        facecolor="white",
+        edgecolor="0.80",
+    )
     ax.grid(True, linewidth=0.35, alpha=0.20)
     ax.tick_params(direction="in")
 

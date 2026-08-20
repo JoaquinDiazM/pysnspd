@@ -1134,7 +1134,15 @@ def _format_tolerance_axis(ax: plt.Axes, *, title: str) -> None:
     ax.set_yscale("log")
     ax.set_ylabel("Metric / tolerance")
     ax.set_title(title)
-    ax.legend(frameon=False, fontsize=6.8, ncol=2, loc="best")
+    ax.legend(
+        frameon=True,
+        framealpha=1.0,
+        facecolor="white",
+        edgecolor="0.80",
+        fontsize=6.8,
+        ncol=2,
+        loc="best",
+    )
 
 
 def _prepare_output(path: str | Path) -> Path:
