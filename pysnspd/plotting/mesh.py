@@ -368,19 +368,20 @@ def _draw_length_histogram(
     ax.hist(values, bins=_histogram_bins(values), color=color, alpha=0.82)
     median = float(np.median(values))
     p05, p95 = np.quantile(values, [0.05, 0.95])
-    ax.axvline(median, color="0.30", linewidth=1.0, label=rf"median $={median:.2f}$")
+    ax.axvline(
+        median,
+        color="0.30",
+        linewidth=1.0,
+        label=(
+            rf"median $={median:.2f}$"
+            "\n"
+            f"central 90%: {p05:.2f}–{p95:.2f} {coordinate_unit}"
+        ),
+    )
     ax.set_xlabel(f"edge length [{coordinate_unit}]")
     ax.set_ylabel("count")
     ax.set_title(title)
-    ax.text(
-        0.97,
-        0.95,
-        rf"p5-p95: {p05:.2f}-{p95:.2f} {coordinate_unit}",
-        transform=ax.transAxes,
-        ha="right",
-        va="top",
-    )
-    ax.legend(loc="upper left")
+    ax.legend(loc="upper right")
     ax.grid(True, linewidth=0.35, alpha=0.20)
     ax.tick_params(direction="in")
 
