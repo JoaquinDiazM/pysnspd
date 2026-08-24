@@ -19,7 +19,10 @@ from pysnspd.analysis.ss_phasecg import build_phasecg_diagnostic_dataset
 from pysnspd.analysis.ss_run import load_ss_run
 from pysnspd.config import load_config, validate_config
 from pysnspd.mesh.operators import build_fv_operators
-from pysnspd.plotting.ss_phasecg_figures import make_phasecg_ss_figures
+from pysnspd.plotting.ss_phasecg_figures import (
+    compute_final_current_conversion_diagnostics,
+    make_phasecg_ss_figures,
+)
 from pysnspd.plotting.style import THESIS_DPI
 from pysnspd.thermal.evolution import build_central_thermal_mask
 
@@ -156,6 +159,7 @@ def _write_manifest(
     total_current = np.asarray(dataset.get("current_total_snapshot_uA", []), dtype=float)
     terminal_voltage = np.asarray(dataset.get("voltage_terminal_snapshot_mV", []), dtype=float)
     center_voltage = np.asarray(dataset.get("voltage_center_snapshot_mV", []), dtype=float)
+    current_conversion = compute_final_current_conversion_diagnostics(dataset)
 
     wall_total = dataset.get("measured_wall_time_s")
     wall_note = (
@@ -167,7 +171,7 @@ def _write_manifest(
         )
     )
     manifest = {
-        "schema_version": 3,
+        "schema_version": 4,
         "pipeline": "plot_pipelines/E2_phasecg_ss_diagnostics.py",
         "purpose": (
             "Focused validation of the normalized Allmaras phase-drive continuation, "
@@ -195,6 +199,7 @@ def _write_manifest(
             "per_step_is_estimated": wall_total is not None,
             "note": wall_note,
         },
+        "current_conversion": current_conversion,
         "summary": {
             "target_current_uA": target_current,
             "final_snapshot_total_current_uA": _last_finite(total_current),

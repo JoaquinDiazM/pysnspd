@@ -1,11 +1,39 @@
 from __future__ import annotations
 
-import numpy as np
+from types import SimpleNamespace
 
+import numpy as np
+import yaml
+
+from plot_pipelines.E2_phasecg_ss_diagnostics import _write_manifest
 from pysnspd.plotting.ss_phasecg_figures import (
     _nearest_unique_snapshot_indices,
+    compute_final_current_conversion_diagnostics,
     make_phasecg_ss_figures,
 )
+
+
+def _synthetic_conversion_dataset() -> dict[str, np.ndarray | float]:
+    x_nm = np.linspace(0.0, 1000.0, 9001)
+    length_nm = float(np.ptp(x_nm))
+    normal_current = (
+        0.08
+        + 0.55 * np.exp(-x_nm / 20.0)
+        + 0.35 * np.exp(-(length_nm - x_nm) / 30.0)
+    )
+    delta = np.full_like(x_nm, 0.92)
+    delta[(x_nm >= 200.0) & (x_nm <= 400.0)] = 0.9154
+    delta[(x_nm >= 600.0) & (x_nm <= 800.0)] = 0.9148
+    return {
+        "nodes_x_nm": x_nm,
+        "node_area_m2": np.ones_like(x_nm),
+        "snapshot_t_ps": np.array([0.0, 200.0]),
+        "jtot_x_snapshot_over_javg": np.ones((1, x_nm.size)),
+        "jn_x_snapshot_over_javg": normal_current[np.newaxis, :],
+        "delta_snapshot_over_delta0": delta[np.newaxis, :],
+        "Te_snapshot_K": np.full((1, x_nm.size), 0.9),
+        "center_width_nm": 100.0,
+    }
 
 
 def test_make_phasecg_ss_figures(tmp_path):
@@ -147,3 +175,73 @@ def test_nearest_unique_snapshot_indices_omits_duplicate_matches():
     )
 
     np.testing.assert_array_equal(indices, np.array([0, 1, 3]))
+
+
+def test_current_conversion_diagnostics_use_canonical_binning_and_fit_rules():
+    diagnostics = compute_final_current_conversion_diagnostics(
+        _synthetic_conversion_dataset()
+    )
+
+    assert diagnostics["profile_rules"]["longitudinal_bins"] == 90
+    assert diagnostics["analytical_comparison_inputs"]["formula_evaluated"] is False
+    for side, expected_length_nm in (("left", 20.0), ("right", 30.0)):
+        fit = diagnostics["fits"][side]
+        assert fit is not None
+        np.testing.assert_allclose(fit["length_nm"], expected_length_nm, rtol=0.02)
+        assert fit["n_fit_points"] >= 5
+        assert fit["distance_interval_nm"][0] >= 0.0
+        assert fit["distance_interval_nm"][1] > fit["distance_interval_nm"][0]
+        assert fit["contact_amplitude_jn_over_javg"] > 0.0
+        assert fit["current_space_rmse_jn_over_javg"] < 1.0e-3
+        assert fit["log_space_r_squared"] > 0.999
+
+    analytical = diagnostics["analytical_comparison_inputs"]
+    np.testing.assert_allclose(
+        analytical["left"]["electron_temperature_median_K"], 0.9
+    )
+    np.testing.assert_allclose(
+        analytical["right"]["electron_temperature_median_K"], 0.9
+    )
+    np.testing.assert_allclose(
+        analytical["left"]["delta_over_delta0_median"], 0.9154
+    )
+    np.testing.assert_allclose(
+        analytical["right"]["delta_over_delta0_median"], 0.9148
+    )
+
+
+def test_phasecg_manifest_persists_conversion_fits_and_plateau_inputs(tmp_path):
+    dataset = _synthetic_conversion_dataset()
+    run = SimpleNamespace(
+        run_name="synthetic_ss",
+        pre_run_name="synthetic_pre",
+        raw_ss=tmp_path / "raw_ss",
+    )
+
+    manifest_path = _write_manifest(
+        run=run,
+        figures_dir=tmp_path / "figures",
+        saved={},
+        dataset=dataset,
+        requested_times_ps=[0.0, 200.0],
+    )
+    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+
+    assert manifest["schema_version"] == 4
+    conversion = manifest["current_conversion"]
+    assert conversion["profile_rules"]["longitudinal_bins"] == 90
+    assert conversion["exponential_fit_rules"]["minimum_fit_points"] == 5
+    np.testing.assert_allclose(
+        conversion["fits"]["left"]["length_nm"], 20.0, rtol=0.02
+    )
+    np.testing.assert_allclose(
+        conversion["fits"]["right"]["length_nm"], 30.0, rtol=0.02
+    )
+    analytical = conversion["analytical_comparison_inputs"]
+    assert analytical["formula_evaluated"] is False
+    np.testing.assert_allclose(
+        analytical["left"]["delta_over_delta0_median"], 0.9154
+    )
+    np.testing.assert_allclose(
+        analytical["right"]["delta_over_delta0_median"], 0.9148
+    )

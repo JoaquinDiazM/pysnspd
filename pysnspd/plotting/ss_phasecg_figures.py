@@ -20,6 +20,13 @@ from pysnspd.plotting.style import THESIS_DPI, THESIS_WIDTH_IN, apply_thesis_sty
 apply_thesis_style()
 
 DEFAULT_SNAPSHOT_TIMES_PS = (0.0, 0.2, 0.5, 2.0, 20.0, 100.0, 200.0)
+_FINAL_LONGITUDINAL_PROFILE_BINS = 90
+_CONVERSION_BASELINE_FRACTION = (0.40, 0.60)
+_CONVERSION_CONTACT_MAX_FRACTION = 0.35
+_CONVERSION_RELATIVE_EXCESS_CUTOFF = 0.05
+_CONVERSION_ABSOLUTE_EXCESS_FLOOR = 1.0e-10
+_CONVERSION_MIN_FIT_POINTS = 5
+_TERMINAL_PLATEAU_FRACTION = (0.25, 0.35)
 _OBSOLETE_E2_OUTPUTS = (
     "E2_ss_current_conversion_profiles.pdf",
     "E2_ss_numerical_diagnostics.pdf",
@@ -401,25 +408,18 @@ def plot_final_longitudinal_profiles(
     """Plot final longitudinal current, condensate, voltage and temperature profiles."""
 
     output = _prepare_output(output_path)
-    x = np.asarray(dataset.get("nodes_x_nm", []), dtype=float)
-    weights = np.asarray(dataset.get("node_area_m2", np.ones_like(x)), dtype=float)
-    if x.size == 0:
-        raise ValueError("The E2 conversion figure requires mesh coordinates.")
-
-    profiles = {}
-    for key in (
-        "jtot_x_snapshot_over_javg",
-        "js_x_snapshot_over_javg",
-        "jn_x_snapshot_over_javg",
-        "delta_snapshot_over_delta0",
-        "phi_snapshot_mV",
-        "Te_snapshot_K",
-        "Tph_snapshot_K",
-    ):
-        values = np.asarray(dataset.get(key, []), dtype=float)
-        if values.ndim != 2 or values.shape[1] != x.size:
-            raise ValueError(f"Missing node-resolved snapshot field: {key}")
-        profiles[key] = _binned_profile(x, values[-1], weights, n_bins=90)
+    profiles = _build_final_longitudinal_profiles(
+        dataset,
+        keys=(
+            "jtot_x_snapshot_over_javg",
+            "js_x_snapshot_over_javg",
+            "jn_x_snapshot_over_javg",
+            "delta_snapshot_over_delta0",
+            "phi_snapshot_mV",
+            "Te_snapshot_K",
+            "Tph_snapshot_K",
+        ),
+    )
 
     x_profile = profiles["jtot_x_snapshot_over_javg"][0]
     jtot = profiles["jtot_x_snapshot_over_javg"][1]
@@ -429,6 +429,7 @@ def plot_final_longitudinal_profiles(
     phi = profiles["phi_snapshot_mV"][1]
     Te = profiles["Te_snapshot_K"][1]
     Tph = profiles["Tph_snapshot_K"][1]
+    conversion = _conversion_diagnostics_from_profiles(profiles)
 
     fig, axes = plt.subplots(3, 1, figsize=(THESIS_WIDTH_IN, 5.55), sharex=True)
     fig.subplots_adjust(left=0.115, right=0.875, bottom=0.090, top=0.980, hspace=0.15)
@@ -437,16 +438,23 @@ def plot_final_longitudinal_profiles(
     axes[0].plot(x_profile, js, color="tab:purple", label=r"$j_{s,x}^{\mathrm{Us}}/j_{\mathrm{avg}}$")
     axes[0].plot(x_profile, jn, color="tab:orange", label=r"$j_{n,x}/j_{\mathrm{avg}}$")
     for side, color in (("left", "0.25"), ("right", "0.45")):
-        fitted = _fit_conversion_exponential(x_profile, jn, side=side)
-        if fitted is not None:
-            fit_values, length_nm = fitted
+        fit_diagnostics = conversion["fits"][side]
+        if fit_diagnostics is not None:
+            fit_values = _evaluate_conversion_exponential(
+                x_profile,
+                side=side,
+                fit_diagnostics=fit_diagnostics,
+            )
             axes[0].plot(
                 x_profile,
                 fit_values,
                 linestyle="--",
                 color=color,
                 linewidth=0.9,
-                label=rf"{side.capitalize()} exponential fit",
+                label=(
+                    rf"{side.capitalize()} fit, "
+                    rf"$\ell_{{\mathrm{{fit}}}}={fit_diagnostics['length_nm']:.1f}$ nm"
+                ),
             )
     axes[0].set_ylabel(r"$j / j_{\mathrm{avg}}$")
     axes[0].legend(frameon=False, ncol=2, loc="best")
@@ -477,6 +485,28 @@ def plot_final_longitudinal_profiles(
     fig.savefig(output, dpi=dpi)
     plt.close(fig)
     return output
+
+
+def compute_final_current_conversion_diagnostics(
+    dataset: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Summarize the final, 90-bin normal-current conversion fits.
+
+    The returned mapping is YAML-safe and records both contact-side exponential
+    regressions and the terminal plateau inputs needed by a separate analytical
+    comparison.  No analytical conversion-length formula is evaluated here.
+    """
+
+    profiles = _build_final_longitudinal_profiles(
+        dataset,
+        keys=(
+            "jtot_x_snapshot_over_javg",
+            "jn_x_snapshot_over_javg",
+            "delta_snapshot_over_delta0",
+            "Te_snapshot_K",
+        ),
+    )
+    return _conversion_diagnostics_from_profiles(profiles)
 
 
 def plot_ss_power_density_snapshots(
@@ -1206,6 +1236,173 @@ def _global_limits(
     return vmin, vmax
 
 
+def _build_final_longitudinal_profiles(
+    dataset: Mapping[str, Any],
+    *,
+    keys: Sequence[str],
+) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    """Build node-area-weighted final profiles on the canonical 90-bin grid."""
+
+    x = np.asarray(dataset.get("nodes_x_nm", []), dtype=float)
+    weights = np.asarray(dataset.get("node_area_m2", np.ones_like(x)), dtype=float)
+    if x.size == 0:
+        raise ValueError("The E2 conversion diagnostics require mesh coordinates.")
+    if weights.shape != x.shape:
+        raise ValueError(
+            "The E2 conversion diagnostics require one node weight per x coordinate."
+        )
+
+    profiles: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    for key in keys:
+        values = np.asarray(dataset.get(key, []), dtype=float)
+        if values.ndim != 2 or values.shape[1] != x.size:
+            raise ValueError(f"Missing node-resolved snapshot field: {key}")
+        profiles[key] = _binned_profile(
+            x,
+            values[-1],
+            weights,
+            n_bins=_FINAL_LONGITUDINAL_PROFILE_BINS,
+        )
+    return profiles
+
+
+def _conversion_diagnostics_from_profiles(
+    profiles: Mapping[str, tuple[np.ndarray, np.ndarray]],
+) -> dict[str, Any]:
+    """Evaluate fit and plateau diagnostics from canonical binned profiles."""
+
+    x_profile = np.asarray(profiles["jtot_x_snapshot_over_javg"][0], dtype=float)
+    jn = _profile_values_on_grid(profiles, "jn_x_snapshot_over_javg", x_profile)
+    delta = _profile_values_on_grid(profiles, "delta_snapshot_over_delta0", x_profile)
+    Te = _profile_values_on_grid(profiles, "Te_snapshot_K", x_profile)
+    profile_length_nm = float(np.nanmax(x_profile) - np.nanmin(x_profile))
+
+    fits = {
+        side: _fit_conversion_exponential_diagnostics(x_profile, jn, side=side)
+        for side in ("left", "right")
+    }
+    plateau = {
+        side: _terminal_plateau_diagnostics(
+            x_profile,
+            Te,
+            delta,
+            side=side,
+        )
+        for side in ("left", "right")
+    }
+    return {
+        "profile_rules": {
+            "snapshot": "final stored snapshot",
+            "longitudinal_bins": _FINAL_LONGITUDINAL_PROFILE_BINS,
+            "bin_edges": "uniform over the stored node-x extent",
+            "bin_value": "node-area-weighted arithmetic mean",
+            "profile_length_nm": profile_length_nm,
+        },
+        "exponential_fit_rules": {
+            "model": "j_n(d) = baseline + sign * contact_amplitude * exp(-d / length)",
+            "distance_origin": "nearest longitudinal contact",
+            "baseline_x_fraction_interval": list(_CONVERSION_BASELINE_FRACTION),
+            "candidate_distance_fraction_interval": [
+                0.0,
+                _CONVERSION_CONTACT_MAX_FRACTION,
+            ],
+            "selection_threshold": (
+                "abs(j_n - baseline) > max(relative_cutoff * selection_peak_abs_excess, "
+                "absolute_floor)"
+            ),
+            "relative_cutoff": _CONVERSION_RELATIVE_EXCESS_CUTOFF,
+            "absolute_floor_jn_over_javg": _CONVERSION_ABSOLUTE_EXCESS_FLOOR,
+            "minimum_fit_points": _CONVERSION_MIN_FIT_POINTS,
+            "regression": (
+                "unweighted least squares of log(abs(j_n - baseline)) versus d"
+            ),
+            "current_space_rmse": (
+                "RMSE of j_n against the fitted signed exponential on selected points"
+            ),
+            "log_space_r_squared": (
+                "1 - SSE/SST for log(abs(j_n - baseline)) on selected points"
+            ),
+        },
+        "fits": fits,
+        "analytical_comparison_inputs": {
+            "formula_evaluated": False,
+            "note": (
+                "Persisted fit and plateau inputs only; no analytical length is evaluated."
+            ),
+            "terminal_plateau_rules": {
+                "distance_origin": "nearest longitudinal contact",
+                "distance_fraction_interval": list(_TERMINAL_PLATEAU_FRACTION),
+                "statistic": "median of the same 90-bin node-area-weighted profile",
+            },
+            "left": plateau["left"],
+            "right": plateau["right"],
+        },
+    }
+
+
+def _profile_values_on_grid(
+    profiles: Mapping[str, tuple[np.ndarray, np.ndarray]],
+    key: str,
+    reference_x: np.ndarray,
+) -> np.ndarray:
+    x_values, profile_values = profiles[key]
+    x_values = np.asarray(x_values, dtype=float)
+    values = np.asarray(profile_values, dtype=float)
+    if (
+        x_values.shape != reference_x.shape
+        or values.shape != reference_x.shape
+        or not np.allclose(x_values, reference_x, rtol=0.0, atol=1.0e-12)
+    ):
+        raise ValueError(
+            f"Binned profile {key} does not share the canonical longitudinal grid."
+        )
+    return values
+
+
+def _terminal_plateau_diagnostics(
+    x_nm: np.ndarray,
+    electron_temperature_K: np.ndarray,
+    delta_over_delta0: np.ndarray,
+    *,
+    side: str,
+) -> dict[str, Any]:
+    x = np.asarray(x_nm, dtype=float)
+    Te = np.asarray(electron_temperature_K, dtype=float)
+    delta = np.asarray(delta_over_delta0, dtype=float)
+    if side == "left":
+        distance = x - float(np.nanmin(x))
+    elif side == "right":
+        distance = float(np.nanmax(x)) - x
+    else:
+        raise ValueError(f"Unknown side: {side}")
+    length = float(np.nanmax(x) - np.nanmin(x))
+    lower, upper = _TERMINAL_PLATEAU_FRACTION
+    mask = (
+        (distance >= lower * length)
+        & (distance <= upper * length)
+        & np.isfinite(Te)
+        & np.isfinite(delta)
+    )
+    count = int(np.count_nonzero(mask))
+    if count == 0:
+        return {
+            "n_profile_points": 0,
+            "distance_interval_nm": [None, None],
+            "electron_temperature_median_K": None,
+            "delta_over_delta0_median": None,
+        }
+    selected_distance = distance[mask]
+    return {
+        "n_profile_points": count,
+        "distance_interval_nm": [
+            float(np.nanmin(selected_distance)),
+            float(np.nanmax(selected_distance)),
+        ],
+        "electron_temperature_median_K": float(np.nanmedian(Te[mask])),
+        "delta_over_delta0_median": float(np.nanmedian(delta[mask])),
+    }
+
+
 def _binned_profile(
     x_nm: np.ndarray,
     values: np.ndarray,
@@ -1234,37 +1431,132 @@ def _fit_conversion_exponential(
     *,
     side: str,
 ) -> tuple[np.ndarray, float] | None:
+    diagnostics = _fit_conversion_exponential_diagnostics(
+        x_nm,
+        normal_current,
+        side=side,
+    )
+    if diagnostics is None:
+        return None
+    return (
+        _evaluate_conversion_exponential(
+            np.asarray(x_nm, dtype=float),
+            side=side,
+            fit_diagnostics=diagnostics,
+        ),
+        float(diagnostics["length_nm"]),
+    )
+
+
+def _fit_conversion_exponential_diagnostics(
+    x_nm: np.ndarray,
+    normal_current: np.ndarray,
+    *,
+    side: str,
+) -> dict[str, Any] | None:
     x = np.asarray(x_nm, dtype=float)
     current = np.asarray(normal_current, dtype=float)
+    if side not in {"left", "right"}:
+        raise ValueError(f"Unknown side: {side}")
+    if x.ndim != 1 or current.shape != x.shape:
+        raise ValueError("Conversion fitting requires matching one-dimensional profiles.")
     length = float(np.nanmax(x) - np.nanmin(x))
     if x.size < 8 or not np.isfinite(length) or length <= 0.0:
         return None
-    center = (x >= np.nanmin(x) + 0.40 * length) & (x <= np.nanmin(x) + 0.60 * length)
-    baseline = float(np.nanmedian(current[center])) if np.any(center) else float(np.nanmedian(current))
+    center = (
+        (x >= np.nanmin(x) + _CONVERSION_BASELINE_FRACTION[0] * length)
+        & (x <= np.nanmin(x) + _CONVERSION_BASELINE_FRACTION[1] * length)
+    )
+    baseline = (
+        float(np.nanmedian(current[center]))
+        if np.any(center)
+        else float(np.nanmedian(current))
+    )
+    if side == "left":
+        distance = x - float(np.nanmin(x))
+    else:
+        distance = float(np.nanmax(x)) - x
+    excess_signed = current - baseline
+    contact = distance <= _CONVERSION_CONTACT_MAX_FRACTION * length
+    selection_amplitude = (
+        float(np.nanmax(np.abs(excess_signed[contact]))) if np.any(contact) else 0.0
+    )
+    mask = (
+        contact
+        & np.isfinite(excess_signed)
+        & (
+            np.abs(excess_signed)
+            > max(
+                _CONVERSION_RELATIVE_EXCESS_CUTOFF * selection_amplitude,
+                _CONVERSION_ABSOLUTE_EXCESS_FLOOR,
+            )
+        )
+    )
+    n_fit_points = int(np.count_nonzero(mask))
+    if n_fit_points < _CONVERSION_MIN_FIT_POINTS:
+        return None
+    log_excess = np.log(np.abs(excess_signed[mask]))
+    slope, intercept = np.polyfit(distance[mask], log_excess, 1)
+    if not np.isfinite(slope) or slope >= 0.0:
+        return None
+    length_nm = -1.0 / float(slope)
+    if not np.isfinite(length_nm) or length_nm <= 0.0 or length_nm > length:
+        return None
+    near_contact = mask & (
+        distance <= np.nanpercentile(distance[mask], 40.0)
+    )
+    sign = float(np.sign(np.nanmedian(excess_signed[near_contact])))
+    if sign == 0.0:
+        sign = 1.0
+    fitted_contact_amplitude = float(np.exp(intercept))
+    predicted_log = intercept + slope * distance[mask]
+    predicted_current = baseline + sign * np.exp(predicted_log)
+    current_rmse = float(
+        np.sqrt(np.mean(np.square(current[mask] - predicted_current)))
+    )
+    log_sse = float(np.sum(np.square(log_excess - predicted_log)))
+    log_sst = float(np.sum(np.square(log_excess - np.mean(log_excess))))
+    log_r_squared = None if log_sst <= 0.0 else float(1.0 - log_sse / log_sst)
+    selected_distance = distance[mask]
+    return {
+        "length_nm": length_nm,
+        "n_fit_points": n_fit_points,
+        "distance_interval_nm": [
+            float(np.nanmin(selected_distance)),
+            float(np.nanmax(selected_distance)),
+        ],
+        "baseline_jn_over_javg": baseline,
+        "contact_amplitude_jn_over_javg": fitted_contact_amplitude,
+        "contact_excess_sign": int(sign),
+        "selection_peak_abs_excess_jn_over_javg": selection_amplitude,
+        "current_space_rmse_jn_over_javg": current_rmse,
+        "log_space_r_squared": log_r_squared,
+    }
+
+
+def _evaluate_conversion_exponential(
+    x_nm: np.ndarray,
+    *,
+    side: str,
+    fit_diagnostics: Mapping[str, Any],
+) -> np.ndarray:
+    """Evaluate a persisted conversion fit on a longitudinal profile grid."""
+
+    x = np.asarray(x_nm, dtype=float)
     if side == "left":
         distance = x - float(np.nanmin(x))
     elif side == "right":
         distance = float(np.nanmax(x)) - x
     else:
         raise ValueError(f"Unknown side: {side}")
-    excess_signed = current - baseline
-    contact = distance <= 0.35 * length
-    amplitude = float(np.nanmax(np.abs(excess_signed[contact]))) if np.any(contact) else 0.0
-    mask = contact & np.isfinite(excess_signed) & (np.abs(excess_signed) > max(0.05 * amplitude, 1.0e-10))
-    if np.count_nonzero(mask) < 5:
-        return None
-    slope, intercept = np.polyfit(distance[mask], np.log(np.abs(excess_signed[mask])), 1)
-    if not np.isfinite(slope) or slope >= 0.0:
-        return None
-    length_nm = -1.0 / float(slope)
-    if not np.isfinite(length_nm) or length_nm <= 0.0 or length_nm > length:
-        return None
-    sign = float(np.sign(np.nanmedian(excess_signed[mask & (distance <= np.nanpercentile(distance[mask], 40.0))])))
-    if sign == 0.0:
-        sign = 1.0
-    fit = baseline + sign * np.exp(intercept + slope * distance)
-    fit[distance > 0.35 * length] = np.nan
-    return fit, length_nm
+    profile_length = float(np.nanmax(x) - np.nanmin(x))
+    fitted = float(fit_diagnostics["baseline_jn_over_javg"]) + (
+        float(fit_diagnostics["contact_excess_sign"])
+        * float(fit_diagnostics["contact_amplitude_jn_over_javg"])
+        * np.exp(-distance / float(fit_diagnostics["length_nm"]))
+    )
+    fitted[distance > _CONVERSION_CONTACT_MAX_FRACTION * profile_length] = np.nan
+    return fitted
 
 
 def _power_norm(values: np.ndarray, *, positive: bool):
