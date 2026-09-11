@@ -1,0 +1,550 @@
+---
+title: "E. Cuaderno de aprendizaje del modelo"
+subtitle: "Un concepto por paso · Documento 5 de 5"
+date: "9 de septiembre de 2026 · Revisión 0.4"
+lang: es
+---
+
+\setlength{\parskip}{4pt plus 1pt}
+
+# E.0. Ruta y registro de aprendizaje
+
+Esta versión reduce los requisitos de entrada. Cada clase introduce sus símbolos antes de calcular, distingue el objeto físico de su representación matemática y trabaja un ejemplo pequeño. No hace falta dominar teoría cuántica de campos, cálculo de operadores ni DFPT para seguir el primer paso del modelo. El objetivo es comprender qué hace una fórmula de A–D y qué información necesita.
+
+No se recibieron respuestas en el Markdown de 0.3. Por tanto, ninguna clase está aprobada. Una clase sin respuesta y sin otro motivo explícito se interpreta desde ahora como una señal de dificultad excesiva: corresponde revisar su enseñanza, no asignar una nota de reprobación. Cuando haya clases cerradas, las siguientes partirán de esos conceptos demostrados; por ahora las conexiones de la tabla son una ruta propuesta, no conocimientos que se dan por adquiridos.
+
+| ID estable | Clase de esta versión | Estado | Punto de apoyo |
+|:--|:--|:--|:--|
+| E01 | Partículas, excitaciones y escalas | ABIERTO | Variables familiares de mecánica y circuitos |
+| E04 | Electrones y huecos: elegir la referencia | ABIERTO | Carga y portadores de un diodo |
+| E06 | Ocupaciones y operadores: primera segunda cuantización | ABIERTO | Columnas y multiplicación de matrices |
+| E07 | Por qué se usa una columna de Nambu | ABIERTO | E04 y E06, sin exigir matrices de cuatro componentes |
+| E03 | Qué significa variar una energía funcional | ABIERTO | Derivada ordinaria, regla del producto e integral |
+| E05 | De dos masas a una DOS | ABIERTO | Modos normales de mecánica |
+| E08 | Qué aporta DFPT al modelo del detector | ABIERTO | E05: frecuencias, modos y conteo |
+| E02 | Nambu y espín: dos índices distintos, clase de 0.3 | DESCARTADA | Sustituida por E06 y E07; no se conserva su contenido |
+
+Los números E01, E03, etc. identifican clases a través de versiones; E.1, E.2, etc. indican su orden de lectura actual. **DESCARTADA** identifica exclusivamente una clase retirada y no es una evaluación del aprendizaje. Las clases activas tienen los estados ABIERTO o CERRADO / APROBADO.
+
+Cada clase vale 10 puntos: 4 por un cálculo guiado, 3 por interpretar y 3 por detectar una confusión. Se cierra con al menos 8 puntos y la condición esencial satisfecha. Los errores aritméticos menores reciben crédito parcial. Las respuestas se escriben bajo su identificador. La próxima versión conservará las respuestas y añadirá la pauta de las actividades entregadas. Aquí se resuelven ejemplos distintos.
+
+## E.0.1. La palabra «estado» necesita apellido
+
+| Expresión | Qué significa aquí | Ejemplo |
+|:--|:--|:--|
+| Estado mecánico clásico | Coordenadas y momentos que permiten continuar la evolución | Posición y momento de dos masas |
+| Vector de estado del circuito | Variables independientes de almacenamiento elegidas para el circuito | Corriente de una inductancia y tensión de un capacitor |
+| Estado cuántico de ocupación | Vector que especifica las ocupaciones, o una superposición de esos vectores | Un modo electrónico vacío u ocupado |
+| Estado electrónico de una partícula | Modo disponible antes de decir si está ocupado | Un orbital con una orientación de espín definida |
+| Estado químico | Configuración, enlaces o grado de oxidación, según la pregunta | Átomo neutro e ion; no equivale a toda su función de onda |
+| Estado del condensado | Campo de orden efectivo usado por el modelo | Perfil complejo $\Delta(\mathbf r,t)$ |
+
+El mismo sistema admite varias descripciones. Una corriente de circuito no especifica cada ocupación electrónica; un listado de especies elementales tampoco determina un pulso eléctrico.
+
+\Needspace{12\baselineskip}
+
+# E.1. Partículas, excitaciones y escalas — E01
+
+**Estado: ABIERTO. Meta:** distinguir qué se está describiendo antes de interpretar masa, carga o espín.
+
+## E.1.1. Introducción
+
+En mecánica, una coordenada representa el desplazamiento de una masa. En una descripción de campos, una variable se asigna a cada posición. Un modo es una forma de variación de ese campo, del mismo modo que un modo normal es una forma de vibración de una cadena. Una excitación cuántica es un cambio permitido de energía y ocupación de esos modos. Esta analogía introduce el lenguaje; no construye literalmente un electrón a partir de resortes.
+
+![Figura E.1. Tres escalas de descripción. El vocabulario y las variables cambian con la pregunta. El fonón pertenece a la descripción de un sólido; la corriente pertenece a la descripción del dispositivo.](figuras/E01_escalas.png){width=100%}
+
+Una **especie de partícula** identifica propiedades compartidas: todos los electrones tienen la misma masa y carga. Un **estado cuántico** indica cómo se encuentra o se ocupa el sistema descrito. Son preguntas distintas. El espín es momento angular intrínseco y describe cómo transforma el estado bajo rotaciones; no es una bolita girando.
+
+El Modelo Estándar organiza campos elementales y sus interacciones electromagnética, débil y fuerte. Los quarks y leptones son fermiones: un estado electrónico o fermiónico completamente especificado admite ocupación 0 o 1. Los bosones admiten otras ocupaciones. La tabla muestra ejemplos, no el inventario completo.
+
+| Familia | Ejemplos | Carga eléctrica, en unidades de $e>0$ | Espín |
+|:--|:--|:--|:--|
+| Quarks | up, down | $+2/3$, $-1/3$ | $1/2$ |
+| Leptones | electrón, neutrino | $-1$, $0$ | $1/2$ |
+| Bosones asociados a interacciones | fotón, $W^+$ | $0$, $+1$ | $1$ |
+| Bosón de Higgs | Higgs | $0$ | $0$ |
+
+Masa, carga y espín no especifican por sí solos el estado de movimiento, la ocupación o las correlaciones. El Modelo Estándar tampoco incluye una teoría cuántica completa de la gravedad. Un protón es compuesto; un fonón es una excitación colectiva de un sólido, no otra partícula elemental de esa tabla.
+
+## E.1.2. Ejemplo resuelto
+
+**Problema:** un protón contiene quarks de valencia up, up, down. ¿Qué se puede obtener sumando los datos de carga?
+
+La suma es $2/3+2/3-1/3=1$: carga $+e$. Si se añade un electrón de carga $-e$, el conjunto tiene carga neta cero. Eso no determina la masa, la energía de enlace ni el estado cuántico. La carga es aditiva; la energía de un sistema ligado incluye interacciones. En particular, sumar tres números de espín $1/2$ tampoco determina el espín del protón: hay que conocer cómo se combinan los momentos angulares.
+
+## E.1.3. Actividad
+
+\Needspace{4\baselineskip}
+
+**E01.1, 4 puntos.** Un neutrón tiene quarks de valencia up, down, down. Calcular su carga con la tabla e indicar una propiedad que no queda determinada por esa suma.
+
+**Respuesta E01.1:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E01.2, 3 puntos.** Clasificar electrón, protón, fonón y corriente de una inductancia como especie elemental, objeto compuesto, excitación colectiva o variable de circuito.
+
+**Respuesta E01.2:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E01.3, 3 puntos.** Corregir: «si dos electrones tienen igual masa, carga y espín, están necesariamente en el mismo estado cuántico».
+
+**Respuesta E01.3:** _Escribir aquí._
+
+**Condición esencial:** separar especie, estado cuántico y variable efectiva.
+
+**Conexión con A–D:** A describe electrones próximos al nivel de Fermi; B sigue ocupaciones de excitaciones; C utiliza el campo efectivo del condensado; D reúne además variables de circuito. Fuentes de contexto: [CERN, Modelo Estándar](https://home.cern/science/physics/standard-model/), [Particle Data Group, clasificación](https://pdg.lbl.gov/chris/museum_version/standard_model.html) y [Tong, introducción a campos](https://www.damtp.cam.ac.uk/user/tong/qft/qfthtml/S0.html). La analogía y el ejercicio se elaboran aquí.
+
+\Needspace{12\baselineskip}
+
+# E.2. Electrones y huecos: elegir la referencia — E04
+
+**Estado: ABIERTO. Meta:** contabilizar carga y energía sin convertir una vacante en una nueva especie elemental.
+
+## E.2.1. Introducción desde el diodo
+
+En una banda casi llena de un semiconductor, seguir los pocos lugares vacíos puede ser más sencillo que seguir todos los electrones. Esa vacante se llama hueco. Si un electrón llena la vacante vecina, la vacante cambia de posición en sentido contrario. La carga relativa de retirar un electrón es positiva, porque se quitó una carga negativa.
+
+En un diodo se distinguen electrones de conducción y huecos de valencia. Su difusión y la acción del campo eléctrico determinan corrientes; en equilibrio pueden compensarse. La analogía que se usará para el superconductor es la **contabilidad respecto de una referencia ocupada**, no el perfil de bandas completo del diodo.
+
+![Figura E.2. Izquierda: un salto electrónico mueve la vacante al revés. Derecha: se pueden crear excitaciones de energía positiva añadiendo por encima de la referencia o retirando por debajo.](figuras/E04_referencia_hueco.png){width=98%}
+
+Antes de calcular, se definen $\varepsilon$ como energía de un nivel electrónico, $\mu$ como potencial químico de referencia y $\delta N$ como cambio del número de electrones: $+1$ al añadir, $-1$ al retirar. La carga relativa es $\delta Q=-e\delta N$. La energía de excitación respecto de esa referencia es el cambio de $U-\mu N$, no necesariamente el cambio de energía interna $U$ aislada:
+
+$$
+\delta E_{\rm exc}=(\varepsilon-\mu)\delta N,
+\qquad \delta Q=-e\delta N.
+\tag{E.1}
+$$
+
+La forma es «energía por electrón medida desde la referencia» por «cantidad añadida o retirada». Retirar un electrón con $\varepsilon<\mu$ multiplica dos signos negativos y cuesta energía positiva. Un hueco en el sólido no es un positrón.
+
+## E.2.2. Ejemplo resuelto
+
+Añadir un electrón a $\varepsilon-\mu=3$ meV da $\delta E_{\rm exc}=3$ meV y $\delta Q=-e$. Retirar otro a $\varepsilon-\mu=-2$ meV da $(-2)(-1)=2$ meV y $\delta Q=+e$. El conjunto contiene 5 meV de excitaciones y carga neta cero. Neutralidad no significa ausencia de energía.
+
+Una cuasipartícula superconductora es una excitación del sistema electrónico emparejado. Su descripción combina operaciones de añadir y retirar electrones. E07 introducirá esa combinación después de definir dichas operaciones en E06; aquí no se exige su álgebra.
+
+## E.2.3. Actividad
+
+\Needspace{4\baselineskip}
+
+**E04.1, 4 puntos.** Añadir un electrón a $\mu+4$ meV y retirar otro a $\mu-1$ meV. Completar por separado $\delta N$, $\delta Q$ y $\delta E_{\rm exc}$ de cada operación y sus totales.
+
+**Respuesta E04.1:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E04.2, 3 puntos.** En la figura, si la vacante va a la derecha, ¿hacia dónde saltó el electrón y hacia dónde apunta la corriente convencional asociada a ese salto? Explicar usando su carga.
+
+**Respuesta E04.2:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E04.3, 3 puntos.** Corregir: «una población de excitaciones eléctricamente neutra debe tener energía cero».
+
+**Respuesta E04.3:** _Escribir aquí._
+
+**Condición esencial:** declarar la referencia y conservar los signos de carga y energía.
+
+**Conexión con A–D:** el conteo normal de A incluye electrones y vacantes; B integra energías de excitación positivas; C y D conservan energía y carga mediante balances distintos. Fuentes: [MIT 6.012, portadores y unión p–n](https://web.mit.edu/6.012/www/) y [TU Delft, representación superconductora](https://topocondmat.org/test/w1_topointro/0d.html). Los números del ejemplo no son parámetros del detector.
+
+\Needspace{12\baselineskip}
+
+# E.3. Ocupaciones y operadores — E06
+
+**Estado: ABIERTO. Meta:** leer $c$, $c^\dagger$ y $c^\dagger c$ como operaciones concretas. No se requiere teoría de campos relativista.
+
+## E.3.1. Introducción: cambiar de coordenadas de descripción
+
+En lugar de preguntar «dónde está cada electrón numerado», la representación de ocupaciones pregunta «qué modos electrónicos están ocupados». A este lenguaje de muchos cuerpos se lo llama **segunda cuantización**; no significa aplicar dos veces un procedimiento de cuantización a la misma variable.
+
+Se empieza con un solo modo fermiónico, incluyendo su espín. Los símbolos $|0\rangle$ y $|1\rangle$, llamados *kets*, serán aquí columnas ordinarias: vacío y ocupado. Una superposición es una combinación lineal de esas columnas. Los operadores son matrices que actúan sobre ellas.
+
+$$
+|0\rangle=\begin{pmatrix}1\\0\end{pmatrix},\quad
+|1\rangle=\begin{pmatrix}0\\1\end{pmatrix},\quad
+c=\begin{pmatrix}0&1\\0&0\end{pmatrix},\quad
+c^\dagger=\begin{pmatrix}0&0\\1&0\end{pmatrix}.
+\tag{E.2}
+$$
+
+La daga $\dagger$ significa transponer y conjugar complejamente una matriz. Como aquí las entradas son reales, basta transponer. El operador $c$ retira una ocupación y $c^\dagger$ la añade. La forma de las matrices se escoge precisamente para esas acciones:
+
+$$
+c|1\rangle=|0\rangle,\quad c|0\rangle=0,
+\qquad c^\dagger|0\rangle=|1\rangle,\quad c^\dagger|1\rangle=0.
+\tag{E.3}
+$$
+
+El $0$ de la derecha es el **vector cero**, no el ket de vacío $|0\rangle$. Indica que la operación no produce un estado permitido. En particular, no se añade un segundo fermión al mismo modo completamente especificado.
+
+![Figura E.3. Acciones de añadir y retirar en un modo fermiónico. «Vacío» sigue siendo un estado de ocupación representado por un vector no nulo.](figuras/E06_ocupacion_operadores.png){width=97%}
+
+## E.3.2. Ejemplo resuelto: contar sin retirar definitivamente
+
+El operador número $\hat n$ se define como $c^\dagger c$. La matriz de la derecha actúa primero:
+
+$$
+\hat n=c^\dagger c=\begin{pmatrix}0&0\\0&1\end{pmatrix},
+\qquad \hat n|0\rangle=0,\quad \hat n|1\rangle=|1\rangle.
+\tag{E.4}
+$$
+
+En el ket ocupado, primero se retira y luego se repone: el resultado es el mismo ket multiplicado por 1. En el vacío, retirar da el vector cero. Por eso los valores de ocupación son 0 y 1.
+
+Al multiplicar en el otro orden se obtiene $cc^\dagger=\operatorname{diag}(1,0)$. Por tanto $cc^\dagger+c^\dagger c=I$, donde $I$ es la matriz identidad. La suma $AB+BA$ se llama **anticomutador**. Este nombre permite buscar la regla después; aquí se la ha comprobado con matrices. No se necesita todavía el álgebra de muchos modos.
+
+## E.3.3. Actividad
+
+\Needspace{4\baselineskip}
+
+**E06.1, 4 puntos.** Multiplicar explícitamente $c^\dagger c|1\rangle$ y $cc^\dagger|1\rangle$. Indicar en qué paso importa el orden.
+
+**Respuesta E06.1:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E06.2, 3 puntos.** Explicar la diferencia entre el ket $|0\rangle$ y el vector cero de E.3.
+
+**Respuesta E06.2:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E06.3, 3 puntos.** Hay dos modos distintos, uno de espín arriba y otro abajo. ¿La prohibición de dos fermiones en el mismo modo impide ocupar uno en cada modo? Identificar qué etiqueta cambió.
+
+**Respuesta E06.3:** _Escribir aquí._
+
+**Condición esencial:** distinguir estado de ocupación, operador y resultado de una operación.
+
+**Conexión con A–D:** los operadores preparan la notación de Nambu de A; las probabilidades de ocupación de B son promedios, no matrices $c$. C y D usan campos y variables de circuito derivados, no kets individuales. Fuente de contexto: [Tong, cuantización y representación de ocupaciones](https://www.damtp.cam.ac.uk/user/tong/qft.htm). Las matrices y sus productos se desarrollan aquí.
+
+\Needspace{12\baselineskip}
+
+# E.4. Por qué se usa una columna de Nambu — E07
+
+**Estado: ABIERTO. Meta:** entender el motivo de juntar una operación de retirar con otra de añadir. Requiere las operaciones de E06.
+
+## E.4.1. Introducción: el emparejamiento mezcla operaciones
+
+Se eligen dos modos electrónicos relacionados: por ejemplo, momentos opuestos y espines opuestos. Se los etiqueta 1 y 2; $c_1$ y $c_2$ retiran sus ocupaciones. En una descripción efectiva del emparejamiento aparecen términos que añaden o retiran una pareja, $\Delta c_1^\dagger c_2^\dagger$ y $\Delta^*c_2c_1$. El orden escrito es la convención de este ejemplo. El número complejo $\Delta$ mide el emparejamiento; su conjugado $\Delta^*$ acompaña al proceso inverso para que la energía sea real.
+
+La energía normal de cada modo, medida desde el potencial químico, se llama $\xi$. Para representar juntos los términos normales y de pareja, se define la **columna de operadores de Nambu**
+
+$$
+\Psi=\begin{pmatrix}c_1\\c_2^\dagger\end{pmatrix},\qquad
+H_{\rm BdG}=\begin{pmatrix}\xi&\Delta\\\Delta^*&-\xi\end{pmatrix}.
+\tag{E.5}
+$$
+
+BdG abrevia Bogoliubov–de Gennes. $H_{\rm BdG}$ es una matriz de coeficientes de energía. **$\Psi$ contiene operadores; no es el ket $|0\rangle$ ni una lista de dos electrones nuevos.** La forma de la matriz puede comprobarse expandiendo el producto siguiente.
+
+![Figura E.4. Multiplicar una matriz por una columna de operadores combina operaciones de retirar y añadir. El emparejamiento aparece fuera de la diagonal.](figuras/E07_columna_nambu.png){width=100%}
+
+## E.4.2. Ejemplo resuelto: de la matriz al contenido físico
+
+Para esta pareja de modos, sin sumar otra vez el bloque equivalente, multiplicar fila, matriz y columna da
+
+$$
+\begin{aligned}
+\Psi^\dagger H_{\rm BdG}\Psi
+={}&\xi c_1^\dagger c_1-\xi c_2c_2^\dagger
++\Delta c_1^\dagger c_2^\dagger+\Delta^*c_2c_1\\
+={}&\xi(\hat n_1+\hat n_2-1)
++\Delta c_1^\dagger c_2^\dagger+\Delta^*c_2c_1.
+\end{aligned}\tag{E.6}
+$$
+
+La segunda línea usa sólo $c_2c_2^\dagger=1-\hat n_2$, que se practicó en E06. El signo negativo de la diagonal no afirma que un segundo electrón tenga energía normal $-\xi$. Aparece porque se escribió creación en esa entrada. Sumando la constante $\xi$ se recupera la energía normal $\xi(\hat n_1+\hat n_2)$ más los términos de pareja.
+
+Con $\xi=2$ y $\Delta=1$ en una misma unidad de energía, los valores propios se obtienen de
+
+$$
+\det(H_{\rm BdG}-EI)=(2-E)(-2-E)-1=E^2-5=0,
+\qquad E=\pm\sqrt5.
+\tag{E.7}
+$$
+
+Un valor propio caracteriza un canal de la representación BdG. Las ramas positivas y negativas están relacionadas por su construcción electrón–hueco; no se cuentan como dos especies independientes. A utiliza además índices de espín y trazas. Ese paso sólo se abordará después de comprobar que E.5–E.6 se entienden; no hace falta reconstruir ahora sus cuatro componentes.
+
+## E.4.3. Actividad
+
+\Needspace{4\baselineskip}
+
+**E07.1, 4 puntos.** Poner $\Delta=0$ en E.6 y usar la constante $+\xi$. Mostrar que quedan las energías normales de los dos modos con el mismo signo $+\xi$.
+
+**Respuesta E07.1:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E07.2, 3 puntos.** Señalar en E.5 qué entrada describe retirar una ocupación y cuál añadirla. Explicar por qué ninguna entrada es una probabilidad $f(E)$.
+
+**Respuesta E07.2:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E07.3, 3 puntos.** Corregir: «los dos signos de E.7 demuestran que aparecieron dos tipos nuevos de partículas elementales».
+
+**Respuesta E07.3:** _Escribir aquí._
+
+**Condición esencial:** explicar el origen de la columna y el signo diagonal mediante el producto, sin duplicar electrones físicos.
+
+**Conexión con A–D:** A organiza el propagador electrónico con esta clase de índices; B usa el espectro y la coherencia resultantes; C evoluciona el emparejamiento efectivo; D conserva la misma convención al formar fuerzas y corrientes. Fuente: [TU Delft, Hamiltoniano BdG y redundancia](https://topocondmat.org/test/w1_topointro/0d.html). Aquí se escogió un bloque de pareja concreto; el factor $1/2$ de una representación completa duplicada no se traslada automáticamente a este bloque.
+
+\Needspace{12\baselineskip}
+
+# E.5. Qué significa variar una energía funcional — E03
+
+**Estado: ABIERTO. Meta:** reconstruir una primera variación y entender la envolvente de A. No se exige resolver un problema completo de estabilidad ni calcular segundas variaciones.
+
+## E.5.1. Introducción: construir primero una curva ordinaria
+
+Una función $F(y)$ recibe un número. Un funcional $\mathcal F[y]$ recibe un perfil completo $y(x)$ y devuelve un número, por ejemplo una energía. Los corchetes sólo recuerdan qué tipo de entrada se utiliza. La coordenada $x$ recorre el espacio; no representa tiempo en esta clase.
+
+Se elige otro perfil $\eta(x)$, llamado **dirección de perturbación**, y un número pequeño $\epsilon$ que fija su tamaño. El perfil ensayado es $y_\epsilon(x)=y(x)+\epsilon\eta(x)$. Una vez fijados $y$ y $\eta$, evaluar su energía produce la función ordinaria $J(\epsilon)=\mathcal F[y_\epsilon]$ de una sola variable.
+
+![Figura E.5. La variación se convierte en la pendiente de una curva ordinaria. En el ejemplo dibujado, el término cuadrático explica por qué la recta tangente y la curva se separan al alejarse de cero.](figuras/E03_curva_variacion.png){width=96%}
+
+La derivada direccional de Gâteaux, también llamada primera variación en esta aplicación, es
+
+$$
+D\mathcal F[y](\eta)
+\equiv J'(0)
+=\lim_{\epsilon\to0}
+\frac{\mathcal F[y+\epsilon\eta]-\mathcal F[y]}{\epsilon}.
+\tag{E.8}
+$$
+
+$D\mathcal F[y](\eta)$ es un número que depende del perfil base y de la dirección elegida. Cuando se puede escribir como $\int g(x)\eta(x)dx$, la función $g(x)$ se denota $\delta\mathcal F/\delta y(x)$ y se llama densidad de derivada funcional. **Ese símbolo no es un cociente de dos números pequeños.** Los términos de borde deben tratarse antes de identificar $g$. Ésta es la interpretación necesaria de la antigua E.7 [MIT, apéndice A, pp. 123–124].
+
+## E.5.2. Ejemplo resuelto: por qué quedan esos términos
+
+Se usa una energía adimensional sobre $0\leq x\leq1$:
+
+$$
+\mathcal F[y]=\frac12\int_0^1[(y')^2+y^2]dx,
+\qquad y'=\frac{dy}{dx}.
+\tag{E.9}
+$$
+
+El primer cuadrado penaliza diferencias espaciales; el segundo, la amplitud del perfil. Para hacer la variación se sustituye **en ambos** cuadrados. Como $\epsilon$ no depende de $x$, $(y+\epsilon\eta)'=y'+\epsilon\eta'$. La identidad $(a+b)^2=a^2+2ab+b^2$ da exactamente
+
+$$
+\mathcal F[y+\epsilon\eta]-\mathcal F[y]
+=\epsilon\int_0^1(y'\eta'+y\eta)dx
++\frac{\epsilon^2}{2}\int_0^1[(\eta')^2+\eta^2]dx.
+\tag{E.10}
+$$
+
+No se ha descartado nada. Al dividir por $\epsilon$, el primer término ya no depende de él y el segundo conserva un factor $\epsilon$. El límite de E.8 elimina ese segundo término. Se retienen los términos lineales **porque se está calculando una derivada en cero**, no porque los demás sean físicamente inexistentes.
+
+Para reemplazar $\eta'$ por $\eta$ se utiliza integración por partes, que viene de integrar la regla del producto $(y'\eta)'=y''\eta+y'\eta'$:
+
+$$
+D\mathcal F[y](\eta)
+=[y'\eta]_0^1+\int_0^1(-y''+y)\eta\,dx.
+\tag{E.11}
+$$
+
+Si los valores de $y$ en los extremos están fijados, las perturbaciones permitidas cumplen $\eta(0)=\eta(1)=0$. Con esa condición desaparece el término de borde y se identifica $\delta\mathcal F/\delta y=-y''+y$. Si los extremos pueden moverse, ese término informa del trabajo de borde y se conserva hasta especificar qué otra condición corresponde.
+
+**Comprobación numérica del dibujo.** Para $y=1$ y $\eta=\sin(\pi x)$, se obtiene $D\mathcal F[y](\eta)=2/\pi$. La curva exacta es $J(\epsilon)=1/2+2\epsilon/\pi+(\pi^2+1)\epsilon^2/4$. Su pendiente en cero vuelve a ser $2/\pi$. El script verifica esa pendiente con diferencias centrales.
+
+## E.5.3. La envolvente, con una sola regla de la cadena
+
+En A hay variables internas que ya satisfacen su condición estacionaria. Para ver qué cambia al eliminarlas, usar $F(y,z)=y^2/2+(z-2y)^2/2$, donde $y,z$ son ahora números, no perfiles. La variable interna estacionaria satisface $F_z=z-2y=0$, así que $z^*(y)=2y$. Definir $\bar F(y)=F(y,z^*(y))$ y aplicar la regla de la cadena:
+
+$$
+\frac{d\bar F}{dy}=F_y+F_z\frac{dz^*}{dy}=F_y,
+\qquad F_z(y,z^*(y))=0.
+\tag{E.12}
+$$
+
+Ésta es la forma estacionaria del **teorema de la envolvente**, para una rama diferenciable. La derivada interna no se elimina porque $z^*$ sea constante, sino porque multiplica una pendiente cero. Aquí $\bar F=y^2/2$ y la derivada vale $y$. En A, resolver la variable espectral interna no obliga a que la amplitud del condensado esté también en equilibrio. Este paso y E.11 son el objetivo de la clase; el análisis de curvaturas puede esperar.
+
+## E.5.4. Actividad
+
+\Needspace{4\baselineskip}
+
+**E03.1, 4 puntos.** Para $\mathcal G[y]=\frac12\int_0^1 y(x)^2dx$, expandir $\mathcal G[y+\epsilon\eta]-\mathcal G[y]$, dividir por $\epsilon$ y tomar el límite. No hay derivadas espaciales en este ejercicio.
+
+**Respuesta E03.1:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E03.2, 3 puntos.** En E.11, explicar qué condición permite quitar $[y'\eta]_0^1$. ¿Basta con decir «se integra sobre todo el dominio»?
+
+**Respuesta E03.2:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E03.3, 3 puntos.** En E.12, indicar cuál factor vale cero y explicar por qué eso no implica $d\bar F/dy=0$.
+
+**Respuesta E03.3:** _Escribir aquí._
+
+**Condición esencial:** identificar perfil, dirección, tamaño y pendiente, y justificar el término de borde. **Conexión:** A aplica la envolvente; B distingue qué ocupaciones se fijan al derivar; C obtiene fuerzas y bordes de una energía espacial; D reúne esas ecuaciones. Fuente para nombre y definición: [MIT 18.325, cálculo de variaciones, apéndice A](https://ocw.mit.edu/courses/18-325-topics-in-applied-mathematics-waves-and-imaging-fall-2015/834e98a77f64597a422c205b123cd6d7_MIT18_325F15_Appendix_A.pdf). Las expansiones y el ejemplo de envolvente se calculan aquí.
+
+\Needspace{12\baselineskip}
+
+# E.6. De dos masas a una DOS — E05
+
+**Estado: ABIERTO. Meta:** separar forma de vibración, frecuencia, conteo de modos y ocupación. DFPT se estudia después, en E08.
+
+## E.6.1. Introducción desde modos normales
+
+Dos masas iguales $m$ pueden desplazarse a lo largo de una línea. Sus desplazamientos son $u_1,u_2$; tres resortes de constante $K$ las conectan entre sí y a paredes fijas. Hay dos coordenadas independientes, luego dos modos normales. Un modo normal es un patrón de desplazamientos que oscila con una frecuencia propia.
+
+![Figura E.6. Cada modo aporta un área de uno a la DOS. Las alturas de las líneas son una convención gráfica para mostrar esas áreas; no cuentan cuántos cuantos de vibración se han excitado.](figuras/E05_modos_conteo.png){width=98%}
+
+## E.6.2. Ejemplo resuelto: de fuerzas a un conteo
+
+La energía potencial suma el alargamiento al cuadrado de cada resorte:
+
+$$
+V=\frac K2[u_1^2+(u_2-u_1)^2+u_2^2],\qquad
+m\ddot{\mathbf u}=-K\begin{pmatrix}2&-1\\-1&2\end{pmatrix}\mathbf u.
+\tag{E.13}
+$$
+
+$\mathbf u=(u_1,u_2)^T$ es la columna de desplazamientos; los puntos indican derivadas temporales. La matriz aparece al derivar $-\partial V/\partial u_i$. Ensayar una oscilación $\mathbf u(t)=\mathbf v\cos(\omega t)$ convierte la ecuación de movimiento en un problema de valores propios. Los vectores de forma $\mathbf v_1=(1,1)^T/\sqrt2$ y $\mathbf v_2=(1,-1)^T/\sqrt2$ tienen valores propios adimensionales 1 y 3:
+
+$$
+\omega_1=\sqrt{K/m},\qquad \omega_2=\sqrt{3K/m}.
+\tag{E.14}
+$$
+
+$\omega$ es frecuencia angular, medida en radianes por segundo. La DOS, densidad de estados de vibración, reúne esas frecuencias en una función de conteo. Para este sistema finito se escribe
+
+$$
+F_\omega(\omega)=\delta(\omega-\omega_1)+\delta(\omega-\omega_2),
+\qquad \int_0^\infty F_\omega(\omega)d\omega=2.
+\tag{E.15}
+$$
+
+La delta de Dirac $\delta$ representa una línea de área unitaria concentrada en una frecuencia. Ése es el motivo de sumar deltas: cada modo debe contar una vez. No hace falta interpretar su altura puntual. Una gráfica con picos anchos debe conservar sus áreas.
+
+La ocupación $n_j$ indica cuántos cuantos hay en el modo $j$. Cada cuanto tiene energía $\hbar\omega_j$, donde $\hbar=h/(2\pi)$ y $h$ es la constante de Planck. Con $n_1=2,n_2=0$, la energía de excitaciones es $2\hbar\sqrt{K/m}$, omitiendo la energía de punto cero de la referencia. La integral de la DOS sigue siendo 2. **Excitar un modo no crea otro modo disponible.**
+
+## E.6.3. Cambiar el eje sin cambiar el conteo
+
+Si $\Omega=\hbar\omega$ es la energía, la cantidad de modos en el mismo intervalo debe cumplir $F_\Omega d\Omega=F_\omega d\omega$. Como $d\Omega=\hbar d\omega$,
+
+$$
+F_\Omega(\Omega)=\frac1\hbar F_\omega(\Omega/\hbar).
+\tag{E.16}
+$$
+
+No se copia la altura al cambiar el eje. Para frecuencia ordinaria $\nu$ en ciclos por segundo, se usa $\Omega=h\nu$. Por eso un archivo en THz se convierte con $h\times10^{12}$, no con $\hbar\times10^{12}$. Una DOS por átomo, por celda o por volumen requiere además indicar por qué cantidad se dividió el conteo. En tres dimensiones hay tres coordenadas por átomo, pero ese conteo no se impone a una tabla de procedencia desconocida.
+
+## E.6.4. Actividad
+
+\Needspace{4\baselineskip}
+
+**E05.1, 4 puntos.** Tres masas con desplazamiento escalar y extremos fijos tienen tres modos. Escribir una DOS simbólica usando frecuencias $\omega_1,\omega_2,\omega_3$ e indicar su integral. No calcular esas frecuencias.
+
+**Respuesta E05.1:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E05.2, 3 puntos.** Si se duplica la ocupación de un modo, ¿qué cambia en la energía y qué cambia en la integral de la DOS?
+
+**Respuesta E05.2:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E05.3, 3 puntos.** Explicar por qué cambiar de frecuencia a energía en el eje horizontal exige cambiar también la altura de la DOS.
+
+**Respuesta E05.3:** _Escribir aquí._
+
+**Condición esencial:** conservar el conteo y no confundirlo con ocupación. **Conexión:** A distingue espectros electrónicos y materiales; B necesita una DOS fonónica con unidades y normalización verificadas; C recibe sus tasas; D exige esa comprobación antes de usar datos. El ejemplo mecánico se deriva aquí. Para el contexto de modos de un cristal: [Baroni et al., dinámica de red y DFPT](https://arxiv.org/abs/cond-mat/0012092), sección II.
+
+\Needspace{12\baselineskip}
+
+# E.7. Qué aporta DFPT al detector — E08
+
+**Estado: ABIERTO. Meta:** explicar de dónde salen frecuencias y pesos de interacción, sin resolver un programa de estructura electrónica.
+
+## E.7.1. Introducción: quién determina los resortes
+
+En E05 se entregó $K$ como dato. En un sólido, desplazar un átomo modifica la distribución electrónica y las fuerzas sobre los demás. **DFT**, teoría del funcional de la densidad, calcula el estado electrónico de equilibrio mediante la densidad electrónica dentro de una aproximación elegida. **DFPT**, teoría de perturbaciones del funcional de la densidad, calcula cómo responde ese equilibrio a una perturbación pequeña, por ejemplo un desplazamiento atómico.
+
+«Autoconsistente» significa que la densidad determina el potencial electrónico y que los estados calculados con ese potencial deben devolver la misma densidad. No es simplemente mover un resorte manteniendo congelada toda la nube electrónica.
+
+![Figura E.7. La curvatura de la energía determina fuerzas restauradoras. Los pesos de interacción responden a otra pregunta: cuánto acopla cada modo con los electrones. Ambos datos se necesitan para construir tasas.](figuras/E08_curvatura_acoplamiento.png){width=98%}
+
+## E.7.2. Ejemplo resuelto: curvatura y peso no son lo mismo
+
+Primero, para un desplazamiento pequeño $u$, expandir la energía de equilibrio alrededor de $u=0$ da $E(u)=E_0+Ku^2/2+\cdots$. No hay término lineal porque la fuerza inicial de equilibrio es cero. El coeficiente $K=E''(0)$ es la curvatura, con unidades de energía por longitud al cuadrado.
+
+Para varias coordenadas, $u_I$ etiqueta un átomo y una dirección. $\Phi_{IJ}$ es una rigidez: la fuerza restauradora cumple $F_I\simeq-\sum_J\Phi_{IJ}u_J$. El signo menos proviene de derivar la energía con $F_I=-\partial E/\partial u_I$. La expansión de Taylor y la matriz dinámica son
+
+$$
+E(\mathbf u)=E_0+\frac12\sum_{I,J}\Phi_{IJ}u_Iu_J+\cdots,
+\quad \Phi_{IJ}=\frac{\partial^2E}{\partial u_I\partial u_J},
+\quad \mathsf D_{IJ}=\frac{\Phi_{IJ}}{\sqrt{M_IM_J}}.
+\tag{E.17}
+$$
+
+$M_I$ es la masa del átomo de la coordenada $I$. Dividir por las masas convierte rigidez en frecuencia al cuadrado, como $K/m$ en E05. Los valores propios de $\mathsf D$ son $\omega^2$. En un cristal se organiza además la dependencia espacial por vector de onda; aquí no se requiere su álgebra.
+
+Segundo, los elementos de interacción electrón–fonón, usualmente llamados $g$, miden cuánto conecta la perturbación del potencial a dos modos electrónicos. Sus probabilidades de transición llevan pesos proporcionales a $|g|^2$. La función espectral $\alpha^2F(\Omega)$ reúne frecuencias **ponderadas por esa interacción**, no sólo el conteo $F(\Omega)$ de E05.
+
+Como ejemplo de dos modos, definir sus energías $\Omega_1=1$, $\Omega_2=2$ y pesos $W_1=0.1$, $W_2=0.3$, todos en una misma unidad de energía. En la convención de eje energético con $\alpha^2F$ adimensional,
+
+$$
+\alpha^2F(\Omega)=W_1\delta(\Omega-\Omega_1)+W_2\delta(\Omega-\Omega_2),
+\qquad
+\lambda=2\int_0^\infty\frac{\alpha^2F(\Omega)}{\Omega}d\Omega.
+\tag{E.18}
+$$
+
+$\lambda$ es un parámetro adimensional de acoplamiento. La delta tiene unidades inversas de energía; por eso $W_j$ debe tener unidades de energía para que $\alpha^2F$ sea adimensional. Integrar cada delta evalúa $1/\Omega$ en su modo:
+
+$$
+\lambda=2\left(\frac{0.1}{1}+\frac{0.3}{2}\right)=0.5.
+\tag{E.19}
+$$
+
+Duplicar ambos pesos duplica $\lambda$ y no cambia el número de modos. Estos valores son pedagógicos. No se ajusta con ellos NbN ni se deduce automáticamente una temperatura crítica.
+
+## E.7.3. La entrada concreta de B
+
+Para evitar una normalización oculta, llamar $g_{\rm ph}(\Omega)$ a la densidad de modos por volumen y por energía. Si $n(\Omega)$ es la ocupación media de cada modo, la energía fonónica por volumen es
+
+$$
+u_{\rm ph}=\int_0^\infty g_{\rm ph}(\Omega)\,\Omega\,n(\Omega)d\Omega.
+\tag{E.20}
+$$
+
+Se lee «modos por volumen e intervalo» por «energía de cada cuanto» por «cuantos por modo», integrado sobre todos los intervalos. DFPT ayuda a obtener modos y pesos materiales; B añade ocupaciones y factores superconductores para formar tasas. DFPT por sí sola no entrega la burbuja posterior al fotón ni el pulso del circuito. La revisión 0.4 comprueba la admisibilidad de los datos antes de atribuirles una normalización absoluta.
+
+## E.7.4. Actividad
+
+\Needspace{4\baselineskip}
+
+**E08.1, 4 puntos.** Para dos modos con $\Omega_1=1$, $\Omega_2=3$ y $W_1=W_2=0.15$ en la misma unidad de energía, calcular $\lambda$ usando E.18.
+
+**Respuesta E08.1:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E08.2, 3 puntos.** Dos espectros tienen el mismo número de modos en cada frecuencia y la misma normalización, pero distintos pesos de interacción. ¿Deben tener la misma DOS? ¿Deben tener el mismo $\alpha^2F$? Explicar cada respuesta por separado.
+
+**Respuesta E08.2:** _Escribir aquí._
+
+\Needspace{4\baselineskip}
+
+**E08.3, 3 puntos.** Un archivo dice «DOS» sin precisar si es por átomo o por celda. ¿Basta multiplicarlo por una densidad de iones para obtener $u_{\rm ph}$? Indicar el dato que falta.
+
+**Respuesta E08.3:** _Escribir aquí._
+
+**Condición esencial:** distinguir conteo, interacción y ocupación, y comprobar sus unidades. **Conexión:** A define $\lambda$ y el alcance microscópico; B utiliza $g_{\rm ph}$ y $\alpha^2F$ en balances y colisiones; C recibe sus intercambios y D registra las entradas exigidas. Fuentes: [Baroni et al., DFPT](https://arxiv.org/abs/cond-mat/0012092) y [Quantum ESPRESSO, coeficientes electrón–fonón, ecuaciones (1)–(5)](https://www.quantum-espresso.org/Doc/ph_user_guide/node19.html). Se usa un ejemplo espectral construido y no un cálculo DFPT nuevo.
+
+# E.8. Respuestas, pauta y próxima revisión
+
+Hay 21 respuestas pendientes, tres por clase activa. No se conserva una pauta de E02 porque esa clase fue descartada. E03, E05 y las dos clases nuevas de ocupaciones/Nambu se evaluarán con los requisitos reducidos de esta versión. No se exige resolver actividades retiradas.
+
+**Comentarios de aprendizaje:** _Indicar qué símbolo o salto dejó de entenderse y en qué paso. Si una clase quedó sin responder, se revisará su dificultad antes de insistir con el mismo ejercicio._
+
+**Pauta de actividades:** pendiente de respuestas. **Calificaciones:** sin asignar. En la próxima revisión se conservará la evidencia de aprendizaje y se enlazarán los nuevos conceptos con las clases efectivamente cerradas.

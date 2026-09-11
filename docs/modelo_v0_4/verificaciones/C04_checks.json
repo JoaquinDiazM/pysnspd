@@ -1,0 +1,217 @@
+{
+  "version": "0.4",
+  "host": "geminga",
+  "python": "3.10.20",
+  "parameters": {
+    "Tc_K": 8.65,
+    "Tb_K": 0.9,
+    "D_m2_s": 0.0001581,
+    "delta_reference_over_Delta0": 0.1,
+    "tau_ee_KWT_Tc_ps": 0.5,
+    "tau_ep_KWT_Tc_ps": 2.47
+  },
+  "variation": {
+    "force_directional_relative_error": 4.3391724622197675e-11,
+    "current_variation_relative_error": 7.401088995833821e-12,
+    "gauge_energy_relative_error": 2.2151049902617572e-16,
+    "kwt_power_relative_error": 1.7786926637461592e-16,
+    "zero_node_count": 2,
+    "zero_node_force_finite": true,
+    "kwt_min_eigenvalue": 0.0963056108896401,
+    "discretization": "128 periodic collocation nodes; independent five-point directional differences"
+  },
+  "core": {
+    "profile": "Prescribed Delta=aeq*tanh(r/ell0)*exp(i theta), disk r<=8ell0; not a stationary vortex",
+    "aeq_over_kBTc": 1.7638769425233947,
+    "ell0_nm": 8.354862799574418,
+    "regularized_energy_dimensionless": {
+      "0.05": 45.86008431105833,
+      "0.1": 46.09374446555535,
+      "0.2": 46.440239089908644
+    },
+    "original_energy_dimensionless": 45.71219551251873,
+    "force_norms": {
+      "0.05": {
+        "max_abs_force": 27.610408005437833,
+        "force_L2": 8.016101678835263,
+        "radius_max_force_ell0": 0.061534275211654874
+      },
+      "0.1": {
+        "max_abs_force": 11.881470552696499,
+        "force_L2": 6.055446393313869,
+        "radius_max_force_ell0": 0.11798425210733328
+      },
+      "0.2": {
+        "max_abs_force": 3.251288085110849,
+        "force_L2": 4.516886435401554,
+        "radius_max_force_ell0": 0.207279063224905
+      }
+    },
+    "energy_spread_over_reference": 0.01258641027273991,
+    "max_force_spread_over_reference": 2.0501771908022515,
+    "delta_to_zero_core_test": [
+      [
+        0.04,
+        20.205934556445705,
+        0.12991551802015697
+      ],
+      [
+        0.02,
+        41.23326660105489,
+        0.11639337658766712
+      ],
+      [
+        0.01,
+        82.98332876008195,
+        0.11104547493426964
+      ],
+      [
+        0.005,
+        166.27538035372407,
+        0.1092009736609591
+      ],
+      [
+        0.0025,
+        332.73900200831133,
+        0.10861193358116321
+      ],
+      [
+        0.00125,
+        665.5800042029346,
+        0.1084326283681594
+      ]
+    ],
+    "matsubara_convergence": [
+      {
+        "a": 0.1,
+        "q": 20,
+        "max_scaled_difference": 2.168404344971009e-19
+      },
+      {
+        "a": 1.3,
+        "q": 0.4,
+        "max_scaled_difference": 2.7496671606286327e-11
+      },
+      {
+        "a": 1.7638769425233947,
+        "q": 0,
+        "max_scaled_difference": 1.2678835759061258e-10
+      }
+    ],
+    "decision": "delta=0.1Delta0 is the fixed reference of an experimental core closure, not a calibrated material parameter; no production promotion"
+  },
+  "finite_modes": {
+    "scope": "Isothermal linear amplitude perturbations around uniform q=0 BCS equilibrium; identical assumed KWT mobility, no kinetic feedback",
+    "H0": 1.9999990835595227,
+    "KWT_R": 19.182506650352625,
+    "tau0_ps": 0.3467661178053203,
+    "probes": [
+      {
+        "k_ell0": 0.3,
+        "relative_stiffness_excess": 0.030266853662026527,
+        "tau_full_ps": 4.755634890070164,
+        "tau_local_ps": 4.6159253528991275
+      },
+      {
+        "k_ell0": 0.99,
+        "relative_stiffness_excess": 0.30310854116805785,
+        "tau_full_ps": 3.6390232647864633,
+        "tau_local_ps": 2.7925711096364836
+      },
+      {
+        "k_ell0": 2.01,
+        "relative_stiffness_excess": 1.0775198382029103,
+        "tau_full_ps": 2.460415327514165,
+        "tau_local_ps": 1.1843041314312865
+      }
+    ],
+    "sum_refinement_max_relative_difference": 4.396889706401338e-06
+  },
+  "cell": {
+    "scope": "Isolated q=0 BCS cell: evolving spectral p, no e-ph/ee/escape/Joule; effective QDelta source from B and specified KWT times. A subsystem diagnostic, not a detector transient.",
+    "initial_a_over_Delta0": 0.6,
+    "initial_TE_K": 0.9,
+    "duration_ps": 86.69152945133007,
+    "final_a_over_Delta0": 0.9419917961940717,
+    "final_TE_K": 4.518198331314109,
+    "energy_drift_absolute_normalized": 5.397104985149781e-11,
+    "refinement_max_gap_difference": 1.820842788324839e-06,
+    "refinement_max_TE_difference": 3.9479482516480147e-07,
+    "population_range": [
+      2.6007242999239665e-84,
+      0.054135922224977436
+    ],
+    "solver": "DOP853 rtol3e-9 atol2e-12, 96 and192 Gauss nodes on x/(kBTc) in[0,20]"
+  },
+  "uniform_regularized": {
+    "reference_material": {
+      "sigma_S_m": 420000.0,
+      "w_nm": 120,
+      "d_nm": 7
+    },
+    "branches": {
+      "0.0": {
+        "maximum_current_uA": 38.850323623699474,
+        "q_peak_ell0": 0.6449966888611158,
+        "gap_at_peak_over_Delta0": 0.7910590148155727,
+        "gap_at_q1_over_Delta0": 0.0,
+        "current_max_change_percent": 0.0
+      },
+      "0.05": {
+        "maximum_current_uA": 38.75196763562336,
+        "q_peak_ell0": 0.643746751760853,
+        "gap_at_peak_over_Delta0": 0.7905723065455477,
+        "gap_at_q1_over_Delta0": 0.04616859536575457,
+        "current_max_change_percent": -0.253166457579046
+      },
+      "0.1": {
+        "maximum_current_uA": 38.45571083867446,
+        "q_peak_ell0": 0.6398735617986288,
+        "gap_at_peak_over_Delta0": 0.7893264320368523,
+        "gap_at_q1_over_Delta0": 0.09156938408779347,
+        "current_max_change_percent": -1.0157258633086141
+      },
+      "0.2": {
+        "maximum_current_uA": 37.28334268140854,
+        "q_peak_ell0": 0.6235836208314699,
+        "gap_at_peak_over_Delta0": 0.7868911984442519,
+        "gap_at_q1_over_Delta0": 0.17660482495788515,
+        "current_max_change_percent": -4.033379380487434
+      }
+    },
+    "multiple_stationary_root_search_events": 0,
+    "selection": "lowest free energy among positive stationary roots and normal state at fixed q; 42-point bracketing grid; maximum on main branch",
+    "scope": "Uniform equilibrium at Tb, using current and force from the same regularized functional. Not device switching."
+  },
+  "phase_principal": {
+    "scope": "Vacuum p=0, fixed amplitude. Exact gapped zero-temperature constitutive derivative, not derivative along a self-consistent branch.",
+    "probes": [
+      {
+        "amplitude_over_Delta0": 0.6,
+        "q_ell0": 0.65,
+        "q_delta_ell0": 0.6324324324324324,
+        "phase_principal_coefficient": 1.7267826289627208,
+        "independent_Matsubara_quadrature_derivative_absolute_error": 1.411315508903499e-12,
+        "quadrature_refinement_absolute_difference": 9.547918011776346e-15
+      },
+      {
+        "amplitude_over_Delta0": 0.6,
+        "q_ell0": 1.0,
+        "q_delta_ell0": 0.9729729729729729,
+        "phase_principal_coefficient": -0.343430634465554,
+        "independent_Matsubara_quadrature_derivative_absolute_error": 1.1067813332488186e-12,
+        "quadrature_refinement_absolute_difference": 1.3322676295501878e-15
+      },
+      {
+        "amplitude_over_Delta0": 1.0,
+        "q_ell0": 1.0,
+        "q_delta_ell0": 0.9900990099009901,
+        "phase_principal_coefficient": 1.6845708143717837,
+        "independent_Matsubara_quadrature_derivative_absolute_error": 4.584110868677271e-12,
+        "quadrature_refinement_absolute_difference": 1.509903313490213e-14
+      }
+    ],
+    "decision": "The local finite-core PDE is not globally parabolic. A positive principal symbol is an admission condition; loss requires stopping the candidate, not interpreting ultraviolet growth as detector physics."
+  },
+  "runtime_seconds": 4.302496056072414
+}

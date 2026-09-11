@@ -1,11 +1,31 @@
 # pySNSPD publication status
 
-Last updated: 2026-08-10
+Last updated: 2026-09-11
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: D3 energy-projection checkpoint archived; commission changes to
-the undergraduate thesis precede any scientific framework update
+Current phase: release 1.0.0 preserves the thesis implementation and publishes the
+complete model 0.4 documentation, including notebook E-r02. The first experimental
+implementation stage follows the release tag: admit data and build the catalogue.
+
+## Release 1.0.0 and next-stage boundary
+
+The implementation baseline is `f3c26b95ff4e4a93504371e78b46ad3a20e06273`, including
+the latest persisted-data diagnostics already on GitHub. Release changes cover
+version/package metadata, documentation, reproducible checks and published artifacts.
+They do not replace the thesis kinetic, condensate or circuit solvers with model 0.4.
+
+The model 0.4 candidate is not admitted for production: the core force is sensitive
+to its effective scale, the condensate principal symbol is negative in demonstrated
+states, and the supplied phonon DOS is not normalized with verified units. These
+findings remain explicit in A-D. The pedagogical notebook is E-r02, with eight active
+classes and 24 unanswered activities, independently versioned from the physics.
+
+Computations expected to exceed five minutes are prepared in
+`/home/jdiaz/GEMINGA_COMMANDS.md` for the user. The agent resumes after the user
+provides the output; it does not start long runs or use polling to wait for them.
+
+The sections below preserve the earlier operational and scientific checkpoints.
 
 ## Executive status
 

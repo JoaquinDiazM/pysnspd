@@ -2,16 +2,28 @@
 
 **Multiscale research code for superconducting nanowire single-photon detector (SNSPD) simulations.**
 
-This README documents the production research workflow of `pySNSPD` used to
-obtain the main thermal-photon result of the thesis work. The publication
-baseline, open defects, and current validation record live in `status.md`.
+Version **1.0.0** freezes the research implementation based on the thesis, including
+the diagnostics already published on `main`. The updated model **0.4 is documented
+but is not activated in this release**. Its notebook includes the subsequent E-r02
+revision. The implementation sequence starts in commits after `v1.0.0`.
+
+The complete model documentation, editable sources, figures, lightweight checks and
+historical deliveries are included in the repository. Start with
+[model 0.4](docs/modelo_v0_4/README.md),
+[the continuous system and implementation sequence](docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md),
+[release notes](docs/releases/v1.0.0.md) and [status](status.md).
+The [command notebook](docs/GEMINGA_COMMANDS.md) mirrors the user-maintained file
+`/home/jdiaz/GEMINGA_COMMANDS.md` on Geminga. Calculations expected to exceed five
+minutes are left there for the user to execute.
 
 ```text
-Publication baseline : 23ea557657d890b1c902f5962a669d3fb845fd93
+Software release     : v1.0.0 (thesis implementation)
+Implementation base  : f3c26b95ff4e4a93504371e78b46ad3a20e06273
+Model documentation  : 0.4; notebook E-r02
 Historical tag       : dirty-functional-thermal-photon-v1
 Repository           : github.com/JoaquinDiazM/pysnspd
-Status               : research prototype, production pipeline validated
-Date                 : 2026-07-23
+Status               : research prototype; updated model not promoted to production
+Release date         : 2026-09-11
 ```
 
 ---
@@ -30,7 +42,13 @@ Date                 : 2026-07-23
 8. external circuit readout;
 9. plotting and current-sweep diagnostics.
 
-The code at this SHA is **dirty but functional**. It reproduces the central result needed for the thesis: a photon-induced transient in a NbN nanowire where the order parameter, thermal fields, electric potential, current redistribution and output voltage evolve consistently over picosecond scales.
+The preserved implementation produced the central thesis result: a photon-induced
+transient in a NbN nanowire coupling the order parameter, thermal fields, electric
+potential, current redistribution and output voltage. Those historical runs are
+not rerun by this documentation release. Model 0.4 records limitations of the new
+candidate, including core sensitivity, loss of spatial admissibility in some states
+and unverified absolute phonon normalization; conservation checks alone do not
+validate its detector predictions.
 
 The repository still contains historical naming, partially redundant diagnostics, exploratory plotting code and configuration files created during development. The goal of this README is not to pretend that the project is clean, but to explain what is currently reliable and how the present result was obtained.
 

@@ -1,0 +1,62 @@
+{
+  "document": "B",
+  "revision": "0.3",
+  "date": "2026-09-08",
+  "normalization": "gap=k_B=1; u_qp unit 4N0 gap^2; X_QP unit 4N0 gap",
+  "numpy_version": "2.2.6",
+  "matplotlib_version": "3.10.8",
+  "reactions": {
+    "sample_count_each_reaction": 3000,
+    "rng_seed": 290802,
+    "collision_balance_relative_residual": 3.955787071116389e-20,
+    "max_event_absolute_residual": 1.7763568394002505e-15,
+    "equilibrium_BS_max_absolute": 8.881784197001252e-16,
+    "equilibrium_BR_max_absolute": 1.3322676295501878e-15,
+    "thermal_reduction_max_absolute_error": 1.4155343563970746e-15,
+    "scope": "arbitrary bounded populations and positive weights; algebraic reaction test, no material kernel"
+  },
+  "energy_and_populations": {
+    "quadrature": {
+      "variable": "x/Delta; E=sqrt(x^2+Delta^2)",
+      "x_max": 60,
+      "nodes_fine": 1024,
+      "nodes_coarse": 512
+    },
+    "temperature_range_kBT_over_gap": [
+      0.055,
+      1.5
+    ],
+    "quadrature_refinement_max_relative_change": 1.2875972833314818e-12,
+    "inversion_max_absolute_error": 2.220446049250313e-16,
+    "central_difference_capacity_max_relative_error": 1.3559558350702692e-06,
+    "min_capacity_in_test": 1.3338754102153221e-06,
+    "target_energy_normalized": 0.025,
+    "equivalent_temperature": 0.28443462937853736,
+    "force_packet_ratio": 25.18725598785124,
+    "packet_energies": [
+      0.025,
+      0.025,
+      0.02500000000000001
+    ],
+    "packet_force_moments": [
+      0.01751177268423763,
+      0.0006952632193314037,
+      0.018850943476603238
+    ],
+    "isolated_instantaneous_check": {
+      "delta_over_Delta0": 0.4,
+      "kBT_over_Delta0": 0.08,
+      "amplitude_force_normalized": -0.1817887800162626,
+      "delta_dot_arbitrary_time": 0.1817887800162626,
+      "Q_delta_normalized": 0.03304716053980112,
+      "T_dot_arbitrary_time": 0.6812117787106318,
+      "energy_chain_rule_residual": 6.938893903907228e-18,
+      "scope": "local derivative identity, not integrated dynamics or material prediction"
+    }
+  },
+  "normal_limit": {
+    "normal_2JS_plus_JR_relative_error": 8.34027761800062e-14,
+    "normal_fifth_power_max_absolute_error": 6.838973831690964e-14,
+    "scope": "normal-state constant DOS and ideal alpha2F proportional to Omega^2; not DFT spectrum"
+  }
+}

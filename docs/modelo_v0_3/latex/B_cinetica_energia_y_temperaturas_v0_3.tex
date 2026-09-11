@@ -1,0 +1,1580 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+\documentclass[
+  spanish,
+  10pt,
+  a4paper,
+]{article}
+\usepackage{xcolor}
+\usepackage[top=22mm,bottom=22mm,left=22mm,right=22mm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{setspace}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off]{babel}
+\else
+\usepackage[bidi=default,shorthands=off]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small,labelformat=empty,skip=7pt}
+\floatplacement{figure}{H}
+\definecolor{DocBlue}{HTML}{173F57}
+\definecolor{DocGray}{HTML}{52616C}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{DocGray} pySNSPD | Desarrollo del modelo}
+\fancyhead[R]{\small\sffamily\color{DocGray} Revisión 0.3}
+\fancyfoot[L]{\small\sffamily\color{DocGray} 8 de septiembre de 2026}
+\fancyfoot[R]{\small\sffamily\thepage}
+\setlength{\headheight}{15pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\parskip}{5pt plus 1pt}
+\setlength{\parindent}{0pt}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\predisplaypenalty=10000
+\renewcommand{\arraystretch}{1.16}
+\AtBeginEnvironment{longtable}{\small}
+\pretocmd{\section}{\Needspace{6\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{5\baselineskip}}{}{}
+\AtBeginDocument{\hypersetup{colorlinks=true,linkcolor=DocBlue,urlcolor=DocBlue}}
+\allowdisplaybreaks[1]
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={B. Cinética{,} energía y temperaturas},
+  pdfauthor={Desarrollo del modelo pySNSPD},
+  pdflang={es},
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{B. Cinética, energía y temperaturas}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Actualización física y pedagógica de pySNSPD · Documento
+técnico 2 de 5}
+\author{Desarrollo del modelo pySNSPD}
+\date{8 de septiembre de 2026 · Revisión 0.3}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\setstretch{1.07}
+\newpage
+
+\section{B.0. Decisión física
+central}\label{b.0.-decisiuxf3n-fuxedsica-central}
+
+\textbf{Propósito.} Conectar lo que cambia de estado ---las
+ocupaciones--- con lo que se conserva ---la energía--- y definir cuándo
+es legítimo comprimir esa información en temperaturas. La revisión 0.3
+aclara la notación de Fermi--Dirac, precisa qué representa la burbuja
+fonónica y cómo se contabilizan las fluctuaciones de energía. El
+desarrollo de energía adiabática antes situado en A pasa a B.11. Las
+cuatro figuras heredadas y sus cifras se han regenerado al reejecutar
+las pruebas de 0.2 en Geminga para 0.3; la figura B.5 es un esquema
+nuevo. No se cambia el transitorio de producción.
+
+Se conservan \(F(\Omega)\) y \(\alpha^2F(\Omega)\) como entradas
+materiales. Se retira la hipótesis de que una energía depositada define
+desde el comienzo dos distribuciones térmicas. La alternativa no es
+imponer una temperatura indefinida a GL: se conserva una
+\textbf{temperatura electrónica equivalente, invertible desde la
+energía}, además de las variables no térmicas que todavía influyen sobre
+el condensado y las colisiones.
+
+La versión de referencia propuesta utiliza ocupaciones espectrales
+durante el intervalo temprano y en la región afectada. El paso a
+electrones térmicos se realiza cuando desaparecen errores relevantes de
+fuerza, corriente e intercambio, no a un tiempo fijo elegido de
+antemano. Para los fonones se conserva información espectral o por
+bandas mientras sea necesaria. Un cierre de pocos momentos es una opción
+de aceleración, no un resultado validado por el mero hecho de conservar
+energía.
+
+Las fuentes principales son Vodolazov, Simon y los capítulos 2--3 de
+Allmaras {[}V, S, A{]}. A proporciona el espectro y la energía libre
+estática A.6--A.9. Aquí se construyen la energía adiabática y sus
+fuerzas en B.11, los balances, las reducciones y las condiciones
+iniciales; C deduce la disipación del condensado. B.11 puede leerse
+antes de B.4--B.5 cuando se desee seguir primero la derivación
+energética completa.
+
+\section{B.1. Variables y tres significados diferentes de
+temperatura}\label{b.1.-variables-y-tres-significados-diferentes-de-temperatura}
+
+\textbf{La etiqueta FD no designa la misma magnitud en A y B.} Aquí
+
+\[
+f_{\rm FD}(E,T)=\frac{1}{\exp[E/(k_BT)]+1}
+\]
+
+es la ocupación de un estado de excitación: un número adimensional entre
+cero y uno. En A, \(f_e^{\rm FD}(T,|\Delta|,q)\) es una \textbf{densidad
+de energía libre electrónica}, con unidades J/m\(^3\), evaluada para
+ocupaciones Fermi--Dirac. Comparten la etiqueta porque una usa la
+población térmica que define a la otra; no se igualan ni se sustituyen
+entre sí.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Símbolo
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Objeto
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Unidades y operación típica
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(f(E)\), \(f_{\rm FD}(E,T)\) & Ocupación de un estado & Adimensional;
+entra en \(f(1-f')\) \\
+\(f_e^{\rm FD}\) & Densidad de energía libre & J/m\(^3\); sus derivadas
+dan entropía y fuerzas \\
+\(u_e\), \(u_{\rm qp}\) & Densidades de energía interna y de
+excitaciones & J/m\(^3\); entran en balances \\
+\end{longtable}
+}
+
+El puente es sumar energías de estados \textbf{pesadas por sus
+ocupaciones}, como en B.19, y después incluir la entropía, como en B.23
+y B.46--B.48. Por ejemplo, en B.40 se abrevia \(f=f_e^{\rm FD}\) sólo
+dentro del balance térmico; en las colisiones B.3--B.6, \(f\) siempre
+significa ocupación. E.3 practica la diferencia entre una función y un
+funcional; E.5 conecta los modos fonónicos con \(F\) y \(\alpha^2F\).
+
+Los campos son \(\Delta=|\Delta| e^{i\theta}\), \(\mathbf q\), las
+ocupaciones electrónicas \(f(E,\mathbf r,t)\) y fonónicas
+\(n(\Omega,\mathbf r,t)\). Se presupone simetría electrón--hueco; el
+desequilibrio de carga espectral independiente no está resuelto en esta
+versión. Las funciones de Usadel son \(\rho=N_1\), \(N_2\) y \(R_2\).
+
+Conviene separar tres situaciones. Si \(f=f_{\rm FD}(E,T_e)\), \(T_e\)
+es una temperatura de cuasiequilibrio. Si \(f\) no es Fermi--Dirac,
+\(T_E\) es la temperatura de una distribución térmica con la misma
+energía: una coordenada útil, pero no una descripción completa. Si
+existe un pequeño subsistema térmico más una cola no térmica, la
+temperatura de ese subsistema no coincide necesariamente con \(T_E\) del
+conjunto. La propuesta básica no introduce ese tercer reparto sin
+definir explícitamente su proyección.
+
+Una analogía útil es una cuenta bancaria: el saldo total no indica si
+está repartido en muchas monedas pequeñas o en pocos billetes grandes.
+\(u_{\rm qp}\) es el saldo; \(f(E)\) describe el reparto. Las colisiones
+y la fuerza sobre el condensado responden también a ese reparto. La
+figura B.3 lo cuantifica sin simular una cascada.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Información que conserva
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Qué no determina por sí sola
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(f(E),n(\Omega)\) & Ocupación de cada intervalo espectral & Su
+evolución exige transporte y colisiones \\
+\(u_{\rm qp},u_{\rm ph}\) & Energía de cada sector & Forma de la
+distribución \\
+\(T_E,T_{{\rm ph},E}\) & La misma energía, escrita en una escala térmica
+& Fuerza, corriente o tasas fuera de equilibrio \\
+\(T_e,T_{\rm ph}\) & Distribuciones térmicas completas, si el cierre es
+válido & Correcciones no térmicas descartadas \\
+\end{longtable}
+}
+
+La biyección de B.20 será entre \textbf{energía y temperatura
+equivalente a espectro fijo}, no entre una distribución arbitraria y una
+temperatura.
+
+\section{B.2. Coherencia superconductora y espacio de fases
+correcto}\label{b.2.-coherencia-superconductora-y-espacio-de-fases-correcto}
+
+\textbf{Propósito.} Usar las mismas funciones espectrales para decidir
+cuántos estados existen y con qué peso intervienen en cada reacción. Los
+factores de coherencia expresan que una cuasipartícula superconductora
+mezcla componentes de electrón y de hueco; esa mezcla afecta de forma
+distinta a la dispersión y a la recombinación.
+
+La memoria combina DOS de Usadel con factores BCS
+\(1\mp |\Delta|^2/(EE')\) y límites de integración asociados al gap BCS.
+Su anexo A reconoce esta aproximación. Los núcleos propuestos utilizan
+el espectro normal y el anómalo del mismo problema {[}M, V{]}:
+
+\[
+\begin{gathered}
+\mathcal C_S(E,E')=N_1(E)N_1(E')-R_2(E)R_2(E'),\\
+\mathcal C_R(E,E')=N_1(E)N_1(E')+R_2(E)R_2(E').
+\end{gathered} \tag{B.1}
+\]
+
+En el límite BCS sin corriente se recupera
+
+\[
+\begin{gathered}
+R_2(E)=\rho(E)\frac{|\Delta|}{E},\\
+\mathcal C_{S/R}=\rho(E)\rho(E')\left(1\mp\frac{|\Delta|^2}{EE'}\right).
+\end{gathered} \tag{B.2}
+\]
+
+La nueva expresión no añade un mecanismo: deja de aplicar fuera de su
+límite una simplificación del mismo mecanismo. La no negatividad de los
+núcleos y la rama física deben verificarse. No se obtiene una teoría
+fiable recortando a cero valores negativos producidos por ramas
+espectrales incompatibles.
+
+Se integrará sobre \(E>0\) y \(\Omega>0\). El soporte espectral
+determina los umbrales. Bajo depairing, el borde de DOS \(E_g\) no es
+\(|\Delta|\); por ello no se conserva un corte artificial en
+\(|\Delta|\) o \(2|\Delta|\). El ensanchamiento \(\eta\) se trata como
+regulador o parámetro físico identificado, no como una tasa inelástica
+universal.
+
+\section{B.3. Reacciones elementales y balance
+energético}\label{b.3.-reacciones-elementales-y-balance-energuxe9tico}
+
+\textbf{Propósito.} Construir ambos balances a partir de la misma lista
+de reacciones. Así se evita que electrones y fonones cuenten cantidades
+ligeramente diferentes de la misma transferencia.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.96\linewidth,height=\textheight,keepaspectratio,alt={Figura B.1. Recurso pedagógico: cada reacción retira de los electrones exactamente la energía del fonón creado. Las energías son ejemplos arbitrarios; el espectro se mantiene fijo durante la colisión. La recuperación posterior de la amplitud se contabiliza aparte en B.9 y C.}]{../figuras/B_01_reacciones_balance.png}
+\caption{Figura B.1. Recurso pedagógico: cada reacción retira de los
+electrones exactamente la energía del fonón creado. Las energías son
+ejemplos arbitrarios; el espectro se mantiene fijo durante la colisión.
+La recuperación posterior de la amplitud se contabiliza aparte en B.9 y
+C.}
+\end{figure}
+
+\subsection{B.3.1. Factores de
+ocupación}\label{b.3.1.-factores-de-ocupaciuxf3n}
+
+Para la emisión neta de un fonón de energía \(\Omega\) por una
+cuasipartícula que pasa de \(E+\Omega\) a \(E\),
+
+\[
+\mathcal B_S=f(E+\Omega)[1-f(E)](n+1)
+-f(E)[1-f(E+\Omega)]n. \tag{B.3}
+\]
+
+Para recombinación neta de dos cuasipartículas de energías \(E\) y
+\(\Omega-E\),
+
+\[
+\mathcal B_R=f(E)f(\Omega-E)(n+1)
+-[1-f(E)][1-f(\Omega-E)]n. \tag{B.4}
+\]
+
+El signo positivo representa creación neta de fonones; un signo negativo
+representa absorción o ruptura de pares.
+
+Cada producto se lee de izquierda a derecha: ocupación inicial,
+disponibilidad del estado final y ocupación fonónica. \(1-f\) impide
+llegar a un estado electrónico ocupado; \(n+1\) incorpora emisión
+espontánea y estimulada. La resta compara el proceso directo con el
+inverso. No es necesario asignarles un signo de calentamiento por
+separado. Se definen las densidades de reacción, con \(N_0\) por espín,
+
+\[
+\begin{gathered}
+\mathcal R_S(E,\Omega)=\frac{8\pi N_0}{\hbar}
+\alpha^2F(\Omega)\mathcal C_S(E,E+\Omega)\mathcal B_S,\\
+0<E<\infty,
+\end{gathered} \tag{B.5}
+\]
+
+\[
+\begin{gathered}
+\mathcal R_R(E,\Omega)=\frac{4\pi N_0}{\hbar}
+\alpha^2F(\Omega)\mathcal C_R(E,\Omega-E)\mathcal B_R,\\
+0<E<\Omega.
+\end{gathered} \tag{B.6}
+\]
+
+El factor relativo \(1/2\) evita contar dos veces el mismo par al
+recorrer \(E\) y \(\Omega-E\). En B.5--B.6, \(\alpha^2F\) tiene la
+convención adimensional del eje de energía utilizada en A. Una
+implementación que use otra convención debe transformar los prefactores,
+no copiar ambas simultáneamente.
+
+\subsection{B.3.2. Ecuación débil para cualquier momento
+electrónico}\label{b.3.2.-ecuaciuxf3n-duxe9bil-para-cualquier-momento-electruxf3nico}
+
+Para un peso \(b(E)\), sea
+
+\[
+m_b=4N_0\int_0^\infty b(E)\rho(E)f(E)\,dE.
+\]
+
+Durante las colisiones, el espectro se mantiene fijo. El cambio debido a
+B.5--B.6 es el número neto de reacciones multiplicado por el cambio de
+la cantidad observada. En dispersión ese cambio es \(b(E)-b(E+\Omega)\);
+en recombinación se pierden ambos pesos. Por tanto,
+
+\[
+\begin{aligned}
+\left.\dot m_b\right|_{e\text{-ph}}={}&
+\int_0^\infty d\Omega\int_0^\infty dE\,
+[b(E)-b(E+\Omega)]\mathcal R_S\\
+&-\int_0^\infty d\Omega\int_0^\Omega dE\,
+[b(E)+b(\Omega-E)]\mathcal R_R.
+\end{aligned} \tag{B.7}
+\]
+
+Para \(b=1\), la dispersión conserva el número de cuasipartículas y cada
+recombinación lo reduce en dos. Para \(b=E\), el corchete de dispersión
+vale \(-\Omega\), mientras el de recombinación vale \(\Omega\). Por
+tanto,
+
+\[
+\left.\dot u_e\right|_{e\text{-ph}}=-P_{e\text{-ph}}, \tag{B.8}
+\]
+
+\[
+P_{e\text{-ph}}=\int_0^\infty\Omega\left[
+\int_0^\infty\mathcal R_S\,dE+
+\int_0^\Omega\mathcal R_R\,dE\right]d\Omega. \tag{B.9}
+\]
+
+No se decide el signo de la fila fonónica por conveniencia: cada
+reacción añade o retira exactamente el fonón que aparece en B.9.
+
+\subsection{B.3.3. Ecuación de
+fonones}\label{b.3.3.-ecuaciuxf3n-de-fonones}
+
+La ecuación sigue la población de modos, tanto si forman una
+distribución térmica como si constituyen una \textbf{burbuja fonónica}:
+un exceso localizado de fonones de alta energía. ``Burbuja'' describe
+dónde está inicialmente la energía y en qué sector, sin implicar una
+cavidad material ni una temperatura única.
+
+Vodolazov compara condiciones iniciales electrónica, fonónica y térmica
+a igual energía, y encuentra que el reparto y la termalización dependen
+de la razón de capacidades electrón/fonón. Su burbuja fonónica es una
+condición de prueba; no identifica toda absorción óptica con un
+calentamiento Bose instantáneo. Esto respalda separar la energía
+inyectada de la forma inicial de las ocupaciones {[}V, §III, ecuaciones
+(16)--(22), pp.~4--6 del preprint{]}.
+
+La tesis de Allmaras sigue el paso de excitaciones electrón--hueco a
+fonones de primera generación y su posterior reabsorción. Sus cálculos
+muestran por qué, después de una etapa temprana no resuelta, una
+población fonónica puede servir como condición de entrada; también
+muestran que forzar electrones térmicos puede transferirles energía
+demasiado rápido. La ``burbuja modificada'' ralentiza ese intercambio
+como corrección efectiva, no como una nueva ley microscópica {[}A,
+§§2.3.1--2.3.2 y 2.4.6{]}. En la ecuación B.10 se conserva el
+intercambio espectral para poder contrastar ese cierre; la sección B.8
+especifica el instante y la energía que entrega la etapa omitida.
+
+Con \(N_iF(\Omega)\) como DOS fonónica por volumen y por energía,
+
+\[
+N_iF(\Omega)\dot n(\Omega)=
+\int_0^\infty\mathcal R_S\,dE+
+\int_0^\Omega\mathcal R_R\,dE
+-\frac{N_iF(\Omega)}{\tau_{\rm esc}(\Omega)}[n-n_b]
++S_{\gamma,\rm ph}(\Omega). \tag{B.10}
+\]
+
+Su momento energético da
+
+\[
+\begin{gathered}
+u_{\rm ph}=N_i\int_0^\infty F(\Omega)\Omega n(\Omega)\,d\Omega,\\
+\dot u_{\rm ph}=P_{e\text{-ph}}-P_{\rm esc}+S_{\gamma,\rm ph}^{(E)},
+\end{gathered} \tag{B.11}
+\]
+
+\[
+P_{\rm esc}=N_i\int_0^\infty
+\frac{F(\Omega)\Omega[n-n_b]}{\tau_{\rm esc}(\Omega)}\,d\Omega. \tag{B.12}
+\]
+
+Sin escape ni fuentes, B.8 y B.11 cancelan exactamente el intercambio.
+Esta cancelación es independiente de si \(f\) o \(n\) son térmicas. Debe
+preservarse al reducir el espectro.
+
+\textbf{Prueba heredada de 0.2, reejecutada en 0.3.} Se evaluaron 3000
+reacciones de cada tipo con ocupaciones sintéticas acotadas y pesos
+positivos. El residuo de intercambio dividido por la suma de
+transferencias absolutas es \(3.96\times10^{-20}\); el máximo residuo de
+un evento es \(1.78\times10^{-15}\) en unidades arbitrarias. Es una
+comprobación algebraica de signos y contabilidad, no una validación de
+tasas materiales.
+
+Un tiempo de escape efectivo único puede mantenerse como primer cierre
+de interfaz si se contrasta su efecto sobre los observables de interés.
+No se exige un sustrato 3D completo. Tampoco se afirma que una sola
+constante reproduzca automáticamente la pérdida de fonones de alta
+energía y la relajación tardía. La resolución por rama, ángulo o energía
+se promueve cuando el balance o los datos lo requieren {[}A{]}.
+
+\section{B.4. Transporte, evolución del espectro y colisiones
+electrón--electrón}\label{b.4.-transporte-evoluciuxf3n-del-espectro-y-colisiones-electruxf3nelectruxf3n}
+
+\textbf{Propósito.} Separar tres cambios que pueden ocurrir
+simultáneamente: una ocupación se desplaza en el espacio, una colisión
+redistribuye población y el condensado mueve la energía de los estados.
+Sólo los dos primeros cambian directamente la población del estado que
+se sigue.
+
+\subsection{B.4.1. Difusión electrónica
+espectral}\label{b.4.1.-difusiuxf3n-electruxf3nica-espectral}
+
+En el cierre longitudinal de energía de Vodolazov,
+
+\[
+\begin{gathered}
+\mathcal D_L(E)=N_1^2(E)-R_2^2(E),\\
+\boldsymbol\Phi_f(E)=-4N_0D\mathcal D_L(E)\nabla_E f(E).
+\end{gathered} \tag{B.13}
+\]
+
+La notación \(\nabla_E\) indica una derivada espacial a energía
+espectral fija. El flujo de energía es
+
+\[
+\mathbf Q_e=\int_0^\infty E\boldsymbol\Phi_f(E)\,dE.
+\tag{B.14}
+\]
+
+La divergencia del flujo se añade a la ecuación espectral antes de
+reducirla. Cuando el peso \(b\) depende de los campos locales, el
+momento de transporte es
+
+\[
+-\int b\nabla\cdot\boldsymbol\Phi_f\,dE
+=-\nabla\cdot\int b\boldsymbol\Phi_f\,dE
++\int(\nabla_Eb)\cdot\boldsymbol\Phi_f\,dE. \tag{B.15}
+\]
+
+Ignorar el segundo término para los momentos de fuerza no es una
+reducción exacta. B.13 es el sector de energía de la aproximación
+adoptada; no sustituye todas las ecuaciones de desequilibrio de carga y
+respuesta electromagnética de Keldysh.
+
+\subsection{B.4.2. Derivada temporal a estados
+fijos}\label{b.4.2.-derivada-temporal-a-estados-fijos}
+
+Piénsese en pasajeros sobre los peldaños de una escalera mecánica:
+cambiar de peldaño y mover la escalera son operaciones diferentes. \(x\)
+etiqueta el estado; \(E(x,t)\) es su energía instantánea. En ausencia de
+colisiones un estado puede conservar su ocupación aunque cambie la
+función dibujada frente al eje \(E\). La regla de la cadena distingue
+ambas operaciones.
+
+Con la coordenada de estados \(x\) de B.43 y sus derivadas B.45,
+
+\[
+\begin{gathered}
+\left.\dot p\right|_x=
+\left.\partial_tf\right|_E+\dot E|_x\,\partial_Ef,\\
+\dot E|_x=\frac{R_2}{\rho}\partial_t|\Delta|
+-\hbar D\frac{N_2R_2}{\rho}\mathbf q\cdot\dot{\mathbf q}.
+\end{gathered} \tag{B.16}
+\]
+
+El primer término proporcional a \(\partial_t|\Delta|\) es la estructura
+que aparece en la ecuación cinética de Vodolazov. La variación del
+espectro no puede omitirse y después compensarse únicamente reajustando
+\(C_e\). La misma derivada produce el almacenamiento en amplitud y
+superflujo al tomar el momento energético.
+
+Las ecuaciones de ocupación quedan definidas por B.7 para las
+reacciones, B.13--B.16 para el transporte y la deriva espectral, y los
+operadores adicionales explícitos de electrones y fuentes. Es una
+formulación débil equivalente a evolucionar el espectro cuando se
+conserva un conjunto completo de pesos. Un número finito de pesos
+introduce un cierre nuevo.
+
+\subsection{B.4.3. Un cierre electrónico mínimo que sí conserva
+energía}\label{b.4.3.-un-cierre-electruxf3nico-muxednimo-que-suxed-conserva-energuxeda}
+
+La integral electrón--electrón microscópica puede retenerse desde las
+fuentes. Como aproximación reducida explícita se propone
+
+\[
+\left.\dot p\right|_{ee}
+=\frac{f_{\rm FD}(E(x),T_E)-p(x)}{\tau_{ee}(T_E)}. \tag{B.17}
+\]
+
+Aquí \(\tau_{ee}\) es constante sobre la energía en una celda y un
+instante. \(T_E\) se obtiene por el ajuste energético de B.20. De esta
+manera,
+
+\[
+4N_0\int E\left.\dot p\right|_{ee}dx=0. \tag{B.18}
+\]
+
+Es un cierre de relajación conservativo, no una derivación ab initio de
+la interacción Coulomb. Si se introduce \(\tau_{ee}(E)\), la cancelación
+B.18 deja de seguir del ajuste energético no ponderado y debe
+reformularse el equilibrio objetivo. El cierre tampoco conserva por
+imposición un número de cuasipartículas independiente: un modelo con
+cuasipotencial químico requeriría declarar y evolucionar esa restricción
+adicional.
+
+\section{B.5. Inversión energía--temperatura incluso fuera de
+equilibrio}\label{b.5.-inversiuxf3n-energuxedatemperatura-incluso-fuera-de-equilibrio}
+
+\textbf{Propósito.} Disponer de una coordenada energética comparable con
+una temperatura, sin afirmar que la distribución ya se haya termalizado.
+En una implementación se puede evolucionar \(u_e\) y calcular \(T_E\)
+sólo al consultar tablas o mostrar resultados.
+
+\subsection{B.5.1. Definición y prueba de
+unicidad}\label{b.5.1.-definiciuxf3n-y-prueba-de-unicidad}
+
+Para el estado electrónico adiabático de B.46,
+
+\[
+\begin{gathered}
+u_e=U_{\rm vac}(|\Delta|,q)+u_{\rm qp},\\
+u_{\rm qp}=4N_0\int_0^\infty E(x)p(x)\,dx.
+\end{gathered} \tag{B.19}
+\]
+
+Se define \(T_E\) mediante
+
+\[
+u_{\rm qp}=4N_0\int_0^\infty
+E\rho(E;|\Delta|,q)\frac{dE}{\exp[E/(k_BT_E)]+1}.
+\tag{B.20}
+\]
+
+A \(|\Delta|,q\) fijos y dentro del catálogo espectral sin autoenergías
+explícitamente dependientes de temperatura,
+
+\[
+\frac{\partial u_{\rm qp}^{\rm FD}}{\partial T_E}
+=\frac{4N_0}{k_BT_E^2}\int_0^\infty
+E^2\rho(E)f_{\rm FD}(1-f_{\rm FD})\,dE>0. \tag{B.21}
+\]
+
+Luego existe una inversa única dentro del rango energético cubierto.
+
+La deducción usa
+\(\partial_T f_{\rm FD}=E f_{\rm FD}(1-f_{\rm FD})/(k_BT^2)\) y
+\(\rho\geq0\): todos los sumandos de B.21 son no negativos, con alguno
+positivo si existen estados accesibles. Existencia y unicidad se
+separan: la monotonía asegura a lo sumo una solución; una energía dentro
+de la imagen continua de la función asegura que la solución existe. En
+una malla truncada el intervalo permitido es finito y debe comprobarse.
+La monotonía no implica buen acondicionamiento a temperatura casi nula,
+donde la capacidad puede ser exponencialmente pequeña; eso exige una
+representación cuidadosa, no descartar la operación subkelvin.
+
+Si se avanza una energía que incluye \(K_0|\nabla |\Delta||^2\), primero
+se resta esa parte y \(U_{\rm vac}\) antes de aplicar B.20. Debe
+verificarse que la energía restante pertenece al rango permitido; no se
+debe devolver silenciosamente \(T_b\) mediante recorte.
+
+Para fonones, una temperatura equivalente puede definirse por
+
+\[
+u_{\rm ph}=N_i\int F(\Omega)\Omega n_B(\Omega,T_{{\rm ph},E})d\Omega.
+\tag{B.22}
+\]
+
+Su derivada también es positiva. Esa temperatura sirve para describir
+energía y presentar resultados. No permite reemplazar una distribución
+fonónica no térmica en las tasas de ruptura de pares sin validación.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth,height=\textheight,keepaspectratio,alt={Figura B.2. Resultado cuantitativo de un modelo BCS homogéneo simplificado, con amplitud fija y corriente nula. La curva de energía es invertible; el panel derecho muestra la sensibilidad absoluta de la inversión. La curva sin gap es otro espectro, por eso define otro mapa. No son datos de una película.}]{../figuras/B_02_energia_temperatura.png}
+\caption{Figura B.2. Resultado cuantitativo de un modelo BCS homogéneo
+simplificado, con amplitud fija y corriente nula. La curva de energía es
+invertible; el panel derecho muestra la sensibilidad absoluta de la
+inversión. La curva sin gap es otro espectro, por eso define otro mapa.
+No son datos de una película.}
+\end{figure}
+
+La prueba usa \(x/|\Delta|\in[0,60]\), cuadratura de 1024 puntos y
+\(0.055\leq k_BT/|\Delta|\leq1.5\). Al invertir 220 energías se recupera
+la temperatura con error absoluto máximo \(2.23\times10^{-16}\) en estas
+unidades; refinar de 512 a 1024 puntos cambia la energía menos de
+\(1.29\times10^{-12}\) relativo en la reejecución de 0.3. Es una prueba
+del mapa a amplitud impuesta, incluso en regiones donde esa amplitud no
+sería un equilibrio autoconsistente.
+
+\subsection{B.5.2. Energía térmica
+consistente}\label{b.5.2.-energuxeda-tuxe9rmica-consistente}
+
+Cuando los electrones sí son térmicos,
+
+\[
+\begin{gathered}
+s_e=-\partial_T f_e^{\rm FD},\\
+u_e=f_e^{\rm FD}-T_e\partial_Tf_e^{\rm FD},\\
+C_e=-T_e\partial_T^2f_e^{\rm FD}.
+\end{gathered} \tag{B.23}
+\]
+
+No se diferencia a lo largo de la rama \(|\Delta|_{\rm eq}(T)\) durante
+la dinámica. La derivada que convierte energía en temperatura mantiene
+el valor instantáneo de \(|\Delta|\) y \(q\). Las otras derivadas se
+contabilizan separadamente.
+
+La garantía B.21 corresponde al modelo espectral adiabático definido en
+B.11. Una promoción a autoenergías Eliashberg dependientes de
+temperatura exige repetir la prueba con la energía completa. No se
+hereda automáticamente la monotonía de una fórmula BCS parcial.
+
+\subsection{B.5.3. Misma energía, otra fuerza sobre el
+condensado}\label{b.5.3.-misma-energuxeda-otra-fuerza-sobre-el-condensado}
+
+A \(q=0\), \(E(x)=\sqrt{x^2+|\Delta|^2}\) y la contribución de las
+excitaciones a la fuerza es
+
+\[
+X_{|\Delta|}^{\rm qp}=4N_0\int_0^\infty\frac{|\Delta|}{E(x)}p(x)\,dx.
+\]
+
+El peso de energía es \(E\); el de fuerza es \(|\Delta|/E\). Para un
+paquete estrecho, su cociente es \(|\Delta|/E_*^2\): a igual energía
+depositada, las excitaciones cercanas al gap pesan más en esta fuerza
+que una cola de alta energía. Ésta es la razón matemática por la que el
+saldo no basta.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth,height=\textheight,keepaspectratio,alt={Figura B.3. Resultado cuantitativo simplificado: paquetes gaussianos centrados en 1.2 y 6 veces la amplitud, con anchuras 0.045 y 0.2, y una distribución térmica. Las tres energías coinciden. La barra de fuerza representa sólo la contribución QP; la parte de vacío es común a los tres estados.}]{../figuras/B_03_misma_energia.png}
+\caption{Figura B.3. Resultado cuantitativo simplificado: paquetes
+gaussianos centrados en 1.2 y 6 veces la amplitud, con anchuras 0.045 y
+0.2, y una distribución térmica. Las tres energías coinciden. La barra
+de fuerza representa sólo la contribución QP; la parte de vacío es común
+a los tres estados.}
+\end{figure}
+
+Los tres estados tienen \(u_{\rm qp}/(4N_0|\Delta|^2)=0.025\) y
+\(k_BT_E/|\Delta|=0.2844346\). El cociente de fuerzas QP entre los
+paquetes es 25.1873. La diferencia es una propiedad de estas poblaciones
+sintéticas y de sus pesos BCS; no predice un factor 25 en una latencia
+ni reproduce una cascada material.
+
+\section{B.6. Reducción térmica de los integrales sin perder los
+espectros
+materiales}\label{b.6.-reducciuxf3n-tuxe9rmica-de-los-integrales-sin-perder-los-espectros-materiales}
+
+\textbf{Propósito.} Mostrar qué simplificación se obtiene realmente al
+imponer Fermi--Dirac. Se simplifican los factores de ocupación; los
+espectros materiales permanecen dentro de los integrales.
+
+Para electrones Fermi--Dirac, las identidades de balance detallado son
+
+\[
+\mathcal B_S=[f(E)-f(E+\Omega)]
+[n_B(\Omega,T_e)-n(\Omega)], \tag{B.24}
+\]
+
+\[
+\mathcal B_R=[1-f(E)-f(\Omega-E)]
+[n_B(\Omega,T_e)-n(\Omega)]. \tag{B.25}
+\]
+
+La segunda se obtiene usando
+\((1-f_E)(1-f_{\Omega-E})=e^{\Omega/k_BT_e}f_Ef_{\Omega-E}\).
+
+Para la primera,
+\(f(E+\Omega)[1-f(E)]=e^{-\Omega/k_BT_e}f(E)[1-f(E+\Omega)]\). Con
+\(n_B=(e^{\Omega/k_BT_e}-1)^{-1}\) se factoriza B.3 y aparece B.24.
+Cuando \(n=n_B(T_e)\) ambos balances netos se anulan \textbf{para cada
+par de energías}, antes de integrar. Esto es balance detallado; una
+potencia integrada cero por cancelación entre canales sería una prueba
+más débil. Se definen
+
+\[
+J_S(\Omega;T_e,|\Delta|,q)=\int_0^\infty
+\mathcal C_S(E,E+\Omega)[f(E)-f(E+\Omega)]\,dE, \tag{B.26}
+\]
+
+\[
+J_R(\Omega;T_e,|\Delta|,q)=\int_0^\Omega
+\mathcal C_R(E,\Omega-E)[1-f(E)-f(\Omega-E)]\,dE. \tag{B.27}
+\]
+
+Entonces
+
+\[
+\begin{gathered}
+\mathcal G_\Omega=\frac{4\pi N_0}{\hbar}\alpha^2F(\Omega)\Omega(2J_S+J_R),\\
+P_{e\text{-ph}}=\int_0^\infty\mathcal G_\Omega
+[n_B(\Omega,T_e)-n(\Omega)]\,d\Omega.
+\end{gathered} \tag{B.28}
+\]
+
+La ecuación fonónica se convierte en
+
+\[
+\begin{gathered}
+\dot n=\gamma_{\rm ph}(\Omega;T_e,|\Delta|,q)
+[n_B(\Omega,T_e)-n]-\frac{n-n_b}{\tau_{\rm esc}(\Omega)},\\
+\gamma_{\rm ph}=\frac{\mathcal G_\Omega}{N_iF(\Omega)\Omega}.
+\end{gathered} \tag{B.29}
+\]
+
+Se evalúa el cociente únicamente donde existen modos; fuera de ese
+soporte no hay una variable fonónica física que deba dividirse por cero.
+En esta versión el catálogo ya no necesita contraer de antemano todo el
+espectro a un eje adicional \(T_{\rm ph}\): se pueden conservar tasas
+espectrales tabuladas en \((T_e,|\Delta|,q)\).
+
+\subsection{B.6.1. Prueba del límite
+normal}\label{b.6.1.-prueba-del-luxedmite-normal}
+
+En el estado normal, \(\mathcal C_S=\mathcal C_R=1\):
+
+\[
+\begin{gathered}
+J_S=\int_0^\Omega f(E)dE,\\
+J_R=\Omega-2\int_0^\Omega f(E)dE.
+\end{gathered}
+\]
+
+Por tanto,
+
+\[
+2J_S+J_R=\Omega. \tag{B.30}
+\]
+
+La potencia normal queda
+
+\[
+P_{e\text{-ph}}^{n}=\frac{4\pi N_0}{\hbar}
+\int_0^\infty\alpha^2F(\Omega)\Omega^2
+[n_B(\Omega,T_e)-n(\Omega)]\,d\Omega. \tag{B.31}
+\]
+
+Si adicionalmente \(\alpha^2F\propto\Omega^2\) en el intervalo relevante
+y los fonones son térmicos, aparece una ley \(T_e^5-T_{\rm ph}^5\). No
+debe imponerse esa ley a un espectro completo fuera del intervalo
+acústico correspondiente.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth,height=\textheight,keepaspectratio,alt={Figura B.4. Resultado cuantitativo simplificado del límite normal. Izquierda: los dos canales suman exactamente el núcleo normal. Derecha: para un espectro acústico ideal, la integral cambia de signo cuando los fonones superan la temperatura electrónica. La ley de quinta potencia es una referencia de este límite, no un ajuste impuesto al material.}]{../figuras/B_04_limite_normal.png}
+\caption{Figura B.4. Resultado cuantitativo simplificado del límite
+normal. Izquierda: los dos canales suman exactamente el núcleo normal.
+Derecha: para un espectro acústico ideal, la integral cambia de signo
+cuando los fonones superan la temperatura electrónica. La ley de quinta
+potencia es una referencia de este límite, no un ajuste impuesto al
+material.}
+\end{figure}
+
+Integrando por separado B.26 y B.27, el error relativo máximo de
+\(2J_S+J_R=\Omega\) es \(8.34\times10^{-14}\). Para el espectro acústico
+ideal, el error absoluto máximo de \(P/P(T_e,0)=1-(T_{\rm ph}/T_e)^5\)
+es \(6.84\times10^{-14}\). Los factores originales y reducidos
+B.24--B.25 coinciden a \(1.42\times10^{-15}\) absoluto en los casos de
+prueba reejecutados en 0.3.
+
+\subsection{B.6.2. Conductividad térmica del mismo
+espectro}\label{b.6.2.-conductividad-tuxe9rmica-del-mismo-espectro}
+
+Al insertar \(\nabla f=(\partial f/\partial T_e)\nabla T_e\) en B.14,
+
+\[
+\kappa_s(T_e,|\Delta|,q)=\frac{4N_0D}{k_BT_e^2}
+\int_0^\infty E^2\mathcal D_L(E)
+ f_{\rm FD}(1-f_{\rm FD})\,dE. \tag{B.32}
+\]
+
+Con \(\mathcal D_L=1\), se recupera
+\(\kappa_n=(\pi^2k_B^2/3e^2)\sigma_nT_e\). Esta prueba verifica
+simultáneamente unidades, espín y normalización. La expresión nueva
+retiene la dependencia de depairing que no estaba presente en la
+conductividad BCS \(\kappa_s(T_e,|\Delta|)\) de producción.
+
+\section{B.7. Cómo reducir sin borrar la física que se desea
+mejorar}\label{b.7.-cuxf3mo-reducir-sin-borrar-la-fuxedsica-que-se-desea-mejorar}
+
+\textbf{Propósito.} Reducir coste sólo después de verificar las
+magnitudes que afectan al detector. Dos distribuciones pueden verse
+similares en energía y diferir en una fuerza o una tasa; la figura B.3
+es un contraejemplo mínimo.
+
+\subsection{B.7.1. Criterio de paso a electrones
+térmicos}\label{b.7.1.-criterio-de-paso-a-electrones-tuxe9rmicos}
+
+Se compara el estado espectral con \(f_{\rm FD}(T_E)\) manteniendo
+\((|\Delta|,q)\) idénticos. Deben ser pequeños los errores de
+\(X_{|\Delta|}\), \(j_s\) y \(P_{e\text{-ph}}\); además se controla el
+flujo de energía. La igualdad de \(u_e\) es exacta por construcción y no
+sirve como única prueba del cierre.
+
+Se proponen tolerancias iniciales del 3--5\% en magnitudes dinámicamente
+relevantes, con denominadores regularizados mediante escalas físicas
+cuando la cantidad se anula. Son criterios de aceptación del proyecto,
+no constantes universales. Se exige permanencia durante un intervalo y
+se comprueba que el cambio de representación no modifica la energía, la
+fuerza ni la corriente de forma discontinua. Si los criterios fallan, se
+retiene el espectro; no se fuerza la termalización por alcanzar cierto
+número de picosegundos.
+
+\subsection{B.7.2. Cierre de máxima entropía: derivación y
+límite}\label{b.7.2.-cierre-de-muxe1xima-entropuxeda-derivaciuxf3n-y-luxedmite}
+
+Para intentar una reducción finita se pueden conservar momentos de
+energía y de fuerzas:
+
+\[
+\begin{gathered}
+b_1(x)=E(x),\\
+b_2(x)=\partial_{|\Delta|}E(x),\\
+b_3(x)=\partial_qE(x),\\
+m_\alpha=4N_0\int b_\alpha p\,dx.
+\end{gathered} \tag{B.33}
+\]
+
+Se maximiza la entropía de B.48 fijando los \(m_\alpha\). Absorbiendo
+\(k_B\) en los multiplicadores, la variación local da
+
+\[
+\ln\frac{1-p(x)}{p(x)}-\sum_\alpha\lambda_\alpha b_\alpha(x)=0.
+\]
+
+Despejar \(p\) conduce a
+
+\[
+p_{\boldsymbol\lambda}(x)=
+\frac1{1+\exp[\sum_\alpha\lambda_\alpha b_\alpha(x)]}. \tag{B.34}
+\]
+
+El Jacobiano negativo del mapa de multiplicadores a momentos es
+
+\[
+\begin{gathered}
+H_{\alpha\beta}=4N_0\int b_\alpha b_\beta p(1-p)\,dx,\\
+\mathbf v^TH\mathbf v=4N_0\int(\mathbf v\cdot\mathbf b)^2p(1-p)dx\geq0.
+\end{gathered} \tag{B.35}
+\]
+
+La independencia de los pesos sobre los estados poblados da positividad
+estricta y unicidad local. En \(q=0\) el tercer peso puede anularse; se
+elimina esa restricción degenerada. No se invierte una matriz singular
+añadiendo una supuesta nueva física.
+
+Los pesos se mueven cuando cambia el condensado:
+
+\[
+\begin{aligned}
+\dot m_\alpha={}&4N_0\int b_\alpha\dot p\,dx\\
+&+4N_0\int(\partial_{|\Delta|}b_\alpha\partial_t|\Delta|+
+\partial_{\mathbf q}b_\alpha\cdot\dot{\mathbf q})p\,dx.
+\end{aligned}\tag{B.36}
+\]
+
+Se combinan B.7, B.15 y B.36 para obtener el sistema reducido. Esto
+expone todos los términos omitidos por una proyección ingenua sobre
+energía solamente. La técnica de máxima entropía está respaldada por la
+teoría de cierres cinéticos {[}L{]}; la selección concreta de pesos B.33
+y su aplicación al SNSPD son propuestas de este desarrollo.
+
+\textbf{Alcance de validación sin ampliar respecto de 0.2.} La figura
+B.3, regenerada en 0.3, verifica que energía sola no fija la fuerza. No
+se ha ejecutado un ajuste de máxima entropía ni la comparación de sus
+integrales electrón--fonón con un espectro material. Los errores del
+24\% y 67\% citados en 0.1 no se mantienen como resultados revalidados,
+porque sus archivos de cálculo no acompañan a los documentos recibidos.
+La positividad de B.35 garantiza propiedades del ajuste; no garantiza
+que las tasas omitidas sean precisas.
+
+\subsection{B.7.3. Fonones por bandas}\label{b.7.3.-fonones-por-bandas}
+
+Para una banda \(B_b\) se conserva su energía
+
+\[
+\begin{gathered}
+U_b=N_i\int_{B_b}F(\Omega)\Omega n(\Omega)d\Omega,\\
+\dot U_b=P_b-P_{{\rm esc},b}+S_{\gamma,b}.
+\end{gathered} \tag{B.37}
+\]
+
+\(P_b\) debe ser exactamente la contribución retirada de los electrones.
+La reconstrucción intrabanda ---por ejemplo, máxima entropía
+restringida--- debe declararse y comprobarse aumentando el número de
+bandas. Las bandas se eligen atendiendo a umbrales y estructura de
+\(\alpha^2F\), no a una temperatura Debye que borre el espectro
+original.
+
+\section{B.8. Condición inicial tras la
+absorción}\label{b.8.-condiciuxf3n-inicial-tras-la-absorciuxf3n}
+
+\textbf{Propósito.} Declarar qué energía y qué distribución entrega la
+parte no resuelta de la cascada al intervalo que sí se modela. La
+absorción óptica, el reparto entre excitaciones y la pérdida al sustrato
+son pasos distintos.
+
+Se condiciona el problema a que el fotón haya sido absorbido en la
+película. Su probabilidad de absorción pertenece al problema óptico.
+Después de esa absorción, las ramificaciones de la cascada distribuyen
+la energía entre electrones y fonones; parte puede abandonar la
+película. Las fluctuaciones de Fano describen variaciones estadísticas
+de ese reparto. El factor de Fano caracteriza una varianza, no la
+probabilidad de absorción ni la eficiencia cuántica del detector {[}K,
+§§I--II{]}.
+
+Sea \(t_0\) el instante en que comienza la descripción resuelta,
+\(E_{\rm in}\) la energía excedente que recibe y \(u_\gamma(\mathbf r)\)
+su densidad inicial. La normalización B.38 se explicita en esta versión
+como
+
+\[
+\begin{gathered}
+\int_{\mathcal V}u_\gamma(\mathbf r)\,dV=E_{\rm in},\\
+E_{\rm in}=E_\gamma-E_{\rm perdido}^{<t_0}.
+\end{gathered} \tag{B.38}
+\]
+
+Aquí se cuenta únicamente la energía del fotón; el trabajo posterior de
+la fuente eléctrica entra en B.40. Si se empieza antes de toda pérdida,
+\(E_{\rm in}=E_\gamma\). Si se empieza después de una etapa que ya
+perdió energía, no corresponde depositar nuevamente el fotón completo.
+En particular, una realización que retiene menos energía no representa
+``una fracción de fotón absorbido'': representa un fotón absorbido cuya
+energía fue repartida entre la película y su entorno.
+
+Allmaras et al.~modelan la energía disponible al terminar la cascada
+como una variable fluctuante y relacionan esa variación con latencia y
+jitter {[}A19, §II, pp.~2--4 del preprint{]}. Una parametrización
+efectiva de ese ensamble es
+
+\[
+\langle E_{\rm in}\rangle=\chi E_\gamma,
+\qquad
+\operatorname{Var}(E_{\rm in})\simeq F_{\rm eff}\,\varepsilon E_\gamma.
+\tag{B.38a}
+\]
+
+\(\chi\) es la fracción media retenida; \(F_{\rm eff}\) es adimensional
+y \(\varepsilon\) fija su convención energética. En la convención de
+{[}K{]}, \(2\varepsilon\) es la energía media necesaria para generar un
+par de QP. Conocer la media no determina la varianza. La definición
+usual para un número de excitaciones es
+\(F_N=\operatorname{Var}(N)/\langle N\rangle\); trasladarla a B.38a
+exige especificar qué sectores y pérdidas representa la energía efectiva
+{[}K, pp.~054507-4--5; A19, ecuación (6) del preprint{]}.
+
+Si se conserva toda la energía del fotón en electrones \textbf{más}
+fonones, \(E_{\rm in}=E_\gamma\) en cada evento y su varianza total es
+cero. Aun así pueden fluctuar el número de QP y el reparto entre
+sectores. Por ello no se puede asignar automáticamente la varianza Fano
+de QP a la energía total de B.38: para esa energía,
+\(F_{\rm eff}\varepsilon\) sólo debe resumir pérdidas fluctuantes o
+sectores que quedaron fuera de la descripción. Cuando se modelan
+explícitamente reparto y escape, esas fluctuaciones se generan allí y no
+se añaden nuevamente mediante B.38a.
+
+Como ejemplo mínimo, la tesis considera \(N\) fonones de igual energía
+\(\bar\Omega\), cada uno retenido independientemente con probabilidad
+\(r\). Si toda la energía inicial está en ellos,
+\(N\bar\Omega=E_\gamma\), y el número retenido es binomial. Por ello
+
+\[
+\langle E_{\rm in}\rangle=rE_\gamma,
+\qquad
+\operatorname{Var}(E_{\rm in})
+=\bar\Omega E_\gamma r(1-r).
+\tag{B.38b}
+\]
+
+Es una derivación de la dispersión por escape, bajo esas hipótesis, y no
+la cascada completa {[}A, §2.4.4, ecuación (2.51), pp.~44--46{]}. En el
+modelo general los fonones tienen distintas energías, trayectorias y
+probabilidades de transmisión. Se debe respetar
+\(0\leq E_{\rm in}\leq E_\gamma\); una aproximación gaussiana estrecha
+como la de {[}A19, ecuación (2){]} no autoriza colas de energía
+imposibles. Una implementación que trunque esa distribución debe
+normalizarla y comprobar los momentos efectivamente obtenidos.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.98\linewidth,height=\textheight,keepaspectratio,alt={Figura B.5. Esquema pedagógico: tras una absorción, la cascada redistribuye la energía y puede perder parte al sustrato. Un perfil medio compacto no fija la forma de cada evento. Los dos lóbulos del ejemplo representan una posibilidad de una descripción espacial estocástica, no una predicción de frecuencia ni de separación.}]{../figuras/B_05_burbuja_y_retencion.png}
+\caption{Figura B.5. Esquema pedagógico: tras una absorción, la cascada
+redistribuye la energía y puede perder parte al sustrato. Un perfil
+medio compacto no fija la forma de cada evento. Los dos lóbulos del
+ejemplo representan una posibilidad de una descripción espacial
+estocástica, no una predicción de frecuencia ni de separación.}
+\end{figure}
+
+Se conservan dos opciones de entrada: una excitación electrón--hueco de
+alta energía, si el operador cinético cubre ese rango, o una burbuja
+fonónica que resume una etapa anterior. La segunda evita resolver de
+nuevo esa parte de la cascada. Una forma espectral de prueba, motivada
+por el peso de acoplamiento, es
+\(\delta n\propto\alpha^2(\Omega)=\alpha^2F(\Omega)/F(\Omega)\). Si toda
+\(u_\gamma\) se deposita en fonones, su normalización es
+
+\[
+\delta n(\Omega,\mathbf r)=
+\frac{u_\gamma(\mathbf r)\,\alpha^2(\Omega)}
+{N_i\int_0^\infty\Omega\alpha^2F(\Omega)d\Omega}.
+\tag{B.39}
+\]
+
+Multiplicar B.39 por \(N_iF(\Omega)\Omega\) e integrar devuelve
+exactamente \(u_\gamma\). Esa comprobación fija su energía, no su
+validez espectral. Si queda una parte electrónica en \(t_0\), se usa en
+B.39 sólo la parte fonónica y se entrega el resto mediante \(\delta f\);
+ambas deben sumar B.38. El condensado puede iniciarse continuo y
+evolucionar mediante su fuerza no térmica, sin un salto impuesto a su
+mínimo de equilibrio.
+
+\textbf{La localización es una hipótesis estadística, no una prohibición
+de separarse.} Nada obliga a las excitaciones iniciales a seguir juntas.
+La dispersión elástica repetida borra su dirección inicial en el régimen
+difusivo; una escala de expansión en dos dimensiones es \(\sqrt{4Dt}\),
+no una distancia máxima permitida. Antes de alcanzar ese régimen deben
+compararse vuelos \(v\tau\) y libres recorridos con el tamaño de la
+región; los fonones pueden requerir transporte balístico aunque los
+electrones sean difusivos. Una realización poco frecuente puede producir
+dos concentraciones separadas si las ramas transportan suficiente
+energía antes de dispersarla. Que además formen dos hotspots que
+supriman el condensado depende de su separación, energía y posterior
+difusión. Ésta es una inferencia física sobre trayectorias que el cierre
+de promedio no resuelve: los cálculos radiales de {[}A, §2.3.2{]} apoyan
+una población media localizada en sus condiciones, pero no calculan la
+probabilidad de esos eventos. Cuantificarla requiere cascadas espaciales
+estocásticas; una gaussiana central no puede descartarla por
+construcción.
+
+En esta propuesta, el perfil inicial, \(t_0\), el reparto y, si se usa,
+la distribución de \(E_{\rm in}\) son datos de transferencia que deben
+contrastarse. Si se resuelve el escape posterior mediante B.12, no se
+aplica además una fracción que incluya esa misma pérdida. La energía
+sólo cambia por canales identificados, aunque la población sea
+aleatoria. La gaussiana truncada en un borde tampoco debe renormalizarse
+sin discutir confinamiento o escape. El tiempo desde \(t_0\) debe
+distinguirse de la latencia desde el instante óptico absoluto.
+
+\section{B.9. Energía del condensado y fuentes de
+calentamiento}\label{b.9.-energuxeda-del-condensado-y-fuentes-de-calentamiento}
+
+\textbf{Propósito.} Evitar que recuperar amplitud cree o destruya
+energía en el balance total. La energía del estado de fondo y la de las
+excitaciones son partes distintas de la misma contabilidad electrónica.
+
+El balance de una celda no se cierra sumando a la ecuación antigua dos
+derivadas de almacenamiento y conservando sin cambios todas las fuentes.
+La potencia reversible de superflujo, la disipación del parámetro de
+orden y el trabajo eléctrico deben contarse una vez. C deriva la
+identidad completa.
+
+Para electrones térmicos, la forma resultante es
+
+\[
+\begin{aligned}
+C_e\dot T_e={}&\nabla\cdot(\kappa_s\nabla T_e)
++\sigma_nE^2+Q_\Delta\\
+&-P_{e\text{-ph}}+S_{\gamma,e}^{(E)}\\
+&+T_e f_{T|\Delta|}\partial_t|\Delta|+T_e\partial_T\partial_{\mathbf q}f\cdot\dot{\mathbf q}.
+\end{aligned}
+\tag{B.40}
+\]
+
+\(f=f_e^{\rm FD}\) y \(Q_\Delta\geq0\) es la disipación del condensado.
+
+\(S_{\gamma,e}^{(E)}\) representa una fuente electrónica resuelta; vale
+cero si la absorción ya quedó incorporada como condición inicial. Los
+subíndices de \(f\) indican derivadas parciales:
+\(f_{T|\Delta|}=\partial_T\partial_{|\Delta|}f\). Es una ecuación
+invertible y consistente con el funcional, no un uso ad hoc de
+\(j_s\cdot E\) como calentamiento siempre positivo.
+
+En la fase espectral, la energía \(P_{\rm heat}=\sigma_nE^2+Q_\Delta\)
+necesita una distribución entre estados. Una opción de cierre explícita,
+conservativa en energía, es
+
+\[
+\left.\dot p\right|_{\rm heat}
+=\frac{P_{\rm heat}\,E(x)p(1-p)}
+{4N_0\int_0^\infty E^2p(1-p)dx}. \tag{B.41}
+\]
+
+Su momento energético vale \(P_{\rm heat}\) y en el límite térmico sigue
+la dirección de calentamiento de Fermi--Dirac. \textbf{B.41 no es la
+integral microscópica exacta de calentamiento eléctrico fuera de
+equilibrio.} Es un cierre térmicamente orientado para la energía
+disipada; su efecto durante el intervalo no térmico debe compararse con
+un tratamiento cinético más completo. Cuando ese calentamiento temprano
+es despreciable frente a la cascada, el error asociado puede acotarse.
+Si no lo es, B.41 no debe ocultarse dentro de una supuesta derivación ab
+initio.
+
+\subsection{B.9.1. Celda aislada como prueba de
+almacenamiento}\label{b.9.1.-celda-aislada-como-prueba-de-almacenamiento}
+
+Para una celda homogénea sin corriente, fuentes, escape ni intercambio
+fonónico, C da \(\partial_t|\Delta|=-\mathcal M X_{|\Delta|}\) y
+\(Q_\Delta=\mathcal M X_{|\Delta|}^2\). Aquí
+\(\mathcal M=1/\Gamma_{|\Delta|}>0\) es la movilidad, inversa de la
+fricción de C. De \(u_e=f-Tf_T\) se obtiene, a \(q=0\),
+
+\[
+\dot u_e=(X_{|\Delta|}-T f_{T|\Delta|})\partial_t|\Delta|
++C_e\dot T.
+\tag{B.42}
+\]
+
+Al sustituir B.40 se cancelan los términos mixtos y queda
+\(\dot u_e=X_{|\Delta|}\partial_t|\Delta|+Q_\Delta=0\). Esta cancelación
+explica el calentamiento durante la recuperación sin convertir todo el
+cambio de amplitud en una fuente térmica adicional.
+
+\textbf{Prueba instantánea heredada de 0.2, reejecutada en 0.3.} Se
+evalúa una celda BCS a \(|\Delta|/\Delta_0=0.4\), \(k_BT/\Delta_0=0.08\)
+y movilidad positiva unitaria en unidades de tiempo arbitrarias. Se
+obtiene fuerza negativa, recuperación de amplitud, \(Q_\Delta>0\) y
+\(\dot T>0\); el residuo de B.42 es \(6.94\times10^{-18}\) en las
+unidades normalizadas de la prueba. La prueba evalúa derivadas locales;
+no integra una trayectoria ni predice una temperatura final material. C
+añade una trayectoria de un modelo de celda simplificado para visualizar
+esta transferencia.
+
+Las cifras finales de amplitud y temperatura de la celda citada en 0.1
+no se presentan como revalidadas. La ecuación B.42 de esta versión
+sustituye aquella referencia numérica por una identidad verificable con
+los archivos entregados.
+
+\section{B.10. Criterios de aceptación antes del transitorio
+2D}\label{b.10.-criterios-de-aceptaciuxf3n-antes-del-transitorio-2d}
+
+Las comprobaciones ligeras diseñadas en 0.2 se reejecutaron para 0.3 en
+Geminga, con un hilo de cálculo, Python 3.10.20, NumPy 2.2.6, SciPy
+1.15.3 y Matplotlib 3.10.8. La tabla recoge los resultados de esta
+reejecución. Son condiciones necesarias para avanzar; sus residuos miden
+las pruebas concretas, no el error físico de un detector. Las
+diferencias de redondeo respecto de 0.2 no se interpretan como nueva
+física.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Verificación reejecutada en 0.3
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Resultado
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Alcance
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercambio de 6000 reacciones sintéticas & Residuo relativo
+\(3.96\times10^{-20}\) & Contabilidad de eventos a espectro fijo \\
+Balance detallado de B.3 y B.4 & Residuo absoluto máximo
+\(1.33\times10^{-15}\) & Distribuciones térmicas con temperatura
+común \\
+Energía BCS e inversión & Error de temperatura
+\(\leq2.23\times10^{-16}\) & 220 temperaturas, amplitud fija, \(q=0\) \\
+Paquetes de igual energía & Fuerza QP: cociente 25.1873 & Poblaciones
+sintéticas declaradas \\
+Límite normal B.30 & Error relativo \(8.34\times10^{-14}\) & DOS normal
+constante \\
+Ley de quinta potencia & Error normalizado \(6.84\times10^{-14}\) &
+Espectro acústico ideal \\
+Celda aislada, B.42 & Residuo \(6.94\times10^{-18}\) & Identidad
+instantánea, unidades normalizadas, sin transitorio \\
+\end{longtable}
+}
+
+Falta validar el núcleo material completo, su no negatividad, la
+discretización que conserva energía al desplazar el espectro, el límite
+normal de B.32 dentro de la implementación futura y el cierre de pocos
+momentos contra una referencia espectral. La comparación de cascadas
+debe medir energía electrónica y fonónica, fuerza \(X_{|\Delta|}\),
+corriente, escape acumulado y persistencia del error de reducción.
+
+No se ejecutaron los datos DFT de producción ni un transitorio espacial
+en estas comprobaciones. El cálculo reproducible de esta entrega es
+\nolinkurl{sandbox/model_v0_3/checks_b.py}; los resultados están en
+\nolinkurl{docs/modelo_v0_3/verificaciones/B_verificaciones.json}, seis
+tablas CSV con prefijo \nolinkurl{B_} en esa carpeta y cuatro figuras
+PNG/PDF en \nolinkurl{docs/modelo_v0_3/figuras}. Los scripts necesarios
+acompañan al paquete 0.3 y no requieren los scripts de 0.2. D registra
+la ejecución y los recursos añadidos; ninguna de estas pruebas simula
+fluctuaciones Fano ni cuenta eventos con dos hotspots.
+
+\section{B.11. Energía adiabática y fuerzas de las
+ocupaciones}\label{b.11.-energuxeda-adiabuxe1tica-y-fuerzas-de-las-ocupaciones}
+
+\textbf{Propósito.} Derivar la energía interna y las fuerzas que utiliza
+la cinética de B, a partir del espectro estático de A. Este desarrollo
+se traslada aquí desde A.4 de la revisión 0.2 para que A conserve su
+función de catálogo microscópico. C toma B.49--B.51 como entrada de su
+ley dinámica; no se deduce aquí la fricción del condensado.
+
+\subsection{B.11.1. Qué se propone y qué debe
+comprobarse}\label{b.11.1.-quuxe9-se-propone-y-quuxe9-debe-comprobarse}
+
+La cinética quasiclásica y el término de desequilibrio de Vodolazov
+proporcionan puntos de partida para acoplar una distribución no térmica
+al condensado {[}V, S{]}. No basta con insertar un escalar de supresión
+en cualquier ecuación dinámica y atribuirle toda esa teoría.
+
+Se propone una descripción \textbf{espectralmente adiabática,
+electrón--hueco simétrica y localmente uniforme} después de la
+excitación óptica no resuelta. El espectro responde instantáneamente a
+\(|\Delta|\) y \(q\) dentro de esta aproximación; las ocupaciones pueden
+seguir fuera de equilibrio. Su régimen de uso requiere comparar las
+escalas temporales y espaciales. Las identidades que siguen corresponden
+al espectro ideal causal, sin autoenergías adicionales que dependan de
+la población. Un ensanchamiento fenomenológico arbitrario no viene
+acompañado automáticamente de la misma termodinámica.
+
+\subsection{B.11.2. Seguir estados cuando cambia su
+energía}\label{b.11.2.-seguir-estados-cuando-cambia-su-energuxeda}
+
+Si cambia el gap, los niveles se desplazan. Mantener fija una población
+\textbf{de estados} no es lo mismo que mantener fija una función
+tabulada en los mismos valores de energía. Para distinguirlo, definimos
+la coordenada acumulada
+
+\[
+x(E;|\Delta|,\Gamma)=\int_0^E\rho(E';|\Delta|,\Gamma)\,dE',
+\quad E=E(x;|\Delta|,\Gamma),\quad p(x)=f(E(x)).
+\tag{B.43}
+\]
+
+\(x\) tiene unidades de energía y \(4N_0dx\) cuenta estados de
+excitación positivos con el espín y la simetría electrón--hueco
+adoptados. Es como numerar asientos en vez de nombrarlos por su altura:
+al mover la estructura, la ocupación de cada asiento puede seguir siendo
+la misma aunque cambie su energía. En BCS sin corriente,
+\(x=\sqrt{E^2-|\Delta|^2}\) sobre el continuo. La inversa se define
+sobre el soporte con estados; el intervalo vacío del gap no introduce
+población.
+
+Las derivadas de A.12 y de \((c^R)^2+(s^R)^2=1\) permiten relacionar el
+movimiento de niveles con el espectro anómalo:
+
+\[
+\partial_{|\Delta|}\rho=-\partial_E R_2,
+\qquad \partial_\Gamma\rho=\partial_E(N_2R_2).
+\tag{B.44}
+\]
+
+Para explicitar el paso, al derivar \(|\Delta|c-\Gamma sc+izs=0\)
+respecto del ángulo aparece
+
+\[
+K=-|\Delta|s-\Gamma(c^2-s^2)+izc,
+\quad \partial_{|\Delta|}\Theta=-\frac{c}{K},
+\quad \partial_E\Theta=-\frac{is}{K},
+\quad \partial_\Gamma\Theta=\frac{sc}{K}.
+\tag{B.44a}
+\]
+
+Por tanto \(\partial_{|\Delta|}c=i\partial_Es\) y
+\(\partial_\Gamma c=-(i/2)\partial_E(s^2)\). Tomar partes reales da
+B.44. Estas igualdades se entienden con el regulador causal y, si el
+borde es singular, después de integrar antes de tomar \(\eta\to0^+\).
+
+Para las ramas simétricas, \(R_2(0)=N_2(0)R_2(0)=0\). Integrando B.44 y
+derivando B.43 a \(x\) fijo,
+
+\[
+\left.\frac{\partial E}{\partial|\Delta|}\right|_x=\frac{R_2}{\rho},
+\qquad
+\left.\frac{\partial E}{\partial\mathbf q}\right|_x
+=-\hbar D\mathbf q\frac{N_2R_2}{\rho}.
+\tag{B.45}
+\]
+
+Los cocientes se usan sobre el soporte espectral o mediante integrales;
+no se divide puntualmente por la DOS dentro del gap.
+
+\subsection{B.11.3. Energía y fuerzas de una población no
+térmica}\label{b.11.3.-energuxeda-y-fuerzas-de-una-poblaciuxf3n-no-tuxe9rmica}
+
+Sea \(U_{\rm vac}(|\Delta|,q)=\lim_{T\to0}f_e^{\rm FD}(T,|\Delta|,q)\),
+manteniendo amplitud y superflujo fijos. La energía adiabática propuesta
+es
+
+\[
+u_e[|\Delta|,\mathbf q;p]
+=U_{\rm vac}(|\Delta|,q)
++4N_0\int_0^\infty E(x;|\Delta|,q)p(x)\,dx.
+\tag{B.46}
+\]
+
+El primer término pertenece al fondo emparejado y al superflujo; el
+segundo es la energía de sus excitaciones. A corriente nula,
+
+\[
+U_{\rm vac}(|\Delta|,0)
+=N_0|\Delta|^2\left[\ln\frac{|\Delta|}{\Delta_0}-\frac12\right],
+\qquad \Delta_0=\pi e^{-\gamma_E}k_BT_c.
+\tag{B.47}
+\]
+
+\(\gamma_E\) es la constante de Euler. La entropía de ocupaciones es
+
+\[
+s_e[p]=-4k_BN_0\int_0^\infty
+\{p\ln p+(1-p)\ln(1-p)\}\,dx.
+\tag{B.48}
+\]
+
+Variando B.46 a \(p(x)\) fijo y utilizando B.45 junto con
+\(dx=\rho\,dE\),
+
+\[
+\begin{aligned}
+X_{|\Delta|}[p]
+&=\left.\partial_{|\Delta|}u_e\right|_{p,q}\\
+&=\partial_{|\Delta|}U_{\rm vac}
++4N_0\int_0^\infty R_2(E)f(E)\,dE,
+\end{aligned}
+\tag{B.49}
+\]
+
+\[
+\boldsymbol\Pi[p]
+=\left.\partial_{\mathbf q}u_e\right|_{p,|\Delta|}
+=\frac{\hbar}{2e}\mathbf j_s[f].
+\tag{B.50}
+\]
+
+La segunda identidad utiliza también A.9 a \(T=0\): la población resta
+al valor de corriente del vacío mediante el peso \(2N_2R_2\). Las dos
+fuerzas son derivadas del \textbf{modelo adiabático B.46}; no
+constituyen una demostración de un potencial termodinámico para todo
+estado Keldysh, ni incluyen memoria temporal, desequilibrio de carga o
+gradientes espectrales generales.
+
+Minimizar \(u_e-Ts_e\) respecto de \(p(x)\) da \(E+k_BT\ln[p/(1-p)]=0\),
+es decir, Fermi--Dirac. Sobre esa población, B.49 recupera A.8. Para la
+temperatura equivalente de energía \(T_E\) definida en B.20, la
+diferencia de fuerza es
+
+\[
+\delta X_{|\Delta|}
+=4N_0\int_0^\infty R_2(E)
+\left[f(E)-f_{\rm FD}(E,T_E)\right]\,dE.
+\tag{B.51}
+\]
+
+Cerca de \(T_c\) se puede expresar esa fuerza como una corrección
+escalar con la normalización GL apropiada. Fuera de ese régimen, B.51
+mantiene explícitamente el peso energético y la escala de fuerza,
+mientras el coeficiente disipativo sigue siendo un cierre por
+contrastar.
+
+\subsection{B.11.4. Igual energía no implica igual acción sobre el
+condensado}\label{b.11.4.-igual-energuxeda-no-implica-igual-acciuxf3n-sobre-el-condensado}
+
+Para un paquete estrecho sin corriente, centrado en \(E_*>|\Delta|\),
+
+\[
+\frac{\delta X_{|\Delta|}}{\delta u_{\rm qp}}
+=\frac{R_2(E_*)}{E_*\rho(E_*)}
+=\frac{|\Delta|}{E_*^2}.
+\tag{B.52}
+\]
+
+Dos paquetes de igual energía en \(1.2|\Delta|\) y \(6|\Delta|\)
+difieren en un factor \(25\) en esta aproximación de ancho despreciable.
+El paquete de menor energía contiene más excitaciones, y cada una pesa
+más en la fuerza de supresión. Ambos paquetes pueden tener la misma
+\(T_E\) sin tener el mismo efecto sobre el condensado.
+
+La figura B.3 muestra los paquetes de ancho finito y la comparación
+térmica; se conserva una sola copia de esa figura en B.5.3.
+
+Los paquetes de ancho finito de la prueba heredada, reejecutada en 0.3,
+dan una razón de fuerzas de aproximadamente \(25.19\). La diferencia
+respecto de \(25\) proviene del ancho y la normalización de los
+paquetes. B.5.3 detalla sus distribuciones y momentos; este cociente no
+se identifica con un factor de cambio en la latencia.
+
+\section{Referencias y procedencia}\label{referencias-y-procedencia}
+
+{[}M{]} J. A. Díaz Monge, \nolinkurl{memoria_02.pdf}, 2026, anexo B,
+pp.~impresas 113--120; anexo A.5 para la aproximación de coherencia.
+Estado térmico de producción: \(P_\Delta\) y \(P_q\) omitidos y
+deposición inicial en \(T_{\rm ph}\).
+
+{[}V{]} D. Y. Vodolazov, \emph{Single-Photon Detection by a Dirty
+Current-Carrying Superconducting Strip Based on the Kinetic-Equation
+Approach}, Physical Review Applied \textbf{7}, 034014 (2017).
+\href{https://doi.org/10.1103/PhysRevApplied.7.034014}{DOI};
+\href{https://arxiv.org/pdf/1611.06060}{preprint}. Se cotejan las
+ecuaciones (1)--(5), pp.~2--3, y §III, ecuaciones (16)--(22), pp.~4--6
+del preprint: comparación de condiciones iniciales con igual energía. La
+aproximación de volumen inicial fijo y escape despreciado corresponde a
+esa prueba, no a una condición universal.
+
+{[}S{]} A. Simon et al., \emph{Ab initio modeling of nonequilibrium
+dynamics in superconducting detectors and qubits}, Physical Review B
+\textbf{112}, 174512 (2025).
+\href{https://doi.org/10.1103/3m2k-mzr6}{DOI};
+\href{https://arxiv.org/abs/2501.13791}{preprint}. Espectros materiales
+y cinética no equilibrada. E.5 introduce la conexión entre DFPT, modos y
+entradas de B.2--B.3.
+
+{[}A{]} J. P. Allmaras, \emph{Modeling and Development of
+Superconducting Nanowire Single-Photon Detectors}, tesis doctoral,
+Caltech (2020). \href{https://thesis.caltech.edu/13748/}{Registro y
+DOI};
+\href{https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf}{PDF
+oficial}. Copia cotejada de 259 páginas,
+\nolinkurl{Allmaras_Thesis_Final.pdf}: §2.3.1, pp.~impresas 19--20 (PDF
+31--32), primera generación de fonones; §2.3.2, pp.~20--24 (PDF 32--36),
+difusión; §2.4.4, pp.~44--46 (PDF 56--58), ecuaciones (2.51)--(2.52),
+fluctuaciones de escape; §2.4.6, pp.~50--53 (PDF 62--65), corrección
+efectiva de la transferencia de la burbuja. Se verifica esta paginación
+en 0.3.
+
+{[}A19{]} J. P. Allmaras et al., \emph{Intrinsic Timing Jitter and
+Latency in Superconducting Nanowire Single-photon Detectors}, Physical
+Review Applied \textbf{11}, 034062 (2019).
+\href{https://doi.org/10.1103/PhysRevApplied.11.034062}{DOI};
+\href{https://arxiv.org/pdf/1805.00130v2}{preprint arXiv:1805.00130v2}.
+Se coteja §II del preprint de 2018, pp.~2--4, ecuaciones (2), (5)--(7):
+energía retenida fluctuante y efecto sobre latencia. La numeración
+citada corresponde expresamente al preprint, no se presupone idéntica a
+la edición publicada.
+
+{[}K{]} A. G. Kozorezov et al., \emph{Fano fluctuations in
+superconducting-nanowire single-photon detectors}, Physical Review B
+\textbf{96}, 054507 (2017).
+\href{https://doi.org/10.1103/PhysRevB.96.054507}{DOI};
+\href{https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=920691}{PDF
+publicado en NIST}. §§I--II, pp.~054507-1--5: ramificación entre
+electrones y fonones, factor de Fano y escape; ecuaciones (11)--(12),
+p.~054507-5, varianza efectiva. No se interpreta el factor de Fano como
+eficiencia óptica.
+
+{[}L{]} C. D. Levermore, \emph{Moment closure hierarchies for kinetic
+theories}, Journal of Statistical Physics \textbf{83}, 1021--1065
+(1996). Marco de cierres por momentos y entropía. La base B.33 y los
+criterios para este SNSPD no se atribuyen a ese artículo.
+
+{[}R{]} Inspección histórica de 0.1: \nolinkurl{JoaquinDiazM/pysnspd},
+revisión \nolinkurl{f3c26b95ff4e4a93504371e78b46ad3a20e06273}; sectores
+\nolinkurl{thermal/evolution.py}, \nolinkurl{kinetic/phase_space.py},
+\nolinkurl{kinetic/power_table.py} y \nolinkurl{excitation/photon.py}. Las
+pruebas heredadas de 0.2 y reejecutadas en 0.3 son independientes del
+solver y se identifican en {[}Q{]}; D registra la revisión local de
+contexto.
+
+{[}Q{]} Verificaciones de 0.3, reejecución de las pruebas diseñadas en
+0.2: \nolinkurl{sandbox/model_v0_3/checks_b.py},
+\nolinkurl{docs/modelo_v0_3/verificaciones/B_verificaciones.json} y
+CSV/figuras con prefijo \nolinkurl{B_} de la misma entrega. El JSON
+identifica la revisión 0.3, la semilla, las cuadraturas y los residuos.
+Los scripts mencionados en 0.1 no se presuponen disponibles ni
+reejecutados. A fija el funcional estático; B.11 contiene ahora la
+extensión adiabática; C fija el balance de disipación. La figura B.5 es
+pedagógica y no añade resultados materiales. D registra la ejecución de
+0.3 y la copia en Geminga.
+
+\end{document}

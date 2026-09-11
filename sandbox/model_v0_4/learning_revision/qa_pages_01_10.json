@@ -1,0 +1,44 @@
+{
+  "artifact": "output/pdf/modelo_v0_4/E_cuaderno_de_aprendizaje_v0_4.pdf",
+  "sha256": "15105EB8C55ABBF5670AB92731B8FAD569851F2860E6BE13A8512954655610EA",
+  "reviewer": "electrones_huecos",
+  "review_kind": "visual, imágenes Poppler completas a 1500 px",
+  "render_directory": "tmp/pdfs/learning_revision/render",
+  "pages_actually_viewed": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "result": "correcciones de maquetación recomendadas; sin recortes ni ilegibilidad",
+  "checks": {
+    "main_text_legible": true,
+    "initial_table_legible_with_complete_recommended_material_column": true,
+    "equations_legible_and_numbered": true,
+    "E01_four_panels_legible": true,
+    "E04_four_circuit_insets_complete_and_legible": true,
+    "E04_pn_NS_comparison_complete_and_legible": true,
+    "overlapping_or_clipped_content": false
+  },
+  "defects": [
+    {
+      "pages": [1, 2],
+      "severity": "layout_medium",
+      "description": "La segunda página contiene sólo una cola corta del índice, dejando aproximadamente 80% del área útil vacía. Además, la primera línea E.7.5 queda aislada de su bloque DFT en la página anterior.",
+      "suggestion": "Compactar el índice o reducir su profundidad para que ocupe una página; alternativamente ajustar la partición de bloques y el espacio de portada."
+    },
+    {
+      "pages": [5, 6],
+      "severity": "layout_medium",
+      "description": "La tabla breve de familias elementales se divide entre dos páginas: tres filas quedan al final de p5 y sólo Higgs, con encabezado repetido, al principio de p6.",
+      "suggestion": "Reservar espacio para la tabla completa antes de su inicio, por ejemplo con Needspace."
+    },
+    {
+      "pages": [7, 8],
+      "severity": "layout_medium",
+      "description": "La introducción E04 deja aproximadamente 65% de p7 vacío porque el gran esquema de cuatro materiales se desplaza completo a p8.",
+      "suggestion": "Mover los párrafos que explican metal, semiconductor y superconductor antes del esquema, o permitir un flujo de texto adecuado alrededor de la colocación en página siguiente. Mantener el tamaño legible y la figura completa."
+    }
+  ],
+  "notes": [
+    "El espacio inferior de p4 y p6 es menos problemático: corresponde, respectivamente, al paso a un esquema grande y al cierre de una clase.",
+    "E04.a y E.1 se ven completas y sus etiquetas no invaden las expresiones.",
+    "En p10 se ven completos los dos paneles p-n/N-S y su pie de figura, sin colisiones con el pie de página.",
+    "Esta revisión corresponde únicamente al SHA256 indicado; cambios posteriores requieren una revisión de las páginas afectadas."
+  ]
+}

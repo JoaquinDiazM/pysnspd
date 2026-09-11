@@ -1,0 +1,43 @@
+{
+  "pdf_path": "output/pdf/modelo_v0_4/E_cuaderno_de_aprendizaje_v0_4.pdf",
+  "pdf_sha256": "15105EB8C55ABBF5670AB92731B8FAD569851F2860E6BE13A8512954655610EA",
+  "reviewer": "modos_ocupaciones",
+  "method": "Direct visual inspection of every Poppler PNG page at 1500 pixels; no contact sheets or inferred page checks.",
+  "pages_actually_viewed": [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+  "render_path_pattern": "tmp/pdfs/learning_revision/render/page-NN.png",
+  "blocking_defects": [],
+  "nonblocking_defects": [
+    {
+      "pages": [15, 16],
+      "severity": "minor",
+      "category": "equation_lead_in_split",
+      "description": "The single-line lead-in beginning 'Con xi = 2 meV y Delta = 1 meV, los valores propios se obtienen de' remains at the bottom of page 15, while its equation E.7 starts page 16. Both are fully readable, but keeping this line with the equation would improve continuity."
+    },
+    {
+      "pages": [14, 19],
+      "severity": "minor",
+      "category": "large_terminal_whitespace",
+      "description": "These are terminal class pages occupying approximately the top quarter of the text area: remaining E06 activities and sources on page 14, all E03 activities and source on page 19. Roughly 70-75 percent of the usable page is blank. This follows the separate-page start for each class; it does not truncate content."
+    }
+  ],
+  "checks": {
+    "text_readable": true,
+    "equations_and_matrices_readable": true,
+    "no_clipped_content": true,
+    "no_overlapping_text_or_equation_numbers": true,
+    "figures_and_captions_readable": true,
+    "no_heading_or_activity_prompt_separated_from_all_its_content": true
+  },
+  "page_notes": {
+    "11": "Readable N-S discussion and E04 activities; normal whitespace at end of class.",
+    "12": "Lagrange derivatives, units and four occupation matrices fit; final display stays inside the text area.",
+    "13": "Single-mode diagram and number-operator matrix readable; first activity has its response on the same page.",
+    "14": "Readable continuation and sources; sparse terminal page noted above.",
+    "15": "Nambu matrix and multiplication diagram legible; equation lead-in split noted above.",
+    "16": "E.7 and remaining explanatory text/activities fit with no overlap.",
+    "17": "Both functional-variation subplots, equations and notation explanation are readable.",
+    "18": "Expanded functional, integration by parts, endpoint constraints and envelope equation fit.",
+    "19": "Complete E03 activity group is readable; sparse terminal page noted above.",
+    "20": "Normal-mode plot and stiffness matrix/eigenfrequency equations readable, no clipping."
+  }
+}

@@ -1,0 +1,439 @@
+---
+title: "A. Microscopía y funcional común"
+subtitle: "Actualización física de pySNSPD · Documento 1 de 5"
+date: "8 de septiembre de 2026 · Revisión 0.3"
+lang: es
+---
+
+# A.0. Qué aporta este documento
+
+Este documento construye la **base microscópica estática** del modelo: un espectro electrónico y una energía libre uniforme cuyas derivadas producen la fuerza de amplitud y la corriente. El propósito es ampliar las capacidades de modelamiento de SNSPD con identidades verificables y parámetros materiales mejor definidos. Esa base informa la dinámica, pero no determina por sí sola sus tiempos de relajación.
+
+La pregunta central es **cómo obtener la corriente y la fuerza sobre $|\Delta|$ de una misma energía electrónica**. El cierre GL/Usadel de referencia ya tiene una justificación para conservar la corriente estacionaria [V, M]. Su ecuación dinámica, la modificación algebraica de la memoria y la comparación entre ramas uniformes se desarrollan en C.0 y C.12. Aquí solo se construye la alternativa estática con la que compararlas.
+
+El recorrido es: convenciones (A.1), derivación del funcional y sus pendientes (A.2), espectro real (A.3), conexiones concretas con B–D (A.4) y alcance material (A.5). En v0.3, la energía no térmica pasa a B.11 y la comparación de cierres del condensado a C.12. Se conservan los números A.1–A.14 y A.32–A.34 para que las referencias sigan siendo reconocibles; D registra la correspondencia de las ecuaciones trasladadas.
+
+# A.1. Convenciones y variables independientes
+
+Se escribe $\Delta=|\Delta|e^{i\theta}$; $|\Delta|$ tiene unidades de energía y $e>0$. En unidades SI,
+
+$$
+\mathbf q=\nabla\theta-\frac{2e}{\hbar}\mathbf A,
+\qquad \Gamma=\frac{\hbar D|\mathbf q|^2}{2},
+\qquad \epsilon_n=\pi k_BT(2n+1).
+\tag{A.1}
+$$
+
+$\mathbf q$ mide el gradiente de fase que impulsa el superflujo; $\Gamma$ es la escala de ruptura de pares asociada. La temperatura $T$, la amplitud $|\Delta|$ y $\mathbf q$ se mantienen independientes al construir el catálogo. Esto permite evaluar una fuerza restauradora cuando la amplitud aún no ha alcanzado el equilibrio.
+
+$N_0$ es la densidad de estados normal **por espín**, volumen y energía, evaluada cerca del nivel de Fermi. Por tanto,
+
+$$
+\sigma_n=2e^2N_0D.
+\tag{A.2}
+$$
+
+No se pueden elegir independientemente $N_0$, $D$ y $\sigma_n$. Para la formulación uniforme difusiva se usan $s_n=\sin\Theta_n$ y $c_n=\cos\Theta_n$, con
+
+$$
+|\Delta|c_n=(\epsilon_n+\Gamma c_n)s_n,
+\qquad s_n^2+c_n^2=1,\qquad c_n\geq0\quad(n\geq0).
+\tag{A.3}
+$$
+
+$\Theta_n$ parametriza el propagador espectral; no es la fase espacial $\theta$. La autoconsistencia de acoplamiento débil y la corriente uniforme son
+
+$$
+\begin{aligned}
+G(T,|\Delta|,q)&=|\Delta|\ln\frac{T}{T_c}
++2\pi k_BT\sum_{n\geq0}\left(\frac{|\Delta|}{\epsilon_n}-s_n\right),\\
+G(T,|\Delta|_{\rm eq},q)&=0,
+\end{aligned}
+\tag{A.4}
+$$
+
+$$
+\mathbf j_s(T,|\Delta|,\mathbf q)
+=\frac{2\pi\sigma_n k_BT}{e}\mathbf q\sum_{n\geq0}s_n^2.
+\tag{A.5}
+$$
+
+A.3 se resuelve para cada amplitud ensayada. A.4 selecciona después la amplitud de equilibrio. **Resolver el espectro no obliga a imponer instantáneamente el equilibrio del condensado durante un evento.** Esta distinción es esencial para que $|\Delta|$ pueda seguir siendo una variable dinámica.
+
+\newpage
+
+# A.2. Construcción y variación del funcional uniforme
+
+## A.2.1. Qué energía buscamos y para qué sirve
+
+El objetivo es construir una **densidad de energía libre electrónica** que contenga el costo del emparejamiento, las excitaciones electrónicas y el superflujo. Su derivada respecto de $|\Delta|$ dará la fuerza de amplitud; respecto de $\mathbf q$, la corriente; respecto de $T$, la entropía de equilibrio. El espectro y la DOS se obtienen del propagador estacionario de esa misma construcción.
+
+No se trata únicamente de asignar una energía a las cuasipartículas. El fondo emparejado también cambia cuando cambian $|\Delta|$ o la corriente. Tampoco es la energía total del sólido: fonones, sustrato y campo electromagnético exterior se contabilizan por separado. La aproximación quasiclásica retiene los cambios electrónicos relevantes cerca del nivel de Fermi; no reconstruye cada nivel electrónico profundo ni toda la estructura de bandas.
+
+La fuente [F] formula el potencial electrónico a potencial químico fijado. En la aproximación electrón–hueco simétrica y de DOS normal constante usada aquí, las diferencias superconductora–normal se pueden emplear como energía libre electrónica a densidad fijada, omitiendo constantes de referencia. Una descripción que retenga asimetría de bandas o redistribución apreciable de carga debe revisar esa identificación.
+
+Una analogía útil es un paisaje cuya altura representa la energía. El espectro se acomoda rápidamente a cada punto $(|\Delta|,q)$ del paisaje; la amplitud puede permanecer fuera del mínimo y sentir su pendiente. La autoconsistencia selecciona puntos estacionarios; en una rama estable corresponden a mínimos locales en amplitud. La corriente corresponde a la pendiente en la dirección de superflujo.
+
+![Lectura pedagógica de una energía común: dos cortes calculados del funcional muestran las pendientes respecto de la amplitud y del superflujo. Representan magnitudes conjugadas distintas; no son una geometría experimental.](figuras/A_01_energia_comun.png){width=93%}
+
+En esta figura $T=0.9$ K, $T_c=8.65$ K y $Q=q\sqrt{\hbar D/(2k_BT_c)}$ es el superflujo adimensional. Los puntos izquierdos son mínimos de energía a cada $Q$. A la derecha se fija $|\Delta|=1.4k_BT_c$ y la energía se divide por $N_0(k_BT_c)^2$: la tangente indica cómo se lee la corriente de una pendiente. Las fórmulas siguientes explican por qué ambas lecturas son compatibles.
+
+## A.2.2. Desde la expresión de Virtanen, Vargunin y Silaev hasta A.6
+
+El punto de partida preciso es la **ecuación (20), sección III, p. 094507-3 de [F]**, también ecuación (20), p. 3 del preprint arXiv v1. La especializamos a emparejamiento singlete $s$ isotrópico, sin campo de intercambio ni acoplamiento espín–órbita explícito, en el límite difusivo y de acoplamiento débil. Restaurando $k_B$ y $\hbar$, su estructura es
+
+$$
+\begin{aligned}
+\frac{f_s}{N_0}
+={}&\frac{|\Delta|^2}{V_{\rm pair}}\\
+&-\frac{\pi k_BT}{2}\sum_{n\in\mathbb Z}
+\operatorname{tr}_{N,s}\!\left[
+\epsilon_n\tau_3\hat g_n+\hat\Delta\hat g_n
+-\frac{\hbar D}{4}(\widetilde\nabla\hat g_n)^2
+\right].
+\end{aligned}
+\tag{A.6a}
+$$
+
+Aquí $V_{\rm pair}$ es el acoplamiento atractivo adimensional de la regularización BCS; no es la función de Eliashberg ni el parámetro $\lambda$ de A.32. La traza abarca **Nambu y espín**, y la suma incluye frecuencias positivas y negativas. Se sobreentiende la regularización ultravioleta común de los términos de emparejamiento. La resta del estado normal se hará antes de retirar el corte. E.2 explica esos dos espacios antes de practicar la traza.
+
+Para ver los factores sin ocultarlos en notación matricial, elijamos una base Nambu de estados relacionados por inversión temporal. Tras quitar localmente la fase del gap mediante una transformación de calibre,
+
+$$
+\hat g_n=(c_n\tau_3+s_n\tau_1)\otimes\sigma_0,
+\qquad \hat\Delta=|\Delta|\tau_1\otimes\sigma_0,
+\qquad \hat g_n^2=1.
+\tag{A.6b}
+$$
+
+Las matrices $\tau_i$ actúan en Nambu y $\sigma_0$ es la identidad de espín. En esta base, el singlete tiene estructura de espín trivial; en otra base puede aparecer una matriz $i\sigma_y$ sin modificar la traza física. Como $\operatorname{tr}_N\tau_i\tau_j=2\delta_{ij}$ y $\operatorname{tr}_s\sigma_0=2$,
+
+$$
+\operatorname{tr}_{N,s}(\epsilon_n\tau_3\hat g_n)=4\epsilon_nc_n,
+\qquad
+\operatorname{tr}_{N,s}(\hat\Delta\hat g_n)=4|\Delta|s_n.
+\tag{A.6c}
+$$
+
+La uniformidad espectral significa $\nabla\Theta_n=0$, pero deja un gradiente de fase. En el calibre elegido,
+
+$$
+\widetilde\nabla\hat g_n
+=\frac{i\mathbf q}{2}[\tau_3,\hat g_n]
+=-\mathbf q\,s_n\tau_2\otimes\sigma_0,
+\quad
+\operatorname{tr}_{N,s}(\widetilde\nabla\hat g_n)^2
+=4q^2s_n^2.
+\tag{A.6d}
+$$
+
+En Matsubara, $c_{-n-1}=-c_n$ y $s_{-n-1}=s_n$ en esta rama: cada sumando de A.6a aporta dos veces su valor con $n\geq0$. El estado normal tiene $c_n=\operatorname{sgn}\epsilon_n$ y $s_n=0$. Sustituir A.6c–A.6d y restarlo da
+
+$$
+\frac{\delta f_U}{N_0}
+=\frac{|\Delta|^2}{V_{\rm pair}}
++2\pi k_BT\sum_{0\leq n<n_c}
+\left[2\epsilon_n(1-c_n)-2|\Delta|s_n+\Gamma s_n^2\right].
+\tag{A.6e}
+$$
+
+El parámetro de corte se elimina usando la ecuación linealizada del gap en $T_c$. Si la energía de corte es mucho mayor que $k_BT$, $|\Delta|$ y $\Gamma$,
+
+$$
+\frac{1}{V_{\rm pair}}
+=\ln\frac{T}{T_c}
++2\pi k_BT\sum_{0\leq n<n_c}\frac{1}{\epsilon_n}
++o(1),
+\tag{A.6f}
+$$
+
+donde $o(1)$ desaparece al retirar el corte manteniendo $T_c$ fijo. Insertar A.6f en A.6e reúne la divergencia en una diferencia convergente. El resultado es
+
+$$
+\begin{aligned}
+\delta f_U(T,|\Delta|,q,\{\Theta_n\})
+={}&N_0|\Delta|^2\ln\frac{T}{T_c}\\
+&+2\pi N_0k_BT\sum_{n\geq0}
+\left[\frac{|\Delta|^2}{\epsilon_n}
++2\epsilon_n(1-c_n)-2|\Delta|s_n+\Gamma s_n^2\right].
+\end{aligned}
+\tag{A.6}
+$$
+
+La cancelación puede verificarse con $s_n\sim|\Delta|/\epsilon_n$ y $1-c_n\sim|\Delta|^2/(2\epsilon_n^2)$: los tres primeros términos cancelan su contribución $1/\epsilon_n$. Para variaciones espectrales se exige el comportamiento físico de alta frecuencia; no se permite una secuencia arbitraria de ángulos que haga divergir la suma.
+
+**Por qué se usa la ecuación (20) de [F].** En ella $\Delta$ aún es una variable independiente. La ecuación (21) de [F] ya sustituye una identidad de autoconsistencia que cambia el coeficiente aparente del término de emparejamiento. Usar directamente esa forma para variar libremente $|\Delta|$ perdería una dependencia necesaria. El orden correcto es: conservar la variable, variar, y solo después imponer su ecuación estacionaria.
+
+**De dónde sale la energía del metal normal.** Hasta aquí se calculó la diferencia superconductora–normal. Falta la energía térmica que el metal normal ya almacenaba. Es el término de referencia que completa A.6; su derivación fija la contabilidad estática.
+
+Tomemos una DOS normal constante $N_0$ **por espín**, con dos espines disponibles, y midamos la energía electrónica $\xi$ desde el nivel de Fermi. A $T=0$ están ocupados los niveles $\xi<0$; al calentar aparecen electrones arriba y vacantes abajo. En la aproximación electrón–hueco simétrica, ambas contribuciones cuestan la misma energía. La energía térmica adicional por volumen es
+
+$$
+\begin{aligned}
+u_{n,\rm th}(T)
+&=2N_0\int_{-\infty}^{\infty}
+\xi\,[f_{\rm FD}(\xi,T)-H(-\xi)]\,d\xi\\
+&=4N_0\int_0^\infty E f_{\rm FD}(E,T)\,dE,
+\qquad f_{\rm FD}(E,T)=\frac{1}{e^{E/(k_BT)}+1}.
+\end{aligned}
+\tag{A.7a}
+$$
+
+$H(-\xi)$ es la ocupación escalón a $T=0$. El factor $4$ cuenta **dos espines y dos lados del nivel de Fermi**; no añade cuatro especies de electrones. La extensión de los límites a infinito solo describe la franja térmica cerca de Fermi: requiere $k_BT$ pequeño frente a las escalas en que cambian la DOS y la banda. Con DOS simétrica constante, el número de electrones promovidos iguala el de vacantes y no hace falta desplazar el potencial químico en este orden.
+
+Con $y=E/(k_BT)$, la integral de Fermi se evalúa sin introducir nuevos parámetros:
+
+$$
+\begin{aligned}
+\int_0^\infty\frac{y}{e^y+1}\,dy
+&=\sum_{m=1}^{\infty}\frac{(-1)^{m+1}}{m^2}
+=\frac{\pi^2}{12},\\
+u_{n,\rm th}(T)&=\frac{\pi^2}{3}N_0k_B^2T^2.
+\end{aligned}
+\tag{A.7b}
+$$
+
+Esta es la contribución de Sommerfeld para DOS constante. Para pasar de energía interna a energía **libre**, a volumen y número de electrones fijos, se usa $C_{e,n}=\partial_Tu_{n,\rm th}$ y $ds_{e,n}=C_{e,n}\,dT/T$. Con entropía normal $s_{e,n}(0)=0$,
+
+$$
+C_{e,n}=\frac{2\pi^2}{3}N_0k_B^2T,
+\qquad
+s_{e,n}(T)=\int_0^T\frac{C_{e,n}(T')}{T'}\,dT'
+=\frac{2\pi^2}{3}N_0k_B^2T.
+\tag{A.7c}
+$$
+
+Por tanto $f_n=u_{n,\rm th}-Ts_{e,n}$ resulta negativo respecto del cero escogido aunque la energía térmica sea positiva: la entropía reduce la energía libre. La suma que completa el funcional es
+
+$$
+f_n(T)=-\frac{\pi^2}{3}N_0 k_B^2T^2,
+\qquad f_e^{\rm FD}=f_n+\delta f_U,
+\qquad u_e^{\rm FD}=f_e^{\rm FD}-T\partial_Tf_e^{\rm FD}.
+\tag{A.7}
+$$
+
+El cero de energía se toma en el metal normal a $T=0$. La derivada $\partial_T$ de A.7 se hace a $|\Delta|$ y $q$ fijos, una vez ajustados los ángulos espectrales como explica A.2.3. Omitir $f_n$ no altera la fuerza de amplitud, pero elimina incorrectamente el calor normal almacenado. La inversión energía–temperatura y su uso dinámico pertenecen a B.5 y C.4.
+
+**Dos usos distintos de la letra $f$.** $f_{\rm FD}(E,T)$ es una probabilidad de ocupación, adimensional, y significa lo mismo aquí y en B. En cambio, $f_e^{\rm FD}$ es una **densidad de energía libre electrónica**, en J/m$^3$, calculada con esas ocupaciones. Su superíndice FD especifica la población usada; no significa que $|\Delta|$ ya satisfaga A.4. La energía térmica de excitaciones, la energía interna y la energía libre tampoco son intercambiables: A.7b y A.7 muestran explícitamente la resta $Ts$.
+
+## A.2.3. Derivada espectral y teorema de la envolvente
+
+Primero se varía un ángulo a $T$, $|\Delta|$ y $q$ fijos. Como $\partial_{\Theta_n}s_n=c_n$ y $\partial_{\Theta_n}c_n=-s_n$,
+
+$$
+\begin{aligned}
+\frac{\partial\delta f_U}{\partial\Theta_n}
+&=2\pi N_0k_BT\left[0+2\epsilon_ns_n-2|\Delta|c_n
++2\Gamma s_nc_n\right]\\
+&=4\pi N_0k_BT\left[(\epsilon_n+\Gamma c_n)s_n-|\Delta|c_n\right].
+\end{aligned}
+\tag{A.8a}
+$$
+
+La anulación de esta derivada reproduce A.3. Denotemos por $\Theta_n^*(T,|\Delta|,q)$ la rama espectral estacionaria física, y por $\bar f_e$ la energía con esos ángulos ya sustituidos.
+
+**Teorema de la envolvente, en la forma que se necesita aquí.** Si $F(y,z)$ es diferenciable y una rama diferenciable $z^*(y)$ satisface $\partial_zF(y,z^*)=0$, entonces
+
+$$
+\frac{d}{dy}F(y,z^*(y))
+=\left.\partial_yF\right|_{z^*}
++\underbrace{\left.\partial_zF\right|_{z^*}}_{0}
+\frac{dz^*}{dy}
+=\left.\partial_yF\right|_{z^*}.
+\tag{A.8b}
+$$
+
+Para una suma espectral, el segundo término es una suma sobre todos los ángulos. La afirmación se aplica primero a una truncación finita; pasar al límite exige convergencia de la energía renormalizada y de las derivadas. La normalización $\hat g^2=1$ ya está incorporada al ángulo. Se sigue una rama suave; si se cambia discontinuamente de rama o aparece una degeneración, las derivadas deben estudiarse por separado. El teorema exige estacionariedad de los ángulos, **no** que la amplitud ya esté en su mínimo.
+
+Aplicándolo a $y=|\Delta|$, los ángulos se mantienen fijos en la derivada parcial restante:
+
+$$
+\begin{aligned}
+X_{|\Delta|}^{\rm FD}
+:=\left.\frac{\partial\bar f_e}{\partial|\Delta|}\right|_{T,q}
+&=2N_0|\Delta|\ln\frac{T}{T_c}
++2\pi N_0k_BT\sum_{n\geq0}
+\left(\frac{2|\Delta|}{\epsilon_n}-2s_n\right)\\
+&=2N_0G(T,|\Delta|,q).
+\end{aligned}
+\tag{A.8}
+$$
+
+Desde ahora, $f_e^{\rm FD}$ designa esa energía espectralmente reducida. $X_{|\Delta|}^{\rm FD}=0$ selecciona el equilibrio del condensado; un valor distinto de cero proporciona la fuerza conjugada que puede entrar en una ley dinámica. La movilidad o el tiempo de relajación de dicha ley **no** se deduce del funcional estático y se trata como cierre en C.2 y C.5. E.3 desarrolla el cálculo con funcionales y un ejemplo de eliminación de variables para practicar A.8b.
+
+## A.2.4. Corriente, integrabilidad y alcance de la comparación
+
+Aplicando la misma regla a $\mathbf q$, solamente queda la dependencia explícita de $\Gamma$:
+
+$$
+\begin{aligned}
+\frac{\partial f_e^{\rm FD}}{\partial\mathbf q}
+&=2\pi N_0k_BT\sum_{n\geq0}s_n^2
+\underbrace{\frac{\partial\Gamma}{\partial\mathbf q}}_{\hbar D\mathbf q}\\
+&=\frac{\hbar}{2e}\mathbf j_s.
+\end{aligned}
+\tag{A.9}
+$$
+
+En una dirección fija de corriente, si las segundas derivadas son continuas,
+
+$$
+\frac{\partial X_{|\Delta|}^{\rm FD}}{\partial q}
+=\frac{\hbar}{2e}\frac{\partial j_s}{\partial|\Delta|}.
+\tag{A.10}
+$$
+
+Es una prueba de integrabilidad: desplazarse primero en amplitud y después en superflujo debe dar el mismo cambio de energía que recorrer el pequeño rectángulo en el orden inverso. Un desacuerdo de A.10 identificaría que las dos fuerzas ensayadas no pertenecen a ese mismo potencial, con esas variables y normalización.
+
+Esta prueba responde a una pregunta diferente de la conservación de corriente. A.10 comprueba una relación entre la fuerza de amplitud y la respuesta de corriente. La corrección de fase del cierre de referencia se analiza en C.12.1, ecuaciones C.35a–C.35c; su conservación estacionaria no exige por sí sola A.10. Para comparar ambas construcciones hay que identificar primero la normalización de fuerza usada en C.0 y C.2.
+
+Una reconstrucción útil para contrastar tablas independientes es
+
+$$
+f_e^{\rm FD}(T,|\Delta|,q)
+=f_e^{\rm FD}(T,|\Delta|,0)
++\frac{\hbar}{2e}\int_0^q j_s(T,|\Delta|,q')\,dq'.
+\tag{A.11}
+$$
+
+La amplitud permanece fija durante esa integral. No se debe sumar después otra energía local de superflujo: ya está incluida.
+
+# A.3. Del propagador al espectro de excitaciones
+
+**Propósito.** Determinar qué energías están disponibles para las cuasipartículas y qué pesos espectrales se requieren para la corriente y las colisiones. Una DOS más precisa es una consecuencia útil de resolver el espectro; por sí sola no reemplaza los factores anómalos.
+
+La continuación $\epsilon_n\to-iz$, con $z=E+i\eta$, produce
+
+$$
+|\Delta|c^R=(\Gamma c^R-iz)s^R,
+\qquad c^R=N_1+iR_1,\qquad s^R=N_2+iR_2.
+\tag{A.12}
+$$
+
+Se elige la rama retardada causal, continua hacia $c^R\to1$ a alta energía. La DOS normalizada es $\rho=N_1$. El propagador anómalo $s^R$ conserva su fase compleja. Para una distribución electrón–hueco simétrica $f(E)$,
+
+$$
+\mathbf j_s[f]=\frac{\sigma_n}{e}\mathbf q
+\int_0^\infty 2N_2(E)R_2(E)[1-2f(E)]\,dE.
+\tag{A.13}
+$$
+
+Esta es la corriente espectral de [V, ecuación (33)], escrita con $q=q_s/\hbar$. Coincide con A.5 para Fermi–Dirac usando las mismas ramas y el límite causal. Una temperatura equivalente no puede sustituir a $f$ dentro de la integral sin comprobar la reducción.
+
+## A.3.1. La amplitud y el borde espectral son magnitudes diferentes
+
+Para $\eta\to0^+$ y sin otra fuente de ensanchamiento,
+
+$$
+E_g=|\Delta|\left[1-\left(\frac{\Gamma}{|\Delta|}\right)^{2/3}\right]^{3/2}
+\quad(0\leq\Gamma<|\Delta|),
+\qquad E_g=0\quad(\Gamma\geq|\Delta|).
+\tag{A.14}
+$$
+
+La fórmula se refiere al espectro a una amplitud dada; no asegura que toda esa rama sea estable frente a una corriente impuesta. Puede entenderse $|\Delta|$ como la escala del emparejamiento, mientras $E_g$ es la primera energía a la que se encuentran estados accesibles. El superflujo modifica lo segundo además de modificar la amplitud mediante la autoconsistencia.
+
+![Resultado uniforme: el borde espectral cae por debajo de la amplitud al aumentar la ruptura de pares. Esta curva adimensional ilustra A.14 y no constituye una predicción de latencia.](figuras/A_03_gap_espectral.png){width=88%}
+
+Por eso los umbrales BCS $E=|\Delta|$ y $\Omega=2|\Delta|$ no son generales bajo corriente. Para el cierre espectral ampliado se integran energías positivas y se deja que los soportes y factores de coherencia determinen las contribuciones. $\Omega$ designa **energía** fonónica, no frecuencia angular: al convertir un eje de THz a joules también se transforma la DOS fonónica. Con un ensanchamiento físico finito no hay un borde estrictamente duro; usar $\eta$ solo como regulador numérico exige comprobar su límite.
+
+La distinción entre amplitud y borde de A.14 informa los soportes cinéticos de B.2–B.3. La comparación de ramas uniformes y máximos de corriente se presenta en C.12.
+
+# A.4. Qué resultados se transfieren a cada documento
+
+La separación entre documentos también separa preguntas físicas: A determina **el espectro y la energía estáticos**; B determina **cómo se ocupan los estados y transportan energía**; C determina **cómo evoluciona el condensado y se forma la señal**. El catálogo de A se consulta a la amplitud y al superflujo presentes, sin imponer A.4 durante cada paso temporal.
+
+| Resultado de A | Uso específico y destino |
+|:--|:--|
+| A.6–A.8: energía libre y fuerza de amplitud | C.1–C.2: funcional espacial reducido y ley del condensado. C.0 conecta esa propuesta con la ecuación de la memoria. |
+| A.7: referencia normal y energía interna térmica | B.5.2: energía térmica consistente. C.4.4: balance escrito con una coordenada de temperatura. |
+| A.9–A.11: corriente como derivada e integrabilidad | C.12: comparación de ramas y estabilidad uniforme. D: controles de derivadas y convergencia. |
+| A.12–A.14: DOS, pesos anómalos y borde espectral | B.2–B.3: soportes y coherencia de las colisiones; B.11: energía adiabática y fuerzas de las ocupaciones. |
+| A.2 y A.32–A.34: convenciones y restricciones materiales | B.6: intercambio térmico con espectros materiales. D: trazabilidad y pruebas antes de usar el catálogo. |
+
+El desarrollo que era A.4 está ahora en **B.11, «Energía adiabática y fuerzas de las ocupaciones»**, ecuaciones B.43–B.52. Incluye la distinción entre seguir estados y mantener una tabla fija en energía. El antiguo A.5 está en **C.12, «Corriente uniforme: conservar la justificación y medir la aproximación»**, ecuaciones C.35–C.41. No es necesario rehacer aquí esos dos desarrollos para utilizar sus interfaces.
+
+# A.5. Material: por qué la corriente no fija toda la energía
+
+## A.5.1. Qué significa el acoplamiento y qué significa el límite difusivo
+
+El **límite difusivo** describe el movimiento: las colisiones elásticas cambian repetidamente la dirección electrónica antes de recorrer las escalas superconductoras relevantes. Una condición usual es $\ell\ll\xi$, con camino libre medio $\ell$ y longitud de coherencia $\xi$. La ecuación Usadel retiene la parte casi isotrópica del propagador. El **acoplamiento débil** describe otra aproximación: cómo se trata la interacción que empareja electrones y renormaliza su espectro. En la referencia BCS isotrópica se obtiene $\Delta_0/(k_BT_c)=\pi e^{-\gamma_E}\simeq1.764$, donde $\gamma_E$ es la constante de Euler. Un material puede ser difusivo y necesitar correcciones de acoplamiento fuerte.
+
+En la convención energética de Eliashberg,
+
+$$
+\lambda=2\int_0^\infty\frac{\alpha^2F(\Omega)}{\Omega}\,d\Omega.
+\tag{A.32}
+$$
+
+La memoria informa $\lambda=1.216$ para el espectro NbN adoptado [M, figura 4.6 y texto, p. impresa 64]. Ese valor se cotejó en la fuente; aquí no se recalcula la integral material. $\lambda$ es un **índice adimensional de intensidad del acoplamiento electrón–fonón**, integrado sobre energías y estados electrónicos relevantes. No es una probabilidad ni una fracción de pares: puede superar uno. Un valor de orden unidad indica que la interacción no es un parámetro pequeño que se pueda despreciar.
+
+El factor $1/\Omega$ permite leerlo: si dos bandas estrechas de $\alpha^2F$ tienen igual área y están centradas en $\Omega_1$ y $2\Omega_1$, la primera aporta aproximadamente el doble a $\lambda$. Por eso conocer solo el área sin ponderar, o solo el número total de modos de $F$, no basta. A la inversa, dos espectros pueden tener el mismo $\lambda$ y distribuir el acoplamiento en energías diferentes. Tampoco $\lambda$ por sí solo fija $T_c$ o la razón de gap: intervienen la forma espectral y la repulsión electrónica efectiva. E.5 relaciona los modos de vibración, la DOS y los pesos electrón–fonón.
+
+Una interpretación adicional, en el caso isotrópico simple y de baja energía, es la contribución electrón–fonón a la renormalización de masa, $m^*/m_{\rm banda}\simeq1+\lambda$. La excitación electrónica arrastra una respuesta de la red y su dispersión cambia. Con $\lambda=1.216$ esa estimación sería $2.216$, pero no constituye una medida de la masa de la película ni una receta para multiplicar por ese factor el $N_0$ ya calibrado. La relación requiere su aproximación de bandas y autoenergía [EPW].
+
+## A.5.2. Qué modifica Simon et al. en el gap y por qué
+
+El apéndice **VII.3, «The Usadel equation», del preprint v3 de [S]**, ecuaciones (11)–(14), usa Usadel con autoconsistencia BCS. Después reescala resultados débiles por $2.1/1.76$ para representar la razón $\Delta_0=2.1k_BT_c$ de NbN: la escala BCS sería demasiado pequeña para esa elección material. Es una corrección práctica de escala que conserva la forma espectral aproximada, no la solución completa de Eliashberg. Los autores indican que esta última exigiría además una ecuación para la renormalización y un gap dependiente de frecuencia. [S, apéndice VII.3](https://arxiv.org/html/2501.13791v3#S7.SS3)
+
+La consecuencia para este proyecto se ve directamente en A.4. A $q=0$, su solución de acoplamiento débil fija la razón 1.764. Si se reescala solamente el valor de salida $|\Delta|$ manteniendo $T_c$ y la ecuación intactos, el valor reescalado ya no anula necesariamente $G$. Tampoco queda garantizado que la fuerza y la corriente reescaladas sean derivadas de A.6. Una aproximación empírica puede ser útil, pero requiere declarar **qué magnitudes se reescalan** y volver a comprobar A.8–A.10.
+
+Como sensibilidad algebraica, cambiar 1.764 por 2.1 aumenta el gap un 19.05% y la escala $N_0\Delta_0^2$ un 41.72%, a $N_0$ fijo. Son consecuencias de multiplicar una escala y elevarla al cuadrado, no predicciones nuevas para la película. Esa diferencia afecta justamente la cantidad de energía necesaria para perturbar el condensado. Por eso la razón 2.1 es una hipótesis material que se debe contrastar, mientras A.6 se mantiene como referencia débil verificable. Incorporar $\alpha^2F$ a las colisiones de B mejora esa parte microscópica; no transforma automáticamente todo el catálogo estático en uno de acoplamiento fuerte.
+
+## A.5.3. Dos combinaciones distintas de parámetros
+
+Manteniendo $T/T_c$ y la escala de gap fijos,
+
+$$
+j_{\rm dep}\propto\frac{\sigma_n}{\sqrt D},
+\qquad C_{e,n}=\frac{2\pi^2}{3}N_0k_B^2T
+\propto\frac{\sigma_n}{D}.
+\tag{A.33}
+$$
+
+Calibrar $D$ con una corriente restringe la primera combinación, pero no constituye una medida independiente de la capacidad calorífica. Por ejemplo, dos conjuntos que cumplan
+
+$$
+\frac{\sigma_{n,1}}{\sqrt{D_1}}
+=\frac{\sigma_{n,2}}{\sqrt{D_2}}
+\quad\Longrightarrow\quad
+\frac{N_{0,1}}{N_{0,2}}=\sqrt{\frac{D_2}{D_1}}
+\tag{A.34}
+$$
+
+pueden dar la misma escala de corriente y distinta energía electrónica. Esta comparación algebraica reemplaza aquí una comparación entre películas de procedencia no revalidada. La corriente de switching, además, puede estar limitada por bordes o inhomogeneidades y no ser la de depairing. La inductancia cinética dependiente de corriente aporta una comprobación complementaria [Fr].
+
+## A.5.4. Entradas que necesitan restricciones materiales
+
+| Entrada | Qué controla | Comprobación propuesta |
+|:--|:--|:--|
+| $D$ | Difusión, ruptura de pares y $N_0$ inferido | Transporte y, cuando corresponda, pendiente de $H_{c2}$ |
+| $\sigma_n$, $d$ | Escala de corriente y conversión de resistencia de hoja | Resistencia y espesor de la misma película |
+| $\Delta(T)$ | Espectro y energía de emparejamiento | Espectroscopia o catálogo material consistente |
+| $N_0$ | Energía y capacidad electrónicas | Capacidad normal o información electrónica independiente |
+| $F$, $\alpha^2F$, $N_i$ | Colisiones y energía fonónica | Fase, estequiometría y normalización por átomo, fórmula o celda |
+| Tiempos efectivos | Relajación, cascada y escape | Precisar el proceso que representa cada tiempo |
+
+# A.6. Decisión de modelamiento para esta iteración
+
+Se adopta como **referencia uniforme verificable** el funcional Usadel de acoplamiento débil A.6 y sus fuerzas conjugadas. Sus salidas alimentan la extensión no térmica adiabática de B.11 y la dinámica de C. Esta organización permite comprobar cada aproximación donde se introduce.
+
+La prioridad es comprobar las identidades, los límites BCS/GL y las curvas uniformes antes de conectar el catálogo con una dinámica espacial. La ley de relajación del condensado y la transición desde la cinética no térmica al cierre reducido requieren sus propias pruebas, descritas en B–D. No se cambia aquí el solver de producción ni se atribuyen nuevas latencias al detector.
+
+Si los datos de la película requieren acoplamiento fuerte, el catálogo puede ampliarse con autoenergías dependientes de energía. Proyectar ese campo de emparejamiento espectral sobre una sola amplitud necesita una definición adicional; esa ampliación no se declara deducida ni implementada en v0.3. Su necesidad se decidirá por la precisión requerida y las restricciones materiales disponibles. El ajuste de Simon es un antecedente concreto para estudiar esa aproximación, no una identidad adicional del funcional actual.
+
+# Referencias y procedencia
+
+[M] J. A. Díaz Monge, *Multiscale Modeling of the Transient Response of Superconducting Nanowire Single-Photon Detectors*, Universidad de Chile, 2026. Copia cotejada: `memoria_02.pdf`, 173 páginas, obtenida de `/home/jdiaz/memoria/main/memoria_02.pdf` en Geminga. Ver A.5, p. impresa 112 (página 143 del PDF), para el cierre de corriente; C.2, pp. impresas 121–123 (páginas 152–154 del PDF), ecuaciones (C.4)–(C.10), para la cancelación de divergencias. El archivo local de nombre `Memoria_JDiaz_JF_v0.pdf` corresponde a otra copia y no se usa para atribuir esta paginación.
+
+[V] D. Y. Vodolazov, *Single-Photon Detection by a Dirty Current-Carrying Superconducting Strip Based on the Kinetic-Equation Approach*, Physical Review Applied **7**, 034014 (2017). [Artículo, DOI](https://doi.org/10.1103/PhysRevApplied.7.034014); [preprint completo](https://arxiv.org/pdf/1611.06060). Ver ecuaciones (33)–(37), pp. 10–11 del PDF: corriente, corrección del RHS y continuidad. Se ha cotejado específicamente p. 11, ecuación (36).
+
+[F] P. Virtanen, A. Vargunin y M. Silaev, *Quasiclassical free energy of superconductors: Disorder-driven first-order phase transition in superconductor/ferromagnetic-insulator bilayers*, Physical Review B **101**, 094507 (2020). [DOI](https://doi.org/10.1103/PhysRevB.101.094507); [copia institucional](https://jyx.jyu.fi/bitstreams/f577693c-c6d1-4923-866c-353ec3ac8dd5/download); [arXiv:1909.00992](https://arxiv.org/pdf/1909.00992). La derivación parte de la ecuación (20), p. 094507-3; el preprint v1 conserva esa numeración, p. 3, bajo el título *Quasiclassical expressions for the free energy of superconducting systems*. Se corrige el título bibliográfico de la revisión 0.1.
+
+[S] A. Simon et al., *Ab initio modeling of nonequilibrium dynamics in superconducting detectors and qubits*, Physical Review B **112**, 174512 (2025). [Ficha editorial y DOI](https://journals.aps.org/prb/abstract/10.1103/3m2k-mzr6); [preprint v3, apéndice VII.3](https://arxiv.org/html/2501.13791v3#S7.SS3). La identidad bibliográfica se cotejó en APS; la numeración del apéndice y la explicación del reescalamiento se cotejaron en el preprint. No se atribuye esa paginación al PDF publicado.
+
+[EPW] F. Giustino, material docente de la *Summer School on Electron–Phonon Physics*, 2022, diapositiva 24: relación entre pendiente de la autoenergía y renormalización de masa, con el alcance del caso simple indicado en la fuente. [Apuntes oficiales EPW](https://docs.epw-code.org/_downloads/720916b4aba43b13d75d323126c36a0c/Tue.2.Giustino.pdf).
+
+[Fr] S. Frasca et al., *Determining the depairing current in superconducting nanowire single-photon detectors*, Physical Review B **100**, 054520 (2019). [DOI](https://doi.org/10.1103/PhysRevB.100.054520).
+
+[R] Repositorio `pysnspd`, rama `main`; cálculo uniforme de esta revisión: `sandbox/model_v0_3/checks_a.py`. D registra la base de código, la ejecución en Geminga, los resultados y la procedencia completa. Las dos figuras del documento ilustran las derivadas de la energía y la distinción entre amplitud y borde espectral.

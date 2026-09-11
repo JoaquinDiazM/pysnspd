@@ -1,0 +1,88 @@
+{
+  "scope": "Equilibrio uniforme de acoplamiento débil; sin transitorio ni calibración experimental nueva",
+  "parameters": {
+    "T_K": 0.9,
+    "Tc_K": 8.65,
+    "D_m2_s": 0.0001581,
+    "sigma_S_m": 420000.0,
+    "w_nm": 120,
+    "d_nm": 7,
+    "n_matsubara": 800
+  },
+  "maxima": {
+    "usadel": {
+      "I_uA": 38.850323624124606,
+      "Q": 0.6449966773817724,
+      "delta_meV": 1.0400786457517746,
+      "Eg_meV": 0.4285288126359297,
+      "Eg_over_delta": 0.41201577821664315
+    },
+    "allmaras_usadel": {
+      "I_uA": 35.182843131110126,
+      "Q": 0.5849067393346965,
+      "delta_meV": 1.0153326120526442,
+      "Eg_meV": 0.47415198424374577,
+      "Eg_over_delta": 0.4669917804424481
+    },
+    "vodolazov": {
+      "I_uA": 40.143624460600776,
+      "Q": 0.6509625218211106,
+      "delta_meV": 0.9297300470953194,
+      "Eg_meV": 0.3417233498950781,
+      "Eg_over_delta": 0.36755115203891364
+    }
+  },
+  "convergence": {
+    "400": {
+      "I_uA": 38.85032361739352,
+      "Q": 0.6449966967592173,
+      "delta_meV": 1.0400786265378523,
+      "Eg_meV": 0.4285287775847978,
+      "Eg_over_delta": 0.4120157521275648
+    },
+    "800": {
+      "I_uA": 38.850323624124606,
+      "Q": 0.6449966773817724,
+      "delta_meV": 1.0400786457517746,
+      "Eg_meV": 0.4285288126359297,
+      "Eg_over_delta": 0.41201577821664315
+    },
+    "1600": {
+      "I_uA": 38.85032362454646,
+      "Q": 0.6449966870027362,
+      "delta_meV": 1.0400786362027132,
+      "Eg_meV": 0.4285287952260192,
+      "Eg_over_delta": 0.41201576526036654
+    },
+    "3200": {
+      "I_uA": 38.85032362457291,
+      "Q": 0.6449966870021164,
+      "delta_meV": 1.0400786362032666,
+      "Eg_meV": 0.42852879522709464,
+      "Eg_over_delta": 0.41201576526118133
+    }
+  },
+  "derivative_checks": [
+    {
+      "delta_kBTc": 0.8,
+      "Q": 0.2,
+      "current_derivative_relative_error": 1.5232259897857148e-12,
+      "amplitude_derivative_relative_error": 4.070299652880749e-12
+    },
+    {
+      "delta_kBTc": 1.1,
+      "Q": 0.4,
+      "current_derivative_relative_error": 4.701794509287538e-13,
+      "amplitude_derivative_relative_error": 7.436495863544224e-12
+    },
+    {
+      "delta_kBTc": 1.5,
+      "Q": 0.5,
+      "current_derivative_relative_error": 5.440092820663267e-15,
+      "amplitude_derivative_relative_error": 1.3384449104592022e-10
+    }
+  ],
+  "runtime_seconds": 1.0613307789899409,
+  "host": "geminga",
+  "python": "3.10.20"
+}

@@ -1,0 +1,145 @@
+{
+  "document": "A",
+  "revision": "0.4",
+  "host": "geminga",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "scope": "Catálogo uniforme estático; sin transitorio, ajuste material ni imports de producción o de v0.3.",
+  "independent_method": "Newton acotado para energía Matsubara renormalizada; sumas crudas y extrapolación en corte; raíces cuárticas filtradas con ecuación retardada original.",
+  "point_count": 80,
+  "T_over_Tc": [
+    0.05,
+    0.15,
+    0.4,
+    0.8,
+    0.98
+  ],
+  "delta_kBTc": [
+    0.25,
+    0.8,
+    1.5,
+    2.0
+  ],
+  "Q": [
+    0.0,
+    0.15,
+    0.45,
+    0.75
+  ],
+  "derivative_steps": [
+    0.01,
+    0.003,
+    0.001,
+    0.0003,
+    0.0001
+  ],
+  "derivative_error_scaling": "abs(numerical-reference)/max(1,abs(reference)); mixed uses max of both derivatives",
+  "max_errors_by_step": [
+    [
+      1.7326127232930588e-07,
+      9.226844655681723e-08,
+      4.759368540385722e-07
+    ],
+    [
+      1.4024644778842799e-09,
+      7.493499014535702e-10,
+      3.82059239800725e-09
+    ],
+    [
+      1.7287837827950625e-11,
+      1.0030721976358601e-11,
+      4.712663592698618e-11
+    ],
+    [
+      1.0654810367327627e-11,
+      1.0369705094603887e-11,
+      7.308986749166024e-12
+    ],
+    [
+      4.0486169972098196e-11,
+      2.75749423295224e-11,
+      3.265909764849084e-11
+    ]
+  ],
+  "chosen_step": 0.001,
+  "max_errors_at_chosen_step": {
+    "amplitude": 1.7287837827950625e-11,
+    "current": 1.0030721976358601e-11,
+    "mixed": 4.712663592698618e-11
+  },
+  "cutoffs": [
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+  ],
+  "extrapolation_windows": [
+    [
+      256,
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    [
+      512,
+      1024,
+      2048,
+      4096,
+      8192
+    ]
+  ],
+  "max_extrapolation_window_change": [
+    1.2138900995495305e-12,
+    3.154204756953988e-12,
+    1.0939027461631667e-12
+  ],
+  "max_matsubara_absolute_residual": 4.440892098500626e-16,
+  "spectral_state_count": 12020,
+  "max_retarded_scaled_residual": 2.3375741755328966e-14,
+  "max_retarded_normalization_residual": 7.275957614183426e-12,
+  "min_dos": 9.9999999995e-06,
+  "spectral_edge_checks": [
+    {
+      "Gamma_over_delta": 0.1,
+      "edge_from_stationary_equation": 0.6949224834460447,
+      "edge_formula": 0.6949224834460447,
+      "edge_absolute_error": 0.0,
+      "subgap_dos_at_half_edge": [
+        0.014681775517504495,
+        0.0014684531475853122,
+        0.00014684559046578688,
+        1.4684559322171832e-05
+      ]
+    },
+    {
+      "Gamma_over_delta": 0.4,
+      "edge_from_stationary_equation": 0.30905823030093993,
+      "edge_formula": 0.3090582303009399,
+      "edge_absolute_error": 5.551115123125783e-17,
+      "subgap_dos_at_half_edge": [
+        0.020097206281798643,
+        0.0020109235179147727,
+        0.00020109355684434072,
+        2.010935688947218e-05
+      ]
+    },
+    {
+      "Gamma_over_delta": 0.8,
+      "edge_from_stationary_equation": 0.05139077831550521,
+      "edge_formula": 0.05139077831550518,
+      "edge_absolute_error": 2.7755575615628914e-17,
+      "subgap_dos_at_half_edge": [
+        0.05674627000556942,
+        0.005763561764700621,
+        0.0005764506222110181,
+        5.76451567267948e-05
+      ]
+    }
+  ],
+  "runtime_seconds": 2.539701947942376
+}

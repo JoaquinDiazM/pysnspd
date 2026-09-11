@@ -1,0 +1,11 @@
+# Published document bundles carry SHA-256 manifests. Preserve their exact bytes
+# across Windows/Linux checkouts, including historical source and QA records.
+docs/modelo_v0_2/** -text
+docs/modelo_v0_3/** -text
+docs/modelo_v0_4/** -text
+sandbox/model_v0_2/** -text
+sandbox/model_v0_3/** -text
+sandbox/model_v0_4/** -text
+*.pdf binary
+*.png binary
+*.zip binary

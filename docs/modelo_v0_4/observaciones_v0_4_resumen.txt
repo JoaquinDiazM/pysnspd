@@ -1,0 +1,10 @@
+Solicitud de la revisión 0.4, recibida el 9 de septiembre de 2026.
+
+General: cada versión debe hacer pruebas independientes y repetir anteriores cuando se requiera verificar. Se busca anticipar el comportamiento en transientes completos antes del cambio generalizado a producción.
+A: sospecha de fallos de compilación de números de ecuaciones; revisar.
+B: cerrar decisiones abiertas con diagnóstico. Conservar sólo la decisión adecuada y el cálculo/plot que la avala; retirar desarrollos de alternativas que no se incorporarán a priori.
+C: auditar de nuevo analítica y físicamente el modelo integrado A/B/C. Desarrollar cómo aparece xi_mod^2*q^2 en C.0e y por qué su tratamiento es esencial para actualizar el cierre mesoscópico y evitar doble conteo. Conservar el origen de la ecuación compleja y forma estable de la memoria.
+D: añadir una sección con TODAS las ecuaciones del modelo actualizado que se evaluarán/implementarán, en su forma continua: dominio, bordes, tiempo y circuito; referencias breves a A–C.
+E: definir tecnicismos antes de usarlos, dar apellidos al término estado según su escala. Conectar clases abiertas con cerradas (actualmente no hay respuestas ni clases cerradas). Eliminar por completo la clase Nambu0.3, sólo nombre/estado DESCARTADA, y sustituir por dos clases progresivas (segunda cuantización y Nambu, si ésa es la mejor secuencia). Si una clase queda sin responder sin motivo explícito, interpretarlo como dificultad excesiva y bajar requisitos. Simplificar cálculo funcional: explicar notación, contexto y nombre de derivada direccional/regla E7; explicar expansión E8→E9 y porqué se retienen términos. No exigir toda la matemática si no es necesaria para A–D. Dividir modos/DOS/DFPT en dos clases, definir cada variable y justificar forma de ecuaciones. Mantener PDF de lectura y Markdown de respuestas.
+
+Autorización persistente: cálculos ligeros en Geminga, todo el conjunto versionado subido a Geminga. No se solicita modificar ni desplegar producción en este turno. Trabajar en main según AGENTS.md.

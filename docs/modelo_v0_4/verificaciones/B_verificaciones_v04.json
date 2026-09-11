@@ -1,0 +1,273 @@
+{
+  "version": "0.4",
+  "host": "geminga",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "matplotlib": "3.10.8",
+  "script_sha256": "28634e6bb633f023142b5fd31747ca9676d72813cc9e0bfce47a925523998747",
+  "material_audit": {
+    "path": "/home/jdiaz/scratch/big_data/catalogs/simon_2025/nbn-a2f-ph.dat",
+    "sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+    "rows": 11999,
+    "nu_THz": [
+      0.0,
+      20.0
+    ],
+    "declared_header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+    "signed_integral_modes": 0.708420057744323,
+    "positive_integral_modes": 0.7199501385518589,
+    "negative_integral_modes": -0.011530080807535748,
+    "negative_to_positive_fraction": 0.016015110200170095,
+    "if_per_meV_signed_integral": 2.929789948011651,
+    "if_per_meV_positive_integral": 2.9774745307396464,
+    "lambda_ep": 1.2156653377087898,
+    "minimum_phdos": -0.006390859,
+    "admission": "REJECTED for absolute phonon energy/rates until units, mode count and negative tail are resolved",
+    "repairs_applied": []
+  },
+  "spectral_vs_energy_and_bgk": {
+    "quadratures": [
+      {
+        "nodes": 256,
+        "forces": [
+          0.07004709073549631,
+          0.002781052877325611
+        ],
+        "ratio": 25.187255987328378,
+        "T_E": 0.28443462937859176,
+        "equilibrium_force": 0.07540377390638942,
+        "max_energy_error": 1.942890293094024e-16,
+        "bounds": [
+          [
+            0.0,
+            0.09739351024603884
+          ],
+          [
+            0.0,
+            0.028795929038148933
+          ]
+        ]
+      },
+      {
+        "nodes": 512,
+        "forces": [
+          0.07004709073694984,
+          0.0027810528773256123
+        ],
+        "ratio": 25.18725598785102,
+        "T_E": 0.28443462937858743,
+        "equilibrium_force": 0.07540377390639193,
+        "max_energy_error": 2.7755575615628914e-16,
+        "bounds": [
+          [
+            0.0,
+            0.10062349481027028
+          ],
+          [
+            0.0,
+            0.028795949062332817
+          ]
+        ]
+      },
+      {
+        "nodes": 1024,
+        "forces": [
+          0.07004709073695069,
+          0.0027810528773256115
+        ],
+        "ratio": 25.187255987851334,
+        "T_E": 0.28443462937856656,
+        "equilibrium_force": 0.07540377390640109,
+        "max_energy_error": 2.0816681711721685e-16,
+        "bounds": [
+          [
+            0.0,
+            0.10040869293273473
+          ],
+          [
+            0.0,
+            0.028795950318909642
+          ]
+        ]
+      }
+    ],
+    "independent_quad_forces": [
+      0.07004709073695016,
+      0.0027810528773256115
+    ],
+    "normalization": "N0=Delta0=1; total u_qp=.1, i.e. u_qp/(4*N0*Delta0^2)=.025 as v0.3",
+    "tau_kin_over_t_ref_sweep": [
+      0.2,
+      1.0,
+      5.0
+    ],
+    "normalized_force_difference_at_t_ref": [
+      0.006737946999085467,
+      0.36787944117144233,
+      0.8187307530779818
+    ],
+    "last_vs_independent_max_relative": 7.549516567451064e-15,
+    "meaning": "Conservative model relaxation in units of tau_kin; no material time or latency prediction"
+  },
+  "heat": {
+    "cases_last_grid": {
+      "vacuum": {
+        "power_error": 1.1102230246251565e-16,
+        "minimum_source": 1.6128794853032867e-124,
+        "maximum_source": 0.6287174000533278,
+        "T_star": 0.08,
+        "old_defined": false,
+        "distance_old_l1": null,
+        "new_distance_to_vacuum_l1": 0.0,
+        "new_force_per_power": 0.9176179264240275,
+        "old_force_per_power": null
+      },
+      "thermal": {
+        "power_error": 0.0,
+        "minimum_source": 2.6966693877795083e-33,
+        "maximum_source": 0.221572028646431,
+        "T_star": 0.3,
+        "old_defined": true,
+        "distance_old_l1": 5.252436349028667e-17,
+        "new_distance_to_vacuum_l1": 0.18678703409472802,
+        "new_force_per_power": 0.6871673035881002,
+        "old_force_per_power": 0.6871673035881001
+      },
+      "nonthermal": {
+        "power_error": 0.0,
+        "minimum_source": 1.1322428881991027e-16,
+        "maximum_source": 0.0865050286613832,
+        "T_star": 0.6118151011022159,
+        "old_defined": true,
+        "distance_old_l1": 0.20241797141530465,
+        "new_distance_to_vacuum_l1": 0.2647104971881489,
+        "new_force_per_power": 0.43218435153174894,
+        "old_force_per_power": 0.06207857622830003
+      },
+      "near_vacuum_FD_seed": {
+        "power_error": 1.1102230246251565e-16,
+        "minimum_source": 1.6128794853033348e-124,
+        "maximum_source": 0.628717400053325,
+        "T_star": 0.08,
+        "old_defined": true,
+        "distance_old_l1": 0.1848408178081279,
+        "new_distance_to_vacuum_l1": 9.35007731051434e-16,
+        "new_force_per_power": 0.9176179264240268,
+        "old_force_per_power": 0.6901124758665583
+      },
+      "near_vacuum_packet_seed": {
+        "power_error": 1.1102230246251565e-16,
+        "minimum_source": 1.6128794853032867e-124,
+        "maximum_source": 0.6287174000533278,
+        "T_star": 0.08,
+        "old_defined": true,
+        "distance_old_l1": 0.30114846043420507,
+        "new_distance_to_vacuum_l1": 3.0947155289587777e-26,
+        "new_force_per_power": 0.9176179264240275,
+        "old_force_per_power": 0.062090716454440226
+      }
+    },
+    "refinement": [
+      {
+        "nodes": 96,
+        "max_energy_residual": 6.938893903907228e-17,
+        "minimum_p": 0.0,
+        "maximum_p": 0.028866663325765846,
+        "final_force": 0.0754037427883065,
+        "nfev": 476
+      },
+      {
+        "nodes": 192,
+        "max_energy_residual": 6.938893903907228e-17,
+        "minimum_p": 0.0,
+        "maximum_p": 0.02886730431024995,
+        "final_force": 0.07540374280785975,
+        "nfev": 425
+      },
+      {
+        "nodes": 384,
+        "max_energy_residual": 4.163336342344337e-17,
+        "minimum_p": 0.0,
+        "maximum_p": 0.028867344785836423,
+        "final_force": 0.0754037428042561,
+        "nfev": 425
+      }
+    ],
+    "final_force_relative_change": 4.7791326451829264e-11,
+    "old_v03_vacuum_denominator": 0.0,
+    "entropy_claim": "No universal entropy positivity claimed for inverted occupations",
+    "physical_status": "Phenomenological deposition of positive dissipation, not microscopic Joule collision integral"
+  },
+  "collision_transport_escape": {
+    "refinement": [
+      {
+        "electron_bins": 12,
+        "phonon_bins": 24,
+        "energy_step": 0.5,
+        "max_relative_energy_residual": 3.8982792151362607e-16,
+        "minimum_f": 4.74266477016466e-09,
+        "maximum_f": 0.30527478532709845,
+        "minimum_n": 4.248354255291589e-18,
+        "equilibrium_rhs_max": 6.685867816982648e-19,
+        "final_qp_excess": 0.266488089185574,
+        "final_escape": 0.2149495047814337,
+        "nfev": 242,
+        "escape": true
+      },
+      {
+        "electron_bins": 24,
+        "phonon_bins": 48,
+        "energy_step": 0.25,
+        "max_relative_energy_residual": 2.0038852385427263e-16,
+        "minimum_f": 3.126557316965642e-09,
+        "maximum_f": 0.39853379510932185,
+        "minimum_n": 4.248354255291589e-18,
+        "equilibrium_rhs_max": 1.9669735098092518e-18,
+        "final_qp_excess": 0.26639964093350843,
+        "final_escape": 0.21504105537121623,
+        "nfev": 242,
+        "escape": true
+      },
+      {
+        "electron_bins": 48,
+        "phonon_bins": 96,
+        "energy_step": 0.125,
+        "max_relative_energy_residual": 2.0181111255085046e-16,
+        "minimum_f": 2.538565525460274e-09,
+        "maximum_f": 0.44872073199881574,
+        "minimum_n": 4.248354255291589e-18,
+        "equilibrium_rhs_max": 1.919530387825109e-18,
+        "final_qp_excess": 0.26637796790377066,
+        "final_escape": 0.21506350363895962,
+        "nfev": 242,
+        "escape": true
+      }
+    ],
+    "closed_test": {
+      "electron_bins": 24,
+      "phonon_bins": 48,
+      "energy_step": 0.25,
+      "max_relative_energy_residual": 4.0077704770854526e-16,
+      "minimum_f": 3.126557316965642e-09,
+      "maximum_f": 0.39936082071193296,
+      "minimum_n": 4.248354255291589e-18,
+      "equilibrium_rhs_max": 1.9669735098092518e-18,
+      "final_qp_excess": 0.4426474962858786,
+      "final_escape": 0.0,
+      "nfev": 197,
+      "escape": false
+    },
+    "last_relative_qp_change": 8.135532638786636e-05,
+    "last_relative_escape_change": 0.00010439061371170233,
+    "model": "normal rho=1, N0=1, hbar=1, Ni=10, alpha2F=.03*(Omega/12)^2, Debye cutoff=12, D=.03, tau_escape=8",
+    "scope": "Finite conservative two-cell reaction network; not a complete SNSPD transient or convergence proof for moving-gap Usadel transport"
+  },
+  "structural_acceptance": {
+    "independent_packet_quadrature": true,
+    "heating_refinement": true,
+    "heating_energy_and_bounds": true,
+    "collision_energy_and_bounds": true,
+    "collision_refinement": true
+  }
+}

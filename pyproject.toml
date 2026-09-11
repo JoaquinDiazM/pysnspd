@@ -4,17 +4,30 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysnspd"
-version = "0.0.0"
-description = "Template repository for a modular multiscale SNSPD simulation framework."
+version = "1.0.0"
+description = "Multiscale SNSPD research simulations based on the thesis model, with documentation for its next model update."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
   {name = "Joaquin Andres Diaz Monge"}
 ]
-dependencies = []
+dependencies = [
+  "numpy",
+  "scipy",
+  "matplotlib",
+  "PyYAML",
+  "h5py",
+  "meshpy",
+  "shapely",
+  "tqdm",
+  "threadpoolctl",
+]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "tomli; python_version < '3.11'"]
 
 [tool.setuptools.packages.find]
 include = ["pysnspd*"]
+
+[tool.setuptools.package-data]
+"pysnspd.plotting" = ["*.mplstyle"]

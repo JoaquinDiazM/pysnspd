@@ -1,0 +1,32 @@
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small,labelformat=empty,skip=7pt}
+\floatplacement{figure}{H}
+\definecolor{DocBlue}{HTML}{173F57}
+\definecolor{DocGray}{HTML}{52616C}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{DocGray} pySNSPD | Desarrollo del modelo}
+\fancyhead[R]{\small\sffamily\color{DocGray} Revisión 0.4}
+\fancyfoot[L]{\small\sffamily\color{DocGray} 9 de septiembre de 2026}
+\fancyfoot[R]{\small\sffamily\thepage}
+\setlength{\headheight}{15pt}
+\setlength{\emergencystretch}{2em}
+\setlength{\parskip}{5pt plus 1pt}
+\setlength{\parindent}{0pt}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\predisplaypenalty=10000
+\renewcommand{\arraystretch}{1.16}
+\AtBeginEnvironment{longtable}{\small}
+\pretocmd{\section}{\Needspace{6\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{5\baselineskip}}{}{}
+\AtBeginDocument{\hypersetup{colorlinks=true,linkcolor=DocBlue,urlcolor=DocBlue}}
+\allowdisplaybreaks[1]

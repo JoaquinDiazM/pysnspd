@@ -1,0 +1,929 @@
+{
+  "revision": "0.4",
+  "notebook_revision": "E-r02",
+  "date": "2026-09-09",
+  "created_utc": "2026-09-09T22:08:38.823685+00:00",
+  "repository_base": "391bb301a6c36f4438754a51a10a7fe2aade0555",
+  "scope": "Documentos, figuras y pruebas ligeras; sin modificación del solver ni ejecución PRE/SS/photon",
+  "pdf_pages": 84,
+  "equation_labels": 196,
+  "distinct_figures": 25,
+  "pedagogical_topics": 8,
+  "activities_total": 24,
+  "activities_pending": 24,
+  "class_revisions": {
+    "E01": {
+      "revision": 2,
+      "learning_state": "ABIERTO"
+    },
+    "E04": {
+      "revision": 2,
+      "learning_state": "ABIERTO"
+    },
+    "E06": {
+      "revision": 2,
+      "learning_state": "ABIERTO"
+    },
+    "E07": {
+      "revision": 2,
+      "learning_state": "ABIERTO"
+    },
+    "E03": {
+      "revision": 2,
+      "learning_state": "ABIERTO"
+    },
+    "E05": {
+      "revision": 2,
+      "learning_state": "ABIERTO"
+    },
+    "E09": {
+      "revision": 1,
+      "learning_state": "ABIERTO"
+    },
+    "E10": {
+      "revision": 1,
+      "learning_state": "ABIERTO"
+    }
+  },
+  "retired_classes": {
+    "E02": {
+      "revision": 1,
+      "replaced_by": [
+        "E06",
+        "E07"
+      ]
+    },
+    "E08": {
+      "revision": 1,
+      "replaced_by": [
+        "E09",
+        "E10"
+      ]
+    }
+  },
+  "learning_state": "E01: ABIERTO (r2); E04: ABIERTO (r2); E06: ABIERTO (r2); E07: ABIERTO (r2); E03: ABIERTO (r2); E05: ABIERTO (r2); E09: ABIERTO (r1); E10: ABIERTO (r1); retiradas: E02, E08; 24 respuestas pendientes",
+  "previous_delivery_snapshot": {
+    "notebook_revision": "E-r01",
+    "manifest": {
+      "path": "docs/modelo_v0_4/historial/E-r01/entrega-47a15161d183/manifiesto_v0_4.json",
+      "sha256": "47a15161d1831d44b56bd7f6153929b4915cd5084c88ce8e741a7b2aa36af559"
+    },
+    "zip": {
+      "path": "output/pdf/modelo_v0_4/historial/E-r01/entrega-47a15161d183/pysnspd_documentos_v0_4.zip",
+      "sha256": "f11aa18538b359e4dd08af1fa1a5d094a1b4cb5d58f04883b998e5771b28aa01"
+    }
+  },
+  "model_admission": "Candidato experimental restringido; no se promueve a producción. Fuerza de núcleo sensible, símbolo principal negativo en estados probados, entrada fonónica inadmisible y tiempos cinéticos sin identificar.",
+  "independent_diagnostics": [
+    "checks_a_v04.py",
+    "checks_b_v04.py",
+    "checks_c_v04.py",
+    "checks_d_v04.py",
+    "learning_revision/figures_foundations.py",
+    "learning_revision/figures_e04.py",
+    "learning_revision/checks_modes.py",
+    "learning_revision/figures_dft_dfpt.py"
+  ],
+  "learning_build": [
+    "learning_revision/build_learning.py"
+  ],
+  "historical_learning_assembly": {
+    "path": "sandbox/model_v0_4/learning_revision/assemble_learning.py",
+    "purpose": "Montaje editorial de E-r02 desde fragmentos; reconstruir sólo sobre una copia para preservar la edición personal del Markdown."
+  },
+  "historical_learning_script": {
+    "path": "sandbox/model_v0_4/learning_v04.py",
+    "purpose": "Reproduce la entrega E-r01; no ejecutar para regenerar las figuras actuales."
+  },
+  "material_source": {
+    "path_on_geminga": "/home/jdiaz/scratch/big_data/catalogs/simon_2025/nbn-a2f-ph.dat",
+    "sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+    "redistributed": false,
+    "admitted_for_absolute_rates": false
+  },
+  "remote_root": "geminga:/home/jdiaz/pysnspd",
+  "delivery_status": {
+    "notebook": "Revisión local; esta entrega no acredita una nueva sincronización con Geminga.",
+    "documents_A_D": "Se conservan las fuentes y los PDF de la edición 0.4."
+  },
+  "source_documents": [
+    {
+      "name": "observaciones_v0_3_adjuntas",
+      "sha256": "e6dec5cbb5594093867790540d36d75a57f88f4a44c7f4bab5e4e93c232b4c0d",
+      "redistributed": false
+    },
+    {
+      "name": "memoria_02.pdf",
+      "sha256": "50a75f1bd84f06f32820dbf9477c0fdcaf809fb502485e84249ebb46b286c1e8",
+      "redistributed": false
+    },
+    {
+      "name": "Allmaras_Thesis_Final.pdf",
+      "sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96",
+      "redistributed": false
+    }
+  ],
+  "primary_reference_urls": [
+    "https://arxiv.org/pdf/1611.06060",
+    "https://doi.org/10.1103/PhysRevB.101.094507",
+    "https://arxiv.org/pdf/1909.00992v1",
+    "https://arxiv.org/pdf/2501.13791v3",
+    "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf",
+    "https://ocw.mit.edu/courses/18-325-topics-in-applied-mathematics-waves-and-imaging-fall-2015/834e98a77f64597a422c205b123cd6d7_MIT18_325F15_Appendix_A.pdf",
+    "https://topocondmat.org/test/w1_topointro/0d.html",
+    "https://www.quantum-espresso.org/Doc/ph_user_guide/node19.html",
+    "https://arxiv.org/abs/cond-mat/0012092"
+  ],
+  "files": [
+    {
+      "path": "docs/modelo_v0_4/A_microscopia_y_funcional_v0_4.md",
+      "bytes": 38198,
+      "sha256": "043d14c9d9c2e52a06d909a033a6230d021120b696272023ed0558e6e8c228a5"
+    },
+    {
+      "path": "docs/modelo_v0_4/B_cinetica_energia_y_temperaturas_v0_4.md",
+      "bytes": 61873,
+      "sha256": "559434e30bf71c84718fcc364456b2513eca8dce245b81f25baedf5bff79c47a"
+    },
+    {
+      "path": "docs/modelo_v0_4/C_condensado_corriente_y_senal_v0_4.md",
+      "bytes": 41438,
+      "sha256": "e1ca04f4d55947c2ec87d8aef47626aaf196d105d5ac8d973d988bede7ab288c"
+    },
+    {
+      "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+      "bytes": 38506,
+      "sha256": "1c6b06170b7d40f2be63d05ad7359c314fb1106cb758019a1028326c34dbfc76"
+    },
+    {
+      "path": "docs/modelo_v0_4/E_cuaderno_de_aprendizaje_v0_4.md",
+      "bytes": 75905,
+      "sha256": "b16be1968865f5213e5ed4b9f450c235fb817f6c55d230aeadf88128ec26c2a5"
+    },
+    {
+      "path": "docs/modelo_v0_4/E_registro_de_revisiones.json",
+      "bytes": 1162,
+      "sha256": "1983b9a772fb59b12dddf454469088bf8542cbbcbcf820430af8da932188b3ce"
+    },
+    {
+      "path": "docs/modelo_v0_4/E_VERSIONADO.md",
+      "bytes": 3444,
+      "sha256": "d41f605b3efe6026903a1fc4ad5194580f0d53382803a4cadc9188051e8515f9"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_01_energia_comun.pdf",
+      "bytes": 24441,
+      "sha256": "d773a6f9b95bfcf3443e5f78f418bdf0e076d8f6faeda071df1067f0579e9abc"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_01_energia_comun.png",
+      "bytes": 147433,
+      "sha256": "d0a72298a2cbaa773ea78737abe307a40696cebe2d41d3c688881ba080d9855a"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_03_gap_espectral.pdf",
+      "bytes": 22415,
+      "sha256": "defab7a3825031d4d6ffcf66e30ce9c58ac81d701ebea12dc92daa082cf85d38"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_03_gap_espectral.png",
+      "bytes": 74668,
+      "sha256": "d9e817a50cf108612132c0dfb113a876edddf128079628c89dda102a604be5da"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_04_auditoria_independiente.pdf",
+      "bytes": 21492,
+      "sha256": "af10e1bfb39030ed0c4e1330d45f866c0e6ada0ad0ba8ecaf57a8b7d47b4561f"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_04_auditoria_independiente.png",
+      "bytes": 212051,
+      "sha256": "275c9a6bef304939f2907b8d2198b5a682f231f4b997d823dee3a8513b9b9e00"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_05_espectro_y_regulador.pdf",
+      "bytes": 23174,
+      "sha256": "55d3797ab236093d2338091ef355c2f5e526d200afb22dae244f6dacd77fd4ee"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/A_05_espectro_y_regulador.png",
+      "bytes": 166840,
+      "sha256": "ca144eaf8d4ecdfb5c9ddc43c3bccfd0072c239d48e3e1b52cbc39371ceb28fa"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_01_reacciones_balance.png",
+      "bytes": 92499,
+      "sha256": "c55440ad1237e085677d24b73c25002e08cf9d18bb4373e651f336d5b7bc67cf"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_05_burbuja_y_retencion.png",
+      "bytes": 160081,
+      "sha256": "315f585d023f33218da3e1128c67d3c3e33762ef8bc60e28266ac2276122a255"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_06_auditoria_dos.pdf",
+      "bytes": 33686,
+      "sha256": "fbbd96ed6e0a8059244414de41199a5abd85ab53e5fba0bbd9c9f1100a01e00d"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_06_auditoria_dos.png",
+      "bytes": 146421,
+      "sha256": "c026ed94a25fb7905aaba3cf16495aa4071136cf2edb75a37408031cb609b402"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_07_espectro_y_relajacion.pdf",
+      "bytes": 23143,
+      "sha256": "aa23e245c75a3481e37a60abc20106e9bc0e3171b7db16e49b0d5770abc1f19f"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_07_espectro_y_relajacion.png",
+      "bytes": 133541,
+      "sha256": "03c8dc02c295b9074be88a526642492d1926e7968cc5722bbd42a05c01804af2"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_08_calor_espectral.pdf",
+      "bytes": 21979,
+      "sha256": "b71993b3fb71ec7a308f6ea5153784ca5005b364233a5d429e3fb8dc7e89f61c"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_08_calor_espectral.png",
+      "bytes": 129153,
+      "sha256": "b1ed811988306b8d58d74e3b1b579f175179702bc33edb5f9ffa114737bbe092"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_09_trayectoria_conservativa.pdf",
+      "bytes": 18326,
+      "sha256": "b3131f5ce323708885ff3f06cb8b29d2f3e9cd062a465217eac21a0f04057d5c"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/B_09_trayectoria_conservativa.png",
+      "bytes": 137218,
+      "sha256": "781db9785d23f42e0ffef7cd3503102e91af99fb4d559d4d651293b43141dc02"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_05_auditoria_nucleo.pdf",
+      "bytes": 33310,
+      "sha256": "8bda88bfd0efd1f732843a6c7a2f17c12bebe352b14d0ba58a79e992ae830054"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_05_auditoria_nucleo.png",
+      "bytes": 178878,
+      "sha256": "7deb538b6332bdbf1b30b48138d8afbf2f88577865db92a30547cdb43eac62b0"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_06_modos_espaciales.pdf",
+      "bytes": 28946,
+      "sha256": "e5638268cec2bf3475ad015e9cc630bf74c7bcf34ae6523d630da7ba68b35e40"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_06_modos_espaciales.png",
+      "bytes": 120427,
+      "sha256": "892b40999dff11fa53a241ebd4fa2461be59909eb55247b19f7946781f907298"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_07_celda_BCS_cinetica.pdf",
+      "bytes": 29986,
+      "sha256": "d8fb72bda310353c156a97f5a20abdb0233a70fac840bb7342d0edfca3838a64"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_07_celda_BCS_cinetica.png",
+      "bytes": 119850,
+      "sha256": "1e60877681ad8e3cd745302ecced56b6f729c2bb4b7b59be7ee8c0810b7a566d"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_08_ramas_regularizadas.pdf",
+      "bytes": 33307,
+      "sha256": "c117b4f14e254f09191b7bda7eaece4fefc2c23a1f12380c94b88e7360e23215"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_08_ramas_regularizadas.png",
+      "bytes": 142757,
+      "sha256": "a612761071764bd5fab0d60a3576d8d113730d44bdfc22039053d0a049059ef6"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_09_admisibilidad_espacial.pdf",
+      "bytes": 25884,
+      "sha256": "3fbc29b5a44ded70bcd478b408207e1d0ba36365fa0a11a0dab6edb38e0dd14a"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/C_09_admisibilidad_espacial.png",
+      "bytes": 112117,
+      "sha256": "148950574d848ffdd4a49ca907e0acc178690435f311eb52e3779c39f225d432"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/D_01_circuito_y_balance.pdf",
+      "bytes": 32260,
+      "sha256": "8f0f5fe2a0fe791e837f33f060998ebe1dfc94cbe21fd74aa33e65dbbb624ceb"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/D_01_circuito_y_balance.png",
+      "bytes": 307847,
+      "sha256": "4fb8911c360fbbcfeff9e5e7b81c0d35db7cb95bae33cd021c4fcca701bc758c"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E01_escalas.pdf",
+      "bytes": 12706,
+      "sha256": "85a83a5817fd6bca99ee4c7bdf52c18a73fae51a6c49ff74c090010a64e7d76c"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E01_escalas.png",
+      "bytes": 75404,
+      "sha256": "7a47a4a11de5fa3a77d259cca55988917e5c70c2c2ae3cb2eae02b679b3136c2"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E01_sistemas_campos.pdf",
+      "bytes": 34882,
+      "sha256": "ee4f0aa1cd26a4a3b403a69e151345cca6ffa928c4abb00627c063f63a8f64a4"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E01_sistemas_campos.png",
+      "bytes": 280628,
+      "sha256": "d8d502c6ccc8e868a3e0cfa0d9ba614003f22963af5ec02adf02147b32d99827"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E03_curva_variacion.pdf",
+      "bytes": 25925,
+      "sha256": "45d518754d130cf48d729f3a57c589298b43d6135691f17c751d58eb1e3ef2d1"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E03_curva_variacion.png",
+      "bytes": 114957,
+      "sha256": "906d42fdf20318394993011355ae750fb180cf1b8efd7cc83a005ec674d4f88f"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_circuitos_micro.pdf",
+      "bytes": 44910,
+      "sha256": "63c65e9258bf104344673f3b8c74a2a727fc0cd2390552a930fbd1a193c0634b"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_circuitos_micro.png",
+      "bytes": 278811,
+      "sha256": "e509510318bb5fc037c59dc7369ee1b76e22893171b9bdf4b4c4d897175724c9"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_interfaces.pdf",
+      "bytes": 42920,
+      "sha256": "b349054b1030132cc93de795519becb802be48adc95c8099eaca1bdd100e04d4"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_interfaces.png",
+      "bytes": 165925,
+      "sha256": "7f84b226d662bf4130fadeb743abae817c382e0aec60a4f4c2d5d751f1e4b335"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_referencia_hueco.pdf",
+      "bytes": 17597,
+      "sha256": "77313180545f756b6ae4fe31d86dbf2e96ecae1962a3c883501a19f40a062da6"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_referencia_hueco.png",
+      "bytes": 64796,
+      "sha256": "6be2878af4f0889d3e52ce6ef1d452c116c08a08148491edf6ee22e41dd8cfba"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E05_modos_conteo.pdf",
+      "bytes": 20318,
+      "sha256": "ac45c4a1f4e9d64c6c38570b5638915f548da5426992458bcb13ab0e65d15626"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E05_modos_conteo.png",
+      "bytes": 75416,
+      "sha256": "02440c12e761f458b78ae87162484ac9af9819538ed8dbe778617314006c0a85"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E06_ocupacion_operadores.pdf",
+      "bytes": 14652,
+      "sha256": "f975e0595903d103a3a8c5470eae91a7aaf71bb462760a26b7a289c73750ca4f"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E06_ocupacion_operadores.png",
+      "bytes": 29709,
+      "sha256": "14ff5857b1541d354f5c9e7c933db794f4d17b4f8196c2be3145ab01e9f0310e"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E07_columna_nambu.pdf",
+      "bytes": 20932,
+      "sha256": "8d17de2ba9d9928312ad4c4239909f923f66cf5fce955b4db0d707566cdcc791"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E07_columna_nambu.png",
+      "bytes": 50246,
+      "sha256": "c1055792a21cbcb63d2a88073aff70d22b7e2beaca13c303305b82edec31894f"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E08_curvatura_acoplamiento.pdf",
+      "bytes": 21554,
+      "sha256": "e603791754b3c01ea700ce0b1f3630a3b0a51d9596208308987852d54dcdfc81"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E08_curvatura_acoplamiento.png",
+      "bytes": 128478,
+      "sha256": "4c6dc7a908343f56c0da070d1492d88fe1eb7e9366fa57f2284cf81f5f8cda9f"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E09_dft_dos.pdf",
+      "bytes": 58009,
+      "sha256": "470e8b921a70a39b4dcd30a4a9125a08f199cccb5f42acd2b88b6f0dc59a3a92"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E09_dft_dos.png",
+      "bytes": 258283,
+      "sha256": "fe571322f0e426bd28c9eaf64a5e613339ff7a1c90e3bc912d0d4a3f77932e34"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E10_dfpt_a2f.checks.json",
+      "bytes": 978,
+      "sha256": "03973b8462a0a1094c00e4988e56492c8e9a87a30acf2d8b5829e90cf677b286"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E10_dfpt_a2f.pdf",
+      "bytes": 43815,
+      "sha256": "4b9afa5c41685896a2005a517e726b4a43c5e5cee5cc6c56ae047a448c86ef4c"
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E10_dfpt_a2f.png",
+      "bytes": 278269,
+      "sha256": "9c027f2f150e34a9e5c4ea703a59e8b8b6bce033f155066f81b177c7b4e62e07"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/E_cuaderno_de_aprendizaje_v0_4.md",
+      "bytes": 36861,
+      "sha256": "2664c3049e12187f2f9c9748ba7226dc34325d490e874543bd6f86dacd71fe1f"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/E_cuaderno_de_aprendizaje_v0_4.pdf",
+      "bytes": 605117,
+      "sha256": "8d9ab7c0cd4e31b99d37aca63784ec9060fab978829c746976421ac88e45544e"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/E_cuaderno_de_aprendizaje_v0_4.tex",
+      "bytes": 48850,
+      "sha256": "0a05a936545c006dff7fd0d3d169f574ee8ad3c9d4f5d87b9a458a7f9c52b962"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/entrega-47a15161d183/manifiesto_v0_4.json",
+      "bytes": 22911,
+      "sha256": "47a15161d1831d44b56bd7f6153929b4915cd5084c88ce8e741a7b2aa36af559"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/figuras/E01_escalas.png",
+      "bytes": 75404,
+      "sha256": "7a47a4a11de5fa3a77d259cca55988917e5c70c2c2ae3cb2eae02b679b3136c2"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/figuras/E03_curva_variacion.png",
+      "bytes": 114957,
+      "sha256": "906d42fdf20318394993011355ae750fb180cf1b8efd7cc83a005ec674d4f88f"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/figuras/E04_referencia_hueco.png",
+      "bytes": 64796,
+      "sha256": "6be2878af4f0889d3e52ce6ef1d452c116c08a08148491edf6ee22e41dd8cfba"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/figuras/E05_modos_conteo.png",
+      "bytes": 75416,
+      "sha256": "02440c12e761f458b78ae87162484ac9af9819538ed8dbe778617314006c0a85"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/figuras/E06_ocupacion_operadores.png",
+      "bytes": 29709,
+      "sha256": "14ff5857b1541d354f5c9e7c933db794f4d17b4f8196c2be3145ab01e9f0310e"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/figuras/E07_columna_nambu.png",
+      "bytes": 50246,
+      "sha256": "c1055792a21cbcb63d2a88073aff70d22b7e2beaca13c303305b82edec31894f"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/figuras/E08_curvatura_acoplamiento.png",
+      "bytes": 128478,
+      "sha256": "4c6dc7a908343f56c0da070d1492d88fe1eb7e9366fa57f2284cf81f5f8cda9f"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/latex/E_cuaderno_de_aprendizaje_v0_4.tex",
+      "bytes": 48850,
+      "sha256": "0a05a936545c006dff7fd0d3d169f574ee8ad3c9d4f5d87b9a458a7f9c52b962"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/latex/header.tex",
+      "bytes": 1135,
+      "sha256": "857b10b5344a145d5091846892a4b40b4c53ec58d54609875da5efaef050dfc5"
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r01/QA_visual_E.json",
+      "bytes": 1046,
+      "sha256": "b7c8893f8e400f68e94fe24b227addcc0c39ffec2636c7e3145eb7d0e522e573"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/A_microscopia_y_funcional_v0_4.tex",
+      "bytes": 48330,
+      "sha256": "0b27f7bb084384d9e796ea267fd4363d2a939c775f3430e0774a4b0b3ce88d06"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/B_cinetica_energia_y_temperaturas_v0_4.tex",
+      "bytes": 75278,
+      "sha256": "babf2cc1f1994f94bdefc3d276d7b52307c07bc04999d1aaa47196afd3b72a41"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/C_condensado_corriente_y_senal_v0_4.tex",
+      "bytes": 54056,
+      "sha256": "3fc95270f982419d920f218b7ccbbe475bf20e5712253ec7977fac24c4ada2fd"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/D_sintesis_plan_y_verificaciones_v0_4.tex",
+      "bytes": 47473,
+      "sha256": "d4bc109ce6dc4dcf6006e7eaf723e9a4e88d598a997a86695aead8aa4fbaa7a1"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/E_cuaderno_de_aprendizaje_v0_4.tex",
+      "bytes": 91491,
+      "sha256": "b5e55f4121ec75b930eac82d4e61299b196e0055696811c54a412cdab5f64e27"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/header.tex",
+      "bytes": 1135,
+      "sha256": "857b10b5344a145d5091846892a4b40b4c53ec58d54609875da5efaef050dfc5"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/header_learning.tex",
+      "bytes": 1140,
+      "sha256": "887fdfdcfe057c33fda3fba05a1403c12830cd7396edd984b43a6ced3adcc90b"
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/sources.json",
+      "bytes": 1778,
+      "sha256": "5b52bea4818b63b3ab1bfd641d47196774b82c1b71ca952b0dcbef1733f869cc"
+    },
+    {
+      "path": "docs/modelo_v0_4/observaciones_v0_4_resumen.txt",
+      "bytes": 2082,
+      "sha256": "87df99e56dec77ea871e936bd166e0db21ec0341b156fe35a6f9e9e17482ab2d"
+    },
+    {
+      "path": "docs/modelo_v0_4/README.md",
+      "bytes": 7535,
+      "sha256": "b00cee6784caa56c1c85b9ae54313c9d36b31a85bb9de95cc1761d87629cd0da"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/A_auditoria_independiente_v04.json",
+      "bytes": 3310,
+      "sha256": "0540a756cae9450165f58d86321d89968adb65645980b875339098b0d1ffdf9c"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/A_convergencia_cortes_v04.csv",
+      "bytes": 770,
+      "sha256": "d6e761425480b699830f592d3329ec2e55b2f96f6f1981dbb8e81dce705ee94a"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/A_convergencia_malla_v04.csv",
+      "bytes": 12093,
+      "sha256": "51952f911696f3babc3c3f89711704a58802d98681b7f08ee860b92d6f6a107f"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/A_derivadas_malla_v04.csv",
+      "bytes": 70084,
+      "sha256": "7b9b801451635a1c112967ed7a321004459b9d1ba7c10270a272699add647119"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/A_espectros_causales_v04.csv",
+      "bytes": 2103588,
+      "sha256": "43c7022f9fafce11d67a51e36967934f706f7a9baad53e0136154f176c84caf9"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/A_mapa_ecuaciones.json",
+      "bytes": 5820,
+      "sha256": "c6ae5218505f155e84a20d44d181fc67adb2482d15580e40f535286964706b43"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/B_04_bgk_trajectory.csv",
+      "bytes": 12121,
+      "sha256": "e0423bc6c4432e3b83bffb96d1adb1b1d151bfa0d7cd65a6d2a2044f22cb9fb0"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/B_04_collision_trajectory.csv",
+      "bytes": 28215,
+      "sha256": "6bc02fe62012bc2509b52c29327290d16cb23b4d8ef5dfca2e095397c86fd12b"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/B_04_heat_trajectory.csv",
+      "bytes": 6099,
+      "sha256": "a0c289a734c9b5f208d7bef034eb12b27b64aa0dd664414882a5ae4f6579bd37"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/B_04_material_audit.csv",
+      "bytes": 1200311,
+      "sha256": "a0c7f688ae64696772d8a5b4995ff2abc949271b85d53f8dd2f2938c0e429378"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/B_verificaciones_v04.json",
+      "bytes": 8918,
+      "sha256": "317385b4e19d6f248c97f3ac364c0cda378c255ef4c6df926837f90e7daee0dd"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/C04_checks.json",
+      "bytes": 7580,
+      "sha256": "c6b0c378086015d7165eeba9977420a02a0b67026b1aa113620094a9eb73b31d"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/C04_core_delta_limit.csv",
+      "bytes": 321,
+      "sha256": "fa7e24589b81fdf204404ec37462e4b306397724d18cf08188924e19a0c4ca7e"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/C04_finite_wavevector.csv",
+      "bytes": 8424,
+      "sha256": "506e0f62d74855bb89759f2db45cff8eb7497f0934ff58411218e3cb30c3279d"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/C04_isolated_BCS_cell.csv",
+      "bytes": 55454,
+      "sha256": "1ff2b174845fbf9a66302b46942abe278eeda85071e12c32b40042a9b3821e8f"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/C04_phase_principal.csv",
+      "bytes": 25903,
+      "sha256": "76c2d2102ce4a21e5c96f419512676c1199d557c8b35192502c6d42b95b57fa1"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/C04_uniform_regularized.csv",
+      "bytes": 24970,
+      "sha256": "4e4fde2acfb3431c320402da6d2a0a64f9478a64897cda88853352a031a97fbf"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/C04_vortex_profiles.csv",
+      "bytes": 529206,
+      "sha256": "10f38c3a08fe47e4883f4848a395b555bb6142247366fc54554658aec1a05bbe"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/compilacion/A_microscopia_y_funcional_v0_4.log",
+      "bytes": 40566,
+      "sha256": "acb71a0df70a16f5a82c186ccde2149fc2b90fcabe82e76ca44aaed1cda3ad6f"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/compilacion/B_cinetica_energia_y_temperaturas_v0_4.log",
+      "bytes": 42109,
+      "sha256": "715d84eebadbfc105f69871224ea86050a19a20d51403f9de621c6ae4893e6fc"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/compilacion/C_condensado_corriente_y_senal_v0_4.log",
+      "bytes": 41962,
+      "sha256": "a1b9acfa8ebf8be9a07fdd98890f56210a6a6d341d4328f7cd19a060294c8038"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/compilacion/D_sintesis_plan_y_verificaciones_v0_4.log",
+      "bytes": 41504,
+      "sha256": "3a8f948557e1a7d490531b69e520aeb30fcb412cc6cd42e9155753d9a3c88d30"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/compilacion/E_cuaderno_de_aprendizaje_v0_4.log",
+      "bytes": 41104,
+      "sha256": "26fae364639086dbe7a23f8c2d8aafa2e14cda0fa8985e20a0f63c44c5e22836"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/D04_circuito_y_balance.json",
+      "bytes": 3800,
+      "sha256": "f7e32b563ca059c55a683b0c36e4bffa7f2198731a2e29dc66121d0cbf645135"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/D04_convergencia_circuito.csv",
+      "bytes": 1049,
+      "sha256": "eb2f561924e1f5691ebb1c45ec4ae49a62884f95e552357fe5b4035cda7303dc"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/D04_trayectoria_circuito.csv",
+      "bytes": 963695,
+      "sha256": "07760a7fdf60f31b208bda7115c7c0988e3d335f8d6efe93d2eee0fdf2832f5e"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/E_ejemplos_v04.json",
+      "bytes": 486,
+      "sha256": "2a813865903cdb72552593a77c8343f6a99009c9bd5a07fc40e63d9a55f079f7"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/E_fundamentos_r02.json",
+      "bytes": 365,
+      "sha256": "5809b91be8aedf12a5d8b85e4370469285e16a62bba576362bb80e1b5f1363a0"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/manifiesto_E_r02.json",
+      "bytes": 4297,
+      "sha256": "200db8a01a3c0171e2897b44975f5033d2cc375d4c9719cbaf76cd9815f13c94"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_estructura.json",
+      "bytes": 1778,
+      "sha256": "00431f1676e239a73d132475914d3e3b2c30c6e2a38a18e8875779e5df1ee065"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual.json",
+      "bytes": 3547,
+      "sha256": "279dd33e4c9d7bfcb91f68dbb02db25a570976788383ab953c6d989bafc7ed8a"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual_A.json",
+      "bytes": 3877,
+      "sha256": "bd8d1d50cec6ccee7102dbca134a8a80741302eaa9b64c25874223ef4a24ac60"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual_B.json",
+      "bytes": 1129,
+      "sha256": "be7416b5401cd8b7c125b94dc3a43d21b72ea1828046aaba5248929569a35591"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual_C.json",
+      "bytes": 1035,
+      "sha256": "f4b0a70b2bfc940300b480ffc9a54e8cbc7442a0327e03ca2dfb28f5293053fb"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual_D.json",
+      "bytes": 1035,
+      "sha256": "b1641b548fa7da7a0ea13d449ded1aad70d8538341c611d2382d202328d4b2f7"
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual_E.json",
+      "bytes": 954,
+      "sha256": "6601539e97abefa0b7e7dd460cb795c5fcc86f1c9d117d3dd3ef46a4262a51fb"
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/A_microscopia_y_funcional_v0_4.pdf",
+      "bytes": 674439,
+      "sha256": "7be97b3aef57f2cd27e461a0120a77918c0221d0f2e6389efe3f80e6a48bb86d"
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/B_cinetica_energia_y_temperaturas_v0_4.pdf",
+      "bytes": 888089,
+      "sha256": "72c0e677713ed54dcb4fd12056d6517a29f9dda6996f07fc97b158145c5d6791"
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/C_condensado_corriente_y_senal_v0_4.pdf",
+      "bytes": 761380,
+      "sha256": "c0610ded6b043f7fa776e1f27de39e87e9cf6fd86ef1caf3369e1df60d9995c8"
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.pdf",
+      "bytes": 398585,
+      "sha256": "079991165a711a54ac7d27eb86adb79d12b2fa3d9b00e362d6b9e05159badfc3"
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/E_cuaderno_de_aprendizaje_v0_4.pdf",
+      "bytes": 1653984,
+      "sha256": "b7f90b720e92e434156842981306d33adbfb5ee4883d4b45354e364c50ab94ac"
+    },
+    {
+      "path": "sandbox/model_v0_4/build_documents.py",
+      "bytes": 4401,
+      "sha256": "250b89fbdb3d87adcc2899cc44ef212707237344701d7c4875eb8c8f363dfa53"
+    },
+    {
+      "path": "sandbox/model_v0_4/checks_a_v04.py",
+      "bytes": 14439,
+      "sha256": "9f63956533da4ccd210f1cefcb0928bee19b9127d14e3e534fdb0af2debd5462"
+    },
+    {
+      "path": "sandbox/model_v0_4/checks_b_v04.py",
+      "bytes": 18136,
+      "sha256": "28634e6bb633f023142b5fd31747ca9676d72813cc9e0bfce47a925523998747"
+    },
+    {
+      "path": "sandbox/model_v0_4/checks_c_v04.py",
+      "bytes": 22995,
+      "sha256": "5ed0348bdc0dfc84a35ce6b17ce2fc2b3189af575905617959728ac525197f6e"
+    },
+    {
+      "path": "sandbox/model_v0_4/checks_d_v04.py",
+      "bytes": 10529,
+      "sha256": "7cb880bfe4fcd7ade9c5520abcb0d937b4d5fe1cdba69901ce4e5a56a270929f"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/assemble_learning.py",
+      "bytes": 6509,
+      "sha256": "7c45a4cb2f05f1888bbd37066f2febf6f8fc2271d36e4b9a0b50f5276d6933c7"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/assembly_source.json",
+      "bytes": 229,
+      "sha256": "f8a340a3bb7103f53f720f6ae67daa821aa67c44fe3ee9adaadab9b6e9c26f89"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/build_learning.py",
+      "bytes": 2217,
+      "sha256": "af612bfa10a7a665a4490cad88154d3e8fac5c41977b9b7838368d44e3a10f78"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/checks_modes.py",
+      "bytes": 2818,
+      "sha256": "ed1bd35e0a552aac271751373d35b0ee21a4c49a1e4843b2f15af8dac2ed02c3"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E01.md",
+      "bytes": 6934,
+      "sha256": "36548f3a2d65d29e2e134b6e1e152f8d351ec8aa1c35e5ce8bfe595386513086"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E03.md",
+      "bytes": 7831,
+      "sha256": "fc79e43f75a16c52abb5eac2d603f056fc50af7d70a0f7b9323054733076815a"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E04.md",
+      "bytes": 11124,
+      "sha256": "dce1d06d08a10e6598cb290bd15297e75d94605255fab49c5759d4f06b9b560b"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E05.md",
+      "bytes": 11973,
+      "sha256": "261250684f9284b156aead914d1c62c56db04d6c7e211c92eabeaef0e5510029"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E06.md",
+      "bytes": 7859,
+      "sha256": "afc345a411462fe5b801af9b7ee269327ed195fe28f8c2767c23e02b9dd62840"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E07.md",
+      "bytes": 5392,
+      "sha256": "abf9f6a892c94cd060903730a81fe686dddc16f7ac6c7c86676c80bf2a4eec38"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E09.md",
+      "bytes": 9454,
+      "sha256": "dc201eab759d9652c17b978f9efc0389b4946a2786a3a9be6411abf5b61529a0"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/E10.md",
+      "bytes": 10663,
+      "sha256": "ccca39a0e201e39cb6ab170ade252e05c0221f75010fd1b57ef008a5cde27e10"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/figures_dft_dfpt.py",
+      "bytes": 10691,
+      "sha256": "0f2867e967728ed50238ae79ad680dafe2cadafda20c3d856297a3644a317a85"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/figures_e04.py",
+      "bytes": 9893,
+      "sha256": "212e0c3a1183338362921b01ac7b05730d2a3190cd3a5e093806faaebe6d225e"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/figures_foundations.py",
+      "bytes": 4661,
+      "sha256": "05bea30b50f5817bef8430595eb31e8c4d22b1eb4a173e09aecb2135dc4352ab"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/qa_final_01_09.json",
+      "bytes": 1592,
+      "sha256": "71a9ccc5ed47caea872c8b07f28510d24d73b7eb139b8fb6a164d9d7a5665664"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/qa_final_10_18.json",
+      "bytes": 2096,
+      "sha256": "bbe97f2d15031102336af86c563ab2fc2a5bffe3e09969aea7fc7a824960cc2a"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/qa_final_19_26.json",
+      "bytes": 543,
+      "sha256": "799a0ccd0c72b58b85fc5583234c08ac3fd06ed590d046acaf5e7d7cc9ada45b"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/qa_pages_01_10.json",
+      "bytes": 2651,
+      "sha256": "3ff7cba46b1e3e71f696d23b47ad4e359c7a757228bee1dceebc0e742ef43f04"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/qa_pages_11_20.json",
+      "bytes": 2662,
+      "sha256": "eaee57406c0547b31bbfa46ddefb28fd7b6bf9590c875e3327de5d5ff98016d6"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/record_final_qa.py",
+      "bytes": 3060,
+      "sha256": "2784f29a9d1bc6571bc592ce9e35bdc77bc5caf501d28a2339ad6d850c8d5d0b"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/revise_foundations.py",
+      "bytes": 9840,
+      "sha256": "24939fb083f4d7b35072e21872ce35ef628b9625a28abc583e45d5e442cb40de"
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_v04.py",
+      "bytes": 7081,
+      "sha256": "e6616e1d3c6da8f99ca88ca849e129faccbe2888c0f871d40cf0ea39abdc613c"
+    },
+    {
+      "path": "sandbox/model_v0_4/package_results.py",
+      "bytes": 9949,
+      "sha256": "d43ae7646a98882f53a4bb6b21a66f7756e68b8af7604e0c11d8e8fa6833b1e4"
+    },
+    {
+      "path": "sandbox/model_v0_4/verify_artifacts.py",
+      "bytes": 2212,
+      "sha256": "b856b7b159e6b24f17cbf6243050c1642b756db9fb8147220bf3414ead42895f"
+    },
+    {
+      "path": "sandbox/model_v0_4/verify_distribution.py",
+      "bytes": 1117,
+      "sha256": "16df04cb2f53e37374577fbeb83f09077b18b5de9a57cf7f4190affd27baae65"
+    }
+  ]
+}

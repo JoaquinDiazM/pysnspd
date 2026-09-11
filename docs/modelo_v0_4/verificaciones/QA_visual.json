@@ -1,0 +1,131 @@
+{
+  "revision": "0.4",
+  "notebook_revision": "E-r02",
+  "status": "approved",
+  "documents": [
+    {
+      "pdf": "A_microscopia_y_funcional_v0_4.pdf",
+      "pdf_sha256": "7be97b3aef57f2cd27e461a0120a77918c0221d0f2e6389efe3f80e6a48bb86d",
+      "pages_reviewed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "method": "Renderizado completo con pdftoppm a 125 dpi; inspección de cuatro contactos de tres páginas y acercamientos de páginas 4, 6, 8 y 11; cotejo de etiquetas Markdown, LaTeX y margen de ecuaciones del PDF.",
+      "record": "QA_visual_A.json"
+    },
+    {
+      "pdf": "B_cinetica_energia_y_temperaturas_v0_4.pdf",
+      "pdf_sha256": "72c0e677713ed54dcb4fd12056d6517a29f9dda6996f07fc97b158145c5d6791",
+      "pages_reviewed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "method": "All 20 pages rendered with pdftoppm at 110 dpi; all seven contact sheets inspected visually; additional full-page inspections of pages 11, 15, 17 and 19.",
+      "record": "QA_visual_B.json"
+    },
+    {
+      "pdf": "C_condensado_corriente_y_senal_v0_4.pdf",
+      "pdf_sha256": "c0610ded6b043f7fa776e1f27de39e87e9cf6fd86ef1caf3369e1df60d9995c8",
+      "pages_reviewed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "method": "Poppler pdftoppm at 135 dpi; all 14 rendered pages inspected in three-page contact sheets; four critical pages inspected at full size; all five scientific figures also inspected separately at full size.",
+      "record": "QA_visual_C.json"
+    },
+    {
+      "pdf": "D_sintesis_plan_y_verificaciones_v0_4.pdf",
+      "pdf_sha256": "4f3e3290e74372d07db5371d5ba5effafec828e946fdd39049ef8f048bdafb43",
+      "pages_reviewed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "method": "Todas las páginas renderizadas con Poppler a escala 1300 e inspeccionadas en contactos de tres páginas; revisión adicional de páginas críticas a tamaño completo. Tras la corrección final se renderizaron todas de nuevo: sólo D11 y E7 cambian; ambas se volvieron a inspeccionar, las demás coinciden píxel a píxel con las revisadas. Release 1.0.0: render de las 12 páginas a 1300; sólo D12 cambia frente al render aprobado, las otras 11 son idénticas píxel a píxel. D12 reinspeccionada visualmente: ocho clases E-r02 y 24 respuestas, sin problemas de composición.",
+      "record": "QA_visual_D.json"
+    },
+    {
+      "pdf": "E_cuaderno_de_aprendizaje_v0_4.pdf",
+      "pdf_sha256": "b7f90b720e92e434156842981306d33adbfb5ee4883d4b45354e364c50ab94ac",
+      "pages_reviewed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ],
+      "method": "Todas las páginas finales renderizadas con Poppler e inspeccionadas directamente a 1500 px; revisión repartida entre tres revisores. Se corrigieron el índice residual, la tabla partida y saltos que producían espacios excesivos.",
+      "record": "QA_visual_E.json"
+    }
+  ]
+}

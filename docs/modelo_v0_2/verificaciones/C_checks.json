@@ -1,0 +1,87 @@
+{
+  "revision": "0.2",
+  "date": "2026-09-08",
+  "scope": "BCS coordinate map; illustrative cell; prescribed circuit. No production detector transient.",
+  "bcs": {
+    "quadrature_order": 512,
+    "quadrature_upper_x_Dref": 40,
+    "max_absolute_change_order_1024": 2.6867397195928788e-14,
+    "max_heat_capacity_derivative_error": 4.661182689824628e-10,
+    "equal_energy": 0.06,
+    "equal_energy_gaps": [
+      0.2,
+      0.9
+    ],
+    "equal_energy_temperatures": [
+      0.2604337381360276,
+      0.34200414018569814
+    ]
+  },
+  "cell": {
+    "model": "Illustrative polynomial free energy C.20b, dimensionless",
+    "initial": {
+      "d": 0.35,
+      "temperature": 0.2,
+      "energy": 0.21152156250000004
+    },
+    "final_at_t12": {
+      "d": 0.8778365397013218,
+      "temperature": 0.7573027948755824,
+      "entropy": 0.5238726930439908
+    },
+    "max_energy_drift_thermal_coordinates": 6.744604874597826e-13,
+    "max_thermal_vs_energy_coordinates": 1.133371174688591e-12,
+    "max_change_halving_step": 1.5832890554179357e-12,
+    "max_entropy_identity_residual": 5.551115123125783e-17,
+    "initial_entropy": 0.19020000000000006,
+    "min_entropy_increment": -1.1102230246251565e-16,
+    "unbalanced_final_energy_loss_fraction": 0.9423604862689273
+  },
+  "circuit": [
+    {
+      "lambda": 0.25,
+      "peak_port_time": 0.308,
+      "peak_port_voltage": 0.6791196254534803,
+      "peak_patch_time": 0.07200000000000001,
+      "peak_patch_voltage": 1.4934368809711411,
+      "max_current_change_halving_step": 6.471381763795137e-10,
+      "integrated_energy_balance_absolute_residual": 1.6667419407011448e-05
+    },
+    {
+      "lambda": 1.0,
+      "peak_port_time": 0.644,
+      "peak_port_voltage": 0.5241580783982467,
+      "peak_patch_time": 0.11,
+      "peak_patch_voltage": 2.0284132962688743,
+      "max_current_change_halving_step": 2.78317369151182e-11,
+      "integrated_energy_balance_absolute_residual": 1.66647833430289e-05
+    },
+    {
+      "lambda": 4.0,
+      "peak_port_time": 1.198,
+      "peak_port_voltage": 0.26726929104390207,
+      "peak_patch_time": 0.14,
+      "peak_patch_voltage": 2.3491917731460212,
+      "max_current_change_halving_step": 1.2142731264930262e-11,
+      "integrated_energy_balance_absolute_residual": 1.6660162706627624e-05
+    }
+  ],
+  "diffusion_C24": {
+    "D_m2_s": 0.0001581,
+    "epsilon": 0.01,
+    "times_ps": [
+      5,
+      20,
+      50
+    ],
+    "lengths_nm": [
+      120.67123985479866,
+      241.3424797095973,
+      381.59596601764997
+    ]
+  },
+  "gradient_C28": {
+    "K_ratio": 0.5668934240362812,
+    "length_ratio": 0.7529232524210427
+  }
+}

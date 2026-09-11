@@ -10,6 +10,12 @@ venv/
 env/
 .ipynb_checkpoints/
 
+# Local rendering, downloaded references, dependencies and build intermediates.
+/tmp/
+/build/
+/dist/
+/output/pdf/**/*.log
+
 # Raw simulation data should live outside the repository.
 big_data/
 raw/
