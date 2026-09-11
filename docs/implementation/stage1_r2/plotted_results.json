@@ -1,0 +1,78 @@
+{
+  "assessment_sha256": "6be8a019069d495fd5a4505d1b4b95482c9b5c61434d85eecefc06b2c748a8ee",
+  "assessment_status": "PASS_TESTED_PHYSICAL_AND_API_GATES",
+  "before_after_critical_total_error_percent": [
+    8.567559494285813,
+    0.03195699920808132
+  ],
+  "critical_reference": 0.6785840131753953,
+  "current_critical_case": {
+    "kind": "fixed_occupation",
+    "amplitude": 0.72,
+    "gamma": 0.0,
+    "profile": "low_energy",
+    "candidate": [
+      -0.2712091886097606,
+      -0.2877740892083945,
+      0.6788008682631119
+    ],
+    "reference": [
+      -0.2712091839316488,
+      -0.28777408271101695,
+      0.6785840131753953
+    ],
+    "reference_error_bound": 5e-13,
+    "absolute_error": [
+      4.678111842348898e-09,
+      6.497377524894432e-09,
+      0.00021685508771662754
+    ],
+    "scaled_error": [
+      4.678111842348898e-09,
+      6.497377524894432e-09,
+      0.00021685508771662754
+    ],
+    "relative_error": [
+      1.7249090810759175e-08,
+      2.2578049641180182e-08,
+      0.00031956999208081324
+    ],
+    "failures": []
+  },
+  "groups": [
+    {
+      "group": "Energ\u00eda escalada",
+      "samples": 234,
+      "maximum_fraction_of_tolerance": 0.0496498441748816,
+      "exact_zeros": 39
+    },
+    {
+      "group": "Fuerza escalada",
+      "samples": 234,
+      "maximum_fraction_of_tolerance": 0.0075966255351778145,
+      "exact_zeros": 51
+    },
+    {
+      "group": "Respuesta \u0393 escalada",
+      "samples": 234,
+      "maximum_fraction_of_tolerance": 0.5029257627242988,
+      "exact_zeros": 53
+    },
+    {
+      "group": "Fuerza relativa",
+      "samples": 219,
+      "maximum_fraction_of_tolerance": 0.26499581538382355,
+      "exact_zeros": 36
+    },
+    {
+      "group": "Respuesta \u0393 relativa",
+      "samples": 219,
+      "maximum_fraction_of_tolerance": 0.5134379099836363,
+      "exact_zeros": 38
+    }
+  ],
+  "plotting_floor_fraction_of_tolerance": 1e-10,
+  "zero_display_policy": "Exact zero errors share the stated plotting floor; this does not change acceptance.",
+  "scaled_definition": "abs(candidate-reference)/max(1,abs(reference))",
+  "historical_comparison": "R1 is the delivered Hermite catalogue at commit d17d7c3; its total error differs from its independently resolved 8.61% regulator-only bias."
+}

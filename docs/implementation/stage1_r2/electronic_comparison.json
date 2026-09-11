@@ -1,0 +1,36 @@
+{
+  "schema": "pysnspd.stage1_r2.electronic_comparison.v1",
+  "quantity": "Electronic DOS, Re(c), normalized by the normal electronic DOS",
+  "not_the_Simon_input": "Simon nbn-a2f-ph.dat contains a phonon DOS and alpha2F, not these electronic spectra.",
+  "same_equation_controls": [
+    {
+      "delta": 0.72,
+      "gamma": 0.0,
+      "eta": 0.001,
+      "samples": 1775,
+      "max_abs_DOS_difference": 0.0,
+      "max_scaled_DOS_difference": 0.0
+    },
+    {
+      "delta": 0.72,
+      "gamma": 0.2,
+      "eta": 0.001,
+      "samples": 1775,
+      "max_abs_DOS_difference": 7.386637235033688e-10,
+      "max_scaled_DOS_difference": 7.386637235033688e-10
+    }
+  ],
+  "regulator_comparison": {
+    "delta": 0.72,
+    "gamma": 0,
+    "legacy_eta": 0.001,
+    "r2_eta": 1e-08,
+    "interpretation": "Numerical causal regulator only; no fitted physical lifetime or new material DOS is claimed."
+  },
+  "source_sha256": {
+    "pysnspd/usadel/solver.py": "c1026412061efeb51956dc296f68e56c2d51b8554fe9ee09462c3f6e27ca954e",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "sandbox/stage1_catalog_r2/electronic_comparison.py": "f8ed930334edde63d1b37db6982709e986f51cd0e978645f57eb6f63dad14ec9"
+  },
+  "elapsed_seconds": 0.7551687899976969
+}

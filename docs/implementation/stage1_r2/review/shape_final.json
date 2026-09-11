@@ -1,0 +1,967 @@
+{
+  "schema": "pysnspd.stage1_r2.shape_cells.v1",
+  "status": "PASS",
+  "method": "Minimum of each exact Hermite energy-difference cubic over the physical ratio interval, evaluated at nodal amplitudes and three interior amplitude fractions. Bernstein bounds are also reported; a negative control alone is not a failed query.",
+  "coverage_limit": "Amplitude is sampled, not certified uniformly; strictly positive energies are checked independently by the query assessment.",
+  "runtime_seconds": 1.9466605000052368,
+  "catalog": "tmp\\stage1_catalog_r2\\ratio_final_17.npz",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "source_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+  "script_sha256": "80c6c7b55831219c49a7cf5f24b276f0a43799698041e71671951617ec21d79d",
+  "amplitudes": 65,
+  "amplitude_fractions": [
+    0.21132486540518713,
+    0.5,
+    0.7886751345948129
+  ],
+  "checked_cells": 9260,
+  "endpoint_nonpositive_increments": 0,
+  "minimum_cubic_increment": 6.988762901727341e-10,
+  "flagged_Bernstein_intervals": 4,
+  "crossing_intervals": 0,
+  "ratio_midpoints_proposed": [],
+  "Bernstein_midpoints": [
+    1.311003491079539e-06,
+    4.4732271923187375e-05,
+    0.00024727267061397525,
+    0.2268157219588256
+  ],
+  "rows": [
+    {
+      "delta": 0.23164546907494526,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.8556540274510273e-07,
+      "minimum_cubic_increment": 1.6114960573881953e-06
+    },
+    {
+      "delta": 0.2401405295639078,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.475034618759678e-07,
+      "minimum_cubic_increment": 1.6309545192300101e-06
+    },
+    {
+      "delta": 0.2503435570147947,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.443201810949722e-07,
+      "minimum_cubic_increment": 1.6537324376009188e-06
+    },
+    {
+      "delta": 0.2642811517082162,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -8.170108880146135e-07,
+      "minimum_cubic_increment": 1.6838682069808542e-06
+    },
+    {
+      "delta": 0.27821874640163774,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.093800100303588e-06,
+      "minimum_cubic_increment": 1.712956979871283e-06
+    },
+    {
+      "delta": 0.28842177385252465,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.2988138302046734e-06,
+      "minimum_cubic_increment": 1.7336409054435897e-06
+    },
+    {
+      "delta": 0.3006761620701023,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.5475128791806575e-06,
+      "minimum_cubic_increment": 1.7578533374196237e-06
+    },
+    {
+      "delta": 0.31741596768315006,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.8913176069592222e-06,
+      "minimum_cubic_increment": 1.7898869975052634e-06
+    },
+    {
+      "delta": 0.3341557732961978,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.239478930887018e-06,
+      "minimum_cubic_increment": 1.82080771488069e-06
+    },
+    {
+      "delta": 0.3464101615137754,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.4968911723279876e-06,
+      "minimum_cubic_increment": 1.8427942616860982e-06
+    },
+    {
+      "delta": 0.3611283450441012,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -6.929102328619238e-09,
+      "minimum_cubic_increment": 4.9273336077959584e-08
+    },
+    {
+      "delta": 0.3611283450441012,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.8086789857658637e-06,
+      "minimum_cubic_increment": 1.8685315262834123e-06
+    },
+    {
+      "delta": 0.3812337576440879,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.97267267382779e-08,
+      "minimum_cubic_increment": 5.0170602505783535e-08
+    },
+    {
+      "delta": 0.3812337576440879,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.2389212074105535e-06,
+      "minimum_cubic_increment": 1.902582570822986e-06
+    },
+    {
+      "delta": 0.4013391702440746,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.273389758787173e-08,
+      "minimum_cubic_increment": 5.103670630557389e-08
+    },
+    {
+      "delta": 0.4013391702440746,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.6737943654238494e-06,
+      "minimum_cubic_increment": 1.935450575057951e-06
+    },
+    {
+      "delta": 0.4160573537744004,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.2378002522481306e-08,
+      "minimum_cubic_increment": 5.165256594663603e-08
+    },
+    {
+      "delta": 0.4160573537744004,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.994844051181784e-06,
+      "minimum_cubic_increment": 1.9588217587962475e-06
+    },
+    {
+      "delta": 0.43373468883072147,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.408719525730962e-08,
+      "minimum_cubic_increment": 5.237349209874509e-08
+    },
+    {
+      "delta": 0.43373468883072147,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.3832289767005885e-06,
+      "minimum_cubic_increment": 1.9861798631892746e-06
+    },
+    {
+      "delta": 0.4578823775888653,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -7.029060680941855e-08,
+      "minimum_cubic_increment": 5.3327305182815365e-08
+    },
+    {
+      "delta": 0.4578823775888653,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.918377600675533e-06,
+      "minimum_cubic_increment": 2.0223753121328958e-06
+    },
+    {
+      "delta": 0.48203006634700907,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -8.671675053092696e-08,
+      "minimum_cubic_increment": 5.42479901555204e-08
+    },
+    {
+      "delta": 0.48203006634700907,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.458448776601744e-06,
+      "minimum_cubic_increment": 2.0573132097356783e-06
+    },
+    {
+      "delta": 0.49970740140333014,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -9.887140777109936e-08,
+      "minimum_cubic_increment": 5.4902659918365515e-08
+    },
+    {
+      "delta": 0.49970740140333014,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.85667880602418e-06,
+      "minimum_cubic_increment": 2.0821562115025394e-06
+    },
+    {
+      "delta": 0.5209388376094066,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.265756288144056e-10,
+      "minimum_cubic_increment": 2.0423598337717762e-08
+    },
+    {
+      "delta": 0.5209388376094066,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.1360384647364265e-07,
+      "minimum_cubic_increment": 5.5669016396642235e-08
+    },
+    {
+      "delta": 0.5209388376094066,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -6.337936991430554e-06,
+      "minimum_cubic_increment": 2.1112372091125486e-06
+    },
+    {
+      "delta": 0.5499415188257359,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.1755292717899544e-09,
+      "minimum_cubic_increment": 2.029697325768678e-08
+    },
+    {
+      "delta": 0.5499415188257359,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.3395020459324399e-07,
+      "minimum_cubic_increment": 5.6682934568286214e-08
+    },
+    {
+      "delta": 0.5499415188257359,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -7.00024282146627e-06,
+      "minimum_cubic_increment": 2.149712081456201e-06
+    },
+    {
+      "delta": 0.5789442000420651,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.859180961744435e-09,
+      "minimum_cubic_increment": 2.0143672285808265e-08
+    },
+    {
+      "delta": 0.5789442000420651,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.5453331693501967e-07,
+      "minimum_cubic_increment": 5.766163502229915e-08
+    },
+    {
+      "delta": 0.5789442000420651,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -7.667781182687337e-06,
+      "minimum_cubic_increment": 2.1868502003696833e-06
+    },
+    {
+      "delta": 0.6001756362481416,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.111768543257675e-09,
+      "minimum_cubic_increment": 2.0015990670924834e-08
+    },
+    {
+      "delta": 0.6001756362481416,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.697392641929511e-07,
+      "minimum_cubic_increment": 5.835755712002566e-08
+    },
+    {
+      "delta": 0.6001756362481416,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -8.15950443024184e-06,
+      "minimum_cubic_increment": 2.2132576915634417e-06
+    },
+    {
+      "delta": 0.6256757403043528,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -6.636729931874525e-09,
+      "minimum_cubic_increment": 1.9846782543451147e-08
+    },
+    {
+      "delta": 0.6256757403043528,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.8814490768021606e-07,
+      "minimum_cubic_increment": 5.9172202582225e-08
+    },
+    {
+      "delta": 0.6256757403043528,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -8.753239584200456e-06,
+      "minimum_cubic_increment": 2.244170062615236e-06
+    },
+    {
+      "delta": 0.6605095302442838,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -8.753601120650561e-09,
+      "minimum_cubic_increment": 1.95895934098624e-08
+    },
+    {
+      "delta": 0.6605095302442838,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.1352290273326267e-07,
+      "minimum_cubic_increment": 6.02500072055534e-08
+    },
+    {
+      "delta": 0.6605095302442838,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -9.56950005865959e-06,
+      "minimum_cubic_increment": 2.285067880747338e-06
+    },
+    {
+      "delta": 0.695343320184215,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.0906300125923248e-08,
+      "minimum_cubic_increment": 1.9304730171445007e-08
+    },
+    {
+      "delta": 0.695343320184215,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.3915255897420503e-07,
+      "minimum_cubic_increment": 6.129037410929072e-08
+    },
+    {
+      "delta": 0.695343320184215,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.0391322557097734e-05,
+      "minimum_cubic_increment": 2.324544757070779e-06
+    },
+    {
+      "delta": 0.7208434242404261,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.2502916370379307e-08,
+      "minimum_cubic_increment": 1.908015409030232e-08
+    },
+    {
+      "delta": 0.7208434242404261,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.580615253923973e-07,
+      "minimum_cubic_increment": 6.20301443543525e-08
+    },
+    {
+      "delta": 0.7208434242404261,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.0996181758181728e-05,
+      "minimum_cubic_increment": 2.3526152450603632e-06
+    },
+    {
+      "delta": 0.7514704294305645,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.44417633107272e-08,
+      "minimum_cubic_increment": 1.8793964836379534e-08
+    },
+    {
+      "delta": 0.7514704294305645,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.809236664076776e-07,
+      "minimum_cubic_increment": 6.289611764742631e-08
+    },
+    {
+      "delta": 0.7514704294305645,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.1725997589360017e-05,
+      "minimum_cubic_increment": 2.3854743014251056e-06
+    },
+    {
+      "delta": 0.7933076965621314,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.712516626128761e-08,
+      "minimum_cubic_increment": 1.8375963790965517e-08
+    },
+    {
+      "delta": 0.7933076965621314,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.124041776890549e-07,
+      "minimum_cubic_increment": 6.404182983921203e-08
+    },
+    {
+      "delta": 0.7933076965621314,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.27284753695462e-05,
+      "minimum_cubic_increment": 2.4289476254768516e-06
+    },
+    {
+      "delta": 0.8351449636936983,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.9845654980383945e-08,
+      "minimum_cubic_increment": 1.7929190363174272e-08
+    },
+    {
+      "delta": 0.8351449636936983,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.4415220948428197e-07,
+      "minimum_cubic_increment": 6.514774375521171e-08
+    },
+    {
+      "delta": 0.8351449636936983,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.3736865443271415e-05,
+      "minimum_cubic_increment": 2.470910518914682e-06
+    },
+    {
+      "delta": 0.8657719688838367,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.1858673235761062e-08,
+      "minimum_cubic_increment": 1.7585438239122585e-08
+    },
+    {
+      "delta": 0.8657719688838367,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.67549391749348e-07,
+      "minimum_cubic_increment": 6.593412171795876e-08
+    },
+    {
+      "delta": 0.8657719688838367,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.4478505861859223e-05,
+      "minimum_cubic_increment": 2.5007487143846596e-06
+    },
+    {
+      "delta": 0.9025566598344718,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.4298431289404436e-08,
+      "minimum_cubic_increment": 1.715543438760938e-08
+    },
+    {
+      "delta": 0.9025566598344718,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.958116750694679e-07,
+      "minimum_cubic_increment": 6.685465325784179e-08
+    },
+    {
+      "delta": 0.9025566598344718,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.537281415623785e-05,
+      "minimum_cubic_increment": 2.53567702956925e-06
+    },
+    {
+      "delta": 0.9528054821433989,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.766739461003107e-08,
+      "minimum_cubic_increment": 1.6539853751566204e-08
+    },
+    {
+      "delta": 0.9528054821433989,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.3468468034696096e-07,
+      "minimum_cubic_increment": 6.807254637752891e-08
+    },
+    {
+      "delta": 0.9528054821433989,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.66003410952934e-05,
+      "minimum_cubic_increment": 2.581888027264334e-06
+    },
+    {
+      "delta": 1.003054304452326,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.107482669502759e-08,
+      "minimum_cubic_increment": 1.589429578899144e-08
+    },
+    {
+      "delta": 1.003054304452326,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.738420183836934e-07,
+      "minimum_cubic_increment": 6.924813300557275e-08
+    },
+    {
+      "delta": 1.003054304452326,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.7834152506418307e-05,
+      "minimum_cubic_increment": 2.6264934711583976e-06
+    },
+    {
+      "delta": 1.039838995402961,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.359152194433883e-08,
+      "minimum_cubic_increment": 1.540432160616437e-08
+    },
+    {
+      "delta": 1.039838995402961,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.026729676664292e-07,
+      "minimum_cubic_increment": 7.008405211728075e-08
+    },
+    {
+      "delta": 1.039838995402961,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.8741029745713355e-05,
+      "minimum_cubic_increment": 2.6582106791295246e-06
+    },
+    {
+      "delta": 1.0840194002428511,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.663705531821972e-08,
+      "minimum_cubic_increment": 1.4797968180532328e-08
+    },
+    {
+      "delta": 1.0840194002428511,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.374715794707554e-07,
+      "minimum_cubic_increment": 7.106257560174356e-08
+    },
+    {
+      "delta": 1.0840194002428511,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.9834020260850398e-05,
+      "minimum_cubic_increment": 2.6953385454664414e-06
+    },
+    {
+      "delta": 1.1443709556036221,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.0835014934582596e-08,
+      "minimum_cubic_increment": 1.3940229577521226e-08
+    },
+    {
+      "delta": 1.1443709556036221,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.852901400757052e-07,
+      "minimum_cubic_increment": 7.235719312603806e-08
+    },
+    {
+      "delta": 1.1443709556036221,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.1333322391762328e-05,
+      "minimum_cubic_increment": 2.744459596693005e-06
+    },
+    {
+      "delta": 1.204722510964393,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.50732316615229e-08,
+      "minimum_cubic_increment": 1.3051077774352376e-08
+    },
+    {
+      "delta": 1.204722510964393,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -6.334111440770045e-07,
+      "minimum_cubic_increment": 7.360683773605103e-08
+    },
+    {
+      "delta": 1.204722510964393,
+      "index": 58,
+      "r_low": 0.00023400370139499687,
+      "r_high": 0.0002612940447849904,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.873966129488087e-08,
+      "minimum_cubic_increment": 1.5190765711992071e-07
+    },
+    {
+      "delta": 1.204722510964393,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.2839305337485726e-05,
+      "minimum_cubic_increment": 2.7918739819998706e-06
+    },
+    {
+      "delta": 1.2489029158042833,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.819927881246839e-08,
+      "minimum_cubic_increment": 1.238188367962178e-08
+    },
+    {
+      "delta": 1.2489029158042833,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -6.688146417858508e-07,
+      "minimum_cubic_increment": 7.449541605808463e-08
+    },
+    {
+      "delta": 1.2489029158042833,
+      "index": 58,
+      "r_low": 0.00023400370139499687,
+      "r_high": 0.0002612940447849904,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -4.3472279601612364e-08,
+      "minimum_cubic_increment": 1.5374170936333087e-07
+    },
+    {
+      "delta": 1.2489029158042833,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.394565748247103e-05,
+      "minimum_cubic_increment": 2.825588516386368e-06
+    },
+    {
+      "delta": 1.301965973325578,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.1977958278405804e-08,
+      "minimum_cubic_increment": 1.1559320540689533e-08
+    },
+    {
+      "delta": 1.301965973325578,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -7.115183297575822e-07,
+      "minimum_cubic_increment": 7.553558178940989e-08
+    },
+    {
+      "delta": 1.301965973325578,
+      "index": 58,
+      "r_low": 0.00023400370139499687,
+      "r_high": 0.0002612940447849904,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -7.35373544511975e-08,
+      "minimum_cubic_increment": 1.5588863888638116e-07
+    },
+    {
+      "delta": 1.301965973325578,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.5278467258948016e-05,
+      "minimum_cubic_increment": 2.8650544312558424e-06
+    },
+    {
+      "delta": 1.3744514579021416,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -5.717906948978301e-08,
+      "minimum_cubic_increment": 1.04048442299687e-08
+    },
+    {
+      "delta": 1.3744514579021416,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -7.701532068669684e-07,
+      "minimum_cubic_increment": 7.691175274437967e-08
+    },
+    {
+      "delta": 1.3744514579021416,
+      "index": 58,
+      "r_low": 0.00023400370139499687,
+      "r_high": 0.0002612940447849904,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.152012492849575e-07,
+      "minimum_cubic_increment": 1.5872908654124274e-07
+    },
+    {
+      "delta": 1.3744514579021416,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.710576201226407e-05,
+      "minimum_cubic_increment": 2.9172687714407175e-06
+    },
+    {
+      "delta": 1.4469369424787053,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -6.24214067669762e-08,
+      "minimum_cubic_increment": 9.217807878889921e-09
+    },
+    {
+      "delta": 1.4469369424787053,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -8.291086090148451e-07,
+      "minimum_cubic_increment": 7.824011705181988e-08
+    },
+    {
+      "delta": 1.4469369424787053,
+      "index": 58,
+      "r_low": 0.00023400370139499687,
+      "r_high": 0.0002612940447849904,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.574997167544315e-07,
+      "minimum_cubic_increment": 1.6147085402096195e-07
+    },
+    {
+      "delta": 1.4469369424787053,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -2.8940155286628002e-05,
+      "minimum_cubic_increment": 2.686383451288382e-06
+    },
+    {
+      "delta": 1.5,
+      "index": 42,
+      "r_low": 1.1740782976828378e-06,
+      "r_high": 1.463897380883855e-06,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -6.62825388086348e-08,
+      "minimum_cubic_increment": 8.330112662842012e-09
+    },
+    {
+      "delta": 1.5,
+      "index": 53,
+      "r_low": 4.006029761852662e-05,
+      "r_high": 4.9949108470627004e-05,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -8.724533452872011e-07,
+      "minimum_cubic_increment": 7.91846692660414e-08
+    },
+    {
+      "delta": 1.5,
+      "index": 58,
+      "r_low": 0.00023400370139499687,
+      "r_high": 0.0002612940447849904,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -1.8883393643125842e-07,
+      "minimum_cubic_increment": 1.6342042408190594e-07
+    },
+    {
+      "delta": 1.5,
+      "index": 78,
+      "r_low": 0.2203125,
+      "r_high": 0.2335109071328366,
+      "accessible_fraction": 1.0,
+      "minimum_Bernstein_control_increment": -3.0287162104646753e-05,
+      "minimum_cubic_increment": 2.5009277851965357e-06
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema": "pysnspd.stage1_r2.direct17_support_diagnosis.v1",
+  "assessment_sha256": "1ae89a07de79994234422b1f98326587e3362d05b9635466355c5f353561a1bd",
+  "queries": 2352,
+  "failed_queries": 248,
+  "failed_fraction": 0.1054421768707483,
+  "ratio_definition": "r=Gamma/absDelta",
+  "ratio_bin_edges": [
+    0,
+    0.001,
+    0.01,
+    0.1,
+    0.5,
+    0.9,
+    0.99,
+    1,
+    1.01,
+    1.1,
+    2,
+    5,
+    20
+  ],
+  "failed_counts_by_ratio_bin": [
+    64,
+    20,
+    4,
+    19,
+    0,
+    0,
+    0,
+    0,
+    14,
+    65,
+    62,
+    0
+  ],
+  "failed_ratio_quantiles_0_25_50_75_100": [
+    1.1707332581019785e-06,
+    0.000925844325923015,
+    1.1109887674621486,
+    1.9984801378307915,
+    3.390756721401104
+  ],
+  "nonpositive_energy_queries": 140,
+  "nonpositive_increment_queries": 108,
+  "interpretation": "Failures include nonmonotone spectra at weak depairing as well as nonpositive energies in the gapless sector. Aligning Gamma/Delta=1 alone is not an established remedy. All guard rejections are retained in the referenced assessment; no rejected energy was used as an admitted physical result."
+}

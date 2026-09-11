@@ -25,7 +25,40 @@ Computations expected to exceed five minutes are prepared in
 `/home/jdiaz/GEMINGA_COMMANDS.md` for the user. The agent resumes after the user
 provides the output; it does not start long runs or use polling to wait for them.
 
-## Experimental stage 1 after v1.0.0
+## Experimental stage 1, R2
+
+The [R2 report](docs/implementation/stage1_r2/Informe_etapa_1_r2.md) and
+[source-bound admission certificate](docs/implementation/stage1_r2/catalog_admission.json)
+close the sampled uniform electronic catalogue for synthetic-cell validation.
+The final file passes 234 physical cases, 150 derivative checks, 476 support checks
+(including all 326 retained failure points), and 6,855 dense queries. Exact cubic
+ordering minima are positive in 9,260 cells at 65 sampled amplitudes. These are
+sampled numerical guarantees, not a uniform bound for arbitrary populations.
+
+R2 represents energy in Gamma/absDelta, retains compensated differences near
+zero pair breaking and inserts seven diagnosed ratio nodes. The critical slope
+error falls from 8.56756% total in R1 to 0.03196%; the worst tested relative current
+response error is 0.05134%, below the fixed 0.1% tolerance. Interpolation,
+quadrature, cutoff and causal-regulator errors have separate evidence. No change
+to the uniform physical functional was required by this numerical diagnosis.
+
+The full suite passes 278 tests in 34.09 s. Geminga construction took 143.89 s
+plus 4.61 s and 1.09 s for local refinements; occupied queries cost 0.0537 ms.
+These timings exclude coupled dynamics. No calculation exceeded the compute
+handoff limit. The next permitted step is synthetic one- or two-cell conservation,
+relaxation and time-refinement checks from D.4.2, not a full production transient.
+
+The material input remains **REJECTED**. The improved plots distinguish Simon's
+phonon DOS from the electronic Usadel DOS and expose what the legacy loader clips.
+Public provenance of the numerical body is verified; units and normalization
+remain unverified, and negative/duplicate phonon data are unresolved. Spatial
+admissibility and core sensitivity remain later-stage physical checks.
+
+The historical first-iteration section below is retained for traceability. Its
+manifest must be checked against source commit d17d7c3, since R2 changes the shared
+experimental module. The release tag v1.0.0 remains unchanged at 5ea0cd6.
+
+## Experimental stage 1 after v1.0.0 — historical first iteration
 
 Explicit material admission and uniform vacuum/fixed-occupation catalogues are
 implemented in `pysnspd.experimental`, independently of production. The final

@@ -1,0 +1,169 @@
+{
+  "title": "pySNSPD · Informe de resultados · Etapa 1 R2",
+  "subtitle": "Admitir datos y construir el catálogo · 11 septiembre 2026 · modelo 0.4 experimental",
+  "pages": [
+    {
+      "title": "Etapa 1 · segunda iteración",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "<b>Resultado: catálogo electrónico aceptado para avanzar a la validación en celdas sintéticas.</b> Se resolvió el sesgo numérico que bloqueaba la primera entrega y se cerraron los cruces espurios de niveles durante la interpolación. El modelo conserva su funcional uniforme; la mejora de esta iteración está en cómo se calcula y representa."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage1_r2/figures/critical_before_after.png",
+          "caption": "Misma población de baja energía y mismo límite causal en ambas entregas: |Δ|/Δ₀ = 0,72 y Γ = 0. Se compara la pendiente de corriente j/q, porque la corriente en q = 0 es nula. El error total de R1 (8,56756 %) incluye su interpolación; el 8,61 % del informe anterior aislaba sólo el regulador."
+        },
+        {
+          "type": "table",
+          "widths": [
+            0.54,
+            0.46
+          ],
+          "rows": [
+            [
+              "Control independiente final",
+              "Resultado"
+            ],
+            [
+              "Energía, fuerza y respuesta de corriente",
+              "234 de 234 casos dentro de tolerancia"
+            ],
+            [
+              "Identidades de derivadas de energía",
+              "150 de 150 controles"
+            ],
+            [
+              "Consultas interiores de la tabla",
+              "6.855 de 6.855; sin rechazo"
+            ],
+            [
+              "Soporte y regresiones conservadas",
+              "476 de 476; incluye 326 fallos anteriores"
+            ],
+            [
+              "Regresión completa del repositorio",
+              "278 pruebas pasan en 34,09 s"
+            ]
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "Qué permitió cerrar el problema"
+        },
+        {
+          "type": "body",
+          "text": "La tabla sigue la razón Γ/|Δ|, que ubica el cierre de la brecha en el mismo lugar para todas las amplitudes. Conserva por separado las pequeñas diferencias energéticas cerca de Γ = 0 y deriva las fuerzas de esa misma representación. Un diagnóstico local añadió <b>siete nodos</b> sin recalcular los anteriores; ambos refinamientos sumaron <b>5,70 s</b>."
+        },
+        {
+          "type": "small",
+          "text": "Criterios fijados antes de R2; no se relajaron tolerancias ni se quitaron casos fallidos. Certificado: catalog_admission.json. La aceptación corresponde al dominio, poblaciones y controles documentados, no a todo estado posible de un detector."
+        }
+      ]
+    },
+    {
+      "title": "Qué curva procede de Simón",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "<b>Esta entrada describe vibraciones del material: es una DOS fonónica.</b> Se comparó el archivo publicado con la salida del loader que usa PRE. La figura muestra el tratamiento efectivo del código anterior."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage1_r2/figures/material_legacy_comparison.png",
+          "caption": "Línea discontinua: archivo de Simón; línea naranja y círculos: datos que consume el legado. El residual y la ampliación hacen visible el recorte. La entrada experimental R2 se rechaza; por tanto, no existe una tercera curva fonónica calculada por R2."
+        },
+        {
+          "type": "body",
+          "text": "El legado recorta <b>361 valores negativos</b>, conserva cuatro pares de frecuencias repetidas y no renormaliza. El área pasa de 0,7084201 a 0,7199501; esa área todavía no puede interpretarse como un número certificado de modos por átomo. La función de interacción α²F coincide después de alinear el mismo ordenamiento."
+        },
+        {
+          "type": "small",
+          "text": "La revisión R2 reproduce el diagnóstico anterior y pasa 25 controles nuevos de comparación en 1,22 s. La coincidencia exacta del cuerpo numérico con el <link href=\"https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat\" color=\"#007c83\">archivo público</link> demuestra la procedencia numérica. Su cabecera de unidades se añadió localmente; las unidades y la base de normalización siguen sin certificar. El solver público menciona un archivo con sufijo _2 que no aparece en el árbol consultado."
+        },
+        {
+          "type": "body",
+          "text": "<b>Decisión material:</b> conservar el rechazo de NbN hasta disponer de una tabla unívoca y positiva, con unidades y normalización documentadas. Corregir el catálogo electrónico no resuelve esta entrada fonónica."
+        }
+      ]
+    },
+    {
+      "title": "Qué cambia en la DOS electrónica",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "La DOS electrónica cuenta excitaciones electrónicas. Para los mismos campos y el mismo regulador, los dos solucionadores probados coinciden. La actualización del modelo conserva esta ecuación espectral local y cambia cómo se obtiene y utiliza su energía."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage1_r2/figures/electronic_same_equation.png",
+          "caption": "Control directo, sin interpolación de catálogo: 1775 energías por estado. La línea naranja discontinua y sus círculos se superponen a la azul. Los paneles inferiores muestran sus diferencias, cuyo máximo escalado es 7,39 × 10⁻¹⁰ en estos dos estados; no es una certificación de todos los campos."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage1_r2/figures/electronic_regulator_edge.png",
+          "caption": "Reducir el regulador numérico η estrecha y eleva el pico, y reduce la cola lejos del borde inferior. El eje horizontal mide distancia al borde y es logarítmico. Este control no crea una DOS material nueva ni sustituye las pruebas de convergencia de las integrales."
+        }
+      ]
+    },
+    {
+      "title": "Precisión, coste y siguiente etapa",
+      "blocks": [
+        {
+          "type": "image",
+          "path": "docs/implementation/stage1_r2/figures/acceptance_cases.png",
+          "caption": "Cada punto corresponde a un resultado físico de la auditoría; el rombo identifica el peor. Todos quedan debajo de su tolerancia. Error escalado = |resultado − referencia| / max(1, |referencia|); el error relativo se usa además cuando la referencia está certificada como no nula. Los ceros exactos se dibujan en 10⁻¹⁰ del límite, sólo para mostrarlos en escala logarítmica."
+        },
+        {
+          "type": "body",
+          "text": "El peor error relativo de la respuesta asociada a la corriente es <b>0,05134 %</b>, frente al límite de 0,1 %. Se verificaron por separado interpolación, cuadratura, corte de energía y regulador. Además, 90 controles espectrales pasan y el mínimo cúbico de separación de niveles es positivo en 9.260 celdas a 65 amplitudes muestreadas."
+        },
+        {
+          "type": "table",
+          "widths": [
+            0.58,
+            0.42
+          ],
+          "rows": [
+            [
+              "Coste medido en Geminga · un hilo",
+              "R2"
+            ],
+            [
+              "Construcción base + refinamientos",
+              "143,89 + 4,61 + 1,09 s"
+            ],
+            [
+              "Catálogo guardado / carga mediana",
+              "12,04 MB / 53,37 ms"
+            ],
+            [
+              "Consulta con ocupación no térmica",
+              "0,0537 ms (R1: 0,0479 ms)"
+            ]
+          ]
+        },
+        {
+          "type": "small",
+          "text": "Consultas: mediana de tres series de 1.000 campos, sin resolver espectros nuevos. R2 prioriza precisión; la consulta es algo más costosa que en R1. Estos tiempos excluyen colisiones, malla espacial, circuito y avance temporal; no predicen el coste de un transiente completo."
+        },
+        {
+          "type": "subheading",
+          "text": "Decisión para continuar"
+        },
+        {
+          "type": "body",
+          "text": "<b>Continuar con una o dos celdas sintéticas</b> de la secuencia D.4.2: medir conservación de energía, relajación al equilibrio y convergencia temporal antes del acoplamiento espacial. No hay evidencia en esta etapa que exija reformular la energía uniforme. El soporte electrónico probado es 0,08 ≤ |Δ|/Δ₀ ≤ 1,5 y 0 ≤ Γ/Δ₀ ≤ 1,2, más el límite normal exacto."
+        },
+        {
+          "type": "body",
+          "text": "<b>NbN continúa rechazado como entrada material.</b> Su tabla fonónica requiere resolver duplicados, negatividad y unidades/normalización con evidencia de origen. La admisibilidad espacial y la sensibilidad del núcleo de modelo 0.4 siguen siendo verificaciones propias de etapas posteriores."
+        },
+        {
+          "type": "small",
+          "text": "La etiqueta v1.0.0 conserva la implementación de la memoria. R2 se entrega en pysnspd.experimental; el solucionador de producción todavía no utiliza este catálogo. El repositorio contiene los datos de las figuras, referencias, pilotos y comandos de reproducción."
+        }
+      ]
+    }
+  ]
+}

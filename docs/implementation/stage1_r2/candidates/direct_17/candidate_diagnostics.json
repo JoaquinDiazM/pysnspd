@@ -1,0 +1,5522 @@
+{
+  "schema": "pysnspd.stage1_r2.candidate.v1",
+  "host": "geminga",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "criteria_id": "stage1-r2-fixed-20260911T154504Z",
+  "criteria_sha256": "ef8164fe9f7d7d27f4ecbba1a318fc8642ea3dcc9723dd2e1a9d9c1447dc6bfb",
+  "source_sha256": "e0ed54b38581f52484baec6ba940803e79d6f5dc72990252fe72b13fd2dd2607",
+  "runner_sha256": "959a95bbe2ebdf0004bc12601b23dfae56bee3ae1553727376e6fd174c2e5e54",
+  "catalog_sha256": "08c975a886984e5374f938c264a56685c939ac932b9eccdc013a466c5b35bdb2",
+  "catalog_bytes": 3036925,
+  "build_seconds": 42.748527043964714,
+  "runtime_seconds": 49.19872288359329,
+  "eta": 1e-08,
+  "shape": [
+    17,
+    50,
+    144
+  ],
+  "delta_axis": [
+    0.08,
+    0.09608433007998939,
+    0.11540248108650443,
+    0.1386046260595678,
+    0.16647165801151267,
+    0.19994147171676618,
+    0.2401405295639078,
+    0.28842177385252465,
+    0.3464101615137754,
+    0.4160573537744004,
+    0.49970740140333014,
+    0.6001756362481416,
+    0.7208434242404261,
+    0.8657719688838367,
+    1.039838995402961,
+    1.2489029158042833,
+    1.5
+  ],
+  "gamma_axis": [
+    0.0,
+    2.4494897427831783e-14,
+    5.845572498306125e-14,
+    1.3950137139226004e-13,
+    3.3291234735281084e-13,
+    7.944769998591443e-13,
+    1.8959756474164836e-12,
+    4.524641564492944e-12,
+    1.0797808144336387e-11,
+    2.576837503258972e-11,
+    6.14948092190799e-11,
+    1.4675397870872136e-10,
+    3.5022029566940545e-10,
+    8.357814662198124e-10,
+    1.994546483782098e-09,
+    4.759875442034791e-09,
+    1.135918085033767e-08,
+    2.7108060108295352e-08,
+    6.469189394172815e-08,
+    1.543836454932139e-07,
+    3.684280756603497e-07,
+    8.7923333136187e-07,
+    2.09824196918793e-06,
+    5.007339012548919e-06,
+    1.194973904572996e-05,
+    2.8517394748624232e-05,
+    6.805519351817639e-05,
+    0.0001624099748810279,
+    0.0003875824691294319,
+    0.0009249442374860915,
+    0.002207328531603499,
+    0.005267668091725479,
+    0.0125710000696748,
+    0.03,
+    0.103125,
+    0.17625,
+    0.24937499999999999,
+    0.3225,
+    0.395625,
+    0.46875,
+    0.541875,
+    0.615,
+    0.688125,
+    0.76125,
+    0.834375,
+    0.9075,
+    0.980625,
+    1.05375,
+    1.1268749999999998,
+    1.2
+  ],
+  "count_breaks": [
+    0.0,
+    1e-06,
+    1e-05,
+    3e-05,
+    0.0001,
+    0.0003,
+    0.001,
+    0.003,
+    0.01,
+    0.02,
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    4.0,
+    8.0,
+    12.0
+  ],
+  "count_order_per_segment": 8,
+  "vacuum_evaluation": "closed_form",
+  "worst_errors": [
+    {
+      "observable": "energy",
+      "max_scaled_error": 2.550672545384436e-06,
+      "max_scaled_case": "fixed_16_low_energy",
+      "max_relative_error": 4.9626658858790804e-05,
+      "max_relative_case": "fixed_16_low_energy"
+    },
+    {
+      "observable": "amplitude_force",
+      "max_scaled_error": 5.258848550493411e-05,
+      "max_scaled_case": "fixed_26_low_energy",
+      "max_relative_error": 9.522388210096799e-05,
+      "max_relative_case": "fixed_21_low_energy"
+    },
+    {
+      "observable": "gamma_response",
+      "max_scaled_error": 0.00425400808504813,
+      "max_scaled_case": "offnode_05_low_energy",
+      "max_relative_error": 0.004377169662385678,
+      "max_relative_case": "offnode_03_low_energy"
+    }
+  ],
+  "rows": [
+    {
+      "case_id": "fixed_00_vacuum",
+      "field_id": "fixed_00",
+      "delta": 0.08,
+      "gamma": 0.0,
+      "profile": "vacuum",
+      "candidate": [
+        -0.019364663323572836,
+        -0.4041165830893209,
+        0.12566370614359174
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.019364663323572836,
+        -0.4041165830893209,
+        0.12566370614359174
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_00_low_energy",
+      "field_id": "fixed_00",
+      "delta": 0.08,
+      "gamma": 0.0,
+      "profile": "low_energy",
+      "candidate": [
+        0.03558980042157989,
+        -0.3071916325812234,
+        0.075406270816443
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.03558980042157989,
+        -0.3071916325812234,
+        0.075406270816443
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_00_finite_energy_band",
+      "field_id": "fixed_00",
+      "delta": 0.08,
+      "gamma": 0.0,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.305143585970912,
+        -0.37388329876480925,
+        0.12566192897698367
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.30514358597091196,
+        -0.37388329876480925,
+        0.12566192897698367
+      ],
+      "scaled_error": [
+        5.551115123125783e-17,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        1.8191813226101848e-16,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_00_near_edge_band",
+      "field_id": "fixed_00",
+      "delta": 0.08,
+      "gamma": 0.0,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.01812307822241614,
+        -0.3911480713553184,
+        0.12566342936553063
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.01812307822241614,
+        -0.3911480713553184,
+        0.12566342936553063
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_00_high_energy_band",
+      "field_id": "fixed_00",
+      "delta": 0.08,
+      "gamma": 0.0,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4784716912255085,
+        -0.39224130177347416,
+        0.1256637061425863
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4784716912255087,
+        -0.39224130177347416,
+        0.1256637061425863
+      ],
+      "scaled_error": [
+        1.5018522589430035e-16,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        1.5018522589430035e-16,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_01_vacuum",
+      "field_id": "fixed_01",
+      "delta": 0.09,
+      "gamma": 0.0,
+      "profile": "vacuum",
+      "candidate": [
+        -0.023554359430080163,
+        -0.43343020955733697,
+        0.1413716694115407
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.023554359430080163,
+        -0.43343020955733697,
+        0.1413716694115407
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_01_low_energy",
+      "field_id": "fixed_01",
+      "delta": 0.09,
+      "gamma": 0.0,
+      "profile": "low_energy",
+      "candidate": [
+        0.03239778764978887,
+        -0.33091248959044833,
+        0.08483258983658935
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.032397787649788866,
+        -0.33091248959044833,
+        0.08483259027391452
+      ],
+      "scaled_error": [
+        6.938893903907228e-18,
+        0.0,
+        4.3732516219474604e-10
+      ],
+      "relative_error": [
+        2.14178016687891e-16,
+        0.0,
+        5.155155121194275e-09
+      ]
+    },
+    {
+      "case_id": "fixed_01_finite_energy_band",
+      "field_id": "fixed_01",
+      "delta": 0.09,
+      "gamma": 0.0,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.301274901162459,
+        -0.39946370754588517,
+        0.14136966999036507
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.301274901162459,
+        -0.39946370754588517,
+        0.14136966999040687
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        4.1799896877137144e-14
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        2.956779688314588e-13
+      ]
+    },
+    {
+      "case_id": "fixed_01_near_edge_band",
+      "field_id": "fixed_01",
+      "delta": 0.09,
+      "gamma": 0.0,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.022181906461969665,
+        -0.42023625594037695,
+        0.14137135342993423
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.022181906461969665,
+        -0.42023625594037695,
+        0.141371353430038
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        1.0377809722683651e-13
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        7.340815144575546e-13
+      ]
+    },
+    {
+      "case_id": "fixed_01_high_energy_band",
+      "field_id": "fixed_01",
+      "delta": 0.09,
+      "gamma": 0.0,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.474408164314783,
+        -0.4200717183435582,
+        0.14137166941026819
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.474408164314783,
+        -0.4200717183435582,
+        0.14137166941026819
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_02_vacuum",
+      "field_id": "fixed_02",
+      "delta": 0.17,
+      "gamma": 0.0,
+      "profile": "vacuum",
+      "candidate": [
+        -0.0656595527318312,
+        -0.6024653262568376,
+        0.26703537555513246
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.0656595527318312,
+        -0.6024653262568376,
+        0.26703537555513246
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_02_low_energy",
+      "field_id": "fixed_02",
+      "delta": 0.17,
+      "gamma": 0.0,
+      "profile": "low_energy",
+      "candidate": [
+        -0.00014277251441066618,
+        -0.46914445248467973,
+        0.16024615224957775
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.0001427725144106523,
+        -0.46914445248467973,
+        0.1602461522484016
+      ],
+      "scaled_error": [
+        1.3877787807814457e-17,
+        0.0,
+        1.1761425167122752e-12
+      ],
+      "relative_error": [
+        9.720209709200884e-14,
+        0.0,
+        7.339599111803365e-12
+      ]
+    },
+    {
+      "case_id": "fixed_02_finite_energy_band",
+      "field_id": "fixed_02",
+      "delta": 0.17,
+      "gamma": 0.0,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.2630634770104806,
+        -0.5393133349796604,
+        0.26703159751748695
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.2630634770104806,
+        -0.5393133349796604,
+        0.2670315975174857
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        1.27675647831893e-15
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        4.7812936378636836e-15
+      ]
+    },
+    {
+      "case_id": "fixed_02_near_edge_band",
+      "field_id": "fixed_02",
+      "delta": 0.17,
+      "gamma": 0.0,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.06319650365996246,
+        -0.5885871016928288,
+        0.267034710385384
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.06319650365996246,
+        -0.5885871016928288,
+        0.2670347103853793
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        4.718447854656915e-15
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        1.7669792244788488e-14
+      ]
+    },
+    {
+      "case_id": "fixed_02_high_energy_band",
+      "field_id": "fixed_02",
+      "delta": 0.17,
+      "gamma": 0.0,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4338457715079418,
+        -0.5772603070658235,
+        0.26703537555059237
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4338457715079418,
+        -0.5772603070658235,
+        0.26703537555059237
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_03_vacuum",
+      "field_id": "fixed_03",
+      "delta": 0.43,
+      "gamma": 0.0,
+      "profile": "vacuum",
+      "candidate": [
+        -0.24850006599745839,
+        -0.7258142604532949,
+        0.6754424205218055
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.24850006599745839,
+        -0.7258142604532949,
+        0.6754424205218055
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_03_low_energy",
+      "field_id": "fixed_03",
+      "delta": 0.43,
+      "gamma": 0.0,
+      "profile": "low_energy",
+      "candidate": [
+        -0.1422752745923929,
+        -0.554215513112129,
+        0.40536557347811725
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.1422752745923929,
+        -0.5542155131121289,
+        0.40536557368235127
+      ],
+      "scaled_error": [
+        0.0,
+        1.1102230246251565e-16,
+        2.0423401858593593e-10
+      ],
+      "relative_error": [
+        0.0,
+        2.0032333963205684e-16,
+        5.038267476210889e-10
+      ]
+    },
+    {
+      "case_id": "fixed_03_finite_energy_band",
+      "field_id": "fixed_03",
+      "delta": 0.43,
+      "gamma": 0.0,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.1077580144139279,
+        -0.5810078866853301,
+        0.6754328566378547
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.1077580144139279,
+        -0.5810078866853301,
+        0.6754328566378492
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        5.440092820663267e-15
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        8.054231841404353e-15
+      ]
+    },
+    {
+      "case_id": "fixed_03_near_edge_band",
+      "field_id": "fixed_03",
+      "delta": 0.43,
+      "gamma": 0.0,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.24238185363022988,
+        -0.7116832504628493,
+        0.6754401924141047
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.24238185363022988,
+        -0.7116832504628493,
+        0.6754401924140556
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        4.907185768843192e-14
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        7.26516695920134e-14
+      ]
+    },
+    {
+      "case_id": "fixed_03_high_energy_band",
+      "field_id": "fixed_03",
+      "delta": 0.43,
+      "gamma": 0.0,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.2625227764938904,
+        -0.6625778491198917,
+        0.6754424204927589
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.2625227764938904,
+        -0.6625778491198917,
+        0.6754424204927589
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_04_vacuum",
+      "field_id": "fixed_04",
+      "delta": 0.72,
+      "gamma": 0.0,
+      "profile": "vacuum",
+      "candidate": [
+        -0.42949650831830344,
+        -0.47304585643973196,
+        1.1309733552923256
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.42949650831830344,
+        -0.47304585643973196,
+        1.1309733552923256
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_04_low_energy",
+      "field_id": "fixed_04",
+      "delta": 0.72,
+      "gamma": 0.0,
+      "profile": "low_energy",
+      "candidate": [
+        -0.27120918752379425,
+        -0.2877740877000385,
+        0.6788009031178357
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.27120918752379425,
+        -0.28777408770003843,
+        0.6788009025816724
+      ],
+      "scaled_error": [
+        0.0,
+        5.551115123125783e-17,
+        5.361633359513007e-10
+      ],
+      "relative_error": [
+        0.0,
+        1.928983657803128e-16,
+        7.898683309231315e-10
+      ]
+    },
+    {
+      "case_id": "fixed_04_finite_energy_band",
+      "field_id": "fixed_04",
+      "delta": 0.72,
+      "gamma": 0.0,
+      "profile": "finite_energy_band",
+      "candidate": [
+        -0.02137529392393922,
+        -0.264730888728964,
+        1.1309573307867804
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.02137529392393922,
+        -0.264730888728964,
+        1.1309573307867615
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        1.6688332004088893e-14
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        1.6688332004088893e-14
+      ]
+    },
+    {
+      "case_id": "fixed_04_near_edge_band",
+      "field_id": "fixed_04",
+      "delta": 0.72,
+      "gamma": 0.0,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4192746438306362,
+        -0.4588836477003465,
+        1.1309686230174743
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4192746438306362,
+        -0.4588836477003465,
+        1.1309686230174718
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        2.159644931314431e-15
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        2.159644931314431e-15
+      ]
+    },
+    {
+      "case_id": "fixed_04_high_energy_band",
+      "field_id": "fixed_04",
+      "delta": 0.72,
+      "gamma": 0.0,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.1058409422695052,
+        -0.36894075611453103,
+        1.1309733552108887
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1058409422695052,
+        -0.36894075611453103,
+        1.1309733552108887
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_05_vacuum",
+      "field_id": "fixed_05",
+      "delta": 1.2,
+      "gamma": 0.0,
+      "profile": "vacuum",
+      "candidate": [
+        -0.4574569582167054,
+        0.437571736305491,
+        1.8849555921538759
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4574569582167054,
+        0.437571736305491,
+        1.8849555921538759
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_05_low_energy",
+      "field_id": "fixed_05",
+      "delta": 1.2,
+      "gamma": 0.0,
+      "profile": "low_energy",
+      "candidate": [
+        -0.20796889628984516,
+        0.6308129263546265,
+        1.1314397390082265
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.20796889628984516,
+        0.6308129263546265,
+        1.1314397397820168
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        6.838988749548733e-10
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        6.838988749548733e-10
+      ]
+    },
+    {
+      "case_id": "fixed_05_finite_energy_band",
+      "field_id": "fixed_05",
+      "delta": 1.2,
+      "gamma": 0.0,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.06650929769234026,
+        0.704669420170793,
+        1.8849288612551707
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.06650929769234037,
+        0.704669420170793,
+        1.884928861254669
+      ],
+      "scaled_error": [
+        1.1102230246251565e-16,
+        0.0,
+        2.6611018210616477e-13
+      ],
+      "relative_error": [
+        1.6692749181638356e-15,
+        0.0,
+        2.6611018210616477e-13
+      ]
+    },
+    {
+      "case_id": "fixed_05_near_edge_band",
+      "field_id": "fixed_05",
+      "delta": 1.2,
+      "gamma": 0.0,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4404338963656853,
+        0.45174507271991104,
+        1.8849449694482074
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4404338963656853,
+        0.45174507271991104,
+        1.8849449694460838
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        1.1266294963120636e-12
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        1.1266294963120636e-12
+      ]
+    },
+    {
+      "case_id": "fixed_05_high_energy_band",
+      "field_id": "fixed_05",
+      "delta": 1.2,
+      "gamma": 0.0,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.143046901306249,
+        0.6036439133099117,
+        1.884955591927663
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.143046901306249,
+        0.6036439133099117,
+        1.884955591927663
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_06_vacuum",
+      "field_id": "fixed_06",
+      "delta": 1.47,
+      "gamma": 0.0,
+      "profile": "vacuum",
+      "candidate": [
+        -0.24793647813149544,
+        1.132671458324496,
+        2.3090706003884978
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.24793647813149544,
+        1.132671458324496,
+        2.3090706003884978
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_06_low_energy",
+      "field_id": "fixed_06",
+      "delta": 1.47,
+      "gamma": 0.0,
+      "profile": "low_energy",
+      "candidate": [
+        0.05401174916219986,
+        1.3278628827095806,
+        1.3860746982462362
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.05401174916219981,
+        1.3278628827095806,
+        1.386074694782517
+      ],
+      "scaled_error": [
+        5.551115123125783e-17,
+        0.0,
+        2.498941148239089e-09
+      ],
+      "relative_error": [
+        1.0277606648982104e-15,
+        0.0,
+        2.498941148239089e-09
+      ]
+    },
+    {
+      "case_id": "fixed_06_finite_energy_band",
+      "field_id": "fixed_06",
+      "delta": 1.47,
+      "gamma": 0.0,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.35079424885400146,
+        1.4181847965468404,
+        2.3090378410618393
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.35079424885400134,
+        1.4181847965468404,
+        2.309037841063121
+      ],
+      "scaled_error": [
+        1.1102230246251565e-16,
+        0.0,
+        5.550543333829431e-13
+      ],
+      "relative_error": [
+        3.164883769480569e-16,
+        0.0,
+        5.550543333829431e-13
+      ]
+    },
+    {
+      "case_id": "fixed_06_near_edge_band",
+      "field_id": "fixed_06",
+      "delta": 1.47,
+      "gamma": 0.0,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.22708630455985337,
+        1.1468468862894643,
+        2.3090557127887945
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.22708630455985337,
+        1.1468468862894643,
+        2.309055712794427
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        2.4392583588691393e-12
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        2.4392583588691393e-12
+      ]
+    },
+    {
+      "case_id": "fixed_06_high_energy_band",
+      "field_id": "fixed_06",
+      "delta": 1.47,
+      "gamma": 0.0,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.401662837910937,
+        1.329783454175228,
+        2.3090706000490373
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.401662837910937,
+        1.329783454175228,
+        2.3090706000490373
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_07_vacuum",
+      "field_id": "fixed_07",
+      "delta": 0.17,
+      "gamma": 1e-10,
+      "profile": "vacuum",
+      "candidate": [
+        -0.06565955270512766,
+        -0.6024653260997579,
+        0.2670353754884658
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.06565955270512766,
+        -0.6024653260997579,
+        0.2670353754884658
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_07_low_energy",
+      "field_id": "fixed_07",
+      "delta": 0.17,
+      "gamma": 1e-10,
+      "profile": "low_energy",
+      "candidate": [
+        -0.0001427724983698031,
+        -0.4691444523903069,
+        0.1601415093331981
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.00014277249838447192,
+        -0.4691444523903933,
+        0.16027127017996895
+      ],
+      "scaled_error": [
+        1.466882171285988e-14,
+        8.643086246706844e-14,
+        0.00012976084677085442
+      ],
+      "relative_error": [
+        1.0274262815908863e-10,
+        1.8423080999185717e-13,
+        0.0008096326099190809
+      ]
+    },
+    {
+      "case_id": "fixed_07_finite_energy_band",
+      "field_id": "fixed_07",
+      "delta": 0.17,
+      "gamma": 1e-10,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.2630634770371838,
+        -0.5393133348225831,
+        0.267031241176337
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.2630634770371838,
+        -0.5393133348225829,
+        0.2670315927605154
+      ],
+      "scaled_error": [
+        0.0,
+        2.220446049250313e-16,
+        3.5158417843739187e-07
+      ],
+      "relative_error": [
+        0.0,
+        4.1171725338124077e-16,
+        1.3166388845708852e-06
+      ]
+    },
+    {
+      "case_id": "fixed_07_near_edge_band",
+      "field_id": "fixed_07",
+      "delta": 0.17,
+      "gamma": 1e-10,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.06319650363325899,
+        -0.5885871015357496,
+        0.26703467706708733
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.06319650363325899,
+        -0.5885871015357496,
+        0.2670346779896169
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        9.22529552749296e-10
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        3.4547181650510828e-09
+      ]
+    },
+    {
+      "case_id": "fixed_07_high_energy_band",
+      "field_id": "fixed_07",
+      "delta": 0.17,
+      "gamma": 1e-10,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4338457715346453,
+        -0.5772603069087436,
+        0.2670340170638356
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4338457715346453,
+        -0.5772603069087439,
+        0.26703537548388023
+      ],
+      "scaled_error": [
+        0.0,
+        2.220446049250313e-16,
+        1.3584200446170591e-06
+      ],
+      "relative_error": [
+        0.0,
+        3.846524735332845e-16,
+        5.087041528320135e-06
+      ]
+    },
+    {
+      "case_id": "fixed_08_vacuum",
+      "field_id": "fixed_08",
+      "delta": 0.72,
+      "gamma": 1e-12,
+      "profile": "vacuum",
+      "candidate": [
+        -0.42949650831717245,
+        -0.47304585643816116,
+        1.130973355291659
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.42949650831717245,
+        -0.47304585643816116,
+        1.130973355291659
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_08_low_energy",
+      "field_id": "fixed_08",
+      "delta": 0.72,
+      "gamma": 1e-12,
+      "profile": "low_energy",
+      "candidate": [
+        -0.27120918752311535,
+        -0.2877740876990954,
+        0.6793975619957184
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.27120918752311546,
+        -0.2877740876990955,
+        0.6788152668499501
+      ],
+      "scaled_error": [
+        1.1102230246251565e-16,
+        1.1102230246251565e-16,
+        0.0005822951457683523
+      ],
+      "relative_error": [
+        4.093604035927179e-16,
+        3.857967315618897e-16,
+        0.0008578109158777461
+      ]
+    },
+    {
+      "case_id": "fixed_08_finite_energy_band",
+      "field_id": "fixed_08",
+      "delta": 0.72,
+      "gamma": 1e-12,
+      "profile": "finite_energy_band",
+      "candidate": [
+        -0.021375293922808236,
+        -0.2647308887273932,
+        1.1309573489462619
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.021375293922808347,
+        -0.26473088872739325,
+        1.1309573281287704
+      ],
+      "scaled_error": [
+        1.1102230246251565e-16,
+        5.551115123125783e-17,
+        1.8406964604791503e-08
+      ],
+      "relative_error": [
+        5.1939544253026685e-15,
+        2.0968898453108153e-16,
+        1.8406964604791503e-08
+      ]
+    },
+    {
+      "case_id": "fixed_08_near_edge_band",
+      "field_id": "fixed_08",
+      "delta": 0.72,
+      "gamma": 1e-12,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4192746438295052,
+        -0.4588836476987757,
+        1.1309686094112903
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4192746438295052,
+        -0.4588836476987757,
+        1.1309686027180483
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        5.918150110082596e-09
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        5.918150110082596e-09
+      ]
+    },
+    {
+      "case_id": "fixed_08_high_energy_band",
+      "field_id": "fixed_08",
+      "delta": 0.72,
+      "gamma": 1e-12,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.1058409422706361,
+        -0.36894075611296023,
+        1.1309733552296473
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1058409422706361,
+        -0.36894075611296023,
+        1.1309733552102137
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        1.7183044833122133e-11
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        1.7183044833122133e-11
+      ]
+    },
+    {
+      "case_id": "fixed_09_vacuum",
+      "field_id": "fixed_09",
+      "delta": 1.47,
+      "gamma": 1e-10,
+      "profile": "vacuum",
+      "candidate": [
+        -0.24793647790058837,
+        1.1326714584815756,
+        2.309070600321831
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.24793647790058837,
+        1.1326714584815756,
+        2.309070600321831
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_09_low_energy",
+      "field_id": "fixed_09",
+      "delta": 1.47,
+      "gamma": 1e-10,
+      "profile": "low_energy",
+      "candidate": [
+        0.05401174930100583,
+        1.3278628828040635,
+        1.3860465158942332
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.0540117493008796,
+        1.3278628828039796,
+        1.3871608367912112
+      ],
+      "scaled_error": [
+        1.262323578998803e-13,
+        6.320898170180429e-14,
+        0.0008033105227765745
+      ],
+      "relative_error": [
+        2.3371277459777548e-12,
+        6.320898170180429e-14,
+        0.0008033105227765745
+      ]
+    },
+    {
+      "case_id": "fixed_09_finite_energy_band",
+      "field_id": "fixed_09",
+      "delta": 1.47,
+      "gamma": 1e-10,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.3507942490849051,
+        1.4181847967039178,
+        2.309037261057021
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.3507942490849052,
+        1.4181847967039178,
+        2.309037634034195
+      ],
+      "scaled_error": [
+        1.1102230246251565e-16,
+        0.0,
+        1.61529274593492e-07
+      ],
+      "relative_error": [
+        3.1648837673973426e-16,
+        0.0,
+        1.61529274593492e-07
+      ]
+    },
+    {
+      "case_id": "fixed_09_near_edge_band",
+      "field_id": "fixed_09",
+      "delta": 1.47,
+      "gamma": 1e-10,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.22708630432894816,
+        1.1468468864465415,
+        2.3090487868875584
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.22708630432894816,
+        1.1468468864465415,
+        2.3090488488723833
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        2.684431074670109e-08
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        2.684431074670109e-08
+      ]
+    },
+    {
+      "case_id": "fixed_09_high_energy_band",
+      "field_id": "fixed_09",
+      "delta": 1.47,
+      "gamma": 1e-10,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4016628381418441,
+        1.3297834543323077,
+        2.309069088632335
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4016628381418441,
+        1.3297834543323077,
+        2.3090705999785834
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        6.545257856598082e-07
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        6.545257856598082e-07
+      ]
+    },
+    {
+      "case_id": "fixed_10_vacuum",
+      "field_id": "fixed_10",
+      "delta": 0.72,
+      "gamma": 1e-08,
+      "profile": "vacuum",
+      "candidate": [
+        -0.42949649700856996,
+        -0.4730458407317687,
+        1.1309733486256588
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.42949649700856996,
+        -0.4730458407317687,
+        1.1309733486256588
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_10_low_energy",
+      "field_id": "fixed_10",
+      "delta": 0.72,
+      "gamma": 1e-08,
+      "profile": "low_energy",
+      "candidate": [
+        -0.2712091807192983,
+        -0.28777407823351886,
+        0.6791976078587616
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.2712091807206223,
+        -0.2877740782353324,
+        0.6808913187919069
+      ],
+      "scaled_error": [
+        1.3239964680167304e-12,
+        1.8135493107251932e-12,
+        0.0016937109331452982
+      ],
+      "relative_error": [
+        4.881827615491396e-12,
+        6.301989817311241e-12,
+        0.00248749086146438
+      ]
+    },
+    {
+      "case_id": "fixed_10_finite_energy_band",
+      "field_id": "fixed_10",
+      "delta": 0.72,
+      "gamma": 1e-08,
+      "profile": "finite_energy_band",
+      "candidate": [
+        -0.021375282614368885,
+        -0.26473087302123055,
+        1.1309568528071567
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.02137528261436894,
+        -0.26473087302123055,
+        1.1309569157867112
+      ],
+      "scaled_error": [
+        5.551115123125783e-17,
+        0.0,
+        5.568696170590284e-08
+      ],
+      "relative_error": [
+        2.5969785865634356e-15,
+        0.0,
+        5.568696170590284e-08
+      ]
+    },
+    {
+      "case_id": "fixed_10_near_edge_band",
+      "field_id": "fixed_10",
+      "delta": 0.72,
+      "gamma": 1e-08,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4192746325212941,
+        -0.45888363199387844,
+        1.1308992636425093
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4192746325212954,
+        -0.45888363199388366,
+        1.1309008654068256
+      ],
+      "scaled_error": [
+        1.27675647831893e-15,
+        5.218048215738236e-15,
+        1.4163613852381752e-06
+      ],
+      "relative_error": [
+        3.0451555598324503e-15,
+        1.137117964540471e-14,
+        1.4163613852381752e-06
+      ]
+    },
+    {
+      "case_id": "fixed_10_high_energy_band",
+      "field_id": "fixed_10",
+      "delta": 0.72,
+      "gamma": 1e-08,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.1058409535792386,
+        -0.36894074040656777,
+        1.1309733485653461
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1058409535792386,
+        -0.36894074040656777,
+        1.1309733484604225
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        9.277285400798855e-11
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        9.277285400798855e-11
+      ]
+    },
+    {
+      "case_id": "fixed_11_vacuum",
+      "field_id": "fixed_11",
+      "delta": 1.2,
+      "gamma": 1e-06,
+      "profile": "vacuum",
+      "candidate": [
+        -0.4574550732614466,
+        0.4375733071018178,
+        1.884954925487209
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4574550732614466,
+        0.4375733071018178,
+        1.884954925487209
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_11_low_energy",
+      "field_id": "fixed_11",
+      "delta": 1.2,
+      "gamma": 1e-06,
+      "profile": "low_energy",
+      "candidate": [
+        -0.20796774667439247,
+        0.6308138942410542,
+        1.1596436330673479
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.20796774701487472,
+        0.6308138939723049,
+        1.1552078828265295
+      ],
+      "scaled_error": [
+        3.404822535024721e-10,
+        2.6874924508035747e-10,
+        0.0038397852947168777
+      ],
+      "relative_error": [
+        1.6371877773822274e-09,
+        4.260357098161135e-10,
+        0.0038397852947168777
+      ]
+    },
+    {
+      "case_id": "fixed_11_finite_energy_band",
+      "field_id": "fixed_11",
+      "delta": 1.2,
+      "gamma": 1e-06,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.06651118261595884,
+        0.7046709909367801,
+        1.8849211640628774
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.06651118261592709,
+        0.7046709909367329,
+        1.8849207493969629
+      ],
+      "scaled_error": [
+        3.175237850427948e-14,
+        4.718447854656915e-14,
+        2.1999116653950183e-07
+      ],
+      "relative_error": [
+        4.773990967449119e-13,
+        6.695958703202171e-14,
+        2.1999116653950183e-07
+      ]
+    },
+    {
+      "case_id": "fixed_11_near_edge_band",
+      "field_id": "fixed_11",
+      "delta": 1.2,
+      "gamma": 1e-06,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4404320248216363,
+        0.4517466117652321,
+        1.8602244558013856
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.44043202490988537,
+        0.4517466116155832,
+        1.8590641702237076
+      ],
+      "scaled_error": [
+        8.824907471449706e-11,
+        1.4964890437951794e-10,
+        0.0006241234682815593
+      ],
+      "relative_error": [
+        2.003693412906413e-10,
+        3.3126735327206544e-10,
+        0.0006241234682815593
+      ]
+    },
+    {
+      "case_id": "fixed_11_high_energy_band",
+      "field_id": "fixed_11",
+      "delta": 1.2,
+      "gamma": 1e-06,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.1430487862614953,
+        0.6036454841062157,
+        1.8849549026338424
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.143048786261495,
+        0.6036454841062164,
+        1.8849549008629243
+      ],
+      "scaled_error": [
+        1.942564548371203e-16,
+        7.771561172376096e-16,
+        9.395015647517604e-10
+      ],
+      "relative_error": [
+        1.942564548371203e-16,
+        1.2874379709612182e-15,
+        9.395015647517604e-10
+      ]
+    },
+    {
+      "case_id": "fixed_12_vacuum",
+      "field_id": "fixed_12",
+      "delta": 0.43,
+      "gamma": 0.0001,
+      "profile": "vacuum",
+      "candidate": [
+        -0.24843252508873953,
+        -0.7256571808206154,
+        0.6753757538551388
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.24843252508873953,
+        -0.7256571808206154,
+        0.6753757538551388
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_12_low_energy",
+      "field_id": "fixed_12",
+      "delta": 0.43,
+      "gamma": 0.0001,
+      "profile": "low_energy",
+      "candidate": [
+        -0.14223322735938493,
+        -0.5541155749723723,
+        0.4252391318588218
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.14223326182982948,
+        -0.5541156461935249,
+        0.424805109889959
+      ],
+      "scaled_error": [
+        3.4470444554290935e-08,
+        7.122115264213136e-08,
+        0.00043402196886277444
+      ],
+      "relative_error": [
+        2.423515014057121e-07,
+        1.285312066738815e-07,
+        0.0010216966763304776
+      ]
+    },
+    {
+      "case_id": "fixed_12_finite_energy_band",
+      "field_id": "fixed_12",
+      "delta": 0.43,
+      "gamma": 0.0001,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.10782555328921511,
+        -0.580850814645819,
+        0.6753468658586821
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.10782555326672383,
+        -0.5808508147597023,
+        0.6753465428420753
+      ],
+      "scaled_error": [
+        2.249128661091504e-11,
+        1.1388334719697468e-10,
+        3.230166067957896e-07
+      ],
+      "relative_error": [
+        2.0858957760484872e-10,
+        1.9606298950288666e-10,
+        4.782975647382925e-07
+      ]
+    },
+    {
+      "case_id": "fixed_12_near_edge_band",
+      "field_id": "fixed_12",
+      "delta": 0.43,
+      "gamma": 0.0001,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.24231750905399504,
+        -0.7115406894692641,
+        0.628194931621994
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.24231751732468695,
+        -0.7115406948984283,
+        0.6280967597057486
+      ],
+      "scaled_error": [
+        8.270691909118e-09,
+        5.429164229298067e-09,
+        9.817191624539312e-05
+      ],
+      "relative_error": [
+        3.413163026937052e-08,
+        7.63015280534738e-09,
+        0.0001563006252275283
+      ]
+    },
+    {
+      "case_id": "fixed_12_high_energy_band",
+      "field_id": "fixed_12",
+      "delta": 0.43,
+      "gamma": 0.0001,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.2625903173883197,
+        -0.6624207695543578,
+        0.6753754660028367
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.2625903173879314,
+        -0.6624207695561835,
+        0.6753754603272912
+      ],
+      "scaled_error": [
+        3.0758671967112607e-13,
+        1.8256507416936074e-12,
+        5.675545478034394e-09
+      ],
+      "relative_error": [
+        3.0758671967112607e-13,
+        2.7560288348397933e-12,
+        8.403541158104839e-09
+      ]
+    },
+    {
+      "case_id": "fixed_13_vacuum",
+      "field_id": "fixed_13",
+      "delta": 0.72,
+      "gamma": 0.002,
+      "profile": "vacuum",
+      "candidate": [
+        -0.42723589494105213,
+        -0.46990426378614214,
+        1.1296400219589922
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.42723589494105213,
+        -0.46990426378614214,
+        1.1296400219589922
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_13_low_energy",
+      "field_id": "fixed_13",
+      "delta": 0.72,
+      "gamma": 0.002,
+      "profile": "low_energy",
+      "candidate": [
+        -0.26968746477985944,
+        -0.28553709024441665,
+        0.7824248042675145
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.2696875594226248,
+        -0.2855371835665932,
+        0.7832536313444538
+      ],
+      "scaled_error": [
+        9.464276534698612e-08,
+        9.332217654201003e-08,
+        0.0008288270769393202
+      ],
+      "relative_error": [
+        3.5093485791338397e-07,
+        3.268302060570173e-07,
+        0.0010581847868571508
+      ]
+    },
+    {
+      "case_id": "fixed_13_finite_energy_band",
+      "field_id": "fixed_13",
+      "delta": 0.72,
+      "gamma": 0.002,
+      "profile": "finite_energy_band",
+      "candidate": [
+        -0.01911573813645845,
+        -0.26159284681165335,
+        1.1286068324828855
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.01911574036935315,
+        -0.2615928543951774,
+        1.1286261060048917
+      ],
+      "scaled_error": [
+        2.232894702469679e-09,
+        7.583524030962963e-09,
+        1.7076976957737775e-05
+      ],
+      "relative_error": [
+        1.1680921896436265e-07,
+        2.8989798090993916e-08,
+        1.7076976957737775e-05
+      ]
+    },
+    {
+      "case_id": "fixed_13_near_edge_band",
+      "field_id": "fixed_13",
+      "delta": 0.72,
+      "gamma": 0.002,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4171698876303241,
+        -0.45589671638993934,
+        1.0631852147707084
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.41716989782528197,
+        -0.4558967233941292,
+        1.063274682223153
+      ],
+      "scaled_error": [
+        1.019495787790703e-08,
+        7.004189839232566e-09,
+        8.41433111691069e-05
+      ],
+      "relative_error": [
+        2.4438383332674824e-08,
+        1.5363545030740098e-08,
+        8.41433111691069e-05
+      ]
+    },
+    {
+      "case_id": "fixed_13_high_energy_band",
+      "field_id": "fixed_13",
+      "delta": 0.72,
+      "gamma": 0.002,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.108101538926566,
+        -0.36579921119587494,
+        1.12962291817988
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1081015388867053,
+        -0.3657992113095745,
+        1.1296232619993218
+      ],
+      "scaled_error": [
+        3.59721378804098e-11,
+        1.1369954977524799e-10,
+        3.043664674516543e-07
+      ],
+      "relative_error": [
+        3.59721378804098e-11,
+        3.1082502711856446e-10,
+        3.043664674516543e-07
+      ]
+    },
+    {
+      "case_id": "fixed_14_vacuum",
+      "field_id": "fixed_14",
+      "delta": 0.43,
+      "gamma": 0.02,
+      "profile": "vacuum",
+      "candidate": [
+        -0.2351245509203556,
+        -0.6943983339173969,
+        0.6621090871884722
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.2351245509203556,
+        -0.6943983339173969,
+        0.6621090871884722
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_14_low_energy",
+      "field_id": "fixed_14",
+      "delta": 0.43,
+      "gamma": 0.02,
+      "profile": "low_energy",
+      "candidate": [
+        -0.13283497260506355,
+        -0.5305478645877846,
+        0.4859656806627365
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.13283714780502565,
+        -0.5305522652725699,
+        0.4860275972595119
+      ],
+      "scaled_error": [
+        2.1751999620955864e-06,
+        4.400684785355047e-06,
+        6.191659677540207e-05
+      ],
+      "relative_error": [
+        1.6374937267459848e-05,
+        8.294535851419286e-06,
+        0.0001273931709321066
+      ]
+    },
+    {
+      "case_id": "fixed_14_finite_energy_band",
+      "field_id": "fixed_14",
+      "delta": 0.43,
+      "gamma": 0.02,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.12110661376231036,
+        -0.549731835705791,
+        0.6594280332494056
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.12110605249025846,
+        -0.5497345784478915,
+        0.6594352476570688
+      ],
+      "scaled_error": [
+        5.612720518910486e-07,
+        2.7427421005477015e-06,
+        7.21440766326964e-06
+      ],
+      "relative_error": [
+        4.634549969632577e-06,
+        4.989211536031623e-06,
+        1.0940282141274625e-05
+      ]
+    },
+    {
+      "case_id": "fixed_14_near_edge_band",
+      "field_id": "fixed_14",
+      "delta": 0.43,
+      "gamma": 0.02,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.22972422851147123,
+        -0.681286823373385,
+        0.6345879010157288
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.22972437512451266,
+        -0.6812870870228245,
+        0.634592821116908
+      ],
+      "scaled_error": [
+        1.4661304142959963e-07,
+        2.636494395025224e-07,
+        4.920101179139991e-06
+      ],
+      "relative_error": [
+        6.382128206905952e-07,
+        3.869872841046371e-07,
+        7.7531623671387e-06
+      ]
+    },
+    {
+      "case_id": "fixed_14_high_energy_band",
+      "field_id": "fixed_14",
+      "delta": 0.43,
+      "gamma": 0.02,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.2758977185026,
+        -0.6311646154157913,
+        0.6620502345564413
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.2758977046018674,
+        -0.6311646807474975,
+        0.662050393210558
+      ],
+      "scaled_error": [
+        1.08948644667069e-08,
+        6.533170626710216e-08,
+        1.5865411673310348e-07
+      ],
+      "relative_error": [
+        1.08948644667069e-08,
+        1.0350976260225599e-07,
+        2.3964054452671437e-07
+      ]
+    },
+    {
+      "case_id": "fixed_15_vacuum",
+      "field_id": "fixed_15",
+      "delta": 0.17,
+      "gamma": 0.012,
+      "profile": "vacuum",
+      "candidate": [
+        -0.06250312822516961,
+        -0.5836157703352988,
+        0.25903537555513245
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.06250312822516961,
+        -0.5836157703352988,
+        0.25903537555513245
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_15_low_energy",
+      "field_id": "fixed_15",
+      "delta": 0.17,
+      "gamma": 0.012,
+      "profile": "low_energy",
+      "candidate": [
+        0.0019336330953073494,
+        -0.45619366531876226,
+        0.1751818198724423
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.0019336061930363274,
+        -0.456193804214582,
+        0.17527281499295663
+      ],
+      "scaled_error": [
+        2.6902271021977953e-08,
+        1.3889581973458576e-07,
+        9.099512051433112e-05
+      ],
+      "relative_error": [
+        1.3913004167479169e-05,
+        3.0446669474987583e-07,
+        0.0005191627721503062
+      ]
+    },
+    {
+      "case_id": "fixed_15_finite_energy_band",
+      "field_id": "fixed_15",
+      "delta": 0.17,
+      "gamma": 0.012,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.26621847379134594,
+        -0.5204807499875609,
+        0.25880273458791886
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.2662184730632063,
+        -0.5204807588796969,
+        0.2588051707300698
+      ],
+      "scaled_error": [
+        7.281396596781065e-10,
+        8.89213602750516e-09,
+        2.436142150952225e-06
+      ],
+      "relative_error": [
+        2.7351207123227306e-09,
+        1.7084466381898422e-08,
+        9.413035079940839e-06
+      ]
+    },
+    {
+      "case_id": "fixed_15_near_edge_band",
+      "field_id": "fixed_15",
+      "delta": 0.17,
+      "gamma": 0.012,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.06027701897664524,
+        -0.5710109841299055,
+        0.24115289349183572
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.06027702138842852,
+        -0.5710109763441581,
+        0.24116123473739254
+      ],
+      "scaled_error": [
+        2.4117832800318872e-09,
+        7.785747380140151e-09,
+        8.34124555681992e-06
+      ],
+      "relative_error": [
+        4.001165327148832e-08,
+        1.3635022272229576e-08,
+        3.458783732759929e-05
+      ]
+    },
+    {
+      "case_id": "fixed_15_high_energy_band",
+      "field_id": "fixed_15",
+      "delta": 0.17,
+      "gamma": 0.012,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4370021632919683,
+        -0.5584111367464467,
+        0.259029858060331
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4370021632738017,
+        -0.5584111369608621,
+        0.25902991884994553
+      ],
+      "scaled_error": [
+        1.2641998610881725e-11,
+        2.1441537434441216e-10,
+        6.078961450883824e-08
+      ],
+      "relative_error": [
+        1.2641998610881725e-11,
+        3.839740294424681e-10,
+        2.3468182663506643e-07
+      ]
+    },
+    {
+      "case_id": "fixed_16_vacuum",
+      "field_id": "fixed_16",
+      "delta": 0.37,
+      "gamma": 0.14,
+      "profile": "vacuum",
+      "candidate": [
+        -0.12972921982613306,
+        -0.515835196523176,
+        0.48786130758077845
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.12972921982613306,
+        -0.515835196523176,
+        0.48786130758077845
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_16_low_energy",
+      "field_id": "fixed_16",
+      "delta": 0.37,
+      "gamma": 0.14,
+      "profile": "low_energy",
+      "candidate": [
+        -0.05139977555206421,
+        -0.39058829216824115,
+        0.3929876253606889
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.051397224879518824,
+        -0.3905932699094818,
+        0.3929587148318299
+      ],
+      "scaled_error": [
+        2.550672545384436e-06,
+        4.977741240641542e-06,
+        2.8910528858949736e-05
+      ],
+      "relative_error": [
+        4.9626658858790804e-05,
+        1.2744052763108568e-05,
+        7.357141543818985e-05
+      ]
+    },
+    {
+      "case_id": "fixed_16_finite_energy_band",
+      "field_id": "fixed_16",
+      "delta": 0.37,
+      "gamma": 0.14,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.2175237171187704,
+        -0.39231560573441027,
+        0.4772988151388681
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.2175228421342939,
+        -0.39231903346182256,
+        0.47731206919931046
+      ],
+      "scaled_error": [
+        8.74984476484375e-07,
+        3.4277274122973544e-06,
+        1.3254060442335902e-05
+      ],
+      "relative_error": [
+        4.022494685611815e-06,
+        8.73709180523589e-06,
+        2.7768123409428024e-05
+      ]
+    },
+    {
+      "case_id": "fixed_16_near_edge_band",
+      "field_id": "fixed_16",
+      "delta": 0.37,
+      "gamma": 0.14,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.12704120639008043,
+        -0.5060664045996001,
+        0.4765377580364006
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.12704083781975395,
+        -0.506066949609606,
+        0.4765335972304908
+      ],
+      "scaled_error": [
+        3.685703264810769e-07,
+        5.450100059034568e-07,
+        4.160805909758647e-06
+      ],
+      "relative_error": [
+        2.901195653353656e-06,
+        1.076952380162136e-06,
+        8.731400962996822e-06
+      ]
+    },
+    {
+      "case_id": "fixed_16_high_energy_band",
+      "field_id": "fixed_16",
+      "delta": 0.37,
+      "gamma": 0.14,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.37773862732927,
+        -0.46140175028104385,
+        0.4875585132519814
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.3777385625065124,
+        -0.4614021028926316,
+        0.48755932641648586
+      ],
+      "scaled_error": [
+        4.7050114855010804e-08,
+        3.5261158776167534e-07,
+        8.131645044540114e-07
+      ],
+      "relative_error": [
+        4.7050114855010804e-08,
+        7.642175567711449e-07,
+        1.6678267861896773e-06
+      ]
+    },
+    {
+      "case_id": "fixed_17_vacuum",
+      "field_id": "fixed_17",
+      "delta": 0.72,
+      "gamma": 0.3,
+      "profile": "vacuum",
+      "candidate": [
+        -0.12020450173060579,
+        -0.0018069584012629925,
+        0.9309733552923256
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.12020450173060579,
+        -0.0018069584012629925,
+        0.9309733552923256
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_17_low_energy",
+      "field_id": "fixed_17",
+      "delta": 0.72,
+      "gamma": 0.3,
+      "profile": "low_energy",
+      "candidate": [
+        -0.014396047910284857,
+        0.12751327371790158,
+        0.8130198479622215
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.014395745602453922,
+        0.12751239492367927,
+        0.813003387346601
+      ],
+      "scaled_error": [
+        3.0230783093498914e-07,
+        8.78794222308743e-07,
+        1.6460615620439434e-05
+      ],
+      "relative_error": [
+        2.0999803642227275e-05,
+        6.891833714163496e-06,
+        2.0246675323410324e-05
+      ]
+    },
+    {
+      "case_id": "fixed_17_finite_energy_band",
+      "field_id": "fixed_17",
+      "delta": 0.72,
+      "gamma": 0.3,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.27716758526384666,
+        0.178988818515001,
+        0.8793234971314863
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.27716764493319346,
+        0.1789888973457518,
+        0.8793203911243898
+      ],
+      "scaled_error": [
+        5.966934679690894e-08,
+        7.883075078818358e-08,
+        3.1060070965205355e-06
+      ],
+      "relative_error": [
+        2.152825118216494e-07,
+        4.4042257345105985e-07,
+        3.5322814390200532e-06
+      ]
+    },
+    {
+      "case_id": "fixed_17_near_edge_band",
+      "field_id": "fixed_17",
+      "delta": 0.72,
+      "gamma": 0.3,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.11597982938703154,
+        0.007645795130536294,
+        0.9196016611137583
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.11597979431028108,
+        0.0076456681109818,
+        0.9195997533930488
+      ],
+      "scaled_error": [
+        3.507675046254821e-08,
+        1.2701955449424818e-07,
+        1.9077207095152815e-06
+      ],
+      "relative_error": [
+        3.0243846069175876e-07,
+        1.6613270763323426e-05,
+        2.0745119846719848e-06
+      ]
+    },
+    {
+      "case_id": "fixed_17_high_energy_band",
+      "field_id": "fixed_17",
+      "delta": 0.72,
+      "gamma": 0.3,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4147606476384813,
+        0.10123799937812356,
+        0.9285204156021427
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4147606136138384,
+        0.10123790637029344,
+        0.9285222879105635
+      ],
+      "scaled_error": [
+        2.4049752695634223e-08,
+        9.30078301181192e-08,
+        1.8723084207472596e-06
+      ],
+      "relative_error": [
+        2.4049752695634223e-08,
+        9.187055862053147e-07,
+        2.016438856799529e-06
+      ]
+    },
+    {
+      "case_id": "fixed_18_vacuum",
+      "field_id": "fixed_18",
+      "delta": 1.17,
+      "gamma": 0.72,
+      "profile": "vacuum",
+      "candidate": [
+        0.6809112574375707,
+        1.498362127506941,
+        1.3578317023500288
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.6809112574375707,
+        1.498362127506941,
+        1.3578317023500288
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_18_low_energy",
+      "field_id": "fixed_18",
+      "delta": 1.17,
+      "gamma": 0.72,
+      "profile": "low_energy",
+      "candidate": [
+        0.7946674442775868,
+        1.608265554350921,
+        1.2573681645045198
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.7946684692877983,
+        1.608255975856483,
+        1.2573767185316724
+      ],
+      "scaled_error": [
+        1.0250102114861548e-06,
+        5.9558270460988495e-06,
+        6.803074231083734e-06
+      ],
+      "relative_error": [
+        1.2898589173983391e-06,
+        5.9558270460988495e-06,
+        6.803074231083734e-06
+      ]
+    },
+    {
+      "case_id": "fixed_18_finite_energy_band",
+      "field_id": "fixed_18",
+      "delta": 1.17,
+      "gamma": 0.72,
+      "profile": "finite_energy_band",
+      "candidate": [
+        1.1288061801291152,
+        1.6799467445688325,
+        1.2652497123137332
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1288056880025648,
+        1.6799521416191288,
+        1.265250533563236
+      ],
+      "scaled_error": [
+        4.3597100513437156e-07,
+        3.212621456601778e-06,
+        6.490805425975068e-07
+      ],
+      "relative_error": [
+        4.3597100513437156e-07,
+        3.212621456601778e-06,
+        6.490805425975068e-07
+      ]
+    },
+    {
+      "case_id": "fixed_18_near_edge_band",
+      "field_id": "fixed_18",
+      "delta": 1.17,
+      "gamma": 0.72,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.6849022443624114,
+        1.506017511376417,
+        1.3494511856786149
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.6849023874103225,
+        1.5060160792337265,
+        1.349451376164645
+      ],
+      "scaled_error": [
+        1.4304791107200288e-07,
+        9.509478087160529e-07,
+        1.4115812798082906e-07
+      ],
+      "relative_error": [
+        2.0885882966896917e-07,
+        9.509478087160529e-07,
+        1.4115812798082906e-07
+      ]
+    },
+    {
+      "case_id": "fixed_18_high_energy_band",
+      "field_id": "fixed_18",
+      "delta": 1.17,
+      "gamma": 0.72,
+      "profile": "high_energy_band",
+      "candidate": [
+        2.2710175748211827,
+        1.6511631490071117,
+        1.3438830065824052
+      ],
+      "same_eta_same_quadrature_reference": [
+        2.271017577130492,
+        1.6511630820298804,
+        1.3438829169251587
+      ],
+      "scaled_error": [
+        1.016860992875987e-09,
+        4.056366814737447e-08,
+        6.671507270962435e-08
+      ],
+      "relative_error": [
+        1.016860992875987e-09,
+        4.056366814737447e-08,
+        6.671507270962435e-08
+      ]
+    },
+    {
+      "case_id": "fixed_19_vacuum",
+      "field_id": "fixed_19",
+      "delta": 0.43,
+      "gamma": 0.8,
+      "profile": "vacuum",
+      "candidate": [
+        0.08916342137038685,
+        0.42539132364298016,
+        0.2253857169678653
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.08916342137038685,
+        0.42539132364298016,
+        0.2253857169678653
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_19_low_energy",
+      "field_id": "fixed_19",
+      "delta": 0.43,
+      "gamma": 0.8,
+      "profile": "low_energy",
+      "candidate": [
+        0.1448995060266357,
+        0.454163809131039,
+        0.21343888235569586
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.14489946961012773,
+        0.4541594710487632,
+        0.2134386845903344
+      ],
+      "scaled_error": [
+        3.641650797581164e-08,
+        4.338082275789912e-06,
+        1.977653614482211e-07
+      ],
+      "relative_error": [
+        2.513225760853048e-07,
+        9.551892126728611e-06,
+        9.265675612075849e-07
+      ]
+    },
+    {
+      "case_id": "fixed_19_finite_energy_band",
+      "field_id": "fixed_19",
+      "delta": 0.43,
+      "gamma": 0.8,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.43082629742982176,
+        0.5082874553603349,
+        0.2070440071420578
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.4308262936007563,
+        0.5082863622581049,
+        0.20704393707037014
+      ],
+      "scaled_error": [
+        3.829065453597735e-09,
+        1.0931022300653126e-06,
+        7.00716876744778e-08
+      ],
+      "relative_error": [
+        8.88772461308061e-09,
+        2.1505637593916826e-06,
+        3.3843873269595823e-07
+      ]
+    },
+    {
+      "case_id": "fixed_19_near_edge_band",
+      "field_id": "fixed_19",
+      "delta": 0.43,
+      "gamma": 0.8,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.08975124917667164,
+        0.4259379590498595,
+        0.22509349334727205
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.08975125360396007,
+        0.4259383714090287,
+        0.22509338576330984
+      ],
+      "scaled_error": [
+        4.427288424757592e-09,
+        4.1235916919957205e-07,
+        1.0758396221111077e-07
+      ],
+      "relative_error": [
+        4.932842993250679e-08,
+        9.681193263604408e-07,
+        4.779525699801657e-07
+      ]
+    },
+    {
+      "case_id": "fixed_19_high_energy_band",
+      "field_id": "fixed_19",
+      "delta": 0.43,
+      "gamma": 0.8,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.5993149881220836,
+        0.4845548341342978,
+        0.22336287627034218
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.5993149875527128,
+        0.48455482337477174,
+        0.22336288125819057
+      ],
+      "scaled_error": [
+        3.560091521576438e-10,
+        1.075952604789876e-08,
+        4.9878483843190935e-09
+      ],
+      "relative_error": [
+        3.560091521576438e-10,
+        2.2204971509646834e-08,
+        2.2330695038597388e-08
+      ]
+    },
+    {
+      "case_id": "fixed_21_vacuum",
+      "field_id": "fixed_21",
+      "delta": 0.17,
+      "gamma": 0.169983,
+      "profile": "vacuum",
+      "candidate": [
+        -0.02989948525184312,
+        -0.3354566542392607,
+        0.15371337555513248
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.02989948525184312,
+        -0.3354566542392607,
+        0.15371337555513248
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_21_low_energy",
+      "field_id": "fixed_21",
+      "delta": 0.17,
+      "gamma": 0.169983,
+      "profile": "low_energy",
+      "candidate": [
+        0.02608596475939448,
+        -0.2649505697502824,
+        0.12206844839934969
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.026086294386939962,
+        -0.2649253425306997,
+        0.12197022788627818
+      ],
+      "scaled_error": [
+        3.2962754548115925e-07,
+        2.522721958270191e-05,
+        9.822051307151192e-05
+      ],
+      "relative_error": [
+        1.2636043302730895e-05,
+        9.522388210096799e-05,
+        0.0008052826888467416
+      ]
+    },
+    {
+      "case_id": "fixed_21_finite_energy_band",
+      "field_id": "fixed_21",
+      "delta": 0.17,
+      "gamma": 0.169983,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.29858504278751713,
+        -0.27512550587327167,
+        0.15113390453669942
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.2985850273322904,
+        -0.2751256768836497,
+        0.1511385596749934
+      ],
+      "scaled_error": [
+        1.5455226709537584e-08,
+        1.7101037802502717e-07,
+        4.655138293979677e-06
+      ],
+      "relative_error": [
+        5.176155967237337e-08,
+        6.215718574945924e-07,
+        3.080046749148617e-05
+      ]
+    },
+    {
+      "case_id": "fixed_21_near_edge_band",
+      "field_id": "fixed_21",
+      "delta": 0.17,
+      "gamma": 0.169983,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.029037588006994245,
+        -0.33027700020358297,
+        0.1497570903511508
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.029037554530151888,
+        -0.33027664287094705,
+        0.14974680614655933
+      ],
+      "scaled_error": [
+        3.347684235724402e-08,
+        3.573326359251894e-07,
+        1.0284204591481938e-05
+      ],
+      "relative_error": [
+        1.1528809122848993e-06,
+        1.0819191839273183e-06,
+        6.86772883918248e-05
+      ]
+    },
+    {
+      "case_id": "fixed_21_high_energy_band",
+      "field_id": "fixed_21",
+      "delta": 0.17,
+      "gamma": 0.169983,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.469599292076506,
+        -0.3103287801916759,
+        0.15363629874956508
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4695992911042612,
+        -0.31032879170935085,
+        0.15363658946041422
+      ],
+      "scaled_error": [
+        6.615713106657799e-10,
+        1.1517674924910182e-08,
+        2.907108491434496e-07
+      ],
+      "relative_error": [
+        6.615713106657799e-10,
+        3.711442583676689e-08,
+        1.892198011973923e-06
+      ]
+    },
+    {
+      "case_id": "fixed_22_vacuum",
+      "field_id": "fixed_22",
+      "delta": 0.17,
+      "gamma": 0.17,
+      "profile": "vacuum",
+      "candidate": [
+        -0.029896872220792015,
+        -0.3354299507017051,
+        0.15370204222179912
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.029896872220792015,
+        -0.3354299507017051,
+        0.15370204222179912
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_22_low_energy",
+      "field_id": "fixed_22",
+      "delta": 0.17,
+      "gamma": 0.17,
+      "profile": "low_energy",
+      "candidate": [
+        0.026088039858634372,
+        -0.2649293469361566,
+        0.12206087387533195
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.026088367818210542,
+        -0.2649042335145524,
+        0.12196286275331425
+      ],
+      "scaled_error": [
+        3.2795957616987836e-07,
+        2.5113421604217034e-05,
+        9.801112201769657e-05
+      ],
+      "relative_error": [
+        1.2571103660266233e-05,
+        9.480188848260683e-05,
+        0.0008036144757928224
+      ]
+    },
+    {
+      "case_id": "fixed_22_finite_energy_band",
+      "field_id": "fixed_22",
+      "delta": 0.17,
+      "gamma": 0.17,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.2985876119660728,
+        -0.2750993158943186,
+        0.15112239614268813
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.29858759658989525,
+        -0.2750994860392312,
+        0.15112704091274262
+      ],
+      "scaled_error": [
+        1.5376177553427794e-08,
+        1.7014491260347597e-07,
+        4.644770054490488e-06
+      ],
+      "relative_error": [
+        5.149637067659813e-08,
+        6.184850253744642e-07,
+        3.073420895716654e-05
+      ]
+    },
+    {
+      "case_id": "fixed_22_near_edge_band",
+      "field_id": "fixed_22",
+      "delta": 0.17,
+      "gamma": 0.17,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.029035042227261637,
+        -0.33025097710233786,
+        0.1497464075890698
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.029035008925052543,
+        -0.3302506223617618,
+        0.14973614670809046
+      ],
+      "scaled_error": [
+        3.33022090945323e-08,
+        3.547405760806477e-07,
+        1.0260880979329201e-05
+      ],
+      "relative_error": [
+        1.1469674137347293e-06,
+        1.0741556625805817e-06,
+        6.852641265928069e-05
+      ]
+    },
+    {
+      "case_id": "fixed_22_high_energy_band",
+      "field_id": "fixed_22",
+      "delta": 0.17,
+      "gamma": 0.17,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4696019037971921,
+        -0.3103020920940214,
+        0.1536249584689874
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4696019028298843,
+        -0.31030210355356563,
+        0.1536252485495656
+      ],
+      "scaled_error": [
+        6.582107627656058e-10,
+        1.1459544257963472e-08,
+        2.9008057819690514e-07
+      ],
+      "relative_error": [
+        6.582107627656058e-10,
+        3.6930282220872144e-08,
+        1.8882350455778994e-06
+      ]
+    },
+    {
+      "case_id": "fixed_23_vacuum",
+      "field_id": "fixed_23",
+      "delta": 0.17,
+      "gamma": 0.170017,
+      "profile": "vacuum",
+      "candidate": [
+        -0.029894259382407518,
+        -0.33540324717697034,
+        0.15369070890128597
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.029894259382407518,
+        -0.33540324717697034,
+        0.15369070890128597
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_23_low_energy",
+      "field_id": "fixed_23",
+      "delta": 0.17,
+      "gamma": 0.170017,
+      "profile": "low_energy",
+      "candidate": [
+        0.02609011482910407,
+        -0.2649081240161256,
+        0.12205329896981047
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.02609044112427306,
+        -0.26488312449291995,
+        0.12195549753254323
+      ],
+      "scaled_error": [
+        3.262951689883553e-07,
+        2.4999523205671004e-05,
+        9.780143726724477e-05
+      ],
+      "relative_error": [
+        1.2506310929514674e-05,
+        9.4379448496498e-05,
+        0.0008019436535950086
+      ]
+    },
+    {
+      "case_id": "fixed_23_finite_energy_band",
+      "field_id": "fixed_23",
+      "delta": 0.17,
+      "gamma": 0.170017,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.29859018094898615,
+        -0.2750731259618868,
+        0.15111088778910467
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.29859016565168156,
+        -0.2750732952432773,
+        0.15111552217841456
+      ],
+      "scaled_error": [
+        1.5297304589712013e-08,
+        1.6928139046079593e-07,
+        4.634389309893239e-06
+      ],
+      "relative_error": [
+        5.123177635916176e-08,
+        6.154046699120028e-07,
+        3.066785756410679e-05
+      ]
+    },
+    {
+      "case_id": "fixed_23_near_edge_band",
+      "field_id": "fixed_23",
+      "delta": 0.17,
+      "gamma": 0.170017,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.02903249662913663,
+        -0.33022495399934343,
+        0.14973572475677568
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.029032463501164077,
+        -0.3302246018465718,
+        0.14972548722547874
+      ],
+      "scaled_error": [
+        3.312797255267119e-08,
+        3.521527716099371e-07,
+        1.0237531296947155e-05
+      ],
+      "relative_error": [
+        1.1410665357882186e-06,
+        1.0664038040798472e-06,
+        6.837534134405568e-05
+      ]
+    },
+    {
+      "case_id": "fixed_23_high_energy_band",
+      "field_id": "fixed_23",
+      "delta": 0.17,
+      "gamma": 0.170017,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4696045153250943,
+        -0.31027540401057896,
+        0.1536136182021198
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.469604514362712,
+        -0.3102754154121188,
+        0.15361390765156752
+      ],
+      "scaled_error": [
+        6.548579325572668e-10,
+        1.1401539823374662e-08,
+        2.8944944771569503e-07
+      ],
+      "relative_error": [
+        6.548579325572668e-10,
+        3.674651376497469e-08,
+        1.8842658984512944e-06
+      ]
+    },
+    {
+      "case_id": "fixed_24_vacuum",
+      "field_id": "fixed_24",
+      "delta": 0.72,
+      "gamma": 0.719928,
+      "profile": "vacuum",
+      "candidate": [
+        0.21195743568258996,
+        0.6578144015170644,
+        0.6510213552923256
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.21195743568258996,
+        0.6578144015170644,
+        0.6510213552923256
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_24_low_energy",
+      "field_id": "fixed_24",
+      "delta": 0.72,
+      "gamma": 0.719928,
+      "profile": "low_energy",
+      "candidate": [
+        0.2838089535142564,
+        0.7286858822010787,
+        0.6015996232174613
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.28380853441605197,
+        0.7287384085642092,
+        0.6015906187371781
+      ],
+      "scaled_error": [
+        4.1909820441832224e-07,
+        5.2526363130578346e-05,
+        9.004480283181238e-06
+      ],
+      "relative_error": [
+        1.4766934520860498e-06,
+        7.207848867753241e-05,
+        1.4967787067695448e-05
+      ]
+    },
+    {
+      "case_id": "fixed_24_finite_energy_band",
+      "field_id": "fixed_24",
+      "delta": 0.72,
+      "gamma": 0.719928,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.5878951981752001,
+        0.7922138387532075,
+        0.6044918090161202
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.5878952200014138,
+        0.792214128610246,
+        0.6044920691843997
+      ],
+      "scaled_error": [
+        2.1826213725262278e-08,
+        2.898570384823884e-07,
+        2.601682794756144e-07
+      ],
+      "relative_error": [
+        3.712602685425779e-08,
+        3.6588218767427776e-07,
+        4.303915514171127e-07
+      ]
+    },
+    {
+      "case_id": "fixed_24_near_edge_band",
+      "field_id": "fixed_24",
+      "delta": 0.72,
+      "gamma": 0.719928,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.21318424140485967,
+        0.6618040784025524,
+        0.6474485821710468
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.21318423108651674,
+        0.6618090324727074,
+        0.6474484068163785
+      ],
+      "scaled_error": [
+        1.031834293008238e-08,
+        4.954070154994383e-06,
+        1.7535466834139868e-07
+      ],
+      "relative_error": [
+        4.840106079841749e-08,
+        7.485649049673081e-06,
+        2.708396012643686e-07
+      ]
+    },
+    {
+      "case_id": "fixed_24_high_energy_band",
+      "field_id": "fixed_24",
+      "delta": 0.72,
+      "gamma": 0.719928,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.7452689636014935,
+        0.7562073845441585,
+        0.6457614225687704
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.7452689613406858,
+        0.7562073803552269,
+        0.6457613972676808
+      ],
+      "scaled_error": [
+        1.2953921792573661e-09,
+        4.188931534976348e-09,
+        2.530108966780631e-08
+      ],
+      "relative_error": [
+        1.2953921792573661e-09,
+        5.539395202687133e-09,
+        3.918024486266792e-08
+      ]
+    },
+    {
+      "case_id": "fixed_25_vacuum",
+      "field_id": "fixed_25",
+      "delta": 0.72,
+      "gamma": 0.72,
+      "profile": "vacuum",
+      "candidate": [
+        0.212004307492171,
+        0.6579274988525936,
+        0.6509733552923256
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.212004307492171,
+        0.6579274988525936,
+        0.6509733552923256
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_25_low_energy",
+      "field_id": "fixed_25",
+      "delta": 0.72,
+      "gamma": 0.72,
+      "profile": "low_energy",
+      "candidate": [
+        0.2838522673067551,
+        0.7287886243638976,
+        0.6015612793960212
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.28385184756383214,
+        0.7288411821966492,
+        0.6015523751272135
+      ],
+      "scaled_error": [
+        4.197429229746419e-07,
+        5.255783275159853e-05,
+        8.904268807730098e-06
+      ],
+      "relative_error": [
+        1.4787394430478412e-06,
+        7.211150252678486e-05,
+        1.4802150529032596e-05
+      ]
+    },
+    {
+      "case_id": "fixed_25_finite_energy_band",
+      "field_id": "fixed_25",
+      "delta": 0.72,
+      "gamma": 0.72,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.5879387199381967,
+        0.7923197138516386,
+        0.6044460520257942
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.5879387417829717,
+        0.7923200038626202,
+        0.6044463074466506
+      ],
+      "scaled_error": [
+        2.1844774988899474e-08,
+        2.9001098167391604e-07,
+        2.554208564653493e-07
+      ],
+      "relative_error": [
+        3.715484868823822e-08,
+        3.6602759019094616e-07,
+        4.225699674538803e-07
+      ]
+    },
+    {
+      "case_id": "fixed_25_near_edge_band",
+      "field_id": "fixed_25",
+      "delta": 0.72,
+      "gamma": 0.72,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.21323085601448052,
+        0.6619161201920264,
+        0.647401685064337
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.21323084568357137,
+        0.6619210750025633,
+        0.6474015113580845
+      ],
+      "scaled_error": [
+        1.0330909155920054e-08,
+        4.954810536861309e-06,
+        1.737062524931332e-07
+      ],
+      "relative_error": [
+        4.844941229211666e-08,
+        7.4855004984425405e-06,
+        2.68313016645175e-07
+      ]
+    },
+    {
+      "case_id": "fixed_25_high_energy_band",
+      "field_id": "fixed_25",
+      "delta": 0.72,
+      "gamma": 0.72,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.7453154566818034,
+        0.7563194255338439,
+        0.6457130304956691
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.745315454419192,
+        0.7563194213370099,
+        0.6457130056864725
+      ],
+      "scaled_error": [
+        1.2963911055838964e-09,
+        4.196833991443327e-09,
+        2.480919658598424e-08
+      ],
+      "relative_error": [
+        1.2963911055838964e-09,
+        5.549023168047474e-09,
+        3.8421398310862585e-08
+      ]
+    },
+    {
+      "case_id": "fixed_26_vacuum",
+      "field_id": "fixed_26",
+      "delta": 0.72,
+      "gamma": 0.720072,
+      "profile": "vacuum",
+      "candidate": [
+        0.212051175845753,
+        0.6580405961338234,
+        0.6509253553466223
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.212051175845753,
+        0.6580405961338234,
+        0.6509253553466223
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_26_low_energy",
+      "field_id": "fixed_26",
+      "delta": 0.72,
+      "gamma": 0.720072,
+      "profile": "low_energy",
+      "candidate": [
+        0.2838955783384719,
+        0.7288913669516941,
+        0.6015229348587661
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.2838951579580667,
+        0.728943955437199,
+        0.6015141313816467
+      ],
+      "scaled_error": [
+        4.2038040520830933e-07,
+        5.258848550493411e-05,
+        8.803477119401215e-06
+      ],
+      "relative_error": [
+        1.4807593346498796e-06,
+        7.214338648763895e-05,
+        1.4635528344413267e-05
+      ]
+    },
+    {
+      "case_id": "fixed_26_finite_energy_band",
+      "field_id": "fixed_26",
+      "delta": 0.72,
+      "gamma": 0.720072,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.5879822384066964,
+        0.7924255891697324,
+        0.6044002952453978
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.5879822602696908,
+        0.7924258793341866,
+        0.6044005459140782
+      ],
+      "scaled_error": [
+        2.1862994414867387e-08,
+        2.901644542419035e-07,
+        2.5066868036827117e-07
+      ],
+      "relative_error": [
+        3.71830850897431e-08,
+        3.6617235984986504e-07,
+        4.1473933480514477e-07
+      ]
+    },
+    {
+      "case_id": "fixed_26_near_edge_band",
+      "field_id": "fixed_26",
+      "delta": 0.72,
+      "gamma": 0.720072,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.21327746724750837,
+        0.6620281619467264,
+        0.6473547879488463
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.21327745690415187,
+        0.6620331174575028,
+        0.6473546158961767
+      ],
+      "scaled_error": [
+        1.0343356504627366e-08,
+        4.955510776394334e-06,
+        1.7205266955588883e-07
+      ],
+      "relative_error": [
+        4.8497186035351734e-08,
+        7.485291363407417e-06,
+        2.6577808411500195e-07
+      ]
+    },
+    {
+      "case_id": "fixed_26_high_energy_band",
+      "field_id": "fixed_26",
+      "delta": 0.72,
+      "gamma": 0.720072,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.7453619462778867,
+        0.7564314663942006,
+        0.6456646385099988
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.7453619440135062,
+        0.7564314621895417,
+        0.645664614193113
+      ],
+      "scaled_error": [
+        1.2973701349919384e-09,
+        4.204658843320885e-09,
+        2.4316885727238002e-08
+      ],
+      "relative_error": [
+        1.2973701349919384e-09,
+        5.558545689189365e-09,
+        3.766179095570664e-08
+      ]
+    },
+    {
+      "case_id": "fixed_27_vacuum",
+      "field_id": "fixed_27",
+      "delta": 0.09,
+      "gamma": 1.2,
+      "profile": "vacuum",
+      "candidate": [
+        0.0070931957445393365,
+        0.15766878336717594,
+        0.006746834155027367
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.0070931957445393365,
+        0.15766878336717594,
+        0.006746834155027367
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_27_low_energy",
+      "field_id": "fixed_27",
+      "delta": 0.09,
+      "gamma": 1.2,
+      "profile": "low_energy",
+      "candidate": [
+        0.05721140008903658,
+        0.1602994404923511,
+        0.00657553253422757
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.05721138661658599,
+        0.16030124149423697,
+        0.006575532975257802
+      ],
+      "scaled_error": [
+        1.3472450592633134e-08,
+        1.8010018858760635e-06,
+        4.4103023143227116e-10
+      ],
+      "relative_error": [
+        2.354854756959758e-07,
+        1.1235108780743983e-05,
+        6.707140441569758e-08
+      ]
+    },
+    {
+      "case_id": "fixed_27_finite_energy_band",
+      "field_id": "fixed_27",
+      "delta": 0.09,
+      "gamma": 1.2,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.3309319968265906,
+        0.1697337000569921,
+        0.006192634633959528
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.330931997054393,
+        0.1697336705757134,
+        0.006192633873489399
+      ],
+      "scaled_error": [
+        2.278024435753423e-10,
+        2.9481278696064095e-08,
+        7.60470128709223e-10
+      ],
+      "relative_error": [
+        6.883663278347181e-10,
+        1.7369139897857407e-07,
+        1.22802372018922e-07
+      ]
+    },
+    {
+      "case_id": "fixed_27_near_edge_band",
+      "field_id": "fixed_27",
+      "delta": 0.09,
+      "gamma": 1.2,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.0075908858724242105,
+        0.1576995742228402,
+        0.006744492638005091
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.007590882527586228,
+        0.15770003371876531,
+        0.006744492651935146
+      ],
+      "scaled_error": [
+        3.3448379821096608e-09,
+        4.59495925114739e-07,
+        1.3930055026145638e-11
+      ],
+      "relative_error": [
+        4.4063888091458353e-07,
+        2.9137338418974725e-06,
+        2.0653970202115637e-09
+      ]
+    },
+    {
+      "case_id": "fixed_27_high_energy_band",
+      "field_id": "fixed_27",
+      "delta": 0.09,
+      "gamma": 1.2,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.5049768643839496,
+        0.16927485198236755,
+        0.0066335827304747925
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.5049768643837413,
+        0.1692748520092547,
+        0.006633582711787681
+      ],
+      "scaled_error": [
+        1.3839271841894066e-13,
+        2.6887159165767116e-11,
+        1.868711175384563e-11
+      ],
+      "relative_error": [
+        1.3839271841894066e-13,
+        1.5883729240712685e-10,
+        2.8170466195648974e-09
+      ]
+    },
+    {
+      "case_id": "fixed_29_vacuum",
+      "field_id": "fixed_29",
+      "delta": 1.5,
+      "gamma": 1.2,
+      "profile": "vacuum",
+      "candidate": [
+        2.1347298814741835,
+        3.101350916478369,
+        1.556194490192345
+      ],
+      "same_eta_same_quadrature_reference": [
+        2.1347298814741835,
+        3.101350916478369,
+        1.556194490192345
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_29_low_energy",
+      "field_id": "fixed_29",
+      "delta": 1.5,
+      "gamma": 1.2,
+      "profile": "low_energy",
+      "candidate": [
+        2.2388011572822997,
+        3.1900918265649554,
+        1.478705028923557
+      ],
+      "same_eta_same_quadrature_reference": [
+        2.2388011572822997,
+        3.1900918265649554,
+        1.478705028923557
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_29_finite_energy_band",
+      "field_id": "fixed_29",
+      "delta": 1.5,
+      "gamma": 1.2,
+      "profile": "finite_energy_band",
+      "candidate": [
+        2.5940438669524077,
+        3.264027903445852,
+        1.461797356267312
+      ],
+      "same_eta_same_quadrature_reference": [
+        2.5940438669524077,
+        3.264027903445852,
+        1.461797356267312
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_29_near_edge_band",
+      "field_id": "fixed_29",
+      "delta": 1.5,
+      "gamma": 1.2,
+      "profile": "near_edge_band",
+      "candidate": [
+        2.13755889045695,
+        3.1071363770147573,
+        1.550331915100355
+      ],
+      "same_eta_same_quadrature_reference": [
+        2.13755889045695,
+        3.1071363770147573,
+        1.550331915100355
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "fixed_29_high_energy_band",
+      "field_id": "fixed_29",
+      "delta": 1.5,
+      "gamma": 1.2,
+      "profile": "high_energy_band",
+      "candidate": [
+        3.7683572036681294,
+        3.272708352164464,
+        1.5269203988310245
+      ],
+      "same_eta_same_quadrature_reference": [
+        3.7683572036681294,
+        3.272708352164464,
+        1.5269203988310245
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_00_vacuum",
+      "field_id": "offnode_00",
+      "delta": 1.3265003355580534,
+      "gamma": 2.9827887155583854e-10,
+      "profile": "vacuum",
+      "candidate": [
+        -0.38263600019345223,
+        0.7495898135667642,
+        2.0836618543879353
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.38263600019345223,
+        0.7495898135667642,
+        2.0836618543879353
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_00_low_energy",
+      "field_id": "offnode_00",
+      "delta": 1.3265003355580534,
+      "gamma": 2.9827887155583854e-10,
+      "profile": "low_energy",
+      "candidate": [
+        -0.10863477425949852,
+        0.9438657113825868,
+        1.2488199067260666
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.10863477425960621,
+        0.9438657113825024,
+        1.2522270974451808
+      ],
+      "scaled_error": [
+        1.0769163338864018e-13,
+        8.43769498715119e-14,
+        0.002720904799189889
+      ],
+      "relative_error": [
+        9.913182415355123e-13,
+        8.939507903928725e-14,
+        0.002720904799189889
+      ]
+    },
+    {
+      "case_id": "offnode_00_finite_energy_band",
+      "field_id": "offnode_00",
+      "delta": 1.3265003355580534,
+      "gamma": 2.9827887155583854e-10,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.17573961235408908,
+        1.0262154482991468,
+        2.0836318928276047
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.17573961235408908,
+        1.0262154482991468,
+        2.0836320153234253
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        5.878956538257821e-08
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        5.878956538257821e-08
+      ]
+    },
+    {
+      "case_id": "offnode_00_near_edge_band",
+      "field_id": "offnode_00",
+      "delta": 1.3265003355580534,
+      "gamma": 2.9827887155583854e-10,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.36381993091043824,
+        0.7637642885880465,
+        2.0836348745561706
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.36381993091043824,
+        0.7637642885880465,
+        2.0836352763233577
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        1.928203038411714e-07
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        1.928203038411714e-07
+      ]
+    },
+    {
+      "case_id": "offnode_00_high_energy_band",
+      "field_id": "offnode_00",
+      "delta": 1.3265003355580534,
+      "gamma": 2.9827887155583854e-10,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.239825502459417,
+        0.9305676640702806,
+        2.083661854302565
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.2398255024594165,
+        0.9305676640702809,
+        2.083661854102486
+      ],
+      "scaled_error": [
+        3.5818686498150903e-16,
+        3.3306690738754696e-16,
+        9.602280909135775e-11
+      ],
+      "relative_error": [
+        3.5818686498150903e-16,
+        3.5791798946754736e-16,
+        9.602280909135775e-11
+      ]
+    },
+    {
+      "case_id": "offnode_01_vacuum",
+      "field_id": "offnode_01",
+      "delta": 0.5631616161964096,
+      "gamma": 0.0023728711340928934,
+      "profile": "vacuum",
+      "candidate": [
+        -0.338582810529533,
+        -0.6429946959441099,
+        0.8830302840238022
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.338582810529533,
+        -0.6429946959441099,
+        0.8830302840238022
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_01_low_energy",
+      "field_id": "offnode_01",
+      "delta": 0.5631616161964096,
+      "gamma": 0.0023728711340928934,
+      "profile": "low_energy",
+      "candidate": [
+        -0.20963596129218484,
+        -0.4645833670388308,
+        0.6069149424126213
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.20963604293425886,
+        -0.4645834750163397,
+        0.6060422229715265
+      ],
+      "scaled_error": [
+        8.164207401795132e-08,
+        1.0797750887858726e-07,
+        0.0008727194410947936
+      ],
+      "relative_error": [
+        3.8944674243614676e-07,
+        2.3241788545059555e-07,
+        0.0014400307569589854
+      ]
+    },
+    {
+      "case_id": "offnode_01_finite_energy_band",
+      "field_id": "offnode_01",
+      "delta": 0.5631616161964096,
+      "gamma": 0.0023728711340928934,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.03919451016365699,
+        -0.46561955551358497,
+        0.8824010882480364
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.03919450718883627,
+        -0.46561956779296687,
+        0.8823691277804714
+      ],
+      "scaled_error": [
+        2.974820723089522e-09,
+        1.2279381900182074e-08,
+        3.1960467565039785e-05
+      ],
+      "relative_error": [
+        7.589891891629236e-08,
+        2.6372134569829718e-08,
+        3.622119876908406e-05
+      ]
+    },
+    {
+      "case_id": "offnode_01_near_edge_band",
+      "field_id": "offnode_01",
+      "delta": 0.5631616161964096,
+      "gamma": 0.0023728711340928934,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.3307320778198351,
+        -0.6290465789753791,
+        0.8277326085696759
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.33073208560506306,
+        -0.6290465974892483,
+        0.8276446534594533
+      ],
+      "scaled_error": [
+        7.78522796229808e-09,
+        1.8513869215475154e-08,
+        8.795511022263724e-05
+      ],
+      "relative_error": [
+        2.353937915656194e-08,
+        2.9431633982872935e-08,
+        0.00010627158630820081
+      ]
+    },
+    {
+      "case_id": "offnode_01_high_energy_band",
+      "field_id": "offnode_01",
+      "delta": 0.5631616161964096,
+      "gamma": 0.0023728711340928934,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.1821314783184351,
+        -0.560736303450022,
+        0.8830188954902538
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1821314782584476,
+        -0.5607363036664452,
+        0.8830182507931652
+      ],
+      "scaled_error": [
+        5.074526105583619e-11,
+        2.1642321268444675e-10,
+        6.446970886031522e-07
+      ],
+      "relative_error": [
+        5.074526105583619e-11,
+        3.8596254829469077e-10,
+        7.301061875267667e-07
+      ]
+    },
+    {
+      "case_id": "offnode_02_vacuum",
+      "field_id": "offnode_02",
+      "delta": 0.73044336017017,
+      "gamma": 0.0007565984523879768,
+      "profile": "vacuum",
+      "candidate": [
+        -0.4334950218708776,
+        -0.45768129625746007,
+        1.1468733481187658
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4334950218708776,
+        -0.45768129625746007,
+        1.1468733481187658
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_02_low_energy",
+      "field_id": "offnode_02",
+      "delta": 0.73044336017017,
+      "gamma": 0.0007565984523879768,
+      "profile": "low_energy",
+      "candidate": [
+        -0.2735697484627657,
+        -0.2724851809442908,
+        0.7695737713277839
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.2735698897244554,
+        -0.2724853260260686,
+        0.7708413589230684
+      ],
+      "scaled_error": [
+        1.4126168967898423e-07,
+        1.450817778136937e-07,
+        0.0012675875952844473
+      ],
+      "relative_error": [
+        5.163641723190574e-07,
+        5.324388653494455e-07,
+        0.0016444208404377473
+      ]
+    },
+    {
+      "case_id": "offnode_02_finite_energy_band",
+      "field_id": "offnode_02",
+      "delta": 0.73044336017017,
+      "gamma": 0.0007565984523879768,
+      "profile": "finite_energy_band",
+      "candidate": [
+        -0.023189020178916886,
+        -0.24756153053493524,
+        1.1464329323147593
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.02318902144811169,
+        -0.24756153481784604,
+        1.1464439304037268
+      ],
+      "scaled_error": [
+        1.2691948048093593e-09,
+        4.282910803787843e-09,
+        9.593220109479582e-06
+      ],
+      "relative_error": [
+        5.473257281034217e-08,
+        1.7300388798038342e-08,
+        9.593220109479582e-06
+      ]
+    },
+    {
+      "case_id": "offnode_02_near_edge_band",
+      "field_id": "offnode_02",
+      "delta": 0.73044336017017,
+      "gamma": 0.0007565984523879768,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4231918097817492,
+        -0.44359683697537633,
+        1.0651954761802203
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.4231918275135009,
+        -0.44359684441827235,
+        1.0653556491755931
+      ],
+      "scaled_error": [
+        1.7731751678073948e-08,
+        7.442896021725431e-09,
+        0.00015034697145202238
+      ],
+      "relative_error": [
+        4.1900033330649e-08,
+        1.677851435459591e-08,
+        0.00015034697145202238
+      ]
+    },
+    {
+      "case_id": "offnode_02_high_energy_band",
+      "field_id": "offnode_02",
+      "delta": 0.73044336017017,
+      "gamma": 0.0007565984523879768,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.1029371047874041,
+        -0.3521458868282,
+        1.1468666308606204
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1029371047658607,
+        -0.3521458868889168,
+        1.14686681722617
+      ],
+      "scaled_error": [
+        1.95327853334073e-11,
+        6.071676494912026e-11,
+        1.62499731320133e-07
+      ],
+      "relative_error": [
+        1.95327853334073e-11,
+        1.7241935007542244e-10,
+        1.62499731320133e-07
+      ]
+    },
+    {
+      "case_id": "offnode_03_vacuum",
+      "field_id": "offnode_03",
+      "delta": 0.14646298796719825,
+      "gamma": 7.855998114565713e-08,
+      "profile": "vacuum",
+      "candidate": [
+        -0.05193346301800533,
+        -0.5627055572836648,
+        0.23006347113695938
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.05193346301800533,
+        -0.5627055572836648,
+        0.23006347113695938
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_03_low_energy",
+      "field_id": "offnode_03",
+      "delta": 0.14646298796719825,
+      "gamma": 7.855998114565713e-08,
+      "profile": "low_energy",
+      "candidate": [
+        0.01052727780910203,
+        -0.4365462579356596,
+        0.13896526124558792
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.010527277802784986,
+        -0.43654625797823265,
+        0.1383596376372236
+      ],
+      "scaled_error": [
+        6.31704411002687e-12,
+        4.25730561914861e-11,
+        0.0006056236083643307
+      ],
+      "relative_error": [
+        6.000643498127977e-10,
+        9.752243986388473e-11,
+        0.004377169662385678
+      ]
+    },
+    {
+      "case_id": "offnode_03_finite_energy_band",
+      "field_id": "offnode_03",
+      "delta": 0.14646298796719825,
+      "gamma": 7.855998114565713e-08,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.2754022316511661,
+        -0.5079949333154377,
+        0.23006018059209699
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.27540223165116584,
+        -0.5079949333154409,
+        0.23006015765957047
+      ],
+      "scaled_error": [
+        2.7755575615628914e-16,
+        3.219646771412954e-15,
+        2.293252651663913e-08
+      ],
+      "relative_error": [
+        1.0078195608372957e-15,
+        6.3379505586795e-15,
+        9.968056507451994e-08
+      ]
+    },
+    {
+      "case_id": "offnode_03_near_edge_band",
+      "field_id": "offnode_03",
+      "delta": 0.14646298796719825,
+      "gamma": 7.855998114565713e-08,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.0497959757699474,
+        -0.5489269662982732,
+        0.23005845438459008
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.049795975769950554,
+        -0.5489269662983358,
+        0.23005814439248268
+      ],
+      "scaled_error": [
+        3.157196726277789e-15,
+        6.261657858885883e-14,
+        3.099921074001255e-07
+      ],
+      "relative_error": [
+        6.340264805460451e-14,
+        1.1407087360111108e-13,
+        1.347451133359027e-06
+      ]
+    },
+    {
+      "case_id": "offnode_03_high_energy_band",
+      "field_id": "offnode_03",
+      "delta": 0.14646298796719825,
+      "gamma": 7.855998114565713e-08,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4470195706074371,
+        -0.5409817166668698,
+        0.23006347100067262
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4470195706074371,
+        -0.5409817166668763,
+        0.23006347110708372
+      ],
+      "scaled_error": [
+        0.0,
+        6.5503158452884236e-15,
+        1.0641110215203753e-10
+      ],
+      "relative_error": [
+        0.0,
+        1.2108201892009508e-14,
+        4.6252932566816816e-10
+      ]
+    },
+    {
+      "case_id": "offnode_04_vacuum",
+      "field_id": "offnode_04",
+      "delta": 1.0101565280015532,
+      "gamma": 1.3279839383759975e-05,
+      "profile": "vacuum",
+      "candidate": [
+        -0.49987542486116354,
+        0.020436723517414726,
+        1.58674131044647
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.49987542486116354,
+        0.020436723517414726,
+        1.58674131044647
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_04_low_energy",
+      "field_id": "offnode_04",
+      "delta": 1.0101565280015532,
+      "gamma": 1.3279839383759975e-05,
+      "profile": "low_energy",
+      "candidate": [
+        -0.2868908047242251,
+        0.21152343029288534,
+        0.9967689314552692
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.2868908072599051,
+        0.21152342804585322,
+        0.9936153822777016
+      ],
+      "scaled_error": [
+        2.5356799993048185e-09,
+        2.247032115931802e-09,
+        0.003153549177567605
+      ],
+      "relative_error": [
+        8.838484660847467e-09,
+        1.0623088594444956e-08,
+        0.003173812758754405
+      ]
+    },
+    {
+      "case_id": "offnode_04_finite_energy_band",
+      "field_id": "offnode_04",
+      "delta": 1.0101565280015532,
+      "gamma": 1.3279839383759975e-05,
+      "profile": "finite_energy_band",
+      "candidate": [
+        -0.024973391450502036,
+        0.2693508483421256,
+        1.5866926614716643
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.024973391451609372,
+        0.2693508483395092,
+        1.5866912721977293
+      ],
+      "scaled_error": [
+        1.1073364447611311e-12,
+        2.616407090982875e-12,
+        8.755792379697231e-07
+      ],
+      "relative_error": [
+        4.434065140518872e-11,
+        9.713751068958831e-12,
+        8.755792379697231e-07
+      ]
+    },
+    {
+      "case_id": "offnode_04_near_edge_band",
+      "field_id": "offnode_04",
+      "delta": 1.0101565280015532,
+      "gamma": 1.3279839383759975e-05,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.4855437053822033,
+        0.03460570778827675,
+        1.4879237783828
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.48554370601271774,
+        0.034605707781906095,
+        1.487143755824943
+      ],
+      "scaled_error": [
+        6.305144184537426e-10,
+        6.370654004328458e-12,
+        0.000524510528859027
+      ],
+      "relative_error": [
+        1.2985739710880478e-09,
+        1.840925793073769e-10,
+        0.000524510528859027
+      ]
+    },
+    {
+      "case_id": "offnode_04_high_energy_band",
+      "field_id": "offnode_04",
+      "delta": 1.0101565280015532,
+      "gamma": 1.3279839383759975e-05,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.0713127360413077,
+        0.16297830803756735,
+        1.5867411000222844
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.0713127360412962,
+        0.16297830803754265,
+        1.5867410854257624
+      ],
+      "scaled_error": [
+        1.0777730038725637e-14,
+        2.4702462297909733e-14,
+        9.199057190340688e-09
+      ],
+      "relative_error": [
+        1.0777730038725637e-14,
+        1.515690191864026e-13,
+        9.199057190340688e-09
+      ]
+    },
+    {
+      "case_id": "offnode_05_vacuum",
+      "field_id": "offnode_05",
+      "delta": 1.36934436958699,
+      "gamma": 3.29558722967218e-08,
+      "profile": "vacuum",
+      "candidate": [
+        -0.3481466210203402,
+        0.8608577329219638,
+        2.150961083893936
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.3481466210203402,
+        0.8608577329219638,
+        2.150961083893936
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_05_low_energy",
+      "field_id": "offnode_05",
+      "delta": 1.36934436958699,
+      "gamma": 3.29558722967218e-08,
+      "profile": "low_energy",
+      "candidate": [
+        -0.06581538666686743,
+        1.0554318944466308,
+        1.306019252413393
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.06581538669129111,
+        1.055431894429184,
+        1.3004869703271216
+      ],
+      "scaled_error": [
+        2.4423685296426356e-11,
+        1.65303993889727e-11,
+        0.00425400808504813
+      ],
+      "relative_error": [
+        3.7109385091037037e-10,
+        1.65303993889727e-11,
+        0.00425400808504813
+      ]
+    },
+    {
+      "case_id": "offnode_05_finite_energy_band",
+      "field_id": "offnode_05",
+      "delta": 1.36934436958699,
+      "gamma": 3.29558722967218e-08,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.222142367947593,
+        1.1403303813531172,
+        2.150928833991988
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.222142367947592,
+        1.1403303813531158,
+        2.1509285888828136
+      ],
+      "scaled_error": [
+        9.992007221626409e-16,
+        1.1683172274769346e-15,
+        1.1395504972011023e-07
+      ],
+      "relative_error": [
+        4.498019587143201e-15,
+        1.1683172274769346e-15,
+        1.1395504972011023e-07
+      ]
+    },
+    {
+      "case_id": "offnode_05_near_edge_band",
+      "field_id": "offnode_05",
+      "delta": 1.36934436958699,
+      "gamma": 3.29558722967218e-08,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.32872325319333023,
+        0.8750325239459956,
+        2.1495898923060808
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.3287232531937446,
+        0.8750325239451068,
+        2.1494938541980826
+      ],
+      "scaled_error": [
+        4.143907439413397e-13,
+        8.888445535149003e-13,
+        4.4679405717126674e-05
+      ],
+      "relative_error": [
+        1.2606067259169642e-12,
+        1.0157845899344652e-12,
+        4.4679405717126674e-05
+      ]
+    },
+    {
+      "case_id": "offnode_05_high_energy_band",
+      "field_id": "offnode_05",
+      "delta": 1.36934436958699,
+      "gamma": 3.29558722967218e-08,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.2821740188311797,
+        1.0467395607659384,
+        2.150961085043576
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.2821740188311797,
+        1.0467395607659384,
+        2.1509610825304564
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        1.1683705068860695e-09
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        1.1683705068860695e-09
+      ]
+    },
+    {
+      "case_id": "offnode_06_vacuum",
+      "field_id": "offnode_06",
+      "delta": 0.7171548262408284,
+      "gamma": 0.30980323259252074,
+      "profile": "vacuum",
+      "candidate": [
+        -0.1111432341358903,
+        0.009782136043133827,
+        0.9199686784073117
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.1111432341358903,
+        0.009782136043133827,
+        0.9199686784073117
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_06_low_energy",
+      "field_id": "offnode_06",
+      "delta": 0.7171548262408284,
+      "gamma": 0.30980323259252074,
+      "profile": "low_energy",
+      "candidate": [
+        -0.0068440843724801165,
+        0.1374877166980824,
+        0.8045876889649632
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.006843950716419772,
+        0.13748624191363257,
+        0.8045707268605052
+      ],
+      "scaled_error": [
+        1.3365606034432265e-07,
+        1.4747844498397278e-06,
+        1.6962104458007055e-05
+      ],
+      "relative_error": [
+        1.9529079895864768e-05,
+        1.0726778398424564e-05,
+        2.108217946754594e-05
+      ]
+    },
+    {
+      "case_id": "offnode_06_finite_energy_band",
+      "field_id": "offnode_06",
+      "delta": 0.7171548262408284,
+      "gamma": 0.30980323259252074,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.28521061141826065,
+        0.18900243320211862,
+        0.86837529220866
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.28521063761636445,
+        0.1890024940554206,
+        0.868371946361141
+      ],
+      "scaled_error": [
+        2.6198103797447914e-08,
+        6.085330198080108e-08,
+        3.345847519042877e-06
+      ],
+      "relative_error": [
+        9.185528287583322e-08,
+        3.2197089400818835e-07,
+        3.853011987620563e-06
+      ]
+    },
+    {
+      "case_id": "offnode_06_near_edge_band",
+      "field_id": "offnode_06",
+      "delta": 0.7171548262408284,
+      "gamma": 0.30980323259252074,
+      "profile": "near_edge_band",
+      "candidate": [
+        -0.10705532377303888,
+        0.019101241478293007,
+        0.9088856911145551
+      ],
+      "same_eta_same_quadrature_reference": [
+        -0.10705530801054994,
+        0.019100927022896657,
+        0.9088837249427731
+      ],
+      "scaled_error": [
+        1.576248893908616e-08,
+        3.1445539635036046e-07,
+        1.9661717819419167e-06
+      ],
+      "relative_error": [
+        1.4723687439704365e-07,
+        1.6462834289320963e-05,
+        2.1632819776431956e-06
+      ]
+    },
+    {
+      "case_id": "offnode_06_high_energy_band",
+      "field_id": "offnode_06",
+      "delta": 0.7171548262408284,
+      "gamma": 0.30980323259252074,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.4235050597123626,
+        0.11237239582653864,
+        0.9174601940703487
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.4235050452052558,
+        0.11237235840938904,
+        0.9174620782136063
+      ],
+      "scaled_error": [
+        1.0191117269307464e-08,
+        3.741714960092679e-08,
+        1.8841432575245065e-06
+      ],
+      "relative_error": [
+        1.0191117269307464e-08,
+        3.329746757170532e-07,
+        2.053647014155755e-06
+      ]
+    },
+    {
+      "case_id": "offnode_07_vacuum",
+      "field_id": "offnode_07",
+      "delta": 1.0838892028898972,
+      "gamma": 0.3534389514414086,
+      "profile": "vacuum",
+      "candidate": [
+        0.06734475922796286,
+        0.7298074841920262,
+        1.466943210924493
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.06734475922796286,
+        0.7298074841920262,
+        1.466943210924493
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_07_low_energy",
+      "field_id": "offnode_07",
+      "delta": 1.0838892028898972,
+      "gamma": 0.3534389514414086,
+      "profile": "low_energy",
+      "candidate": [
+        0.2154710370780405,
+        0.8714363409671523,
+        1.3158126707833706
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.21547138090305867,
+        0.8714408083843231,
+        1.3158151747419748
+      ],
+      "scaled_error": [
+        3.438250181786451e-07,
+        4.46741717086141e-06,
+        1.9029713688547413e-06
+      ],
+      "relative_error": [
+        1.5956876348851783e-06,
+        5.1264723064141696e-06,
+        1.9029713688547413e-06
+      ]
+    },
+    {
+      "case_id": "offnode_07_finite_energy_band",
+      "field_id": "offnode_07",
+      "delta": 1.0838892028898972,
+      "gamma": 0.3534389514414086,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.533522508480362,
+        0.9452364499182931,
+        1.3697608927951128
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.5335224852355727,
+        0.9452325821809232,
+        1.3697623074808458
+      ],
+      "scaled_error": [
+        2.3244789315590708e-08,
+        3.8677373699336215e-06,
+        1.0327965116846218e-06
+      ],
+      "relative_error": [
+        4.356852796059224e-08,
+        4.091836700137484e-06,
+        1.0327965116846218e-06
+      ]
+    },
+    {
+      "case_id": "offnode_07_near_edge_band",
+      "field_id": "offnode_07",
+      "delta": 1.0838892028898972,
+      "gamma": 0.3534389514414086,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.0745003457682959,
+        0.7400700626143796,
+        1.4532491812557924
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.07450038982550419,
+        0.7400707877028555,
+        1.4532494470890194
+      ],
+      "scaled_error": [
+        4.405720829825377e-08,
+        7.250884759280041e-07,
+        1.829233291773732e-07
+      ],
+      "relative_error": [
+        5.913688290953262e-07,
+        9.79755569299856e-07,
+        1.829233291773732e-07
+      ]
+    },
+    {
+      "case_id": "offnode_07_high_energy_band",
+      "field_id": "offnode_07",
+      "delta": 1.0838892028898972,
+      "gamma": 0.3534389514414086,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.6481871236921888,
+        0.8793256146903157,
+        1.4603017174033415
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.6481870616410672,
+        0.8793254908319051,
+        1.4603009544696983
+      ],
+      "scaled_error": [
+        3.764810622438117e-08,
+        1.2385841052786617e-07,
+        5.224495956227957e-07
+      ],
+      "relative_error": [
+        3.764810622438117e-08,
+        1.4085615829320177e-07,
+        5.224495956227957e-07
+      ]
+    },
+    {
+      "case_id": "offnode_08_vacuum",
+      "field_id": "offnode_08",
+      "delta": 0.22307714066093892,
+      "gamma": 0.558247972436148,
+      "profile": "vacuum",
+      "candidate": [
+        0.005817506248984186,
+        0.05517491574091689,
+        0.08793612008927025
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.005817506248984186,
+        0.05517491574091689,
+        0.08793612008927025
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_08_low_energy",
+      "field_id": "offnode_08",
+      "delta": 0.22307714066093892,
+      "gamma": 0.558247972436148,
+      "profile": "low_energy",
+      "candidate": [
+        0.05835343289070618,
+        0.07858163108694542,
+        0.08127304613585497
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.05835337115186242,
+        0.07858366858951245,
+        0.08127299958742526
+      ],
+      "scaled_error": [
+        6.17388437595956e-08,
+        2.0375025670260616e-06,
+        4.654842970797102e-08
+      ],
+      "relative_error": [
+        1.0580167442069903e-06,
+        2.5927811765433167e-05,
+        5.727416232238227e-07
+      ]
+    },
+    {
+      "case_id": "offnode_08_finite_energy_band",
+      "field_id": "offnode_08",
+      "delta": 0.22307714066093892,
+      "gamma": 0.558247972436148,
+      "profile": "finite_energy_band",
+      "candidate": [
+        0.33560196512692314,
+        0.1125041864539914,
+        0.08150231298652573
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.3356019709644758,
+        0.11250417416742221,
+        0.08150268144620601
+      ],
+      "scaled_error": [
+        5.837552663479073e-09,
+        1.2286569192609953e-08,
+        3.6845968028054177e-07
+      ],
+      "relative_error": [
+        1.7394274076229995e-08,
+        1.0920989628638837e-07,
+        4.520828931545463e-06
+      ]
+    },
+    {
+      "case_id": "offnode_08_near_edge_band",
+      "field_id": "offnode_08",
+      "delta": 0.22307714066093892,
+      "gamma": 0.558247972436148,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.006358521454589583,
+        0.05562984691498314,
+        0.08775558344872425
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.006358520836132162,
+        0.055629912436069254,
+        0.08775562558235633
+      ],
+      "scaled_error": [
+        6.18457420692442e-10,
+        6.552108611224128e-08,
+        4.2133632083274364e-08
+      ],
+      "relative_error": [
+        9.72643538695463e-08,
+        1.177803150194405e-06,
+        4.801245709738923e-07
+      ]
+    },
+    {
+      "case_id": "offnode_08_high_energy_band",
+      "field_id": "offnode_08",
+      "delta": 0.22307714066093892,
+      "gamma": 0.558247972436148,
+      "profile": "high_energy_band",
+      "candidate": [
+        1.5067507381976217,
+        0.08715390291874256,
+        0.08752842519799969
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.5067507378246927,
+        0.08715390018510684,
+        0.08752839523209968
+      ],
+      "scaled_error": [
+        2.475054510581516e-10,
+        2.733635720564287e-09,
+        2.99659000113639e-08
+      ],
+      "relative_error": [
+        2.475054510581516e-10,
+        3.1365615477428973e-08,
+        3.423563282738488e-07
+      ]
+    },
+    {
+      "case_id": "offnode_10_vacuum",
+      "field_id": "offnode_10",
+      "delta": 1.476930068806779,
+      "gamma": 0.5995991373143735,
+      "profile": "vacuum",
+      "candidate": [
+        1.031183720596296,
+        2.093752127702477,
+        1.92022356880504
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.031183720596296,
+        2.093752127702477,
+        1.92022356880504
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_10_low_energy",
+      "field_id": "offnode_10",
+      "delta": 1.476930068806779,
+      "gamma": 0.5995991373143735,
+      "profile": "low_energy",
+      "candidate": [
+        1.1971771362989045,
+        2.2272337545570595,
+        1.7775020978624045
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.1971773518943212,
+        2.227224044761813,
+        1.7774966991989083
+      ],
+      "scaled_error": [
+        1.8008644775093613e-07,
+        4.3595951962446465e-06,
+        3.037228422804292e-06
+      ],
+      "relative_error": [
+        1.8008644775093613e-07,
+        4.3595951962446465e-06,
+        3.037228422804292e-06
+      ]
+    },
+    {
+      "case_id": "offnode_10_finite_energy_band",
+      "field_id": "offnode_10",
+      "delta": 1.476930068806779,
+      "gamma": 0.5995991373143735,
+      "profile": "finite_energy_band",
+      "candidate": [
+        1.5535686328296845,
+        2.3087738563035134,
+        1.7893225208229022
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.5535685395676744,
+        2.3087808172815123,
+        1.7893209428961745
+      ],
+      "scaled_error": [
+        6.003083078688442e-08,
+        3.015001660963481e-06,
+        8.818578545059273e-07
+      ],
+      "relative_error": [
+        6.003083078688442e-08,
+        3.015001660963481e-06,
+        8.818578545059273e-07
+      ]
+    },
+    {
+      "case_id": "offnode_10_near_edge_band",
+      "field_id": "offnode_10",
+      "delta": 1.476930068806779,
+      "gamma": 0.5995991373143735,
+      "profile": "near_edge_band",
+      "candidate": [
+        1.0390727238644286,
+        2.103298876197746,
+        1.9081471447549054
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.0390727499479533,
+        2.103297621811903,
+        1.9081466792697885
+      ],
+      "scaled_error": [
+        2.510269341082029e-08,
+        5.96390082976566e-07,
+        2.439461923725274e-07
+      ],
+      "relative_error": [
+        2.510269341082029e-08,
+        5.96390082976566e-07,
+        2.439461923725274e-07
+      ]
+    },
+    {
+      "case_id": "offnode_10_high_energy_band",
+      "field_id": "offnode_10",
+      "delta": 1.476930068806779,
+      "gamma": 0.5995991373143735,
+      "profile": "high_energy_band",
+      "candidate": [
+        2.675811905120079,
+        2.2825767101112944,
+        1.9006147505756639
+      ],
+      "same_eta_same_quadrature_reference": [
+        2.675811901358234,
+        2.282576480513493,
+        1.9006155201471977
+      ],
+      "scaled_error": [
+        1.4058703497367662e-09,
+        1.0058712300585187e-07,
+        4.049064767040497e-07
+      ],
+      "relative_error": [
+        1.4058703497367662e-09,
+        1.0058712300585187e-07,
+        4.049064767040497e-07
+      ]
+    },
+    {
+      "case_id": "offnode_11_vacuum",
+      "field_id": "offnode_11",
+      "delta": 1.3237809954323705,
+      "gamma": 0.4876242629921028,
+      "profile": "vacuum",
+      "candidate": [
+        0.5500371227771659,
+        1.5085784452255975,
+        1.7543074831113243
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.5500371227771659,
+        1.5085784452255975,
+        1.7543074831113243
+      ],
+      "scaled_error": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "relative_error": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "case_id": "offnode_11_low_energy",
+      "field_id": "offnode_11",
+      "delta": 1.3237809954323705,
+      "gamma": 0.4876242629921028,
+      "profile": "low_energy",
+      "candidate": [
+        0.7115582639014706,
+        1.6460960457456824,
+        1.6062170185288305
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.7115586257595597,
+        1.6461006023596296,
+        1.6062231222641246
+      ],
+      "scaled_error": [
+        3.618580891595613e-07,
+        2.7681260432922826e-06,
+        3.8000544317150206e-06
+      ],
+      "relative_error": [
+        5.085429029453372e-07,
+        2.7681260432922826e-06,
+        3.8000544317150206e-06
+      ]
+    },
+    {
+      "case_id": "offnode_11_finite_energy_band",
+      "field_id": "offnode_11",
+      "delta": 1.3237809954323705,
+      "gamma": 0.4876242629921028,
+      "profile": "finite_energy_band",
+      "candidate": [
+        1.053448585869236,
+        1.7260939311076327,
+        1.6330358959455538
+      ],
+      "same_eta_same_quadrature_reference": [
+        1.0534482755455414,
+        1.7260886795668817,
+        1.6330359425795584
+      ],
+      "scaled_error": [
+        2.945789572423896e-07,
+        3.0424513022388115e-06,
+        2.8556630899508276e-08
+      ],
+      "relative_error": [
+        2.945789572423896e-07,
+        3.0424513022388115e-06,
+        2.8556630899508276e-08
+      ]
+    },
+    {
+      "case_id": "offnode_11_near_edge_band",
+      "field_id": "offnode_11",
+      "delta": 1.3237809954323705,
+      "gamma": 0.4876242629921028,
+      "profile": "near_edge_band",
+      "candidate": [
+        0.5578316041471099,
+        1.5184622198798219,
+        1.7414752948563297
+      ],
+      "same_eta_same_quadrature_reference": [
+        0.5578316543437374,
+        1.5184628733236951,
+        1.7414762105476929
+      ],
+      "scaled_error": [
+        5.019662752125953e-08,
+        4.3033246628070583e-07,
+        5.258133057649782e-07
+      ],
+      "relative_error": [
+        8.998526191618418e-08,
+        4.3033246628070583e-07,
+        5.258133057649782e-07
+      ]
+    },
+    {
+      "case_id": "offnode_11_high_energy_band",
+      "field_id": "offnode_11",
+      "delta": 1.3237809954323705,
+      "gamma": 0.4876242629921028,
+      "profile": "high_energy_band",
+      "candidate": [
+        2.168597762513552,
+        1.6837972552164966,
+        1.7409747165627003
+      ],
+      "same_eta_same_quadrature_reference": [
+        2.1685977472982065,
+        1.6837972918648434,
+        1.740973626630986
+      ],
+      "scaled_error": [
+        7.016213793908409e-09,
+        2.1765296202096627e-08,
+        6.260472287134038e-07
+      ],
+      "relative_error": [
+        7.016213793908409e-09,
+        2.1765296202096627e-08,
+        6.260472287134038e-07
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "field_id": "fixed_20",
+      "delta": 1.2,
+      "gamma": 0.002,
+      "reason": "direct interpolated energy lost positive monotone support: Delta=1.2, Gamma=0.002, minE=1.06777, min increment=-1.68607e-06",
+      "failed_gates": [
+        "positive_monotone_energy"
+      ]
+    },
+    {
+      "field_id": "fixed_28",
+      "delta": 0.72,
+      "gamma": 1.19,
+      "reason": "direct interpolated energy lost positive monotone support: Delta=0.72, Gamma=1.19, minE=-6.15951e-08, min increment=1.0272e-07",
+      "failed_gates": [
+        "positive_monotone_energy"
+      ]
+    },
+    {
+      "field_id": "offnode_09",
+      "delta": 0.32271495064340994,
+      "gamma": 0.759148305988343,
+      "reason": "direct interpolated energy lost positive monotone support: Delta=0.32271495064340994, Gamma=0.759148305988343, minE=-5.18104e-08, min increment=9.03818e-08",
+      "failed_gates": [
+        "positive_monotone_energy"
+      ]
+    },
+    {
+      "case_id": "fixed_10_low_energy",
+      "failed_gates": [
+        "gamma_response",
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "fixed_11_low_energy",
+      "failed_gates": [
+        "gamma_response",
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "fixed_12_low_energy",
+      "failed_gates": [
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "fixed_13_low_energy",
+      "failed_gates": [
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "offnode_00_low_energy",
+      "failed_gates": [
+        "gamma_response",
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "offnode_01_low_energy",
+      "failed_gates": [
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "offnode_02_low_energy",
+      "failed_gates": [
+        "gamma_response",
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "offnode_03_low_energy",
+      "failed_gates": [
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "offnode_04_low_energy",
+      "failed_gates": [
+        "gamma_response",
+        "gamma_response_relative"
+      ]
+    },
+    {
+      "case_id": "offnode_05_low_energy",
+      "failed_gates": [
+        "gamma_response",
+        "gamma_response_relative"
+      ]
+    }
+  ],
+  "rejected_fields": [
+    {
+      "field_id": "fixed_20",
+      "delta": 1.2,
+      "gamma": 0.002,
+      "reason": "direct interpolated energy lost positive monotone support: Delta=1.2, Gamma=0.002, minE=1.06777, min increment=-1.68607e-06"
+    },
+    {
+      "field_id": "fixed_28",
+      "delta": 0.72,
+      "gamma": 1.19,
+      "reason": "direct interpolated energy lost positive monotone support: Delta=0.72, Gamma=1.19, minE=-6.15951e-08, min increment=1.0272e-07"
+    },
+    {
+      "field_id": "offnode_09",
+      "delta": 0.32271495064340994,
+      "gamma": 0.759148305988343,
+      "reason": "direct interpolated energy lost positive monotone support: Delta=0.32271495064340994, Gamma=0.759148305988343, minE=-5.18104e-08, min increment=9.03818e-08"
+    }
+  ],
+  "interpolation_only_status": "FAIL",
+  "overall_acceptance_status": "PENDING_INDEPENDENT_REFERENCES_QUADRATURE_CUTOFF_REGULATOR_AND_API",
+  "production_connected": false
+}

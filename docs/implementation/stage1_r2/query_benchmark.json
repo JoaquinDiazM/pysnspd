@@ -1,0 +1,109 @@
+{
+  "schema": "pysnspd.experimental.catalog-query-benchmark.v1",
+  "runtime_seconds": 0.3466477352194488,
+  "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "processor": "x86_64",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "seed": 20260911,
+  "repetitions": 3,
+  "query_support_dimensionless": {
+    "delta": [
+      0.08,
+      1.5
+    ],
+    "gamma": [
+      0.0,
+      1.2
+    ]
+  },
+  "query_coordinates_sha256_float64_little_endian": "888cc77dc7a1dfe30ca73b49331da7de343bc039df155e50c259626b2a71520f",
+  "common_queries": true,
+  "fixed_occupation": {
+    "description": "Two nonthermal Gaussian populations fixed at the state-count quadrature nodes.",
+    "formula": "p(x)=0.12 exp[-0.5((x/X-0.35)/0.08)^2]+0.07 exp[-0.5((x/X-0.75)/0.07)^2]",
+    "X_count_cutoff_over_Delta0": 11.999999999999996,
+    "count_nodes": 180,
+    "minimum": 8.372349761320989e-06,
+    "maximum": 0.11968257336729018,
+    "occupation_sha256_float64_little_endian": "7aa3403e6a0ac87c76f494fba14f588cf2662095df71525153cee73700ebe203",
+    "thermal_reduction": false
+  },
+  "module": {
+    "path": "pysnspd/experimental/energy_catalog.py",
+    "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+  },
+  "benchmark_script_sha256": "664adfca63e8375ffec97674443f225d5efe29c64d9aeb73a3fbd008ff614691",
+  "catalogs": {
+    "vacuum": {
+      "path": "docs/implementation/stage1_r2/catalogs/vacuum_catalog.npz",
+      "bytes": 6822,
+      "sha256": "54c961c910333be71eb304b35faca4d5aa91264a0a25cac150e2a5315e62e0af",
+      "loading": {
+        "seconds_by_repetition": [
+          0.0008031749166548252,
+          0.0004983902908861637,
+          0.00041998177766799927
+        ],
+        "median_seconds": 0.0004983902908861637,
+        "median_ms_per_load": 0.4983902908861637,
+        "includes": "NPZ decompression, array validation, and construction of interpolation objects",
+        "cache_context": "same process; SHA-256 reads precede loading; no cold-storage claim"
+      },
+      "queries": {
+        "queries_per_repetition": 1000,
+        "warmup_queries": 12,
+        "seconds_by_repetition": [
+          0.003821686375886202,
+          0.0037587177939713,
+          0.0037537291646003723
+        ],
+        "median_seconds": 0.0037587177939713,
+        "median_ms_per_query": 0.0037587177939713,
+        "result_sha256_float64_little_endian": "b28b3863d9b5f16f73f8210a2d62c0b0d3d155687727ad078ea7d95185d5a060",
+        "repeat_results_identical": true,
+        "timed_operation": "scalar evaluate API returning energy, amplitude force, and Gamma conjugate"
+      }
+    },
+    "occupation": {
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "bytes": 12037450,
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+      "loading": {
+        "seconds_by_repetition": [
+          0.05525109078735113,
+          0.05337092513218522,
+          0.05112901795655489
+        ],
+        "median_seconds": 0.05337092513218522,
+        "median_ms_per_load": 53.37092513218522,
+        "includes": "NPZ decompression, array validation, and construction of interpolation objects",
+        "cache_context": "same process; SHA-256 reads precede loading; no cold-storage claim"
+      },
+      "queries": {
+        "queries_per_repetition": 1000,
+        "warmup_queries": 12,
+        "seconds_by_repetition": [
+          0.05433217715471983,
+          0.05371874989941716,
+          0.053620995953679085
+        ],
+        "median_seconds": 0.05371874989941716,
+        "median_ms_per_query": 0.05371874989941716,
+        "result_sha256_float64_little_endian": "dcf20ce35abacdadf7068f1766e0f8b49b3fde753d0a9b9463987f59cc720d79",
+        "repeat_results_identical": true,
+        "timed_operation": "scalar evaluate API returning energy, amplitude force, and Gamma conjugate"
+      }
+    }
+  },
+  "inputs_unchanged": true,
+  "interpretation": "Measured cost of loading and scalar queries only; not a coupled transient runtime estimate.",
+  "excluded_work": "catalog construction, spectral solves, kinetic collisions, spatial PDE, circuit evolution, and transient time stepping"
+}

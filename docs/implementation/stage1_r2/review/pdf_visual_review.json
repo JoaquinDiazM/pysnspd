@@ -1,0 +1,58 @@
+{
+  "schema": "pysnspd.stage1_r2.pdf_visual_review.v1",
+  "status": "PASS_VISUAL_QA",
+  "reviewed_utc": "2026-09-11T17:05:47Z",
+  "reviewer": "/root/material_admission",
+  "pdf_path": "output/pdf/implementation/Informe_etapa_1_r2.pdf",
+  "pdf_sha256": "19102afb2962d7bd0b559f56dfb2981551d483ddafd42f71d854172ac1eaefc0",
+  "pdf_bytes": 953742,
+  "pdf_page_count": 4,
+  "page_size": "A4, 595.2756 by 841.8898 PDF points",
+  "method": "Independent visual inspection of all four final rendered pages; page count and MediaBox independently read with pypdf.",
+  "inspected_pages": [
+    {
+      "page": 1,
+      "render_path": "tmp/pdfs/stage1_r2/final_review/page-1.png",
+      "render_sha256": "f6c8db81c0e0b84ef7c4b1931485dbc56352642874d75d6d827dbfbff22648ad",
+      "status": "PASS"
+    },
+    {
+      "page": 2,
+      "render_path": "tmp/pdfs/stage1_r2/final_review/page-2.png",
+      "render_sha256": "a7c1a7f9409fece56bafbd22512be2dae1eef98af7c73739f0b14b9652ae7d6b",
+      "status": "PASS"
+    },
+    {
+      "page": 3,
+      "render_path": "tmp/pdfs/stage1_r2/final_review/page-3.png",
+      "render_sha256": "5993f6d23b688f85c0bf93191132ed43d654e04e6d22305803bc65bd43b43f04",
+      "status": "PASS"
+    },
+    {
+      "page": 4,
+      "render_path": "tmp/pdfs/stage1_r2/final_review/page-4.png",
+      "render_sha256": "78239cd293c37de7852de5b0756021c4eb61dd0e7d7e1d6c08f062d42159d6cc",
+      "status": "PASS"
+    }
+  ],
+  "checks": {
+    "all_pages_reviewed": true,
+    "no_overflow_or_unexpected_page": true,
+    "tables_not_clipped": true,
+    "body_and_captions_legible": true,
+    "greek_letters_subscripts_and_superscripts_legible": true,
+    "phonon_and_electronic_DOS_visually_distinguished": true,
+    "overlapping_curves_explained_with_residual_or_zoom": true,
+    "plot_legends_do_not_hide_worst_case_markers": true,
+    "titles_and_annotations_do_not_overlap": true,
+    "page_numbers_and_footers_consistent": true
+  },
+  "resolved_findings": [
+    "Subscript zero rendered using base glyph markup.",
+    "Critical R1 error label separated from plot title.",
+    "Superscript minus and digits rendered using base glyph markup.",
+    "Acceptance legend moved to expose the worst relative Gamma-response marker."
+  ],
+  "outstanding_findings": [],
+  "scope": "Visual and document-layout review only. Numerical admission and scientific validation remain in the external certificate and assessment JSON."
+}

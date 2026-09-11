@@ -20,8 +20,13 @@ Commits after the tag contain the opt-in
 [stage 1 implementation](sandbox/stage1_catalog/README.md): explicit material
 admission and uniform electronic catalogues with their own verification results.
 The production solver does not import `pysnspd.experimental`. The
-[stage 1 report](docs/implementation/stage1/Informe_etapa_1.md) records what passed,
-which input data were rejected and the scope permitted for the next step.
+[second-iteration report](docs/implementation/stage1_r2/Informe_etapa_1_r2.md) and
+[R2 reproduction guide](sandbox/stage1_catalog_r2/README.md) record the current
+sampled electronic acceptance for synthetic-cell validation: 278 regression
+tests pass and the critical small-current slope error is 0.03196% (0.1% limit).
+NbN phonon input remains rejected; no production transient is certified by this
+catalogue. The [first report](docs/implementation/stage1/Informe_etapa_1.md)
+preserves the preceding iteration and its rejected numerical approximation.
 
 ```text
 Software release     : v1.0.0 (thesis implementation)

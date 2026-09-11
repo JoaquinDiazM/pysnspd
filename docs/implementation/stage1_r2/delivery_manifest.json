@@ -1,0 +1,434 @@
+{
+  "schema": "pysnspd.stage1_r2.delivery.v1",
+  "release_tag": "v1.0.0",
+  "release_commit_before_implementation": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+  "previous_iteration_commit": "d17d7c3fc3943699631126eaa636732bba56aabe",
+  "scope": "experimental data admission and uniform catalogue; no production activation",
+  "files": [
+    {
+      "path": "docs/implementation/stage1_r2/acceptance_criteria.json",
+      "bytes": 9980,
+      "sha256": "ef8164fe9f7d7d27f4ecbba1a318fc8642ea3dcc9723dd2e1a9d9c1447dc6bfb"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/compensated_17/candidate_diagnostics.json",
+      "bytes": 165543,
+      "sha256": "2540b5093c4a64fdb3b8863d54f01d4629625c7c9ba66f81af206617f0d0c204"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/direct_17/candidate_diagnostics.json",
+      "bytes": 131259,
+      "sha256": "8dbdcbd6c4b623d3ee13c352e09611d3290538a9c635addaffa4f68e0a6e823f"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/direct_33/candidate_diagnostics.json",
+      "bytes": 137153,
+      "sha256": "7a6d1d15df40ea7ddd46f6fb53f3ae2e0df89608089ff89e2a8f553874f2f29c"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/ratio_17/candidate_diagnostics.json",
+      "bytes": 146805,
+      "sha256": "1b2d6e135b324e6cab0dc5bec9edfecd402f70a2c512a440e065a5997bc0a8e4"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/ratio_bulk_17/candidate_diagnostics.json",
+      "bytes": 141301,
+      "sha256": "7b32292064bad0dbb659ab9172f9b940e3a7f9a30d285a857b16891e48e3d7c2"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/ratio_final_17/count_rule_check.json",
+      "bytes": 106967,
+      "sha256": "a9d8e2a7e37de31670273364e5937424f2809985796b09eeca6fdf0085231be1"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/ratio_final_17/interpolation.json",
+      "bytes": 125024,
+      "sha256": "56d6c9aea3ab74b549858d5c24f63b2d37a15c999f27811ffadcff51d7b50da3"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/ratio_final_17/refinement.json",
+      "bytes": 554,
+      "sha256": "ec7ff2905fe568fa44738e642761eaf5eb0ddcf9d6d6f6dbd1898b752caefc8a"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/candidates/ratio_refined_17/refinement.json",
+      "bytes": 688,
+      "sha256": "0f19bfc112fd64f28a36f4287d14e9d88e95cf47e9ddc8036b137c182f5520c3"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/catalog_admission.json",
+      "bytes": 32570,
+      "sha256": "cbf7fe6d3ecd972ac882e995f0da0d64aa507da281d417ca2a877fe8bc15b3b8"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/catalog_count_rule_check.json",
+      "bytes": 106966,
+      "sha256": "2667dc140cc359fc3a2ef158f4eb4b084a38efdabbf28a229fc67319020c22cb"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "bytes": 12037450,
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/catalogs/vacuum_catalog.npz",
+      "bytes": 6822,
+      "sha256": "54c961c910333be71eb304b35faca4d5aa91264a0a25cac150e2a5315e62e0af"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/electronic_comparison.json",
+      "bytes": 1308,
+      "sha256": "87b8fa521befdfd09368c4905d760303028b3909473b1a482de5b69990a96224"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/acceptance_cases.pdf",
+      "bytes": 35980,
+      "sha256": "14bc9791a6da8016d48c92dad1351e1becb2131f8808c076aa1a964d8ff82d92"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/acceptance_cases.png",
+      "bytes": 176017,
+      "sha256": "d1a5bd82a240169a0feef0b53d9b21a2bb4725e42fd19082212d1f6ca997cc5b"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/critical_before_after.pdf",
+      "bytes": 22053,
+      "sha256": "5904a40772f23b7f7b34524160b91c9446813c3d6f4c1570cccd6ccb4be3d5e1"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/critical_before_after.png",
+      "bytes": 60878,
+      "sha256": "ce79467828401f71827feb15d7841fcf1c54b9cf7f01df306a5b34083a989e14"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/electronic_regulator_edge.pdf",
+      "bytes": 22939,
+      "sha256": "89ee826dbbdb6c2ac12ec4d89fd3de268c99e2792d0b9a9c8ca9f61ced60ddc5"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/electronic_regulator_edge.png",
+      "bytes": 112949,
+      "sha256": "daef731a744b0836e500654bda89c5560bdb35ddb3333405871f8b5b326b5254"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/electronic_same_equation.pdf",
+      "bytes": 25465,
+      "sha256": "01b4e71322a3faa0c90ac734b97537e180aec6bbc6a9c89b315099ec8df204c4"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/electronic_same_equation.png",
+      "bytes": 159164,
+      "sha256": "cfbe03db47d8f1c4f4f4c3c9780383d7d289ceb8b46bd8b4d4c5e8abd6088b32"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/material_legacy_comparison.pdf",
+      "bytes": 155666,
+      "sha256": "9403b85ffc76d707e52c67364d132bbca7fad67b06f61a7efecb66cc1a02b91a"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/figures/material_legacy_comparison.png",
+      "bytes": 350486,
+      "sha256": "3490f5508ba2f4c556024009decfc487abb56f1708cc49a37d425a7a184e64b1"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/Informe_etapa_1_r2.md",
+      "bytes": 6933,
+      "sha256": "ed8647add5c5a88ba21d2f715ec5ccd30cd595a42a04c2c97a243bbb07746421"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/material_comparison.json",
+      "bytes": 8350,
+      "sha256": "d9bf67b2012341586def01e68f07773c9e180a8ab2e0ecabf7b30b1af80b3142"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/material_curves.csv",
+      "bytes": 2400298,
+      "sha256": "dd12573167688d73296bf6e3778ddc7db1b585ee8f7eb32496d18cd6338127f5"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/material_findings.md",
+      "bytes": 1589,
+      "sha256": "9e526e9bb1da39ce2a5679d2945ff017c7d84f29891d5ebcf819d6c94953bf69"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/material_interpolation_probe.csv",
+      "bytes": 300153,
+      "sha256": "4a1008beec336fd259745d92bd7a4014ce16a4a387460eafc0991ac9fee2a639"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/material_source_notice.md",
+      "bytes": 1544,
+      "sha256": "e31e306a2706c0a8621941060ddd96d7848345d29570d1b95fdc657e00b0fe19"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/plotted_results.json",
+      "bytes": 2346,
+      "sha256": "9e65c749f6c6d2b31abf3a12e8c7dc50efc317bed70e1e10c9872e449661ce7e"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/quadrature_diagnostics.json",
+      "bytes": 2637108,
+      "sha256": "61334a790d548264dcdfa5bf3d394d2efa7dcb87e60c1890fa45d37836273fd7"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/query_benchmark.json",
+      "bytes": 4322,
+      "sha256": "5c673eb00a91acbd781cf01f61e9dcff5e32f22218be5d93fec1ae8884a623df"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/regression_result.json",
+      "bytes": 1114,
+      "sha256": "471112c3f00b325aef3a1523ae331a486196049793bf1239b475a975e6fb468d"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/report_content.json",
+      "bytes": 9547,
+      "sha256": "1780aade8267c0c831e5504f4a2947f7bca9dd4bd3678bdd0fb2ff24c38646ed"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/assess_candidate.py",
+      "bytes": 24973,
+      "sha256": "543faac6c9f3ebb54b57d0b74687d83f219f110a6957f156510b941016793d2e"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/causal_reference.json",
+      "bytes": 60409,
+      "sha256": "96ef03d7845afcf25e90c6178b5615d5fd32de50875399bcaf474f7339d13137"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/causal_reference.py",
+      "bytes": 6270,
+      "sha256": "8e0324a87b5278df3ac2b976480fcbdf2f696bfb63a9b66c8dfa17f7e71516b1"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/direct_17_assessment.json",
+      "bytes": 382352,
+      "sha256": "1ae89a07de79994234422b1f98326587e3362d05b9635466355c5f353561a1bd"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/direct_17_support_diagnosis.json",
+      "bytes": 1166,
+      "sha256": "cf9e2f026e80831f52afbbe95ec219dd4d092987bd7f922cc32d2ca4388dbe18"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/final_assessment.json",
+      "bytes": 397040,
+      "sha256": "6be8a019069d495fd5a4505d1b4b95482c9b5c61434d85eecefc06b2c748a8ee"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/finalize_admission.py",
+      "bytes": 14803,
+      "sha256": "e0df7b1ee46c4c26857caf82eba6a1816f633ade53321c998ce75ccf2ccbf020"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/gamma_zero_reference.json",
+      "bytes": 93456,
+      "sha256": "70615fd6d954dbc35eed57f1b14f6fd0e0e8098c1089513aa0e152bf6a9efef5"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/gamma_zero_reference.py",
+      "bytes": 5301,
+      "sha256": "8e2ed0759f854c774770d80ec22d033495c37d3e4dc3796d8565969e4bd6965d"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/hermite_precision.json",
+      "bytes": 16047,
+      "sha256": "e7dfb5342728e4a24acc37fd10e13c3d37e90611f26007ab1afbf8f38d91265b"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/hermite_precision.py",
+      "bytes": 5823,
+      "sha256": "be19186527651eab775a5f1e61aaeccf73bb5dcd6e0648de7fcab39f95830d81"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/pdf_visual_review.json",
+      "bytes": 2477,
+      "sha256": "4e6a2f461e44d25eb5eda43106a68ec11c400837acef923f83c79e05cfbdd9c8"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/pre_deep_gap_polish_spectral_crosscheck.json",
+      "bytes": 38821,
+      "sha256": "6a462dc027d937c9e20ffe13abe7e7b6fe6ab857ec0f02bef35bb1f479714127"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/pre_scalar_unification_spectral_crosscheck.json",
+      "bytes": 41848,
+      "sha256": "c15ba00abfc282f2933ef51e5aca6c5626c832154cddc95434df62023836dfb7"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/ratio_17_assessment.json",
+      "bytes": 359090,
+      "sha256": "5d793a3a9f5a7aa4ac29aab3c71df77c4eee1cf11a8ec99d15b344e54b6a4f84"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/ratio_bulk_17_assessment.json",
+      "bytes": 412302,
+      "sha256": "6d98764782606cc1e952d28e79abe8af878bfe8aca569e26c162606bdf37706c"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/ratio_refined_17_assessment.json",
+      "bytes": 397117,
+      "sha256": "eb1af61bb2040777e3491958a42dd326550053a7ff4789ffa589448ce0146234"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/retain_support_failures.py",
+      "bytes": 1492,
+      "sha256": "90e9f7041f070bde4550b223d64a7e356edbb56e92548258d423e5a60c613d67"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/REVIEW.md",
+      "bytes": 6770,
+      "sha256": "b8e88879c5996adad641140ec730bbd69ce6556c5855664f72b7a69504534f0a"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/shape_bulk_17.json",
+      "bytes": 114109,
+      "sha256": "bf1c0c2c93020dcf8ad2478c775bd6f5f41b895ed7f66ce6b11856d0a93d580a"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/shape_final.json",
+      "bytes": 33127,
+      "sha256": "e55513c94e46b4c6ea6ab2daf077d868dc8c34c935ec4cc8146af46c8fb68097"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/shape_refined_17.json",
+      "bytes": 43227,
+      "sha256": "afc29d1778455fe79567b46ec07cf7220b77c87fa71c68164b58a20aba4ea69d"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/spectral_crosscheck.json",
+      "bytes": 39548,
+      "sha256": "a66321b17f531f18965b71f673c0decea2fdd55d263c070346c21f56ba0e9998"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/spectral_crosscheck.py",
+      "bytes": 6034,
+      "sha256": "91a24b1f50142335721bac13c505477e239501ee6b25d6d7b82c0cec0c150611"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/support_regression_points.json",
+      "bytes": 57010,
+      "sha256": "c4c050210323eb369ae3fa93f1b6193f8aa5b5155e356de9a6c0d0b69a696c60"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/tail_reference.json",
+      "bytes": 87466,
+      "sha256": "9038417140809bff5083800382f4341fa8212fd678afff83a529b686214dcfc4"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/tail_reference.py",
+      "bytes": 3405,
+      "sha256": "5cc45fb23b31b2fb7f902b20807320b0a67c902f2f6da9455ca27ca82c7ba93e"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/thermal_reference.json",
+      "bytes": 19409,
+      "sha256": "2401c8445dc9f8d33f5eed56abc8193aec1dc954cb32346d6ffaeb53d29c253b"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/review/thermal_reference.py",
+      "bytes": 7418,
+      "sha256": "8ffea545794ca532f87d1cb38af79349013db9347487de8a3db94bd10938a865"
+    },
+    {
+      "path": "output/pdf/implementation/Informe_etapa_1_r2.pdf",
+      "bytes": 953742,
+      "sha256": "19102afb2962d7bd0b559f56dfb2981551d483ddafd42f71d854172ac1eaefc0"
+    },
+    {
+      "path": "pysnspd/experimental/__init__.py",
+      "bytes": 228,
+      "sha256": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54"
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "bytes": 52362,
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    {
+      "path": "pysnspd/experimental/material_admission.py",
+      "bytes": 12797,
+      "sha256": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/build_catalog.py",
+      "bytes": 9555,
+      "sha256": "37c1ea43d24b2024c57e54cb4f5d8400d6a66cd8b27d3ccec9f517834d959f5a"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/build_report.py",
+      "bytes": 7223,
+      "sha256": "bf61b82be63a7add468fa73c21fb4e8874884d7bb1490a1408868d391c49c5be"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/check_catalog_interpolation.py",
+      "bytes": 3744,
+      "sha256": "b80f37f410ab6c2f54ef481a07acfc62f5d3d076b76d8136d3fc1036d1ab62dc"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/check_catalog_quadrature.py",
+      "bytes": 4189,
+      "sha256": "da2c11c199d808b678360adb0476d7e0eb303f35ea12c4a2e3119e364cb4b17e"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/check_shape_cells.py",
+      "bytes": 5345,
+      "sha256": "80c6c7b55831219c49a7cf5f24b276f0a43799698041e71671951617ec21d79d"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/diagnose_quadrature.py",
+      "bytes": 5875,
+      "sha256": "8a576e9a7172e5ce18ef084684214649ccaf9670f7d393e11f74668ae2ba9dce"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/electronic_comparison.py",
+      "bytes": 5950,
+      "sha256": "f8ed930334edde63d1b37db6982709e986f51cd0e978645f57eb6f63dad14ec9"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/material_comparison.py",
+      "bytes": 19076,
+      "sha256": "e534251fb57d980b67d4116ba0042ee8388e4db47748849097e65b0b18fe5052"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/plot_acceptance.py",
+      "bytes": 5155,
+      "sha256": "1a319ba5bdb292e1b1f39a6ef76d3d2d7d83143e0e4cb06c282683e8ebcaaa66"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/README.md",
+      "bytes": 11610,
+      "sha256": "ebb59b94c1bd03db7c452c7b9d854d7e24f2592d63286ab71b9f64a0d50bddb1"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/refine_catalog.py",
+      "bytes": 1709,
+      "sha256": "d9513a322b45c2b9d90b77f561805475572b6f0fa01880f71ed8c21d97362a2e"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/run_regression.py",
+      "bytes": 1531,
+      "sha256": "ec3ad80b7bf4caecdf0215d4fd21df9f748762000768e4542645208338a7ad42"
+    },
+    {
+      "path": "sandbox/stage1_catalog_r2/verify_delivery.py",
+      "bytes": 2712,
+      "sha256": "c7fdf9bf7b4d39ee061fe4829de47cd0ad1ec6d43c934161e98698c902d8c5c2"
+    },
+    {
+      "path": "tests/test_experimental_energy_catalog.py",
+      "bytes": 9067,
+      "sha256": "8afd68b362decbb41502adb9efeb657735dc9bc7922606228ee0901510bdb685"
+    },
+    {
+      "path": "tests/test_experimental_energy_catalog_r2.py",
+      "bytes": 19260,
+      "sha256": "eb54e8409bcbdc9a86cf0c732f2d7f4f336b14fd5170997589af3e4739f5e046"
+    },
+    {
+      "path": "tests/test_experimental_material_admission.py",
+      "bytes": 9717,
+      "sha256": "5c31f2c05ac4a21d705c464ae00cd748225a0ea9bdd101bedf0c609b6fca0f82"
+    }
+  ]
+}

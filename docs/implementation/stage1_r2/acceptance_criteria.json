@@ -1,0 +1,107 @@
+{
+  "schema": "pysnspd.stage1_r2.acceptance.v1",
+  "criteria_id": "stage1-r2-fixed-20260911T154504Z",
+  "frozen_before_r2_results_utc": "2026-09-11T15:45:04Z",
+  "repository_before_iteration": "d17d7c3fc3943699631126eaa636732bba56aabe",
+  "purpose": "Accept or reject a sampled electronic catalogue domain for synthetic cell validation; never admit unverified NbN material by numerical success.",
+  "change_policy": "Do not loosen tolerances, remove failing samples, or substitute an easier population after viewing r2 results. A changed implementation may be rerun against these same gates. Additional adversarial cases can be added. Any exceptional restricted-domain claim must explicitly retain and identify every failed case outside that domain; it is not a full pass of this contract.",
+  "normalization": {
+    "amplitude": "abs(Delta)/Delta0",
+    "gamma": "Gamma/Delta0, Gamma=hbar*D*q^2/2",
+    "count_coordinate": "x/Delta0, a common state-count coordinate at all fields",
+    "energy": "u/(N0*Delta0^2)",
+    "amplitude_force": "partial_absDelta(u)/(N0*Delta0)",
+    "gamma_response": "partial_Gamma(u)/(N0*Delta0)",
+    "N0": "normal electronic DOS per spin, volume and energy",
+    "gamma_zero_observable": "At Gamma=0, current itself is zero. Compare the Gamma-conjugate response, proportional to the small-q coefficient j/q, rather than a relative error of zero current."
+  },
+  "numerical_gates": {
+    "energy_max_scaled_error": 0.00001,
+    "amplitude_force_max_scaled_error": 0.001,
+    "gamma_response_max_scaled_error": 0.001,
+    "scaled_error_definition": "abs(candidate-reference)/max(1,abs(reference))",
+    "nonzero_force_and_gamma_max_relative_error": 0.001,
+    "relative_error_definition": "abs(candidate-reference)/abs(reference). Apply to amplitude force and Gamma response whenever the reference is certified nonzero; in particular it is mandatory for the critical low-energy case.",
+    "reference_zero_policy": "An analytic exact zero is tested by the scaled absolute gate. A numerical reference is certified nonzero only when its error interval excludes zero. An unresolved reference near zero requires a tighter reference calculation or INCONCLUSIVE status; it cannot silently be excluded or marked PASS.",
+    "reference_error_budget_fraction_of_applicable_tolerance": 0.1,
+    "derivative_identity_max_scaled_error": 0.0000001,
+    "Maxwell_identity_max_scaled_error": 0.0000001,
+    "causal_unsquared_equation_max_scaled_residual": 0.00000001,
+    "spectral_normalization_max_scaled_residual": 0.00000001,
+    "spectral_DOS_minimum": 0,
+    "spectral_count_max_scaled_inverse_error": 0.00000001,
+    "sample_gate": "Every declared case must pass its applicable gates; do not average errors across cases. Report the worst absolute and relative cases with field and population identifiers."
+  },
+  "error_separation": {
+    "field_interpolation": "Compare the queried catalogue with direct causal spectral evaluation using identical count nodes, weights, occupation values and eta. Both energy and forces must pass. This isolates interpolation from quadrature and regulator bias.",
+    "count_quadrature": "Compare at least three increasing resolutions at a fixed eta and fixed support with an adaptive or independently overresolved reference. Keep the same continuous population p(x), not the same vector length. Quadrature error must independently satisfy the observable gates.",
+    "count_cutoff": "Compare at least three increasing finite supports with independently converged quadrature; use an analytic tail bound or adaptive integral to infinity. Merely increasing support at fixed global node count does not isolate cutoff error.",
+    "regulator": "Compare at least three decreasing positive eta values with count quadrature and field interpolation independently controlled for each eta. Compare against an analytic causal limit where available, including the mandatory Gamma=0 low-energy reference. Stability between the last two eta values alone is insufficient if a known causal-limit bias exceeds the gates.",
+    "total_error": "The final queried catalogue, not just a direct reference or the intermediate pieces, must meet the observable gates against the causal reference. Summing separately acceptable errors is not a substitute for checking their total.",
+    "no_hidden_fit": "Do not rescale the energy, force, current, occupations, or regulator response to match a target result. Resolve the numerical approximation or reject it."
+  },
+  "mandatory_field_points": [
+    [0.08, 0.0], [0.09, 0.0], [0.17, 0.0], [0.43, 0.0], [0.72, 0.0], [1.2, 0.0], [1.47, 0.0],
+    [0.17, 0.0000000001], [0.72, 0.000000000001], [1.47, 0.0000000001],
+    [0.72, 0.00000001], [1.2, 0.000001], [0.43, 0.0001],
+    [0.72, 0.002], [0.43, 0.02], [0.17, 0.012], [0.37, 0.14],
+    [0.72, 0.3], [1.17, 0.72], [0.43, 0.8], [1.2, 0.002],
+    [0.17, 0.169983], [0.17, 0.17], [0.17, 0.170017],
+    [0.72, 0.719928], [0.72, 0.72], [0.72, 0.720072],
+    [0.09, 1.2], [0.72, 1.19], [1.5, 1.2]
+  ],
+  "mandatory_population_profiles": [
+    {"id": "vacuum", "definition": "p(x)=0"},
+    {"id": "low_energy", "definition": "p(x)=0.2*exp(-x/0.25)"},
+    {"id": "finite_energy_band", "definition": "p(x)=0.16*exp(-((x-0.95)/0.3)^2)"},
+    {"id": "near_edge_band", "definition": "p(x)=0.2*exp(-((x-0.035)/0.01)^2)"},
+    {"id": "high_energy_band", "definition": "p(x)=0.12*exp(-((x-3.2)/0.55)^2)"}
+  ],
+  "profile_field_cross_product_required": true,
+  "thermal_equilibrium_checks": {
+    "field_points": [[1.0, 0.0], [0.7, 0.2], [0.35, 0.65]],
+    "kBT_over_Delta0": [0.1, 0.25, 0.5],
+    "reference": "Independent Matsubara sums with a converged ultraviolet tail and the same weak-coupling normal reference. Compare free energy after subtracting occupation entropy; compare force and Gamma response with p held fixed during field variation.",
+    "regulator_scope": "A finite-eta FD population and spectrum may be used for a controlled approximation, but their bias against the ideal causal/Matsubara reference must be reported, not treated as an exact identity."
+  },
+  "critical_analytic_reference": {
+    "population": "low_energy",
+    "amplitude": 0.72,
+    "gamma": 0,
+    "eta_limit": 0,
+    "Gamma_conjugate_formula": "pi*0.72/2*(1-2*0.2)",
+    "Gamma_conjugate_value": 0.6785840131753953,
+    "mandatory_relative_tolerance": 0.001,
+    "independent_reference_script": "docs/implementation/stage1/review/low_energy_regulator_reference.py"
+  },
+  "support_and_API_gates": [
+    "A common x quadrature is fixed for all fields in each catalogue; field derivatives keep those p(x) values fixed.",
+    "Queried E(x) must be finite, positive and strictly increasing at its positive count nodes. No sorting, clipping or nonfinite replacement is permitted.",
+    "The ideal normal point at amplitude zero is separate and exact: u=4*N0*integral(x*p dx), zero condensate force and zero supercurrent. Check Gamma=0,0.4,1.2.",
+    "Reject positive amplitudes below the declared support, amplitudes above support, Gamma outside support and all nonfinite fields. Both field endpoints inside the declared support remain queryable.",
+    "Reject p of the wrong shape, NaN, infinity, p<0 and p>1. p=0 and p=1 at individual nodes are valid occupations.",
+    "Check energy-force identities at interior cells and one-sided Gamma=0 boundaries; check current parity in signed q and physical SI conversion factors.",
+    "Save/reload must retain all energy data and derivative constraints, eta, x nodes/weights, support, physical units, provenance, scheme version and admission status. Querying a loaded catalogue must reproduce the same values and derivatives without resolving new spectra.",
+    "An incompatible earlier file schema must be rejected. Loading uses no pickle. Filenames without an extension must identify the file actually written."
+  ],
+  "sampling_scope": {
+    "required_positive_amplitude_support": [0.08, 1.5],
+    "required_gamma_support": [0, 1.2],
+    "off_node_checks": "The mandatory physical points remain fixed if a refinement happens to place a node on them. Add deterministic interior off-node points per represented field region; do not move fixed difficult cases to favorable nodes or omit them.",
+    "certificate_limit": "Passing certifies only the documented sampled domain, profiles and numerical tolerances. It is not a uniform mathematical error bound for every possible occupation or a prediction of detector latency.",
+    "physical_scope": "Synthetic, spatially uniform electronic catalogue. The positive-core and principal-symbol difficulties of model 0.4 remain independent. NbN phonon data remain rejected until their own admission evidence and table defects are resolved."
+  },
+  "decision_rules": {
+    "PASS_SAMPLED_ELECTRONIC_DOMAIN": "All mandatory numerical, causal, support, persistence and total-error gates pass with adequate references; separated error evidence is complete. Synthetic cell validation may then proceed within the tested contract.",
+    "PARTIAL": "Only an explicitly identified subset passes; retain the full failure list. This is not acceptance of the complete requested sampled domain.",
+    "FAIL": "Any mandatory, resolved numerical case exceeds a gate or a required safety/contract property fails.",
+    "INCONCLUSIVE": "A reference or separated convergence assessment is not precise enough, or a required test has not completed. Never substitute PASS for missing evidence.",
+    "MATERIAL_ADMISSION": "No electronic numerical pass can change NbN from REJECTED to ADMITTED. Material admission is a separate evidence contract."
+  },
+  "execution_policy": {
+    "remote_user": "jdiaz, non-administrator",
+    "uncertain_workload_wall_timeout_seconds": 240,
+    "known_workload_above_300_seconds": "Do not launch. Write the concrete command to /home/jdiaz/GEMINGA_COMMANDS.md and hand execution to the user.",
+    "production": "No PRE, SS, photon transient, or production solver modification."
+  }
+}

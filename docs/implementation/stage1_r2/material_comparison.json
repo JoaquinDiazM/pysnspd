@@ -1,0 +1,184 @@
+{
+  "schema": "pysnspd.stage1_r2.material-comparison.v1",
+  "runtime_seconds": 1.2218069890514016,
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.39",
+  "hashes": {
+    "source": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+    "legacy_loader": "6f9ac77c3e206e02fac3ab2418638e9650e89e507d8ca6a1c9701588ed17daa9",
+    "experimental_admission": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "legacy_power_consumer": "0dc1aa04212b33e0046da1ba9e9104f438e9bc5e20ea7aa49af034968f6c58f3",
+    "legacy_pre_pipeline": "4fe00cb7ecda5fb4d88e02ad8eb9c1639f7073d9b05cba87e6f6c0d202f5b79b"
+  },
+  "script_sha256": "e534251fb57d980b67d4116ba0042ee8388e4db47748849097e65b0b18fe5052",
+  "fresh_upstream": {
+    "checked": true,
+    "main_sha": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+    "main_commit_date": "2025-11-04T18:08:16Z",
+    "nbn_paths": [
+      "nbn-a2f-ph.dat"
+    ],
+    "missing_solver_input_present": false,
+    "public_numeric_file_has_header": false
+  },
+  "primary_repository": "https://github.com/qnngroup/proj-KE-solver",
+  "pinned_revision": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+  "public_file_sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+  "added_header_bytes": 48,
+  "physical_quantity": "phonon DOS and alpha2F input; NOT the electronic Usadel DOS",
+  "legacy_transforms": {
+    "uses_actual_default_loader": true,
+    "sorts_axis": true,
+    "merges_duplicates": false,
+    "rows_moved_by_argsort": 2,
+    "plot_alignment": "Source columns reordered with the same argsort permutation for pointwise comparison; original-order integral reported separately.",
+    "phdos_negative_samples_clipped": 361,
+    "alpha2F_negative_samples_clipped": 0,
+    "renormalizes_phdos": false,
+    "duplicate_axis_pairs_retained": 4,
+    "energy_argument_change": "Omega=h*nu; ordinate remains in the declared states/THz convention",
+    "thermal_consumer": "power_table.py integrates over nu_THz and multiplies by the configured ion density; no automatic mode-count repair",
+    "PRE_call": "pipelines/01_prerun_template.py:365 calls load_simon_eliashberg_dat without a clip_negative override"
+  },
+  "metrics": {
+    "raw_integral": 0.7084200577443232,
+    "sorted_raw_integral": 0.708420057904323,
+    "sorting_area_change": 1.599999022161569e-10,
+    "legacy_integral": 0.7199501387118589,
+    "negative_integral": -0.01153008080753575,
+    "negative_fraction_of_positive": 0.01601511019661094,
+    "legacy_area_increase_relative_to_raw": 0.016275768650944933,
+    "max_phdos_change": 0.006390859,
+    "max_alpha2F_change": 0.0,
+    "max_change_where_raw_dos_nonnegative": 0.0,
+    "lambda_legacy": 1.2156653376542017,
+    "normalization_interpretation": "integrals under the local added header, not certified modes per atom"
+  },
+  "experimental": {
+    "status": "REJECTED",
+    "curve_produced": false,
+    "repairs_applied": [],
+    "audit": {
+      "status": "REJECTED",
+      "source_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+      "metadata": {
+        "material_id": "NbN-Simon-R2-quarantine",
+        "axis_unit": "THz",
+        "phdos_unit": "states/THz",
+        "normalization_basis": "atom",
+        "atoms_per_basis": 1,
+        "basis_density_m3": 4.8e+28,
+        "source_url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat",
+        "source_revision": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+        "raw_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+        "unit_evidence": "Local added header is absent from the public source; not certified.",
+        "normalization_evidence": "Atom/cell basis and complete phonon mode count are not certified.",
+        "provenance_evidence": "Independent R2 byte comparison against pinned public numeric payload.",
+        "units_verified": false,
+        "normalization_verified": false,
+        "provenance_verified": true,
+        "synthetic": false,
+        "alpha2F_convention": "dimensionless_eliashberg"
+      },
+      "policy": {
+        "relative_mode_tolerance": 0.005
+      },
+      "issues": [
+        {
+          "code": "UNVERIFIED_EVIDENCE",
+          "detail": "units_verified has not been established."
+        },
+        {
+          "code": "UNVERIFIED_EVIDENCE",
+          "detail": "normalization_verified has not been established."
+        },
+        {
+          "code": "INVALID_AXIS",
+          "detail": "Require a nonnegative, strictly increasing axis; no sorting or merging."
+        },
+        {
+          "code": "NEGATIVE_DOS",
+          "detail": "Negative phonon modes are not repaired."
+        },
+        {
+          "code": "INCOMPATIBLE_SUPPORT",
+          "detail": "Positive alpha2F requires positive phonon DOS at the same energy."
+        },
+        {
+          "code": "NONZERO_ALPHA2F_AT_ZERO",
+          "detail": "A finite lambda needs a zero alpha2F intercept."
+        },
+        {
+          "code": "MODE_COUNT",
+          "detail": "Integrated DOS disagrees with the declared complete basis."
+        }
+      ],
+      "metrics_assuming_declared_units": {
+        "rows": 11999,
+        "raw_axis_min": 0.0,
+        "raw_axis_max": 20.0,
+        "negative_alpha2F_samples": 0,
+        "negative_phdos_samples": 361,
+        "zero_width_intervals": 4,
+        "decreasing_intervals": 0,
+        "omega_max_J": 1.3252140299999999e-20,
+        "signed_modes_per_basis": 0.708420057744323,
+        "quadrature_axis_interpretation": "ordered samples; zero-width intervals retained for diagnosis",
+        "positive_modes_per_basis": 0.7199501385518587,
+        "negative_modes_per_basis": -0.011530080807535748,
+        "negative_to_positive_fraction": 0.0160151102001701,
+        "lambda_ep": 1.2156653377087898,
+        "lambda_interpretation": "diagnostic excluding singular zero endpoint",
+        "expected_modes_per_basis": 3,
+        "relative_mode_error": 0.7638599807518923
+      },
+      "header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "repairs_applied": [],
+      "scope": "input contract only; no transient or absolute-rate validation"
+    },
+    "decision": "The raw source is quarantined; no new phonon spectrum is manufactured."
+  },
+  "comparison_to_stage1": {
+    "stage1_result_sha256": "23e03dce1deeb8145b1c065c2bf82c515a4fdbf01c989ccf5ef16661d3f2113a",
+    "delta_raw_integral": 1.1102230246251565e-16,
+    "delta_negative_fraction": 0.0,
+    "duplicate_pairs_before": 4,
+    "duplicate_pairs_r2": 4
+  },
+  "checks": {
+    "exact_local_source_hash": true,
+    "published_payload_hash_after_removing_added_header": true,
+    "local_header_added_48_bytes": true,
+    "fresh_public_bytes_equal_local_numeric_payload": true,
+    "fresh_public_numeric_table_identical": true,
+    "legacy_axis_is_numpy_argsort_of_raw": true,
+    "unclipped_loader_preserves_sorted_source_dos": true,
+    "legacy_dos_is_exact_zero_clipping": true,
+    "legacy_alpha_is_exact_zero_clipping": true,
+    "no_phdos_renormalization": true,
+    "alpha2F_identical_in_this_file": true,
+    "duplicate_intervals_preserved": true,
+    "independent_raw_quadrature": true,
+    "independent_legacy_quadrature": true,
+    "clipping_area_change_equals_removed_negative_area": true,
+    "loader_metadata_matches_measured_integral": true,
+    "experimental_original_input_rejected": true,
+    "experimental_repairs_empty": true,
+    "experimental_audit_repeats_raw_integral": true,
+    "legacy_energy_argument_keeps_dos_ordinate_per_THz": true,
+    "omega_axis_uses_h_times_nu": true,
+    "outside_source_support_returns_zero": true,
+    "independent_r2_reproduces_stage1_raw_integral": true,
+    "independent_r2_reproduces_stage1_negative_fraction": true,
+    "raw_input_and_production_files_unchanged": true
+  },
+  "passed_checks": 25,
+  "figure": "figures/material_legacy_comparison.png",
+  "limitations": [
+    "No raw DFPT inputs or corrected nbn-a2f-ph_2.dat located in the published repository.",
+    "A near-integer integral after a unit hypothesis does not certify units or basis.",
+    "The interpolation probe is a fresh diagnostic grid, not a saved production PRE catalog.",
+    "This comparison establishes data transformations, not physically validated phonon rates."
+  ]
+}

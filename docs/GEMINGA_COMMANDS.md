@@ -401,3 +401,79 @@ Siguiente trabajo recomendado: cuadratura concentrada cerca del borde, malla de
 Gamma que resuelva su escala estrecha y convergencia conjunta del regulador;
 además, obtener datos fonónicos positivos, unívocos y documentados. Esa ampliación
 no se ha implementado ni ejecutado como un transitorio en esta etapa.
+
+
+## Etapa 1 R2 — catálogo electrónico aceptado en el contrato muestreado (2026-09-11)
+
+R2 pasa 278 pruebas y admite la siguiente validación en una o dos celdas
+sintéticas; la entrada fonónica NbN continúa REJECTED. El informe y el certificado
+están en `docs/implementation/stage1_r2/`. No se ejecutó un transiente completo.
+La etiqueta v1.0.0 permanece intacta. Los comandos siguientes son breves y
+reproducibles; cada ejecución incierta conserva el límite de 240 segundos. Si
+vence, conservar el resultado incompleto y ejecutar sólo por decisión del usuario
+la versión sin límite: no repetir ni subdividir para eludir la entrega de cómputo.
+
+Preparar una terminal propia (los resultados nuevos van a `tmp`, sin reemplazar
+el certificado entregado):
+
+```bash
+cd /home/jdiaz/pysnspd
+export PY_R2=/home/jdiaz/.conda/envs/snspd/bin/python
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export R2_RUN=tmp/stage1_r2_reproduction
+mkdir -p "$R2_RUN"
+export R2_CATALOG=docs/implementation/stage1_r2/catalogs/occupation_catalog.npz
+```
+
+Verificar archivos entregados, regresión completa (~34 s), física (~6 s), orden
+cúbico (~2 s), interpolación (~8 s) y cuadratura realmente guardada (~1 s):
+
+```bash
+"$PY_R2" sandbox/stage1_catalog_r2/verify_delivery.py
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" -m pytest -q
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" docs/implementation/stage1_r2/review/assess_candidate.py "$R2_CATALOG" --output "$R2_RUN/assessment.json"
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/check_shape_cells.py "$R2_CATALOG" --output "$R2_RUN/shape.json"
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/check_catalog_interpolation.py "$R2_CATALOG" --output "$R2_RUN/interpolation.json"
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/check_catalog_quadrature.py "$R2_CATALOG" --output "$R2_RUN/quadrature.json"
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog/benchmark_queries.py --vacuum docs/implementation/stage1_r2/catalogs/vacuum_catalog.npz --occupation "$R2_CATALOG" --output "$R2_RUN/query_benchmark.json"
+```
+
+Reconstrucción numérica del catálogo en tres ejecuciones con resultados útiles
+propios: base ~144 s; insertar seis nodos ~5 s; insertar el último ~1 s. Los nodos
+anteriores se reutilizan exactamente. No es una partición de un cálculo que haya
+agotado un límite; surgió del diagnóstico de interpolación de cada candidato.
+No ejecutar el constructor con una malla mayor por defecto sin estimar su coste.
+
+```bash
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/build_catalog.py --delta-nodes 17 --gamma-low-nodes 49 --gamma-high-nodes 17 --count-order 10 --count-cutoff 12 --eta 1e-8 --ratio-coordinate --output "$R2_RUN/base"
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/refine_catalog.py "$R2_RUN/base/occupation_catalog.npz" --ratios 1.463897380883855e-6 5.500371809126641e-6 1.3293713801755863e-5 4.9949108470627004e-5 2.9176708501341483e-4 0.2335109071328366 --output "$R2_RUN/refined.npz" --report "$R2_RUN/refined.json"
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/refine_catalog.py "$R2_RUN/refined.npz" --ratios 0.0002612940447849904 --output "$R2_RUN/final.npz" --report "$R2_RUN/final.json"
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" docs/implementation/stage1_r2/review/assess_candidate.py "$R2_RUN/final.npz" --output "$R2_RUN/rebuilt_assessment.json"
+```
+
+Los metadatos de procedencia pueden dar un hash NPZ diferente al reconstruir;
+hay que comparar contenido numérico y volver a evaluar el archivo nuevo. El
+certificado de R2 admite exclusivamente el archivo entregado y su fuente por hash.
+
+Comparar el tratamiento legado del archivo fonónico de Simón (~1 s):
+
+```bash
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/material_comparison.py --nbn-path /home/jdiaz/scratch/big_data/catalogs/simon_2025/nbn-a2f-ph.dat --output-root "$R2_RUN/material"
+```
+
+Las siguientes recetas regeneran las figuras y el PDF EN sus rutas publicadas.
+Guardar primero cualquier versión que se quiera conservar. Cambiar el archivo
+publicado invalida su manifiesto anterior; no recrear éste sin revisar los datos
+y renderizar todas las páginas. La reproducción visual puede variar por las
+fuentes instaladas en Windows/Linux. No cambia el dictamen físico.
+
+```bash
+timeout --signal=TERM --kill-after=5 240 "$PY_R2" sandbox/stage1_catalog_r2/electronic_comparison.py --eta 1e-8
+"$PY_R2" sandbox/stage1_catalog_r2/plot_acceptance.py docs/implementation/stage1_r2/review/final_assessment.json
+PYTHONPATH=/home/jdiaz/pysnspd/tmp/stage1_report_deps "$PY_R2" sandbox/stage1_catalog_r2/build_report.py
+```
+
+Próximo paso recomendado: conservación de energía, relajación al equilibrio y
+convergencia temporal en una o dos celdas sintéticas (D.4.2), manteniendo el
+rechazo material y el límite de soporte del catálogo. No hay un cálculo pesado
+pendiente de ejecución por el usuario al cerrar R2.
