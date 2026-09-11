@@ -1,0 +1,53 @@
+{
+  "scope": "Independent BCS Gamma=0 reference; no field interpolation, no fixed-count quadrature error",
+  "units": "Delta0=1, N0=1",
+  "amplitude": 0.72,
+  "occupation": "p(x)=0.2 exp(-x/0.25), held fixed",
+  "causal_limit": 0.6785840131753953,
+  "rows": [
+    {
+      "eta_over_Delta0": 0.01,
+      "Gamma_conjugate_normalized": 0.8281181392012937,
+      "causal_limit": 0.6785840131753953,
+      "relative_regulator_bias": 0.22036199368470522,
+      "quad_estimated_absolute_error_after_factor4": 1.5487422946804772e-13
+    },
+    {
+      "eta_over_Delta0": 0.001,
+      "Gamma_conjugate_normalized": 0.7370119090434204,
+      "causal_limit": 0.6785840131753953,
+      "relative_regulator_bias": 0.086102670757914,
+      "quad_estimated_absolute_error_after_factor4": 3.308645705710612e-13
+    },
+    {
+      "eta_over_Delta0": 0.0001,
+      "Gamma_conjugate_normalized": 0.698904486284295,
+      "causal_limit": 0.6785840131753953,
+      "relative_regulator_bias": 0.029945405011549298,
+      "quad_estimated_absolute_error_after_factor4": 9.126241915496095e-13
+    },
+    {
+      "eta_over_Delta0": 1e-05,
+      "Gamma_conjugate_normalized": 0.6852735647091729,
+      "causal_limit": 0.6785840131753953,
+      "relative_regulator_bias": 0.009858103645080218,
+      "quad_estimated_absolute_error_after_factor4": 8.367521294041992e-14
+    },
+    {
+      "eta_over_Delta0": 1e-06,
+      "Gamma_conjugate_normalized": 0.6807339509384243,
+      "causal_limit": 0.6785840131753953,
+      "relative_regulator_bias": 0.003168270577092569,
+      "quad_estimated_absolute_error_after_factor4": 3.243960655652245e-12
+    },
+    {
+      "eta_over_Delta0": 1e-07,
+      "Gamma_conjugate_normalized": 0.6792681572248025,
+      "causal_limit": 0.6785840131753953,
+      "relative_regulator_bias": 0.0010081935856487423,
+      "quad_estimated_absolute_error_after_factor4": 2.3954970363145645e-12
+    }
+  ],
+  "decision": "eta=1e-3 has an 8.61 percent regulator bias for this occupation; not converged for its small-current response",
+  "runtime_seconds": 0.0015483368188142776
+}

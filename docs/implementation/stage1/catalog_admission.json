@@ -1,0 +1,36 @@
+{
+  "schema": "pysnspd.stage1.catalog-admission.v1",
+  "release_tag": "v1.0.0",
+  "release_commit": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+  "implementation_status": "implemented_opt_in_experimental",
+  "stage1_acceptance_status": "NOT_CLOSED",
+  "promotion_to_stage2": "NOT_ADMITTED",
+  "vacuum_status": "sampled_uniform_references_verified",
+  "occupation_catalog_status": "diagnostic_pilot_not_admitted_for_coupled_dynamics",
+  "material_status": "REJECTED",
+  "regulator_case_relative_bias": 0.086102670757914,
+  "regulator_reference": "review/low_energy_regulator_reference.json",
+  "interpolation_case_relative_error_after_fix": 8.251680400057857e-07,
+  "interpolation_reference": "electronic/boundary_comparison.json",
+  "pytest": {
+    "passed": 232,
+    "new_tests": 57,
+    "seconds": 22.41,
+    "host": "geminga"
+  },
+  "catalog_build_seconds": 27.365410928148776,
+  "files_sha256": {
+    "complex_spectral_pilot.npz": "1fea170f51bcc612a5e18a3773c4da1c829c851411b6d6172a2b9883120f1e39",
+    "occupation_catalog.npz": "0de505cbb138ad118e674d98ce8ae2d4333b3adab9eca7975401853cf5f1deb6",
+    "vacuum_catalog.npz": "4429ae363434eed19e90a88dfac928b0da0240be744fb79e351fc25e75ce91d7"
+  },
+  "next_required_work": [
+    "Converge the causal regulator with quadrature concentrated at the low-energy edge and a Gamma mesh resolving its narrow scale.",
+    "Repeat fixed-p force/current and independent thermal references using those resolved tables before coupling cells.",
+    "Obtain single-valued, positive phonon data with verified ordinate units, complete basis and matching density."
+  ],
+  "physical_interpretation": "The regulator discrepancy is a numerical approximation error; this test does not falsify the underlying uniform functional.",
+  "production_model_updated": false,
+  "full_transient_executed": false,
+  "long_calculation_running_or_required_for_this_report": false
+}

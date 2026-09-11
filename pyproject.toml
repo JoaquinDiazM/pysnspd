@@ -31,3 +31,6 @@ include = ["pysnspd*"]
 
 [tool.setuptools.package-data]
 "pysnspd.plotting" = ["*.mplstyle"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

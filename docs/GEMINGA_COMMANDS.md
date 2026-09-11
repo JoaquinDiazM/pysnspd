@@ -304,3 +304,100 @@ cd /home/jdiaz/pysnspd
 Los comandos del catálogo se incorporarán a continuación, con los tamaños
 realmente ensayados y sus tiempos medidos. No usar los comandos PRE de arriba
 para validar automáticamente el nuevo catálogo experimental.
+
+## Etapa 1 ejecutada y dictamen - 2026-09-11
+
+La etiqueta v1.0.0 quedó publicada en GitHub antes de implementar la etapa:
+`5ea0cd6a08d2cae414c82944f8230469ca5aa7d6`. Los siguientes módulos son
+experimentales y no se conectan al solver de producción.
+
+Resultado: 232 pruebas aprobadas (57 nuevas), catálogo construido y auditado.
+**No promover todavía a etapa 2:** NbN está rechazado y el regulador del piloto
+mantiene un sesgo de 8.61% en la pendiente de corriente del caso de baja energía.
+El informe está en `output/pdf/implementation/Informe_etapa_1_catalogo.pdf`.
+El dictamen verificable está en `docs/implementation/stage1/catalog_admission.json`.
+
+Todos estos comandos se midieron con un hilo en Geminga, usando la cuenta jdiaz.
+No hay un cálculo largo pendiente o ejecutándose para esta entrega. Un futuro
+catálogo más fino debe estimarse antes de lanzarlo: si se prevén más de cinco
+minutos, dejar aquí el comando concreto y esperar la salida manual con `reinicia`.
+No relanzar ni fragmentar una corrida para eludir ese límite.
+
+### Preparación común
+
+```bash
+cd /home/jdiaz/pysnspd
+SNSPD_PY=/home/jdiaz/.conda/envs/snspd/bin/python
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+```
+
+### Regresión completa - 22.41 s
+
+```bash
+timeout --signal=TERM --kill-after=5s 240s "$SNSPD_PY" -m pytest -q
+```
+
+La configuración limita la colección a `tests`; las copias de fuentes en `tmp`
+no se recogen como otra suite. El resultado esperado de esta entrega es 232 passed.
+
+### Auditar los datos NbN - aproximadamente 0.4 a 2 s
+
+```bash
+timeout --signal=TERM --kill-after=5s 240s "$SNSPD_PY" sandbox/stage1_catalog/audit_materials.py --nbn-path /home/jdiaz/scratch/big_data/catalogs/simon_2025/nbn-a2f-ph.dat --verify-upstream
+```
+
+Comprueba seis fuentes públicas por SHA-256, conserva los datos y devuelve NbN
+REJECTED con las causas; admite únicamente los fixtures sintéticos declarados.
+Las referencias de red están fijadas a una revisión. Un fallo de red no es una
+verificación de procedencia aprobada.
+
+### Reconstruir pilotos y diagnósticos - 27.37 s
+
+```bash
+timeout --signal=TERM --kill-after=5s 240s "$SNSPD_PY" sandbox/stage1_catalog/build_catalog.py
+timeout --signal=TERM --kill-after=5s 240s "$SNSPD_PY" sandbox/stage1_catalog/check_boundary_comparison.py
+timeout --signal=TERM --kill-after=5s 240s "$SNSPD_PY" sandbox/stage1_catalog/benchmark_queries.py
+```
+
+El primer programa genera NPZ en `docs/implementation/stage1/catalogs` y resultados
+en `docs/implementation/stage1/electronic`. Los otros tardan menos de un segundo.
+Medianas observadas: 0.048 ms por consulta con población y 0.009 ms en el vacío.
+Estos comandos sobrescriben los resultados de diagnóstico, no los datos externos
+ni un transitorio. Se puede conservar otra corrida con las opciones `--output`
+y `--catalogs` del constructor, eligiendo directorios nuevos.
+
+### Referencias independientes - menos de 2 s en conjunto
+
+```bash
+"$SNSPD_PY" docs/implementation/stage1/review/independent_vacuum_reference.py
+timeout 60 "$SNSPD_PY" docs/implementation/stage1/review/verify_query_contract.py
+"$SNSPD_PY" docs/implementation/stage1/review/low_energy_regulator_reference.py
+```
+
+El último comando es especialmente útil para comprobar el bloqueo actual:
+separa el sesgo del regulador del error de interpolación y de cuadratura. En
+la población de baja energía probada, eta/Delta0=1e-3, 1e-4 y 1e-5 dejan 8.61%,
+2.99% y 0.986% de sesgo en la pendiente j/q, respectivamente. Bajar eta sobre
+la misma malla global de 64 nodos no certifica ese límite.
+
+### Componer y verificar el informe - pocos segundos
+
+Las dependencias de PDF están aisladas en `tmp/stage1_report_deps` (ReportLab y
+pypdf); no modifican el entorno de simulación. Para restaurarlas si se elimina
+esa carpeta: `"$SNSPD_PY" -m pip install --target tmp/stage1_report_deps reportlab pypdf`.
+
+```bash
+"$SNSPD_PY" sandbox/stage1_catalog/prepare_report.py
+PYTHONPATH=/home/jdiaz/pysnspd/tmp/stage1_report_deps "$SNSPD_PY" sandbox/stage1_catalog/build_report.py
+"$SNSPD_PY" sandbox/stage1_catalog/verify_delivery.py
+```
+
+El verificador detecta cualquier archivo distinto del manifiesto entregado.
+Regenerar resultados exige revisar el dictamen y las tres páginas del PDF antes
+de crear un manifiesto nuevo con `verify_delivery.py --write`. No sobrescribir
+un dictamen de admisión únicamente para hacer pasar su verificación.
+
+Siguiente trabajo recomendado: cuadratura concentrada cerca del borde, malla de
+Gamma que resuelva su escala estrecha y convergencia conjunta del regulador;
+además, obtener datos fonónicos positivos, unívocos y documentados. Esa ampliación
+no se ha implementado ni ejecutado como un transitorio en esta etapa.

@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "scope": "independent numerical/API review; synthetic query populations",
+  "implementation_sha256": "73d90f6c90a6881d6523c701e506d7c203207f38de1a53c66b35579d20e492f5",
+  "vacuum_reference_states": 24,
+  "max_vacuum_reference_scaled_error": 4.1470650802288844e-09,
+  "spectral_parameter_combinations": 126,
+  "minimum_DOS": 5e-10,
+  "maximum_scaled_spectral_normalization_residual": 8.882040091980554e-16,
+  "roundtrip": "arrays exact; eta, SI scales, provenance retained; extensionless filename works",
+  "invalid_cases_rejected": [
+    "NaN occupation",
+    "infinite occupation",
+    "negative occupation",
+    "occupation above one",
+    "low positive amplitude",
+    "Gamma above support",
+    "negative Gamma"
+  ],
+  "normal_energy_factor4_error": 0.0,
+  "nonthermal_derivative_identity_max_absolute_error": 5.9245497396887e-11,
+  "nonthermal_Maxwell_max_absolute_error": 1.2064305110470741e-09,
+  "Gamma_zero_one_sided_derivative_max_absolute_error": 1.06738440308618e-09,
+  "normal_forces": [
+    0.0,
+    0.0
+  ],
+  "random_query_points": 200,
+  "minimum_excitation_energy": 0.012139427038220081,
+  "minimum_adjacent_energy_difference": 0.0013016934187690676,
+  "vacuum_SI_current_relative_derivative_error": 1.8509305199643222e-11,
+  "vacuum_SI_force_relative_derivative_error": 2.8069324642387983e-11,
+  "nonthermal_SI_current_relative_derivative_error": 3.2871039223891785e-11,
+  "runtime_seconds": 0.6521728606894612,
+  "limits": "Does not replace grid/cutoff/eta convergence or validate phonon input and detector transients."
+}

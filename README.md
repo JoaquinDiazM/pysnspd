@@ -16,6 +16,13 @@ The [command notebook](docs/GEMINGA_COMMANDS.md) mirrors the user-maintained fil
 `/home/jdiaz/GEMINGA_COMMANDS.md` on Geminga. Calculations expected to exceed five
 minutes are left there for the user to execute.
 
+Commits after the tag contain the opt-in
+[stage 1 implementation](sandbox/stage1_catalog/README.md): explicit material
+admission and uniform electronic catalogues with their own verification results.
+The production solver does not import `pysnspd.experimental`. The
+[stage 1 report](docs/implementation/stage1/Informe_etapa_1.md) records what passed,
+which input data were rejected and the scope permitted for the next step.
+
 ```text
 Software release     : v1.0.0 (thesis implementation)
 Implementation base  : f3c26b95ff4e4a93504371e78b46ad3a20e06273

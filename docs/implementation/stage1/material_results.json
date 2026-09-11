@@ -1,0 +1,536 @@
+{
+  "schema": "pysnspd.experimental.material-admission.stage1.v1",
+  "runtime_seconds": 0.3667240450158715,
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "production_imports_or_changes": false,
+  "nbn_audit": {
+    "status": "REJECTED",
+    "source_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+    "metadata": {
+      "material_id": "NbN-Simon-unadmitted",
+      "axis_unit": "THz",
+      "phdos_unit": "states/THz",
+      "normalization_basis": "atom",
+      "atoms_per_basis": 1,
+      "basis_density_m3": 4.8e+28,
+      "source_url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat",
+      "source_revision": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+      "raw_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+      "unit_evidence": "Unverified local header; absent from the byte-identical public numeric payload.",
+      "normalization_evidence": "Unverified atom basis: article calls N ion density; file count is not 3 or 6.",
+      "provenance_evidence": "SHA-256 of local file excluding its added first line matches the pinned public payload.",
+      "units_verified": false,
+      "normalization_verified": false,
+      "provenance_verified": true,
+      "synthetic": false,
+      "alpha2F_convention": "dimensionless_eliashberg"
+    },
+    "policy": {
+      "relative_mode_tolerance": 0.005
+    },
+    "issues": [
+      {
+        "code": "UNVERIFIED_EVIDENCE",
+        "detail": "units_verified has not been established."
+      },
+      {
+        "code": "UNVERIFIED_EVIDENCE",
+        "detail": "normalization_verified has not been established."
+      },
+      {
+        "code": "INVALID_AXIS",
+        "detail": "Require a nonnegative, strictly increasing axis; no sorting or merging."
+      },
+      {
+        "code": "NEGATIVE_DOS",
+        "detail": "Negative phonon modes are not repaired."
+      },
+      {
+        "code": "INCOMPATIBLE_SUPPORT",
+        "detail": "Positive alpha2F requires positive phonon DOS at the same energy."
+      },
+      {
+        "code": "NONZERO_ALPHA2F_AT_ZERO",
+        "detail": "A finite lambda needs a zero alpha2F intercept."
+      },
+      {
+        "code": "MODE_COUNT",
+        "detail": "Integrated DOS disagrees with the declared complete basis."
+      }
+    ],
+    "metrics_assuming_declared_units": {
+      "rows": 11999,
+      "raw_axis_min": 0.0,
+      "raw_axis_max": 20.0,
+      "negative_alpha2F_samples": 0,
+      "negative_phdos_samples": 361,
+      "zero_width_intervals": 4,
+      "decreasing_intervals": 0,
+      "omega_max_J": 1.3252140299999999e-20,
+      "signed_modes_per_basis": 0.708420057744323,
+      "quadrature_axis_interpretation": "ordered samples; zero-width intervals retained for diagnosis",
+      "positive_modes_per_basis": 0.7199501385518587,
+      "negative_modes_per_basis": -0.011530080807535748,
+      "negative_to_positive_fraction": 0.0160151102001701,
+      "lambda_ep": 1.2156653377087898,
+      "lambda_interpretation": "diagnostic excluding singular zero endpoint",
+      "expected_modes_per_basis": 3,
+      "relative_mode_error": 0.7638599807518923
+    },
+    "header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+    "repairs_applied": [],
+    "scope": "input contract only; no transient or absolute-rate validation"
+  },
+  "nbn_strict_admission_rejected": true,
+  "nbn_duplicate_axis_pairs": [
+    {
+      "zero_based_row": 1377,
+      "axis_value": 1.94097,
+      "alpha2F_pair": [
+        6.847464e-06,
+        6.847301e-06
+      ],
+      "phdos_pair": [
+        0.003208905,
+        0.003208908
+      ]
+    },
+    {
+      "zero_based_row": 9233,
+      "axis_value": 13.0065,
+      "alpha2F_pair": [
+        0.5385409,
+        0.5385338
+      ],
+      "phdos_pair": [
+        0.1373035,
+        0.1373067
+      ]
+    },
+    {
+      "zero_based_row": 9368,
+      "axis_value": 13.1966,
+      "alpha2F_pair": [
+        0.2775855,
+        0.2775852
+      ],
+      "phdos_pair": [
+        0.09859541,
+        0.09859569
+      ]
+    },
+    {
+      "zero_based_row": 11506,
+      "axis_value": 16.2081,
+      "alpha2F_pair": [
+        0.985923,
+        0.9859243
+      ],
+      "phdos_pair": [
+        0.1228677,
+        0.1228645
+      ]
+    }
+  ],
+  "source_provenance": {
+    "repository": "https://github.com/qnngroup/proj-KE-solver",
+    "revision": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+    "file_origin_commit": "798d8bbab6d28467574d0c95398bc3d2c0dd0686",
+    "public_url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat",
+    "public_sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+    "local_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+    "local_bytes": 576000,
+    "header_added_bytes": 48,
+    "payload_sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+    "payload_matches_published_file": true,
+    "public_file_has_header": false,
+    "published_solver_url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/solver.m#L93-L113",
+    "published_solver_input": "nbn-a2f-ph_2.dat",
+    "published_solver_input_present_in_repository": false,
+    "published_solver_unit_conversion": "Omega=h*nu; DOS_per_eV=DOS_column/h, for its missing _2 input",
+    "published_solver_negative_policy": "F<1e-8 set to zero in lines 112-113; not adopted",
+    "license_url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/LICENSE",
+    "source_conclusion": "Numeric payload traced; its units and atom/cell normalization remain unverified."
+  },
+  "upstream_online_comparison": [
+    {
+      "file": "nbn-a2f-ph.dat",
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat",
+      "sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+      "hash_verified": true,
+      "header": null,
+      "rows": 11999,
+      "raw_dos_integral": 0.7084200577443232,
+      "positive_integral": 0.7199501385518589,
+      "negative_integral": -0.011530080807535748,
+      "decision": "comparison only; material basis not admitted by this measurement"
+    },
+    {
+      "file": "Al-a2f-phdos.dat",
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/Al-a2f-phdos.dat",
+      "sha256": "92141ffe404fcf52afcf86c5fbbb3421b6cb3f4378b4204bfa64fb550462bebc",
+      "hash_verified": true,
+      "header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "rows": 1000,
+      "raw_dos_integral": 3.0007460978514997,
+      "positive_integral": 3.0007460978514997,
+      "negative_integral": 0.0,
+      "decision": "comparison only; material basis not admitted by this measurement"
+    },
+    {
+      "file": "nb-a2f-phdos.dat",
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nb-a2f-phdos.dat",
+      "sha256": "0f5bfe8832085cd7f964481066a6f6a6fde2f3092e3c5d2c5a7dcd521bdf43f7",
+      "hash_verified": true,
+      "header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "rows": 1000,
+      "raw_dos_integral": 5.983601987665501,
+      "positive_integral": 5.983601987665501,
+      "negative_integral": 0.0,
+      "decision": "comparison only; material basis not admitted by this measurement"
+    },
+    {
+      "file": "TiN-prim-a2f-phdos.dat",
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/TiN-prim-a2f-phdos.dat",
+      "sha256": "291bcc13a45249c856a24d161c35ed0f1557e163d016b872ce958564c21eaebd",
+      "hash_verified": true,
+      "header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "rows": 1000,
+      "raw_dos_integral": 6.017908533027998,
+      "positive_integral": 6.017908533027998,
+      "negative_integral": 0.0,
+      "decision": "comparison only; material basis not admitted by this measurement"
+    },
+    {
+      "file": "Ta-a2f-phdos-soc-THz.dat",
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/Ta-a2f-phdos-soc-THz.dat",
+      "sha256": "77e40e5ff63fc50c8c8527d94e52b8e7c92ac6c65be060ba3b4958127443ff0d",
+      "hash_verified": true,
+      "header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "rows": 10000,
+      "raw_dos_integral": 2.9994051291100003,
+      "positive_integral": 2.9994051291100003,
+      "negative_integral": 0.0,
+      "decision": "comparison only; material basis not admitted by this measurement"
+    },
+    {
+      "file": "pb-a2f-phdos-soc-THz.dat",
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/pb-a2f-phdos-soc-THz.dat",
+      "sha256": "1a50a601b4cd75609127811adde7d098ebcfeff22490a4a55a5622ca2a6ca267",
+      "hash_verified": true,
+      "header": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "rows": 10000,
+      "raw_dos_integral": 2.999686749917,
+      "positive_integral": 2.999686749917,
+      "negative_integral": 0.0,
+      "decision": "comparison only; material basis not admitted by this measurement"
+    }
+  ],
+  "synthetic_unit_invariance": [
+    {
+      "unit": "THz",
+      "audit": {
+        "status": "ADMITTED_SYNTHETIC",
+        "source_sha256": "fa584282bb3f0d01489ad65181e21797989d1cfb1f4b1c09c2ac7fe8b8fb8c61",
+        "metadata": {
+          "material_id": "synthetic-Debye-8THz",
+          "axis_unit": "THz",
+          "phdos_unit": "states/THz",
+          "normalization_basis": "atom",
+          "atoms_per_basis": 1,
+          "basis_density_m3": 5e+28,
+          "source_url": "synthetic:sandbox/stage1_catalog/audit_materials.py",
+          "source_revision": "stage1-v1",
+          "raw_sha256": "fa584282bb3f0d01489ad65181e21797989d1cfb1f4b1c09c2ac7fe8b8fb8c61",
+          "unit_evidence": "Exact SI constants; Omega=h*nu; dimensionless alpha2F=0.5*(Omega/Omega_D)^2.",
+          "normalization_evidence": "Analytic integral of 9*Omega^2/Omega_D^3 from zero to Omega_D is 3 per atom.",
+          "provenance_evidence": "Generated by this runner as an algorithm fixture, without material claims.",
+          "units_verified": true,
+          "normalization_verified": true,
+          "provenance_verified": true,
+          "synthetic": true,
+          "alpha2F_convention": "dimensionless_eliashberg"
+        },
+        "policy": {
+          "relative_mode_tolerance": 0.005
+        },
+        "issues": [],
+        "metrics_assuming_declared_units": {
+          "rows": 1001,
+          "raw_axis_min": 0.0,
+          "raw_axis_max": 8.0,
+          "negative_alpha2F_samples": 0,
+          "negative_phdos_samples": 0,
+          "zero_width_intervals": 0,
+          "decreasing_intervals": 0,
+          "omega_max_J": 5.3008561199999996e-21,
+          "signed_modes_per_basis": 3.0000015,
+          "quadrature_axis_interpretation": "ordered samples; zero-width intervals retained for diagnosis",
+          "positive_modes_per_basis": 3.0000015,
+          "negative_modes_per_basis": 0.0,
+          "negative_to_positive_fraction": -0.0,
+          "lambda_ep": 0.5000005,
+          "lambda_interpretation": "finite-grid quadrature with linear first-bin limit",
+          "expected_modes_per_basis": 3,
+          "relative_mode_error": 5.00000000069889e-07
+        },
+        "header": "# Synthetic Debye; axis unit and DOS unit recorded in material_results.json",
+        "repairs_applied": [],
+        "scope": "input contract only; no transient or absolute-rate validation"
+      },
+      "energy_at_30K_J_m3": 576775.147432605,
+      "relative_energy_difference_to_THz": 0.0,
+      "file": "synthetic_materials/debye_THz.dat"
+    },
+    {
+      "unit": "meV",
+      "audit": {
+        "status": "ADMITTED_SYNTHETIC",
+        "source_sha256": "0631350b7cbc46d0141800f81b49d7e363a2d9e09ace3a62c3262fbb5cc3575c",
+        "metadata": {
+          "material_id": "synthetic-Debye-8THz",
+          "axis_unit": "meV",
+          "phdos_unit": "states/meV",
+          "normalization_basis": "atom",
+          "atoms_per_basis": 1,
+          "basis_density_m3": 5e+28,
+          "source_url": "synthetic:sandbox/stage1_catalog/audit_materials.py",
+          "source_revision": "stage1-v1",
+          "raw_sha256": "0631350b7cbc46d0141800f81b49d7e363a2d9e09ace3a62c3262fbb5cc3575c",
+          "unit_evidence": "Exact SI constants; Omega=h*nu; dimensionless alpha2F=0.5*(Omega/Omega_D)^2.",
+          "normalization_evidence": "Analytic integral of 9*Omega^2/Omega_D^3 from zero to Omega_D is 3 per atom.",
+          "provenance_evidence": "Generated by this runner as an algorithm fixture, without material claims.",
+          "units_verified": true,
+          "normalization_verified": true,
+          "provenance_verified": true,
+          "synthetic": true,
+          "alpha2F_convention": "dimensionless_eliashberg"
+        },
+        "policy": {
+          "relative_mode_tolerance": 0.005
+        },
+        "issues": [],
+        "metrics_assuming_declared_units": {
+          "rows": 1001,
+          "raw_axis_min": 0.0,
+          "raw_axis_max": 33.08534157539087,
+          "negative_alpha2F_samples": 0,
+          "negative_phdos_samples": 0,
+          "zero_width_intervals": 0,
+          "decreasing_intervals": 0,
+          "omega_max_J": 5.3008561199999996e-21,
+          "signed_modes_per_basis": 3.0000014999999998,
+          "quadrature_axis_interpretation": "ordered samples; zero-width intervals retained for diagnosis",
+          "positive_modes_per_basis": 3.0000014999999998,
+          "negative_modes_per_basis": 0.0,
+          "negative_to_positive_fraction": -0.0,
+          "lambda_ep": 0.5000005,
+          "lambda_interpretation": "finite-grid quadrature with linear first-bin limit",
+          "expected_modes_per_basis": 3,
+          "relative_mode_error": 4.999999998478444e-07
+        },
+        "header": "# Synthetic Debye; axis unit and DOS unit recorded in material_results.json",
+        "repairs_applied": [],
+        "scope": "input contract only; no transient or absolute-rate validation"
+      },
+      "energy_at_30K_J_m3": 576775.147432605,
+      "relative_energy_difference_to_THz": 0.0,
+      "file": "synthetic_materials/debye_meV.dat"
+    },
+    {
+      "unit": "eV",
+      "audit": {
+        "status": "ADMITTED_SYNTHETIC",
+        "source_sha256": "6ceba1aa0957ffa2101093a35f8dfd0ef3d427b255207a60e88116e4ae32d0ac",
+        "metadata": {
+          "material_id": "synthetic-Debye-8THz",
+          "axis_unit": "eV",
+          "phdos_unit": "states/eV",
+          "normalization_basis": "atom",
+          "atoms_per_basis": 1,
+          "basis_density_m3": 5e+28,
+          "source_url": "synthetic:sandbox/stage1_catalog/audit_materials.py",
+          "source_revision": "stage1-v1",
+          "raw_sha256": "6ceba1aa0957ffa2101093a35f8dfd0ef3d427b255207a60e88116e4ae32d0ac",
+          "unit_evidence": "Exact SI constants; Omega=h*nu; dimensionless alpha2F=0.5*(Omega/Omega_D)^2.",
+          "normalization_evidence": "Analytic integral of 9*Omega^2/Omega_D^3 from zero to Omega_D is 3 per atom.",
+          "provenance_evidence": "Generated by this runner as an algorithm fixture, without material claims.",
+          "units_verified": true,
+          "normalization_verified": true,
+          "provenance_verified": true,
+          "synthetic": true,
+          "alpha2F_convention": "dimensionless_eliashberg"
+        },
+        "policy": {
+          "relative_mode_tolerance": 0.005
+        },
+        "issues": [],
+        "metrics_assuming_declared_units": {
+          "rows": 1001,
+          "raw_axis_min": 0.0,
+          "raw_axis_max": 0.03308534157539087,
+          "negative_alpha2F_samples": 0,
+          "negative_phdos_samples": 0,
+          "zero_width_intervals": 0,
+          "decreasing_intervals": 0,
+          "omega_max_J": 5.3008561199999996e-21,
+          "signed_modes_per_basis": 3.0000014999999998,
+          "quadrature_axis_interpretation": "ordered samples; zero-width intervals retained for diagnosis",
+          "positive_modes_per_basis": 3.0000014999999998,
+          "negative_modes_per_basis": 0.0,
+          "negative_to_positive_fraction": -0.0,
+          "lambda_ep": 0.5000005,
+          "lambda_interpretation": "finite-grid quadrature with linear first-bin limit",
+          "expected_modes_per_basis": 3,
+          "relative_mode_error": 4.999999998478444e-07
+        },
+        "header": "# Synthetic Debye; axis unit and DOS unit recorded in material_results.json",
+        "repairs_applied": [],
+        "scope": "input contract only; no transient or absolute-rate validation"
+      },
+      "energy_at_30K_J_m3": 576775.147432605,
+      "relative_energy_difference_to_THz": 0.0,
+      "file": "synthetic_materials/debye_eV.dat"
+    },
+    {
+      "unit": "J",
+      "audit": {
+        "status": "ADMITTED_SYNTHETIC",
+        "source_sha256": "4fcd95d7c42603c57f435c9ae4a5d8a7ade485dee5448d0b64399084aa375efa",
+        "metadata": {
+          "material_id": "synthetic-Debye-8THz",
+          "axis_unit": "J",
+          "phdos_unit": "states/J",
+          "normalization_basis": "atom",
+          "atoms_per_basis": 1,
+          "basis_density_m3": 5e+28,
+          "source_url": "synthetic:sandbox/stage1_catalog/audit_materials.py",
+          "source_revision": "stage1-v1",
+          "raw_sha256": "4fcd95d7c42603c57f435c9ae4a5d8a7ade485dee5448d0b64399084aa375efa",
+          "unit_evidence": "Exact SI constants; Omega=h*nu; dimensionless alpha2F=0.5*(Omega/Omega_D)^2.",
+          "normalization_evidence": "Analytic integral of 9*Omega^2/Omega_D^3 from zero to Omega_D is 3 per atom.",
+          "provenance_evidence": "Generated by this runner as an algorithm fixture, without material claims.",
+          "units_verified": true,
+          "normalization_verified": true,
+          "provenance_verified": true,
+          "synthetic": true,
+          "alpha2F_convention": "dimensionless_eliashberg"
+        },
+        "policy": {
+          "relative_mode_tolerance": 0.005
+        },
+        "issues": [],
+        "metrics_assuming_declared_units": {
+          "rows": 1001,
+          "raw_axis_min": 0.0,
+          "raw_axis_max": 5.3008561199999996e-21,
+          "negative_alpha2F_samples": 0,
+          "negative_phdos_samples": 0,
+          "zero_width_intervals": 0,
+          "decreasing_intervals": 0,
+          "omega_max_J": 5.3008561199999996e-21,
+          "signed_modes_per_basis": 3.0000015,
+          "quadrature_axis_interpretation": "ordered samples; zero-width intervals retained for diagnosis",
+          "positive_modes_per_basis": 3.0000015,
+          "negative_modes_per_basis": 0.0,
+          "negative_to_positive_fraction": -0.0,
+          "lambda_ep": 0.5000005,
+          "lambda_interpretation": "finite-grid quadrature with linear first-bin limit",
+          "expected_modes_per_basis": 3,
+          "relative_mode_error": 5.00000000069889e-07
+        },
+        "header": "# Synthetic Debye; axis unit and DOS unit recorded in material_results.json",
+        "repairs_applied": [],
+        "scope": "input contract only; no transient or absolute-rate validation"
+      },
+      "energy_at_30K_J_m3": 576775.147432605,
+      "relative_energy_difference_to_THz": 0.0,
+      "file": "synthetic_materials/debye_J.dat"
+    },
+    {
+      "unit": "rad/s",
+      "audit": {
+        "status": "ADMITTED_SYNTHETIC",
+        "source_sha256": "ab9abe6ab6b88c8f29e839c7794a2efa11c10526c9b34bf60a0e8a73088e9c6a",
+        "metadata": {
+          "material_id": "synthetic-Debye-8THz",
+          "axis_unit": "rad/s",
+          "phdos_unit": "states/(rad/s)",
+          "normalization_basis": "atom",
+          "atoms_per_basis": 1,
+          "basis_density_m3": 5e+28,
+          "source_url": "synthetic:sandbox/stage1_catalog/audit_materials.py",
+          "source_revision": "stage1-v1",
+          "raw_sha256": "ab9abe6ab6b88c8f29e839c7794a2efa11c10526c9b34bf60a0e8a73088e9c6a",
+          "unit_evidence": "Exact SI constants; Omega=h*nu; dimensionless alpha2F=0.5*(Omega/Omega_D)^2.",
+          "normalization_evidence": "Analytic integral of 9*Omega^2/Omega_D^3 from zero to Omega_D is 3 per atom.",
+          "provenance_evidence": "Generated by this runner as an algorithm fixture, without material claims.",
+          "units_verified": true,
+          "normalization_verified": true,
+          "provenance_verified": true,
+          "synthetic": true,
+          "alpha2F_convention": "dimensionless_eliashberg"
+        },
+        "policy": {
+          "relative_mode_tolerance": 0.005
+        },
+        "issues": [],
+        "metrics_assuming_declared_units": {
+          "rows": 1001,
+          "raw_axis_min": 0.0,
+          "raw_axis_max": 50265482457436.69,
+          "negative_alpha2F_samples": 0,
+          "negative_phdos_samples": 0,
+          "zero_width_intervals": 0,
+          "decreasing_intervals": 0,
+          "omega_max_J": 5.3008561199999996e-21,
+          "signed_modes_per_basis": 3.0000014999999998,
+          "quadrature_axis_interpretation": "ordered samples; zero-width intervals retained for diagnosis",
+          "positive_modes_per_basis": 3.0000014999999998,
+          "negative_modes_per_basis": 0.0,
+          "negative_to_positive_fraction": -0.0,
+          "lambda_ep": 0.5000005,
+          "lambda_interpretation": "finite-grid quadrature with linear first-bin limit",
+          "expected_modes_per_basis": 3,
+          "relative_mode_error": 4.999999998478444e-07
+        },
+        "header": "# Synthetic Debye; axis unit and DOS unit recorded in material_results.json",
+        "repairs_applied": [],
+        "scope": "input contract only; no transient or absolute-rate validation"
+      },
+      "energy_at_30K_J_m3": 576775.147432605,
+      "relative_energy_difference_to_THz": 0.0,
+      "file": "synthetic_materials/debye_rad_s.dat"
+    }
+  ],
+  "synthetic_quadrature_convergence": [
+    {
+      "nodes": 101,
+      "energy_J_m3": 576774.5147215617,
+      "relative_error_to_adaptive_integral": 1.106339144518742e-06,
+      "relative_modes_error": 4.999999999988347e-05
+    },
+    {
+      "nodes": 501,
+      "energy_J_m3": 576775.1311197716,
+      "relative_error_to_adaptive_integral": 3.76415646430317e-08,
+      "relative_modes_error": 1.9999999998354667e-06
+    },
+    {
+      "nodes": 1001,
+      "energy_J_m3": 576775.147432605,
+      "relative_error_to_adaptive_integral": 9.358735009179497e-09,
+      "relative_modes_error": 5.00000000069889e-07
+    }
+  ],
+  "synthetic_reference_energy_at_30K_J_m3": 576775.1528304908,
+  "decision": "Proceed with synthetic structural tests; NbN absolute phonon energy and rates remain blocked.",
+  "missing_physical_inputs": [
+    "Verified ordinate units of the published NbN numeric file",
+    "Documented complete phonon basis and matching basis density",
+    "Positive, physically valid phonon DOS without silent clipping",
+    "Single-valued spectral abscissas with documented treatment of four conflicting duplicate pairs"
+  ],
+  "admission_limit": "Metadata evidence is an explicit reviewed contract; sum rules alone cannot establish provenance or missing high-energy support."
+}

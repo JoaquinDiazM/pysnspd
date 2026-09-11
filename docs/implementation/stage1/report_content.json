@@ -1,0 +1,197 @@
+{
+  "title": "pySNSPD · Informe de resultados de la etapa 1",
+  "subtitle": "11 de septiembre de 2026 · Modelo documentado 0.4 · Implementación posterior a v1.0.0",
+  "pages": [
+    {
+      "title": "Etapa 1: datos y catálogo",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "<b>Resultado: implementación experimental terminada; admisión de la etapa todavía pendiente.</b> Recomiendo corregir la resolución espectral antes de pasar al acoplamiento de una y dos celdas."
+        },
+        {
+          "type": "body",
+          "text": "La <link href=\"https://github.com/JoaquinDiazM/pysnspd/tree/v1.0.0\" color=\"#007c83\">versión 1.0.0</link> quedó publicada primero, en el commit 5ea0cd6, con el solver de la memoria y la documentación 0.4 / E-r02. El código de esta etapa se incorpora después del tag y se activa sólo por importación explícita."
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              "Verificación",
+              "Resultado",
+              "Decisión"
+            ],
+            [
+              "Regresión del paquete",
+              "232 pruebas aprobadas; 57 nuevas. 22.41 s en Geminga.",
+              "Implementación verificable"
+            ],
+            [
+              "Vacío y espectro uniforme",
+              "24 referencias independientes; 10 836 estados espectrales. Residuo espectral 2.63 × 10⁻¹⁴.",
+              "Referencias muestreadas correctas"
+            ],
+            [
+              "Ocupaciones no térmicas",
+              "Energía, fuerzas y corriente proceden de la misma tabla. Conserva orden de energías y rechaza consultas inválidas.",
+              "Piloto numérico"
+            ],
+            [
+              "Respuesta a corriente pequeña",
+              "Sesgo del regulador: 8.61% en el caso crítico, aun con cuadratura resuelta.",
+              "No promover a etapa 2"
+            ],
+            [
+              "Datos fonónicos NbN",
+              "Unidades/base sin certificar; DOS negativa y frecuencias repetidas.",
+              "Material rechazado"
+            ]
+          ],
+          "widths": [
+            0.26,
+            0.48,
+            0.26
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "Costo medido en Geminga"
+        },
+        {
+          "type": "body",
+          "text": "Construcción y diagnósticos completos: <b>27.37 s</b>, un hilo. Consulta de energía y sus dos derivadas: <b>0.048 ms</b> con población y <b>0.009 ms</b> en el vacío; mediana de tres lotes de 1000 consultas. El archivo del catálogo con población ocupa 1.03 MB."
+        },
+        {
+          "type": "small",
+          "text": "El benchmark mide consultas locales. El transporte, las colisiones, la malla, el circuito y los pasos temporales no están incluidos en ese costo. No se ejecutó un transitorio completo ni quedó un cálculo largo en marcha."
+        },
+        {
+          "type": "subheading",
+          "text": "Apreciación para continuar"
+        },
+        {
+          "type": "body",
+          "text": "El próximo trabajo debe concentrarse en la cuadratura cerca del borde espectral y en la convergencia conjunta de sus mallas y del regulador. Este resultado no exige reformular ahora el funcional uniforme; sí exige resolver su aproximación numérica antes del acoplamiento. La entrada fonónica necesita una fuente material admisible."
+        }
+      ]
+    },
+    {
+      "title": "Datos: rechazo con causas identificadas",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "Se recuperó la procedencia exacta del contenido numérico de NbN: al retirar la primera línea añadida localmente, sus bytes coinciden con el archivo público. Los seis archivos usados en la comparación de procedencia pasaron sus hashes. Esa coincidencia no certifica las unidades ni la base de normalización."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage1/figures/material_admission.png",
+          "caption": "Datos originales, sin recorte ni renormalización. La referencia de tres modos presupone la base por átomo; esa base sigue sin certificar para este archivo."
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              "Hallazgo en NbN",
+              "Resultado observado"
+            ],
+            [
+              "DOS negativa",
+              "361 muestras; peso negativo / positivo = 1.601511%."
+            ],
+            [
+              "Eje no unívoco",
+              "Cuatro frecuencias repetidas con ordenadas distintas."
+            ],
+            [
+              "Normalización bajo cabecera local",
+              "Integral 0.708420; no coincide con tres modos por átomo. Las unidades de la cabecera no provienen del archivo público."
+            ],
+            [
+              "Soporte de interacción",
+              "Hay peso de interacción donde la DOS no es positiva y un valor no nulo de α²F en energía cero."
+            ]
+          ],
+          "widths": [
+            0.35,
+            0.65
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "Admisión comprobada con una referencia sintética"
+        },
+        {
+          "type": "body",
+          "text": "Un espectro Debye generado analíticamente se admite como dato sintético. Sus cinco representaciones —THz, meV, eV, J y rad/s— conservan la energía hasta precisión numérica. La conversión por átomo / por celda mantiene la densidad volumétrica. Con 1001 nodos, el error energético frente a integración adaptativa es <b>9.36 × 10⁻⁹</b>."
+        },
+        {
+          "type": "body",
+          "text": "Decisión: mantener NbN en cuarentena. Se requiere una tabla positiva y unívoca, unidades de ambas columnas espectrales y base/densidad documentadas. Multiplicar por una constante, promediar duplicados o recortar valores no resolvería esa trazabilidad."
+        },
+        {
+          "type": "small",
+          "text": "Fuente y licencia: <link href=\"https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat\" color=\"#007c83\">datos públicos de Simon et al., revisión 5b6bd747</link>. Los hashes, rechazos y conversiones están en material_results.json; la licencia de los datos derivados se conserva en MATERIAL_SOURCE_NOTICE.md."
+        }
+      ]
+    },
+    {
+      "title": "Catálogo: corrección y límite pendiente",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "En el caso |Δ|/Δ₀ = 0.72 y Γ = 0, la interpolación Hermite redujo el error de la respuesta al superflujo de <b>14.96% a 0.0000825%</b>, frente al espectro directo con los mismos 64 nodos y el mismo regulador. Aquí se compara la pendiente j/q al aproximarse a corriente nula; en q = 0 la corriente vale cero."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage1/figures/catalogue_decision.png",
+          "caption": "Izquierda: máximo error de interpolación en cinco campos con población de baja energía. Derecha: sesgo del regulador calculado por una referencia independiente, sin interpolación y con cuadratura adaptativa."
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              "Comprobación independiente",
+              "Resultado"
+            ],
+            [
+              "Vacío: referencia sobre frecuencias imaginarias",
+              "Error máximo escalado 4.15 × 10⁻⁹ en 24 estados."
+            ],
+            [
+              "Derivadas de la tabla con población",
+              "Errores de energía/fuerza de orden 10⁻¹¹; reciprocidad de derivadas cruzadas de orden 10⁻⁹."
+            ],
+            [
+              "Baja energía: sesgo del regulador",
+              "η/Δ₀ = 10⁻³: 8.61%; 10⁻⁴: 2.99%; 10⁻⁵: 0.986%."
+            ],
+            [
+              "Cuadratura separada, η/Δ₀ = 10⁻³",
+              "La respuesta pasa de 0.736723 a 0.737013 al refinar de 64 a 128 nodos. Límite causal: 0.678584."
+            ]
+          ],
+          "widths": [
+            0.42,
+            0.58
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "Alcance que queda documentado"
+        },
+        {
+          "type": "body",
+          "text": "El piloto con población cubre 0.08 ≤ |Δ|/Δ₀ ≤ 1.5 y 0 ≤ Γ/Δ₀ ≤ 1.2, con 33 × 33 campos y 64 nodos de estados. El punto normal se trata por separado; amplitudes positivas menores de 0.08 se rechazan. Dentro de los cinco campos de baja energía, persisten errores relativos de interpolación de hasta 0.35% fuera de los nodos."
+        },
+        {
+          "type": "body",
+          "text": "<b>No cerrar todavía la etapa 1.</b> Reducir el regulador sobre la misma malla de 64 nodos puede empeorar la integral de corriente. El siguiente ensayo debe concentrar nodos cerca del borde y resolver la estrecha escala de Γ, repetir estos contrastes y después decidir la promoción. Los ensayos sintéticos de contabilidad que se adelanten no equivalen a admitir el catálogo."
+        },
+        {
+          "type": "small",
+          "text": "Reproducción: sandbox/stage1_catalog y docs/implementation/stage1/review. Comandos y tiempos en /home/jdiaz/GEMINGA_COMMANDS.md. Los archivos de esta entrega se verifican por SHA-256."
+        }
+      ]
+    }
+  ]
+}

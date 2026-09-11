@@ -1,0 +1,363 @@
+{
+  "schema": "pysnspd.stage1.delivery.v1",
+  "release_tag": "v1.0.0",
+  "release_commit_before_implementation": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+  "scope": "experimental data admission and uniform catalogue; no production activation",
+  "files": [
+    {
+      "path": "docs/implementation/stage1/catalog_admission.json",
+      "bytes": 1897,
+      "sha256": "044f6b77a0151ec09ce3745a5f50bdd1ae379eb6b4749bca39a809b554b4f20b"
+    },
+    {
+      "path": "docs/implementation/stage1/catalogs/complex_spectral_pilot.npz",
+      "bytes": 274614,
+      "sha256": "1fea170f51bcc612a5e18a3773c4da1c829c851411b6d6172a2b9883120f1e39"
+    },
+    {
+      "path": "docs/implementation/stage1/catalogs/occupation_catalog.npz",
+      "bytes": 1029952,
+      "sha256": "0de505cbb138ad118e674d98ce8ae2d4333b3adab9eca7975401853cf5f1deb6"
+    },
+    {
+      "path": "docs/implementation/stage1/catalogs/vacuum_catalog.npz",
+      "bytes": 35423,
+      "sha256": "4429ae363434eed19e90a88dfac928b0da0240be744fb79e351fc25e75ce91d7"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/boundary_comparison.json",
+      "bytes": 2953,
+      "sha256": "65ac8cb6ef30e4fe26b6736ebca8a6d76ec80e7df974ecede9e7b68108addf82"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/electronic_diagnostics.json",
+      "bytes": 12263,
+      "sha256": "24bfc8932a65cf75e94e090c79c055b6b8b3bdf99dd5f269643835d7f7663422"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/figures/catalogue_refinement.pdf",
+      "bytes": 20390,
+      "sha256": "a324ab390adcb784ca4c2e597b5ee71428642b7f8c4eb450710c8a305d710dbd"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/figures/catalogue_refinement.png",
+      "bytes": 126821,
+      "sha256": "641572bbcaa8441be766977580acbefdc838519ad2983a845f142ff1906f1fc3"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/figures/spectral_eta.pdf",
+      "bytes": 21294,
+      "sha256": "b04376a16aca81bf9510500617b67f9aa4c31326f3a4f6fad9d4d8360daf7191"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/figures/spectral_eta.png",
+      "bytes": 150323,
+      "sha256": "ba12d8141745d9d4b507b942552371a1421b9be6219d142a772b99851f63c8f5"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/figures/vacuum_reference.pdf",
+      "bytes": 18044,
+      "sha256": "1227fb2f3b40c81a7881dea7c56d9f217f1f44337e950ee344166f540b0a4c97"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/figures/vacuum_reference.png",
+      "bytes": 94524,
+      "sha256": "9e177ccad02c9631b2d92cad07128797cbfa5783fd24f09bb18809ce9d3f8d55"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/low_energy_grid_refinement.csv",
+      "bytes": 365,
+      "sha256": "8141c2195f24d9dd7cfe08a9a371101bc5070283e4fe19aa0c8c0a2a9ff2d0c8"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/low_energy_quadrature.csv",
+      "bytes": 1207,
+      "sha256": "0b11ea5ba437c184d48e24a3ad57fb9ad5b70fa3ae445cfc13ae77efa6cd00f4"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/matsubara_cutoffs.csv",
+      "bytes": 6372,
+      "sha256": "7fbac465a61cc55092aa4dc86da341504cff28adbb98c2a6a2eaabea48419cdb"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/nonthermal_grid_refinement.csv",
+      "bytes": 365,
+      "sha256": "5f23a1d1bd72fd7a3dff0743cc4a4e311f1ec63a813ff699db5e74128ea762c4"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/nonthermal_quadrature.csv",
+      "bytes": 1189,
+      "sha256": "ac0cd5e9f3a3426a1df1a638b8a89413aaaef0aaccc570fa6ecfd0f2c1870d13"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/runner.log",
+      "bytes": 12409,
+      "sha256": "40c6ca5a1aded6d0c3c8c514106aa0951c9712dc34899ddc0092f045ca4e29ee"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/spectral_eta_quadrature.csv",
+      "bytes": 2508,
+      "sha256": "821916ac743a8915e68aae811a4dfcfaef3e2cac848a1c39a169c4cac6636c3d"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/thermal_fixed_p_reference.csv",
+      "bytes": 3728,
+      "sha256": "8b643c49b274ed60312fd1f7ae765affee1af2f93df303f1ed70066f9daa565c"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/vacuum_auxiliary_temperature.csv",
+      "bytes": 3244,
+      "sha256": "be7fe3bb0cd7fe12fdb2ce52d7012bfa3aca06b1ef828106a0d444e519ca5a7b"
+    },
+    {
+      "path": "docs/implementation/stage1/electronic/vacuum_grid_refinement.csv",
+      "bytes": 365,
+      "sha256": "b695136a7b92c94eac87a5a3350b57f147925d538cc2d345b6de59067d1541e5"
+    },
+    {
+      "path": "docs/implementation/stage1/figures/catalogue_decision.pdf",
+      "bytes": 22528,
+      "sha256": "7bd19c629197bc0dcea0c4acc373f574fb0b177662e0995dd06506fd99d3bc40"
+    },
+    {
+      "path": "docs/implementation/stage1/figures/catalogue_decision.png",
+      "bytes": 117235,
+      "sha256": "1b0b5f72f354e3ac92002a5989eb77ff091e735c1ecdcbba3ffd585ddbba772a"
+    },
+    {
+      "path": "docs/implementation/stage1/figures/material_admission.pdf",
+      "bytes": 30254,
+      "sha256": "28f4a4adb91d46c72752499ea1ec82ec6ca5aa13dc3947aa295946795bb7f0ed"
+    },
+    {
+      "path": "docs/implementation/stage1/figures/material_admission.png",
+      "bytes": 113078,
+      "sha256": "149b82a44b174c943387da0af35c3c5c1fa6aac482d065a79b7d9bcf725d4c3a"
+    },
+    {
+      "path": "docs/implementation/stage1/history/before_gamma_hermite/build_catalog.py",
+      "bytes": 18760,
+      "sha256": "81ae6f42d1223a5f9fb8dba7fbc3fa0bcdca8e12944dd70820c3ebe1a4990595"
+    },
+    {
+      "path": "docs/implementation/stage1/history/before_gamma_hermite/electronic_diagnostics.json",
+      "bytes": 12256,
+      "sha256": "5359f14c0dbf278b1db59edd71b0b9865b1c6811c09d4364f2ae66b25e01e62b"
+    },
+    {
+      "path": "docs/implementation/stage1/history/before_gamma_hermite/energy_catalog.py",
+      "bytes": 20795,
+      "sha256": "34e35cba512455c88122d3eea7c0681a775044fa046755bb9d313c821e86fe2c"
+    },
+    {
+      "path": "docs/implementation/stage1/history/before_gamma_hermite/low_energy_grid_refinement.csv",
+      "bytes": 365,
+      "sha256": "82fbf0ec3b4571b92f2dbf1b0460a4da26f64e02289d1c27a61b7c1fe0b4530a"
+    },
+    {
+      "path": "docs/implementation/stage1/history/before_gamma_hermite/nonthermal_grid_refinement.csv",
+      "bytes": 365,
+      "sha256": "4d5f9fd0288c426e84d9c1d696a40fc33d70e97f4ed586af136ca484ef4b5f65"
+    },
+    {
+      "path": "docs/implementation/stage1/history/before_gamma_hermite/README.md",
+      "bytes": 822,
+      "sha256": "6f5ec1d4be8f2f8c50f837425ce5128b08579cf3a49544a5bbc9013755d1de6b"
+    },
+    {
+      "path": "docs/implementation/stage1/Informe_etapa_1.md",
+      "bytes": 6519,
+      "sha256": "a443a4bc8ddf7456f3f040b947bf8c3f705dc40633701892601e1eabc4157144"
+    },
+    {
+      "path": "docs/implementation/stage1/material_nbn_audit.csv",
+      "bytes": 900353,
+      "sha256": "d09caed124fb16b093aff9fe2637b9ceb1016b177d075285c4aaad31684b29f1"
+    },
+    {
+      "path": "docs/implementation/stage1/material_quadrature.csv",
+      "bytes": 276,
+      "sha256": "73ec8294f853563ddbe00c8010d44863ec9ab55dea3f593316f4f3514e2825e1"
+    },
+    {
+      "path": "docs/implementation/stage1/material_results.json",
+      "bytes": 23240,
+      "sha256": "23e03dce1deeb8145b1c065c2bf82c515a4fdbf01c989ccf5ef16661d3f2113a"
+    },
+    {
+      "path": "docs/implementation/stage1/MATERIAL_SOURCE_NOTICE.md",
+      "bytes": 1686,
+      "sha256": "5ab058621c42516f1962baf4356e9115b4faaf54cac36f02a3558e7be106ffc7"
+    },
+    {
+      "path": "docs/implementation/stage1/pytest_collection_initial.txt",
+      "bytes": 27166,
+      "sha256": "bd59d14ef9921da1a38f6a970cc347ce0ce8dd74f514312a248b1e7e21056ae9"
+    },
+    {
+      "path": "docs/implementation/stage1/pytest_geminga.txt",
+      "bytes": 341,
+      "sha256": "42b80b72be6799550562688fface21772395c0462de884c9b64fb8fd58582c81"
+    },
+    {
+      "path": "docs/implementation/stage1/QA_visual.json",
+      "bytes": 316,
+      "sha256": "d25fd71d5589d44652161651b07ab4cc3c594b6913cf94cb95f35d3286e53c39"
+    },
+    {
+      "path": "docs/implementation/stage1/query_benchmark.json",
+      "bytes": 4314,
+      "sha256": "cd29f2f83b56b866c5676924f4da842c79eb5d507e74de3ba79fedc1f6677cae"
+    },
+    {
+      "path": "docs/implementation/stage1/report_content.json",
+      "bytes": 9508,
+      "sha256": "d4c6af21f99e0521cab5b7e1089e131ea8caebc279a04836749b91142e6da2a1"
+    },
+    {
+      "path": "docs/implementation/stage1/review/independent_vacuum_reference.json",
+      "bytes": 8992,
+      "sha256": "eca047b6d669964711a2b001eb9715f86cbba57f94854c4d44b84f55f46febe6"
+    },
+    {
+      "path": "docs/implementation/stage1/review/independent_vacuum_reference.py",
+      "bytes": 4103,
+      "sha256": "64e86ac02e015a56570624fb93349b1b23aa6fda9d9b9a3c259d6bbe85bfd8f9"
+    },
+    {
+      "path": "docs/implementation/stage1/review/low_energy_regulator_reference.json",
+      "bytes": 2072,
+      "sha256": "2d1b85a59551044d933bcdcd6b6162c0a86ed15e510ac26706dd304a7c716298"
+    },
+    {
+      "path": "docs/implementation/stage1/review/low_energy_regulator_reference.py",
+      "bytes": 2363,
+      "sha256": "b4c9995678ffeb2a3b32850f42355c2d5a0a89d30525b490710e4f5f5b20ee8b"
+    },
+    {
+      "path": "docs/implementation/stage1/review/REVIEW.md",
+      "bytes": 5084,
+      "sha256": "30d856e576598f38068ed0d4598ab60389f13dcf4f71a3b3dd10212cb8643f9e"
+    },
+    {
+      "path": "docs/implementation/stage1/review/verify_query_contract.json",
+      "bytes": 1568,
+      "sha256": "56c833a8cf900534bf2092d22fc462f0102046398f3f93d9bc8964a1ca32ae47"
+    },
+    {
+      "path": "docs/implementation/stage1/review/verify_query_contract.py",
+      "bytes": 8627,
+      "sha256": "382aeffa4ad660baba3bdde13a7c76829654882e681c23dc01325bfaed9c0588"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_convergence_1001.dat",
+      "bytes": 72148,
+      "sha256": "fa584282bb3f0d01489ad65181e21797989d1cfb1f4b1c09c2ac7fe8b8fb8c61"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_convergence_101.dat",
+      "bytes": 7348,
+      "sha256": "ab176ab33bc126693d96f21ba14f9640c2126fd08969444d960f9d205382108c"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_convergence_501.dat",
+      "bytes": 36148,
+      "sha256": "a5104d1f8634bcaf3711b51e1949788abebc7ce3c8edccb53b42d60f6005f3cb"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_eV.dat",
+      "bytes": 72148,
+      "sha256": "6ceba1aa0957ffa2101093a35f8dfd0ef3d427b255207a60e88116e4ae32d0ac"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_J.dat",
+      "bytes": 72148,
+      "sha256": "4fcd95d7c42603c57f435c9ae4a5d8a7ade485dee5448d0b64399084aa375efa"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_meV.dat",
+      "bytes": 72148,
+      "sha256": "0631350b7cbc46d0141800f81b49d7e363a2d9e09ace3a62c3262fbb5cc3575c"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_rad_s.dat",
+      "bytes": 72148,
+      "sha256": "ab9abe6ab6b88c8f29e839c7794a2efa11c10526c9b34bf60a0e8a73088e9c6a"
+    },
+    {
+      "path": "docs/implementation/stage1/synthetic_materials/debye_THz.dat",
+      "bytes": 72148,
+      "sha256": "fa584282bb3f0d01489ad65181e21797989d1cfb1f4b1c09c2ac7fe8b8fb8c61"
+    },
+    {
+      "path": "output/pdf/implementation/Informe_etapa_1_catalogo.pdf",
+      "bytes": 272576,
+      "sha256": "44a872113e6a697ee8da79a0f1d9cceb67edbfc9f580075f979bcbad43db704a"
+    },
+    {
+      "path": "pysnspd/experimental/__init__.py",
+      "bytes": 228,
+      "sha256": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54"
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "bytes": 24671,
+      "sha256": "73d90f6c90a6881d6523c701e506d7c203207f38de1a53c66b35579d20e492f5"
+    },
+    {
+      "path": "pysnspd/experimental/material_admission.py",
+      "bytes": 12797,
+      "sha256": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f"
+    },
+    {
+      "path": "sandbox/stage1_catalog/audit_materials.py",
+      "bytes": 12746,
+      "sha256": "bad87c07bb4c12a17e582aaa6056d83f393a45f74e54374853323fa19ed40f4a"
+    },
+    {
+      "path": "sandbox/stage1_catalog/benchmark_queries.py",
+      "bytes": 8851,
+      "sha256": "664adfca63e8375ffec97674443f225d5efe29c64d9aeb73a3fbd008ff614691"
+    },
+    {
+      "path": "sandbox/stage1_catalog/build_catalog.py",
+      "bytes": 18760,
+      "sha256": "81ae6f42d1223a5f9fb8dba7fbc3fa0bcdca8e12944dd70820c3ebe1a4990595"
+    },
+    {
+      "path": "sandbox/stage1_catalog/build_report.py",
+      "bytes": 6726,
+      "sha256": "b1b639f417a0c3331445f649f166476b86be640fce48b1a9b8b7ac7040d3d279"
+    },
+    {
+      "path": "sandbox/stage1_catalog/check_boundary_comparison.py",
+      "bytes": 4475,
+      "sha256": "1a81c068cfe198e55ce6bd8c26b45366516f19dac6c2067388a6a21edd1cab6a"
+    },
+    {
+      "path": "sandbox/stage1_catalog/prepare_report.py",
+      "bytes": 13389,
+      "sha256": "27a99e622127d502cd69a7e753deca3f2cb75076ddf14e9b7d6a03ca465051ed"
+    },
+    {
+      "path": "sandbox/stage1_catalog/README.md",
+      "bytes": 3396,
+      "sha256": "9dc5dbe21d70a45ed13830e9ec56a85d3399c645f08ce50b3e64737ed1d70f42"
+    },
+    {
+      "path": "sandbox/stage1_catalog/verify_delivery.py",
+      "bytes": 2441,
+      "sha256": "21603213a5cb2c24a9283ccef46455184f018e49915847327fc4d973404f7146"
+    },
+    {
+      "path": "tests/test_experimental_energy_catalog.py",
+      "bytes": 9067,
+      "sha256": "8afd68b362decbb41502adb9efeb657735dc9bc7922606228ee0901510bdb685"
+    },
+    {
+      "path": "tests/test_experimental_material_admission.py",
+      "bytes": 9717,
+      "sha256": "5c31f2c05ac4a21d705c464ae00cd748225a0ea9bdd101bedf0c609b6fca0f82"
+    }
+  ]
+}

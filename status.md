@@ -25,6 +25,27 @@ Computations expected to exceed five minutes are prepared in
 `/home/jdiaz/GEMINGA_COMMANDS.md` for the user. The agent resumes after the user
 provides the output; it does not start long runs or use polling to wait for them.
 
+## Experimental stage 1 after v1.0.0
+
+Explicit material admission and uniform vacuum/fixed-occupation catalogues are
+implemented in `pysnspd.experimental`, independently of production. The final
+Geminga regression has 232 passing tests (57 new), in 22.41 s; catalogue construction
+and diagnostics took 27.37 s. Query timing is 0.048 ms for the occupied catalogue.
+
+Stage 1 is **not closed for promotion to stage 2**. The input NbN data have 361
+negative DOS samples and four conflicting duplicate frequency pairs; source units
+and normalization remain unverified. Hermite interpolation fixes the identified
+small-current slope error, but a separate, resolved reference demonstrates an
+8.61% numerical-regulator bias for a low-energy population at eta/Delta0=0.001.
+The next required work is joint edge-quadrature, Gamma-grid and regulator
+convergence, plus admissible phonon data. This result does not require changing
+the underlying uniform functional on its own.
+
+See `docs/implementation/stage1/Informe_etapa_1.md` and `catalog_admission.json`.
+The published tag v1.0.0 remains at 5ea0cd6; no new production transient was run.
+Remote-only responses to the old v0.3 learning exercises were preserved separately
+under `docs/learning_history`, without transferring answers to new questions.
+
 The sections below preserve the earlier operational and scientific checkpoints.
 
 ## Executive status
