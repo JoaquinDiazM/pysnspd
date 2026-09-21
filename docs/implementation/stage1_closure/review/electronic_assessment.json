@@ -1,0 +1,483 @@
+{
+  "schema": "pysnspd.stage1_closure.electronic_assessment.v1",
+  "status": "PASS_REDUCED_ELECTRONIC_USE_TESTS",
+  "scope": "Actual R2 native energy for BGK, heat and amplitude; reconstructed energy only for the transport prototype. No simultaneous electron-phonon or full spatial dynamics.",
+  "criteria_sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+  "cell_source_sha256": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+  "reviewer_source_sha256": "4131219630722474afe262e3280258041ce16951c6624c12bde0ce5dd0a9aa69",
+  "gates": [
+    {
+      "name": "fresh_cells_criteria_hash",
+      "passed": true,
+      "value": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "catalog_sha256",
+      "passed": true,
+      "value": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "query_source_sha256",
+      "passed": true,
+      "value": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "measured_cell_code_hash",
+      "passed": true,
+      "value": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "measured_runner_hash",
+      "passed": true,
+      "value": "2febe52de649e3f86811df9d56dc6dd765f7a1d90597a89415ed141459610d17",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "production_disconnected",
+      "passed": true,
+      "value": false,
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "fresh_R2_recheck",
+      "passed": true,
+      "value": "PASS_TESTED_PHYSICAL_AND_API_GATES",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "bgk_energy_scaled_error",
+      "passed": true,
+      "value": 2.55351295663786e-14,
+      "limit": 1e-10,
+      "detail": "Finest time grid; coarse grids retained for independent refinement ratios."
+    },
+    {
+      "name": "bgk_instantaneous_energy_moment_max",
+      "passed": true,
+      "value": 7.549893603943402e-15,
+      "limit": 1e-11,
+      "detail": "Finest time grid; coarse grids retained for independent refinement ratios."
+    },
+    {
+      "name": "bgk_final_population_error",
+      "passed": true,
+      "value": 5.067557484750296e-12,
+      "limit": 1e-07,
+      "detail": "Finest time grid; coarse grids retained for independent refinement ratios."
+    },
+    {
+      "name": "bgk_entropy_decrease_max",
+      "passed": true,
+      "value": 0.0,
+      "limit": 1e-11,
+      "detail": "Finest time grid; coarse grids retained for independent refinement ratios."
+    },
+    {
+      "name": "bgk_Pauli",
+      "passed": true,
+      "value": [
+        0.0,
+        0.2966889503106758
+      ],
+      "limit": null,
+      "detail": "No population clipping; tolerance only distinguishes arithmetic roundoff."
+    },
+    {
+      "name": "bgk_finite_energy_band_80_to_160",
+      "passed": true,
+      "value": 16.421918258430384,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 8,
+        "coarse_error": 1.348035183479368e-09,
+        "fine_error": 8.208755897243236e-11,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "bgk_finite_energy_band_160_to_320",
+      "passed": true,
+      "value": 16.198643867278644,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 8,
+        "coarse_error": 8.208755897243236e-11,
+        "fine_error": 5.067557484750296e-12,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "bgk_low_energy_80_to_160",
+      "passed": true,
+      "value": 16.422631379625297,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 8,
+        "coarse_error": 8.184514177500546e-11,
+        "fine_error": 4.983680135239865e-12,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "bgk_low_energy_160_to_320",
+      "passed": true,
+      "value": 16.214195412678347,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 8,
+        "coarse_error": 4.983680135239865e-12,
+        "fine_error": 3.073652443674746e-13,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "bgk_vacuum_stationarity",
+      "passed": true,
+      "value": 0.0,
+      "limit": 1e-12,
+      "detail": null
+    },
+    {
+      "name": "bgk_FD_stationarity",
+      "passed": true,
+      "value": 0.0,
+      "limit": 1e-12,
+      "detail": null
+    },
+    {
+      "name": "moving_energy_ledger",
+      "passed": true,
+      "value": 1.5333567748854193e-13,
+      "limit": 1e-07,
+      "detail": null
+    },
+    {
+      "name": "moving_heat_energy_moment",
+      "passed": true,
+      "value": 1.3877787807814457e-17,
+      "limit": 1e-11,
+      "detail": null
+    },
+    {
+      "name": "moving_thermal_direction",
+      "passed": true,
+      "value": 1.3877787807814457e-17,
+      "limit": 1e-10,
+      "detail": null
+    },
+    {
+      "name": "moving_negative_control",
+      "passed": true,
+      "value": 0.01514758019939487,
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "moving_time_80_to_160",
+      "passed": true,
+      "value": 15.841214604333437,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 4,
+        "coarse_error": 2.9028467130043367e-11,
+        "fine_error": 1.8324647355072443e-12,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "moving_time_160_to_320",
+      "passed": true,
+      "value": 11.95067426916463,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 4,
+        "coarse_error": 1.8324647355072443e-12,
+        "fine_error": 1.5333567748854193e-13,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "moving_Pauli",
+      "passed": true,
+      "value": [
+        0.0,
+        0.11034201234214251
+      ],
+      "limit": null,
+      "detail": "No population clipping; tolerance only distinguishes arithmetic roundoff."
+    },
+    {
+      "name": "self_consistent_energy",
+      "passed": true,
+      "value": 5.550171433554851e-12,
+      "limit": 1e-07,
+      "detail": null
+    },
+    {
+      "name": "self_consistent_instantaneous_balance",
+      "passed": true,
+      "value": 8.305856002976952e-15,
+      "limit": 1e-10,
+      "detail": null
+    },
+    {
+      "name": "self_consistent_positive_dissipation",
+      "passed": true,
+      "value": 0.0010444019136942584,
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "self_consistent_time_80_to_160",
+      "passed": true,
+      "value": 16.320081963915825,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 4,
+        "coarse_error": 1.4638583123449678e-09,
+        "fine_error": 8.969675002745703e-11,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "self_consistent_time_160_to_320",
+      "passed": true,
+      "value": 16.161077383155135,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 4,
+        "coarse_error": 8.969675002745703e-11,
+        "fine_error": 5.550171433554851e-12,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "self_consistent_Pauli",
+      "passed": true,
+      "value": [
+        6.483000748046723e-23,
+        0.10234146445950315
+      ],
+      "limit": null,
+      "detail": "No population clipping; tolerance only distinguishes arithmetic roundoff."
+    },
+    {
+      "name": "transport_reconstructed_energy",
+      "passed": true,
+      "value": 2.220446049250313e-16,
+      "limit": 1e-10,
+      "detail": null
+    },
+    {
+      "name": "transport_same_physical_distribution",
+      "passed": true,
+      "value": 0.0,
+      "limit": 1e-12,
+      "detail": null
+    },
+    {
+      "name": "transport_native_R2_energy_bias",
+      "passed": true,
+      "value": 0.00021191745407809947,
+      "limit": 0.001,
+      "detail": null
+    },
+    {
+      "name": "transport_FD_native_remap_relative_max",
+      "passed": true,
+      "value": 0.0006879285400542473,
+      "limit": 0.001,
+      "detail": null
+    },
+    {
+      "name": "transport_refinement_FD_native_remap_relative_max",
+      "passed": true,
+      "value": [
+        0.01122153122564825,
+        0.0029429268830013532,
+        0.0006879285400542473
+      ],
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "transport_quasiparticle_count_relative_drift",
+      "passed": true,
+      "value": 2.327923158777986e-05,
+      "limit": 0.001,
+      "detail": null
+    },
+    {
+      "name": "transport_refinement_quasiparticle_count_relative_drift",
+      "passed": true,
+      "value": [
+        0.00040604627603629855,
+        8.6201082736541e-05,
+        2.327923158777986e-05
+      ],
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "transport_hot_to_cold",
+      "passed": true,
+      "value": 0.11027558185407423,
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "transport_Pauli",
+      "passed": true,
+      "value": [
+        3.482856574774174e-44,
+        0.499999375
+      ],
+      "limit": null,
+      "detail": "No population clipping; tolerance only distinguishes arithmetic roundoff."
+    },
+    {
+      "name": "transport_time_error",
+      "passed": true,
+      "value": 2.9688057567867077e-14,
+      "limit": 1e-07,
+      "detail": null
+    },
+    {
+      "name": "transport_time_80_to_160",
+      "passed": true,
+      "value": 16.1163689847749,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 4,
+        "coarse_error": 7.679294700135841e-12,
+        "fine_error": 4.764903749343574e-13,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "transport_time_160_to_320",
+      "passed": true,
+      "value": 16.049900666121303,
+      "limit": null,
+      "detail": {
+        "minimum_reduction": 4,
+        "coarse_error": 4.764903749343574e-13,
+        "fine_error": 2.9688057567867077e-14,
+        "roundoff_limited": false
+      }
+    },
+    {
+      "name": "transport_time_Pauli",
+      "passed": true,
+      "value": [
+        3.482856574774174e-44,
+        0.499999375
+      ],
+      "limit": null,
+      "detail": "No population clipping; tolerance only distinguishes arithmetic roundoff."
+    },
+    {
+      "name": "independent_operator_checks",
+      "passed": true,
+      "value": "PASS",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_operator_checks_code_hash",
+      "passed": true,
+      "value": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_operator_checks_criteria_hash",
+      "passed": true,
+      "value": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_transport_checks",
+      "passed": true,
+      "value": "PASS",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_transport_checks_code_hash",
+      "passed": true,
+      "value": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_transport_checks_criteria_hash",
+      "passed": true,
+      "value": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_coupled_reference",
+      "passed": true,
+      "value": "PASS",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_coupled_reference_code_hash",
+      "passed": true,
+      "value": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+      "limit": null,
+      "detail": null
+    },
+    {
+      "name": "independent_coupled_reference_criteria_hash",
+      "passed": true,
+      "value": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+      "limit": null,
+      "detail": null
+    }
+  ],
+  "gate_count": 53,
+  "failed_gates": [],
+  "evidence": {
+    "operator_checks": {
+      "path": "docs/implementation/stage1_closure/review/operator_checks.json",
+      "sha256": "e554e731531463fcd6c1cb2a1a553f72f79c6187abacf5cf3cb91c13d9452f9a"
+    },
+    "transport_checks": {
+      "path": "docs/implementation/stage1_closure/review/transport_checks.json",
+      "sha256": "3f39e5a8f383e3733cae2663558ee3ae2b9e58eabd311aa6b84c464f7419395e"
+    },
+    "coupled_reference": {
+      "path": "docs/implementation/stage1_closure/review/coupled_reference.json",
+      "sha256": "e6ed55b3166306def1a3617dfe83381f74a2b5cd67fe14977e7a327d6dea3466"
+    },
+    "criteria": {
+      "path": "docs/implementation/stage1_closure/acceptance_criteria.json",
+      "sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951"
+    },
+    "cells": {
+      "path": "docs/implementation/stage1_closure/cells_results.json",
+      "sha256": "deafa33c92b0efb0e35ba17bfa6fb7764330e97256db9e4f6965c71a961c6f10"
+    },
+    "catalog_recheck": {
+      "path": "docs/implementation/stage1_closure/catalog_recheck.json",
+      "sha256": "af8629a23d919859a52d6111cca8822b07ba746573ce8566199fcfdb50f4ef57"
+    }
+  },
+  "next_permitted_work": "Complete self-consistent electronic/phonon one-and-two-cell coupling, with a shared event energy ledger, before spatial and circuit integration."
+}

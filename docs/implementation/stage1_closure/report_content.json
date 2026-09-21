@@ -1,0 +1,86 @@
+{
+  "title": "Cierre de etapa 1 · Catálogo y celdas",
+  "subtitle": "Modelo 0.4 · Implementación experimental posterior a v1.0.0 · Resultados nuevos del 21 de septiembre de 2026",
+  "pages": [
+    {
+      "title": "Cierre de etapa 1",
+      "blocks": [
+        {"type": "body", "text": "<b>Decisión: continuar con la cinética electrón–fonón en celdas.</b> El catálogo electrónico R2 supera las pruebas nuevas de uso y sus referencias independientes. No apareció en estos ensayos una razón para reformular su funcional uniforme. Sí fue necesario cuidar la representación del transporte y su actualización numérica."},
+        {"type": "table", "widths": [0.31, 0.43, 0.26], "rows": [
+          ["Bloque", "Resultado nuevo", "Decisión"],
+          ["Catálogo R2 retenido", "234 casos físicos, 150 derivadas, 476 controles de soporte y 6.855 consultas densas: pasan de nuevo", "Conservar catálogo"],
+          ["Una y dos celdas", "53 puertas de aceptación; 0 fallos; refinamientos en tiempo y energía", "Uso reducido aceptado"],
+          ["Regresión del repositorio", "317 pruebas pasan en 34,69 s en Geminga; fuentes y tests fijados por hash", "Sin regresiones detectadas"],
+          ["Tabla fonónica NbN", "Derivado trazable con recorte explícito y soporte común; sensibilidad no térmica relevante", "Forma experimental condicionada"],
+          ["Transiente completo", "Aún faltan colisiones acopladas, dinámica fonónica, validación espacial y circuito", "Preparar siguiente etapa"]
+        ]},
+        {"type": "subheading", "text": "Qué se añadió para cerrar"},
+        {"type": "body", "text": "Se probaron relajación hacia el equilibrio de igual energía (BGK), depósito de calor, trabajo de un espectro móvil, una amplitud superconductora que evoluciona por su propia fuerza y transporte entre dos espectros distintos. Las trayectorias conservan las ocupaciones físicas sin recortarlas. Las pruebas nuevas usan el catálogo guardado; no vuelven a ajustarlo a los resultados."},
+        {"type": "body", "text": "Se evaluó el preprocesado autorizado de NbN y se conserva una tabla derivada con su sensibilidad medida. Sin embargo, el recorte térmicamente pequeño de la cola no basta para acreditar las tasas: también aparece un hueco interno donde el acoplamiento publicado es distinto de cero y la DOS vale cero."},
+        {"type": "subheading", "text": "Alcance del cierre"},
+        {"type": "body", "text": "Se cierra la admisión del catálogo y su uso electrónico reducido. No se da por completado todo el punto 2 de la secuencia D.4: falta evolucionar simultáneamente electrones, fonones y condensado. Los tiempos de las figuras son sintéticos; no predicen latencia de un SNSPD. El código sigue en pysnspd.experimental y la etiqueta v1.0.0 permanece inmutable."},
+        {"type": "small", "text": "Evidencia: closure_admission.json, catalog_recheck.json, cells_results.json y regression_result.json, en docs/implementation/stage1_closure. Los criterios se fijaron antes de los resultados; la precisión previa del contrato de transporte queda archivada. Los 87 archivos de la entrega R2 se verifican de nuevo por hash."}
+      ]
+    },
+    {
+      "title": "1. Recuperación sin perder energía",
+      "blocks": [
+        {"type": "body", "text": "La amplitud se recupera de 0,600 a 0,886 mientras la energía liberada por el fondo se transfiere a las excitaciones. La temperatura equivalente T<sub>E</sub> sólo resume su energía: la trayectoria conserva el vector completo de ocupaciones, que no tiene por qué ser térmico."},
+        {"type": "image", "path": "docs/implementation/stage1_closure/cells_recovery.png", "caption": "Arriba: amplitud |Δ| y energía térmica equivalente k<sub>B</sub>T<sub>E</sub>, divididas por Δ₀. Abajo: las dos curvas coinciden por conservación; la línea discontinua permite ver la comparación. N₀ fija la escala de energía electrónica de R2. Movilidad constante de ensayo M = 0,2; no es una calibración KWT de NbN."},
+        {"type": "table", "widths": [0.47, 0.28, 0.25], "rows": [
+          ["Control", "Residuo medido", "Límite previo"],
+          ["Energía de relajación BGK", "2,56 × 10⁻¹⁴", "10⁻¹⁰"],
+          ["Energía de amplitud + ocupaciones", "5,55 × 10⁻¹²", "10⁻⁷"],
+          ["Trabajo del espectro impuesto + calor", "1,53 × 10⁻¹³", "10⁻⁷"]
+        ]},
+        {"type": "body", "text": "El refinamiento de 80 a 160 y 320 pasos reduce el error de la celda acoplada aproximadamente 16 veces por duplicación. Una referencia independiente con espectro BCS analítico reproduce el balance. BGK conserva la energía y aumenta la entropía en los casos ensayados; no se le exige conservar el número de cuasipartículas."},
+        {"type": "small", "text": "Residuos de energía adimensionales según los normalizadores registrados en los scripts; no son porcentajes. No se evolucionan fonones en estas pruebas y, por tanto, aquí no se certifica su positividad dinámica. Referencias del modelo: B para cinética y C/D para fuerza, trabajo y disipación."}
+      ]
+    },
+    {
+      "title": "2. Transporte: la representación importa",
+      "blocks": [
+        {"type": "image", "path": "docs/implementation/stage1_closure/cells_transport_and_work.png", "caption": "Arriba: energía compartida por dos celdas con espectros distintos; su suma reconstruida se conserva. Abajo: el ensayo de espectro impuesto falla deliberadamente si se omite el trabajo de mover los niveles. Las curvas corresponden a pruebas distintas, con su propio eje temporal sintético."},
+        {"type": "body", "text": "El intercambio se calcula entre energías iguales, no entre índices iguales del catálogo. Una misma distribución representada en energía produce flujo nulo. El control incorrecto por índice sí produce un flujo espurio. La actualización exponencial se escribe como combinación convexa: evita ocupaciones negativas diminutas causadas por restar números casi iguales."},
+        {"type": "table", "widths": [0.17, 0.28, 0.29, 0.26], "rows": [
+          ["Nodos", "Sesgo energía / R2", "Remapeo térmico", "Deriva número QP"],
+          ["129", "0,02263 %", "1,12215 %", "0,04060 %"],
+          ["257", "0,02239 %", "0,29429 %", "0,00862 %"],
+          ["513", "0,02119 %", "0,06879 %", "0,00233 %"]
+        ]},
+        {"type": "body", "text": "La resolución final pasa el límite de 0,1 % en los tres indicadores. Su energía reconstruida se conserva hasta 2,22 × 10⁻¹⁶. Eso no vuelve exacta la cuadratura R2 ni el conteo de cuasipartículas: los defectos se publican aparte. La frontera compartida intercambia su contribución válida; las colas privadas quedan separadas y sin flujo."},
+        {"type": "small", "text": "La siguiente implementación debe conservar esta contabilidad explícita, o reemplazar la representación por otra que conserve simultáneamente los momentos requeridos. La evidencia de cancelación y su corrección queda en pilot_initial/exchange_cancellation.json; no se aplicó un recorte posterior de poblaciones."}
+      ]
+    },
+    {
+      "title": "3. NbN: qué cambia realmente",
+      "blocks": [
+        {"type": "body", "text": "La curva naranja es una derivada de la misma tabla fonónica de Simón et al. (2025), no una DOS electrónica nueva. Conserva las ordenadas positivas y elimina 361 negativas; también elimina α²F donde la DOS F no admite modos. Los tramos coincidentes se distinguen con línea continua y discontinua, y los cambios se amplían por separado."},
+        {"type": "image", "path": "docs/implementation/stage1_closure/figures/material_support_review.png", "caption": "F es la densidad de modos fonónicos; α²F pondera su acoplamiento con electrones. a–b: DOS publicada y recorte de la cola. c: el ajuste del soporte también afecta al borde del hueco interno. d: el cociente bruto falla donde F se anula; sobre nodos positivos ambas curvas coinciden. THz y su conversión a meV se usan como hipótesis explícita."},
+        {"type": "body", "text": "La cola negativa empieza cerca de 67,82 meV, fuera de la ventana cerrada de recombinación actual (~32 meV). Pero el hueco interno comienza cerca de 30,47 meV y sí entra en ella. Por eso no puede concluirse que todo el preprocesado ocurre a energías irrelevantes."},
+        {"type": "body", "text": "La revisión del código fuente confirma que el solver conserva el primer duplicado y anula F y el acoplamiento cuando F es demasiado pequeña. No obstante, lee un archivo con sufijo _2 que no está publicado; la tabla disponible no trae una convención inequívoca de unidades y base de normalización. La concordancia aproximada de λ con 1,2 no determina la unidad de F."},
+        {"type": "small", "text": "Fuentes primarias: <link href=\"https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/solver.m#L92-L112\" color=\"#007c83\">solver y preprocesado</link>; <link href=\"https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat\" color=\"#007c83\">tabla pública exacta</link>; <link href=\"https://arxiv.org/html/2501.13791v3\" color=\"#007c83\">artículo, figura 2b y apéndice VII.4</link>. El cuerpo numérico local coincide byte por byte con el publicado. El origen de las ordenadas negativas no queda documentado por esas fuentes."},
+        {"type": "small", "text": "Decisión única del derivado v1: ordenar establemente, conservar el primer duplicado, imponer soporte común no negativo y α²F(0) = 0, sin renormalizar F. CSV, manifiesto de filas modificadas, licencia y comparación con el interpolador del solver acompañan la entrega."}
+      ]
+    },
+    {
+      "title": "4. Impacto y siguiente implementación",
+      "blocks": [
+        {"type": "image", "path": "docs/implementation/stage1_closure/figures/material_impact_review.png", "caption": "a: sensibilidad de energía U y capacidad C. b: gaussianas de ancho σ = 0,4 THz, perfil plano y banda adicional * de σ = 0,04 THz. Verde: |ΔU|/∫|F|En, escala diagnóstica incluso si U bruta es negativa. Naranja: cambio relativo del momento ∫Eα²Fn, donde n es la ocupación fonónica. c: cambios globales del acoplamiento. Ningún panel representa una tasa absoluta ni una trayectoria NbN."},
+        {"type": "table", "widths": [0.49, 0.24, 0.27], "rows": [
+          ["Magnitud", "Cambio", "Lectura"],
+          ["Mayor cambio U/C, puntos de 0,5 a 80 K", "0,01033 %", "Menor que 0,1 %"],
+          ["Capacidad C a 160 K", "+0,3367 %", "Supera el criterio"],
+          ["Área de α²F retirada", "0,6085 %", "Efecto global visible"],
+          ["λ / momento energético M₁", "−0,4112 / −0,7923 %", "Recalcular los pesos"],
+          ["Acoplamiento, banda en 7,45 THz", "−96,03 %", "Muy sensible al hueco"]
+        ]},
+        {"type": "body", "text": "El recorte de la cola es poco importante para U/C en los puntos térmicos ensayados hasta 80 K. Esa conclusión no se extiende a toda distribución fuera del equilibrio. La banda en el hueco conserva U al recortar F, pero cambia fuertemente su momento de acoplamiento. Se admite el derivado como forma experimental condicionada, no como material absoluto ni como kernel global equivalente al bruto."},
+        {"type": "body", "text": "Al usar la inyección B.39 se debe recalcular su normalizador con el nuevo α²F. Reutilizar el antiguo depositaría el 99,2077 % de la energía solicitada; el normalizador consistente recupera el 100 %. Esto corrige la energía inyectada, sin acreditar por sí solo las unidades de la DOS."},
+        {"type": "subheading", "text": "Trabajo que queda preparado"},
+        {"type": "body", "text": "Implementar primero dispersión, recombinación y ruptura de pares mediante eventos compartidos por electrones y fonones. Cerrar conservación, equilibrio y positividad con una entrada Debye analítica; después comparar la forma NbN derivada. Acoplar condensado y transporte antes de avanzar a la malla y al circuito. NEXT_STAGE.md contiene el orden y los criterios que deben fijarse antes de los nuevos resultados."},
+        {"type": "small", "text": "Geminga, un hilo: celdas 2,15 s; diagnóstico material 1,79 s; regresión 34,69 s. Comandos reproducibles en /home/jdiaz/GEMINGA_COMMANDS.md y su copia en docs/GEMINGA_COMMANDS.md. No se lanzó ningún cálculo pesado; los trabajos previstos de más de cinco minutos se entregarán allí para ejecución del usuario."}
+      ]
+    }
+  ]
+}

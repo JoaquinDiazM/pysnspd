@@ -1,0 +1,31 @@
+{
+  "schema": "pysnspd.stage1_closure.independent_material_replay.v1",
+  "status": "PASS",
+  "interpretation": "PASS verifies traceable numerical preprocessing only. It does not admit absolute units, normalization or global physical phonon kinetics.",
+  "source_sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+  "derived_csv_sha256": "7bffe65c19505d203e3b4705e4000d093c487f2ed02d79e0519c754f28d3c537",
+  "criteria_sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+  "module_sha256": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+  "reviewer_source_sha256": "0d251ea996ebe84ecf3d588feff15f13fb07cd25561885e3077a4702d5a73856",
+  "material_results_sha256": "1b4f84ab5cec52d24baced70d1bbfabeb1b2569792ec28cb4993a5006d1ab4df",
+  "summary": {
+    "replay_absolute_error": 0.0,
+    "source_row_trace_equal": true,
+    "closed_form_moment_relative_errors": {
+      "lambda_regular_origin": 1.8340686899717418e-16,
+      "moment_E_power_0": 2.0080963969157606e-16,
+      "moment_E_power_1": 3.318129019210174e-16,
+      "moment_E_power_2": 4.374830558445368e-16
+    },
+    "ratio_identity_abs_error": 2.220446049250313e-16,
+    "finite_derived_ratio": true,
+    "absolute_metadata_remain_uncertified": true
+  },
+  "conditional_closed_form_moments": {
+    "lambda_regular_origin": 1.2106667876678734,
+    "moment_E_power_0": 17.69194787788635,
+    "moment_E_power_1": 685.2466378699003,
+    "moment_E_power_2": 33262.80877387398
+  },
+  "runtime_seconds": 0.03722100000595674
+}

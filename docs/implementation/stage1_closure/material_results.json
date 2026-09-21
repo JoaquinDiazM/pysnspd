@@ -1,0 +1,1161 @@
+{
+  "schema": "pysnspd.material-closure.v1",
+  "primary_sources": {
+    "checked_online": true,
+    "revision": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+    "sources": {
+      "nbn-a2f-ph.dat": {
+        "sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+        "url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat"
+      },
+      "solver.m": {
+        "sha256": "ec46c0b82f091bbb21f8d0ebcfa36546f2d46672fcab0f9fe3195c266fe30b50",
+        "url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/solver.m"
+      },
+      "f.m": {
+        "sha256": "e3fce75da2307b5e7a8e85854675bdb6d08b2f965dc0a914f2b129545ae8c28c",
+        "url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/f.m"
+      },
+      "g.m": {
+        "sha256": "2ca4c6c5defe468b626d95456db26baee919f44a40a6a9622b001b504b472131",
+        "url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/g.m"
+      }
+    },
+    "current_main_sha": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+    "current_commit_date": "2025-11-04T18:08:16Z",
+    "published_nbn_paths": [
+      "nbn-a2f-ph.dat"
+    ],
+    "code_evidence": {
+      "solver.m:92-112": "reads absent nbn-a2f-ph_2.dat, assumes THz and states/THz; stable first duplicates; zero F and alpha2 where F<1e-8 states/eV",
+      "column_order_solver.m:95-97": "a2F=data.Var2; F=data.PhDOS_states_THz_/p.h. This supports column 2 alpha2F, column 3 phonon DOS under the expected header; inversion was not adopted.",
+      "f.m:3-5": "electronic kernel reconstructs interpolated alpha2 times interpolated F",
+      "g.m:29-54": "phonon kernel uses alpha2 directly",
+      "scope": "code supports preprocessing, not the normalization of the differently named public numeric file"
+    }
+  },
+  "status": "CONDITIONAL_SHAPE_ONLY; global physical phonon kinetics and absolute SI material remain unadmitted",
+  "unit_scope": "Temperatures and meV are conditional on THz axis. U/C use the original DOS ordinate, without ion density; no absolute heat capacity prediction.",
+  "threshold_small_relative_effect": 0.001,
+  "source_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+  "source_numeric_payload_sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+  "derived_csv_sha256": "7bffe65c19505d203e3b4705e4000d093c487f2ed02d79e0519c754f28d3c537",
+  "module_sha256": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+  "runner_sha256": "515dea96ac475fda3444e3f55c18cfea1f49251a68aba6065650fd76d8a48408",
+  "operations": {
+    "signed_DOS_area_original_order": 0.708420057744323,
+    "signed_DOS_area_sorted": 0.708420057744323,
+    "signed_DOS_area_keep_first": 0.708420057503863,
+    "signed_DOS_area_keep_last": 0.7084200581307831,
+    "signed_DOS_area_mean_duplicates": 0.7084200578173231,
+    "derived_DOS_area": 0.7199501383113989,
+    "negative_DOS_area_removed": 0.01153008080753575,
+    "negative_rows": 361,
+    "origin_alpha_area_removed": 2.753965808e-89,
+    "alpha_area_removed_common_support_original_axis": 0.026191248128471005,
+    "alpha_area_removed_fraction": 0.00608520668891396,
+    "finite_positive_grid_lambda_reference": 1.2156653384926526,
+    "source_solver_lambda_parameter": 1.2,
+    "lambda_match_cannot_verify_DOS_units": true,
+    "frequency_as_THz_DOS_as_states_meV_hypothesis_modes_raw": 2.9297899470171886,
+    "frequency_as_THz_DOS_as_states_meV_hypothesis_modes_clipped": 2.977474529745184,
+    "hypothesis_is_adopted": false,
+    "first_negative_THz_assumed": 16.3982,
+    "last_positive_THz_assumed": 16.3901,
+    "source_product_interpolants_vs_common_interpolant_max_absolute_alpha_below32meV": 0.1316563631408082
+  },
+  "thermal": [
+    {
+      "T_K_assuming_THz": 0.5,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 8.999036544029189e-11,
+          "C": 7.19543107357276e-10
+        },
+        "last_regular_origin": {
+          "U": 8.999036544029189e-11,
+          "C": 7.19543107357276e-10
+        },
+        "mean_regular_origin": {
+          "U": 8.999036544029189e-11,
+          "C": 7.19543107357276e-10
+        },
+        "clip_F_only": {
+          "U": 8.999036544029189e-11,
+          "C": 7.19543107357276e-10
+        },
+        "common_support_v1": {
+          "U": 8.999036544029189e-11,
+          "C": 7.19543107357276e-10
+        },
+        "source_floor": {
+          "U": 8.999036012197156e-11,
+          "C": 7.1954309644184e-10
+        },
+        "source_product_of_interpolants": {
+          "U": 8.999036012197156e-11,
+          "C": 7.1954309644184e-10
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 0.0,
+          "relative_change": 0.0,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 0.0,
+          "relative_change": 0.0,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 1.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 1.4387027283209679e-09,
+          "C": 5.754044008067697e-09
+        },
+        "last_regular_origin": {
+          "U": 1.4387027283209679e-09,
+          "C": 5.754044008067697e-09
+        },
+        "mean_regular_origin": {
+          "U": 1.4387027283209679e-09,
+          "C": 5.754044008067697e-09
+        },
+        "clip_F_only": {
+          "U": 1.4387027283209679e-09,
+          "C": 5.754044008067697e-09
+        },
+        "common_support_v1": {
+          "U": 1.4387027283209679e-09,
+          "C": 5.754044008067697e-09
+        },
+        "source_floor": {
+          "U": 1.438702717543992e-09,
+          "C": 5.754043997149448e-09
+        },
+        "source_product_of_interpolants": {
+          "U": 1.438702717543992e-09,
+          "C": 5.754043997149448e-09
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 0.0,
+          "relative_change": 0.0,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 0.0,
+          "relative_change": 0.0,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 2.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 2.3018756417876648e-08,
+          "C": 4.6059206681138866e-08
+        },
+        "last_regular_origin": {
+          "U": 2.3018756417876648e-08,
+          "C": 4.6059206681138866e-08
+        },
+        "mean_regular_origin": {
+          "U": 2.3018756417876648e-08,
+          "C": 4.6059206681138866e-08
+        },
+        "clip_F_only": {
+          "U": 2.3018756417876648e-08,
+          "C": 4.6059206681138866e-08
+        },
+        "common_support_v1": {
+          "U": 2.3018756417876648e-08,
+          "C": 4.6059206681138866e-08
+        },
+        "source_floor": {
+          "U": 2.301875639618095e-08,
+          "C": 4.605920667021991e-08
+        },
+        "source_product_of_interpolants": {
+          "U": 2.301875639618095e-08,
+          "C": 4.605920667021991e-08
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 3.1369131568898696e-175,
+          "relative_change": 1.3627639564636535e-167,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 6.2007958097550116e-173,
+          "relative_change": 1.3462663073383377e-165,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 4.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 3.8063659819892886e-07,
+          "C": 3.9532403949721507e-07
+        },
+        "last_regular_origin": {
+          "U": 3.8063659819893193e-07,
+          "C": 3.9532403949723275e-07
+        },
+        "mean_regular_origin": {
+          "U": 3.806365981989304e-07,
+          "C": 3.953240394972239e-07
+        },
+        "clip_F_only": {
+          "U": 3.8063659819892886e-07,
+          "C": 3.9532403949721507e-07
+        },
+        "common_support_v1": {
+          "U": 3.8063659819892886e-07,
+          "C": 3.9532403949721507e-07
+        },
+        "source_floor": {
+          "U": 3.80636598155395e-07,
+          "C": 3.953240394862959e-07
+        },
+        "source_product_of_interpolants": {
+          "U": 3.80636598155395e-07,
+          "C": 3.953240394862959e-07
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 3.2596822341408334e-89,
+          "relative_change": 8.563764623698254e-83,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 1.619079546251564e-87,
+          "relative_change": 4.095575741639081e-81,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 8.65,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 1.1105446871516917e-05,
+          "C": 5.889385730346188e-06
+        },
+        "last_regular_origin": {
+          "U": 1.1105446872347958e-05,
+          "C": 5.889385731380832e-06
+        },
+        "mean_regular_origin": {
+          "U": 1.1105446871932437e-05,
+          "C": 5.88938573086351e-06
+        },
+        "clip_F_only": {
+          "U": 1.1105446871516917e-05,
+          "C": 5.889385730346188e-06
+        },
+        "common_support_v1": {
+          "U": 1.1105446871516917e-05,
+          "C": 5.889385730346188e-06
+        },
+        "source_floor": {
+          "U": 1.110544687142261e-05,
+          "C": 5.889385730335269e-06
+        },
+        "source_product_of_interpolants": {
+          "U": 1.110544687142261e-05,
+          "C": 5.889385730335269e-06
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 1.2690760689291735e-42,
+          "relative_change": 1.1427510154355704e-37,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 1.3639543638665382e-41,
+          "relative_change": 2.3159535243862568e-36,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 10.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 2.1738069800074694e-05,
+          "C": 1.0171445490439109e-05
+        },
+        "last_regular_origin": {
+          "U": 2.1738069803631304e-05,
+          "C": 1.0171445493752453e-05
+        },
+        "mean_regular_origin": {
+          "U": 2.1738069801853e-05,
+          "C": 1.0171445492095782e-05
+        },
+        "clip_F_only": {
+          "U": 2.1738069800074694e-05,
+          "C": 1.0171445490439109e-05
+        },
+        "common_support_v1": {
+          "U": 2.1738069800074694e-05,
+          "C": 1.0171445490439109e-05
+        },
+        "source_floor": {
+          "U": 2.1738069799965644e-05,
+          "C": 1.017144549042819e-05
+        },
+        "source_product_of_interpolants": {
+          "U": 2.1738069799965644e-05,
+          "C": 1.017144549042819e-05
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 3.656082851150794e-37,
+          "relative_change": 1.6818801691115332e-32,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 2.950185670299424e-36,
+          "relative_change": 2.9004586153192493e-31,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 20.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 0.0007841629183461925,
+          "C": 0.0002283296955404784
+        },
+        "last_regular_origin": {
+          "U": 0.0007841629187245511,
+          "C": 0.0002283296956294345
+        },
+        "mean_regular_origin": {
+          "U": 0.0007841629185353718,
+          "C": 0.00022832969558495646
+        },
+        "clip_F_only": {
+          "U": 0.0007841629183461926,
+          "C": 0.00022832969554047877
+        },
+        "common_support_v1": {
+          "U": 0.0007841629183461926,
+          "C": 0.00022832969554047877
+        },
+        "source_floor": {
+          "U": 0.0007841629183459744,
+          "C": 0.00022832969554046782
+        },
+        "source_product_of_interpolants": {
+          "U": 0.0007841629183459744,
+          "C": 0.00022832969554046782
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 1.8085494260081831e-19,
+          "relative_change": 2.306343979925029e-16,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 3.740696398948287e-19,
+          "relative_change": 1.638287297713816e-15,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 40.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 0.03605929538079232,
+          "C": 0.0042213236734603915
+        },
+        "last_regular_origin": {
+          "U": 0.0360592953851043,
+          "C": 0.004221323673754565
+        },
+        "mean_regular_origin": {
+          "U": 0.03605929538294832,
+          "C": 0.00422132367360748
+        },
+        "clip_F_only": {
+          "U": 0.036059295623476116,
+          "C": 0.00422132380360045
+        },
+        "common_support_v1": {
+          "U": 0.036059295623476116,
+          "C": 0.00422132380360045
+        },
+        "source_floor": {
+          "U": 0.03605929562347568,
+          "C": 0.004221323803600439
+        },
+        "source_product_of_interpolants": {
+          "U": 0.03605929562347568,
+          "C": 0.004221323803600439
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 2.426837990152971e-10,
+          "relative_change": 6.730131480732353e-09,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 1.301400580241954e-10,
+          "relative_change": 3.082920621377376e-08,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 80.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 0.4697526037443167,
+          "C": 0.0169666813429988
+        },
+        "last_regular_origin": {
+          "U": 0.46975260386699336,
+          "C": 0.01696668135311984
+        },
+        "mean_regular_origin": {
+          "U": 0.46975260380565503,
+          "C": 0.01696668134805932
+        },
+        "clip_F_only": {
+          "U": 0.46976533413414084,
+          "C": 0.016968434390002098
+        },
+        "common_support_v1": {
+          "U": 0.46976533413414084,
+          "C": 0.016968434390002098
+        },
+        "source_floor": {
+          "U": 0.46976533413413996,
+          "C": 0.016968434390002087
+        },
+        "source_product_of_interpolants": {
+          "U": 0.46976533413413996,
+          "C": 0.016968434390002087
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 1.2730389824111566e-05,
+          "relative_change": 2.7100200664434496e-05,
+          "small_effect": true
+        },
+        "C": {
+          "absolute_change": 1.7530470032974313e-06,
+          "relative_change": 0.00010332291671292664,
+          "small_effect": true
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 160.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 2.5583963094707665,
+          "C": 0.03404329558364449
+        },
+        "last_regular_origin": {
+          "U": 2.5583963131951517,
+          "C": 0.034043295660312375
+        },
+        "mean_regular_origin": {
+          "U": 2.5583963113329586,
+          "C": 0.03404329562197843
+        },
+        "clip_F_only": {
+          "U": 2.5616688657266833,
+          "C": 0.03415790500542388
+        },
+        "common_support_v1": {
+          "U": 2.5616688657266833,
+          "C": 0.03415790500542388
+        },
+        "source_floor": {
+          "U": 2.5616688657266815,
+          "C": 0.034157905005423865
+        },
+        "source_product_of_interpolants": {
+          "U": 2.5616688657266815,
+          "C": 0.034157905005423865
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 0.0032725562559164974,
+          "relative_change": 0.001279143596245049,
+          "small_effect": false
+        },
+        "C": {
+          "absolute_change": 0.00011460942177939226,
+          "relative_change": 0.0033665783472048567,
+          "small_effect": false
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 300.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 8.5726223593816,
+          "C": 0.04931896681391128
+        },
+        "last_regular_origin": {
+          "U": 8.572622375730695,
+          "C": 0.049318966904012926
+        },
+        "mean_regular_origin": {
+          "U": 8.572622367556148,
+          "C": 0.0493189668589621
+        },
+        "clip_F_only": {
+          "U": 8.619439878861346,
+          "C": 0.049810879313462786
+        },
+        "common_support_v1": {
+          "U": 8.619439878861346,
+          "C": 0.049810879313462786
+        },
+        "source_floor": {
+          "U": 8.619439878861344,
+          "C": 0.04981087931346277
+        },
+        "source_product_of_interpolants": {
+          "U": 8.619439878861344,
+          "C": 0.04981087931346277
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 0.046817519479745426,
+          "relative_change": 0.005461283317643153,
+          "small_effect": false
+        },
+        "C": {
+          "absolute_change": 0.0004919124995515064,
+          "relative_change": 0.00997410390626338,
+          "small_effect": false
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 600.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 24.963572005663245,
+          "C": 0.05760154088466885
+        },
+        "last_regular_origin": {
+          "U": 24.963572045332597,
+          "C": 0.05760154095321415
+        },
+        "mean_regular_origin": {
+          "U": 24.963572025497925,
+          "C": 0.057601540918941506
+        },
+        "clip_F_only": {
+          "U": 25.220030082956292,
+          "C": 0.058427170642979545
+        },
+        "common_support_v1": {
+          "U": 25.220030082956292,
+          "C": 0.058427170642979545
+        },
+        "source_floor": {
+          "U": 25.220030082956285,
+          "C": 0.05842717064297953
+        },
+        "source_product_of_interpolants": {
+          "U": 25.220030082956285,
+          "C": 0.05842717064297953
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 0.2564580772930455,
+          "relative_change": 0.010273292509375875,
+          "small_effect": false
+        },
+        "C": {
+          "absolute_change": 0.0008256297583106925,
+          "relative_change": 0.014333466529372672,
+          "small_effect": false
+        }
+      }
+    },
+    {
+      "T_K_assuming_THz": 1000.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": {
+          "U": 48.53866950151131,
+          "C": 0.05975965594781342
+        },
+        "last_regular_origin": {
+          "U": 48.53866956647663,
+          "C": 0.05975965600763186
+        },
+        "mean_regular_origin": {
+          "U": 48.53866953399397,
+          "C": 0.059759655977722634
+        },
+        "clip_F_only": {
+          "U": 49.15070075261801,
+          "C": 0.060688405897731376
+        },
+        "common_support_v1": {
+          "U": 49.15070075261801,
+          "C": 0.060688405897731376
+        },
+        "source_floor": {
+          "U": 49.15070075261799,
+          "C": 0.06068840589773136
+        },
+        "source_product_of_interpolants": {
+          "U": 49.15070075261799,
+          "C": 0.06068840589773136
+        }
+      },
+      "derived_vs_signed_reference": {
+        "U": {
+          "absolute_change": 0.6120312511067043,
+          "relative_change": 0.012609147662929822,
+          "small_effect": false
+        },
+        "C": {
+          "absolute_change": 0.0009287499499179557,
+          "relative_change": 0.015541420632157073,
+          "small_effect": false
+        }
+      }
+    }
+  ],
+  "nonthermal": [
+    {
+      "profile": "Gaussian center=4 THz sigma=0.4 THz amplitude=1",
+      "center_THz": 4.0,
+      "values_original_DOS_units": {
+        "first_regular_origin": 2.324282271054658,
+        "last_regular_origin": 2.3242822710546585,
+        "mean_regular_origin": 2.324282271054658,
+        "clip_F_only": 2.324282271054658,
+        "common_support_v1": 2.324282271054658,
+        "source_floor": 2.324282271054658,
+        "source_product_of_interpolants": 2.324282271054658
+      },
+      "diagnostic_added_after_discovering_internal_gap": false,
+      "coupling_energy_moment_meV2": {
+        "first_regular_origin": 52.652485122932106,
+        "last_regular_origin": 52.652485122932106,
+        "mean_regular_origin": 52.652485122932106,
+        "clip_F_only": 52.652485122932106,
+        "common_support_v1": 52.652485122932106,
+        "source_floor": 52.652485122932106,
+        "source_product_of_interpolants": 52.65747988951247
+      },
+      "coupling_moment_derived_vs_reference": {
+        "absolute_change": 0.0,
+        "relative_change": 0.0,
+        "small_effect": true
+      },
+      "derived_vs_signed_reference": {
+        "absolute_change": 0.0,
+        "relative_change": 0.0,
+        "small_effect": true
+      },
+      "signed_reference_is_physical": true,
+      "removed_signed_mass_over_absolute_reference_mass": 3.42954863809667e-214
+    },
+    {
+      "profile": "Gaussian center=15.5 THz sigma=0.4 THz amplitude=1",
+      "center_THz": 15.5,
+      "values_original_DOS_units": {
+        "first_regular_origin": 6.012194766160066,
+        "last_regular_origin": 6.0121946945364755,
+        "mean_regular_origin": 6.012194730348271,
+        "clip_F_only": 6.012414613285845,
+        "common_support_v1": 6.012414613285845,
+        "source_floor": 6.012414613285845,
+        "source_product_of_interpolants": 6.012414613285845
+      },
+      "diagnostic_added_after_discovering_internal_gap": false,
+      "coupling_energy_moment_meV2": {
+        "first_regular_origin": 68.87532699451546,
+        "last_regular_origin": 68.87532711485132,
+        "mean_regular_origin": 68.8753270546834,
+        "clip_F_only": 68.87532699451546,
+        "common_support_v1": 68.60987198594711,
+        "source_floor": 68.60987198594711,
+        "source_product_of_interpolants": 68.61869564545532
+      },
+      "coupling_moment_derived_vs_reference": {
+        "absolute_change": -0.26545500856835247,
+        "relative_change": -0.00385413790615456,
+        "small_effect": false
+      },
+      "derived_vs_signed_reference": {
+        "absolute_change": 0.00021984712577882703,
+        "relative_change": 3.6566866897966676e-05,
+        "small_effect": true
+      },
+      "signed_reference_is_physical": true,
+      "removed_signed_mass_over_absolute_reference_mass": 3.6564192822005004e-05
+    },
+    {
+      "profile": "Gaussian center=18.5 THz sigma=0.4 THz amplitude=1",
+      "center_THz": 18.5,
+      "values_original_DOS_units": {
+        "first_regular_origin": -0.2875818406373843,
+        "last_regular_origin": -0.28758184063740977,
+        "mean_regular_origin": -0.28758184063739706,
+        "clip_F_only": 1.231509084169315e-07,
+        "common_support_v1": 1.231509084169315e-07,
+        "source_floor": 1.231509084169315e-07,
+        "source_product_of_interpolants": 1.231509084169315e-07
+      },
+      "diagnostic_added_after_discovering_internal_gap": false,
+      "coupling_energy_moment_meV2": {
+        "first_regular_origin": 1.829162791200072e-05,
+        "last_regular_origin": 1.829162795485101e-05,
+        "mean_regular_origin": 1.8291627933425866e-05,
+        "clip_F_only": 1.829162791200072e-05,
+        "common_support_v1": 1.1499277283206161e-05,
+        "source_floor": 1.1499277283206161e-05,
+        "source_product_of_interpolants": 1.156171019372652e-05
+      },
+      "coupling_moment_derived_vs_reference": {
+        "absolute_change": -6.792350628794559e-06,
+        "relative_change": -0.37133658422705246,
+        "small_effect": false
+      },
+      "derived_vs_signed_reference": {
+        "absolute_change": 0.2875819637882927,
+        "relative_change": null,
+        "small_effect": false,
+        "reason": "nonpositive_reference; no relative PASS"
+      },
+      "signed_reference_is_physical": false,
+      "removed_signed_mass_over_absolute_reference_mass": 0.9999995717712817
+    },
+    {
+      "profile": "flat n=1",
+      "center_THz": null,
+      "values_original_DOS_units": {
+        "first_regular_origin": 27.627905993118535,
+        "last_regular_origin": 27.627905959185657,
+        "mean_regular_origin": 27.627905976152093,
+        "clip_F_only": 28.524244195812656,
+        "common_support_v1": 28.524244195812656,
+        "source_floor": 28.524244195812656,
+        "source_product_of_interpolants": 28.524244195812656
+      },
+      "diagnostic_added_after_discovering_internal_gap": false,
+      "coupling_energy_moment_meV2": {
+        "first_regular_origin": 690.7189052742674,
+        "last_regular_origin": 690.7189031330363,
+        "mean_regular_origin": 690.7189042036518,
+        "clip_F_only": 690.7189052742674,
+        "common_support_v1": 685.2466378699,
+        "source_floor": 685.2466378699,
+        "source_product_of_interpolants": 685.3900758552749
+      },
+      "coupling_moment_derived_vs_reference": {
+        "absolute_change": -5.472267404367358,
+        "relative_change": -0.007922567867451746,
+        "small_effect": false
+      },
+      "derived_vs_signed_reference": {
+        "absolute_change": 0.8963382026941211,
+        "relative_change": 0.03244321892934549,
+        "small_effect": false
+      },
+      "signed_reference_is_physical": true,
+      "removed_signed_mass_over_absolute_reference_mass": 0.030466365028165257
+    },
+    {
+      "profile": "Gaussian center=7.45 THz sigma=0.04 THz amplitude=1",
+      "center_THz": 7.45,
+      "values_original_DOS_units": {
+        "first_regular_origin": 9.954727815707069e-05,
+        "last_regular_origin": 9.954727815707069e-05,
+        "mean_regular_origin": 9.954727815707069e-05,
+        "clip_F_only": 9.954727815707069e-05,
+        "common_support_v1": 9.954727815707069e-05,
+        "source_floor": 9.954727815707069e-05,
+        "source_product_of_interpolants": 9.954727815707069e-05
+      },
+      "diagnostic_added_after_discovering_internal_gap": true,
+      "coupling_energy_moment_meV2": {
+        "first_regular_origin": 0.9157461085713818,
+        "last_regular_origin": 0.9157461085713818,
+        "mean_regular_origin": 0.9157461085713818,
+        "clip_F_only": 0.9157461085713818,
+        "common_support_v1": 0.03632193812814902,
+        "source_floor": 0.03632193812814902,
+        "source_product_of_interpolants": 0.03874640236994248
+      },
+      "coupling_moment_derived_vs_reference": {
+        "absolute_change": -0.8794241704432328,
+        "relative_change": -0.9603362353515066,
+        "small_effect": false
+      },
+      "derived_vs_signed_reference": {
+        "absolute_change": 0.0,
+        "relative_change": 0.0,
+        "small_effect": true
+      },
+      "signed_reference_is_physical": true,
+      "removed_signed_mass_over_absolute_reference_mass": 0.0
+    }
+  ],
+  "alpha_moments": {
+    "first_regular_origin": {
+      "lambda_regular_origin": 1.2156653237228146,
+      "moment_E_power_0": 17.80026617668919,
+      "moment_E_power_1": 690.7189052742674,
+      "moment_E_power_2": 33576.699357162535
+    },
+    "last_regular_origin": {
+      "lambda_regular_origin": 1.2156653221027702,
+      "moment_E_power_0": 17.800266134793766,
+      "moment_E_power_1": 690.7189031330363,
+      "moment_E_power_2": 33576.699249532256
+    },
+    "mean_regular_origin": {
+      "lambda_regular_origin": 1.2156653229127925,
+      "moment_E_power_0": 17.80026615574148,
+      "moment_E_power_1": 690.7189042036518,
+      "moment_E_power_2": 33576.6993033474
+    },
+    "clip_F_only": {
+      "lambda_regular_origin": 1.2156653237228146,
+      "moment_E_power_0": 17.80026617668919,
+      "moment_E_power_1": 690.7189052742674,
+      "moment_E_power_2": 33576.699357162535
+    },
+    "common_support_v1": {
+      "lambda_regular_origin": 1.2106667876678732,
+      "moment_E_power_0": 17.691947877886346,
+      "moment_E_power_1": 685.2466378699,
+      "moment_E_power_2": 33262.80877387396
+    },
+    "source_floor": {
+      "lambda_regular_origin": 1.2106667876678732,
+      "moment_E_power_0": 17.691947877886346,
+      "moment_E_power_1": 685.2466378699,
+      "moment_E_power_2": 33262.80877387396
+    },
+    "source_product_of_interpolants": {
+      "lambda_regular_origin": 1.2109214152580703,
+      "moment_E_power_0": 17.695659643482582,
+      "moment_E_power_1": 685.3900758552749,
+      "moment_E_power_2": 33270.05025837413
+    }
+  },
+  "alpha_moment_changes": {
+    "last_regular_origin": {
+      "lambda_regular_origin": {
+        "absolute_change": -1.620044320915781e-09,
+        "relative_change": -1.3326400690237748e-09,
+        "small_effect": true
+      },
+      "moment_E_power_0": {
+        "absolute_change": -4.189542224253273e-08,
+        "relative_change": -2.3536402111445947e-09,
+        "small_effect": true
+      },
+      "moment_E_power_1": {
+        "absolute_change": -2.14123110708897e-06,
+        "relative_change": -3.1000036204868897e-09,
+        "small_effect": true
+      },
+      "moment_E_power_2": {
+        "absolute_change": -0.00010763027967186645,
+        "relative_change": -3.2055050595348916e-09,
+        "small_effect": true
+      }
+    },
+    "mean_regular_origin": {
+      "lambda_regular_origin": {
+        "absolute_change": -8.100220494355881e-10,
+        "relative_change": -6.663199431855164e-10,
+        "small_effect": true
+      },
+      "moment_E_power_0": {
+        "absolute_change": -2.0947709344909526e-08,
+        "relative_change": -1.1768200057784617e-09,
+        "small_effect": true
+      },
+      "moment_E_power_1": {
+        "absolute_change": -1.070615553544485e-06,
+        "relative_change": -1.5500018102434449e-09,
+        "small_effect": true
+      },
+      "moment_E_power_2": {
+        "absolute_change": -5.3815136197954416e-05,
+        "relative_change": -1.6027524214191306e-09,
+        "small_effect": true
+      }
+    },
+    "clip_F_only": {
+      "lambda_regular_origin": {
+        "absolute_change": 0.0,
+        "relative_change": 0.0,
+        "small_effect": true
+      },
+      "moment_E_power_0": {
+        "absolute_change": 0.0,
+        "relative_change": 0.0,
+        "small_effect": true
+      },
+      "moment_E_power_1": {
+        "absolute_change": 0.0,
+        "relative_change": 0.0,
+        "small_effect": true
+      },
+      "moment_E_power_2": {
+        "absolute_change": 0.0,
+        "relative_change": 0.0,
+        "small_effect": true
+      }
+    },
+    "common_support_v1": {
+      "lambda_regular_origin": {
+        "absolute_change": -0.004998536054941383,
+        "relative_change": -0.004111769873992972,
+        "small_effect": false
+      },
+      "moment_E_power_0": {
+        "absolute_change": -0.1083182988028426,
+        "relative_change": -0.00608520668891422,
+        "small_effect": false
+      },
+      "moment_E_power_1": {
+        "absolute_change": -5.472267404367358,
+        "relative_change": -0.007922567867451746,
+        "small_effect": false
+      },
+      "moment_E_power_2": {
+        "absolute_change": -313.8905832885721,
+        "relative_change": -0.009348464539341727,
+        "small_effect": false
+      }
+    },
+    "source_floor": {
+      "lambda_regular_origin": {
+        "absolute_change": -0.004998536054941383,
+        "relative_change": -0.004111769873992972,
+        "small_effect": false
+      },
+      "moment_E_power_0": {
+        "absolute_change": -0.1083182988028426,
+        "relative_change": -0.00608520668891422,
+        "small_effect": false
+      },
+      "moment_E_power_1": {
+        "absolute_change": -5.472267404367358,
+        "relative_change": -0.007922567867451746,
+        "small_effect": false
+      },
+      "moment_E_power_2": {
+        "absolute_change": -313.8905832885721,
+        "relative_change": -0.009348464539341727,
+        "small_effect": false
+      }
+    },
+    "source_product_of_interpolants": {
+      "lambda_regular_origin": {
+        "absolute_change": -0.004743908464744262,
+        "relative_change": -0.0039023145368798284,
+        "small_effect": false
+      },
+      "moment_E_power_0": {
+        "absolute_change": -0.1046065332066064,
+        "relative_change": -0.00587668365002298,
+        "small_effect": false
+      },
+      "moment_E_power_1": {
+        "absolute_change": -5.328829418992541,
+        "relative_change": -0.0077149030934321895,
+        "small_effect": false
+      },
+      "moment_E_power_2": {
+        "absolute_change": -306.6490987884026,
+        "relative_change": -0.009132794606358133,
+        "small_effect": false
+      }
+    }
+  },
+  "normal_exchange": [
+    {
+      "Te_K": 10.0,
+      "Tph_K": 4.0,
+      "definition": "normal-state diagnostic integral E^2 alpha2F [nB(Te)-nB(Tph)] dE; no prefactors/no transient",
+      "values_meV3": {
+        "first_regular_origin": 6.883623593271689e-05,
+        "last_regular_origin": 6.883623592630166e-05,
+        "mean_regular_origin": 6.883623592950928e-05,
+        "clip_F_only": 6.883623593271689e-05,
+        "common_support_v1": 6.883623591629806e-05,
+        "source_floor": 6.883623591629806e-05,
+        "source_product_of_interpolants": 6.883620850441274e-05
+      },
+      "derived_vs_reference": {
+        "absolute_change": -1.6418832439468733e-14,
+        "relative_change": -2.3852019531569266e-10,
+        "small_effect": true
+      }
+    },
+    {
+      "Te_K": 40.0,
+      "Tph_K": 4.0,
+      "definition": "normal-state diagnostic integral E^2 alpha2F [nB(Te)-nB(Tph)] dE; no prefactors/no transient",
+      "values_meV3": {
+        "first_regular_origin": 11.623336661847272,
+        "last_regular_origin": 11.623336661815502,
+        "mean_regular_origin": 11.623336661831388,
+        "clip_F_only": 11.623336661847272,
+        "common_support_v1": 11.616854183714139,
+        "source_floor": 11.616854183714139,
+        "source_product_of_interpolants": 11.619006722622405
+      },
+      "derived_vs_reference": {
+        "absolute_change": -0.006482478133133185,
+        "relative_change": -0.0005577123266515571,
+        "small_effect": true
+      }
+    },
+    {
+      "Te_K": 160.0,
+      "Tph_K": 4.0,
+      "definition": "normal-state diagnostic integral E^2 alpha2F [nB(Te)-nB(Tph)] dE; no prefactors/no transient",
+      "values_meV3": {
+        "first_regular_origin": 1556.5366404600354,
+        "last_regular_origin": 1556.5366377503478,
+        "mean_regular_origin": 1556.5366391051919,
+        "clip_F_only": 1556.5366404600354,
+        "common_support_v1": 1548.8190691427649,
+        "source_floor": 1548.8190691427649,
+        "source_product_of_interpolants": 1549.1535886923677
+      },
+      "derived_vs_reference": {
+        "absolute_change": -7.71757131727054,
+        "relative_change": -0.004958168742490769,
+        "small_effect": false
+      }
+    },
+    {
+      "Te_K": 600.0,
+      "Tph_K": 4.0,
+      "definition": "normal-state diagnostic integral E^2 alpha2F [nB(Te)-nB(Tph)] dE; no prefactors/no transient",
+      "values_meV3": {
+        "first_regular_origin": 21845.879111658258,
+        "last_regular_origin": 21845.87904636014,
+        "mean_regular_origin": 21845.879079009203,
+        "clip_F_only": 21845.879111658258,
+        "common_support_v1": 21689.196107578427,
+        "source_floor": 21689.196107578427,
+        "source_product_of_interpolants": 21693.668311986745
+      },
+      "derived_vs_reference": {
+        "absolute_change": -156.68300407983043,
+        "relative_change": -0.0071721995383658,
+        "small_effect": false
+      }
+    }
+  ],
+  "B39_phonon_injection": {
+    "energy_fraction_retained_if_original_normalizer_reused": 0.9920774321325483,
+    "energy_fraction_with_consistent_derived_normalizer": 1.0,
+    "interpretation": "B.39 must recompute its alpha2F energy moment after preprocessing. This normalizes injected energy, not the DOS mode count; it does not certify absolute phonon occupations."
+  },
+  "inverse_DOS_kernel": {
+    "raw_has_nonintegrable_pole": true,
+    "zero_DOS_nonzero_alpha_node_count": 3187,
+    "zero_DOS_nonzero_alpha_intervals": [
+      {
+        "frequency_range_THz_assumed": [
+          7.36881,
+          11.8557
+        ],
+        "energy_range_meV_assumed": [
+          30.474949474961758,
+          49.0312355034672
+        ],
+        "alpha2F_at_start": 0.1457711
+      },
+      {
+        "frequency_range_THz_assumed": [
+          16.3917,
+          16.3917
+        ],
+        "energy_range_meV_assumed": [
+          67.7906241725232,
+          67.7906241725232
+        ],
+        "alpha2F_at_start": 0.2901567
+      }
+    ],
+    "raw_limit": "alpha2F/F diverges at the first positive-frequency zero of F; no finite global kernel admitted",
+    "derived_ratio_bounded_by_max_positive_node": 104996.84527892816,
+    "derived_ratio_max_below_32meV": 19802.40790954109,
+    "derived_ratio_unit": "original alpha2F/DOS ordinate ratio; energy units not certified",
+    "support_first_zero_THz_assumed": 7.36881,
+    "support_first_zero_meV_assumed": 30.474949474961758,
+    "minimum_signed_DOS": -0.006390859,
+    "kernel_admission": "RESTRICTED_SHAPE_ONLY; finite interpolation after explicit common-support cutoff; no global physical rate certified",
+    "ratio_identity_max_residual": 2.220446049250313e-16
+  },
+  "quadrature_check": {
+    "lambda_8_vs_16_relative_reference": 3.6530548431709646e-16,
+    "lambda_8_vs_16_relative_derived": 1.8340686899717418e-16
+  },
+  "electronic_reaction_scope": {
+    "assumed_closed_phonon_window_meV": [
+      0.0,
+      32.0
+    ],
+    "negative_DOS_tail_inside_window": false,
+    "common_support_alpha_edit_inside_window": true,
+    "origin_alpha_regularization_inside_window": true,
+    "unmodified_common_support_below_meV": 30.0,
+    "finite_window_alpha_moment_changes": {
+      "30.0": {
+        "M0_relative_change": 0.0,
+        "M1_relative_change": 0.0,
+        "M2_relative_change": 0.0
+      },
+      "32.0": {
+        "M0_relative_change": -0.005286216016059049,
+        "M1_relative_change": -0.0076355885926728895,
+        "M2_relative_change": -0.010625293193292269
+      }
+    },
+    "warning": "Incoming phonons above the closed window can create electronic states outside the catalogue. No statement about the full photon cascade or unrestricted transient is made."
+  },
+  "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.39",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "runtime_seconds": 1.7938094749115407
+}

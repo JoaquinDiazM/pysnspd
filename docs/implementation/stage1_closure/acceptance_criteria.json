@@ -1,0 +1,94 @@
+{
+  "schema": "pysnspd.stage1_closure.acceptance.v1.1",
+  "frozen_date": "2026-09-21",
+  "frozen_before_closure_results": true,
+  "pre_result_design_clarification": {
+    "initial_criteria_path": "docs/implementation/stage1_closure/review/acceptance_criteria_initial.json",
+    "initial_criteria_sha256": "abc83c64a4d7a9ff4552c8cb2bbabd50823a36d9744ab1e20d54c5459cac67ac",
+    "reason": "A shared-energy mesh with 513 hats cannot have positive capacities from only 180 point masses. Before any transport results, permit explicit continuous piecewise-linear E(x) reconstruction, retaining a separate native-R2 energy-bias gate. No native R2 gate or tolerance is changed.",
+    "confirmed_before_results_by": ["catalog_stage1", "root", "release_audit"]
+  },
+  "baseline_commit": "c0e07f9bc20ba2a75be96faecf6a5dfc4a58d815",
+  "purpose": "Close electronic catalogue admission with reduced one/two-cell use tests; assess an explicitly authorized derived NbN phonon table independently. This is not production promotion or completion of all D.4 item 2 dynamics.",
+  "references": ["B.13-B.21", "B.39-B.46", "D.8-D.20", "D.34", "D.36", "D.4 items 1-2"],
+  "immutable_inputs": {
+    "catalog_path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "query_source_path": "pysnspd/experimental/energy_catalog.py",
+    "query_source_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "previous_criteria_path": "docs/implementation/stage1_r2/acceptance_criteria.json",
+    "previous_criteria_sha256": "ef8164fe9f7d7d27f4ecbba1a318fc8642ea3dcc9723dd2e1a9d9c1447dc6bfb"
+  },
+  "error_convention": {
+    "scaled": "abs(value-reference)/max(1,abs(reference)) in the declared dimensionless units",
+    "relative": "abs(value-reference)/abs(reference), only for a nonzero well-conditioned reference; always retain absolute error and denominator",
+    "roundoff_floor": "Convergence ratios are required only when the compared error exceeds 100 machine epsilons times the declared scale. Otherwise report roundoff limited, retaining all errors.",
+    "no_clipping": "Do not repair populations, energy, forces or fluxes. Explicit material-data clipping is a different, authorized preprocessing operation and must remain traceable."
+  },
+  "electronic": {
+    "scope": "Synthetic dimensionless time, positive-amplitude sampled R2 domain, isolated external boundaries. No NbN kinetic time calibration.",
+    "provenance": ["R2 catalogue and query source hashes unchanged", "Fresh R2 physical/API recheck passes", "Scenario parameters, numerical settings and source hashes recorded", "Production solver and historical R2 artefacts unchanged"],
+    "bgk": {
+      "required": ["Energy inversion on the actual catalogue weights and energies", "Constant positive tau over energy", "Compare fixed-field trajectory with the exact convex relaxation", "At least two nonthermal populations, vacuum and thermal stationarity", "Entropy nondecreasing for fixed spectrum and energy", "Reject energy outside finite FD range"],
+      "energy_scaled_max": 1e-10,
+      "instantaneous_energy_moment_scaled_max": 1e-11,
+      "exact_solution_population_abs_max": 1e-7,
+      "entropy_decrease_abs_max": 1e-11,
+      "time_refinement": {"steps": [80, 160, 320], "minimum_error_reduction_per_halving": 8},
+      "pauli_roundoff_tolerance": 1e-13
+    },
+    "moving_spectrum_and_heat": {
+      "required": ["Actual R2 E(x), amplitude and Gamma derivatives", "Prescribed moving amplitude and Gamma with independently accumulated field-work ledger", "Source D.18 from vacuum with positive bath temperature", "Thermal source direction check", "No second spectral drift at fixed state count", "Reject positive heating when no electronic capacity remains", "A negative control omitting field work must visibly fail"],
+      "energy_ledger_scaled_max": 1e-7,
+      "source_energy_moment_scaled_max": 1e-11,
+      "thermal_direction_abs_max": 1e-10,
+      "time_refinement_minimum_reduction": 4,
+      "negative_control_minimum_multiple_of_gate": 100,
+      "pauli_roundoff_tolerance": 1e-13
+    },
+    "self_consistent_single_cell": {
+      "required": ["Evolve amplitude_dot=-M*X_amplitude at fixed Gamma=0 using the same catalogue energy and force", "M positive constant synthetic mobility, not a material KWT identification", "Deposit Q=M*X_amplitude^2 exactly once through D.18", "Retain full populations and energy-conserving BGK", "Compare at least three time resolutions", "No external heating or work in the closed energy balance"],
+      "energy_ledger_scaled_max": 1e-7,
+      "instantaneous_balance_scaled_max": 1e-10,
+      "negative_dissipation_tolerance": 1e-13,
+      "time_refinement_minimum_reduction": 4,
+      "pauli_roundoff_tolerance": 1e-13
+    },
+    "two_cell_transport": {
+      "required": ["Unequal superconducting spectra from the actual R2 catalogue", "One shared energy coordinate and one antisymmetric interface flux", "D_L=N1^2-R2^2 from the causal spectrum; explicit positive interface rule and support handling", "Same represented f(E) gives zero flux despite unequal p(x)", "Shared interpolated FD equilibrium and convergence to physical FD distinguished", "Energy transfer hot to cold for a declared thermal case", "Pauli without clipping", "Remapping and quasiparticle-count defect quantified independently", "Time refinement distinct from shared-energy refinement"],
+      "permitted_discretization": "Reconstruct monotone E(x) linearly from the actual R2 energies, x=0 with finite-eta E(0)=0 and the 180 native nodes; stop at the last actual count node. Integrate M_j=int hat_j(E(x)) dx and H_j=int E(x)hat_j(E(x)) dx exactly on that reconstruction. Energy-lumped capacities are H_j/E_j. Report the explicit lower shared-energy cutoff, discarded support and native-R2 energy difference. This is a consistency-tested conservative prototype, not exact native-R2 energy conservation, exact discrete quasiparticle-number conservation or the complete spatial D.17 implementation.",
+      "energy_scaled_max": 1e-10,
+      "energy_gate_applies_to": "Reconstructed energy used by this transport operator; retain native-R2 energy at every reported checkpoint separately.",
+      "native_R2_reconstruction_energy_relative_max": 1e-3,
+      "common_distribution_flux_abs_max": 1e-12,
+      "remap_and_count_relative_max": 1e-3,
+      "shared_energy_nodes": [129, 257, 513],
+      "energy_refinement_requirement": "Last-grid remap and count defects pass and decrease as the grid is refined; retain all grids. Further genuine refinement is permitted without changing tolerances.",
+      "time_final_state_scaled_max": 1e-7,
+      "time_refinement_minimum_reduction": 4,
+      "pauli_roundoff_tolerance": 1e-13
+    },
+    "failure_tests": ["NaN/Inf/invalid Pauli population rejected", "Unsupported catalogue fields rejected", "Nonpositive tau/mobility rejected", "Unavailable energy capacity rejected", "No fabricated tail or silently discarded flux"],
+    "next_stage_limits": ["These tests do not complete simultaneous self-consistent two-cell condensate plus electron-phonon kinetics", "No phonon positivity claim without evolved phonon populations", "No spatial principal-symbol, core, interface-reservoir or circuit validation", "No full transient or material latency prediction", "No uniform-in-domain accuracy claim beyond the actual samples"]
+  },
+  "material": {
+    "authorization": "Explicit derived-data clipping is permitted for this assessment; do not reject it merely because it differs from the raw data.",
+    "provenance_required": ["Exact public source revision and local/raw hashes", "Evidence for units and normalization distinguished from a local added header", "All derived transformations and removed support recorded", "No normalization inferred solely by forcing an integral to a desired count"],
+    "proposed_derived_rule": ["Stable axis sort", "First ordinate for repeated abscissa, if supported by the source solver unique stable policy", "Set negative phonon DOS to zero", "Set alpha2F to zero only where derived DOS is zero to enforce common support", "No renormalization"],
+    "separate_controls": ["Raw table", "Sort alone", "First/last/mean duplicate choices", "DOS clipping alone", "Derived common support"],
+    "thermal_temperatures_K": [0.5, 1, 2, 4, 8.65, 10, 20, 40, 80, 160, 300, 600, 1000],
+    "nonthermal_profiles": {"gaussian_centres_axis_units": [4, 15.5, 18.5], "gaussian_sigma_axis_units": 0.4, "also": ["Flat occupation", "Tail-localized populations retained even if thermally negligible"]},
+    "observables": ["Phonon internal energy", "Phonon heat capacity", "lambda", "alpha2F moments of orders 0,1,2", "Normal energy-exchange proxy with Te=10,40,160,600 K and Tph=4 K", "alpha2F/DOS kernel and its behavior at support edges", "Energy fraction retained in the B.39 phonon injection", "Removed alpha2F area and first removed support energy"],
+    "small_impact_relative_max": 1e-3,
+    "degenerate_observable_policy": "Keep absolute changes and denominator; a zero or negative reference does not establish negligible relative impact or a physical kernel.",
+    "conditional_shape_admission": "May admit an explicitly restricted derived shape only with reported support and sensitivity limits. A failed tail-profile or singular-kernel check cannot be hidden by small low-temperature bulk changes.",
+    "absolute_material_admission": "Requires primary evidence of energy units, DOS basis, volume/atomic normalization and rate convention. If unresolved, SI phonon/rate prediction remains blocked regardless of clipping sensitivity."
+  },
+  "execution": {
+    "account": "jdiaz non-administrator",
+    "uncertain_light_check_timeout_seconds": 240,
+    "never_launch_expected_runtime_over_seconds": 300,
+    "long_calculation_policy": "Record command in /home/jdiaz/GEMINGA_COMMANDS.md and wait for user execution; no background workaround or repeated timeout splitting."
+  },
+  "verdict_policy": "Evaluate electronic and material gates separately. Freeze tolerances before results. Missing evidence is pending, not inferred passing. A final certificate binds exact input, code, criteria and results hashes and states the next permitted implementation task."
+}

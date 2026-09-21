@@ -1,0 +1,337 @@
+{
+  "schema": "pysnspd.stage1_closure.cells.v1",
+  "host": "geminga",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "runtime_seconds": 2.1500976751558483,
+  "criteria_sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "query_code_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+  "cell_code_sha256": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+  "runner_sha256": "2febe52de649e3f86811df9d56dc6dd765f7a1d90597a89415ed141459610d17",
+  "units": {
+    "energy": "N0 Delta0^2",
+    "temperature": "kB T / Delta0",
+    "fields": "Delta0",
+    "time": "synthetic tau_ref; no absolute material calibration"
+  },
+  "bgk": {
+    "amplitude": 0.72,
+    "gamma": 0.2,
+    "tau": 0.7,
+    "duration": 3.5,
+    "resolutions": [
+      {
+        "profile": "low_energy",
+        "steps": 80,
+        "energy_scaled_error": 2.7755575615628914e-17,
+        "instantaneous_energy_moment_max": 2.7044699302340283e-17,
+        "final_population_error": 8.184514177500546e-11,
+        "entropy_decrease_max": 0.0,
+        "initial_count": 0.1999999999999998,
+        "final_count": 0.19183259383729592,
+        "minimum_population": 4.1054816522400436e-23,
+        "maximum_population": 0.20570502794999304
+      },
+      {
+        "profile": "low_energy",
+        "steps": 160,
+        "energy_scaled_error": 2.7755575615628914e-17,
+        "instantaneous_energy_moment_max": 2.7126622663318284e-17,
+        "final_population_error": 4.983680135239865e-12,
+        "entropy_decrease_max": 0.0,
+        "initial_count": 0.1999999999999998,
+        "final_count": 0.19183259380244544,
+        "minimum_population": 4.1054815199010294e-23,
+        "maximum_population": 0.20570502797433649
+      },
+      {
+        "profile": "low_energy",
+        "steps": 320,
+        "energy_scaled_error": 4.163336342344337e-17,
+        "instantaneous_energy_moment_max": 4.08788183354045e-17,
+        "final_population_error": 3.073652443674746e-13,
+        "entropy_decrease_max": 0.0,
+        "initial_count": 0.1999999999999998,
+        "final_count": 0.19183259380032514,
+        "minimum_population": 4.1054815118495496e-23,
+        "maximum_population": 0.20570502797581752
+      },
+      {
+        "profile": "finite_energy_band",
+        "steps": 80,
+        "energy_scaled_error": 2.5479618415147343e-14,
+        "instantaneous_energy_moment_max": 7.467103787312948e-15,
+        "final_population_error": 1.348035183479368e-09,
+        "entropy_decrease_max": 0.0,
+        "initial_count": 0.34030985938328834,
+        "final_count": 0.5178966099190424,
+        "minimum_population": 0.0,
+        "maximum_population": 0.2966889489677082
+      },
+      {
+        "profile": "finite_energy_band",
+        "steps": 160,
+        "energy_scaled_error": 2.55351295663786e-14,
+        "instantaneous_energy_moment_max": 7.45970823290821e-15,
+        "final_population_error": 8.208755897243236e-11,
+        "entropy_decrease_max": 0.0,
+        "initial_count": 0.34030985938328834,
+        "final_count": 0.5178966106768086,
+        "minimum_population": 0.0,
+        "maximum_population": 0.2966889502336558
+      },
+      {
+        "profile": "finite_energy_band",
+        "steps": 320,
+        "energy_scaled_error": 2.55351295663786e-14,
+        "instantaneous_energy_moment_max": 7.549893603943402e-15,
+        "final_population_error": 5.067557484750296e-12,
+        "entropy_decrease_max": 0.0,
+        "initial_count": 0.34030985938328834,
+        "final_count": 0.517896610722911,
+        "minimum_population": 0.0,
+        "maximum_population": 0.2966889503106758
+      }
+    ],
+    "stationarity": {
+      "vacuum_rhs_max": 0.0,
+      "thermal_rhs_max": 0.0
+    }
+  },
+  "moving_spectrum": {
+    "duration": 2.0,
+    "power": 0.04,
+    "tau": 0.7,
+    "bath_temperature": 0.08,
+    "fields": "Delta=.72+.04t; Gamma=.1+.03sin(pi*t/2)",
+    "resolutions": [
+      {
+        "steps": 80,
+        "energy_ledger_scaled_max": 2.9028467130043367e-11,
+        "energy_ledger_final_abs": 1.6205509156819176e-12,
+        "negative_control_final_abs": 0.01514764016938562,
+        "minimum_population": 0.0,
+        "maximum_population": 0.11034201234214251
+      },
+      {
+        "steps": 160,
+        "energy_ledger_scaled_max": 1.8324647355072443e-12,
+        "energy_ledger_final_abs": 1.0051265375565777e-12,
+        "negative_control_final_abs": 0.01514758019939487,
+        "minimum_population": 0.0,
+        "maximum_population": 0.11033797597236411
+      },
+      {
+        "steps": 320,
+        "energy_ledger_scaled_max": 1.5333567748854193e-13,
+        "energy_ledger_final_abs": 1.2433110097020972e-13,
+        "negative_control_final_abs": 0.015147584572204983,
+        "minimum_population": 0.0,
+        "maximum_population": 0.11033827865597795
+      }
+    ],
+    "source_energy_moment_max": 1.3877787807814457e-17,
+    "thermal_direction_abs_error": 1.3877787807814457e-17
+  },
+  "self_consistent_cell": {
+    "initial_amplitude": 0.6,
+    "gamma": 0.0,
+    "mobility": 0.2,
+    "mobility_status": "constant synthetic; not calibrated KWT",
+    "tau": 0.7,
+    "duration": 6.0,
+    "bath_temperature": 0.08,
+    "resolutions": [
+      {
+        "steps": 80,
+        "energy_ledger_scaled_max": 1.4638583123449678e-09,
+        "energy_ledger_final_abs": 1.4638583123449678e-09,
+        "final_amplitude": 0.8858178935803412,
+        "final_temperature": 0.3115606822394705,
+        "converted_heat": 0.08923305177582386,
+        "minimum_population": 6.513211340223386e-23,
+        "maximum_population": 0.10234146116399656
+      },
+      {
+        "steps": 160,
+        "energy_ledger_scaled_max": 8.969675002745703e-11,
+        "energy_ledger_final_abs": 8.969675002745703e-11,
+        "final_amplitude": 0.885817894636966,
+        "final_temperature": 0.3115606818359812,
+        "converted_heat": 0.08923305162399131,
+        "minimum_population": 6.483090933095448e-23,
+        "maximum_population": 0.10234146427569502
+      },
+      {
+        "steps": 320,
+        "energy_ledger_scaled_max": 5.550171433554851e-12,
+        "energy_ledger_final_abs": 5.550171433554851e-12,
+        "final_amplitude": 0.8858178947019179,
+        "final_temperature": 0.31156068181133834,
+        "converted_heat": 0.0892330516149699,
+        "minimum_population": 6.483000748046723e-23,
+        "maximum_population": 0.10234146445950315
+      }
+    ],
+    "instantaneous_balance_max": 8.305856002976952e-15,
+    "minimum_dissipation": 0.0010444019136942584
+  },
+  "two_cell_transport": {
+    "left_fields": [
+      0.43,
+      0.02
+    ],
+    "right_fields": [
+      1.2,
+      0.2
+    ],
+    "initial_temperatures": [
+      0.4,
+      0.12
+    ],
+    "duration": 5.0,
+    "diffusion_over_length_squared": 0.2,
+    "lower_shared_energy": 1e-06,
+    "method": "linear E(x) reconstruction; exact common-domain hat moments; C=H/E; harmonic causal D_L; exponential two-state exchange; private tail constant and disconnected",
+    "resolutions": [
+      {
+        "nodes": 129,
+        "reconstructed_energy_scaled_max": 1.1102230246251565e-16,
+        "native_R2_reconstruction_relative_max": 0.0002262912099217937,
+        "FD_native_remap_relative_max": 0.01122153122564825,
+        "quasiparticle_count_relative_drift": 0.00040604627603629855,
+        "quasiparticle_count_initial": 0.7721731610315395,
+        "quasiparticle_count_final": 0.7718596229950475,
+        "common_distribution_rhs_max": 0.0,
+        "energy_transferred_left_to_right": 0.11075204611169083,
+        "minimum_population": 3.482856574774174e-44,
+        "maximum_population": 0.499999375,
+        "active_energy_nodes": 129,
+        "total_representation_nodes": 130,
+        "common_upper_energy": 11.955548349176716,
+        "private_tail_native_energy_initial": [
+          0.0,
+          2.230653445063255e-43
+        ],
+        "private_tail_population_change_max": 0.0,
+        "common_upper_boundary_population_change_max": 4.530784746014206e-14,
+        "discarded_count_below_lower_energy": [
+          4.1392322247488826e-14,
+          1.8867816688762315e-14
+        ],
+        "discarded_lower_energy_full_occupation_bound": [
+          8.278464449497766e-20,
+          3.7735633377524636e-20
+        ],
+        "represented_count_upper": [
+          11.947813057034343,
+          11.947813057034343
+        ],
+        "nominal_R2_count_support": 11.999999999999996,
+        "unrepresented_count_interval_to_R2_cutoff": 0.05218694296565296
+      },
+      {
+        "nodes": 257,
+        "reconstructed_energy_scaled_max": 1.1102230246251565e-16,
+        "native_R2_reconstruction_relative_max": 0.0002238691976178339,
+        "FD_native_remap_relative_max": 0.0029429268830013532,
+        "quasiparticle_count_relative_drift": 8.6201082736541e-05,
+        "quasiparticle_count_initial": 0.7706780126193093,
+        "quasiparticle_count_final": 0.7706115793401803,
+        "common_distribution_rhs_max": 0.0,
+        "energy_transferred_left_to_right": 0.11008617594965138,
+        "minimum_population": 3.482856574774174e-44,
+        "maximum_population": 0.499999375,
+        "active_energy_nodes": 257,
+        "total_representation_nodes": 258,
+        "common_upper_energy": 11.955548349176716,
+        "private_tail_native_energy_initial": [
+          0.0,
+          2.230653445063255e-43
+        ],
+        "private_tail_population_change_max": 0.0,
+        "common_upper_boundary_population_change_max": 4.5289325201211864e-14,
+        "discarded_count_below_lower_energy": [
+          4.1392322247488826e-14,
+          1.8867816688762315e-14
+        ],
+        "discarded_lower_energy_full_occupation_bound": [
+          8.278464449497766e-20,
+          3.7735633377524636e-20
+        ],
+        "represented_count_upper": [
+          11.947813057034343,
+          11.947813057034343
+        ],
+        "nominal_R2_count_support": 11.999999999999996,
+        "unrepresented_count_interval_to_R2_cutoff": 0.05218694296565296
+      },
+      {
+        "nodes": 513,
+        "reconstructed_energy_scaled_max": 2.220446049250313e-16,
+        "native_R2_reconstruction_relative_max": 0.00021191745407809947,
+        "FD_native_remap_relative_max": 0.0006879285400542473,
+        "quasiparticle_count_relative_drift": 2.327923158777986e-05,
+        "quasiparticle_count_initial": 0.7703019808802578,
+        "quasiparticle_count_final": 0.7702840488420524,
+        "common_distribution_rhs_max": 0.0,
+        "energy_transferred_left_to_right": 0.11027558185407423,
+        "minimum_population": 3.482856574774174e-44,
+        "maximum_population": 0.499999375,
+        "active_energy_nodes": 513,
+        "total_representation_nodes": 514,
+        "common_upper_energy": 11.955548349176716,
+        "private_tail_native_energy_initial": [
+          0.0,
+          2.230653445063255e-43
+        ],
+        "private_tail_population_change_max": 0.0,
+        "common_upper_boundary_population_change_max": 4.528006409639211e-14,
+        "discarded_count_below_lower_energy": [
+          4.1392322247488826e-14,
+          1.8867816688762315e-14
+        ],
+        "discarded_lower_energy_full_occupation_bound": [
+          8.278464449497766e-20,
+          3.7735633377524636e-20
+        ],
+        "represented_count_upper": [
+          11.947813057034343,
+          11.947813057034343
+        ],
+        "nominal_R2_count_support": 11.999999999999996,
+        "unrepresented_count_interval_to_R2_cutoff": 0.05218694296565296
+      }
+    ],
+    "time_resolutions": [
+      {
+        "steps": 80,
+        "final_state_scaled_error": 7.679294700135841e-12,
+        "minimum_population": 3.482856574774174e-44,
+        "maximum_population": 0.499999375
+      },
+      {
+        "steps": 160,
+        "final_state_scaled_error": 4.764903749343574e-13,
+        "minimum_population": 3.482856574774174e-44,
+        "maximum_population": 0.499999375
+      },
+      {
+        "steps": 320,
+        "final_state_scaled_error": 2.9688057567867077e-14,
+        "minimum_population": 3.482856574774174e-44,
+        "maximum_population": 0.499999375
+      }
+    ],
+    "negative_control": {
+      "equal_index_occupation_difference_max": 0.1616446638828909,
+      "incorrect_equal_index_left_power": 0.03156882190773904,
+      "interpretation": "Deliberately wrong equal-count-index exchange at equal physical temperature; not applied to any trajectory."
+    }
+  },
+  "scope": "Reduced electronic tests. No electron-phonon populations, spatial core, KWT calibration, circuit or full transient.",
+  "status": "PENDING_INDEPENDENT_ADJUDICATION",
+  "production_connected": false
+}

@@ -1,0 +1,109 @@
+{
+  "schema": "pysnspd.stage1_closure.exchange_cancellation.v1",
+  "host": "geminga",
+  "python": "3.10.20",
+  "runtime_seconds": 0.11189819173887372,
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "cell_code_sha256": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+  "script_sha256": "7a74613f91660a03bb886e1ece31d905a99c8b68ed02f7ad4d4160c3b9940db7",
+  "provenance": "Fresh reproduction of the rejected algebraic form using the final unchanged interface; not a recovered historical full run.",
+  "regression_test": "tests/test_experimental_cell_validation.py::test_exact_exchange_does_not_cancel_a_cold_population_at_zero_time",
+  "rows": [
+    {
+      "scenario": "thermal_initial_runner",
+      "common_nodes": 65,
+      "time": 0.0,
+      "initial_minimum": 3.482856574774174e-44,
+      "subtractive_minimum": -1.0339757656912846e-25,
+      "subtractive_negative_entries": 2,
+      "subtractive_max_population_change": 1.1102230246251565e-16,
+      "convex_minimum": 3.482856574774174e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": true
+    },
+    {
+      "scenario": "thermal_initial_runner",
+      "common_nodes": 65,
+      "time": 1e-14,
+      "initial_minimum": 3.482856574774174e-44,
+      "subtractive_minimum": 3.482856574774174e-44,
+      "subtractive_negative_entries": 0,
+      "subtractive_max_population_change": 1.1102230246251565e-16,
+      "convex_minimum": 3.482856574774174e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": null
+    },
+    {
+      "scenario": "cold_regression",
+      "common_nodes": 65,
+      "time": 0.0,
+      "initial_minimum": 1e-44,
+      "subtractive_minimum": -1.3877787807814457e-17,
+      "subtractive_negative_entries": 11,
+      "subtractive_max_population_change": 2.7755575615628914e-17,
+      "convex_minimum": 1e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": true
+    },
+    {
+      "scenario": "cold_regression",
+      "common_nodes": 65,
+      "time": 1e-14,
+      "initial_minimum": 1e-44,
+      "subtractive_minimum": -3.469446951953614e-18,
+      "subtractive_negative_entries": 3,
+      "subtractive_max_population_change": 3.885780586188048e-16,
+      "convex_minimum": 1e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": null
+    },
+    {
+      "scenario": "thermal_initial_runner",
+      "common_nodes": 513,
+      "time": 0.0,
+      "initial_minimum": 3.482856574774174e-44,
+      "subtractive_minimum": -6.617444900424222e-24,
+      "subtractive_negative_entries": 41,
+      "subtractive_max_population_change": 5.551115123125783e-17,
+      "convex_minimum": 3.482856574774174e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": true
+    },
+    {
+      "scenario": "thermal_initial_runner",
+      "common_nodes": 513,
+      "time": 1e-14,
+      "initial_minimum": 3.482856574774174e-44,
+      "subtractive_minimum": 3.482856574774174e-44,
+      "subtractive_negative_entries": 0,
+      "subtractive_max_population_change": 1.0581813203458523e-16,
+      "convex_minimum": 3.482856574774174e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": null
+    },
+    {
+      "scenario": "cold_regression",
+      "common_nodes": 513,
+      "time": 0.0,
+      "initial_minimum": 1e-44,
+      "subtractive_minimum": -1.3877787807814457e-17,
+      "subtractive_negative_entries": 85,
+      "subtractive_max_population_change": 2.7755575615628914e-17,
+      "convex_minimum": 1e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": true
+    },
+    {
+      "scenario": "cold_regression",
+      "common_nodes": 513,
+      "time": 1e-14,
+      "initial_minimum": 1e-44,
+      "subtractive_minimum": -3.469446951953614e-18,
+      "subtractive_negative_entries": 3,
+      "subtractive_max_population_change": 4.163336342344337e-16,
+      "convex_minimum": 1e-44,
+      "convex_negative_entries": 0,
+      "convex_zero_time_bitwise_identity": null
+    }
+  ]
+}

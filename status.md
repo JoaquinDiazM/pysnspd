@@ -1,6 +1,6 @@
 # pySNSPD publication status
 
-Last updated: 2026-09-11
+Last updated: 2026-09-21
 
 Publication window: 2026-07-23 to 2026-10-23
 
@@ -25,7 +25,36 @@ Computations expected to exceed five minutes are prepared in
 `/home/jdiaz/GEMINGA_COMMANDS.md` for the user. The agent resumes after the user
 provides the output; it does not start long runs or use polling to wait for them.
 
-## Experimental stage 1, R2
+## Experimental stage 1 closure — current
+
+The [final report](docs/implementation/stage1_closure/Informe_cierre_etapa_1.md)
+and [admission record](docs/implementation/stage1_closure/closure_admission.json)
+close electronic stage 1 with reduced catalogue-use tests: BGK, heating,
+prescribed spectral work, a self-consistent synthetic condensate cell and
+fixed-field two-cell transport. All 53 electronic gates pass. A fresh independent
+R2 reassessment also passes; its 87-file historical delivery remains unchanged.
+The full repository regression passes 317 tests in 34.69 s on Geminga.
+
+Transport conserves its explicitly reconstructed energy to 2.22e-16. At 513
+shared-energy nodes its native-R2 energy bias is 0.02119%, thermal remapping error
+0.06879% and quasiparticle count drift 0.00233%; these distinct defects are not
+silently projected away. Native R2 energy is used directly in BGK, heating and
+the synthetic condensate test. Time is not calibrated to a physical NbN rate.
+
+The NbN preprocessing decision is updated: an explicit, traceable common-support
+derived shape is retained for restricted experimental work. It is not admitted
+as absolute SI material or as an equivalent global physical phonon kernel.
+Thermal U/C changes are small at the tested points through 80 K, but the coupling
+changes in an internal phonon gap and for nonthermal populations are significant.
+The primary-source audit does not settle this file's absolute DOS normalization.
+
+The [next-stage contract](docs/implementation/stage1_closure/NEXT_STAGE.md)
+starts with shared electron-phonon reaction events in cells, then simultaneous
+condensate/transport coupling. Full D.4 item 2, spatial admission and circuit
+validation remain outstanding. No production activation, long calculation or
+change to v1.0.0 was made. All useful commands are recorded in Geminga's notebook.
+
+## Experimental stage 1, R2 — retained historical result
 
 The [R2 report](docs/implementation/stage1_r2/Informe_etapa_1_r2.md) and
 [source-bound admission certificate](docs/implementation/stage1_r2/catalog_admission.json)

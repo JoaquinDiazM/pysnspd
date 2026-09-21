@@ -477,3 +477,104 @@ Próximo paso recomendado: conservación de energía, relajación al equilibrio 
 convergencia temporal en una o dos celdas sintéticas (D.4.2), manteniendo el
 rechazo material y el límite de soporte del catálogo. No hay un cálculo pesado
 pendiente de ejecución por el usuario al cerrar R2.
+
+
+## Documento F-r01: cambios respecto de la memoria (2026-09-13)
+
+Entrega PDF de seis paginas, con 22 bloques de ecuaciones viejas/nuevas,
+motivos y una seccion de cambios menores, numericos y de codigo. Resume el
+candidato 0.4 frente a la memoria; diferencia propuesta, catalogo R2 y produccion.
+Solo se agrega F al directorio de A-E; no se crea una version Markdown del documento.
+Las seis paginas se inspeccionaron visualmente; ecuaciones F.1-F.22 completas.
+A-E conservan sus hashes anteriores. No se ejecutaron simulaciones.
+
+Archivo: /home/jdiaz/pysnspd/output/pdf/modelo_v0_4/F_resumen_de_cambios_respecto_a_la_memoria_v0_4.pdf
+SHA-256: cfc6315a60d9913f35715f967d15944a7cbd47107cbb0f23afb45277a9cc3b34
+Tamano: 105305 bytes. Memoria cotejada: /home/jdiaz/memoria/main/memoria_02.pdf,
+SHA-256 50a75f1bd84f06f32820dbf9477c0fdcaf809fb502485e84249ebb46b286c1e8.
+
+Diagnostico reproducible (lectura, 1 CPU, menos de 30 s, memoria despreciable):
+```bash
+timeout 30s sha256sum /home/jdiaz/pysnspd/output/pdf/modelo_v0_4/F_resumen_de_cambios_respecto_a_la_memoria_v0_4.pdf
+```
+Salida esperada: el SHA-256 anterior y la ruta del PDF. No genera nuevos archivos.
+
+
+## Cierre de etapa 1: celdas y NbN derivado (2026-09-21)
+
+El cierre admite el uso electrónico reducido del catálogo R2: 53 puertas pasan,
+317 pruebas de regresión pasan en 34,69 s. El derivado NbN tiene admisión de forma
+experimental condicionada; no acredita unidades, normalización ni tasas absolutas.
+La cinética electrón-fonón simultánea sigue siendo la siguiente implementación.
+No se lanzó un transiente completo ni hay un cálculo pesado pendiente del usuario.
+
+Preparación (cuenta jdiaz, sin sudo):
+
+```bash
+cd /home/jdiaz/pysnspd
+export CLOSURE_PY=/home/jdiaz/.conda/envs/snspd/bin/python
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export CLOSURE_RUN=tmp/stage1_closure_reproduction
+mkdir -p "$CLOSURE_RUN"
+```
+
+Integridad de las dos entregas y regresión (~35 s, un hilo, memoria estimada
+menor de 1 GiB; salida: hashes verificados y resumen pytest):
+
+```bash
+"$CLOSURE_PY" sandbox/stage1_catalog_r2/verify_delivery.py
+"$CLOSURE_PY" sandbox/stage1_closure/verify_delivery.py
+timeout --signal=TERM --kill-after=5 240 "$CLOSURE_PY" -m pytest -q
+```
+
+Reevaluar el catálogo retenido (~1 s, un hilo, menos de 1 GiB estimado):
+
+```bash
+timeout --signal=TERM --kill-after=5 240 "$CLOSURE_PY" docs/implementation/stage1_r2/review/assess_candidate.py docs/implementation/stage1_r2/catalogs/occupation_catalog.npz --output "$CLOSURE_RUN/catalog_recheck.json"
+```
+
+Repetir celdas (~2,15 s, un hilo, menos de 1 GiB estimado): BGK, calentamiento,
+trabajo espectral, recuperación del condensado y transporte a energía compartida.
+Salidas: cells_results.json, cuatro CSV y dos figuras PNG/PDF. Los resultados
+nuevos quedan en tmp; no reemplazan los artefactos aceptados.
+
+```bash
+timeout --signal=TERM --kill-after=5 240 "$CLOSURE_PY" sandbox/stage1_closure/run_cells.py --output "$CLOSURE_RUN/cells"
+```
+
+Revisar fuente y recorte fonónico (~1,79 s medidos, más latencia de Internet;
+un hilo, menos de 1 GiB estimado). Descarga la revisión pública fijada, compara
+el cuerpo numérico original, deriva soporte común y calcula sensibilidades.
+Salidas: material_results.json, material_nbn_shape_v1.csv, manifiesto de filas,
+material_thermal.csv y figures/material_{support,impact}_review en PNG/PDF.
+No renormaliza la DOS; la hipótesis THz queda explícita en los resultados.
+
+```bash
+timeout --signal=TERM --kill-after=5 240 "$CLOSURE_PY" sandbox/stage1_closure/review_material.py --nbn-path /home/jdiaz/scratch/big_data/catalogs/simon_2025/nbn-a2f-ph.dat --output-root "$CLOSURE_RUN/material" --source-dir "$CLOSURE_RUN/material_sources" --online
+```
+
+Ver sólo las pruebas nuevas de operadores/preprocesado (~0,3 s de pruebas,
+más arranque de pytest; un hilo, menos de 1 GiB estimado):
+
+```bash
+timeout --signal=TERM --kill-after=5 240 "$CLOSURE_PY" -m pytest tests/test_experimental_cell_validation.py tests/test_experimental_material_preprocessing.py -q
+```
+
+Para regenerar el informe (segundos, un hilo, menos de 1 GiB estimado), la receta
+siguiente escribe EN las rutas publicadas el PDF y Markdown. Guardar la versión
+anterior si se desea conservar. Deben revisarse todas las páginas antes de
+actualizar un manifiesto: fuentes de Windows/Linux pueden cambiar la maquetación.
+
+```bash
+PYTHONPATH=/home/jdiaz/pysnspd/tmp/stage1_report_deps "$CLOSURE_PY" sandbox/stage1_closure/build_report.py
+```
+
+Resultado: output/pdf/implementation/Informe_cierre_etapa_1.pdf y
+docs/implementation/stage1_closure/Informe_cierre_etapa_1.md. El paquete entregado
+se comprueba con verify_delivery.py; --write sólo corresponde a una entrega
+nueva ya revisada, no a la reproducción ordinaria.
+
+La siguiente secuencia está en docs/implementation/stage1_closure/NEXT_STAGE.md.
+Toda prueba nueva prevista de más de cinco minutos se dejará aquí con sus
+recursos y salidas para ejecución del usuario. Si un diagnóstico limitado a
+240 segundos agota el tiempo, queda incompleto; no se reinicia en fragmentos.

@@ -1,0 +1,134 @@
+{
+  "schema": "pysnspd.stage1_closure.independent_transport.v1",
+  "status": "PASS",
+  "scope": "Algebra of reconstructed-energy transport only. Native-R2 bias and continuum/remap convergence require separate measured evidence.",
+  "criteria_sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "cell_source_sha256": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+  "reviewer_source_sha256": "fb2db24d97f8ff0af41d467105daa41bee657ea0a13e928298d79dcdebfaa7d2",
+  "summary": {
+    "instantaneous_energy_moment": 2.220446049250313e-16,
+    "common_distribution_rhs": 0.0,
+    "matrix_exponential_population_abs_error": 2.7755575615628914e-17,
+    "exact_trajectory_energy_drift": 3.552713678800501e-15,
+    "private_tail_population_change": 0.0,
+    "moment_identity_abs_error": 1.4210854715202004e-14
+  },
+  "rows": [
+    {
+      "fields": [
+        [
+          0.72,
+          0.2
+        ],
+        [
+          1.0,
+          0.03
+        ]
+      ],
+      "shared_energy_nodes": 258,
+      "moment_identities": [
+        {
+          "count_sum_error": 1.7763568394002505e-15,
+          "energy_sum_error": 1.4210854715202004e-14,
+          "linear_reproduction_error": 0.0,
+          "omitted_lower_count": 6.523367870707063e-09,
+          "unextrapolated_last_count": 11.947813057034343
+        },
+        {
+          "count_sum_error": 1.7763568394002505e-15,
+          "energy_sum_error": 0.0,
+          "linear_reproduction_error": 1.4210854715202004e-14,
+          "omitted_lower_count": 2.708947994359444e-09,
+          "unextrapolated_last_count": 11.947813057034343
+        }
+      ],
+      "instantaneous_energy_moment": 2.220446049250313e-16,
+      "common_distribution_rhs": 0.0,
+      "matrix_exponential_population_abs_error": 2.7755575615628914e-17,
+      "exact_trajectory_energy_drift": 0.0,
+      "private_tail_population_change": 0.0,
+      "pauli_minimum": 0.03,
+      "pauli_maximum": 0.15118374496232323,
+      "initial_quasiparticle_count": 5.307671345267181,
+      "final_quasiparticle_count": 5.30767158345755
+    },
+    {
+      "fields": [
+        [
+          0.35,
+          0.65
+        ],
+        [
+          0.72,
+          0.002
+        ]
+      ],
+      "shared_energy_nodes": 258,
+      "moment_identities": [
+        {
+          "count_sum_error": 1.7763568394002505e-15,
+          "energy_sum_error": 0.0,
+          "linear_reproduction_error": 1.4210854715202004e-14,
+          "omitted_lower_count": 6.5233678707070634e-09,
+          "unextrapolated_last_count": 11.947813057034343
+        },
+        {
+          "count_sum_error": 0.0,
+          "energy_sum_error": 1.4210854715202004e-14,
+          "linear_reproduction_error": 0.0,
+          "omitted_lower_count": 1.7755270983886424e-16,
+          "unextrapolated_last_count": 11.947813057034343
+        }
+      ],
+      "instantaneous_energy_moment": 2.220446049250313e-16,
+      "common_distribution_rhs": 0.0,
+      "matrix_exponential_population_abs_error": 1.3877787807814457e-17,
+      "exact_trajectory_energy_drift": 3.552713678800501e-15,
+      "private_tail_population_change": 0.0,
+      "pauli_minimum": 0.03,
+      "pauli_maximum": 0.19999999690346665,
+      "initial_quasiparticle_count": 5.409207873087524,
+      "final_quasiparticle_count": 5.40921826216962
+    },
+    {
+      "fields": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.72,
+          0.0
+        ]
+      ],
+      "shared_energy_nodes": 258,
+      "moment_identities": [
+        {
+          "count_sum_error": 0.0,
+          "energy_sum_error": 1.4210854715202004e-14,
+          "linear_reproduction_error": 1.4210854715202004e-14,
+          "omitted_lower_count": 4.696824866909086e-09,
+          "unextrapolated_last_count": 11.947813057034343
+        },
+        {
+          "count_sum_error": 0.0,
+          "energy_sum_error": 1.4210854715202004e-14,
+          "linear_reproduction_error": 0.0,
+          "omitted_lower_count": 6.5233678707070634e-09,
+          "unextrapolated_last_count": 11.947813057034343
+        }
+      ],
+      "instantaneous_energy_moment": 2.220446049250313e-16,
+      "common_distribution_rhs": 0.0,
+      "matrix_exponential_population_abs_error": 1.3877787807814457e-17,
+      "exact_trajectory_energy_drift": 0.0,
+      "private_tail_population_change": 0.0,
+      "pauli_minimum": 0.03,
+      "pauli_maximum": 0.1262969500542059,
+      "initial_quasiparticle_count": 5.290147020234012,
+      "final_quasiparticle_count": 5.290146495586185
+    }
+  ],
+  "runtime_seconds": 0.5753007000021171
+}

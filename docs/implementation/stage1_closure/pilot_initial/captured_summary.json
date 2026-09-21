@@ -1,0 +1,20 @@
+{
+  "schema": "pysnspd.stage1_closure.partial_pilot_capture.v1",
+  "provenance": "Partial metrics retained from terminal output before the request to preserve pilots. The original full pilot JSON had already been overwritten by the final rerun; this is not a complete historical artifact.",
+  "initial_failed_run": {
+    "completed_sections": ["BGK", "moving fields", "self-consistent cell"],
+    "failure": "The subtractive mean/difference exact-exchange expression generated a negative tiny population and was rejected by occupation_array while evaluating reconstructed_energy. No clipping was introduced; the algebraically equivalent convex expm1 expression replaced it.",
+    "reproduction": "sandbox/stage1_closure/check_exchange_cancellation.py",
+    "regression": "tests/test_experimental_cell_validation.py::test_exact_exchange_does_not_cancel_a_cold_population_at_zero_time"
+  },
+  "pre_boundary_correction_successful_pilot": {
+    "host": "geminga",
+    "runtime_seconds": 2.0111759179271758,
+    "cell_code_sha256": "8225e6e1029126d7f26ce340f25d362550280e605fe48c12c723b482993e8e66",
+    "interface_policy": "The common upper node was excluded, dropping a valid left half-cell; the final implementation includes its left quadrature weight and keeps the private tail separate.",
+    "active_shared_nodes": [128, 256, 512],
+    "final_energy_transferred": 0.11027558185404895,
+    "final_native_energy_relative_bias": 0.00021191745407809947,
+    "qualification": "Diagnostic history only; excluded from the acceptance certificate. No original full figures or CSVs are asserted to survive."
+  }
+}

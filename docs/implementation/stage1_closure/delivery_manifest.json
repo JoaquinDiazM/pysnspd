@@ -1,0 +1,300 @@
+{
+  "schema": "pysnspd.stage1_closure.delivery.v1",
+  "baseline_commit": "c0e07f9bc20ba2a75be96faecf6a5dfc4a58d815",
+  "immutable_release_commit": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+  "scope": "Experimental catalogue use in cells and explicit material preprocessing; no production activation.",
+  "retained_references": [
+    {
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/catalog_admission.json",
+      "sha256": "cbf7fe6d3ecd972ac882e995f0da0d64aa507da281d417ca2a877fe8bc15b3b8"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/delivery_manifest.json",
+      "sha256": "95649a4e13f398522464154d8e00b34c4782be60db4fdfc52447fc9d43d92218"
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    {
+      "path": "pysnspd/experimental/material_admission.py",
+      "sha256": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/implementation/stage1_closure/acceptance_criteria.json",
+      "bytes": 10326,
+      "sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/catalog_recheck.json",
+      "bytes": 381990,
+      "sha256": "af8629a23d919859a52d6111cca8822b07ba746573ce8566199fcfdb50f4ef57"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_bgk.csv",
+      "bytes": 69402,
+      "sha256": "62dff8ef636c3ca6603ecf52ca95ae300afd78e95393834b2b39bb5c02473771"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_moving.csv",
+      "bytes": 53813,
+      "sha256": "873a3e4959cc69a1113f057333abc4ffda8dd22b49ddd03c19547ee9897e4656"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_recovery.csv",
+      "bytes": 48817,
+      "sha256": "c3a2e033ea7a16a5bc2c2b0e513b21f9f175bd7a80c9e0b7c62cb7f0aa2edff5"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_recovery.pdf",
+      "bytes": 24175,
+      "sha256": "fe1c41a13a7927c4dd1d08cc51e38c104f3d8bf1dea1a4260e59ec1dc2f35a62"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_recovery.png",
+      "bytes": 144181,
+      "sha256": "971658af0a56044320ced5d6617c6df27776f3d039585bf77ca6c212edb1dcc1"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_results.json",
+      "bytes": 12714,
+      "sha256": "deafa33c92b0efb0e35ba17bfa6fb7764330e97256db9e4f6965c71a961c6f10"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_transport.csv",
+      "bytes": 13313,
+      "sha256": "a0371b3296af354dfc496dbdb536b92ffdbe7da39c305debe4ce6837900e3226"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_transport_and_work.pdf",
+      "bytes": 25277,
+      "sha256": "9cde36b013419f8f1a15bb480ac149fd3c07dab29dee1fa6cab00c62fbdfadbc"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/cells_transport_and_work.png",
+      "bytes": 164634,
+      "sha256": "21b3df84d6e4cd9b97ff5314dbae19d2146ea0c0bdd18cbd64f2304941fb79ce"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/closure_admission.json",
+      "bytes": 16088,
+      "sha256": "afe1968fe5abcff79737b1d39390b1afb56d86ddd888fe419a4cb0c940b7e2b9"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/figures/material_impact_review.pdf",
+      "bytes": 28195,
+      "sha256": "8ce1aa9837a4dd322c92bcd3a533a2a642466c609add012524ede585f46f07c3"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/figures/material_impact_review.png",
+      "bytes": 146628,
+      "sha256": "f477752644b38992a8b8d41ec22e566e5ec878d472bc316b76b4ee9f9ff7ebca"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/figures/material_support_review.pdf",
+      "bytes": 260731,
+      "sha256": "d4f255b37c5dcd7ce7aca1e01bf7438346a790a2339d181f07be3c542b3933e8"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/figures/material_support_review.png",
+      "bytes": 265653,
+      "sha256": "bc82ada9911b94f04ee433f91dd8f62a278148e5a86aa1908e03c933a0d0d15a"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/Informe_cierre_etapa_1.md",
+      "bytes": 10658,
+      "sha256": "352f6b4e1cba6dbf459311909ece0e9cb5b3c7993b6f95088609a77edfc6d073"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_findings.md",
+      "bytes": 7164,
+      "sha256": "508b4b636239cd09a2f3e8660084e1f92b962c38bde79fcc8a4312977ba613ae"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_nbn_shape_v1.csv",
+      "bytes": 582295,
+      "sha256": "7bffe65c19505d203e3b4705e4000d093c487f2ed02d79e0519c754f28d3c537"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_nbn_shape_v1.manifest.json",
+      "bytes": 57591,
+      "sha256": "e8cba8c8eb00e475c556e1118bd6d0100857fb57c8bd41d96409499991b1ae8c"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_results.json",
+      "bytes": 38987,
+      "sha256": "1b4f84ab5cec52d24baced70d1bbfabeb1b2569792ec28cb4993a5006d1ab4df"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_source_notice.md",
+      "bytes": 1710,
+      "sha256": "8757a83f77ec3656475c09a4e1b02b2f466f7cdbdffdb165a790d83b037be4a5"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_thermal.csv",
+      "bytes": 6220,
+      "sha256": "581f7ff7c034a17133d109a3240c6ca63200b38367116118f8f47e1d29033bc2"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/NEXT_STAGE.md",
+      "bytes": 5892,
+      "sha256": "b63b1c59d9e5acf2ec4827032590c2ad1f8c9b9ca887df876e09f07c1578c507"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/pilot_initial/captured_summary.json",
+      "bytes": 1605,
+      "sha256": "b7f257fd1eaa2bf3d2ba2ba40e0ac0b7eb033a63651ebe0678d2c791d56e6152"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/pilot_initial/exchange_cancellation.json",
+      "bytes": 4104,
+      "sha256": "710db754aa511d7dfb5834d37804a745891fe76dac3ebe7a3078b9f84df92ca4"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/regression_result.json",
+      "bytes": 3078,
+      "sha256": "1399035110ee8116783634261ce20cd3686c454128e1558979570f15d75be728"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/report_content.json",
+      "bytes": 12637,
+      "sha256": "3da485d1904be242c19394967355da7d3d0acc6760dfe7e0c5901b86003f8f30"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/report_visual_qa.json",
+      "bytes": 1083,
+      "sha256": "8bd5c09a18100f0ed2c1bbd80b07e827244dfe934ac1cf09911fa841ca44619a"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/acceptance_criteria_initial.json",
+      "bytes": 9151,
+      "sha256": "abc83c64a4d7a9ff4552c8cb2bbabd50823a36d9744ab1e20d54c5459cac67ac"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/adjudicate.py",
+      "bytes": 8759,
+      "sha256": "4131219630722474afe262e3280258041ce16951c6624c12bde0ce5dd0a9aa69"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/check_coupled_reference.py",
+      "bytes": 4740,
+      "sha256": "bc1e82a875d83027be12d839b2f25ed4a92d9bbd616e452ae5526e2fca0207de"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/check_material.py",
+      "bytes": 4311,
+      "sha256": "0d251ea996ebe84ecf3d588feff15f13fb07cd25561885e3077a4702d5a73856"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/check_operators.py",
+      "bytes": 6751,
+      "sha256": "db90711f0f50d66af8c0549744970bea8b6b408996e7b7a9580ac411f1c343e4"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/check_transport.py",
+      "bytes": 5409,
+      "sha256": "fb2db24d97f8ff0af41d467105daa41bee657ea0a13e928298d79dcdebfaa7d2"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/coupled_reference.json",
+      "bytes": 6702,
+      "sha256": "e6ed55b3166306def1a3617dfe83381f74a2b5cd67fe14977e7a327d6dea3466"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/electronic_assessment.json",
+      "bytes": 13944,
+      "sha256": "26d7848586621829abe319b6b42f67a4c4c9f35cd9e5475327f9badc91d890c5"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/finalize_closure.py",
+      "bytes": 7359,
+      "sha256": "b3f2d40b84b5f16b01b1fc8e7429415ac08fd28319e664965215203829ee0235"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/material_replay.json",
+      "bytes": 1576,
+      "sha256": "68d300313535751fc4c11597ee0c45e2874c410a79cccaa21e5e07d9d1a53f3d"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/operator_checks.json",
+      "bytes": 17468,
+      "sha256": "e554e731531463fcd6c1cb2a1a553f72f79c6187abacf5cf3cb91c13d9452f9a"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/review/transport_checks.json",
+      "bytes": 4791,
+      "sha256": "3f39e5a8f383e3733cae2663558ee3ae2b9e58eabd311aa6b84c464f7419395e"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/REVIEW.md",
+      "bytes": 5266,
+      "sha256": "de34e8234c339f04da82d6157254d2b181ee593fb5a7cef909f0977dbc86af7c"
+    },
+    {
+      "path": "output/pdf/implementation/Informe_cierre_etapa_1.pdf",
+      "bytes": 882328,
+      "sha256": "b397fea95fee0c690b5b42fc7c79c50827a45beb6c57b028dcf378e675fe00c7"
+    },
+    {
+      "path": "pysnspd/experimental/cell_validation.py",
+      "bytes": 17126,
+      "sha256": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b"
+    },
+    {
+      "path": "pysnspd/experimental/material_preprocessing.py",
+      "bytes": 5396,
+      "sha256": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250"
+    },
+    {
+      "path": "sandbox/stage1_closure/build_report.py",
+      "bytes": 7447,
+      "sha256": "c1490a0eb42c0a50d1656c683bcb528d1dfcb8696d49349d464cf0dbe3080fe2"
+    },
+    {
+      "path": "sandbox/stage1_closure/check_exchange_cancellation.py",
+      "bytes": 4196,
+      "sha256": "7a74613f91660a03bb886e1ece31d905a99c8b68ed02f7ad4d4160c3b9940db7"
+    },
+    {
+      "path": "sandbox/stage1_closure/README.md",
+      "bytes": 4601,
+      "sha256": "c8a1e03d183cf9818a97ca0a20ee84a89e8546f24cfa8448eea6621dfc0907d8"
+    },
+    {
+      "path": "sandbox/stage1_closure/review_material.py",
+      "bytes": 23278,
+      "sha256": "515dea96ac475fda3444e3f55c18cfea1f49251a68aba6065650fd76d8a48408"
+    },
+    {
+      "path": "sandbox/stage1_closure/run_cells.py",
+      "bytes": 19605,
+      "sha256": "2febe52de649e3f86811df9d56dc6dd765f7a1d90597a89415ed141459610d17"
+    },
+    {
+      "path": "sandbox/stage1_closure/run_regression.py",
+      "bytes": 1774,
+      "sha256": "03d6352794846eff4bca9a616d09ce09d132754fefb01c3e4ef1b2bff795c69e"
+    },
+    {
+      "path": "sandbox/stage1_closure/verify_delivery.py",
+      "bytes": 3359,
+      "sha256": "7c54c84d84c9730cf7136e7c1e919e95b05a6b223986785da9f197d50ed42fb3"
+    },
+    {
+      "path": "tests/test_experimental_cell_validation.py",
+      "bytes": 6363,
+      "sha256": "44dfa0bf2b8f1b09fa35ec3de5f13e926045da6fa3df8e6f9868a1fd9bf4eac8"
+    },
+    {
+      "path": "tests/test_experimental_material_preprocessing.py",
+      "bytes": 3152,
+      "sha256": "3281c6af880bd0a8b4854da31ffad1fcdb41a1144451c5e5d906eb618c9874ec"
+    }
+  ]
+}

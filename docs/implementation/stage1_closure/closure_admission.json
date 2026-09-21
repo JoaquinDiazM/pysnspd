@@ -1,0 +1,471 @@
+{
+  "schema": "pysnspd.stage1_closure.admission.v1",
+  "created_utc": "2026-09-21T17:44:28.019995+00:00",
+  "status": "CLOSED_ELECTRONIC_STAGE1_WITH_REDUCED_USE_TESTS; MATERIAL_RESTRICTED",
+  "electronic_status": "PASS_REDUCED_ELECTRONIC_USE_TESTS",
+  "electronic_gate_count": 53,
+  "electronic_stage1_closed": true,
+  "material_status": "CONDITIONAL_NUMERICAL_SHAPE_ONLY",
+  "global_material_small_impact_pass": false,
+  "absolute_NbN_admitted": false,
+  "global_physical_phonon_kinetics_admitted": false,
+  "complete_D4_item2_dynamics": false,
+  "production_promotion": false,
+  "electronic_scope": "Native R2 energy for BGK, heating and one self-consistent amplitude. Two-cell fixed-field transport conserves explicitly reconstructed energy; native energy bias, remapping and QP-count defect are distinct measured errors.",
+  "sampled_transport_summary": {
+    "native_energy_relative_bias": 0.00021191745407809947,
+    "FD_remapping_relative_error": 0.0006879285400542473,
+    "QP_count_relative_drift": 2.327923158777986e-05,
+    "reconstructed_energy_scaled_error": 2.220446049250313e-16
+  },
+  "material_scope": "The authorized derived shape is numerically traceable and has a finite common-support ratio. It is not an equivalent replacement for arbitrary raw populations: global moment and tail tests fail the frozen 0.1% small-impact criterion. Temperature/meV statements remain conditional on the THz-axis assumption; DOS normalization and absolute rates are not certified.",
+  "material_small_impact_threshold": 0.001,
+  "material_observable_changes": [
+    {
+      "group": "thermal",
+      "name": "T=0.5 K conditional; U",
+      "absolute_change": 0.0,
+      "relative_change": 0.0,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=0.5 K conditional; C",
+      "absolute_change": 0.0,
+      "relative_change": 0.0,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=1.0 K conditional; U",
+      "absolute_change": 0.0,
+      "relative_change": 0.0,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=1.0 K conditional; C",
+      "absolute_change": 0.0,
+      "relative_change": 0.0,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=2.0 K conditional; U",
+      "absolute_change": 3.1369131568898696e-175,
+      "relative_change": 1.3627639564636535e-167,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=2.0 K conditional; C",
+      "absolute_change": 6.2007958097550116e-173,
+      "relative_change": 1.3462663073383377e-165,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=4.0 K conditional; U",
+      "absolute_change": 3.2596822341408334e-89,
+      "relative_change": 8.563764623698254e-83,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=4.0 K conditional; C",
+      "absolute_change": 1.619079546251564e-87,
+      "relative_change": 4.095575741639081e-81,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=8.65 K conditional; U",
+      "absolute_change": 1.2690760689291735e-42,
+      "relative_change": 1.1427510154355704e-37,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=8.65 K conditional; C",
+      "absolute_change": 1.3639543638665382e-41,
+      "relative_change": 2.3159535243862568e-36,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=10.0 K conditional; U",
+      "absolute_change": 3.656082851150794e-37,
+      "relative_change": 1.6818801691115332e-32,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=10.0 K conditional; C",
+      "absolute_change": 2.950185670299424e-36,
+      "relative_change": 2.9004586153192493e-31,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=20.0 K conditional; U",
+      "absolute_change": 1.8085494260081831e-19,
+      "relative_change": 2.306343979925029e-16,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=20.0 K conditional; C",
+      "absolute_change": 3.740696398948287e-19,
+      "relative_change": 1.638287297713816e-15,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=40.0 K conditional; U",
+      "absolute_change": 2.426837990152971e-10,
+      "relative_change": 6.730131480732353e-09,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=40.0 K conditional; C",
+      "absolute_change": 1.301400580241954e-10,
+      "relative_change": 3.082920621377376e-08,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=80.0 K conditional; U",
+      "absolute_change": 1.2730389824111566e-05,
+      "relative_change": 2.7100200664434496e-05,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=80.0 K conditional; C",
+      "absolute_change": 1.7530470032974313e-06,
+      "relative_change": 0.00010332291671292664,
+      "small_effect": true
+    },
+    {
+      "group": "thermal",
+      "name": "T=160.0 K conditional; U",
+      "absolute_change": 0.0032725562559164974,
+      "relative_change": 0.001279143596245049,
+      "small_effect": false
+    },
+    {
+      "group": "thermal",
+      "name": "T=160.0 K conditional; C",
+      "absolute_change": 0.00011460942177939226,
+      "relative_change": 0.0033665783472048567,
+      "small_effect": false
+    },
+    {
+      "group": "thermal",
+      "name": "T=300.0 K conditional; U",
+      "absolute_change": 0.046817519479745426,
+      "relative_change": 0.005461283317643153,
+      "small_effect": false
+    },
+    {
+      "group": "thermal",
+      "name": "T=300.0 K conditional; C",
+      "absolute_change": 0.0004919124995515064,
+      "relative_change": 0.00997410390626338,
+      "small_effect": false
+    },
+    {
+      "group": "thermal",
+      "name": "T=600.0 K conditional; U",
+      "absolute_change": 0.2564580772930455,
+      "relative_change": 0.010273292509375875,
+      "small_effect": false
+    },
+    {
+      "group": "thermal",
+      "name": "T=600.0 K conditional; C",
+      "absolute_change": 0.0008256297583106925,
+      "relative_change": 0.014333466529372672,
+      "small_effect": false
+    },
+    {
+      "group": "thermal",
+      "name": "T=1000.0 K conditional; U",
+      "absolute_change": 0.6120312511067043,
+      "relative_change": 0.012609147662929822,
+      "small_effect": false
+    },
+    {
+      "group": "thermal",
+      "name": "T=1000.0 K conditional; C",
+      "absolute_change": 0.0009287499499179557,
+      "relative_change": 0.015541420632157073,
+      "small_effect": false
+    },
+    {
+      "group": "nonthermal_DOS",
+      "name": "Gaussian center=4 THz sigma=0.4 THz amplitude=1",
+      "absolute_change": 0.0,
+      "relative_change": 0.0,
+      "small_effect": true
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "Gaussian center=4 THz sigma=0.4 THz amplitude=1",
+      "absolute_change": 0.0,
+      "relative_change": 0.0,
+      "small_effect": true
+    },
+    {
+      "group": "nonthermal_DOS",
+      "name": "Gaussian center=15.5 THz sigma=0.4 THz amplitude=1",
+      "absolute_change": 0.00021984712577882703,
+      "relative_change": 3.6566866897966676e-05,
+      "small_effect": true
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "Gaussian center=15.5 THz sigma=0.4 THz amplitude=1",
+      "absolute_change": -0.26545500856835247,
+      "relative_change": -0.00385413790615456,
+      "small_effect": false
+    },
+    {
+      "group": "nonthermal_DOS",
+      "name": "Gaussian center=18.5 THz sigma=0.4 THz amplitude=1",
+      "absolute_change": 0.2875819637882927,
+      "relative_change": null,
+      "small_effect": false
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "Gaussian center=18.5 THz sigma=0.4 THz amplitude=1",
+      "absolute_change": -6.792350628794559e-06,
+      "relative_change": -0.37133658422705246,
+      "small_effect": false
+    },
+    {
+      "group": "nonthermal_DOS",
+      "name": "flat n=1",
+      "absolute_change": 0.8963382026941211,
+      "relative_change": 0.03244321892934549,
+      "small_effect": false
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "flat n=1",
+      "absolute_change": -5.472267404367358,
+      "relative_change": -0.007922567867451746,
+      "small_effect": false
+    },
+    {
+      "group": "nonthermal_DOS",
+      "name": "Gaussian center=7.45 THz sigma=0.04 THz amplitude=1",
+      "absolute_change": 0.0,
+      "relative_change": 0.0,
+      "small_effect": true
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "Gaussian center=7.45 THz sigma=0.04 THz amplitude=1",
+      "absolute_change": -0.8794241704432328,
+      "relative_change": -0.9603362353515066,
+      "small_effect": false
+    },
+    {
+      "group": "alpha_moments",
+      "name": "lambda_regular_origin",
+      "absolute_change": -0.004998536054941383,
+      "relative_change": -0.004111769873992972,
+      "small_effect": false
+    },
+    {
+      "group": "alpha_moments",
+      "name": "moment_E_power_0",
+      "absolute_change": -0.1083182988028426,
+      "relative_change": -0.00608520668891422,
+      "small_effect": false
+    },
+    {
+      "group": "alpha_moments",
+      "name": "moment_E_power_1",
+      "absolute_change": -5.472267404367358,
+      "relative_change": -0.007922567867451746,
+      "small_effect": false
+    },
+    {
+      "group": "alpha_moments",
+      "name": "moment_E_power_2",
+      "absolute_change": -313.8905832885721,
+      "relative_change": -0.009348464539341727,
+      "small_effect": false
+    },
+    {
+      "group": "exchange_proxy",
+      "name": "Te=10.0 K conditional",
+      "absolute_change": -1.6418832439468733e-14,
+      "relative_change": -2.3852019531569266e-10,
+      "small_effect": true
+    },
+    {
+      "group": "exchange_proxy",
+      "name": "Te=40.0 K conditional",
+      "absolute_change": -0.006482478133133185,
+      "relative_change": -0.0005577123266515571,
+      "small_effect": true
+    },
+    {
+      "group": "exchange_proxy",
+      "name": "Te=160.0 K conditional",
+      "absolute_change": -7.71757131727054,
+      "relative_change": -0.004958168742490769,
+      "small_effect": false
+    },
+    {
+      "group": "exchange_proxy",
+      "name": "Te=600.0 K conditional",
+      "absolute_change": -156.68300407983043,
+      "relative_change": -0.0071721995383658,
+      "small_effect": false
+    }
+  ],
+  "material_failed_small_impact_observables": [
+    {
+      "group": "thermal",
+      "name": "T=160.0 K conditional; U"
+    },
+    {
+      "group": "thermal",
+      "name": "T=160.0 K conditional; C"
+    },
+    {
+      "group": "thermal",
+      "name": "T=300.0 K conditional; U"
+    },
+    {
+      "group": "thermal",
+      "name": "T=300.0 K conditional; C"
+    },
+    {
+      "group": "thermal",
+      "name": "T=600.0 K conditional; U"
+    },
+    {
+      "group": "thermal",
+      "name": "T=600.0 K conditional; C"
+    },
+    {
+      "group": "thermal",
+      "name": "T=1000.0 K conditional; U"
+    },
+    {
+      "group": "thermal",
+      "name": "T=1000.0 K conditional; C"
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "Gaussian center=15.5 THz sigma=0.4 THz amplitude=1"
+    },
+    {
+      "group": "nonthermal_DOS",
+      "name": "Gaussian center=18.5 THz sigma=0.4 THz amplitude=1"
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "Gaussian center=18.5 THz sigma=0.4 THz amplitude=1"
+    },
+    {
+      "group": "nonthermal_DOS",
+      "name": "flat n=1"
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "flat n=1"
+    },
+    {
+      "group": "nonthermal_coupling",
+      "name": "Gaussian center=7.45 THz sigma=0.04 THz amplitude=1"
+    },
+    {
+      "group": "alpha_moments",
+      "name": "lambda_regular_origin"
+    },
+    {
+      "group": "alpha_moments",
+      "name": "moment_E_power_0"
+    },
+    {
+      "group": "alpha_moments",
+      "name": "moment_E_power_1"
+    },
+    {
+      "group": "alpha_moments",
+      "name": "moment_E_power_2"
+    },
+    {
+      "group": "exchange_proxy",
+      "name": "Te=160.0 K conditional"
+    },
+    {
+      "group": "exchange_proxy",
+      "name": "Te=600.0 K conditional"
+    }
+  ],
+  "material_restricted_examples": "Low-temperature DOS-weighted energy/capacity and the explicitly inspected low-frequency region may be used for conditional shape diagnostics. No inference extends this to arbitrary nonthermal profiles or photon cascades.",
+  "remaining_work": [
+    "Shared superconducting electron-phonon events with exact reaction energy and Pauli/phonon positivity",
+    "Simultaneous two-cell moving-condensate, collision and fixed-energy transport coupling",
+    "Material mobility and kinetic-time identification, phonon-unit/basis provenance",
+    "Spatial principal-symbol/core checks, interfaces, reservoirs and circuit before full transients"
+  ],
+  "next_permitted_implementation": "Complete one-and-two-cell self-consistent electron-phonon coupling using an explicitly synthetic admissible phonon input; retain material-shape sensitivity as a separate diagnostic.",
+  "evidence": {
+    "criteria": {
+      "path": "docs/implementation/stage1_closure/acceptance_criteria.json",
+      "sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951"
+    },
+    "electronic_assessment": {
+      "path": "docs/implementation/stage1_closure/review/electronic_assessment.json",
+      "sha256": "26d7848586621829abe319b6b42f67a4c4c9f35cd9e5475327f9badc91d890c5"
+    },
+    "cell_results": {
+      "path": "docs/implementation/stage1_closure/cells_results.json",
+      "sha256": "deafa33c92b0efb0e35ba17bfa6fb7764330e97256db9e4f6965c71a961c6f10"
+    },
+    "cell_source": {
+      "path": "pysnspd/experimental/cell_validation.py",
+      "sha256": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b"
+    },
+    "material_results": {
+      "path": "docs/implementation/stage1_closure/material_results.json",
+      "sha256": "1b4f84ab5cec52d24baced70d1bbfabeb1b2569792ec28cb4993a5006d1ab4df"
+    },
+    "material_replay": {
+      "path": "docs/implementation/stage1_closure/review/material_replay.json",
+      "sha256": "68d300313535751fc4c11597ee0c45e2874c410a79cccaa21e5e07d9d1a53f3d"
+    },
+    "derived_material_shape": {
+      "path": "docs/implementation/stage1_closure/material_nbn_shape_v1.csv",
+      "sha256": "7bffe65c19505d203e3b4705e4000d093c487f2ed02d79e0519c754f28d3c537"
+    },
+    "derived_material_manifest": {
+      "path": "docs/implementation/stage1_closure/material_nbn_shape_v1.manifest.json",
+      "sha256": "e8cba8c8eb00e475c556e1118bd6d0100857fb57c8bd41d96409499991b1ae8c"
+    },
+    "material_source": {
+      "path": "pysnspd/experimental/material_preprocessing.py",
+      "sha256": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250"
+    },
+    "R2_catalogue": {
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+    },
+    "R2_query_source": {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    }
+  },
+  "reviewer_source_sha256": "b3f2d40b84b5f16b01b1fc8e7429415ac08fd28319e664965215203829ee0235",
+  "final_regression_policy": "The delivery manifest binds the separate full-suite log; this scientific verdict does not turn that software regression into microscopic or material validation."
+}

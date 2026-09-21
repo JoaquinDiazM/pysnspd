@@ -20,12 +20,21 @@ Commits after the tag contain the opt-in
 [stage 1 implementation](sandbox/stage1_catalog/README.md): explicit material
 admission and uniform electronic catalogues with their own verification results.
 The production solver does not import `pysnspd.experimental`. The
+[stage 1 closure report](docs/implementation/stage1_closure/Informe_cierre_etapa_1.md)
+adds reduced one- and two-cell experiments and a source-based reassessment of
+explicit NbN phonon-data preprocessing. Its
+[admission decision](docs/implementation/stage1_closure/closure_admission.json)
+separates electronic catalogue use from material-rate claims; the
+[next implementation contract](docs/implementation/stage1_closure/NEXT_STAGE.md)
+identifies the remaining coupled kinetic work before spatial promotion.
+The earlier
 [second-iteration report](docs/implementation/stage1_r2/Informe_etapa_1_r2.md) and
-[R2 reproduction guide](sandbox/stage1_catalog_r2/README.md) record the current
-sampled electronic acceptance for synthetic-cell validation: 278 regression
-tests pass and the critical small-current slope error is 0.03196% (0.1% limit).
-NbN phonon input remains rejected; no production transient is certified by this
-catalogue. The [first report](docs/implementation/stage1/Informe_etapa_1.md)
+[R2 reproduction guide](sandbox/stage1_catalog_r2/README.md) retain the historical
+catalogue acceptance: 278 tests passed in that iteration and the critical
+small-current slope error was 0.03196% (0.1% limit). The closure now passes 317
+tests and retains a conditional derived NbN shape; absolute material admission
+and production transients remain outstanding. The
+[first report](docs/implementation/stage1/Informe_etapa_1.md)
 preserves the preceding iteration and its rejected numerical approximation.
 
 ```text
