@@ -1,0 +1,1016 @@
+{
+  "schema": "pysnspd.stage2.delivery.v1",
+  "baseline_commit": "d7b01fc5853c18629cb972e74b735e78ecb5be47",
+  "immutable_release_commit": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+  "scope": "Experimental simultaneous one/two-cell kinetics on explicit complementary count meshes; no spatial or production promotion.",
+  "retained_references": [
+    {
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/catalog_admission.json",
+      "sha256": "cbf7fe6d3ecd972ac882e995f0da0d64aa507da281d417ca2a877fe8bc15b3b8"
+    },
+    {
+      "path": "docs/implementation/stage1_r2/delivery_manifest.json",
+      "sha256": "95649a4e13f398522464154d8e00b34c4782be60db4fdfc52447fc9d43d92218"
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    {
+      "path": "pysnspd/experimental/material_admission.py",
+      "sha256": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/delivery_manifest.json",
+      "sha256": "f2a7f945b3cb087acbf968c4aabf07d5b3572c5ba41f43f46d842776af8051b0"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/closure_admission.json",
+      "sha256": "afe1968fe5abcff79737b1d39390b1afb56d86ddd888fe419a4cb0c940b7e2b9"
+    },
+    {
+      "path": "pysnspd/experimental/cell_validation.py",
+      "sha256": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b"
+    },
+    {
+      "path": "pysnspd/experimental/material_preprocessing.py",
+      "sha256": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/implementation/stage2/acceptance_criteria.json",
+      "bytes": 13214,
+      "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_findings.md",
+      "bytes": 2376,
+      "sha256": "dc9d477067ae5330939507c20f955e53fea1a795b1e5663dcb366cfc6ebc68d9"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_results.json",
+      "bytes": 121245,
+      "sha256": "c508feba97193288a81b3103720d636b840a59ecae3309bbce6ee4e0ccc4bd19"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_unit_test_run.json",
+      "bytes": 711,
+      "sha256": "13de8e1a9516a8a274d82fa1792ca6a91f53aec4d3532c6ed87428e0732eefbb"
+    },
+    {
+      "path": "docs/implementation/stage2/command_addendum.md",
+      "bytes": 5418,
+      "sha256": "9cac80aea3c6b20123ab52051ec1669cd2ef59944f1618ace8205d32c5e3bd1d"
+    },
+    {
+      "path": "docs/implementation/stage2/command_notebook_update.json",
+      "bytes": 401,
+      "sha256": "cedc73dc3e85831d9061d1c89f5d41f3b90d0ef40655efadaae7f8326c3c4292"
+    },
+    {
+      "path": "docs/implementation/stage2/complementary_bcs_exact_pilot_01.json",
+      "bytes": 3870007,
+      "sha256": "e29096f61822d941e720acfd60f6988702ad92672cfe9e9c85f2cfd8fb1725bf"
+    },
+    {
+      "path": "docs/implementation/stage2/complementary_event_final.json",
+      "bytes": 8549690,
+      "sha256": "20a200bd81b50aac86d55b3fc39c2fbc48fe1edd95b67e9bf99fcfd6664957f1"
+    },
+    {
+      "path": "docs/implementation/stage2/complementary_event_pilot_01.json",
+      "bytes": 6915600,
+      "sha256": "7b30f24388a3a0548c78cec1aed7e035402ed4b131f1c60300e61897a69b11fa"
+    },
+    {
+      "path": "docs/implementation/stage2/complementary_event_pilot_02.json",
+      "bytes": 6923227,
+      "sha256": "31e254fc9bc7599a08749089a7d446f93facb76d9a25a438916c5946123c0c13"
+    },
+    {
+      "path": "docs/implementation/stage2/complementary_rhs_pilot_02.json",
+      "bytes": 3412901,
+      "sha256": "e2e0fc37036ef14e2aad63c97ead5a12716c0c2e30a165adaaee594d6b773b93"
+    },
+    {
+      "path": "docs/implementation/stage2/event_pilot_01.json",
+      "bytes": 96002,
+      "sha256": "6ecf9a572d8097b8591a380b37bd1536408137446b04902e2457fd6ffbeb38d5"
+    },
+    {
+      "path": "docs/implementation/stage2/event_pilot_02.json",
+      "bytes": 109875,
+      "sha256": "3ae3242617f7aa9d0d16c0f7efc026b2e7555b4d33b70c3dc08efb4b4aa0c1fa"
+    },
+    {
+      "path": "docs/implementation/stage2/event_regulator.json",
+      "bytes": 14039,
+      "sha256": "23fe9587e821a0a0d3775946e0706fe4c30199cc248e510b097383ddb488468c"
+    },
+    {
+      "path": "docs/implementation/stage2/event_summary.json",
+      "bytes": 9532,
+      "sha256": "e8d27c9cab8f2f74b97a72bc7f12b9cd973546bb92edf6a0699958c0afadc438"
+    },
+    {
+      "path": "docs/implementation/stage2/EVENTS_STATUS.md",
+      "bytes": 3908,
+      "sha256": "1df93bd35f937858ca04f95ca160e401819281e20fa18d959b158c772060934a"
+    },
+    {
+      "path": "docs/implementation/stage2/figures/closure_mobility_phonons.pdf",
+      "bytes": 24945,
+      "sha256": "9f116e5de88ca84df9d1e4fdb7dbdb5fcc504926f9fdb763120cb2f186268c03"
+    },
+    {
+      "path": "docs/implementation/stage2/figures/closure_mobility_phonons.png",
+      "bytes": 173108,
+      "sha256": "e1f4ce62aff2563066c1db0207be500adcb75272b93e944b7027ba4f004e2bcd"
+    },
+    {
+      "path": "docs/implementation/stage2/figures/transport_convergence.pdf",
+      "bytes": 31725,
+      "sha256": "4d675a4daa5e3b3ae2b62b0abbe753b65801493b28941d5e82538efd973ad6ef"
+    },
+    {
+      "path": "docs/implementation/stage2/figures/transport_convergence.png",
+      "bytes": 205534,
+      "sha256": "cacedf09fd46a538e9bd0e9e9ec547e5147b80cb5c70a9e74b248a22f5e16313"
+    },
+    {
+      "path": "docs/implementation/stage2/history/check_initial_grid_projection_65_to1025.py",
+      "bytes": 2177,
+      "sha256": "12cb3f7b461e09930b455ee6468cd902c999c46976b7e58c3be2faedb9954aad"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/plot_transport_results.py",
+      "bytes": 6522,
+      "sha256": "2cdf6e032d627d565a831ad90e09e91de242cc4497500b9ef15f32f66fa5ceac"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/refined_cells.py",
+      "bytes": 4170,
+      "sha256": "9841e8b4d4daeeb4ddb1335e33db2341cdadeae0a722ef6980f6f348ede49406"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/snapshot.json",
+      "bytes": 1426,
+      "sha256": "f27498c56fbc8d2ecc2c74bf2c134d9b855aefa086126ba15ba93ee8291e3d04"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_convergence.pdf",
+      "bytes": 31519,
+      "sha256": "15a3999b603f1be8a66d3f69f95212aa13a5966e31d8a661afa11bf8df5ea8df"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_convergence.png",
+      "bytes": 206827,
+      "sha256": "c7e206d1367019c11a9b2986f4fae5892c8f2977bf847b232810e1c888fdb487"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_diagnostics.py",
+      "bytes": 14570,
+      "sha256": "23b08428e9ce42c6cf7ceec8f29ef81e400496ae0f27fdd88a3cc81fb29751c1"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_figure_manifest.json",
+      "bytes": 1193,
+      "sha256": "092469740e17cba4affbe46e3a097910b8fea4fadef426403f1a74259c61ead9"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_findings.md",
+      "bytes": 2302,
+      "sha256": "cc012e6a1cbce1a4c1518743068c98a201b5f8afd29d51ec6f01258449c46249"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_profile_curves.json",
+      "bytes": 80631,
+      "sha256": "bcdf9e1da483d38f8aa2980bfa3db401b348abd37c06c5833d8b9a6a47d61362"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_results.json",
+      "bytes": 68277,
+      "sha256": "c49265e4fb20558f84c98321ccb1313b86c95095a288e97b6fa989376388b6ac"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge2/transport_results_scenarios.json",
+      "bytes": 1617,
+      "sha256": "d54e19a42526afd12e17bdd9e6fdc2c84475b0aa7811bc6acbe23359967d4321"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge8/refined_cells.py",
+      "bytes": 5116,
+      "sha256": "2e3fff6c20f9fbb70f52be1a9a63153ee65ab439a91e879b2141d082e15d7b93"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge8/snapshot.json",
+      "bytes": 659,
+      "sha256": "5f8ec214c5b63b484fc87069730dad91eb55b99bce4ee4e70058c8dd7e4ede16"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge8/transport_diagnostics.py",
+      "bytes": 14570,
+      "sha256": "23b08428e9ce42c6cf7ceec8f29ef81e400496ae0f27fdd88a3cc81fb29751c1"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge8/transport_results.json",
+      "bytes": 68303,
+      "sha256": "d58db6a7aad3ec51d7b977e160dbfdcfe28c6e11c32b758a9120ce7ecdc750b2"
+    },
+    {
+      "path": "docs/implementation/stage2/history/transport_edge8/transport_results_scenarios.json",
+      "bytes": 1617,
+      "sha256": "b9e8037cefdce0201842212546e520d491d44f57dcac522653f128c62d5198c4"
+    },
+    {
+      "path": "docs/implementation/stage2/hybrid_event_pilot_01.json",
+      "bytes": 283847,
+      "sha256": "e2655f6ce33c555be3eaab9c7f9a70eae8930fd86640bc0e485d2c404ae6dd45"
+    },
+    {
+      "path": "docs/implementation/stage2/NEXT_STAGE.md",
+      "bytes": 3722,
+      "sha256": "d4fd937a8b43d259be2aba1da4fd115bd2ad45139dd1e3a294f372c846598ddb"
+    },
+    {
+      "path": "docs/implementation/stage2/NUMERICAL_DECISIONS.md",
+      "bytes": 2530,
+      "sha256": "2e47361829ad6657009e54c982319835ae4842de55e60d2e318a5f7607b7ff47"
+    },
+    {
+      "path": "docs/implementation/stage2/pilot_initial/transport_original.py",
+      "bytes": 6049,
+      "sha256": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75"
+    },
+    {
+      "path": "docs/implementation/stage2/pilot_initial/transport_original_results.json",
+      "bytes": 57313,
+      "sha256": "ffcaecc6f06fe0438466e666cf2d61a3234f3a70bd26a3c8a4fdb5b1fd5acdac"
+    },
+    {
+      "path": "docs/implementation/stage2/pilot_initial/transport_original_results_scenarios.json",
+      "bytes": 1344,
+      "sha256": "1161d5d28955eb75e0ccc230a58673f60b5919eee226f786f93d782309458541"
+    },
+    {
+      "path": "docs/implementation/stage2/pilot_initial/transport_original_runner.py",
+      "bytes": 11600,
+      "sha256": "faef77729cdd3a565ed57b14b721cb7dcc3b31d3fc2b46dff62eff31cec8dc4b"
+    },
+    {
+      "path": "docs/implementation/stage2/pilot_initial/transport_representation_diagnostic.json",
+      "bytes": 7493,
+      "sha256": "f81d0cf432a9858c05c4ded5fbfb1b462b41260e15accfdca1c0deb37210d4e4"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/complementary_two_cost.json",
+      "bytes": 18921,
+      "sha256": "3852b40b3f755b9dfc3ab67d91c3ceeede6fc014c8f1bb297f6276c5308414da"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/complementary_two_cost.npz",
+      "bytes": 180523,
+      "sha256": "af40bfa4e2e3e3b8081a2c77f182b629a2d5651f30603464137376401ae490f4"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/complementary_two_cost_initial.npz",
+      "bytes": 27764,
+      "sha256": "23dcd470bdc03684cd1fc36272761f8348fee226da7c64d3b03cf61c2ed60f73"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/equilibrium_initial.json",
+      "bytes": 27380,
+      "sha256": "170a416542340fb0fab23c1da1eaa77154c16a3bc3ab6c0a1aedb6d62cbed4dc"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/equilibrium_initial.npz",
+      "bytes": 10151,
+      "sha256": "e46fc78aea39f0614efa6810eb3175f3660c8fb0f409fc690ace52637f26cc41"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/equilibrium_initial_initial.npz",
+      "bytes": 7326,
+      "sha256": "054669568b84f498d64e23dfb5a66bc6182ffc32686fca73b2d87e930b902a3c"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/one_initial_isolated.json",
+      "bytes": 83366,
+      "sha256": "10d26179a5b70084c7f12e0f544d0167821822db5167c3dc8d59e8f3721496ca"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/one_initial_isolated.npz",
+      "bytes": 180183,
+      "sha256": "7c7ad1785784f287b073a3e4510256eb67e80ab16a0adf277b3d373f7ac9cf51"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/one_initial_isolated_initial.npz",
+      "bytes": 5858,
+      "sha256": "6d082fb53539b13e559f8bd390cd47e189db7eabceb4e9650b85decc8503b410"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/resolved_one_40.json",
+      "bytes": 40197,
+      "sha256": "491493ef91faef585d46ba0f957c51c538e25ffc6591418b79956276b2346301"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/resolved_one_40.npz",
+      "bytes": 338122,
+      "sha256": "d1cdb14c63bf0024da2ee04b2e9d04bb8365fa3e0c5a89a7a84f48db2814b44d"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/resolved_one_40_initial.npz",
+      "bytes": 19681,
+      "sha256": "42a227830638393015d982df778816006c0388af66c92ae815084110026dfdb9"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/resolved_two_40.json",
+      "bytes": 54374,
+      "sha256": "f6c27d9ba73f2092647c0c09c14ea8d8df29c87562c9d786d12884b79209ca17"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/resolved_two_40.npz",
+      "bytes": 670155,
+      "sha256": "5d6f298c31603796047b693dabebadbe4e6e107911491d2548a99d7cc63d80ae"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/resolved_two_40_initial.npz",
+      "bytes": 27764,
+      "sha256": "23dcd470bdc03684cd1fc36272761f8348fee226da7c64d3b03cf61c2ed60f73"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/sparse_initial.json",
+      "bytes": 67744,
+      "sha256": "063a22cd191659c1c1f561dc7d33ff9710c8c5091e0d0dcc43d0d0042721e976"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/sparse_initial.npz",
+      "bytes": 143063,
+      "sha256": "2130ae3e5c80e4cf43a4c8ead3d2ed8e33bf9a71f0088371257fb7e7644cb1ea"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/sparse_initial_initial.npz",
+      "bytes": 4560,
+      "sha256": "e19ff1cba177980ff9dddae8efd812af7eb47e282b9634507f9f52f8520e8cb1"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/two_initial_cost.json",
+      "bytes": 17159,
+      "sha256": "49837f0a61b80d918721f13bc2365a0e7d4e09f5b71cbda5ea1d148da3a13c6c"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/two_initial_cost.npz",
+      "bytes": 43775,
+      "sha256": "7765a264a5b403df5ac048780f21f71c797a34829e6d02971d84eeab78d76c2e"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/two_initial_cost_initial.npz",
+      "bytes": 7549,
+      "sha256": "dbd019240685d7fc3cfdcd57d9656a9059fdf228fff68bbae4bad8f464023595"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/two_initial_full.json",
+      "bytes": 114404,
+      "sha256": "dc1fe0d840f2a67ea36a98295d6d11caec707e51660c9cc3c178220b2d31e823"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/two_initial_full.npz",
+      "bytes": 368189,
+      "sha256": "9967e14e1ab34756eaa0a47307ae8faced18c72ed9504a9720b6e45047f55b33"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/two_initial_full_initial.npz",
+      "bytes": 7549,
+      "sha256": "dbd019240685d7fc3cfdcd57d9656a9059fdf228fff68bbae4bad8f464023595"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/vacuum_initial.json",
+      "bytes": 67989,
+      "sha256": "e077db4504768e7b773d4b0666d74c823b39aa776c1c8856bd28523c665ff4ae"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/vacuum_initial.npz",
+      "bytes": 147790,
+      "sha256": "27a5b802091de78ed932644945214e34e8bb901686b3a83f39c5e56508bfb939"
+    },
+    {
+      "path": "docs/implementation/stage2/pilots/vacuum_initial_initial.npz",
+      "bytes": 5455,
+      "sha256": "bdc51bd99b330e192937603e4bbe8d196137632b7469de0cd659db95020485a4"
+    },
+    {
+      "path": "docs/implementation/stage2/projected_event_pilot_01.json",
+      "bytes": 277506,
+      "sha256": "ff1303517c7bd1823cca695e67c726aadbae816690adf85be780a5dfe1782626"
+    },
+    {
+      "path": "docs/implementation/stage2/projected_phonon_1025.json",
+      "bytes": 108193,
+      "sha256": "1c77a22257ac2c0eaf262b9cc76372e2b9ca5a1b4d9fdd9daba21cf678447dd7"
+    },
+    {
+      "path": "docs/implementation/stage2/projected_phonon_convergence.json",
+      "bytes": 301139,
+      "sha256": "456b3490ecc3d3e8e11346392d4d893df8269704a7d54654201f51e89e7f92d0"
+    },
+    {
+      "path": "docs/implementation/stage2/README.md",
+      "bytes": 3152,
+      "sha256": "6daacdfe8f7d041595a65c8a41a3356ba6239ed55bd8493022c3a95eaf9a6771"
+    },
+    {
+      "path": "docs/implementation/stage2/reference_handoff.json",
+      "bytes": 1174,
+      "sha256": "f83fad24c65da5043ece4714759c85b8a1eaed9cb86b9b167ad181fb5caf70dc"
+    },
+    {
+      "path": "docs/implementation/stage2/regression_result.json",
+      "bytes": 5842,
+      "sha256": "2ac14b69964a7bb21e24bccaabb8d73ca203d5e5222808287d4934d70fd44ff4"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_edge_order_diagnostic.json",
+      "bytes": 1540,
+      "sha256": "4e004bed27366aab1cc8f0cf9b326dbf6e9971e98d88113a490f8e2e482e84f1"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_energy_reference.json",
+      "bytes": 43728,
+      "sha256": "04306dd602e0e02af5389186b5fdcc2842864364b6f3bdcdbadff86326b2d8f5"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_energy_reference.py",
+      "bytes": 5991,
+      "sha256": "a03d48f6f3be8afcd665a8eda30b285697338e57c9970b96d614d83fc3045a67"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_grid_amendment.json",
+      "bytes": 3574,
+      "sha256": "6270ca41d5d26e2fb30c9b02052d929a28db3fc5c7c2876a9e51c8ed1467b86c"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_moment_quadrature.json",
+      "bytes": 39737,
+      "sha256": "05a81c33ab563f2a9b84b8abca89fdacea25dcf196d8a6e57d7788c15112ca78"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_moment_quadrature.py",
+      "bytes": 4352,
+      "sha256": "a9495e5b5125c1071ae0e5136292dd6d9784d058aa7ac4c19b55e7f895b23bc4"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_moment_quadrature_edge8.json",
+      "bytes": 5587,
+      "sha256": "3df43e2d8db7bddd3c010966db845985f1ecff1b66e1b1c43ea04a5a7778a123"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_moment_quadrature_pilot.json",
+      "bytes": 5310,
+      "sha256": "2e164a75a6bbc598a42c15cd90f87f8c61235474eb41997c2b1f28a63488d18d"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_projection_check.json",
+      "bytes": 44583,
+      "sha256": "6e3471833845b52aeab7cba7761c118eadad494d11b6779f76018c34a2e1e13f"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_projection_check.py",
+      "bytes": 3342,
+      "sha256": "32bfb9b85354a1e7f26567ab3bb7d0b8982b74f0e95fe21641b85afe3f67b33a"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_reactions.json",
+      "bytes": 40732,
+      "sha256": "988f4303329cba7646a60a9add77439c94a9e4be110d77b28aa39fd60faeb6c6"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_reactions.py",
+      "bytes": 11538,
+      "sha256": "fb333f72889d163571f4889c9970d0b0b9760ea96383a9ead4c737986e75a5ac"
+    },
+    {
+      "path": "docs/implementation/stage2/review/DESIGN_REVIEW.md",
+      "bytes": 5909,
+      "sha256": "c0edb84b8e2ef04746ffa99784c80a8a354fd4ea40a5f1814ae478de1cb8f524"
+    },
+    {
+      "path": "docs/implementation/stage2/review/grid_assessment_selftest.json",
+      "bytes": 884,
+      "sha256": "1fdd0fdf953073ba8526b877a56af7f36900a92701a06d4361fdacc2a82f2a0b"
+    },
+    {
+      "path": "docs/implementation/stage2/review/history/complementary_energy_reference_edge8.json",
+      "bytes": 43747,
+      "sha256": "cd0ba9bf3225a6c6983d802675d5030e4fe5442b729840d41bafb9dc6b3a4968"
+    },
+    {
+      "path": "docs/implementation/stage2/review/history/complementary_moment_quadrature_edge8_band_FAIL.json",
+      "bytes": 39963,
+      "sha256": "56aa1bf45af7a17fb48588feaec32eba60b11f55d7e5b573439225710064e3bd"
+    },
+    {
+      "path": "docs/implementation/stage2/review/history/weak_population_reference_bcs_v1.py",
+      "bytes": 6260,
+      "sha256": "084fbd3dd73f59c67176be836726806dc665612df700504c1fe341668b6f92e4"
+    },
+    {
+      "path": "docs/implementation/stage2/review/infrared_reaction_reference.json",
+      "bytes": 76285,
+      "sha256": "a98a6f23ee8588c1643ef72d248dcc69cddf5e9c21d16860aeee91c17cfc7770"
+    },
+    {
+      "path": "docs/implementation/stage2/review/infrared_reaction_reference.py",
+      "bytes": 3552,
+      "sha256": "17e434ad9c93b62758d9881228a88c7976a29955b7bd92c9f0ad5375f160fb9f"
+    },
+    {
+      "path": "docs/implementation/stage2/review/initial_phonon_projection.json",
+      "bytes": 2077,
+      "sha256": "953850d4e0a4c2d1702c92ba83a71a9c092c73e88cf1ef562dac1e59f2071952"
+    },
+    {
+      "path": "docs/implementation/stage2/review/initial_phonon_projection_fine.json",
+      "bytes": 2052,
+      "sha256": "89e622c849ed2aa3cedcc090aa5a94fc67bbcc7c653cbe078017239a1a78bb6a"
+    },
+    {
+      "path": "docs/implementation/stage2/review/initial_phonon_projection_fine_scenarios.json",
+      "bytes": 966,
+      "sha256": "95e3d0b541e76aeabd3b07fe97655ceddf5b1cd114159a5078b7b82ebbec16f9"
+    },
+    {
+      "path": "docs/implementation/stage2/review/initial_phonon_projection_scenarios.json",
+      "bytes": 870,
+      "sha256": "de880b69d13176fb391cf78eb5f7dc7db6fb42912533cb80e27e5aaedb105d42"
+    },
+    {
+      "path": "docs/implementation/stage2/review/negative_controls.json",
+      "bytes": 3376,
+      "sha256": "0318cc9c121b42bcf49bba65f4dd1de164b5455bc7812dc9dcc5279bad173dd2"
+    },
+    {
+      "path": "docs/implementation/stage2/review/negative_controls.py",
+      "bytes": 4051,
+      "sha256": "5c8d24ccf79c59e7bf0d36de01715332c6dbdd75f06e92144a7e1fb15af24612"
+    },
+    {
+      "path": "docs/implementation/stage2/review/normal_population_reference.json",
+      "bytes": 89932,
+      "sha256": "35359007a542ed51a4ed8865879b6c8b377b0625fbb1622a09b93b669bfcfd88"
+    },
+    {
+      "path": "docs/implementation/stage2/review/normal_population_reference.py",
+      "bytes": 5040,
+      "sha256": "8ab69b5c1ac57d8ddc210e502e9a0d6c9236086962488175c12db4eb5bc684d8"
+    },
+    {
+      "path": "docs/implementation/stage2/review/reference_initial_failure.json",
+      "bytes": 579,
+      "sha256": "b050cb04eba901f198619e23758e4c87d41d057b8eadb33af7a4067f9854106c"
+    },
+    {
+      "path": "docs/implementation/stage2/review/time_assessment_selfcheck.json",
+      "bytes": 889,
+      "sha256": "bce3a68d592274cb4042380ad4bdcf7793c013003d6ad7e2ec80b681a7fd7521"
+    },
+    {
+      "path": "docs/implementation/stage2/review/time_assessment_selfcheck.py",
+      "bytes": 4711,
+      "sha256": "cf18dea15fa60b903f05f515c242f85dd5cf1755a32e46054bd7f012c75312b0"
+    },
+    {
+      "path": "docs/implementation/stage2/review/upper_support_reference.json",
+      "bytes": 26536,
+      "sha256": "fa652e53343a373bd09563516ff949e76fb2e9b7104593afdaee737bc3f85c43"
+    },
+    {
+      "path": "docs/implementation/stage2/review/upper_support_reference.py",
+      "bytes": 6632,
+      "sha256": "c1b3067b2c691b5812e84406cf2a72fd241168b86bdb2ddff35349e4fbfff4b5"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_finite_eta.py",
+      "bytes": 6123,
+      "sha256": "0c7dfd59153488a68944e6f5bee512fdfc3e21f62a401ef6c367ff3d76dbf740"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference.py",
+      "bytes": 7317,
+      "sha256": "4e61c72b381fd5b624293246c3781c70cf1cb6c501b01b552cf65ee0067b542f"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_1.json",
+      "bytes": 333318,
+      "sha256": "fe18d352b1d873ce37a46000cddf7ad4af38c329a9cf4c9f7b1689af4ce911ed"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_2.json",
+      "bytes": 644722,
+      "sha256": "6d5eac4dbe1af66a0280b3fd50c1e7a557b32646165ce1d5f0ac33259837d25f"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_4.json",
+      "bytes": 1270373,
+      "sha256": "d7645ee53bb3aab47896804bdd250afbe689d122bace86927aca7a3de4253b8f"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_edge8_all_1.json",
+      "bytes": 559823,
+      "sha256": "94caf2dbef815448f16a0b883fb6dc2441fdc76042bd9d56fee1263528282092"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_edge8_all_2.json",
+      "bytes": 1110983,
+      "sha256": "f2a5f2442e4219176bd2c39617c1acd3edd717444cd681e3252997d250e61d9c"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_edge8_all_4.json",
+      "bytes": 2216194,
+      "sha256": "08d921b794721fc8a93a11c1ef36fbcd5df339d6d5c4c7b90ba847e8798637de"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_edge8_gapless_1.json",
+      "bytes": 211820,
+      "sha256": "c006af5020a09b45cdf70ad99c3215a341b4faf82ef567327b742ce1a5333ce5"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_1.json",
+      "bytes": 585999,
+      "sha256": "771782465028f69880be1366b7aa0f20cc441a5ae1b0dd2dba297403cf200a63"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_2.json",
+      "bytes": 1163152,
+      "sha256": "c651fd105016b0ef5f921c9321b36e9d7737341a74d6207d8f6035c641bf5337"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_4.json",
+      "bytes": 2319332,
+      "sha256": "ac444604036368623479910d89c39228469fd7e848cab3a9f14664e517c4702a"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_finite_eta_bcs_1.json",
+      "bytes": 220339,
+      "sha256": "50619b1ba621904f9567bf76880c1beec7aecfa51fedd303bda75a3dc33d39ca"
+    },
+    {
+      "path": "docs/implementation/stage2/review/write_pending_admission.py",
+      "bytes": 12665,
+      "sha256": "08ada6259bed2d85cf2ce818b11cb7a816c80aadeb4cdc772334feaec7522ada"
+    },
+    {
+      "path": "docs/implementation/stage2/selected_event_measurements.json",
+      "bytes": 3953572,
+      "sha256": "8f358d077a48193b6f725c40827e48f16315916198aaca1fffe72cac407e08b1"
+    },
+    {
+      "path": "docs/implementation/stage2/stage2_admission.json",
+      "bytes": 21891,
+      "sha256": "5ff42f809fcaa1593e897364037d49b2c71f15633547702969617dad1ab5b01e"
+    },
+    {
+      "path": "docs/implementation/stage2/time_suboperator_order.json",
+      "bytes": 7334,
+      "sha256": "fa5fa66da51e1e150d8cb7550a6b5e3ce21e6d18ae438e1abfe67ed462c65fe2"
+    },
+    {
+      "path": "docs/implementation/stage2/time_suboperator_order_scenarios.json",
+      "bytes": 1533,
+      "sha256": "04f50c04f718d2facbd36a63bc67889a3d04690db14c1eec47f9f1d038c76da3"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_40.json",
+      "bytes": 40176,
+      "sha256": "3116b415c977ffc6d866a14fbf506f9fb55eb0a13a003ba1a7b1827bec6da5b2"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_40.npz",
+      "bytes": 368902,
+      "sha256": "7c63f6eda1569cb89b1247701ace286203f5918ec40544a2d51aab1e1d9db565"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_40_initial.npz",
+      "bytes": 21034,
+      "sha256": "a1707a0f04c32b7d1108db6d5acacdcdbfcb03b91e16d638220dded8299182c0"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_80.json",
+      "bytes": 73964,
+      "sha256": "f00b04081bf1ee7a1d529becfe87b28d30f5f9ad96d0b75b356378e7a5cf60e5"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_80.npz",
+      "bytes": 716403,
+      "sha256": "49d2706b43dab014a3f95fabf60fb0ea2e7b6eb03693766b9a518a8eea50ca18"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_80_initial.npz",
+      "bytes": 21034,
+      "sha256": "a1707a0f04c32b7d1108db6d5acacdcdbfcb03b91e16d638220dded8299182c0"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_reference_probe.json",
+      "bytes": 4357,
+      "sha256": "d37d612f83b7fcee8536676a135a13046323eb62f61f0bc52dc4a1ceb036c6da"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_reference_probe_initial.npz",
+      "bytes": 21034,
+      "sha256": "a1707a0f04c32b7d1108db6d5acacdcdbfcb03b91e16d638220dded8299182c0"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/two_40.json",
+      "bytes": 54351,
+      "sha256": "20a7ef1896f58a52b7872762450c076f479ad0101f8cae2bef2468eae504b3b4"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/two_40.npz",
+      "bytes": 732233,
+      "sha256": "7f8ce99f81d357940104cc198131788420c72827ecce44db4dab2aa79dd05903"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/two_40_initial.npz",
+      "bytes": 29812,
+      "sha256": "683456ed3f5e7af9df2dadf9b21ef09116791645222597967f11b6bc8b1b177a"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/vacuum.json",
+      "bytes": 40025,
+      "sha256": "be1662d358f79143af5f8fde48e62e615e127cdd5660d2031eb94b2163119934"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/vacuum.npz",
+      "bytes": 368045,
+      "sha256": "143e58abb721b3e8a12ad27bd089000c13ded3458486e8174150deab5f207946"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/vacuum_initial.npz",
+      "bytes": 18017,
+      "sha256": "7ecb00fbeb47e68f427958f994303329b192440051d4d83e104ea9381781429f"
+    },
+    {
+      "path": "docs/implementation/stage2/transport_figure_manifest.json",
+      "bytes": 1192,
+      "sha256": "f054c4fce5d89b764d8ac3cf9bee25f9c849b83961d778389ec62799e8fbd861"
+    },
+    {
+      "path": "docs/implementation/stage2/transport_findings.md",
+      "bytes": 2645,
+      "sha256": "ef915a8eb6e6a64aa7ecb4cc250e195a367226f56b3a7366083d821cb5b2d318"
+    },
+    {
+      "path": "docs/implementation/stage2/transport_profile_curves.json",
+      "bytes": 80626,
+      "sha256": "750d84bbea1215091d71259d822431e8931f2adbce39b0ff8fad44606c914ad4"
+    },
+    {
+      "path": "docs/implementation/stage2/transport_results.json",
+      "bytes": 68094,
+      "sha256": "ee0e717932bd8ad09fc1375a64e3f247c284d69fcd7dd6556882e6754d8cb435"
+    },
+    {
+      "path": "docs/implementation/stage2/transport_results_scenarios.json",
+      "bytes": 1617,
+      "sha256": "137569b5e0083d3b9bfc754f528436c6ee2fac18f2d126e763c06eb6b1c673a0"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_all_edge8_comparison.json",
+      "bytes": 11140,
+      "sha256": "6350426b2d3179f0bdab863ec482950dbdfc8005d7d7acd356722baf3b98b716"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_comparison.json",
+      "bytes": 7531,
+      "sha256": "1f0cf6951be3fcbbe37d2f8c9075f715e1c3159f61e6b6ead855003195482e92"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_1.json",
+      "bytes": 11165,
+      "sha256": "c6c413ac714e448313c00f97970f29d7e257f0db0908de5efbf8412f7fea68f4"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_2.json",
+      "bytes": 11171,
+      "sha256": "d05107633d4988f71277d4ea346d9caebea337c7b14032e5d98002be41efa786"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_4.json",
+      "bytes": 11167,
+      "sha256": "ea8e4632f8c102ac7be4d7d4a04177fd32da686b06db061844bf8cf7a0c22313"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_gapless_edge8_comparison.json",
+      "bytes": 3967,
+      "sha256": "104683fce7d198c4ad3b62008cfe92ef45f9d9cc8e78f5cd493986568b636f32"
+    },
+    {
+      "path": "pysnspd/experimental/cell_closures.py",
+      "bytes": 17573,
+      "sha256": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d"
+    },
+    {
+      "path": "pysnspd/experimental/cell_transport.py",
+      "bytes": 6049,
+      "sha256": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75"
+    },
+    {
+      "path": "pysnspd/experimental/coupled_cells.py",
+      "bytes": 9219,
+      "sha256": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df"
+    },
+    {
+      "path": "pysnspd/experimental/kinetic_events.py",
+      "bytes": 36271,
+      "sha256": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f"
+    },
+    {
+      "path": "pysnspd/experimental/refined_cells.py",
+      "bytes": 5311,
+      "sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+    },
+    {
+      "path": "sandbox/stage2_cells/assess_grid_refinement.py",
+      "bytes": 21887,
+      "sha256": "50e1dcc0bbf545b16c0d5db67ffeff72bafcda89b4ddd94f13460c178c25cfa4"
+    },
+    {
+      "path": "sandbox/stage2_cells/assess_time_refinement.py",
+      "bytes": 10585,
+      "sha256": "14f2c9282cf0aa84787e73110b3e5027bb2db30b5bc07fcef1ce46a96fd5c64b"
+    },
+    {
+      "path": "sandbox/stage2_cells/build_report.py",
+      "bytes": 7478,
+      "sha256": "4ca91f5251cfbd041794621f06a6c8147ffaf8258e545c239a6b2972f2ef6207"
+    },
+    {
+      "path": "sandbox/stage2_cells/check_event_regulator.py",
+      "bytes": 2937,
+      "sha256": "752d7fd24c81384c85c1ad76b5227886b736f8eaf0f4d6c201066eb3eea5d62a"
+    },
+    {
+      "path": "sandbox/stage2_cells/check_initial_grid_projection.py",
+      "bytes": 2818,
+      "sha256": "7874cd5ab5af761e31438f2493d3ee90be76f147fbfa0599be29ac590d0fc859"
+    },
+    {
+      "path": "sandbox/stage2_cells/check_projected_phonons.py",
+      "bytes": 7789,
+      "sha256": "a3f098b7afd4063b71fe36c15fa420b0bd9cd5c2568a041cd3917c02f6fdb693"
+    },
+    {
+      "path": "sandbox/stage2_cells/check_suboperator_order.py",
+      "bytes": 9582,
+      "sha256": "647ab15327a846dec177b7d0da68e05473f211c24ac335201e8e9f5a5c9da0b6"
+    },
+    {
+      "path": "sandbox/stage2_cells/check_trajectory_fields.py",
+      "bytes": 5207,
+      "sha256": "bdc30ab06493d9ab98ead77464fbcdce14a497a33e7468ce5c842d7ddd17ead3"
+    },
+    {
+      "path": "sandbox/stage2_cells/check_trajectory_support.py",
+      "bytes": 5742,
+      "sha256": "50a3646f33c752eab7eaeb12f6f3ddce0864ff5888c3da508037f68c55285771"
+    },
+    {
+      "path": "sandbox/stage2_cells/closure_diagnostics.py",
+      "bytes": 10138,
+      "sha256": "5700e502f16941e8c61573b96a7526671fef5f667f75da44dc7b6aab2167f674"
+    },
+    {
+      "path": "sandbox/stage2_cells/compare_weak_reference.py",
+      "bytes": 3481,
+      "sha256": "28e9e5c663a05f0d48de8817a41299bf6d729d483550d3a15bc1ea2536b3c49a"
+    },
+    {
+      "path": "sandbox/stage2_cells/event_diagnostics.py",
+      "bytes": 13856,
+      "sha256": "146c6734bea49524fdc57ef918d3c1f2e00513826fb755d09166c39632622c1c"
+    },
+    {
+      "path": "sandbox/stage2_cells/history/coupled_before_edge_fix_run_coupled.py",
+      "bytes": 12283,
+      "sha256": "d6a4ae865cc6d72770c2bb69a278ada61c05832695bb73a92a718f817cb41f96"
+    },
+    {
+      "path": "sandbox/stage2_cells/history/kinetic_events_pair_v1.py",
+      "bytes": 13362,
+      "sha256": "e9abe7b3687f49345fdcbfcfaa2955c0212a422e009700d845f0f2ed8149fc7c"
+    },
+    {
+      "path": "sandbox/stage2_cells/history/kinetic_events_resolved_linear_v1.py",
+      "bytes": 34442,
+      "sha256": "5171565bb3451924685dbe6d969165f880316efde46e10e418b7f9b2edfa7542"
+    },
+    {
+      "path": "sandbox/stage2_cells/history/projected_event_diagnostics_uniform_v1.py",
+      "bytes": 11058,
+      "sha256": "bc85a79775933603f96f2ed63119026a106aa52cb151e77e47a2548882472061"
+    },
+    {
+      "path": "sandbox/stage2_cells/history/refined_cells_edge2.py",
+      "bytes": 4170,
+      "sha256": "9841e8b4d4daeeb4ddb1335e33db2341cdadeae0a722ef6980f6f348ede49406"
+    },
+    {
+      "path": "sandbox/stage2_cells/history/refined_cells_edge8_before_band.py",
+      "bytes": 5116,
+      "sha256": "2e3fff6c20f9fbb70f52be1a9a63153ee65ab439a91e879b2141d082e15d7b93"
+    },
+    {
+      "path": "sandbox/stage2_cells/history/run_coupled_phonon513.py",
+      "bytes": 12283,
+      "sha256": "d6a4ae865cc6d72770c2bb69a278ada61c05832695bb73a92a718f817cb41f96"
+    },
+    {
+      "path": "sandbox/stage2_cells/plot_results.py",
+      "bytes": 5253,
+      "sha256": "78aa1d59583aefc095336077494b3635024b759e71843cc432c1dce23b09a120"
+    },
+    {
+      "path": "sandbox/stage2_cells/plot_transport_results.py",
+      "bytes": 6728,
+      "sha256": "45f9c1f8eff8ebf148805b9fed51bbecd691905e6733760e64f10c7abfa0e2cd"
+    },
+    {
+      "path": "sandbox/stage2_cells/prepare_report_content.py",
+      "bytes": 8053,
+      "sha256": "b985404b467b94f5aecf7e85883116835a0273663bacf93ce2eae3001b2cf1cf"
+    },
+    {
+      "path": "sandbox/stage2_cells/projected_event_diagnostics.py",
+      "bytes": 13209,
+      "sha256": "a92d2e081b2fc34050171852121fb902b550d98edd876903df6509010fe757d2"
+    },
+    {
+      "path": "sandbox/stage2_cells/README.md",
+      "bytes": 1441,
+      "sha256": "17eb078bd12f5eff30eb4295ca8e1ca6014fc2c492264f109692b7ce7f709992"
+    },
+    {
+      "path": "sandbox/stage2_cells/run_coupled.py",
+      "bytes": 12285,
+      "sha256": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9"
+    },
+    {
+      "path": "sandbox/stage2_cells/run_reference_progress.py",
+      "bytes": 2912,
+      "sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e"
+    },
+    {
+      "path": "sandbox/stage2_cells/run_regression.py",
+      "bytes": 1870,
+      "sha256": "618e49763eed056c6d4cd66f6cb7cd65010121543034dfc48cafb3efa0b29641"
+    },
+    {
+      "path": "sandbox/stage2_cells/summarize_events.py",
+      "bytes": 3923,
+      "sha256": "afa92c6d1b5e66a671ea285403c7412ebf0e1bdd99e0d6aa32fcb86d7b21100c"
+    },
+    {
+      "path": "sandbox/stage2_cells/transport_diagnostics.py",
+      "bytes": 14570,
+      "sha256": "23b08428e9ce42c6cf7ceec8f29ef81e400496ae0f27fdd88a3cc81fb29751c1"
+    },
+    {
+      "path": "sandbox/stage2_cells/transport_representation_diagnostic.py",
+      "bytes": 4037,
+      "sha256": "84c9256837218003f35c89bac639a04304696adc840cfa60a177160bf0b61945"
+    },
+    {
+      "path": "sandbox/stage2_cells/verify_delivery.py",
+      "bytes": 4317,
+      "sha256": "9e762bcd02acd51518846225b2c19461b5f430a3e7b8c777bd8f692fe1a1aa40"
+    },
+    {
+      "path": "tests/test_experimental_cell_closures.py",
+      "bytes": 9628,
+      "sha256": "f7c97c60c42a7c026e1510b5d9fa0d8d50466f2e31a5c90671f89670792acff2"
+    },
+    {
+      "path": "tests/test_experimental_cell_transport.py",
+      "bytes": 2150,
+      "sha256": "6b430a042e3c5ca4f72b3b093d11a998d210357486c57ce0a8fbc1991e280183"
+    },
+    {
+      "path": "tests/test_experimental_coupled_cells.py",
+      "bytes": 1722,
+      "sha256": "8a2f552ff17037ce7d0e2d77e160d759c70d372060191e58564de0f7aea6a79d"
+    },
+    {
+      "path": "tests/test_experimental_kinetic_events.py",
+      "bytes": 9890,
+      "sha256": "b54cca03ed2a5ded39d238d86faeeefb44a64c71d917e68c47b120d9f62a5fdc"
+    },
+    {
+      "path": "tests/test_experimental_refined_cells.py",
+      "bytes": 5094,
+      "sha256": "25b273cb1e06455ce3e8778e5216e55f073d931e015950744d984959119eff90"
+    }
+  ]
+}

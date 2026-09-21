@@ -1,0 +1,486 @@
+{
+  "schema": "pysnspd.stage2.independent_upper_support.v1",
+  "status": "REFERENCE_PROFILES_ONLY_ACTUAL_TRAJECTORIES_REQUIRE_THEIR_POPULATIONS",
+  "method": "Independent (E,Omega) integral for E in [Emax-Omega,Emax], external hole <=1. No experimental module imports.",
+  "limitations": [
+    "eta=0 reference; finite-eta bias is separately controlled",
+    "No bound on arbitrary incoming electrons from unrepresented energies",
+    "Lower support and quadrature truncation are separate gates",
+    "External emission columns use the stated analytic continuation of each profile"
+  ],
+  "orders": [
+    16,
+    32,
+    64
+  ],
+  "rate_prefactor": 1.0,
+  "omega_support": [
+    0.01,
+    4.0
+  ],
+  "source_sha256": "c1b3067b2c691b5812e84406cf2a72fd241168b86bdb2ddff35349e4fbfff4b5",
+  "continuous_reference_sha256": "988f4303329cba7646a60a9add77439c94a9e4be110d77b28aa39fd60faeb6c6",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "rows": [
+    {
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "energy_upper": 12.0,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 1.5311788352619128e-18,
+          "absorption_phonon_power_upper_bound": 1.2035635701370206e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.7552329532008474e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.8755893102145496e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.481152026957515e-15
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.5311788352619131e-18,
+          "absorption_phonon_power_upper_bound": 1.2035635701370214e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.755232953200848e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.8755893102145506e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.481152026957531e-15
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.5311788352619131e-18,
+          "absorption_phonon_power_upper_bound": 1.2035635701370206e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.755232953200848e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.87558931021455e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.481152026957505e-15
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 1.5311788352619131e-18,
+        "absorption_phonon_power_upper_bound": 1.2035635701370206e-18,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.755232953200848e-17,
+        "absorption_external_electron_energy_gain_upper_bound": 1.87558931021455e-17,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 4.481152026957505e-15
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 0.0,
+        "absorption_phonon_power_upper_bound": 6.40075852135663e-16,
+        "absorption_inside_electron_energy_loss_upper_bound": 0.0,
+        "absorption_external_electron_energy_gain_upper_bound": 3.285887687925758e-16,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 5.8093119170447316e-15
+      },
+      "absorption_power_bound_over_in_support_gross_power": 5.118635488542402e-15,
+      "absorption_count_bound_over_in_support_gross_count": 9.502108370558908e-15,
+      "assumed_external_emission_power_over_in_support_gross_power": 1.905789138510322e-11
+    },
+    {
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "energy_upper": 12.0,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 1.4390033863274127e-39,
+          "absorption_phonon_power_upper_bound": 3.6820408754751396e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.3758680153767372e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.7440721029242514e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.487254350560258e-46
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.4390033863274385e-39,
+          "absorption_phonon_power_upper_bound": 3.6820408754752114e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.3758680153767573e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.7440721029242785e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.487254350581344e-46
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.4390033863274126e-39,
+          "absorption_phonon_power_upper_bound": 3.682040875475144e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.375868015376733e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.7440721029242477e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.487254350581234e-46
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 1.4390033863274126e-39,
+        "absorption_phonon_power_upper_bound": 3.682040875475144e-39,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.375868015376733e-38,
+        "absorption_external_electron_energy_gain_upper_bound": 1.7440721029242477e-38,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 5.487254350581234e-46
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 1.802503420543898e-14,
+        "absorption_phonon_power_upper_bound": 1.8253636581834985e-14,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.764277703214715e-14,
+        "absorption_external_electron_energy_gain_upper_bound": 1.7659497584596582e-14,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 2.013001660299108e-14
+      },
+      "absorption_power_bound_over_in_support_gross_power": 1.2067236543665862e-36,
+      "absorption_count_bound_over_in_support_gross_count": 9.837787382210567e-37,
+      "assumed_external_emission_power_over_in_support_gross_power": 1.7983503840157284e-43
+    },
+    {
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "energy_upper": 12.0,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 4.0286133471068225e-23,
+          "absorption_phonon_power_upper_bound": 8.450021024448114e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 4.0897413593348095e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.934743461779621e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.159393582187383e-24
+        },
+        {
+          "absorption_number_rate_upper_bound": 4.028613347106836e-23,
+          "absorption_phonon_power_upper_bound": 8.450021024448143e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 4.0897413593348226e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.934743461779637e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.1593935821874105e-24
+        },
+        {
+          "absorption_number_rate_upper_bound": 4.028613347106812e-23,
+          "absorption_phonon_power_upper_bound": 8.45002102444809e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 4.089741359334799e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.934743461779608e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.159393582187359e-24
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 4.028613347106812e-23,
+        "absorption_phonon_power_upper_bound": 8.45002102444809e-23,
+        "absorption_inside_electron_energy_loss_upper_bound": 4.089741359334799e-22,
+        "absorption_external_electron_energy_gain_upper_bound": 4.934743461779608e-22,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 5.159393582187359e-24
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 5.981620005593946e-15,
+        "absorption_phonon_power_upper_bound": 6.260013511677375e-15,
+        "absorption_inside_electron_energy_loss_upper_bound": 5.748502154735198e-15,
+        "absorption_external_electron_energy_gain_upper_bound": 5.907553275298246e-15,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 9.967814439671395e-15
+      },
+      "absorption_power_bound_over_in_support_gross_power": 1.1028349630944906e-19,
+      "absorption_count_bound_over_in_support_gross_count": 9.000878089142412e-20,
+      "assumed_external_emission_power_over_in_support_gross_power": 6.7336632824214606e-21
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "energy_upper": 12.021580594913466,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 1.4507746489166372e-18,
+          "absorption_phonon_power_upper_bound": 1.140371064116081e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.666193513876656e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.7802306202882637e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.246765998367246e-15
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.4507746489166378e-18,
+          "absorption_phonon_power_upper_bound": 1.1403710641160818e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.666193513876656e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.7802306202882646e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.246765998367261e-15
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.4507746489166374e-18,
+          "absorption_phonon_power_upper_bound": 1.140371064116081e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.666193513876656e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.7802306202882643e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.246765998367236e-15
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 1.4507746489166374e-18,
+        "absorption_phonon_power_upper_bound": 1.140371064116081e-18,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.666193513876656e-17,
+        "absorption_external_electron_energy_gain_upper_bound": 1.7802306202882643e-17,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 4.246765998367236e-15
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 2.6550366672390085e-16,
+        "absorption_phonon_power_upper_bound": 6.755450063545951e-16,
+        "absorption_inside_electron_energy_loss_upper_bound": 0.0,
+        "absorption_external_electron_energy_gain_upper_bound": 1.730948718610742e-16,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 5.758426075572215e-15
+      },
+      "absorption_power_bound_over_in_support_gross_power": 5.624025456469949e-15,
+      "absorption_count_bound_over_in_support_gross_count": 1.3802892703964458e-14,
+      "assumed_external_emission_power_over_in_support_gross_power": 2.0943989929278982e-11
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "energy_upper": 12.021580594913466,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 1.2023065286020307e-39,
+          "absorption_phonon_power_upper_bound": 3.07640345778761e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.1521497349220241e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.459790080700785e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.585218528599905e-46
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.2023065286020514e-39,
+          "absorption_phonon_power_upper_bound": 3.0764034577876674e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.1521497349220402e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.459790080700807e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.585218528617538e-46
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.2023065286020307e-39,
+          "absorption_phonon_power_upper_bound": 3.076403457787614e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.1521497349220206e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.4597900807007817e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.5852185286174445e-46
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 1.2023065286020307e-39,
+        "absorption_phonon_power_upper_bound": 3.076403457787614e-39,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.1521497349220206e-38,
+        "absorption_external_electron_energy_gain_upper_bound": 1.4597900807007817e-38,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 4.5852185286174445e-46
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 1.7231746807517356e-14,
+        "absorption_phonon_power_upper_bound": 1.739287364995606e-14,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.6990771954932145e-14,
+        "absorption_external_electron_energy_gain_upper_bound": 1.734371377813454e-14,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 2.0357858319146022e-14
+      },
+      "absorption_power_bound_over_in_support_gross_power": 7.559583755462465e-37,
+      "absorption_count_bound_over_in_support_gross_count": 6.149949122808477e-37,
+      "assumed_external_emission_power_over_in_support_gross_power": 1.1267164394981294e-43
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "energy_upper": 12.021580594913466,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 3.695724343107547e-23,
+          "absorption_phonon_power_upper_bound": 7.751810881938138e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 3.759773811401566e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.53495489959538e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.7338374700853856e-24
+        },
+        {
+          "absorption_number_rate_upper_bound": 3.6957243431075594e-23,
+          "absorption_phonon_power_upper_bound": 7.751810881938165e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 3.7597738114015794e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.534954899595396e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.733837470085411e-24
+        },
+        {
+          "absorption_number_rate_upper_bound": 3.695724343107537e-23,
+          "absorption_phonon_power_upper_bound": 7.751810881938118e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 3.759773811401557e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.534954899595369e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.7338374700853636e-24
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 3.695724343107537e-23,
+        "absorption_phonon_power_upper_bound": 7.751810881938118e-23,
+        "absorption_inside_electron_energy_loss_upper_bound": 3.759773811401557e-22,
+        "absorption_external_electron_energy_gain_upper_bound": 4.534954899595369e-22,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 4.7338374700853636e-24
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 6.04330588326392e-15,
+        "absorption_phonon_power_upper_bound": 6.065650304040383e-15,
+        "absorption_inside_electron_energy_loss_upper_bound": 6.0028854574564245e-15,
+        "absorption_external_electron_energy_gain_upper_bound": 6.013614146749368e-15,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 1.0087895561250499e-14
+      },
+      "absorption_power_bound_over_in_support_gross_power": 8.375341903702465e-20,
+      "absorption_count_bound_over_in_support_gross_count": 7.420055409017134e-20,
+      "assumed_external_emission_power_over_in_support_gross_power": 5.11461230573908e-21
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "hot_electrons",
+      "energy_upper": 12.005088143439622,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 1.5118249590106915e-18,
+          "absorption_phonon_power_upper_bound": 1.1883525574351474e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.7338161419193956e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.8526513976629102e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.42472292950237e-15
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.5118249590106923e-18,
+          "absorption_phonon_power_upper_bound": 1.1883525574351481e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.733816141919396e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.8526513976629108e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.424722929502386e-15
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.5118249590106919e-18,
+          "absorption_phonon_power_upper_bound": 1.1883525574351474e-18,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.7338161419193962e-17,
+          "absorption_external_electron_energy_gain_upper_bound": 1.8526513976629108e-17,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 4.42472292950236e-15
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 1.5118249590106919e-18,
+        "absorption_phonon_power_upper_bound": 1.1883525574351474e-18,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.7338161419193962e-17,
+        "absorption_external_electron_energy_gain_upper_bound": 1.8526513976629108e-17,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 4.42472292950236e-15
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 2.547821337263179e-16,
+        "absorption_phonon_power_upper_bound": 6.482688768875194e-16,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.7772864356933836e-16,
+        "absorption_external_electron_energy_gain_upper_bound": 0.0,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 5.88339886746789e-15
+      },
+      "absorption_power_bound_over_in_support_gross_power": 5.1637501512419474e-15,
+      "absorption_count_bound_over_in_support_gross_count": 9.784943827155819e-15,
+      "assumed_external_emission_power_over_in_support_gross_power": 1.9226755185965448e-11
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "phonon_bubble",
+      "energy_upper": 12.005088143439622,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 1.3792986524558906e-39,
+          "absorption_phonon_power_upper_bound": 3.529274078371133e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.3194843469108717e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.672411754747985e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.259723604591339e-46
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.3792986524559144e-39,
+          "absorption_phonon_power_upper_bound": 3.5292740783712e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.3194843469108907e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.6724117547480106e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.259723604611553e-46
+        },
+        {
+          "absorption_number_rate_upper_bound": 1.3792986524558906e-39,
+          "absorption_phonon_power_upper_bound": 3.529274078371138e-39,
+          "absorption_inside_electron_energy_loss_upper_bound": 1.319484346910868e-38,
+          "absorption_external_electron_energy_gain_upper_bound": 1.6724117547479816e-38,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.259723604611446e-46
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 1.3792986524558906e-39,
+        "absorption_phonon_power_upper_bound": 3.529274078371138e-39,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.319484346910868e-38,
+        "absorption_external_electron_energy_gain_upper_bound": 1.6724117547479816e-38,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 5.259723604611446e-46
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 1.7267733326489482e-14,
+        "absorption_phonon_power_upper_bound": 1.7564629742384966e-14,
+        "absorption_inside_electron_energy_loss_upper_bound": 1.7209798359334995e-14,
+        "absorption_external_electron_energy_gain_upper_bound": 1.7323695409136454e-14,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 2.026135680208327e-14
+      },
+      "absorption_power_bound_over_in_support_gross_power": 1.1439914817713569e-36,
+      "absorption_count_bound_over_in_support_gross_count": 9.33356946987802e-37,
+      "assumed_external_emission_power_over_in_support_gross_power": 1.70490556033106e-43
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "nonthermal",
+      "energy_upper": 12.005088143439622,
+      "all_orders": [
+        {
+          "absorption_number_rate_upper_bound": 3.947505265876529e-23,
+          "absorption_phonon_power_upper_bound": 8.279902576168192e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 4.0094104415213355e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.837400699138154e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.055700639932726e-24
+        },
+        {
+          "absorption_number_rate_upper_bound": 3.9475052658765426e-23,
+          "absorption_phonon_power_upper_bound": 8.279902576168219e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 4.009410441521348e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.83740069913817e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.055700639932753e-24
+        },
+        {
+          "absorption_number_rate_upper_bound": 3.947505265876519e-23,
+          "absorption_phonon_power_upper_bound": 8.279902576168169e-23,
+          "absorption_inside_electron_energy_loss_upper_bound": 4.0094104415213256e-22,
+          "absorption_external_electron_energy_gain_upper_bound": 4.837400699138142e-22,
+          "recombination_outside_support": 0.0,
+          "assumed_profile_external_emission_phonon_power": 5.0557006399327025e-24
+        }
+      ],
+      "final": {
+        "absorption_number_rate_upper_bound": 3.947505265876519e-23,
+        "absorption_phonon_power_upper_bound": 8.279902576168169e-23,
+        "absorption_inside_electron_energy_loss_upper_bound": 4.0094104415213256e-22,
+        "absorption_external_electron_energy_gain_upper_bound": 4.837400699138142e-22,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 5.0557006399327025e-24
+      },
+      "last_refinement_relative_change": {
+        "absorption_number_rate_upper_bound": 5.955631578169795e-15,
+        "absorption_phonon_power_upper_bound": 6.1046922497426915e-15,
+        "absorption_inside_electron_energy_loss_upper_bound": 5.629129734900421e-15,
+        "absorption_external_electron_energy_gain_upper_bound": 5.637628684333697e-15,
+        "recombination_outside_support": 0.0,
+        "assumed_profile_external_emission_phonon_power": 1.0026937409784202e-14
+      },
+      "absorption_power_bound_over_in_support_gross_power": 1.0825136018673128e-19,
+      "absorption_count_bound_over_in_support_gross_count": 8.910818386795507e-20,
+      "assumed_external_emission_power_over_in_support_gross_power": 6.609817759750984e-21
+    }
+  ],
+  "runtime_seconds": 1.2370649999938905
+}

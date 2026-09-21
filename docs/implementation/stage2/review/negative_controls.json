@@ -1,0 +1,85 @@
+{
+  "schema": "pysnspd.stage2.independent_negative_controls.v1",
+  "status": "PASS",
+  "gates": {
+    "correct_balance": true,
+    "double_heat_detected": true,
+    "omitted_work_detected": true,
+    "common_collision_factor_detected": true
+  },
+  "rows": [
+    {
+      "amplitude": 0.6,
+      "gamma": 0.0,
+      "force": -0.34417809871845373,
+      "velocity": 0.2795990604919052,
+      "condensate_heat": 0.09623187304356985,
+      "actual_deposited_heat": 0.09623187304356985,
+      "correct_energy_residual": 1.3877787807814457e-17,
+      "incorrect_double_condensate_heat_residual": 0.09623187304356984,
+      "incorrect_omitted_field_work_residual": 0.09623187304356985,
+      "correct_pass": true,
+      "double_heat_rejected": true,
+      "omitted_work_rejected": true
+    },
+    {
+      "amplitude": 0.55,
+      "gamma": 0.0,
+      "force": -0.39836240191146055,
+      "velocity": 0.33915760709424,
+      "condensate_heat": 0.13510763898860487,
+      "actual_deposited_heat": 0.13510763898860487,
+      "correct_energy_residual": 2.7755575615628914e-17,
+      "incorrect_double_condensate_heat_residual": 0.1351076389886049,
+      "incorrect_omitted_field_work_residual": 0.13510763898860487,
+      "correct_pass": true,
+      "double_heat_rejected": true,
+      "omitted_work_rejected": true
+    },
+    {
+      "amplitude": 0.95,
+      "gamma": 0.0,
+      "force": 0.22931965863747922,
+      "velocity": -0.14924761817703866,
+      "condensate_heat": 0.03422541285281534,
+      "actual_deposited_heat": 0.03422541285281534,
+      "correct_energy_residual": 0.0,
+      "incorrect_double_condensate_heat_residual": 0.03422541285281534,
+      "incorrect_omitted_field_work_residual": 0.03422541285281534,
+      "correct_pass": true,
+      "double_heat_rejected": true,
+      "omitted_work_rejected": true
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "force": 0.1171044802297142,
+      "velocity": -0.08513710281989925,
+      "condensate_heat": 0.009969936173988038,
+      "actual_deposited_heat": 0.009969936173988036,
+      "correct_energy_residual": 1.734723475976807e-18,
+      "incorrect_double_condensate_heat_residual": 0.009969936173988034,
+      "incorrect_omitted_field_work_residual": 0.009969936173988036,
+      "correct_pass": true,
+      "double_heat_rejected": true,
+      "omitted_work_rejected": true
+    }
+  ],
+  "factor_control": {
+    "reference_scattering_power": 7.59562023992208e-05,
+    "intentionally_wrong_power": 3.79781011996104e-05,
+    "wrong_relative_error": 0.5,
+    "gate": 0.001,
+    "rejected": true,
+    "caveat": "Diagnostic factor perturbation of an independent reference; this is not a new production operator"
+  },
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "source_sha256": "5c8d24ccf79c59e7bf0d36de01715332c6dbdd75f06e92144a7e1fb15af24612",
+  "module_sha256": {
+    "energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d"
+  },
+  "runtime_seconds": 0.4072727000020677
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "pysnspd.stage2.complementary-grid-amendment.v1",
+  "status": "FROZEN_BEFORE_COMPLEMENTARY_GRID_RESULTS",
+  "date": "2026-09-21",
+  "original_criteria_path": "docs/implementation/stage2/acceptance_criteria.json",
+  "original_criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "reason": "Measured native180, globally projected180 and hybrid180 pilots retain discrete conservation but fail population-distribution consistency. Extra collision quadrature alone does not add the occupation degrees of freedom needed to resolve those populations.",
+  "amended_requirement": "The accepted dynamic occupations may use a new, explicit complementary fixed-count quadrature. This replaces only the requirement that the dynamic electronic state vector have the original180 occupations. It does not relax any error tolerance, remove an adversarial profile, redefine a failed pilot as passed, or alter the archived R2 catalogue.",
+  "immutable_parent_catalogue": {
+    "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+  },
+  "required_energy": "Ubar = Uvac_R2(delta,Gamma) + 4 sum_j w_j E(x_j;delta,Gamma,eta) p_j. The state coordinates x_j and positive weights w_j are fixed in time. All operators, forces, source normalization, temperature inversion and ledgers use this same potential and these same populations.",
+  "required_derivatives": {
+    "amplitude": "dE/ddelta at fixed x = Im(s)/Re(c)",
+    "Gamma": "dE/dGamma at fixed x = -Re(s)*Im(s)/Re(c)",
+    "field_forces": "Derivative of the same vacuum plus4 sum_j w_j p_j dE/dfield; never a separately fitted force"
+  },
+  "new_evidence_required": [
+    "Save the complementary count nodes, weights, eta, physical support, scales and exact parent hash; report the changed state dimension",
+    "Independently verify direct causal energies and original spectral-equation residuals at normal, Gamma0, tinyGamma, nearGamma=delta and gapless fields",
+    "Verify both field derivatives and the energy derivative identity without mistaking finite-difference cancellation for a physical failure",
+    "Reject nonpositive/nonmonotone energies, invalid populations, nonfinite roots and unsupported field/count queries without repair",
+    "Repeat population and reaction convergence with at least three genuinely different electronic grids; changing only event quadrature is insufficient",
+    "Separate electronic-state resolution, collision quadrature, phonon interpolation, infrared/upper support, eta and time errors",
+    "For projected operators compare the electronic weak response against the same physical basis; retain the collocation diagnostic separately",
+    "Benchmark before full lightweight trajectories; keep the five-minute computation policy and record any long required command for the user"
+  ],
+  "additional_numerical_gates": {
+    "original_causal_equation_scaled_residual_max": 1e-8,
+    "energy_scaled_error_max": 1e-5,
+    "field_force_scaled_error_max": 1e-3,
+    "energy_derivative_identity_scaled_max": 1e-7,
+    "reference_refinement_relative_budget_max": 2e-4,
+    "all_original_consistency_and_time_tolerances_unchanged": true
+  },
+  "verdict_policy": "An admitted complementary grid would certify a new numerical representation for the declared synthetic cell scope. It would not retrospectively admit the failed180-state population models, certify absolute NbN, or validate the spatial/full-detector system. Missing evidence remains pending."
+}

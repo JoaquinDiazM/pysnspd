@@ -1,0 +1,20 @@
+{
+  "schema": "pysnspd.stage2.grid-assessor-self-test.v1",
+  "status": "PASS",
+  "scope": "Nonphysical synthetic files test acceptance guards, not device physics.",
+  "checks": {
+    "three_true_meshes_and_all_checkpoints_pass": true,
+    "three_true_phonon_meshes_pass": true,
+    "nonzero_error_with_degenerate_reference_is_not_false_PASS": true,
+    "changed_source_hash_rejected": true,
+    "changed_NPZ_hash_rejected": true,
+    "different_time_method_rejected": true,
+    "different_tolerance_rejected": true,
+    "different_physical_problem_rejected": true,
+    "nonincreasing_parameter_rejected": true,
+    "declared_refinement_without_real_grid_change_rejected": true,
+    "interior_population_error_detected_despite_equal_endpoints": true
+  },
+  "runner_sha256": "50e1dcc0bbf545b16c0d5db67ffeff72bafcda89b4ddd94f13460c178c25cfa4",
+  "runtime_seconds": 0.04104234091937542
+}

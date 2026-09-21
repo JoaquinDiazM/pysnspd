@@ -1,0 +1,8 @@
+{
+  "status": "REFERENCE_IMPLEMENTATION_FAILURE_RETAINED",
+  "stage": "independent continuous reference, gapless field0.35/0.65, order64",
+  "observed": "The vector real-angle inverse missed its3e-13 relative stopping test at4.2828737943811387e-13. No reference JSON was accepted or delivered.",
+  "cause": "Already-converged coordinates were re-bisected while other vector entries were still active.",
+  "correction": "Freeze individually converged coordinates; keep the same stopping tolerance and original-equation residual check.",
+  "acceptance_tolerances_changed": false
+}

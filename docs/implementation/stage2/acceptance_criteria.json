@@ -1,0 +1,116 @@
+{
+  "schema": "pysnspd.stage2.acceptance.v1",
+  "frozen_date": "2026-09-21",
+  "frozen_before_stage2_results": true,
+  "baseline_commit": "d7b01fc5853c18629cb972e74b735e78ecb5be47",
+  "purpose": "Numerical acceptance of one and two superconducting cells with simultaneous moving condensate, native R2 electronic occupations, fixed phonon populations, electron-phonon reactions, energy-matched transport, BGK, heat and escape. No absolute NbN, spatial-stage3 or production promotion is inferred.",
+  "agreed_by": ["root", "release_audit"],
+  "model_references": ["B.7-B.10", "B.13-B.21", "B.39-B.46", "D.8-D.20", "D.4 item2", "stage1_closure/NEXT_STAGE.md"],
+  "immutable_inputs": {
+    "R2_catalogue_path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "R2_catalogue_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "R2_query_source_path": "pysnspd/experimental/energy_catalog.py",
+    "R2_query_source_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "stage1_closure_certificate_path": "docs/implementation/stage1_closure/closure_admission.json",
+    "stage1_closure_certificate_sha256": "afe1968fe5abcff79737b1d39390b1afb56d86ddd888fe419a4cb0c940b7e2b9",
+    "stage1_criteria_path": "docs/implementation/stage1_closure/acceptance_criteria.json",
+    "stage1_criteria_sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951"
+  },
+  "evidence_policy": {
+    "scenario_registration": "Write all scenario parameters, initial populations, material conventions, numerical grids, timestep/duration and active channels before each pilot. Keep failed pilots and reasons for subsequent parameter or method changes. Do not alter these tolerances after results.",
+    "history": "Preserve every stage1/R2 artefact and the v1.0.0 tag. New evidence and code belong to stage2.",
+    "separate_verdicts": ["Exact discrete identities", "Consistency/convergence to the selected continuous equations", "Time integration of simultaneous dynamics", "Phenomenological-model scope", "Material/unit provenance"],
+    "negative_controls": "Retain at least one intentionally incorrect factor/count/energy-work implementation in diagnostic-only code and show the relevant gate detects it. Never use it in accepted trajectories."
+  },
+  "error_conventions": {
+    "energy_ledger_scale": "max(1, abs(initial total energy), integrated absolute external work and source energy) in N0*Delta0^2 units",
+    "event_balance_scale": "sum of absolute energy changes of that event; an identically zero event is checked exactly",
+    "RHS_balance_scale": "max(1, sum of absolute energy transfer rates)",
+    "relative_observable": "abs(measured-reference)/abs(reference) for nondegenerate reference; if the reference nearly cancels, also report absolute error and normalize by the separately measured forward-plus-reverse activity, not by an arbitrary tiny signed net value",
+    "population_norm": "Capacity-weighted L1: electron weights4*w_x and phonon capacities gbar*w_Omega. Compare equal physical coordinates or conservative projections; do not compare unmatched array indices.",
+    "roundoff_floor": "100 machine epsilons times the declared observable scale; errors below it may be reported roundoff-limited instead of assigning a convergence ratio",
+    "no_repair": "No clipping populations, deleting energy, projecting an energy residual away, replacing a negative coefficient by zero, or silently dropping out-of-support coupled events. Rejection/adaptive timestep changes must be recorded."
+  },
+  "event_geometry": {
+    "required": ["Use the actual native R2 E_i, w_i and occupations for accepted coupled trajectories", "Scattering has one electron entering and one leaving", "Recombination/creation counts each unordered pair once, with diagonal half-weight and electron multiplicity2", "The same event updates electronic and phonon sectors", "Fixed phonon energies receive nonnegative barycentric populations whose zeroth moment is1 and first energy moment is the exact electron energy difference/sum", "Electron transport has equal native energy and QP-count moments on both sides", "No mixing native and reconstructed energies without an explicit converged projection defect"],
+    "energy_relative_max": 1e-12,
+    "scattering_QP_number_relative_max": 1e-12,
+    "transport_QP_number_relative_max": 1e-12,
+    "RHS_energy_scaled_max": 1e-11,
+    "required_channels": ["scattering emission", "scattering absorption", "recombination", "pair creation", "diagonal identical-state recombination", "transport between unequal spectra"]
+  },
+  "detailed_balance_and_positivity": {
+    "fixed_fields": [[0.72, 0.0], [0.72, 0.2], [0.35, 0.65]],
+    "normal_point_separate": true,
+    "common_dimensionless_temperatures": [0.08, 0.2, 0.5],
+    "relative_event_imbalance_max": 1e-10,
+    "representable_rate_policy": "Use relative event balance when forward-plus-reverse rate is above1e-100 in declared normalized units; below that retain absolute rates and weighted RHS checks rather than infer infinite relative significance.",
+    "weighted_equilibrium_RHS_scaled_max": 1e-11,
+    "pauli_roundoff_tolerance": 1e-13,
+    "negative_phonon_roundoff_tolerance": 1e-13,
+    "required": ["FD/BE equilibrium cancels separately in scattering and recombination", "Identical physical FD distributions give zero interface flux across unequal gaps", "Test empty/full electron faces and empty phonon faces before integrating", "Test trajectories from phonon vacuum and sparse/full electron boundary occupations in isolated applicable channels", "No negative phonon DOS or negative coherence factor repaired into a valid rate", "Geometric Bose/Pauli products evaluated with exact zero handling and stable log differences", "Entropy production of the isolated collision/transport operator nonnegative for positive interior populations, up to roundoff; do not extend this claim to the phenomenological heat source"]
+  },
+  "continuous_consistency": {
+    "relative_error_max": 1e-3,
+    "reference_refinement_relative_budget_max": 2e-4,
+    "minimum_grid_levels": 3,
+    "phonon_interpolation": "At fixed native electronic nodes compare barycentric/geometric Bose rates with direct evaluation at exact transition Omega for analytic populations. Compare separate scattering/recombination powers and capacity-weighted electronic RHS; compare phonon RHS only after conservative projection to fixed common physical bands.",
+    "electronic_quadrature": "Normal and superconducting gapped/gapless fields require independent continuous reaction references. Refine electronic quadrature separately from phonon interpolation. A normal-state check alone cannot certify superconducting quadrature. The native180-node catalogue must meet its own measured error gate or remain unaccepted for that scenario.",
+    "transport_quadrature": "Refine shared-energy event quadrature separately from electronic state resolution. Compare to independent continuous fixed-energy diffusion for smooth declared nonthermal/thermal populations. Check energy flux and capacity-weighted population response; energy conservation alone is insufficient.",
+    "minimum_refinement_behavior": "The last two errors decrease unless roundoff-limited. Additional genuine refinement is allowed without changing tolerances; nonconvergence remains a failure.",
+    "infrared_cutoff": {
+      "reference_phonon_cutoff_Omega_over_Delta0": 4.0,
+      "minimum_phonon_energy_over_Delta0_levels": [0.02, 0.01, 0.005],
+      "ratios_to_reference_cutoff": [0.005, 0.0025, 0.00125],
+      "rule": "Alpha2F is explicitly zero below the selected positive cutoff. Compare to the declared uncropped analytic input as Omega_min tends to0. This is a controlled synthetic-input change, not an invisible event omission.",
+      "relative_observable_budget_max": 1e-3
+    },
+    "upper_support": {
+      "required": "Independently estimate absorption into electronic states beyond the native count support, as well as omitted phonon processes. An event list that only contains in-support pairs does not establish that omitted reactions are negligible.",
+      "relative_omitted_power_and_population_activity_max": 1e-3,
+      "outside_support_policy": "A coupled event outside the declared grid is rejected. A process with exactly zero adopted alpha2F is recorded as disabled, not silently counted as resolved."
+    }
+  },
+  "coupled_trajectories": {
+    "mandatory": ["One isolated moving-condensate/electron/phonon cell with scattering, recombination, BGK and condensate heating simultaneously active", "Two unequal-gap cells with those same blocks plus native-energy transport simultaneously active", "A bath/escape case with escaped energy recorded", "A known external heating or B.39 injection case with energy included once", "Equilibrium stationary case for the entire enabled system", "One driven or relaxation case with physical populations near a boundary"],
+    "energy_ledger_scaled_max": 1e-7,
+    "instantaneous_balance_scaled_max": 1e-10,
+    "minimum_time_resolutions": 3,
+    "finest_time_observable_relative_error_max": 1e-4,
+    "time_refinement_minimum_error_reduction": 1.5,
+    "time_reference": "Independent integrator or a separately tightened/step-halved trajectory; compare amplitudes, electronic/phonon energy, escaped energy, channel energy transfers and capacity-weighted populations, not just the conserved total.",
+    "smooth_suboperator_order": "On smooth unit problems require the declared method order, allowing25% margin in its expected error-reduction ratio. The full event trajectory also reports crossing of spectral interpolation knots.",
+    "minimum_resolved_amplitude_change": 0.02,
+    "minimum_eph_and_transport_transferred_energy_fraction": 0.01,
+    "activity_scale": "Compare absolute integrated channel transfer to the initially available QP/phonon or explicitly injected excitation energy, declared before the run; do not divide by vacuum condensation energy or a vanishing net total. At least one coupled trajectory must resolve both e-ph and face transfer above1% and an amplitude change above0.02.",
+    "mobility_scope": "D.11-D.13 inherited KWT mobility may be implemented with explicit units and parameters; its algebraic acceptance is not a microscopic derivation or material calibration. Tau_kin remains independent."
+  },
+  "catalogue_field_checks": {
+    "minimum_actual_trajectory_samples": 10,
+    "include": ["initial", "final", "interior points", "turning or extremal field points"],
+    "required": "Compare the energy and forces actually used along trajectories with independent causal/native-quadrature references. Separate catalogue field-interpolation error from occupation/energy quadrature and time error. Stay within the R2 support and retain positivity/ordering guards.",
+    "relative_energy_and_force_budget_max": 1e-3,
+    "derivative_identity_scaled_max": 1e-7
+  },
+  "phonon_input_and_mobility": {
+    "Debye": {
+      "mode_count_relative_max": 1e-11,
+      "lambda_relative_max": 1e-11,
+      "thermal_energy_and_capacity_reference_relative_max": 1e-8,
+      "required": ["Positive synthetic DOS and coupling with common declared support", "Mode count3*n_atom in SI and3*n_atom/(N0*Delta0) in dimensionless count", "Correct Jacobian and energy scale in SI/dimensionless round trip", "T0 and high-temperature limiting checks", "Explicit infrared and ultraviolet conventions"]
+    },
+    "KWT": {
+      "algebra_and_SI_relative_max": 1e-11,
+      "required": ["Factor1/2 between real energy gradient and complex variation", "Radial and tangential mobilities independently checked", "Rotation covariance", "Continuous zero-amplitude limit", "Positive dissipation and Q=-X dot zdot", "No tau_kin substitution for tau_psi"]
+    },
+    "NbN_shape": "Optional shape-sensitivity experiments use the exact stage1 derived CSV/manifest plus an explicitly synthetic scale. They cannot infer an atom/cell basis, absolute SI rates, film kinetics or material latency. Negative/unsupported data remain rejected unless covered by a separately traceable authorized preprocessing policy."
+  },
+  "failure_cases": ["NaN/Inf or wrong-shaped populations", "Electron p outside[0,1]", "Negative phonon population", "Nonpositive relaxation/escape times or mobility", "Nonmonotone or unsupported spectral grid", "Unrepresentable coupled reaction energy", "Unavailable positive-temperature inversion capacity", "Overflow/nonfinite rates without repair"],
+  "execution": {
+    "account": "jdiaz non-administrator",
+    "uncertain_light_check_timeout_seconds": 240,
+    "never_launch_expected_runtime_over_seconds": 300,
+    "long_calculation_policy": "Write command, purpose, outputs and resources to /home/jdiaz/GEMINGA_COMMANDS.md; wait for user execution. No background jobs, polling or splitting a timed-out calculation to bypass handoff."
+  },
+  "verdict_policy": "Only measured passing gates admit the declared numerical cell scope. Missing convergence or support evidence remains pending/failing. Material, spatial principal-symbol/core, reservoirs/circuit and full detector transient validation are separate and remain outside this certificate."
+}

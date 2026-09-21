@@ -1,0 +1,184 @@
+{
+  "schema": "pysnspd.stage2.transport-representation-diagnostic.v1",
+  "scope": "Diagnostic only; normalized interior geometric products have no unique continuous boundary limit at brackets [0,1]. No operator is changed or admitted.",
+  "operator_sha256": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+  "runner_sha256": "84c9256837218003f35c89bac639a04304696adc840cfa60a177160bf0b61945",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "rows": [
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "decomposition": {
+        "original": {
+          "absolute_weighted_L1": 1.192045555055538e-05,
+          "reference_weighted_L1": 0.03826172436690882,
+          "relative_weighted_L1": 0.000311550400505863,
+          "power_relative_error": 0.0002811810105154968
+        },
+        "normalized_interior_only": {
+          "absolute_weighted_L1": 1.0096848925640743e-13,
+          "reference_weighted_L1": 0.03826172436690882,
+          "relative_weighted_L1": 2.6388901944976487e-12,
+          "power_relative_error": 1.144662553729934e-13
+        },
+        "analytic_population_same_Gauss4": {
+          "absolute_weighted_L1": 1.0096662714985322e-13,
+          "reference_weighted_L1": 0.03826172436690882,
+          "relative_weighted_L1": 2.638841526890921e-12,
+          "power_relative_error": 1.144662553729934e-13
+        },
+        "geometric_factor": {
+          "minimum_Z_left_times_Z_right": 0.9992487888610214,
+          "activity_weighted_attenuation": 0.0003115504002464955,
+          "factorization_absolute_residual": 1.0842021724855044e-19
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "decomposition": {
+        "original": {
+          "absolute_weighted_L1": 1.5742439968324647e-05,
+          "reference_weighted_L1": 0.0202804521727445,
+          "relative_weighted_L1": 0.0007762371289473209,
+          "power_relative_error": 0.0008966891014637619
+        },
+        "normalized_interior_only": {
+          "absolute_weighted_L1": 9.47458865778116e-06,
+          "reference_weighted_L1": 0.0202804521727445,
+          "relative_weighted_L1": 0.00046717837339516223,
+          "power_relative_error": 0.0005738461563464677
+        },
+        "analytic_population_same_Gauss4": {
+          "absolute_weighted_L1": 5.291784946350591e-11,
+          "reference_weighted_L1": 0.0202804521727445,
+          "relative_weighted_L1": 2.609303235093731e-09,
+          "power_relative_error": 2.1507996583130023e-10
+        },
+        "geometric_factor": {
+          "minimum_Z_left_times_Z_right": 0.9990690522508237,
+          "activity_weighted_attenuation": 0.00034949453622105145,
+          "factorization_absolute_residual": 1.6263032587282567e-19
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "decomposition": {
+        "original": {
+          "absolute_weighted_L1": 5.417692296903875e-07,
+          "reference_weighted_L1": 0.005378095907203905,
+          "relative_weighted_L1": 0.00010073625294868636,
+          "power_relative_error": 9.901887066951243e-05
+        },
+        "normalized_interior_only": {
+          "absolute_weighted_L1": 2.9938535825343715e-15,
+          "reference_weighted_L1": 0.005378095907203905,
+          "relative_weighted_L1": 5.566753799470432e-13,
+          "power_relative_error": 1.9312018476636154e-13
+        },
+        "analytic_population_same_Gauss4": {
+          "absolute_weighted_L1": 2.99394212995764e-15,
+          "reference_weighted_L1": 0.005378095907203905,
+          "relative_weighted_L1": 5.566918444030135e-13,
+          "power_relative_error": 1.9324366314536818e-13
+        },
+        "geometric_factor": {
+          "minimum_Z_left_times_Z_right": 0.9995540996131993,
+          "activity_weighted_attenuation": 0.00010073625265555007,
+          "factorization_absolute_residual": 2.0328790734103208e-20
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "decomposition": {
+        "original": {
+          "absolute_weighted_L1": 7.835548416344642e-06,
+          "reference_weighted_L1": 0.0030686760567838808,
+          "relative_weighted_L1": 0.002553397058325104,
+          "power_relative_error": 0.001379890599598317
+        },
+        "normalized_interior_only": {
+          "absolute_weighted_L1": 7.933515800170116e-06,
+          "reference_weighted_L1": 0.0030686760567838808,
+          "relative_weighted_L1": 0.0025853220259699945,
+          "power_relative_error": 0.0013140108714437936
+        },
+        "analytic_population_same_Gauss4": {
+          "absolute_weighted_L1": 1.689783503421103e-13,
+          "reference_weighted_L1": 0.0030686760567838808,
+          "relative_weighted_L1": 5.506555505217051e-11,
+          "power_relative_error": 1.164617127717662e-11
+        },
+        "geometric_factor": {
+          "minimum_Z_left_times_Z_right": 0.998650577884958,
+          "activity_weighted_attenuation": 7.08463096216988e-05,
+          "factorization_absolute_residual": 1.3552527156068805e-20
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "decomposition": {
+        "original": {
+          "absolute_weighted_L1": 8.55198905403736e-06,
+          "reference_weighted_L1": 0.03094163878160754,
+          "relative_weighted_L1": 0.0002763909537694193,
+          "power_relative_error": 0.00024156643026984018
+        },
+        "normalized_interior_only": {
+          "absolute_weighted_L1": 1.718238223305524e-14,
+          "reference_weighted_L1": 0.03094163878160754,
+          "relative_weighted_L1": 5.553158432987999e-13,
+          "power_relative_error": 1.4753977842442966e-13
+        },
+        "analytic_population_same_Gauss4": {
+          "absolute_weighted_L1": 1.718287254343759e-14,
+          "reference_weighted_L1": 0.03094163878160754,
+          "relative_weighted_L1": 5.553316895953005e-13,
+          "power_relative_error": 1.4753977842442966e-13
+        },
+        "geometric_factor": {
+          "minimum_Z_left_times_Z_right": 0.9991380126450234,
+          "activity_weighted_attenuation": 0.00027639095359670865,
+          "factorization_absolute_residual": 8.131516293641283e-20
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "decomposition": {
+        "original": {
+          "absolute_weighted_L1": 1.3350671863583308e-05,
+          "reference_weighted_L1": 0.016627838941195357,
+          "relative_weighted_L1": 0.0008029108238778468,
+          "power_relative_error": 0.0008582007860308762
+        },
+        "normalized_interior_only": {
+          "absolute_weighted_L1": 8.922983637693875e-06,
+          "reference_weighted_L1": 0.016627838941195357,
+          "relative_weighted_L1": 0.0005366291836991062,
+          "power_relative_error": 0.0005903593146268255
+        },
+        "analytic_population_same_Gauss4": {
+          "absolute_weighted_L1": 9.931635944961267e-12,
+          "reference_weighted_L1": 0.016627838941195357,
+          "relative_weighted_L1": 5.972896405891753e-10,
+          "power_relative_error": 1.0526916281591689e-10
+        },
+        "geometric_factor": {
+          "minimum_Z_left_times_Z_right": 0.9992494737230472,
+          "activity_weighted_attenuation": 0.00030365921977848026,
+          "factorization_absolute_residual": 5.421010862427522e-20
+        }
+      }
+    }
+  ],
+  "runtime_seconds": 3.208359196782112
+}

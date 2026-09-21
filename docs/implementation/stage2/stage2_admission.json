@@ -1,0 +1,488 @@
+{
+  "schema": "pysnspd.stage2.admission_checkpoint.v1",
+  "status": "PENDING_COMPUTE",
+  "stage2_status": "NOT_CLOSED",
+  "numerical_admission": false,
+  "production_promotion": false,
+  "recommendation": "Finish the user-run temporal reference and remaining registered validations before considering closure or the spatial stage.",
+  "date": "2026-09-21",
+  "criteria": {
+    "path": "docs/implementation/stage2/acceptance_criteria.json",
+    "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+  },
+  "amendment": {
+    "path": "docs/implementation/stage2/review/complementary_grid_amendment.json",
+    "sha256": "6270ca41d5d26e2fb30c9b02052d929a28db3fc5c7c2876a9e51c8ed1467b86c"
+  },
+  "immutable_inputs": [
+    {
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+      "matches_frozen_input": true
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+      "matches_frozen_input": true
+    },
+    {
+      "path": "docs/implementation/stage1_closure/closure_admission.json",
+      "sha256": "afe1968fe5abcff79737b1d39390b1afb56d86ddd888fe419a4cb0c940b7e2b9",
+      "matches_frozen_input": true
+    },
+    {
+      "path": "docs/implementation/stage1_closure/acceptance_criteria.json",
+      "sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+      "matches_frozen_input": true
+    }
+  ],
+  "audited_source_sha256": {
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+  },
+  "candidate": {
+    "electron_states": 630,
+    "phonon_nodes": 1025,
+    "infrared": 0.005,
+    "phonon_cutoff": 4.0,
+    "electron_mesh": "Complementary causal fixed-count quadrature; R2 vacuum and parent catalog unchanged",
+    "eta": 1e-08,
+    "reaction_layout": "resolved_panels",
+    "reaction_inner_order": 2,
+    "reaction_outer_order": 2,
+    "face_order": 2,
+    "scope": "Synthetic one/two cells; proposed configuration, not yet admitted"
+  },
+  "gates": [
+    {
+      "id": "immutable_parent",
+      "status": "PASS",
+      "detail": "Exact hashes of R2 source/catalog and stage1 contract/certificate preserved."
+    },
+    {
+      "id": "complementary_energy_and_forces",
+      "status": "PASS_SAMPLED_STATIC_DOMAIN",
+      "independent_maxima": {
+        "energy": 3.4675004456278185e-15,
+        "amplitude_derivative": 9.492406860545088e-15,
+        "gamma_derivative": 1.611537020968681e-10,
+        "spectral": 1.1368683772161603e-13
+      },
+      "moment_errors_by_refinement": {
+        "1": [
+          2.7358169008007138e-08,
+          1.953907646790043e-08,
+          4.732054381673123e-06
+        ],
+        "2": [
+          1.8212081842605699e-09,
+          1.3006843380125588e-09,
+          1.6883945030965464e-07
+        ],
+        "4": [
+          1.1550699285933774e-10,
+          8.249345651023532e-11,
+          1.0956225870994984e-07
+        ]
+      },
+      "detail": "630/1260/2520 fixed count states; high-precision implicit spectral reference and independently refined moment quadrature. This is not uniform validation of arbitrary distributions."
+    },
+    {
+      "id": "KWT_and_synthetic_Debye",
+      "status": "PASS",
+      "maxima": {
+        "KWT_velocity_SI_scaled": 3.680992056889131e-15,
+        "KWT_heat_SI_scaled": 7.192252722286001e-15,
+        "KWT_energy_identity_scaled": 1.765952166885242e-16,
+        "KWT_minimum_mobility_eigenvalue": 0.13171770641533342,
+        "R2_Q_plus_force_times_velocity_absolute": 2.7755575615628914e-17,
+        "Debye_mode_relative": 4.736952163853022e-16,
+        "Debye_lambda_relative": 4.163362363359108e-16,
+        "Debye_129_nodes_thermal_relative": 1.042838511124921e-15
+      },
+      "detail": "Inherited mobility algebra and synthetic SI conversions; no microscopic mobility calibration or NbN admission."
+    },
+    {
+      "id": "event_equilibrium_faces_entropy",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "maximum_relative_equilibrium_event_imbalance": 4.2632564145606005e-14,
+      "maximum_weighted_equilibrium_RHS": 1.488601832731206e-19,
+      "all_faces_inward": true,
+      "minimum_isolated_entropy_production": 0.2940413673479258,
+      "detail": "Four static fields and three temperatures on the selected 1025-node phonon grid. Boundary trajectories are a separate gate."
+    },
+    {
+      "id": "transport_continuum",
+      "status": "PASS",
+      "mesh_summary": [
+        {
+          "electron_factor": 1,
+          "electron_nodes": [
+            630,
+            630
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 3.9462775850113324e-05,
+          "maximum_power_relative_error": 2.003174391530846e-05,
+          "precision_status": "PASS"
+        },
+        {
+          "electron_factor": 2,
+          "electron_nodes": [
+            1260,
+            1260
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 9.90866909291049e-06,
+          "maximum_power_relative_error": 5.017388097191844e-06,
+          "precision_status": "PASS"
+        },
+        {
+          "electron_factor": 4,
+          "electron_nodes": [
+            2520,
+            2520
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 2.4825285115234453e-06,
+          "maximum_power_relative_error": 1.255556308267725e-06,
+          "precision_status": "PASS"
+        }
+      ],
+      "reference_budget": 7.048293004533085e-16,
+      "detail": "Independent continuous-energy response and power on normal/gapped/gapless thermal and nonthermal profiles; not full coupled trajectories."
+    },
+    {
+      "id": "reaction_continuum_IR_001",
+      "status": "PARTIAL_WITHIN_ERROR_BUDGET_CONVERGENCE_UNRESOLVED",
+      "maximum_full_RHS_relative_errors": [
+        0.0002993707921886643,
+        0.00028280972923528974,
+        0.0002915110763925293
+      ],
+      "detail": "All three-grid measured weak errors are below 1e-3, but a small nondecreasing BCS floor must be separated from eta and quadrature. Magnitude alone does not satisfy the monotonic convergence gate."
+    },
+    {
+      "id": "selected_phonon_interpolation",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "phonon_nodes": 1025,
+      "maxima": {
+        "power_relative_error": {
+          "field": "gapless",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "power_relative_error": 0.00024264039759069026
+        },
+        "gross_power_relative_error": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "gross_power_relative_error": 5.021333560485369e-05
+        },
+        "electronic_rhs_relative_L1": {
+          "field": "gapless",
+          "profile": "phonon_bubble",
+          "channel": "scattering",
+          "electronic_rhs_relative_L1": 5.0309504446311324e-05
+        },
+        "phonon_17_hats_relative_L1": {
+          "field": "depaired",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_17_hats_relative_L1": 0.00010211710014837729
+        },
+        "phonon_33_hats_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_33_hats_relative_L1": 0.00038832880884626504
+        }
+      },
+      "detail": "Same electronic representation, analytic populations evaluated at exact transition energy as the interpolation reference; not a full continuous-reaction or time check."
+    },
+    {
+      "id": "selected_collision_quadrature",
+      "status": "PASS_INTERNAL_REFINEMENT",
+      "maximum_electronic_RHS_relative_L1": 8.006813886207539e-07,
+      "detail": "630 electrons, 1025 phonons, IR=.005; inner orders2/3/4. Self-convergence does not replace an independent continuous reference."
+    },
+    {
+      "id": "selected_IR_0005_independent_reactions",
+      "status": "PENDING",
+      "detail": "Exact same-cut independent continuous powers and electronic/phonon weak responses have not been compared. IR omission bounds are separate evidence."
+    },
+    {
+      "id": "infrared_and_upper_support_static",
+      "status": "PASS_DECLARED_ANALYTIC_PROFILES_ONLY",
+      "detail": "Independent positive-cut omission and upper absorption bounds exist for nine analytic profiles. Actual selected coupled trajectories, external populations and arbitrary narrow distributions remain outside this result."
+    },
+    {
+      "id": "negative_controls",
+      "status": "PASS",
+      "detail": "Tests detect double condensate heat, omitted spectral work and a common incorrect collision factor."
+    },
+    {
+      "id": "smooth_RK4_suboperators",
+      "status": "PASS",
+      "detail": "BGK and escape exact exponential problems show fourth order; this cannot certify the full nonsmooth event system."
+    },
+    {
+      "id": "simultaneous_trajectories_and_time_convergence",
+      "status": "PENDING_COMPUTE",
+      "detail": "No completed independent temporal reference and no accepted three-time-level comparisons for the selected candidate. A bounded reference probe is INCOMPLETE."
+    },
+    {
+      "id": "dynamic_electron_phonon_resolution",
+      "status": "PENDING_COMPUTE",
+      "detail": "Three-grid full-trajectory electron and phonon population convergence remains unmeasured. Initial-state projection and static kernel refinement are insufficient."
+    },
+    {
+      "id": "selected_boundary_equilibrium_and_activity",
+      "status": "PENDING_COMPUTE",
+      "detail": "Repeat complete equilibrium, empty/sparse boundary, escape/heating, resolved-amplitude and channel-transfer checks on the selected 1025-phonon candidate with accepted time accuracy."
+    },
+    {
+      "id": "actual_trajectory_fields_and_support",
+      "status": "PENDING_COMPUTE",
+      "detail": "At least ten actual points plus endpoints/extrema, energy-force identities, and upper-support bounds must refer to the final selected and time-converged trajectories."
+    },
+    {
+      "id": "final_regression_suite",
+      "status": "PASS",
+      "exit_code": 0,
+      "runtime_seconds": 47.09345739101991,
+      "source_hashes_unchanged": true,
+      "detail": "509 tests passed on Geminga, pytest46.76s, wrapper47.09s. All recorded source hashes match before/after and the current workspace. This cannot close missing physical convergence."
+    }
+  ],
+  "historical_completed_trajectories": [
+    {
+      "name": "one_40",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 40,
+      "duration": 2.0,
+      "ledger_scaled_max": 6.030703653125968e-08,
+      "trajectory_sha256": "7c63f6eda1569cb89b1247701ace286203f5918ec40544a2d51aab1e1d9db565",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    },
+    {
+      "name": "one_80",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 80,
+      "duration": 2.0,
+      "ledger_scaled_max": 3.633290696081204e-09,
+      "trajectory_sha256": "49d2706b43dab014a3f95fabf60fb0ea2e7b6eb03693766b9a518a8eea50ca18",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    },
+    {
+      "name": "two_40",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 40,
+      "duration": 2.0,
+      "ledger_scaled_max": 1.117883874357517e-08,
+      "trajectory_sha256": "7f8ce99f81d357940104cc198131788420c72827ecce44db4dab2aa79dd05903",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    },
+    {
+      "name": "vacuum",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 40,
+      "duration": 0.2,
+      "ledger_scaled_max": 3.3663488663293606e-12,
+      "trajectory_sha256": "143e58abb721b3e8a12ad27bd089000c13ded3458486e8174150deab5f207946",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    }
+  ],
+  "computation_handoff": {
+    "status": "INCOMPLETE_REQUIRES_USER_RUN",
+    "command": "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 timeout --signal=TERM --kill-after=5 240 /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage2_cells/run_coupled.py --case one --duration .1 --steps 2 --escape inf --heating 0 --method dop853 --rtol 1e-9 --output docs/implementation/stage2/trajectories/one_reference_probe.json",
+    "limit_seconds": 240,
+    "observed_process_age_seconds": 189,
+    "observed_cpu_percent": 99.9,
+    "observed_RSS_KiB": 351000,
+    "exec_reported_exit_code": 1,
+    "exec_output": "",
+    "persisted_status": "INCOMPLETE",
+    "completed_trajectory_npz_present": false,
+    "process_absent_after_return": true,
+    "termination_reason": "No completion record or stderr was returned. The configured bound is known; a specific signal or remote exit124 was not reported. Do not infer a physical failure from this incomplete calculation.",
+    "retried": false,
+    "dependent_work_paused": true,
+    "selected_followup_phonon_nodes": 1025,
+    "followup_reason": "Independent population-resolution checks selected1025 nodes; the incomplete513-node probe is retained separately."
+  },
+  "material": {
+    "status": "SYNTHETIC_ONLY_NBN_ABSOLUTE_NOT_ADMITTED",
+    "detail": "Debye inputs are declared synthetic. The traceable NbN shape is conditional; unresolved absolute units/basis/density and material preprocessing defects are not inferred away."
+  },
+  "model_scope": {
+    "status": "EXPERIMENTAL_CELL_ALGORITHM_ONLY",
+    "excludes": [
+      "absolute material rates or latency",
+      "spatial condensate amplitude/phase gradients",
+      "principal-symbol/core stability",
+      "reservoir boundary problem",
+      "Poisson/current/circuit coupling",
+      "full SNSPD transient",
+      "production replacement"
+    ]
+  },
+  "historical_failures_preserved": true,
+  "tolerances_relaxed": false,
+  "evidence": [
+    {
+      "path": "docs/implementation/stage2/acceptance_criteria.json",
+      "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_grid_amendment.json",
+      "sha256": "6270ca41d5d26e2fb30c9b02052d929a28db3fc5c7c2876a9e51c8ed1467b86c"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_energy_reference.json",
+      "sha256": "04306dd602e0e02af5389186b5fdcc2842864364b6f3bdcdbadff86326b2d8f5"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_moment_quadrature.json",
+      "sha256": "05a81c33ab563f2a9b84b8abca89fdacea25dcf196d8a6e57d7788c15112ca78"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_reactions.json",
+      "sha256": "988f4303329cba7646a60a9add77439c94a9e4be110d77b28aa39fd60faeb6c6"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_projection_check.json",
+      "sha256": "6e3471833845b52aeab7cba7761c118eadad494d11b6779f76018c34a2e1e13f"
+    },
+    {
+      "path": "docs/implementation/stage2/review/infrared_reaction_reference.json",
+      "sha256": "a98a6f23ee8588c1643ef72d248dcc69cddf5e9c21d16860aeee91c17cfc7770"
+    },
+    {
+      "path": "docs/implementation/stage2/review/upper_support_reference.json",
+      "sha256": "fa652e53343a373bd09563516ff949e76fb2e9b7104593afdaee737bc3f85c43"
+    },
+    {
+      "path": "docs/implementation/stage2/review/negative_controls.json",
+      "sha256": "0318cc9c121b42bcf49bba65f4dd1de164b5455bc7812dc9dcc5279bad173dd2"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_1.json",
+      "sha256": "771782465028f69880be1366b7aa0f20cc441a5ae1b0dd2dba297403cf200a63"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_2.json",
+      "sha256": "c651fd105016b0ef5f921c9321b36e9d7737341a74d6207d8f6035c641bf5337"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_4.json",
+      "sha256": "ac444604036368623479910d89c39228469fd7e848cab3a9f14664e517c4702a"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_finite_eta_bcs_1.json",
+      "sha256": "50619b1ba621904f9567bf76880c1beec7aecfa51fedd303bda75a3dc33d39ca"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_results.json",
+      "sha256": "c508feba97193288a81b3103720d636b840a59ecae3309bbce6ee4e0ccc4bd19"
+    },
+    {
+      "path": "docs/implementation/stage2/transport_results.json",
+      "sha256": "ee0e717932bd8ad09fc1375a64e3f247c284d69fcd7dd6556882e6754d8cb435"
+    },
+    {
+      "path": "docs/implementation/stage2/event_summary.json",
+      "sha256": "e8d27c9cab8f2f74b97a72bc7f12b9cd973546bb92edf6a0699958c0afadc438"
+    },
+    {
+      "path": "docs/implementation/stage2/complementary_event_final.json",
+      "sha256": "20a200bd81b50aac86d55b3fc39c2fbc48fe1edd95b67e9bf99fcfd6664957f1"
+    },
+    {
+      "path": "docs/implementation/stage2/projected_phonon_convergence.json",
+      "sha256": "456b3490ecc3d3e8e11346392d4d893df8269704a7d54654201f51e89e7f92d0"
+    },
+    {
+      "path": "docs/implementation/stage2/projected_phonon_1025.json",
+      "sha256": "1c77a22257ac2c0eaf262b9cc76372e2b9ca5a1b4d9fdd9daba21cf678447dd7"
+    },
+    {
+      "path": "docs/implementation/stage2/selected_event_measurements.json",
+      "sha256": "8f358d077a48193b6f725c40827e48f16315916198aaca1fffe72cac407e08b1"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_1.json",
+      "sha256": "c6c413ac714e448313c00f97970f29d7e257f0db0908de5efbf8412f7fea68f4"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_2.json",
+      "sha256": "d05107633d4988f71277d4ea346d9caebea337c7b14032e5d98002be41efa786"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_4.json",
+      "sha256": "ea8e4632f8c102ac7be4d7d4a04177fd32da686b06db061844bf8cf7a0c22313"
+    },
+    {
+      "path": "docs/implementation/stage2/time_suboperator_order.json",
+      "sha256": "fa5fa66da51e1e150d8cb7550a6b5e3ce21e6d18ae438e1abfe67ed462c65fe2"
+    },
+    {
+      "path": "docs/implementation/stage2/review/initial_phonon_projection_fine.json",
+      "sha256": "89e622c849ed2aa3cedcc090aa5a94fc67bbcc7c653cbe078017239a1a78bb6a"
+    },
+    {
+      "path": "docs/implementation/stage2/review/time_assessment_selfcheck.json",
+      "sha256": "bce3a68d592274cb4042380ad4bdcf7793c013003d6ad7e2ec80b681a7fd7521"
+    },
+    {
+      "path": "docs/implementation/stage2/review/grid_assessment_selftest.json",
+      "sha256": "1fdd0fdf953073ba8526b877a56af7f36900a92701a06d4361fdacc2a82f2a0b"
+    },
+    {
+      "path": "docs/implementation/stage2/reference_handoff.json",
+      "sha256": "f83fad24c65da5043ece4714759c85b8a1eaed9cb86b9b167ad181fb5caf70dc"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_reference_probe.json",
+      "sha256": "d37d612f83b7fcee8536676a135a13046323eb62f61f0bc52dc4a1ceb036c6da"
+    },
+    {
+      "path": "docs/implementation/stage2/regression_result.json",
+      "sha256": "2ac14b69964a7bb21e24bccaabb8d73ca203d5e5222808287d4934d70fd44ff4"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_40.json",
+      "sha256": "3116b415c977ffc6d866a14fbf506f9fb55eb0a13a003ba1a7b1827bec6da5b2"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_80.json",
+      "sha256": "f00b04081bf1ee7a1d529becfe87b28d30f5f9ad96d0b75b356378e7a5cf60e5"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/two_40.json",
+      "sha256": "20a7ef1896f58a52b7872762450c076f479ad0101f8cae2bef2468eae504b3b4"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/vacuum.json",
+      "sha256": "be1662d358f79143af5f8fde48e62e615e127cdd5660d2031eb94b2163119934"
+    }
+  ],
+  "generator_sha256": "08ada6259bed2d85cf2ce818b11cb7a816c80aadeb4cdc772334feaec7522ada"
+}

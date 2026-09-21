@@ -1,0 +1,3784 @@
+{
+  "schema": "pysnspd.stage2.coupled_run.v1",
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "parameters": {
+    "case": "one",
+    "steps": 100,
+    "duration": 2.0,
+    "phonon_nodes": 65,
+    "infrared": 0.01,
+    "face_order": 2,
+    "escape": "inf",
+    "heating": 0.0,
+    "method": "rk4",
+    "rtol": 1e-09,
+    "output": "docs/implementation/stage2/pilots/one_initial_isolated.json"
+  },
+  "source_hashes": {
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "68e7956e85f27dea01f43b90c6ff8f5a034f3144e76637245f341ff70fa8f717",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "facf0d7cccd73ac1801ad7c8fd8c97895ee12fe46d6dec686e0eb810096e259f",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "e9abe7b3687f49345fdcbfcfaa2955c0212a422e009700d845f0f2ed8149fc7c",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "sandbox/stage2_cells/run_coupled.py": "470b9db7b21c5b7fcd7149998b4fd6e662bba2ef9e83fe24bdf449471478aa24"
+  },
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "host": "geminga",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "material": {
+    "status": "SYNTHETIC_ANALYTIC_NOT_NBN",
+    "label": "Stage2 synthetic Debye, 10 ions/(N0 Delta0)",
+    "scales": {
+      "delta0_J": 2.1065301756880164e-22,
+      "N0_per_J_m3": 5.174479102201753e+46,
+      "Tc_K": 8.65,
+      "Tb_K": 1.8309043144388033,
+      "t_ref_ps": 1.0,
+      "energy_density_scale_J_m3": 2296.159257908026,
+      "temperature_convention": "temperature_bar = k_B T / Delta0",
+      "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+      "time_convention": "dimensionless time = physical time / t_ref"
+    },
+    "cutoff_energy_bar": 4.0,
+    "infrared_cutoff_bar": 0.01,
+    "atom_density_m3": 1.0900196372255028e+26,
+    "lambda_eph_full_Debye": 0.1,
+    "lambda_eph_retained": 0.099999375,
+    "modes_per_m3_retained": 3.2700588605818384e+26,
+    "infrared_omitted_fractions": {
+      "lambda": 6.25e-06,
+      "modes": 1.5625000000000003e-08,
+      "first_DOS_energy_moment": 3.90625e-11
+    },
+    "support_policy": "compact declared interval, endpoints included; zero outside is a model cutoff, not extrapolation",
+    "normalization": "gSI=9*n_atom*Omega^2/OmegaD^3; gbar=gSI/N0; measure dOmega_bar"
+  },
+  "initial_conditions_sha256": "6d082fb53539b13e559f8bd390cd47e189db7eabceb4e9650b85decc8503b410",
+  "initial": {
+    "amplitudes": [
+      0.6
+    ],
+    "electron_energy": [
+      0.07162721687743862
+    ],
+    "phonon_energy": [
+      0.15189357821794436
+    ],
+    "temperatures": [
+      0.37336451416464295
+    ],
+    "forces": [
+      -0.3441780987184537
+    ],
+    "escape": [
+      0.0
+    ],
+    "input": [
+      0.0
+    ],
+    "electron_to_phonon": [
+      0.0
+    ],
+    "condensate_heat": [
+      0.0
+    ],
+    "transport": 0.0,
+    "total": 0.22352079509538297,
+    "conserved": 0.22352079509538297,
+    "minimum_electron": 5.06912565567589e-44,
+    "maximum_electron": 0.19989891280087552,
+    "minimum_phonon": 0.0016666666667351083
+  },
+  "initial_excitation_energy": 0.4355244414331953,
+  "initial_instantaneous_residual": -1.1587952819525071e-15,
+  "rhs_calls": 412,
+  "energy_ledger_scaled_max": 1.473869248869164e-09,
+  "instantaneous_residual_max": 1.1587952819525071e-15,
+  "minimum_electron": 5.06912565567589e-44,
+  "maximum_electron": 0.19989891280087552,
+  "minimum_phonon": 0.00012921615136497785,
+  "final": {
+    "amplitudes": [
+      0.7593207266801683
+    ],
+    "electron_energy": [
+      0.09096624341846105
+    ],
+    "phonon_energy": [
+      0.13255455315079118
+    ],
+    "temperatures": [
+      0.42635033295136027
+    ],
+    "forces": [
+      -0.017435510831765477
+    ],
+    "escape": [
+      0.0
+    ],
+    "input": [
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.019339025067153154
+    ],
+    "condensate_heat": [
+      0.028218520987574724
+    ],
+    "transport": 0.0,
+    "total": 0.22352079656925222,
+    "conserved": 0.22352079656925222,
+    "minimum_electron": 4.0828428616884846e-12,
+    "maximum_electron": 0.18699188725708232,
+    "minimum_phonon": 0.00012921615136497785
+  },
+  "times": [
+    0.0,
+    0.02,
+    0.04,
+    0.06,
+    0.08,
+    0.1,
+    0.12,
+    0.14,
+    0.16,
+    0.18,
+    0.2,
+    0.22,
+    0.24,
+    0.26,
+    0.28,
+    0.3,
+    0.32,
+    0.34,
+    0.36,
+    0.38,
+    0.4,
+    0.42,
+    0.44,
+    0.46,
+    0.48,
+    0.5,
+    0.52,
+    0.54,
+    0.56,
+    0.58,
+    0.6,
+    0.62,
+    0.64,
+    0.66,
+    0.68,
+    0.7000000000000001,
+    0.72,
+    0.74,
+    0.76,
+    0.78,
+    0.8,
+    0.8200000000000001,
+    0.84,
+    0.86,
+    0.88,
+    0.9,
+    0.92,
+    0.9400000000000001,
+    0.96,
+    0.98,
+    1.0,
+    1.02,
+    1.04,
+    1.06,
+    1.08,
+    1.1,
+    1.12,
+    1.1400000000000001,
+    1.16,
+    1.18,
+    1.2,
+    1.22,
+    1.24,
+    1.26,
+    1.28,
+    1.3,
+    1.32,
+    1.34,
+    1.36,
+    1.3800000000000001,
+    1.4000000000000001,
+    1.42,
+    1.44,
+    1.46,
+    1.48,
+    1.5,
+    1.52,
+    1.54,
+    1.56,
+    1.58,
+    1.6,
+    1.62,
+    1.6400000000000001,
+    1.6600000000000001,
+    1.68,
+    1.7,
+    1.72,
+    1.74,
+    1.76,
+    1.78,
+    1.8,
+    1.82,
+    1.84,
+    1.86,
+    1.8800000000000001,
+    1.9000000000000001,
+    1.92,
+    1.94,
+    1.96,
+    1.98,
+    2.0
+  ],
+  "snapshots": [
+    {
+      "amplitudes": [
+        0.6
+      ],
+      "electron_energy": [
+        0.07162721687743862
+      ],
+      "phonon_energy": [
+        0.15189357821794436
+      ],
+      "temperatures": [
+        0.37336451416464295
+      ],
+      "forces": [
+        -0.3441780987184537
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        0.0
+      ],
+      "condensate_heat": [
+        0.0
+      ],
+      "transport": 0.0,
+      "total": 0.22352079509538297,
+      "conserved": 0.22352079509538297,
+      "minimum_electron": 5.06912565567589e-44,
+      "maximum_electron": 0.19989891280087552,
+      "minimum_phonon": 0.0016666666667351083
+    },
+    {
+      "amplitudes": [
+        0.6054882230039196
+      ],
+      "electron_energy": [
+        0.0723649710764207
+      ],
+      "phonon_energy": [
+        0.15115582414806428
+      ],
+      "temperatures": [
+        0.3754250833862995
+      ],
+      "forces": [
+        -0.33252538892970895
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.0007377540698800818
+      ],
+      "condensate_heat": [
+        0.0018569493571665844
+      ],
+      "transport": 0.0,
+      "total": 0.22352079522448498,
+      "conserved": 0.22352079522448498,
+      "minimum_electron": 1.907865672851077e-15,
+      "maximum_electron": 0.19622312093430896,
+      "minimum_phonon": 0.0016443619065234657
+    },
+    {
+      "amplitudes": [
+        0.6107749011716681
+      ],
+      "electron_energy": [
+        0.07308382570048416
+      ],
+      "phonon_energy": [
+        0.15043696964059786
+      ],
+      "temperatures": [
+        0.3773979883111403
+      ],
+      "forces": [
+        -0.3213022744258664
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.0014566085773465086
+      ],
+      "condensate_heat": [
+        0.003585236414871209
+      ],
+      "transport": 0.0,
+      "total": 0.22352079534108202,
+      "conserved": 0.22352079534108202,
+      "minimum_electron": 7.465509967166919e-15,
+      "maximum_electron": 0.1926451385501237,
+      "minimum_phonon": 0.0016204951887240828
+    },
+    {
+      "amplitudes": [
+        0.6158686384480463
+      ],
+      "electron_energy": [
+        0.07378189609677394
+      ],
+      "phonon_energy": [
+        0.14973889934968376
+      ],
+      "temperatures": [
+        0.37928702906359574
+      ],
+      "forces": [
+        -0.3104917220204028
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.0021546788682606176
+      ],
+      "condensate_heat": [
+        0.005194331644331292
+      ],
+      "transport": 0.0,
+      "total": 0.2235207954464577,
+      "conserved": 0.2235207954464577,
+      "minimum_electron": 1.9039689888837766e-14,
+      "maximum_electron": 0.18916296912355163,
+      "minimum_phonon": 0.0015946320109721738
+    },
+    {
+      "amplitudes": [
+        0.6207775917627275
+      ],
+      "electron_energy": [
+        0.07446122793329985
+      ],
+      "phonon_energy": [
+        0.14905956760859074
+      ],
+      "temperatures": [
+        0.3810970649302546
+      ],
+      "forces": [
+        -0.30007665631297464
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.002834010609353608
+      ],
+      "condensate_heat": [
+        0.006692955971368806
+      ],
+      "transport": 0.0,
+      "total": 0.22352079554189058,
+      "conserved": 0.22352079554189058,
+      "minimum_electron": 3.839877045576864e-14,
+      "maximum_electron": 0.18577460645195845,
+      "minimum_phonon": 0.001566893782326303
+    },
+    {
+      "amplitudes": [
+        0.6255095017214107
+      ],
+      "electron_energy": [
+        0.07512315270739611
+      ],
+      "phonon_energy": [
+        0.14839764292106253
+      ],
+      "temperatures": [
+        0.3828324284326349
+      ],
+      "forces": [
+        -0.2900409388164129
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.0034959352968818337
+      ],
+      "condensate_heat": [
+        0.008089145855593227
+      ],
+      "transport": 0.0,
+      "total": 0.22352079562845864,
+      "conserved": 0.22352079562845864,
+      "minimum_electron": 6.680924625309472e-14,
+      "maximum_electron": 0.18247803807019106,
+      "minimum_phonon": 0.0015388126649786115
+    },
+    {
+      "amplitudes": [
+        0.6300717175388566
+      ],
+      "electron_energy": [
+        0.0757656496443257
+      ],
+      "phonon_energy": [
+        0.14775514606268275
+      ],
+      "temperatures": [
+        0.3844960609561017
+      ],
+      "forces": [
+        -0.28036972383039327
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.004138432155261632
+      ],
+      "condensate_heat": [
+        0.009390312608935603
+      ],
+      "transport": 0.0,
+      "total": 0.22352079570700845,
+      "conserved": 0.22352079570700845,
+      "minimum_electron": 1.0512232383094279e-13,
+      "maximum_electron": 0.17927123430228906,
+      "minimum_phonon": 0.0015148928023685816
+    },
+    {
+      "amplitudes": [
+        0.634471219979703
+      ],
+      "electron_energy": [
+        0.076392548120373
+      ],
+      "phonon_energy": [
+        0.1471282476579924
+      ],
+      "temperatures": [
+        0.3860926550244187
+      ],
+      "forces": [
+        -0.27104762341911687
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.004765330559951969
+      ],
+      "condensate_heat": [
+        0.010603292021955788
+      ],
+      "transport": 0.0,
+      "total": 0.2235207957783654,
+      "conserved": 0.2235207957783654,
+      "minimum_electron": 1.5378821870136146e-13,
+      "maximum_electron": 0.17615216782994136,
+      "minimum_phonon": 0.0014943448296328233
+    },
+    {
+      "amplitudes": [
+        0.6387146438062437
+      ],
+      "electron_energy": [
+        0.07700328910766202
+      ],
+      "phonon_energy": [
+        0.14651750673569092
+      ],
+      "temperatures": [
+        0.3876251969991095
+      ],
+      "forces": [
+        -0.2620609276153965
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.005376071482253434
+      ],
+      "condensate_heat": [
+        0.01173439266900211
+      ],
+      "transport": 0.0,
+      "total": 0.22352079584335294,
+      "conserved": 0.22352079584335294,
+      "minimum_electron": 2.1291904817092e-13,
+      "maximum_electron": 0.17311882768270853,
+      "minimum_phonon": 0.0014770964545486804
+    },
+    {
+      "amplitudes": [
+        0.642808306969949
+      ],
+      "electron_energy": [
+        0.07759447183468887
+      ],
+      "phonon_energy": [
+        0.1459263240677621
+      ],
+      "temperatures": [
+        0.38909553297895544
+      ],
+      "forces": [
+        -0.2533973307383705
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.005967254150182283
+      ],
+      "condensate_heat": [
+        0.012789447230675141
+      ],
+      "transport": 0.0,
+      "total": 0.22352079590245097,
+      "conserved": 0.22352079590245097,
+      "minimum_electron": 2.8237476542281317e-13,
+      "maximum_electron": 0.17016916991673928,
+      "minimum_phonon": 0.0014629520392918194
+    },
+    {
+      "amplitudes": [
+        0.6467582220335567
+      ],
+      "electron_energy": [
+        0.0781710404967757
+      ],
+      "phonon_energy": [
+        0.14534975545951848
+      ],
+      "temperatures": [
+        0.39050812170714555
+      ],
+      "forces": [
+        -0.24504299785459172
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.006543822758425921
+      ],
+      "condensate_heat": [
+        0.013773844016434023
+      ],
+      "transport": 0.0,
+      "total": 0.22352079595629418,
+      "conserved": 0.22352079595629418,
+      "minimum_electron": 3.617803482049755e-13,
+      "maximum_electron": 0.16730119414407968,
+      "minimum_phonon": 0.0014519613323370768
+    },
+    {
+      "amplitudes": [
+        0.6505701134278287
+      ],
+      "electron_energy": [
+        0.07873104063876935
+      ],
+      "phonon_energy": [
+        0.14478975536648264
+      ],
+      "temperatures": [
+        0.39186494032431557
+      ],
+      "forces": [
+        -0.23698629562292955
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.007103822851461725
+      ],
+      "condensate_heat": [
+        0.014692563240655937
+      ],
+      "transport": 0.0,
+      "total": 0.223520796005252,
+      "conserved": 0.223520796005252,
+      "minimum_electron": 4.506270319369103e-13,
+      "maximum_electron": 0.16451296763724993,
+      "minimum_phonon": 0.0014423665071778312
+    },
+    {
+      "amplitudes": [
+        0.6542494460359545
+      ],
+      "electron_energy": [
+        0.0792680624594801
+      ],
+      "phonon_energy": [
+        0.14425273359074745
+      ],
+      "temperatures": [
+        0.39316634888440116
+      ],
+      "forces": [
+        -0.2292170919453021
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.007640844627196938
+      ],
+      "condensate_heat": [
+        0.015550220188700253
+      ],
+      "transport": 0.0,
+      "total": 0.22352079605022754,
+      "conserved": 0.22352079605022754,
+      "minimum_electron": 5.482428498715679e-13,
+      "maximum_electron": 0.1618025483558966,
+      "minimum_phonon": 0.001421487290567976
+    },
+    {
+      "amplitudes": [
+        0.6578014334870058
+      ],
+      "electron_energy": [
+        0.07978658395613519
+      ],
+      "phonon_energy": [
+        0.14373421213523185
+      ],
+      "temperatures": [
+        0.39441617833007336
+      ],
+      "forces": [
+        -0.2217238420145229
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.008159366082712508
+      ],
+      "condensate_heat": [
+        0.016351086252126144
+      ],
+      "transport": 0.0,
+      "total": 0.22352079609136705,
+      "conserved": 0.22352079609136705,
+      "minimum_electron": 6.538174479143112e-13,
+      "maximum_electron": 0.15916801736198416,
+      "minimum_phonon": 0.001399451161711411
+    },
+    {
+      "amplitudes": [
+        0.6612310516604522
+      ],
+      "electron_energy": [
+        0.08029126858970376
+      ],
+      "phonon_energy": [
+        0.14322952753920398
+      ],
+      "temperatures": [
+        0.3956181660497115
+      ],
+      "forces": [
+        -0.21449478750454792
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.008664050678740355
+      ],
+      "condensate_heat": [
+        0.017099116248180005
+      ],
+      "transport": 0.0,
+      "total": 0.22352079612890774,
+      "conserved": 0.22352079612890774,
+      "minimum_electron": 7.664613589288245e-13,
+      "maximum_electron": 0.15660748146021006,
+      "minimum_phonon": 0.0013828096106639918
+    },
+    {
+      "amplitudes": [
+        0.664543041630613
+      ],
+      "electron_energy": [
+        0.08078308070937162
+      ],
+      "phonon_energy": [
+        0.14273771545388875
+      ],
+      "temperatures": [
+        0.3967746907517232
+      ],
+      "forces": [
+        -0.20751961817713266
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.009155862764055635
+      ],
+      "condensate_heat": [
+        0.017797968317890267
+      ],
+      "transport": 0.0,
+      "total": 0.22352079616326037,
+      "conserved": 0.22352079616326037,
+      "minimum_electron": 8.852305720224631e-13,
+      "maximum_electron": 0.15411908832488563,
+      "minimum_phonon": 0.001371109298135655
+    },
+    {
+      "amplitudes": [
+        0.667741933016962
+      ],
+      "electron_energy": [
+        0.08125779530293414
+      ],
+      "phonon_energy": [
+        0.1422630008917284
+      ],
+      "temperatures": [
+        0.3978863164940168
+      ],
+      "forces": [
+        -0.20078934640868468
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.009630577326215972
+      ],
+      "condensate_heat": [
+        0.018451034496239263
+      ],
+      "transport": 0.0,
+      "total": 0.22352079619466253,
+      "conserved": 0.22352079619466253,
+      "minimum_electron": 1.0092219141957929e-12,
+      "maximum_electron": 0.15170101152522822,
+      "minimum_phonon": 0.0013609650077105308
+    },
+    {
+      "amplitudes": [
+        0.6708320547018543
+      ],
+      "electron_energy": [
+        0.0817198350754576
+      ],
+      "phonon_energy": [
+        0.14180096114806173
+      ],
+      "temperatures": [
+        0.3989563317477716
+      ],
+      "forces": [
+        -0.1942940101876931
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01009261706988265
+      ],
+      "condensate_heat": [
+        0.01906146076593119
+      ],
+      "transport": 0.0,
+      "total": 0.22352079622351934,
+      "conserved": 0.22352079622351934,
+      "minimum_electron": 1.1376075507061166e-12,
+      "maximum_electron": 0.14935145868080496,
+      "minimum_phonon": 0.0013500134999327904
+    },
+    {
+      "amplitudes": [
+        0.6738175437795967
+      ],
+      "electron_energy": [
+        0.0821698599370031
+      ],
+      "phonon_energy": [
+        0.14135093631315626
+      ],
+      "temperatures": [
+        0.3999866849541135
+      ],
+      "forces": [
+        -0.18802507785545775
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.010542641904788114
+      ],
+      "condensate_heat": [
+        0.01963216351139899
+      ],
+      "transport": 0.0,
+      "total": 0.22352079625015936,
+      "conserved": 0.22352079625015936,
+      "minimum_electron": 1.2696522858531669e-12,
+      "maximum_electron": 0.14706867201134582,
+      "minimum_phonon": 0.0013389908252856753
+    },
+    {
+      "amplitudes": [
+        0.6767023691244873
+      ],
+      "electron_energy": [
+        0.08260268456588155
+      ],
+      "phonon_energy": [
+        0.14091811170857033
+      ],
+      "temperatures": [
+        0.4009773368082792
+      ],
+      "forces": [
+        -0.18197515922409224
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.010975466509374036
+      ],
+      "condensate_heat": [
+        0.020165855016664944
+      ],
+      "transport": 0.0,
+      "total": 0.22352079627445187,
+      "conserved": 0.22352079627445187,
+      "minimum_electron": 1.4047269206973676e-12,
+      "maximum_electron": 0.14485090660922192,
+      "minimum_phonon": 0.0013279090285040302
+    },
+    {
+      "amplitudes": [
+        0.6794903211113899
+      ],
+      "electron_energy": [
+        0.08302269793529704
+      ],
+      "phonon_energy": [
+        0.1404980983613471
+      ],
+      "temperatures": [
+        0.4019312700088314
+      ],
+      "forces": [
+        -0.17613477165878616
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01139547985659728
+      ],
+      "condensate_heat": [
+        0.020665050131719095
+      ],
+      "transport": 0.0,
+      "total": 0.22352079629664415,
+      "conserved": 0.22352079629664415,
+      "minimum_electron": 1.542270450642472e-12,
+      "maximum_electron": 0.1426964535942631,
+      "minimum_phonon": 0.0012224779380003749
+    },
+    {
+      "amplitudes": [
+        0.6821850313559624
+      ],
+      "electron_energy": [
+        0.0834166506538444
+      ],
+      "phonon_energy": [
+        0.14010414566375876
+      ],
+      "temperatures": [
+        0.40284568034868967
+      ],
+      "forces": [
+        -0.17049874297680084
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.011789432554185582
+      ],
+      "condensate_heat": [
+        0.021132086409924155
+      ],
+      "transport": 0.0,
+      "total": 0.22352079631760316,
+      "conserved": 0.22352079631760316,
+      "minimum_electron": 1.6818434883837706e-12,
+      "maximum_electron": 0.14060361949393627,
+      "minimum_phonon": 0.0010965748591112141
+    },
+    {
+      "amplitudes": [
+        0.6847899944235204
+      ],
+      "electron_energy": [
+        0.08378301840051072
+      ],
+      "phonon_energy": [
+        0.1397377779358214
+      ],
+      "temperatures": [
+        0.40372150342770285
+      ],
+      "forces": [
+        -0.16505992160272398
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.012155800282122962
+      ],
+      "condensate_heat": [
+        0.021569143296189596
+      ],
+      "transport": 0.0,
+      "total": 0.22352079633633212,
+      "conserved": 0.22352079633633212,
+      "minimum_electron": 1.823002556538502e-12,
+      "maximum_electron": 0.13857070445998254,
+      "minimum_phonon": 0.0010718778555044888
+    },
+    {
+      "amplitudes": [
+        0.687308551983635
+      ],
+      "electron_energy": [
+        0.08413680774998294
+      ],
+      "phonon_energy": [
+        0.13938398860383847
+      ],
+      "temperatures": [
+        0.4045649134399942
+      ],
+      "forces": [
+        -0.15980855149994216
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.012509589614105919
+      ],
+      "condensate_heat": [
+        0.021978241874835696
+      ],
+      "transport": 0.0,
+      "total": 0.2235207963538214,
+      "conserved": 0.2235207963538214,
+      "minimum_electron": 1.9651667058409577e-12,
+      "maximum_electron": 0.13659608516595065,
+      "minimum_phonon": 0.001068245927785685
+    },
+    {
+      "amplitudes": [
+        0.689743892322756
+      ],
+      "electron_energy": [
+        0.08448038978419392
+      ],
+      "phonon_energy": [
+        0.13904040658569472
+      ],
+      "temperatures": [
+        0.4053779195284326
+      ],
+      "forces": [
+        -0.15473737322954917
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01285317163224964
+      ],
+      "condensate_heat": [
+        0.02236125368598024
+      ],
+      "transport": 0.0,
+      "total": 0.22352079636988864,
+      "conserved": 0.22352079636988864,
+      "minimum_electron": 2.1077138131207747e-12,
+      "maximum_electron": 0.13467821300177707,
+      "minimum_phonon": 0.0010307237149669308
+    },
+    {
+      "amplitudes": [
+        0.6920990765198062
+      ],
+      "electron_energy": [
+        0.0848101936753951
+      ],
+      "phonon_energy": [
+        0.13871060270937244
+      ],
+      "temperatures": [
+        0.40616056088232405
+      ],
+      "forces": [
+        -0.1498408061501736
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.013182975508571946
+      ],
+      "condensate_heat": [
+        0.02271992099138497
+      ],
+      "transport": 0.0,
+      "total": 0.22352079638476754,
+      "conserved": 0.22352079638476754,
+      "minimum_electron": 2.2500811368370344e-12,
+      "maximum_electron": 0.13281554500682263,
+      "minimum_phonon": 0.0010194055598045633
+    },
+    {
+      "amplitudes": [
+        0.6943770430740611
+      ],
+      "electron_energy": [
+        0.08513023629647803
+      ],
+      "phonon_energy": [
+        0.13839056010197687
+      ],
+      "temperatures": [
+        0.40691525043454135
+      ],
+      "forces": [
+        -0.1451115007961606
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.013503018115967517
+      ],
+      "condensate_heat": [
+        0.023055865499679733
+      ],
+      "transport": 0.0,
+      "total": 0.2235207963984549,
+      "conserved": 0.2235207963984549,
+      "minimum_electron": 2.3917018577022118e-12,
+      "maximum_electron": 0.13100656131119195,
+      "minimum_phonon": 0.0010160152975188712
+    },
+    {
+      "amplitudes": [
+        0.6965805997640824
+      ],
+      "electron_energy": [
+        0.08544115376968775
+      ],
+      "phonon_energy": [
+        0.13807964264136097
+      ],
+      "temperatures": [
+        0.4076432541644478
+      ],
+      "forces": [
+        -0.14054306298493063
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.013813935576583372
+      ],
+      "condensate_heat": [
+        0.023370592337122065
+      ],
+      "transport": 0.0,
+      "total": 0.22352079641104872,
+      "conserved": 0.22352079641104872,
+      "minimum_electron": 2.532060627337467e-12,
+      "maximum_electron": 0.12924977947933466,
+      "minimum_phonon": 0.001015012922284099
+    },
+    {
+      "amplitudes": [
+        0.6987124386358999
+      ],
+      "electron_energy": [
+        0.08574296883292343
+      ],
+      "phonon_energy": [
+        0.1377778275897349
+      ],
+      "temperatures": [
+        0.40834558823462164
+      ],
+      "forces": [
+        -0.13612960555269826
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01411575062820946
+      ],
+      "condensate_heat": [
+        0.023665501988582655
+      ],
+      "transport": 0.0,
+      "total": 0.22352079642265832,
+      "conserved": 0.22352079642265832,
+      "minimum_electron": 2.6707076761993468e-12,
+      "maximum_electron": 0.12754375486706096,
+      "minimum_phonon": 0.0010146087398138523
+    },
+    {
+      "amplitudes": [
+        0.7007751424520096
+      ],
+      "electron_energy": [
+        0.08603553071141573
+      ],
+      "phonon_energy": [
+        0.13748526572196812
+      ],
+      "temperatures": [
+        0.4090231639136317
+      ],
+      "forces": [
+        -0.13186554048767912
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.014408312495976235
+      ],
+      "condensate_heat": [
+        0.023941898205430294
+      ],
+      "transport": 0.0,
+      "total": 0.22352079643338385,
+      "conserved": 0.22352079643338385,
+      "minimum_electron": 2.8072492013294975e-12,
+      "maximum_electron": 0.12964047809697948,
+      "minimum_phonon": 0.0010010178181699449
+    },
+    {
+      "amplitudes": [
+        0.7027711908920992
+      ],
+      "electron_energy": [
+        0.08631843644886733
+      ],
+      "phonon_energy": [
+        0.13720235999439315
+      ],
+      "temperatures": [
+        0.40967676622387955
+      ],
+      "forces": [
+        -0.12774560563399245
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.014691218223551196
+      ],
+      "condensate_heat": [
+        0.024200995339415343
+      ],
+      "transport": 0.0,
+      "total": 0.22352079644326048,
+      "conserved": 0.22352079644326048,
+      "minimum_electron": 2.941395978753511e-12,
+      "maximum_electron": 0.13177493266925258,
+      "minimum_phonon": 0.0009504905805872367
+    },
+    {
+      "amplitudes": [
+        0.7047029684376357
+      ],
+      "electron_energy": [
+        0.08658795367702427
+      ],
+      "phonon_energy": [
+        0.1369328427755024
+      ],
+      "temperatures": [
+        0.41030608301025273
+      ],
+      "forces": [
+        -0.1237654118427064
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.014960735442441983
+      ],
+      "condensate_heat": [
+        0.024443925716250925
+      ],
+      "transport": 0.0,
+      "total": 0.22352079645252668,
+      "conserved": 0.22352079645252668,
+      "minimum_electron": 3.0728991955809947e-12,
+      "maximum_electron": 0.1338362860331637,
+      "minimum_phonon": 0.0009091723506005427
+    },
+    {
+      "amplitudes": [
+        0.7065727745663314
+      ],
+      "electron_energy": [
+        0.08684538663797658
+      ],
+      "phonon_energy": [
+        0.13667540982301024
+      ],
+      "temperatures": [
+        0.41091236356908856
+      ],
+      "forces": [
+        -0.11991998690716049
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.015218168394934126
+      ],
+      "condensate_heat": [
+        0.024671746990005353
+      ],
+      "transport": 0.0,
+      "total": 0.22352079646098683,
+      "conserved": 0.22352079646098683,
+      "minimum_electron": 3.2015068934104898e-12,
+      "maximum_electron": 0.13582711590127275,
+      "minimum_phonon": 0.0009091723501977984
+    },
+    {
+      "amplitudes": [
+        0.7083828085557607
+      ],
+      "electron_energy": [
+        0.08709477873257265
+      ],
+      "phonon_energy": [
+        0.13642601773623064
+      ],
+      "temperatures": [
+        0.4114976777558857
+      ],
+      "forces": [
+        -0.1162035009499659
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.015467560481713714
+      ],
+      "condensate_heat": [
+        0.024885441842821945
+      ],
+      "transport": 0.0,
+      "total": 0.2235207964688033,
+      "conserved": 0.2235207964688033,
+      "minimum_electron": 3.3269932396976484e-12,
+      "maximum_electron": 0.13774992011771905,
+      "minimum_phonon": 0.0009074518065942474
+    },
+    {
+      "amplitudes": [
+        0.7101351799651728
+      ],
+      "electron_energy": [
+        0.0873355849645856
+      ],
+      "phonon_energy": [
+        0.13618521151144897
+      ],
+      "temperatures": [
+        0.41206260239281606
+      ],
+      "forces": [
+        -0.11261149426829609
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.015708366706495405
+      ],
+      "condensate_heat": [
+        0.025085925367365702
+      ],
+      "transport": 0.0,
+      "total": 0.22352079647603457,
+      "conserved": 0.22352079647603457,
+      "minimum_electron": 3.449143160681807e-12,
+      "maximum_electron": 0.1396071044856951,
+      "minimum_phonon": 0.0008763006745584938
+    },
+    {
+      "amplitudes": [
+        0.7118319176205057
+      ],
+      "electron_energy": [
+        0.08756752149090624
+      ],
+      "phonon_energy": [
+        0.1359532749917968
+      ],
+      "temperatures": [
+        0.4126077630002786
+      ],
+      "forces": [
+        -0.10913963580486435
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.015940303226147548
+      ],
+      "condensate_heat": [
+        0.025274051234399707
+      ],
+      "transport": 0.0,
+      "total": 0.22352079648270304,
+      "conserved": 0.22352079648270304,
+      "minimum_electron": 3.5677380996106415e-12,
+      "maximum_electron": 0.14140097729852616,
+      "minimum_phonon": 0.0008133950227043142
+    },
+    {
+      "amplitudes": [
+        0.7134749780450753
+      ],
+      "electron_energy": [
+        0.08778575325093135
+      ],
+      "phonon_energy": [
+        0.13573504323806357
+      ],
+      "temperatures": [
+        0.413132321873572
+      ],
+      "forces": [
+        -0.10578484917084685
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.016158534979880814
+      ],
+      "condensate_heat": [
+        0.02545061717221523
+      ],
+      "transport": 0.0,
+      "total": 0.22352079648899492,
+      "conserved": 0.22352079648899492,
+      "minimum_electron": 3.682573867944058e-12,
+      "maximum_electron": 0.14313374684791008,
+      "minimum_phonon": 0.0007861019300111189
+    },
+    {
+      "amplitudes": [
+        0.7150662472453989
+      ],
+      "electron_energy": [
+        0.08799488403910904
+      ],
+      "phonon_energy": [
+        0.13552591245564202
+      ],
+      "temperatures": [
+        0.4136383855820824
+      ],
+      "forces": [
+        -0.10254207492894213
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.016367665762302346
+      ],
+      "condensate_heat": [
+        0.0256163684060318
+      ],
+      "transport": 0.0,
+      "total": 0.22352079649475107,
+      "conserved": 0.22352079649475107,
+      "minimum_electron": 3.793448680466938e-12,
+      "maximum_electron": 0.14480753078035125,
+      "minimum_phonon": 0.0007632589457971763
+    },
+    {
+      "amplitudes": [
+        0.7166075330058994
+      ],
+      "electron_energy": [
+        0.0881949303023048
+      ],
+      "phonon_energy": [
+        0.13532586619776144
+      ],
+      "temperatures": [
+        0.41412658182258744
+      ],
+      "forces": [
+        -0.09940746652485438
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01656771202018295
+      ],
+      "condensate_heat": [
+        0.025771998648482366
+      ],
+      "transport": 0.0,
+      "total": 0.22352079650006623,
+      "conserved": 0.22352079650006623,
+      "minimum_electron": 3.900170332713454e-12,
+      "maximum_electron": 0.14642438117691747,
+      "minimum_phonon": 0.0007632589457971763
+    },
+    {
+      "amplitudes": [
+        0.7181005700097941
+      ],
+      "electron_energy": [
+        0.0883882383116017
+      ],
+      "phonon_energy": [
+        0.13513255819338654
+      ],
+      "temperatures": [
+        0.41459823966592385
+      ],
+      "forces": [
+        -0.09637659070561
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.016761020024557816
+      ],
+      "condensate_heat": [
+        0.025918154369861078
+      ],
+      "transport": 0.0,
+      "total": 0.22352079650498824,
+      "conserved": 0.22352079650498824,
+      "minimum_electron": 4.002574323125151e-12,
+      "maximum_electron": 0.14798627753020166,
+      "minimum_phonon": 0.0007632589457971763
+    },
+    {
+      "amplitudes": [
+        0.7195470239693526
+      ],
+      "electron_energy": [
+        0.08857483214791045
+      ],
+      "phonon_energy": [
+        0.1349459643616459
+      ],
+      "temperatures": [
+        0.4150539300213089
+      ],
+      "forces": [
+        -0.09344582045565769
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.016947613856298435
+      ],
+      "condensate_heat": [
+        0.026055438381540546
+      ],
+      "transport": 0.0,
+      "total": 0.22352079650955636,
+      "conserved": 0.22352079650955636,
+      "minimum_electron": 4.100525406195914e-12,
+      "maximum_electron": 0.14949512859129824,
+      "minimum_phonon": 0.0007610785156977876
+    },
+    {
+      "amplitudes": [
+        0.7209484984028562
+      ],
+      "electron_energy": [
+        0.08875446985501745
+      ],
+      "phonon_energy": [
+        0.13476632665877253
+      ],
+      "temperatures": [
+        0.4154941156811393
+      ],
+      "forces": [
+        -0.09061174453127924
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.017127251559171844
+      ],
+      "condensate_heat": [
+        0.026184413715357832
+      ],
+      "transport": 0.0,
+      "total": 0.22352079651378998,
+      "conserved": 0.22352079651378998,
+      "minimum_electron": 4.193920450377933e-12,
+      "maximum_electron": 0.1509527676296051,
+      "minimum_phonon": 0.0007489305254510446
+    },
+    {
+      "amplitudes": [
+        0.7223065370501002
+      ],
+      "electron_energy": [
+        0.08892703336925739
+      ],
+      "phonon_energy": [
+        0.13459376314846672
+      ],
+      "temperatures": [
+        0.41591927486669883
+      ],
+      "forces": [
+        -0.08787104925040079
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.017299815069477642
+      ],
+      "condensate_heat": [
+        0.02630560631160392
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965177241,
+      "conserved": 0.2235207965177241,
+      "minimum_electron": 4.282680662258567e-12,
+      "maximum_electron": 0.15236095959589926,
+      "minimum_phonon": 0.0007337976728697105
+    },
+    {
+      "amplitudes": [
+        0.7236226291778032
+      ],
+      "electron_energy": [
+        0.08909181065498101
+      ],
+      "phonon_energy": [
+        0.13442898586638466
+      ],
+      "temperatures": [
+        0.4163296787543347
+      ],
+      "forces": [
+        -0.0852207250031059
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.017464592351559685
+      ],
+      "condensate_heat": [
+        0.026419508083467033
+      ],
+      "transport": 0.0,
+      "total": 0.22352079652136567,
+      "conserved": 0.22352079652136567,
+      "minimum_electron": 4.366724941288522e-12,
+      "maximum_electron": 0.15372140380450292,
+      "minimum_phonon": 0.0007323186699999459
+    },
+    {
+      "amplitudes": [
+        0.7248982063310863
+      ],
+      "electron_energy": [
+        0.08925021217728335
+      ],
+      "phonon_energy": [
+        0.13427058434746456
+      ],
+      "temperatures": [
+        0.41672623960385075
+      ],
+      "forces": [
+        -0.08265726292192932
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.017622993870479796
+      ],
+      "condensate_heat": [
+        0.026526578183851037
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965247479,
+      "conserved": 0.2235207965247479,
+      "minimum_electron": 4.445999047271907e-12,
+      "maximum_electron": 0.1550357415486238,
+      "minimum_phonon": 0.0007263534443152027
+    },
+    {
+      "amplitudes": [
+        0.7261346450124934
+      ],
+      "electron_energy": [
+        0.08940231366236495
+      ],
+      "phonon_energy": [
+        0.134118482865527
+      ],
+      "temperatures": [
+        0.4171094310155874
+      ],
+      "forces": [
+        -0.08017766205052268
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.017775095352417357
+      ],
+      "condensate_heat": [
+        0.026627245332102735
+      ],
+      "transport": 0.0,
+      "total": 0.22352079652789195,
+      "conserved": 0.22352079652789195,
+      "minimum_electron": 4.520486751019428e-12,
+      "maximum_electron": 0.15630555624158074,
+      "minimum_phonon": 0.000716997069919338
+    },
+    {
+      "amplitudes": [
+        0.7273332719747159
+      ],
+      "electron_energy": [
+        0.08954793488302826
+      ],
+      "phonon_energy": [
+        0.13397286164778302
+      ],
+      "temperatures": [
+        0.41747962778315956
+      ],
+      "forces": [
+        -0.0777791159744029
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.017920716570161352
+      ],
+      "condensate_heat": [
+        0.026721910440843148
+      ],
+      "transport": 0.0,
+      "total": 0.22352079653081128,
+      "conserved": 0.22352079653081128,
+      "minimum_electron": 4.590223728795881e-12,
+      "maximum_electron": 0.1575323718455405,
+      "minimum_phonon": 0.0007110927425719853
+    },
+    {
+      "amplitudes": [
+        0.7284953649471582
+      ],
+      "electron_energy": [
+        0.08968756592849647
+      ],
+      "phonon_energy": [
+        0.1338332306050205
+      ],
+      "temperatures": [
+        0.41783739510969015
+      ],
+      "forces": [
+        -0.07545872280821253
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.018060347612923862
+      ],
+      "condensate_heat": [
+        0.026810948270505026
+      ],
+      "transport": 0.0,
+      "total": 0.22352079653351697,
+      "conserved": 0.22352079653351697,
+      "minimum_electron": 4.655275196973113e-12,
+      "maximum_electron": 0.15871765856594247,
+      "minimum_phonon": 0.0007040898122919198
+    },
+    {
+      "amplitudes": [
+        0.7296221529923292
+      ],
+      "electron_energy": [
+        0.089821667268636
+      ],
+      "phonon_energy": [
+        0.13369912926739563
+      ],
+      "temperatures": [
+        0.41818327053197735
+      ],
+      "forces": [
+        -0.0732136886528107
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.018194448950548753
+      ],
+      "condensate_heat": [
+        0.02689470894191993
+      ],
+      "transport": 0.0,
+      "total": 0.22352079653603163,
+      "conserved": 0.22352079653603163,
+      "minimum_electron": 4.7157306877685555e-12,
+      "maximum_electron": 0.1598628357697607,
+      "minimum_phonon": 0.000695918610166968
+    },
+    {
+      "amplitudes": [
+        0.7307148215421777
+      ],
+      "electron_energy": [
+        0.08994984749043128
+      ],
+      "phonon_energy": [
+        0.13357094904793396
+      ],
+      "temperatures": [
+        0.4185175101793079
+      ],
+      "forces": [
+        -0.07104157173857889
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.018322629170010412
+      ],
+      "condensate_heat": [
+        0.02697352010129957
+      ],
+      "transport": 0.0,
+      "total": 0.22352079653836524,
+      "conserved": 0.22352079653836524,
+      "minimum_electron": 4.771681353628172e-12,
+      "maximum_electron": 0.16096927045774723,
+      "minimum_phonon": 0.0006937392143100296
+    },
+    {
+      "amplitudes": [
+        0.7317745119791982
+      ],
+      "electron_energy": [
+        0.0900728269815061
+      ],
+      "phonon_energy": [
+        0.13344796955902705
+      ],
+      "temperatures": [
+        0.4188406997585904
+      ],
+      "forces": [
+        -0.06893969489331625
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01844560865891732
+      ],
+      "condensate_heat": [
+        0.027047688091563916
+      ],
+      "transport": 0.0,
+      "total": 0.22352079654053314,
+      "conserved": 0.22352079654053314,
+      "minimum_electron": 4.823209973629901e-12,
+      "maximum_electron": 0.162038282264708,
+      "minimum_phonon": 0.0006851574670880028
+    },
+    {
+      "amplitudes": [
+        0.7328023234022705
+      ],
+      "electron_energy": [
+        0.09019072663549338
+      ],
+      "phonon_energy": [
+        0.13333006990705298
+      ],
+      "temperatures": [
+        0.41915322303595715
+      ],
+      "forces": [
+        -0.0669056446542744
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01856350831089139
+      ],
+      "condensate_heat": [
+        0.027117499393216945
+      ],
+      "transport": 0.0,
+      "total": 0.22352079654254636,
+      "conserved": 0.22352079654254636,
+      "minimum_electron": 4.870404291499478e-12,
+      "maximum_electron": 0.16307114433910794,
+      "minimum_phonon": 0.0006721998566132565
+    },
+    {
+      "amplitudes": [
+        0.7337993166203589
+      ],
+      "electron_energy": [
+        0.09030270714724059
+      ],
+      "phonon_energy": [
+        0.13321808939718446
+      ],
+      "temperatures": [
+        0.4194551520438895
+      ],
+      "forces": [
+        -0.06493737945795047
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.018675488820759912
+      ],
+      "condensate_heat": [
+        0.02718322229001846
+      ],
+      "transport": 0.0,
+      "total": 0.22352079654442505,
+      "conserved": 0.22352079654442505,
+      "minimum_electron": 4.913373005901338e-12,
+      "maximum_electron": 0.1640690828231514,
+      "minimum_phonon": 0.0006697883512713908
+    },
+    {
+      "amplitudes": [
+        0.7347665154463103
+      ],
+      "electron_energy": [
+        0.09040978934202293
+      ],
+      "phonon_energy": [
+        0.13311100720413946
+      ],
+      "temperatures": [
+        0.41974712260462044
+      ],
+      "forces": [
+        -0.06303239235824681
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.018782571013804893
+      ],
+      "condensate_heat": [
+        0.027245108037845096
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965461624,
+      "conserved": 0.2235207965461624,
+      "minimum_electron": 4.9522362548899846e-12,
+      "maximum_electron": 0.16503327948784974,
+      "minimum_phonon": 0.0006691842965195151
+    },
+    {
+      "amplitudes": [
+        0.7357049042673762
+      ],
+      "electron_energy": [
+        0.09051198237881192
+      ],
+      "phonon_energy": [
+        0.13300881416897134
+      ],
+      "temperatures": [
+        0.4200294426870089
+      ],
+      "forces": [
+        -0.06118855157770481
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.018884764048973022
+      ],
+      "condensate_heat": [
+        0.027303391464225554
+      ],
+      "transport": 0.0,
+      "total": 0.22352079654778326,
+      "conserved": 0.22352079654778326,
+      "minimum_electron": 4.987108106242909e-12,
+      "maximum_electron": 0.1659648772310791,
+      "minimum_phonon": 0.0006620736458187712
+    },
+    {
+      "amplitudes": [
+        0.7366154329799307
+      ],
+      "electron_energy": [
+        0.09060929937533008
+      ],
+      "phonon_energy": [
+        0.1329114971739606
+      ],
+      "temperatures": [
+        0.4203024093081012
+      ],
+      "forces": [
+        -0.059403796705926715
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01898208104398375
+      ],
+      "condensate_heat": [
+        0.027358292528927252
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965492907,
+      "conserved": 0.2235207965492907,
+      "minimum_electron": 5.0180943663255154e-12,
+      "maximum_electron": 0.1668649775635674,
+      "minimum_phonon": 0.0006485598559081829
+    },
+    {
+      "amplitudes": [
+        0.7374990182974334
+      ],
+      "electron_energy": [
+        0.09070111170624107
+      ],
+      "phonon_energy": [
+        0.1328196848444531
+      ],
+      "temperatures": [
+        0.42056610937916883
+      ],
+      "forces": [
+        -0.057676289427953886
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01907389337349124
+      ],
+      "condensate_heat": [
+        0.027410017295451613
+      ],
+      "transport": 0.0,
+      "total": 0.22352079655069418,
+      "conserved": 0.22352079655069418,
+      "minimum_electron": 5.045298209615514e-12,
+      "maximum_electron": 0.16773464226994256,
+      "minimum_phonon": 0.0006212205968189541
+    },
+    {
+      "amplitudes": [
+        0.7383565490506846
+      ],
+      "electron_energy": [
+        0.09078656872933566
+      ],
+      "phonon_energy": [
+        0.1327342278226625
+      ],
+      "temperatures": [
+        0.42082055162062093
+      ],
+      "forces": [
+        -0.056004374333175955
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019159350395281865
+      ],
+      "condensate_heat": [
+        0.027458759320253833
+      ],
+      "transport": 0.0,
+      "total": 0.22352079655199816,
+      "conserved": 0.22352079655199816,
+      "minimum_electron": 5.068818733007286e-12,
+      "maximum_electron": 0.16857488950658225,
+      "minimum_phonon": 0.0005925388030806177
+    },
+    {
+      "amplitudes": [
+        0.739188880552207
+      ],
+      "electron_energy": [
+        0.09086700034928075
+      ],
+      "phonon_energy": [
+        0.1326537962039317
+      ],
+      "temperatures": [
+        0.4210664075851075
+      ],
+      "forces": [
+        -0.05438582644687645
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019239782014012656
+      ],
+      "condensate_heat": [
+        0.027504699643628353
+      ],
+      "transport": 0.0,
+      "total": 0.22352079655321244,
+      "conserved": 0.22352079655321244,
+      "minimum_electron": 5.088755283142467e-12,
+      "maximum_electron": 0.16938670414963844,
+      "minimum_phonon": 0.0005531757338262081
+    },
+    {
+      "amplitudes": [
+        0.7399968368227269
+      ],
+      "electron_energy": [
+        0.09094216267448241
+      ],
+      "phonon_energy": [
+        0.13257863387986
+      ],
+      "temperatures": [
+        0.42130385137006987
+      ],
+      "forces": [
+        -0.05281894668065207
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01931494433808438
+      ],
+      "condensate_heat": [
+        0.027548007736126683
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965543424,
+      "conserved": 0.2235207965543424,
+      "minimum_electron": 5.105205577872445e-12,
+      "maximum_electron": 0.17017103948767973,
+      "minimum_phonon": 0.0005034031355623408
+    },
+    {
+      "amplitudes": [
+        0.7407812142284754
+      ],
+      "electron_energy": [
+        0.0910119399672536
+      ],
+      "phonon_energy": [
+        0.13250885658814668
+      ],
+      "temperatures": [
+        0.42153308730152467
+      ],
+      "forces": [
+        -0.05130206100572693
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019384721629797694
+      ],
+      "condensate_heat": [
+        0.027588842537930116
+      ],
+      "transport": 0.0,
+      "total": 0.22352079655540028,
+      "conserved": 0.22352079655540028,
+      "minimum_electron": 5.118258871976598e-12,
+      "maximum_electron": 0.1709288142088517,
+      "minimum_phonon": 0.0004487636168123293
+    },
+    {
+      "amplitudes": [
+        0.7415427846213358
+      ],
+      "electron_energy": [
+        0.09107361743638615
+      ],
+      "phonon_energy": [
+        0.13244717912002668
+      ],
+      "temperatures": [
+        0.4217535096347881
+      ],
+      "forces": [
+        -0.04983403839257544
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019446399097917663
+      ],
+      "condensate_heat": [
+        0.027627353360926518
+      ],
+      "transport": 0.0,
+      "total": 0.22352079655641283,
+      "conserved": 0.22352079655641283,
+      "minimum_electron": 5.128010482725576e-12,
+      "maximum_electron": 0.17166090969418155,
+      "minimum_phonon": 0.0004304326362391117
+    },
+    {
+      "amplitudes": [
+        0.7422822960284952
+      ],
+      "electron_energy": [
+        0.09112982382058182
+      ],
+      "phonon_energy": [
+        0.1323909727367545
+      ],
+      "temperatures": [
+        0.4219661533622381
+      ],
+      "forces": [
+        -0.048412886078458894
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01950260548118985
+      ],
+      "condensate_heat": [
+        0.027663680458686085
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965573363,
+      "conserved": 0.2235207965573363,
+      "minimum_electron": 5.134555122055291e-12,
+      "maximum_electron": 0.17236817292926448,
+      "minimum_phonon": 0.0004285236364970571
+    },
+    {
+      "amplitudes": [
+        0.7430004643890135
+      ],
+      "electron_energy": [
+        0.09118224747428111
+      ],
+      "phonon_energy": [
+        0.132338549083909
+      ],
+      "temperatures": [
+        0.42217175183386774
+      ],
+      "forces": [
+        -0.047036642510743576
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019555029134035357
+      ],
+      "condensate_heat": [
+        0.027697954644498948
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965581901,
+      "conserved": 0.2235207965581901,
+      "minimum_electron": 5.137987320929091e-12,
+      "maximum_electron": 0.17305143385646235,
+      "minimum_phonon": 0.0004285236364970571
+    },
+    {
+      "amplitudes": [
+        0.7436979774839854
+      ],
+      "electron_energy": [
+        0.09123109134694424
+      ],
+      "phonon_energy": [
+        0.132289705212044
+      ],
+      "temperatures": [
+        0.42237057085747065
+      ],
+      "forces": [
+        -0.04570376912704893
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019603873005900347
+      ],
+      "condensate_heat": [
+        0.027730298246430325
+      ],
+      "transport": 0.0,
+      "total": 0.22352079655898824,
+      "conserved": 0.22352079655898824,
+      "minimum_electron": 5.1384023490433145e-12,
+      "maximum_electron": 0.17371149810251274,
+      "minimum_phonon": 0.0004272589341972168
+    },
+    {
+      "amplitudes": [
+        0.7443755000605515
+      ],
+      "electron_energy": [
+        0.09127617852894537
+      ],
+      "phonon_energy": [
+        0.13224461803078655
+      ],
+      "temperatures": [
+        0.42256275160334267
+      ],
+      "forces": [
+        -0.04441289367064438
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.0196489601871578
+      ],
+      "condensate_heat": [
+        0.02776082606811141
+      ],
+      "transport": 0.0,
+      "total": 0.22352079655973192,
+      "conserved": 0.22352079655973192,
+      "minimum_electron": 5.135901214675223e-12,
+      "maximum_electron": 0.17434913971228314,
+      "minimum_phonon": 0.0004216070061325649
+    },
+    {
+      "amplitudes": [
+        0.7450336743296054
+      ],
+      "electron_energy": [
+        0.09131761972877078
+      ],
+      "phonon_energy": [
+        0.13220317683165386
+      ],
+      "temperatures": [
+        0.42274851649519163
+      ],
+      "forces": [
+        -0.043162608494590526
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019690401386290496
+      ],
+      "condensate_heat": [
+        0.027789645834364298
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656042464,
+      "conserved": 0.22352079656042464,
+      "minimum_electron": 5.130585368568224e-12,
+      "maximum_electron": 0.17496510448168254,
+      "minimum_phonon": 0.00041305070692669853
+    },
+    {
+      "amplitudes": [
+        0.7456731201970734
+      ],
+      "electron_energy": [
+        0.09135552557285204
+      ],
+      "phonon_energy": [
+        0.1321652709882185
+      ],
+      "temperatures": [
+        0.42292808067723703
+      ],
+      "forces": [
+        -0.041951553874239156
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019728307229725846
+      ],
+      "condensate_heat": [
+        0.027816858588843064
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656107054,
+      "conserved": 0.22352079656107054,
+      "minimum_electron": 5.122567413075007e-12,
+      "maximum_electron": 0.1755601153386647,
+      "minimum_phonon": 0.00040300147115129306
+    },
+    {
+      "amplitudes": [
+        0.7462944361560856
+      ],
+      "electron_energy": [
+        0.09138985040365577
+      ],
+      "phonon_energy": [
+        0.13213094615801907
+      ],
+      "temperatures": [
+        0.4231016043121298
+      ],
+      "forces": [
+        -0.040778464286453875
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01976263205992527
+      ],
+      "condensate_heat": [
+        0.027842559129748184
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656167484,
+      "conserved": 0.22352079656167484,
+      "minimum_electron": 5.111967402890599e-12,
+      "maximum_electron": 0.17613486754647792,
+      "minimum_phonon": 0.00039425570122706213
+    },
+    {
+      "amplitudes": [
+        0.7468982023310832
+      ],
+      "electron_energy": [
+        0.09142024594136217
+      ],
+      "phonon_energy": [
+        0.13210055062087256
+      ],
+      "temperatures": [
+        0.42326914857763126
+      ],
+      "forces": [
+        -0.03964221662038564
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019793027597071806
+      ],
+      "condensate_heat": [
+        0.027866836597471023
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656223472,
+      "conserved": 0.22352079656223472,
+      "minimum_electron": 5.098906203687118e-12,
+      "maximum_electron": 0.17669003341965459,
+      "minimum_phonon": 0.00039411964820112663
+    },
+    {
+      "amplitudes": [
+        0.7474849776213852
+      ],
+      "electron_energy": [
+        0.09144741697277176
+      ],
+      "phonon_energy": [
+        0.13207337958998777
+      ],
+      "temperatures": [
+        0.4234310917025925
+      ],
+      "forces": [
+        -0.03854140986742788
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019820198627956604
+      ],
+      "condensate_heat": [
+        0.02788977453606815
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656275953,
+      "conserved": 0.22352079656275953,
+      "minimum_electron": 5.083499504563183e-12,
+      "maximum_electron": 0.17722626457640386,
+      "minimum_phonon": 0.0003914034367359562
+    },
+    {
+      "amplitudes": [
+        0.7480553012868643
+      ],
+      "electron_energy": [
+        0.09147136067971429
+      ],
+      "phonon_energy": [
+        0.13204943588353424
+      ],
+      "temperatures": [
+        0.42358758808753244
+      ],
+      "forces": [
+        -0.03747489604465615
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019844142334410095
+      ],
+      "condensate_heat": [
+        0.027911451321826115
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656324852,
+      "conserved": 0.22352079656324852,
+      "minimum_electron": 5.065861753503484e-12,
+      "maximum_electron": 0.17774419111470438,
+      "minimum_phonon": 0.00038579964676530807
+    },
+    {
+      "amplitudes": [
+        0.7486096942489
+      ],
+      "electron_energy": [
+        0.09149217454702274
+      ],
+      "phonon_energy": [
+        0.1320286220166817
+      ],
+      "temperatures": [
+        0.42373881717187417
+      ],
+      "forces": [
+        -0.0364415369949494
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01986495620126265
+      ],
+      "condensate_heat": [
+        0.02793194054109753
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656370444,
+      "conserved": 0.22352079656370444,
+      "minimum_electron": 5.0461117432362895e-12,
+      "maximum_electron": 0.1782444219371374,
+      "minimum_phonon": 0.0003784282651477855
+    },
+    {
+      "amplitudes": [
+        0.7491486596766582
+      ],
+      "electron_energy": [
+        0.09150994045835259
+      ],
+      "phonon_energy": [
+        0.1320108561057773
+      ],
+      "temperatures": [
+        0.42388494802348803
+      ],
+      "forces": [
+        -0.03544023762229209
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019882722112167055
+      ],
+      "condensate_heat": [
+        0.027951311287841025
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965641299,
+      "conserved": 0.2235207965641299,
+      "minimum_electron": 5.024373090949665e-12,
+      "maximum_electron": 0.17872754555176953,
+      "minimum_phonon": 0.0003701099405718882
+    },
+    {
+      "amplitudes": [
+        0.7496726837571221
+      ],
+      "electron_energy": [
+        0.09152463848934045
+      ],
+      "phonon_energy": [
+        0.13199615807518705
+      ],
+      "temperatures": [
+        0.4240261131579268
+      ],
+      "forces": [
+        -0.034469962653384034
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.0198974201427573
+      ],
+      "condensate_heat": [
+        0.027969628457422173
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965645275,
+      "conserved": 0.2235207965645275,
+      "minimum_electron": 5.000772134784575e-12,
+      "maximum_electron": 0.17919413013830907,
+      "minimum_phonon": 0.00036027384454000915
+    },
+    {
+      "amplitudes": [
+        0.7501822378291788
+      ],
+      "electron_energy": [
+        0.09153560002423339
+      ],
+      "phonon_energy": [
+        0.13198519654067006
+      ],
+      "temperatures": [
+        0.42416224144620646
+      ],
+      "forces": [
+        -0.033529916014448824
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01990838167727429
+      ],
+      "condensate_heat": [
+        0.027986953117304213
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656490345,
+      "conserved": 0.22352079656490345,
+      "minimum_electron": 4.975431786516041e-12,
+      "maximum_electron": 0.17964472289118513,
+      "minimum_phonon": 0.00035388282100180324
+    },
+    {
+      "amplitudes": [
+        0.7506777784809419
+      ],
+      "electron_energy": [
+        0.09154346379730166
+      ],
+      "phonon_energy": [
+        0.1319773327679486
+      ],
+      "temperatures": [
+        0.4242936583132859
+      ],
+      "forces": [
+        -0.03261894659272879
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019916245449995755
+      ],
+      "condensate_heat": [
+        0.028003342710380696
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656525026,
+      "conserved": 0.22352079656525026,
+      "minimum_electron": 4.948475038891958e-12,
+      "maximum_electron": 0.18007985147882496,
+      "minimum_phonon": 0.00034599759213216856
+    },
+    {
+      "amplitudes": [
+        0.7511597448164504
+      ],
+      "electron_energy": [
+        0.0915484362697162
+      ],
+      "phonon_energy": [
+        0.13197236029585777
+      ],
+      "temperatures": [
+        0.4244205511689901
+      ],
+      "forces": [
+        -0.03173606557841652
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01992121792208659
+      ],
+      "condensate_heat": [
+        0.028018851058811908
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656557397,
+      "conserved": 0.22352079656557397,
+      "minimum_electron": 4.9200284420441966e-12,
+      "maximum_electron": 0.18050002823419486,
+      "minimum_phonon": 0.00033622954736081315
+    },
+    {
+      "amplitudes": [
+        0.7516285612575666
+      ],
+      "electron_energy": [
+        0.09155054630142273
+      ],
+      "phonon_energy": [
+        0.1319702502644544
+      ],
+      "temperatures": [
+        0.4245430484397391
+      ],
+      "forces": [
+        -0.030880369838127142
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019923327953489965
+      ],
+      "condensate_heat": [
+        0.02803352874379304
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656587712,
+      "conserved": 0.22352079656587712,
+      "minimum_electron": 4.8902241857910345e-12,
+      "maximum_electron": 0.1809057483194864,
+      "minimum_phonon": 0.0003247392038776767
+    },
+    {
+      "amplitudes": [
+        0.7520846384524413
+      ],
+      "electron_energy": [
+        0.09154990804081797
+      ],
+      "phonon_energy": [
+        0.13197088852534336
+      ],
+      "temperatures": [
+        0.424661300475278
+      ],
+      "forces": [
+        -0.030051005464800717
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01992268969260102
+      ],
+      "condensate_heat": [
+        0.02804742333166494
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656616133,
+      "conserved": 0.22352079656616133,
+      "minimum_electron": 4.859191417126382e-12,
+      "maximum_electron": 0.1812974901521199,
+      "minimum_phonon": 0.0003104476070136215
+    },
+    {
+      "amplitudes": [
+        0.752528373525169
+      ],
+      "electron_energy": [
+        0.0915464290568368
+      ],
+      "phonon_energy": [
+        0.13197436750958982
+      ],
+      "temperatures": [
+        0.42477539021435495
+      ],
+      "forces": [
+        -0.029247129058552646
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019919210708354552
+      ],
+      "condensate_heat": [
+        0.028060579545516343
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656642662,
+      "conserved": 0.22352079656642662,
+      "minimum_electron": 4.827052620846127e-12,
+      "maximum_electron": 0.18167571618005746,
+      "minimum_phonon": 0.0002960789138604548
+    },
+    {
+      "amplitudes": [
+        0.7529601514672324
+      ],
+      "electron_energy": [
+        0.09153991719946758
+      ],
+      "phonon_energy": [
+        0.13198087936720604
+      ],
+      "temperatures": [
+        0.42488536638957447
+      ],
+      "forces": [
+        -0.02846798955626323
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01991269885073831
+      ],
+      "condensate_heat": [
+        0.028073039496132123
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656667362,
+      "conserved": 0.22352079656667362,
+      "minimum_electron": 4.793921243832917e-12,
+      "maximum_electron": 0.18204087187300158,
+      "minimum_phonon": 0.0002852950279147838
+    },
+    {
+      "amplitudes": [
+        0.7533803437413956
+      ],
+      "electron_energy": [
+        0.09153082077746649
+      ],
+      "phonon_energy": [
+        0.1319899757894381
+      ],
+      "temperatures": [
+        0.42499146985714337
+      ],
+      "forces": [
+        -0.027712675178392043
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01990360242850626
+      ],
+      "condensate_heat": [
+        0.02808484273388743
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965669046,
+      "conserved": 0.2235207965669046,
+      "minimum_electron": 4.759901282599065e-12,
+      "maximum_electron": 0.18239338921325599,
+      "minimum_phonon": 0.00027371378138986544
+    },
+    {
+      "amplitudes": [
+        0.7537893090315764
+      ],
+      "electron_energy": [
+        0.09151909844774514
+      ],
+      "phonon_energy": [
+        0.13200169811937565
+      ],
+      "temperatures": [
+        0.42509378766286277
+      ],
+      "forces": [
+        -0.026980441083857887
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.01989188009856872
+      ],
+      "condensate_heat": [
+        0.02809602642570647
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965671208,
+      "conserved": 0.2235207965671208,
+      "minimum_electron": 4.725089318777213e-12,
+      "maximum_electron": 0.18273368582826383,
+      "minimum_phonon": 0.000262284295114253
+    },
+    {
+      "amplitudes": [
+        0.7541873949585417
+      ],
+      "electron_energy": [
+        0.09150453666019737
+      ],
+      "phonon_energy": [
+        0.13201625990712593
+      ],
+      "temperatures": [
+        0.42519235084400964
+      ],
+      "forces": [
+        -0.02627060534756437
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019877318310818425
+      ],
+      "condensate_heat": [
+        0.028106625574368785
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965673233,
+      "conserved": 0.2235207965673233,
+      "minimum_electron": 4.689575167897751e-12,
+      "maximum_electron": 0.1830621641700768,
+      "minimum_phonon": 0.0002544202153768037
+    },
+    {
+      "amplitudes": [
+        0.7545749380580774
+      ],
+      "electron_energy": [
+        0.09148740549733397
+      ],
+      "phonon_energy": [
+        0.13203339107017792
+      ],
+      "temperatures": [
+        0.42528733517565387
+      ],
+      "forces": [
+        -0.02558242752717177
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019860187147766425
+      ],
+      "condensate_heat": [
+        0.0281166731261859
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965675119,
+      "conserved": 0.2235207965675119,
+      "minimum_electron": 4.653442368251774e-12,
+      "maximum_electron": 0.18337921314729572,
+      "minimum_phonon": 0.0002481821261192429
+    },
+    {
+      "amplitudes": [
+        0.7549522630826204
+      ],
+      "electron_energy": [
+        0.09146794466780334
+      ],
+      "phonon_energy": [
+        0.13205285189988505
+      ],
+      "temperatures": [
+        0.4253789036209929
+      ],
+      "forces": [
+        -0.024915157481685768
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019840726318059294
+      ],
+      "condensate_heat": [
+        0.02812620004019652
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965676884,
+      "conserved": 0.2235207965676884,
+      "minimum_electron": 4.616769510656678e-12,
+      "maximum_electron": 0.18368520966081595,
+      "minimum_phonon": 0.0002409486572271586
+    },
+    {
+      "amplitudes": [
+        0.7553196840404458
+      ],
+      "electron_energy": [
+        0.09144610777186563
+      ],
+      "phonon_energy": [
+        0.13207468879598866
+      ],
+      "temperatures": [
+        0.42546712842468054
+      ],
+      "forces": [
+        -0.024268155637984012
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019818889421955692
+      ],
+      "condensate_heat": [
+        0.028135235444898092
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656785429,
+      "conserved": 0.22352079656785429,
+      "minimum_electron": 4.579630072653104e-12,
+      "maximum_electron": 0.18398051737439042,
+      "minimum_phonon": 0.00023396711654041338
+    },
+    {
+      "amplitudes": [
+        0.7556775049897579
+      ],
+      "electron_energy": [
+        0.09142197582817346
+      ],
+      "phonon_energy": [
+        0.13209882073983556
+      ],
+      "temperatures": [
+        0.42555211788323327
+      ],
+      "forces": [
+        -0.023640766157421722
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019794757478108826
+      ],
+      "condensate_heat": [
+        0.028143806771589
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656800902,
+      "conserved": 0.22352079656800902,
+      "minimum_electron": 4.5420922611881555e-12,
+      "maximum_electron": 0.18426548666853726,
+      "minimum_phonon": 0.00022684287623212705
+    },
+    {
+      "amplitudes": [
+        0.7560260199567315
+      ],
+      "electron_energy": [
+        0.09139560314350653
+      ],
+      "phonon_energy": [
+        0.13212519342464724
+      ],
+      "temperatures": [
+        0.42563396918600266
+      ],
+      "forces": [
+        -0.023032364256943827
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019768384793297133
+      ],
+      "condensate_heat": [
+        0.02815193983642034
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656815377,
+      "conserved": 0.22352079656815377,
+      "minimum_electron": 4.504227886399105e-12,
+      "maximum_electron": 0.18454045770846783,
+      "minimum_phonon": 0.00021955585647226404
+    },
+    {
+      "amplitudes": [
+        0.7563655134227797
+      ],
+      "electron_energy": [
+        0.09136701492663885
+      ],
+      "phonon_energy": [
+        0.1321537816416507
+      ],
+      "temperatures": [
+        0.4257127678411542
+      ],
+      "forces": [
+        -0.02244235351944146
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019739796576293676
+      ],
+      "condensate_heat": [
+        0.028159658945893062
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656828955,
+      "conserved": 0.22352079656828955,
+      "minimum_electron": 4.46611143382843e-12,
+      "maximum_electron": 0.18480575861962076,
+      "minimum_phonon": 0.00021242848326725024
+    },
+    {
+      "amplitudes": [
+        0.7566962607398771
+      ],
+      "electron_energy": [
+        0.0913362883921609
+      ],
+      "phonon_energy": [
+        0.13218450817625566
+      ],
+      "temperatures": [
+        0.42578861259881573
+      ],
+      "forces": [
+        -0.02187014133308357
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019709070041688717
+      ],
+      "condensate_heat": [
+        0.028166986992575065
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656841656,
+      "conserved": 0.22352079656841656,
+      "minimum_electron": 4.4278103303459985e-12,
+      "maximum_electron": 0.18506170746656306,
+      "minimum_phonon": 0.00020488517217114925
+    },
+    {
+      "amplitudes": [
+        0.7570185284916839
+      ],
+      "electron_energy": [
+        0.09130340025630873
+      ],
+      "phonon_energy": [
+        0.13221739631222665
+      ],
+      "temperatures": [
+        0.4258615689471059
+      ],
+      "forces": [
+        -0.021315185265085246
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019676181905717727
+      ],
+      "condensate_heat": [
+        0.028173945542509366
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656853538,
+      "conserved": 0.22352079656853538,
+      "minimum_electron": 4.389385162435083e-12,
+      "maximum_electron": 0.18530861169807755,
+      "minimum_phonon": 0.00019755891511471463
+    },
+    {
+      "amplitudes": [
+        0.7573325745934867
+      ],
+      "electron_energy": [
+        0.0912684414229909
+      ],
+      "phonon_energy": [
+        0.13225235514565564
+      ],
+      "temperatures": [
+        0.42593173477481
+      ],
+      "forces": [
+        -0.0207769263641992
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019641223072288716
+      ],
+      "condensate_heat": [
+        0.028180554906621337
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656864654,
+      "conserved": 0.22352079656864654,
+      "minimum_electron": 4.350890182981917e-12,
+      "maximum_electron": 0.18554676863120312,
+      "minimum_phonon": 0.00018957993071081093
+    },
+    {
+      "amplitudes": [
+        0.7576386489839323
+      ],
+      "electron_energy": [
+        0.09123135053086434
+      ],
+      "phonon_energy": [
+        0.1322894460378865
+      ],
+      "temperatures": [
+        0.42599915913985853
+      ],
+      "forces": [
+        -0.02025487068761106
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019604132180057875
+      ],
+      "condensate_heat": [
+        0.028186834233080375
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656875085,
+      "conserved": 0.22352079656875085,
+      "minimum_electron": 4.312373490721942e-12,
+      "maximum_electron": 0.18577646539528425,
+      "minimum_phonon": 0.00018160105863999275
+    },
+    {
+      "amplitudes": [
+        0.7579369937159298
+      ],
+      "electron_energy": [
+        0.09119214572163048
+      ],
+      "phonon_energy": [
+        0.13232865084721837
+      ],
+      "temperatures": [
+        0.42606391313576447
+      ],
+      "forces": [
+        -0.019748517183997727
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019564927370725987
+      ],
+      "condensate_heat": [
+        0.028192801569115942
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656884885,
+      "conserved": 0.22352079656884885,
+      "minimum_electron": 4.273876862423242e-12,
+      "maximum_electron": 0.18599797947952976,
+      "minimum_phonon": 0.00017234663877000947
+    },
+    {
+      "amplitudes": [
+        0.7582278436217693
+      ],
+      "electron_energy": [
+        0.09115078078199462
+      ],
+      "phonon_energy": [
+        0.1323700157869459
+      ],
+      "temperatures": [
+        0.42612604612370225
+      ],
+      "forces": [
+        -0.019257401663220486
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019523562430998433
+      ],
+      "condensate_heat": [
+        0.028198473942442084
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656894053,
+      "conserved": 0.22352079656894053,
+      "minimum_electron": 4.23543597940027e-12,
+      "maximum_electron": 0.18621157864019208,
+      "minimum_phonon": 0.00016265997373527313
+    },
+    {
+      "amplitudes": [
+        0.758511425803649
+      ],
+      "electron_energy": [
+        0.09110742421239648
+      ],
+      "phonon_energy": [
+        0.13241337235662984
+      ],
+      "temperatures": [
+        0.4261856708465737
+      ],
+      "forces": [
+        -0.018781009774810897
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019480205861314537
+      ],
+      "condensate_heat": [
+        0.028203867391863018
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656902632,
+      "conserved": 0.22352079656902632,
+      "minimum_electron": 4.197083283413696e-12,
+      "maximum_electron": 0.18641752202133435,
+      "minimum_phonon": 0.0001527143722691947
+    },
+    {
+      "amplitudes": [
+        0.7587879599316043
+      ],
+      "electron_energy": [
+        0.09106213742930669
+      ],
+      "phonon_energy": [
+        0.13245865913979984
+      ],
+      "temperatures": [
+        0.4262428652221104
+      ],
+      "forces": [
+        -0.01831887558578521
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019434919078144496
+      ],
+      "condensate_heat": [
+        0.028208997028388166
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656910653,
+      "conserved": 0.22352079656910653,
+      "minimum_electron": 4.15884878090835e-12,
+      "maximum_electron": 0.1866160604134831,
+      "minimum_phonon": 0.00014373912334341668
+    },
+    {
+      "amplitudes": [
+        0.7590576584474448
+      ],
+      "electron_energy": [
+        0.09101504414175882
+      ],
+      "phonon_energy": [
+        0.13250575242742307
+      ],
+      "temperatures": [
+        0.42629772413911066
+      ],
+      "forces": [
+        -0.01787052797277683
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019387825790521288
+      ],
+      "condensate_heat": [
+        0.028213877089559223
+      ],
+      "transport": 0.0,
+      "total": 0.2235207965691819,
+      "conserved": 0.2235207965691819,
+      "minimum_electron": 4.120760185791707e-12,
+      "maximum_electron": 0.18680743700124944,
+      "minimum_phonon": 0.00013592613125994521
+    },
+    {
+      "amplitudes": [
+        0.7593207266801683
+      ],
+      "electron_energy": [
+        0.09096624341846105
+      ],
+      "phonon_energy": [
+        0.13255455315079118
+      ],
+      "temperatures": [
+        0.42635033295136027
+      ],
+      "forces": [
+        -0.017435510831765477
+      ],
+      "escape": [
+        0.0
+      ],
+      "input": [
+        0.0
+      ],
+      "electron_to_phonon": [
+        -0.019339025067153154
+      ],
+      "condensate_heat": [
+        0.028218520987574724
+      ],
+      "transport": 0.0,
+      "total": 0.22352079656925222,
+      "conserved": 0.22352079656925222,
+      "minimum_electron": 4.0828428616884846e-12,
+      "maximum_electron": 0.18699188725708232,
+      "minimum_phonon": 0.00012921615136497785
+    }
+  ],
+  "trajectory_sha256": "7c7ad1785784f287b073a3e4510256eb67e80ab16a0adf277b3d373f7ac9cf51",
+  "runtime_seconds": 0.6412792578339577
+}

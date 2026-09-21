@@ -1,0 +1,64 @@
+{
+  "schema": "pysnspd.stage2.transport-scenarios.v2",
+  "operator_sha256": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "fields": {
+    "normal": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "gapped": [
+      [
+        0.55,
+        0.0
+      ],
+      [
+        0.95,
+        0.0
+      ]
+    ],
+    "gapless": [
+      [
+        0.35,
+        0.65
+      ],
+      [
+        0.6,
+        0.8
+      ]
+    ]
+  },
+  "refinement_factors": null,
+  "complementary_refinements": [
+    1,
+    2,
+    4
+  ],
+  "complementary_source_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+  "complementary_bulk_spacing": 0.02,
+  "face_orders": [
+    1,
+    2,
+    4
+  ],
+  "diffusion_over_length_squared": 0.03,
+  "profiles": {
+    "thermal": "FD left Tbar=.35, right=.12",
+    "nonthermal": "logodds left=-E/.3+1.5 exp[-.5((E-2.5)/.4)^2]; right=-E/.18-.8 exp[-.5((E-3)/.55)^2]"
+  },
+  "reference_orders": [
+    24,
+    48
+  ],
+  "native_population_gate_relative": 0.001,
+  "reference_refinement_budget_relative": 0.0002,
+  "dense_reference_scope": "Linear subdivisions of each native energy interval are diagnostic only. With --complementary-refinements, each level instead has its own positive count Gauss rule, exact causal energies and consistent energy derivatives. This does not change the historical native180 failure.",
+  "time_dynamics": false
+}

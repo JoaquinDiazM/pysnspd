@@ -1,0 +1,1606 @@
+{
+  "schema": "pysnspd.stage2.independent_complementary_energy.v1",
+  "status": "PASS",
+  "gates": {
+    "no_failures": true,
+    "energy": true,
+    "derivatives": true,
+    "causal": true,
+    "positive_ordered_mesh": true
+  },
+  "maxima": {
+    "energy": 3.4675004456278185e-15,
+    "amplitude_derivative": 9.492406860545088e-15,
+    "gamma_derivative": 1.611537020968681e-10,
+    "spectral": 1.1368683772161603e-13
+  },
+  "method": "Solve x=Re[w-iGammaDelta^2/(2w^2)] and eta=Im[sqrt(w^2+Delta^2)*(1-iGamma/w)] at60 digits; implicit Jacobian differentiation in(wr,wi)",
+  "derivative_order": [
+    "energy",
+    "fixed_count_amplitude_derivative",
+    "fixed_count_Gamma_derivative"
+  ],
+  "rows": [
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        0.14886616104373002,
+        0.20675855700518056,
+        -0.21132486540518705
+      ],
+      "independent_reference": [
+        0.14886616104373004,
+        0.2067585570051806,
+        -0.21132486540518705
+      ],
+      "scaled_errors": [
+        2.7755575615628914e-17,
+        2.7755575615628914e-17,
+        0.0
+      ],
+      "reference_equation_relative_residual": 3.4331021178456265e-57,
+      "original_spectral_scaled_residual": 1.6543612251060553e-24
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "count": 1e-07,
+      "actual": [
+        0.7164267769511992,
+        0.9950371902099796,
+        -9.999999999980341
+      ],
+      "independent_reference": [
+        0.7164267769511992,
+        0.9950371902099795,
+        -9.999999999980322
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1102230246251565e-16,
+        1.9539925233441206e-15
+      ],
+      "reference_equation_relative_residual": 2.3182538441796384e-61,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "count": 1e-05,
+      "actual": [
+        0.7199996400697144,
+        0.9999994999039243,
+        -999.8071355092112
+      ],
+      "independent_reference": [
+        0.7199996400697145,
+        0.9999994999039243,
+        -999.8071355834879
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        0.0,
+        7.429105509222165e-11
+      ],
+      "reference_equation_relative_residual": 0.0,
+      "original_spectral_scaled_residual": 1.7763568394002505e-15
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "count": 0.001,
+      "actual": [
+        0.7200006944081095,
+        0.9999990354452224,
+        -5.183731274878607
+      ],
+      "independent_reference": [
+        0.7200006944081095,
+        0.9999990354452225,
+        -5.183731274333992
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1102230246251565e-16,
+        1.0506235584492844e-10
+      ],
+      "reference_equation_relative_residual": 2.256919915818616e-52,
+      "original_spectral_scaled_residual": 1.1368683772161603e-13
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "count": 0.1,
+      "actual": [
+        0.7269112738154462,
+        0.9904922731777464,
+        -5.183999999997409e-06
+      ],
+      "independent_reference": [
+        0.7269112738154464,
+        0.9904922731777466,
+        -5.183999999997209e-06
+      ],
+      "scaled_errors": [
+        2.220446049250313e-16,
+        2.220446049250313e-16,
+        1.9989977555201488e-19
+      ],
+      "reference_equation_relative_residual": 0.0,
+      "original_spectral_scaled_residual": 4.235164736271502e-22
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "count": 1.0,
+      "actual": [
+        1.2322337440599491,
+        0.5843047258450759,
+        -5.183999999999994e-09
+      ],
+      "independent_reference": [
+        1.2322337440599491,
+        0.5843047258450759,
+        -5.183999999999999e-09
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        4.963083675318166e-24
+      ],
+      "reference_equation_relative_residual": 1.1591269220898192e-61,
+      "original_spectral_scaled_residual": 9.009841111534625e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "count": 11.99,
+      "actual": [
+        12.01159856139057,
+        0.05994206319168282,
+        -3.007512517382837e-12
+      ],
+      "independent_reference": [
+        12.011598561390569,
+        0.05994206319168282,
+        -3.0075125173828377e-12
+      ],
+      "scaled_errors": [
+        1.4788679710876082e-16,
+        0.0,
+        8.077935669463161e-28
+      ],
+      "reference_equation_relative_residual": 1.1591269220898192e-61,
+      "original_spectral_scaled_residual": 4.942957997397534e-27
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-12,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        0.14886616104351874,
+        0.20675855700518064,
+        -0.21132486540518713
+      ],
+      "independent_reference": [
+        0.14886616104351874,
+        0.2067585570051806,
+        -0.21132486540518705
+      ],
+      "scaled_errors": [
+        0.0,
+        5.551115123125783e-17,
+        8.326672684688674e-17
+      ],
+      "reference_equation_relative_residual": 3.0103685293594694e-57,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-12,
+      "count": 1e-07,
+      "actual": [
+        0.7164267769411992,
+        0.9950371902099795,
+        -9.999999999980366
+      ],
+      "independent_reference": [
+        0.7164267769411992,
+        0.9950371902099795,
+        -9.999999999980322
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        4.440892098509365e-15
+      ],
+      "reference_equation_relative_residual": 4.984245764986222e-60,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-12,
+      "count": 1e-05,
+      "actual": [
+        0.7199996390699077,
+        0.9999994999033868,
+        -999.806330259315
+      ],
+      "independent_reference": [
+        0.7199996390699077,
+        0.999999499903387,
+        -999.8063302644046
+      ],
+      "scaled_errors": [
+        0.0,
+        2.220446049250313e-16,
+        5.0905182304410396e-12
+      ],
+      "reference_equation_relative_residual": 0.0,
+      "original_spectral_scaled_residual": 1.7763568394002505e-15
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-12,
+      "count": 0.001,
+      "actual": [
+        0.7200006944027394,
+        0.999999035430047,
+        -5.556826900847733
+      ],
+      "independent_reference": [
+        0.7200006944027393,
+        0.999999035430047,
+        -5.556826901743237
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        0.0,
+        1.611537020968681e-10
+      ],
+      "reference_equation_relative_residual": 1.1591269220898192e-61,
+      "original_spectral_scaled_residual": 8.881784197001252e-16
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-12,
+      "count": 0.1,
+      "actual": [
+        0.7269112738154462,
+        0.9904922731777467,
+        -5.187768308040855e-06
+      ],
+      "independent_reference": [
+        0.7269112738154463,
+        0.9904922731777466,
+        -5.1877683080406545e-06
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        1.1102230246251565e-16,
+        2.0074680849926918e-19
+      ],
+      "reference_equation_relative_residual": 0.0,
+      "original_spectral_scaled_residual": 8.470329472543003e-22
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-12,
+      "count": 1.0,
+      "actual": [
+        1.232233744059949,
+        0.5843047258450759,
+        -5.18463878997292e-09
+      ],
+      "independent_reference": [
+        1.2322337440599491,
+        0.5843047258450759,
+        -5.1846387899729195e-09
+      ],
+      "scaled_errors": [
+        1.801968222306925e-16,
+        0.0,
+        8.271806125530277e-25
+      ],
+      "reference_equation_relative_residual": 0.0,
+      "original_spectral_scaled_residual": 1.3425709473393303e-24
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-12,
+      "count": 11.99,
+      "actual": [
+        12.011598561390569,
+        0.059942063191682826,
+        -3.0078138104022482e-12
+      ],
+      "independent_reference": [
+        12.011598561390569,
+        0.05994206319168282,
+        -3.007813810402247e-12
+      ],
+      "scaled_errors": [
+        0.0,
+        6.938893903907228e-18,
+        1.2116903504194741e-27
+      ],
+      "reference_equation_relative_residual": 1.1591269220898192e-61,
+      "original_spectral_scaled_residual": 5.380090337303439e-27
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-08,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        0.14886615893048138,
+        0.20675855700518064,
+        -0.21132486540518713
+      ],
+      "independent_reference": [
+        0.1488661589304814,
+        0.2067585570051806,
+        -0.21132486540518705
+      ],
+      "scaled_errors": [
+        2.7755575615628914e-17,
+        5.551115123125783e-17,
+        8.326672684688674e-17
+      ],
+      "reference_equation_relative_residual": 3.0413172181792676e-57,
+      "original_spectral_scaled_residual": 1.6543612251060553e-24
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-08,
+      "count": 1e-07,
+      "actual": [
+        0.7164266769511992,
+        0.9950371902099793,
+        -9.99999999998034
+      ],
+      "independent_reference": [
+        0.7164266769511991,
+        0.9950371902099795,
+        -9.999999999980322
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        2.220446049250313e-16,
+        1.776356839403746e-15
+      ],
+      "reference_equation_relative_residual": 2.3182538441796384e-61,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-08,
+      "count": 1e-05,
+      "actual": [
+        0.7199939016831508,
+        0.999997057667803,
+        -407.548938804769
+      ],
+      "independent_reference": [
+        0.7199939016831508,
+        0.999997057667803,
+        -407.54893880398515
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        1.923378204322974e-12
+      ],
+      "reference_equation_relative_residual": 2.3182538441796384e-60,
+      "original_spectral_scaled_residual": 7.105427357601002e-15
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-08,
+      "count": 0.001,
+      "actual": [
+        0.7199985248242899,
+        0.9999959970741829,
+        -217.4735105518384
+      ],
+      "independent_reference": [
+        0.7199985248242899,
+        0.9999959970741829,
+        -217.47351055535574
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        1.617372646115339e-11
+      ],
+      "reference_equation_relative_residual": 2.9209998436663443e-59,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-08,
+      "count": 0.1,
+      "actual": [
+        0.7269112738152061,
+        0.9904922731768224,
+        -4.28670804265061e-05
+      ],
+      "independent_reference": [
+        0.726911273815206,
+        0.9904922731768224,
+        -4.286708042650708e-05
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        0.0,
+        9.825582188149884e-19
+      ],
+      "reference_equation_relative_residual": 1.1591269220898192e-61,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-08,
+      "count": 1.0,
+      "actual": [
+        1.2322337440599491,
+        0.5843047258450755,
+        -1.1571899729206752e-08
+      ],
+      "independent_reference": [
+        1.232233744059949,
+        0.5843047258450756,
+        -1.1571899729206754e-08
+      ],
+      "scaled_errors": [
+        1.8019682223069256e-16,
+        1.1102230246251565e-16,
+        1.6543612251060553e-24
+      ],
+      "reference_equation_relative_residual": 0.0,
+      "original_spectral_scaled_residual": 5.37028378935732e-24
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 1e-08,
+      "count": 11.99,
+      "actual": [
+        12.011598561390569,
+        0.059942063191682826,
+        -6.020442711474569e-12
+      ],
+      "independent_reference": [
+        12.011598561390569,
+        0.05994206319168282,
+        -6.020442711474566e-12
+      ],
+      "scaled_errors": [
+        0.0,
+        6.938893903907228e-18,
+        2.4233807008389483e-27
+      ],
+      "reference_equation_relative_residual": 2.3182538441796384e-61,
+      "original_spectral_scaled_residual": 1.3450225843258597e-28
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        0.10660118796269265,
+        0.2067585570051806,
+        -0.21132486540518702
+      ],
+      "independent_reference": [
+        0.10660118796269265,
+        0.20675855700518053,
+        -0.21132486540518697
+      ],
+      "scaled_errors": [
+        0.0,
+        5.551115123125783e-17,
+        5.551115123125783e-17
+      ],
+      "reference_equation_relative_residual": 2.665991920806584e-60,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "count": 1e-07,
+      "actual": [
+        0.31334923972565676,
+        0.7578061965925857,
+        -1.161401988138016
+      ],
+      "independent_reference": [
+        0.31334923972565665,
+        0.7578061965925856,
+        -1.161401988138016
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        1.1102230246251565e-16,
+        0.0
+      ],
+      "reference_equation_relative_residual": 1.2887520857871237e-56,
+      "original_spectral_scaled_residual": 1.734723475976807e-18
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "count": 1e-05,
+      "actual": [
+        0.3136572176010662,
+        0.7577946557826395,
+        -1.1608472285384974
+      ],
+      "independent_reference": [
+        0.31365721760106624,
+        0.7577946557826395,
+        -1.1608472285384972
+      ],
+      "scaled_errors": [
+        5.551115123125783e-17,
+        0.0,
+        1.9127805921937266e-16
+      ],
+      "reference_equation_relative_residual": 8.623211142448845e-55,
+      "original_spectral_scaled_residual": 6.938893903907228e-18
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "count": 0.001,
+      "actual": [
+        0.32028366617446996,
+        0.7575218878301367,
+        -1.1488602754020083
+      ],
+      "independent_reference": [
+        0.32028366617446996,
+        0.7575218878301366,
+        -1.148860275402008
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1102230246251565e-16,
+        1.9327381203718064e-16
+      ],
+      "reference_equation_relative_residual": 2.5629564216345976e-53,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "count": 0.1,
+      "actual": [
+        0.46874277318141394,
+        0.74725706488996,
+        -0.8864333823823284
+      ],
+      "independent_reference": [
+        0.46874277318141394,
+        0.74725706488996,
+        -0.8864333823823284
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reference_equation_relative_residual": 7.857989163165887e-55,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "count": 1.0,
+      "actual": [
+        1.2209633791287546,
+        0.5506759864012816,
+        -0.10065973176714793
+      ],
+      "independent_reference": [
+        1.2209633791287544,
+        0.5506759864012817,
+        -0.10065973176714799
+      ],
+      "scaled_errors": [
+        1.8186016773367616e-16,
+        1.1102230246251565e-16,
+        5.551115123125783e-17
+      ],
+      "reference_equation_relative_residual": 3.6795012050550256e-54,
+      "original_spectral_scaled_residual": 2.2732520966709514e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "count": 11.99,
+      "actual": [
+        12.011592537228475,
+        0.059925299408700575,
+        -6.022463388819605e-05
+      ],
+      "independent_reference": [
+        12.011592537228474,
+        0.05992529940870058,
+        -6.022463388819606e-05
+      ],
+      "scaled_errors": [
+        1.4788687127827955e-16,
+        6.938893903907228e-18,
+        1.3552527156068805e-20
+      ],
+      "reference_equation_relative_residual": 8.588516155416853e-56,
+      "original_spectral_scaled_residual": 4.625977876594132e-19
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.719999,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        3.32782644698093e-07,
+        0.004833255938675946,
+        -0.004833141748437791
+      ],
+      "independent_reference": [
+        3.3278264469814785e-07,
+        0.004833255938676332,
+        -0.004833141748438177
+      ],
+      "scaled_errors": [
+        5.484538333471595e-20,
+        3.859759734048396e-16,
+        3.859759734048396e-16
+      ],
+      "reference_equation_relative_residual": 5.765252628784772e-50,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.719999,
+      "count": 1e-07,
+      "actual": [
+        6.0274996300253865e-06,
+        0.012795049761965875,
+        -0.012792963755472413
+      ],
+      "independent_reference": [
+        6.027499630013559e-06,
+        0.012795049761956383,
+        -0.012792963755462922
+      ],
+      "scaled_errors": [
+        1.1827121042511796e-17,
+        9.492406860545088e-15,
+        9.490672137069112e-15
+      ],
+      "reference_equation_relative_residual": 7.341272404709765e-56,
+      "original_spectral_scaled_residual": 6.938893903907228e-18
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.719999,
+      "count": 1e-05,
+      "actual": [
+        0.00019041922810265636,
+        0.04037489053552084,
+        -0.040308798839660195
+      ],
+      "independent_reference": [
+        0.00019041922810264847,
+        0.04037489053552013,
+        -0.04030879883965948
+      ],
+      "scaled_errors": [
+        7.887570804832045e-18,
+        7.077671781985373e-16,
+        7.147060721024445e-16
+      ],
+      "reference_equation_relative_residual": 1.7139152805725325e-51,
+      "original_spectral_scaled_residual": 1.5515838457795457e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.719999,
+      "count": 0.001,
+      "actual": [
+        0.006021008618047675,
+        0.12580045611222074,
+        -0.1237104682960851
+      ],
+      "independent_reference": [
+        0.0060210086180477315,
+        0.12580045611222096,
+        -0.12371046829608531
+      ],
+      "scaled_errors": [
+        5.637851296924623e-17,
+        2.220446049250313e-16,
+        2.0816681711721685e-16
+      ],
+      "reference_equation_relative_residual": 1.5179704280021576e-52,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.719999,
+      "count": 0.1,
+      "actual": [
+        0.19167850137898665,
+        0.34435849080540626,
+        -0.2796304450241294
+      ],
+      "independent_reference": [
+        0.1916785013789865,
+        0.3443584908054063,
+        -0.27963044502412954
+      ],
+      "scaled_errors": [
+        1.3877787807814457e-16,
+        5.551115123125783e-17,
+        1.1102230246251565e-16
+      ],
+      "reference_equation_relative_residual": 2.136731438537683e-54,
+      "original_spectral_scaled_residual": 5.551115123125783e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.719999,
+      "count": 1.0,
+      "actual": [
+        1.1545462384397944,
+        0.39381346913573173,
+        -0.12563769709798314
+      ],
+      "independent_reference": [
+        1.1545462384397942,
+        0.39381346913573173,
+        -0.12563769709798314
+      ],
+      "scaled_errors": [
+        1.92321968174348e-16,
+        0.0,
+        0.0
+      ],
+      "reference_equation_relative_residual": 5.000446418325503e-54,
+      "original_spectral_scaled_residual": 3.606036903269024e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.719999,
+      "count": 11.99,
+      "actual": [
+        12.011520750826135,
+        0.05972554494295292,
+        -0.00021535375939676
+      ],
+      "independent_reference": [
+        12.011520750826133,
+        0.05972554494295293,
+        -0.00021535375939676007
+      ],
+      "scaled_errors": [
+        1.4788775511860773e-16,
+        6.938893903907228e-18,
+        8.131516293641283e-20
+      ],
+      "reference_equation_relative_residual": 2.0143083940580914e-54,
+      "original_spectral_scaled_residual": 3.9038973442869776e-19
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.72,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        3.2798498671900777e-07,
+        0.004762236776318335,
+        -0.00476212093499729
+      ],
+      "independent_reference": [
+        3.279849867174054e-07,
+        0.00476223677631002,
+        -0.004762120934988977
+      ],
+      "scaled_errors": [
+        1.6023745779683227e-18,
+        8.314529620356836e-15,
+        8.313662258618848e-15
+      ],
+      "reference_equation_relative_residual": 1.2147418318116887e-56,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.72,
+      "count": 1e-07,
+      "actual": [
+        6.014720237713008e-06,
+        0.012767908108520366,
+        -0.01276581766388934
+      ],
+      "independent_reference": [
+        6.014720237710783e-06,
+        0.01276790810851839,
+        -0.012765817663887364
+      ],
+      "scaled_errors": [
+        2.2243085194897927e-18,
+        1.9758500391375833e-15,
+        1.9758500391375833e-15
+      ],
+      "reference_equation_relative_residual": 9.550005936675742e-50,
+      "original_spectral_scaled_residual": 3.878959614448864e-18
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.72,
+      "count": 1e-05,
+      "actual": [
+        0.0001903789235972673,
+        0.04036631744234399,
+        -0.04030021184114518
+      ],
+      "independent_reference": [
+        0.0001903789235972589,
+        0.04036631744234345,
+        -0.040300211841144636
+      ],
+      "scaled_errors": [
+        8.40256683676266e-18,
+        5.342948306008566e-16,
+        5.412337245047638e-16
+      ],
+      "reference_equation_relative_residual": 3.5967873714547132e-50,
+      "original_spectral_scaled_residual": 7.757919228897728e-18
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.72,
+      "count": 0.001,
+      "actual": [
+        0.00602088490893579,
+        0.12579778359922308,
+        -0.1237077556960013
+      ],
+      "independent_reference": [
+        0.006020884908935734,
+        0.1257977835992226,
+        -0.12370775569600084
+      ],
+      "scaled_errors": [
+        5.637851296924623e-17,
+        4.718447854656915e-16,
+        4.579669976578771e-16
+      ],
+      "reference_equation_relative_residual": 8.823639650031315e-53,
+      "original_spectral_scaled_residual": 2.7755575615628914e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.72,
+      "count": 0.1,
+      "actual": [
+        0.19167822174892452,
+        0.3443577404460098,
+        -0.27962967919038684
+      ],
+      "independent_reference": [
+        0.1916782217489244,
+        0.34435774044600964,
+        -0.2796296791903867
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        1.6653345369377348e-16,
+        1.1102230246251565e-16
+      ],
+      "reference_equation_relative_residual": 1.4504108811033024e-54,
+      "original_spectral_scaled_residual": 6.206335383118183e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.72,
+      "count": 1.0,
+      "actual": [
+        1.1545461128021295,
+        0.39381319063671716,
+        -0.12563763329691954
+      ],
+      "independent_reference": [
+        1.154546112802129,
+        0.39381319063671716,
+        -0.1256376332969196
+      ],
+      "scaled_errors": [
+        3.846439782056349e-16,
+        0.0,
+        5.551115123125783e-17
+      ],
+      "reference_equation_relative_residual": 2.1893888359178404e-54,
+      "original_spectral_scaled_residual": 1.2020124318926086e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.72,
+      "count": 11.99,
+      "actual": [
+        12.01152075061078,
+        0.05972554434373097,
+        -0.00021535405414360817
+      ],
+      "independent_reference": [
+        12.01152075061078,
+        0.05972554434373097,
+        -0.00021535405414360817
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reference_equation_relative_residual": 2.2030006951893256e-55,
+      "original_spectral_scaled_residual": 2.527378627560582e-19
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.720001,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        3.2325850704661083e-07,
+        0.004690904945973016,
+        -0.004690787527680378
+      ],
+      "independent_reference": [
+        3.23258507045392e-07,
+        0.004690904945965443,
+        -0.004690787527672806
+      ],
+      "scaled_errors": [
+        1.2188274715397348e-18,
+        7.572935334376751e-15,
+        7.572067972638763e-15
+      ],
+      "reference_equation_relative_residual": 3.480858147035727e-56,
+      "original_spectral_scaled_residual": 9.69739903612216e-19
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.720001,
+      "count": 1e-07,
+      "actual": [
+        6.0019680010438794e-06,
+        0.012740747357702685,
+        -0.01273865250322115
+      ],
+      "independent_reference": [
+        6.00196800104217e-06,
+        0.012740747357701376,
+        -0.01273865250321984
+      ],
+      "scaled_errors": [
+        1.709312487559178e-18,
+        1.3097162243624894e-15,
+        1.3097162243624894e-15
+      ],
+      "reference_equation_relative_residual": 6.462932367722029e-50,
+      "original_spectral_scaled_residual": 1.734723475976807e-18
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.720001,
+      "count": 1e-05,
+      "actual": [
+        0.0001903386276791653,
+        0.040357743750267266,
+        -0.040291624252675254
+      ],
+      "independent_reference": [
+        0.00019033862767916284,
+        0.0403577437502675,
+        -0.0402916242526755
+      ],
+      "scaled_errors": [
+        2.4665599424045226e-18,
+        2.3592239273284576e-16,
+        2.42861286636753e-16
+      ],
+      "reference_equation_relative_residual": 1.438518934358814e-54,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.720001,
+      "count": 0.001,
+      "actual": [
+        0.0060207612025363275,
+        0.12579511106979296,
+        -0.12370504308230659
+      ],
+      "independent_reference": [
+        0.006020761202536344,
+        0.12579511106979321,
+        -0.12370504308230686
+      ],
+      "scaled_errors": [
+        1.6479873021779667e-17,
+        2.498001805406602e-16,
+        2.636779683484747e-16
+      ],
+      "reference_equation_relative_residual": 1.2581406101714999e-53,
+      "original_spectral_scaled_residual": 3.1031676915590914e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.720001,
+      "count": 0.1,
+      "actual": [
+        0.19167794211962816,
+        0.3443569900868109,
+        -0.27962891335751183
+      ],
+      "independent_reference": [
+        0.19167794211962813,
+        0.3443569900868108,
+        -0.2796289133575117
+      ],
+      "scaled_errors": [
+        2.7755575615628914e-17,
+        1.1102230246251565e-16,
+        1.1102230246251565e-16
+      ],
+      "reference_equation_relative_residual": 2.6950461325849187e-54,
+      "original_spectral_scaled_residual": 5.551115123125783e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.720001,
+      "count": 1.0,
+      "actual": [
+        1.1545459871645276,
+        0.3938129121378417,
+        -0.1256375694957213
+      ],
+      "independent_reference": [
+        1.1545459871645276,
+        0.39381291213784175,
+        -0.1256375694957213
+      ],
+      "scaled_errors": [
+        0.0,
+        5.551115123125783e-17,
+        0.0
+      ],
+      "reference_equation_relative_residual": 1.8125617737048974e-54,
+      "original_spectral_scaled_residual": 3.6060376880865157e-17
+    },
+    {
+      "amplitude": 0.72,
+      "gamma": 0.720001,
+      "count": 11.99,
+      "actual": [
+        12.011520750395425,
+        0.0597255437445082,
+        -0.0002153543488904382
+      ],
+      "independent_reference": [
+        12.011520750395425,
+        0.0597255437445082,
+        -0.00021535434889043828
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        8.131516293641283e-20
+      ],
+      "reference_equation_relative_residual": 5.80259806543355e-54,
+      "original_spectral_scaled_residual": 9.244660456636587e-18
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        2.5078602224271756e-09,
+        2.925836765089781e-09,
+        -1.5754505370539147e-09
+      ],
+      "independent_reference": [
+        2.5078602224271756e-09,
+        2.9258367538912583e-09,
+        -1.5754505310239409e-09
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1198522506794986e-17,
+        6.029973784763548e-18
+      ],
+      "reference_equation_relative_residual": 6.175264905210421e-55,
+      "original_spectral_scaled_residual": 5.575124941368501e-17
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "count": 1e-07,
+      "actual": [
+        1.1867321990806218e-07,
+        1.3845208170984392e-07,
+        -7.455111955956926e-08
+      ],
+      "independent_reference": [
+        1.1867321990806221e-07,
+        1.3845208174063235e-07,
+        -7.455111957614767e-08
+      ],
+      "scaled_errors": [
+        2.6469779601696886e-23,
+        3.078843002283214e-17,
+        1.6578406776346984e-17
+      ],
+      "reference_equation_relative_residual": 7.62955654324888e-55,
+      "original_spectral_scaled_residual": 1.4210013320317805e-17
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "count": 1e-05,
+      "actual": [
+        1.1867321989218286e-05,
+        1.3845208148095179e-05,
+        -7.4551119387036285e-06
+      ],
+      "independent_reference": [
+        1.1867321989204512e-05,
+        1.3845208148092663e-05,
+        -7.455111938702276e-06
+      ],
+      "scaled_errors": [
+        1.3774449788249432e-17,
+        2.515687853345272e-18,
+        1.3527116167651176e-18
+      ],
+      "reference_equation_relative_residual": 1.2066696719262552e-55,
+      "original_spectral_scaled_residual": 6.255761831946635e-18
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "count": 0.001,
+      "actual": [
+        0.0011867305972477476,
+        0.0013844948453060554,
+        -0.0007454922821812159
+      ],
+      "independent_reference": [
+        0.001186730597247747,
+        0.0013844948453061742,
+        -0.00074549228218128
+      ],
+      "scaled_errors": [
+        6.505213034913027e-19,
+        1.1882855810441129e-16,
+        6.407634839389331e-17
+      ],
+      "reference_equation_relative_residual": 1.9692549851995355e-54,
+      "original_spectral_scaled_residual": 5.5185890579512176e-17
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "count": 0.1,
+      "actual": [
+        0.11734451676046147,
+        0.11955121236575499,
+        -0.0609227664636965
+      ],
+      "independent_reference": [
+        0.11734451676046143,
+        0.11955121236575493,
+        -0.06092276646369648
+      ],
+      "scaled_errors": [
+        4.163336342344337e-17,
+        5.551115123125783e-17,
+        2.0816681711721685e-17
+      ],
+      "reference_equation_relative_residual": 1.1220712571682986e-54,
+      "original_spectral_scaled_residual": 6.938893903907228e-17
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "count": 1.0,
+      "actual": [
+        1.04178492284288,
+        0.2320177021463344,
+        -0.03667874263894332
+      ],
+      "independent_reference": [
+        1.0417849228428797,
+        0.23201770214633444,
+        -0.03667874263894332
+      ],
+      "scaled_errors": [
+        2.1313862396770327e-16,
+        2.7755575615628914e-17,
+        0.0
+      ],
+      "reference_equation_relative_residual": 1.9042055937207003e-55,
+      "original_spectral_scaled_residual": 5.4213209713590593e-17
+    },
+    {
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "count": 11.99,
+      "actual": [
+        11.995092360397702,
+        0.029092953424284758,
+        -4.594304692936491e-05
+      ],
+      "independent_reference": [
+        11.995092360397702,
+        0.02909295342428476,
+        -4.594304692936493e-05
+      ],
+      "scaled_errors": [
+        0.0,
+        3.469446951953614e-18,
+        2.0328790734103208e-20
+      ],
+      "reference_equation_relative_residual": 3.8671052019191096e-54,
+      "original_spectral_scaled_residual": 4.634553157015768e-18
+    },
+    {
+      "amplitude": 0.08,
+      "gamma": 1.2,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        2.117960551049337e-09,
+        1.1818976090593655e-10,
+        -7.879317327921725e-12
+      ],
+      "independent_reference": [
+        2.117960473989765e-09,
+        1.1818975660573728e-10,
+        -7.879317041241776e-12
+      ],
+      "scaled_errors": [
+        7.705957221568525e-17,
+        4.3001992786928576e-18,
+        2.8667994954332937e-19
+      ],
+      "reference_equation_relative_residual": 3.4667113506896974e-54,
+      "original_spectral_scaled_residual": 1.1564823173178714e-17
+    },
+    {
+      "amplitude": 0.08,
+      "gamma": 1.2,
+      "count": 1e-07,
+      "actual": [
+        1.0022296571342233e-07,
+        5.592799331925441e-09,
+        -3.7285328568098824e-10
+      ],
+      "independent_reference": [
+        1.0022296571342229e-07,
+        5.592799331925442e-09,
+        -3.7285328568098834e-10
+      ],
+      "scaled_errors": [
+        3.970466940254533e-23,
+        8.271806125530277e-25,
+        1.0339757656912846e-25
+      ],
+      "reference_equation_relative_residual": 4.7778600868654405e-54,
+      "original_spectral_scaled_residual": 1.156482317317921e-17
+    },
+    {
+      "amplitude": 0.08,
+      "gamma": 1.2,
+      "count": 1e-05,
+      "actual": [
+        1.0022296571340655e-05,
+        5.59279933152396e-07,
+        -3.7285328562798453e-08
+      ],
+      "independent_reference": [
+        1.0022296571340655e-05,
+        5.592799331523961e-07,
+        -3.728532856279847e-08
+      ],
+      "scaled_errors": [
+        0.0,
+        1.0587911840678754e-22,
+        1.3234889800848443e-23
+      ],
+      "reference_equation_relative_residual": 4.011414880941601e-54,
+      "original_spectral_scaled_residual": 1.137373342260413e-23
+    },
+    {
+      "amplitude": 0.08,
+      "gamma": 1.2,
+      "count": 0.001,
+      "actual": [
+        0.0010022296555597695,
+        5.592795316717022e-05,
+        -3.7285275559166075e-06
+      ],
+      "independent_reference": [
+        0.0010022296555597691,
+        5.5927953167170235e-05,
+        -3.7285275559166083e-06
+      ],
+      "scaled_errors": [
+        4.336808689942018e-19,
+        1.3552527156068805e-20,
+        8.470329472543003e-22
+      ],
+      "reference_equation_relative_residual": 4.936479303653823e-54,
+      "original_spectral_scaled_residual": 1.1564836301920355e-17
+    },
+    {
+      "amplitude": 0.08,
+      "gamma": 1.2,
+      "count": 0.1,
+      "actual": [
+        0.10022140254009895,
+        0.005552945662387401,
+        -0.0003676097494787355
+      ],
+      "independent_reference": [
+        0.10022140254009894,
+        0.005552945662387402,
+        -0.0003676097494787355
+      ],
+      "scaled_errors": [
+        1.3877787807814457e-17,
+        8.673617379884035e-19,
+        0.0
+      ],
+      "reference_equation_relative_residual": 2.0064051189652064e-54,
+      "original_spectral_scaled_residual": 1.5415999640028266e-18
+    },
+    {
+      "amplitude": 0.08,
+      "gamma": 1.2,
+      "count": 1.0,
+      "actual": [
+        1.0013109808650131,
+        0.03276214259866754,
+        -0.0012871236685131307
+      ],
+      "independent_reference": [
+        1.001310980865013,
+        0.03276214259866754,
+        -0.0012871236685131312
+      ],
+      "scaled_errors": [
+        2.2175388981873677e-16,
+        0.0,
+        4.336808689942018e-19
+      ],
+      "reference_equation_relative_residual": 2.2586835297488295e-54,
+      "original_spectral_scaled_residual": 1.1584658497671883e-17
+    },
+    {
+      "amplitude": 0.08,
+      "gamma": 1.2,
+      "count": 11.99,
+      "actual": [
+        11.990264239217309,
+        0.006605904811625511,
+        -4.3677204363685395e-06
+      ],
+      "independent_reference": [
+        11.990264239217305,
+        0.006605904811625512,
+        -4.367720436368541e-06
+      ],
+      "scaled_errors": [
+        2.9629986528407096e-16,
+        8.673617379884035e-19,
+        1.6940658945086007e-21
+      ],
+      "reference_equation_relative_residual": 9.329390905526698e-54,
+      "original_spectral_scaled_residual": 9.07635142005182e-20
+    },
+    {
+      "amplitude": 1.5,
+      "gamma": 0.002,
+      "count": 2.113248654051871e-09,
+      "actual": [
+        0.30971518577696067,
+        0.20675855700518064,
+        -0.21132486540518708
+      ],
+      "independent_reference": [
+        0.30971518577696056,
+        0.20675855700518062,
+        -0.21132486540518708
+      ],
+      "scaled_errors": [
+        1.1102230246251565e-16,
+        2.7755575615628914e-17,
+        0.0
+      ],
+      "reference_equation_relative_residual": 2.005289575215387e-59,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 1.5,
+      "gamma": 0.002,
+      "count": 1e-07,
+      "actual": [
+        1.4728263177918741,
+        0.9939238713234655,
+        -9.029881650643201
+      ],
+      "independent_reference": [
+        1.4728263177918792,
+        0.9939238713234698,
+        -9.029881650645589
+      ],
+      "scaled_errors": [
+        3.4675004456278185e-15,
+        4.3298697960381105e-15,
+        2.643914598795709e-13
+      ],
+      "reference_equation_relative_residual": 6.739627575799045e-58,
+      "original_spectral_scaled_residual": 1.2027416100105862e-16
+    },
+    {
+      "amplitude": 1.5,
+      "gamma": 0.002,
+      "count": 1e-05,
+      "actual": [
+        1.4728676145569917,
+        0.993921364667211,
+        -9.021121280075727
+      ],
+      "independent_reference": [
+        1.4728676145569917,
+        0.9939213646672109,
+        -9.021121280075727
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1102230246251565e-16,
+        0.0
+      ],
+      "reference_equation_relative_residual": 2.7198913226837607e-57,
+      "original_spectral_scaled_residual": 1.1842378929335002e-15
+    },
+    {
+      "amplitude": 1.5,
+      "gamma": 0.002,
+      "count": 0.001,
+      "actual": [
+        1.4737330705002685,
+        0.9938570913616412,
+        -8.829803165692903
+      ],
+      "independent_reference": [
+        1.4737330705002685,
+        0.9938570913616411,
+        -8.82980316569291
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1102230246251565e-16,
+        8.047095981944701e-16
+      ],
+      "reference_equation_relative_residual": 8.970517455888582e-52,
+      "original_spectral_scaled_residual": 1.22068447960593e-15
+    },
+    {
+      "amplitude": 1.5,
+      "gamma": 0.002,
+      "count": 0.1,
+      "actual": [
+        1.4943685436527308,
+        0.9915135011020179,
+        -4.578185187150054
+      ],
+      "independent_reference": [
+        1.4943685436527308,
+        0.9915135011020177,
+        -4.578185187150044
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1102230246251565e-16,
+        2.1340252124626823e-15
+      ],
+      "reference_equation_relative_residual": 9.276675899538513e-55,
+      "original_spectral_scaled_residual": 0.0
+    },
+    {
+      "amplitude": 1.5,
+      "gamma": 0.002,
+      "count": 1.0,
+      "actual": [
+        1.8027675259955245,
+        0.8320357365101079,
+        -0.008110915260519363
+      ],
+      "independent_reference": [
+        1.8027675259955245,
+        0.832035736510108,
+        -0.008110915260519363
+      ],
+      "scaled_errors": [
+        0.0,
+        1.1102230246251565e-16,
+        0.0
+      ],
+      "reference_equation_relative_residual": 7.906868386343493e-57,
+      "original_spectral_scaled_residual": 2.4633935965963787e-16
+    },
+    {
+      "amplitude": 1.5,
+      "gamma": 0.002,
+      "count": 11.99,
+      "actual": [
+        12.083463904709413,
+        0.12413658606389649,
+        -2.6310515644194136e-06
+      ],
+      "independent_reference": [
+        12.083463904709413,
+        0.12413658606389649,
+        -2.631051564419415e-06
+      ],
+      "scaled_errors": [
+        0.0,
+        0.0,
+        1.2705494208814505e-21
+      ],
+      "reference_equation_relative_residual": 6.684569046999778e-57,
+      "original_spectral_scaled_residual": 4.696600901329286e-21
+    }
+  ],
+  "failures": [],
+  "meshes": [
+    {
+      "refinement": 1,
+      "nodes": 604,
+      "count_min": 1.9855071751231912e-10,
+      "count_max": 11.968301270189222,
+      "total_count_weight": 12.0,
+      "quadrature_count_moment_error": 1.4210854715202004e-14,
+      "minimum_energy_increment": 1.1864240700987239e-09,
+      "arrays_readonly": true
+    },
+    {
+      "refinement": 2,
+      "nodes": 1208,
+      "count_min": 9.927535875615956e-11,
+      "count_max": 11.984150635094611,
+      "total_count_weight": 12.0,
+      "quadrature_count_moment_error": 1.4210854715202004e-14,
+      "minimum_energy_increment": 4.671025788383076e-10,
+      "arrays_readonly": true
+    },
+    {
+      "refinement": 4,
+      "nodes": 2416,
+      "count_min": 4.963767937807978e-11,
+      "count_max": 11.992075317547306,
+      "total_count_weight": 12.0,
+      "quadrature_count_moment_error": 0.0,
+      "minimum_energy_increment": 1.6393597590536046e-10,
+      "arrays_readonly": true
+    }
+  ],
+  "mpmath_version": "1.4.1",
+  "decimal_digits": 60,
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "wrapper_sha256": "2e3fff6c20f9fbb70f52be1a9a63153ee65ab439a91e879b2141d082e15d7b93",
+  "source_sha256": "a03d48f6f3be8afcd665a8eda30b285697338e57c9970b96d614d83fc3045a67",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "amendment_sha256": "6270ca41d5d26e2fb30c9b02052d929a28db3fc5c7c2876a9e51c8ed1467b86c",
+  "runtime_seconds": 1.5637640999921132
+}

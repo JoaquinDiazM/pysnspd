@@ -16,6 +16,13 @@ The [command notebook](docs/GEMINGA_COMMANDS.md) mirrors the user-maintained fil
 `/home/jdiaz/GEMINGA_COMMANDS.md` on Geminga. Calculations expected to exceed five
 minutes are left there for the user to execute.
 
+The [stage 2 checkpoint](docs/implementation/stage2/README.md) adds conservative
+electron-phonon events and simultaneous one/two-cell dynamics. Its static checks
+selected complementary electronic and phonon meshes; temporal admission remains
+pending after an incomplete bounded reference run. The manual continuation is
+prepared in Geminga's command notebook. This checkpoint does not close stage 2
+or promote the updated model to production.
+
 Commits after the tag contain the opt-in
 [stage 1 implementation](sandbox/stage1_catalog/README.md): explicit material
 admission and uniform electronic catalogues with their own verification results.

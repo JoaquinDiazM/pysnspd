@@ -25,7 +25,21 @@ Computations expected to exceed five minutes are prepared in
 `/home/jdiaz/GEMINGA_COMMANDS.md` for the user. The agent resumes after the user
 provides the output; it does not start long runs or use polling to wait for them.
 
-## Experimental stage 1 closure — current
+## Experimental stage 2 — pending temporal admission
+
+The [stage 2 checkpoint](docs/implementation/stage2/README.md) implements
+conservative electron-phonon events, fixed-energy transport, KWT, BGK, heating
+and escape in one/two cells. Static validation selected 630 electronic and 1025
+phonon states. Earlier numerical failures and their corrections remain archived.
+
+A bounded DOP853 reference stayed incomplete. Its manual continuation, with
+progress logging, is in `/home/jdiaz/GEMINGA_COMMANDS.md`. No timed-out calculation
+was retried or split. The [admission record](docs/implementation/stage2/stage2_admission.json)
+keeps temporal and complete dynamic-mesh acceptance pending. Preliminary
+trajectories do not certify the final phonon grid. Production activation and
+the final stage-2 report await completion of those checks.
+
+## Experimental stage 1 closure — retained result
 
 The [final report](docs/implementation/stage1_closure/Informe_cierre_etapa_1.md)
 and [admission record](docs/implementation/stage1_closure/closure_admission.json)

@@ -1,0 +1,18 @@
+{
+  "status": "INCOMPLETE_REQUIRES_USER_RUN",
+  "command": "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 timeout --signal=TERM --kill-after=5 240 /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage2_cells/run_coupled.py --case one --duration .1 --steps 2 --escape inf --heating 0 --method dop853 --rtol 1e-9 --output docs/implementation/stage2/trajectories/one_reference_probe.json",
+  "limit_seconds": 240,
+  "observed_process_age_seconds": 189,
+  "observed_cpu_percent": 99.9,
+  "observed_RSS_KiB": 351000,
+  "exec_reported_exit_code": 1,
+  "exec_output": "",
+  "persisted_status": "INCOMPLETE",
+  "completed_trajectory_npz_present": false,
+  "process_absent_after_return": true,
+  "termination_reason": "No completion record or stderr was returned. The configured bound is known; a specific signal or remote exit124 was not reported. Do not infer a physical failure from this incomplete calculation.",
+  "retried": false,
+  "dependent_work_paused": true,
+  "selected_followup_phonon_nodes": 1025,
+  "followup_reason": "Independent population-resolution checks selected1025 nodes; the incomplete513-node probe is retained separately."
+}

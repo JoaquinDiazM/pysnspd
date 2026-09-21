@@ -1,0 +1,2109 @@
+{
+  "schema": "pysnspd.stage2.transport-review.v2",
+  "source_path": "/home/jdiaz/pysnspd/pysnspd/experimental/cell_transport.py",
+  "source_sha256": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+  "runner_sha256": "23b08428e9ce42c6cf7ceec8f29ef81e400496ae0f27fdd88a3cc81fb29751c1",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "registration_sha256": "b9e8037cefdce0201842212546e520d491d44f57dcac522653f128c62d5198c4",
+  "complementary_source_sha256": "2e3fff6c20f9fbb70f52be1a9a63153ee65ab439a91e879b2141d082e15d7b93",
+  "algebra": [
+    {
+      "field": "normal",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 1,
+      "event_energy_residual_absolute": 0.0,
+      "QP_count_balance_scaled": 0.0,
+      "native_energy_balance_scaled": 0.0,
+      "entropy_production": 0.013668900866061443,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 0.01732050807568899
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "normal",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 2,
+      "event_energy_residual_absolute": 0.0,
+      "QP_count_balance_scaled": 0.0,
+      "native_energy_balance_scaled": 0.0,
+      "entropy_production": 0.013669070049109163,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 0.017320508075688842
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "normal",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 4,
+      "event_energy_residual_absolute": 0.0,
+      "QP_count_balance_scaled": 0.0,
+      "native_energy_balance_scaled": 0.0,
+      "entropy_production": 0.013669112342869952,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 0.0,
+          "absolute_power": 0.0
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 0.01732050807568944
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "gapped",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 1,
+      "event_energy_residual_absolute": 3.552713678800501e-15,
+      "QP_count_balance_scaled": 0.0,
+      "native_energy_balance_scaled": 4.336808689942018e-19,
+      "entropy_production": 0.0048958118106889326,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 7.945077166837755e-23,
+          "absolute_power": 1.0340849959255495e-23
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 1.5996296944762018e-19,
+          "absolute_power": 1.5590498558481243e-21
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 2.5222069286298472e-18,
+          "absolute_power": 1.6408828882177237e-19
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 3.518371439700917e-21
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "gapped",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 2,
+      "event_energy_residual_absolute": 3.552713678800501e-15,
+      "QP_count_balance_scaled": 2.168404344971009e-19,
+      "native_energy_balance_scaled": 0.0,
+      "entropy_production": 0.004895803657681274,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 7.913509478831809e-23,
+          "absolute_power": 5.1249232040804844e-24
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 1.5268045997208903e-19,
+          "absolute_power": 9.300477460011266e-21
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 2.4269346138862988e-18,
+          "absolute_power": 9.11047196259986e-20
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 3.48405290111198e-21
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "gapped",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 4,
+      "event_energy_residual_absolute": 3.552713678800501e-15,
+      "QP_count_balance_scaled": 0.0,
+      "native_energy_balance_scaled": 4.336808689942018e-19,
+      "entropy_production": 0.004895801604452774,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 1.0096974922541873e-22,
+          "absolute_power": 5.882463865755479e-24
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 1.4586087396386632e-19,
+          "absolute_power": 1.5021583324159733e-20
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 2.6099688322827648e-18,
+          "absolute_power": 9.538718510425917e-20
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": -0.0
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "gapless",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 1,
+      "event_energy_residual_absolute": 3.552713678800501e-15,
+      "QP_count_balance_scaled": 0.0,
+      "native_energy_balance_scaled": 1.734723475976807e-18,
+      "entropy_production": 0.012128894976325605,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 8.210095406336145e-19,
+          "absolute_power": 2.2058555605962375e-20
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 2.6715226884663465e-18,
+          "absolute_power": 6.994077609150293e-20
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 6.7841728943980215e-18,
+          "absolute_power": 4.1779169018857145e-19
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 0.013575383323196508
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "gapless",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 2,
+      "event_energy_residual_absolute": 3.552713678800501e-15,
+      "QP_count_balance_scaled": 1.734723475976807e-18,
+      "native_energy_balance_scaled": 8.673617379884035e-19,
+      "entropy_production": 0.01212905627981958,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 9.43477310420516e-19,
+          "absolute_power": 1.3213501968505646e-20
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 2.5415787933527335e-18,
+          "absolute_power": 5.867636180555548e-20
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 6.5142732471084354e-18,
+          "absolute_power": 6.488569669184213e-20
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 0.010317034221638077
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    },
+    {
+      "field": "gapless",
+      "state_mesh": "complementary_causal_count",
+      "electron_factor": 4,
+      "event_energy_residual_absolute": 3.552713678800501e-15,
+      "QP_count_balance_scaled": 1.734723475976807e-18,
+      "native_energy_balance_scaled": 8.673617379884035e-19,
+      "entropy_production": 0.012129096602170174,
+      "common_FD": [
+        {
+          "temperature_bar": 0.08,
+          "weighted_RHS_L1": 9.250309234958794e-19,
+          "absolute_power": 9.568577905946839e-21
+        },
+        {
+          "temperature_bar": 0.2,
+          "weighted_RHS_L1": 2.4874475605600273e-18,
+          "absolute_power": 1.837690029244579e-20
+        },
+        {
+          "temperature_bar": 0.5,
+          "weighted_RHS_L1": 6.79975327394612e-18,
+          "absolute_power": 6.132881847323967e-20
+        }
+      ],
+      "Pauli_boundaries": [
+        {
+          "case": "empty_left_full_right",
+          "minimum_inward_population_derivative": 0.005135107360636806
+        },
+        {
+          "case": "alternating_faces",
+          "minimum_inward_population_derivative": -0.0
+        }
+      ]
+    }
+  ],
+  "continuous_comparisons": [
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 1,
+      "event_count": 603,
+      "shared_support": [
+        1.9855071751231912e-10,
+        11.968301270189222
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 5.528817894667743e-05,
+        "reference_weighted_L1": 0.03826172436690887,
+        "relative_weighted_L1": 0.0014449996664158218
+      },
+      "power": 0.010668736936889377,
+      "reference_power": 0.010669042357576864,
+      "power_relative_error": 2.8626813658722782e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.5725960093195555e-17,
+        "reference_weighted_L1": 0.03826172436690887,
+        "relative_weighted_L1": 4.1101022897954773e-16
+      },
+      "reference_power_refinement_relative": 0.0,
+      "passes_population_0_1_percent": false,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 2,
+      "event_count": 1206,
+      "shared_support": [
+        1.9855071751231912e-10,
+        11.968301270189222
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.6478631975910307e-06,
+        "reference_weighted_L1": 0.03826172436690887,
+        "relative_weighted_L1": 4.3068189551232195e-05
+      },
+      "power": 0.010668829809161307,
+      "reference_power": 0.010669042357576864,
+      "power_relative_error": 1.99219769154114e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.5725960093195555e-17,
+        "reference_weighted_L1": 0.03826172436690887,
+        "relative_weighted_L1": 4.1101022897954773e-16
+      },
+      "reference_power_refinement_relative": 0.0,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 4,
+      "event_count": 2412,
+      "shared_support": [
+        1.9855071751231912e-10,
+        11.968301270189222
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.6478873516191174e-06,
+        "reference_weighted_L1": 0.03826172436690887,
+        "relative_weighted_L1": 4.306882083558977e-05
+      },
+      "power": 0.0106688298142044,
+      "reference_power": 0.010669042357576864,
+      "power_relative_error": 1.9921504230749505e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.5725960093195555e-17,
+        "reference_weighted_L1": 0.03826172436690887,
+        "relative_weighted_L1": 4.1101022897954773e-16
+      },
+      "reference_power_refinement_relative": 0.0,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 1,
+      "event_count": 603,
+      "shared_support": [
+        1.9855071751231912e-10,
+        11.968301270189222
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 2.7907114248679828e-05,
+        "reference_weighted_L1": 0.020280452172744726,
+        "relative_weighted_L1": 0.0013760597648894985
+      },
+      "power": 0.006013236667036661,
+      "reference_power": 0.006013389074656823,
+      "power_relative_error": 2.5344712984655656e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.894680755169647e-18,
+        "reference_weighted_L1": 0.020280452172744726,
+        "relative_weighted_L1": 3.3996681614601947e-16
+      },
+      "reference_power_refinement_relative": 2.884768396722784e-16,
+      "passes_population_0_1_percent": false,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 2,
+      "event_count": 1206,
+      "shared_support": [
+        1.9855071751231912e-10,
+        11.968301270189222
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 7.193509707325872e-07,
+        "reference_weighted_L1": 0.020280452172744726,
+        "relative_weighted_L1": 3.547016430429181e-05
+      },
+      "power": 0.006013285320456216,
+      "reference_power": 0.006013389074656823,
+      "power_relative_error": 1.7253864554378882e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.894680755169647e-18,
+        "reference_weighted_L1": 0.020280452172744726,
+        "relative_weighted_L1": 3.3996681614601947e-16
+      },
+      "reference_power_refinement_relative": 2.884768396722784e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 4,
+      "event_count": 2412,
+      "shared_support": [
+        1.9855071751231912e-10,
+        11.968301270189222
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 7.193573190947794e-07,
+        "reference_weighted_L1": 0.020280452172744726,
+        "relative_weighted_L1": 3.547047733292342e-05
+      },
+      "power": 0.006013285322026974,
+      "reference_power": 0.006013389074656823,
+      "power_relative_error": 1.7253603344370096e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.894680755169647e-18,
+        "reference_weighted_L1": 0.020280452172744726,
+        "relative_weighted_L1": 3.3996681614601947e-16
+      },
+      "reference_power_refinement_relative": 2.884768396722784e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 1,
+      "event_count": 1207,
+      "shared_support": [
+        9.927535875615956e-11,
+        11.984150635094611
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 2.7113627001353197e-05,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 0.0007086357828870557
+      },
+      "power": 0.01066896562771987,
+      "reference_power": 0.010669042357576899,
+      "power_relative_error": 7.191822326432542e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2191397930910801e-17,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 3.1863169087733763e-16
+      },
+      "reference_power_refinement_relative": 6.503764509829124e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 2,
+      "event_count": 2414,
+      "shared_support": [
+        9.927535875615956e-11,
+        11.984150635094611
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.1210808707263736e-07,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 1.0770766187136465e-05
+      },
+      "power": 0.010668989222031341,
+      "reference_power": 0.010669042357576899,
+      "power_relative_error": 4.980348167756607e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2191397930910801e-17,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 3.1863169087733763e-16
+      },
+      "reference_power_refinement_relative": 6.503764509829124e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 4,
+      "event_count": 4828,
+      "shared_support": [
+        9.927535875615956e-11,
+        11.984150635094611
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.121093024069697e-07,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 1.077079795084687e-05
+      },
+      "power": 0.010668989222347318,
+      "reference_power": 0.010669042357576899,
+      "power_relative_error": 4.980318551564158e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2191397930910801e-17,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 3.1863169087733763e-16
+      },
+      "reference_power_refinement_relative": 6.503764509829124e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 1,
+      "event_count": 1207,
+      "shared_support": [
+        9.927535875615956e-11,
+        11.984150635094611
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.37400583796855e-05,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 0.000677502565655366
+      },
+      "power": 0.00601335081433658,
+      "reference_power": 0.006013389074656824,
+      "power_relative_error": 6.362521993749179e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.99769626007986e-18,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 3.4504636289540876e-16
+      },
+      "reference_power_refinement_relative": 1.4423841983613918e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 2,
+      "event_count": 2414,
+      "shared_support": [
+        9.927535875615956e-11,
+        11.984150635094611
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.7987180735373464e-07,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 8.869220756106594e-06
+      },
+      "power": 0.006013363137379098,
+      "reference_power": 0.006013389074656824,
+      "power_relative_error": 4.313254539787092e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.99769626007986e-18,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 3.4504636289540876e-16
+      },
+      "reference_power_refinement_relative": 1.4423841983613918e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 4,
+      "event_count": 4828,
+      "shared_support": [
+        9.927535875615956e-11,
+        11.984150635094611
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.798722032351302e-07,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 8.869240276450233e-06
+      },
+      "power": 0.006013363137477594,
+      "reference_power": 0.006013389074656824,
+      "power_relative_error": 4.313238160360612e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.99769626007986e-18,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 3.4504636289540876e-16
+      },
+      "reference_power_refinement_relative": 1.4423841983613918e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 1,
+      "event_count": 2415,
+      "shared_support": [
+        4.963767937807978e-11,
+        11.992075317547306
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.3430367239815477e-05,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 0.0003510131198224537
+      },
+      "power": 0.010669023128303803,
+      "reference_power": 0.010669042357576907,
+      "power_relative_error": 1.8023429338740748e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.3467401416858319e-17,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 3.5198103691598834e-16
+      },
+      "reference_power_refinement_relative": 4.877823382371839e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 2,
+      "event_count": 4830,
+      "shared_support": [
+        4.963767937807978e-11,
+        11.992075317547306
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.0304484500819747e-07,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 2.693157371059761e-06
+      },
+      "power": 0.010669029073744158,
+      "reference_power": 0.010669042357576907,
+      "power_relative_error": 1.2450820142852933e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.3467401416858319e-17,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 3.5198103691598834e-16
+      },
+      "reference_power_refinement_relative": 4.877823382371839e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 4,
+      "event_count": 9660,
+      "shared_support": [
+        4.963767937807978e-11,
+        11.992075317547306
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.03044899503421e-07,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 2.6931587953349194e-06
+      },
+      "power": 0.010669029073763929,
+      "reference_power": 0.010669042357576907,
+      "power_relative_error": 1.2450801612001904e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.3467401416858319e-17,
+        "reference_weighted_L1": 0.03826172436690886,
+        "relative_weighted_L1": 3.5198103691598834e-16
+      },
+      "reference_power_refinement_relative": 4.877823382371839e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 1,
+      "event_count": 2415,
+      "shared_support": [
+        4.963767937807978e-11,
+        11.992075317547306
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 6.818353686360622e-06,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 0.0003362032378905206
+      },
+      "power": 0.006013379489871651,
+      "reference_power": 0.006013389074656817,
+      "power_relative_error": 1.5939073702158597e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 7.245672713531767e-18,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 3.5727372603996263e-16
+      },
+      "reference_power_refinement_relative": 5.769536793445574e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 2,
+      "event_count": 4830,
+      "shared_support": [
+        4.963767937807978e-11,
+        11.992075317547306
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.497216687831757e-08,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 2.217513026595949e-06
+      },
+      "power": 0.006013382590498455,
+      "reference_power": 0.006013389074656817,
+      "power_relative_error": 1.078286849836151e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 7.245672713531767e-18,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 3.5727372603996263e-16
+      },
+      "reference_power_refinement_relative": 5.769536793445574e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 4,
+      "event_count": 9660,
+      "shared_support": [
+        4.963767937807978e-11,
+        11.992075317547306
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.4972191530080966e-08,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 2.2175142421390343e-06
+      },
+      "power": 0.006013382590504621,
+      "reference_power": 0.006013389074656817,
+      "power_relative_error": 1.0782858244452244e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 7.245672713531767e-18,
+        "reference_weighted_L1": 0.020280452172744733,
+        "relative_weighted_L1": 3.5727372603996263e-16
+      },
+      "reference_power_refinement_relative": 5.769536793445574e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 1,
+      "event_count": 1205,
+      "shared_support": [
+        0.01885860127452717,
+        11.980932154636923
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 2.2641149806023063e-06,
+        "reference_weighted_L1": 0.0053780959072039225,
+        "relative_weighted_L1": 0.00042098821212346546
+      },
+      "power": 0.0035121788732366196,
+      "reference_power": 0.0035122008604513573,
+      "power_relative_error": 6.260238412125399e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.2868763514646334e-18,
+        "reference_weighted_L1": 0.0053780959072039225,
+        "relative_weighted_L1": 6.111598618131531e-16
+      },
+      "reference_power_refinement_relative": 1.2347837900662346e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 2,
+      "event_count": 2410,
+      "shared_support": [
+        0.01885860127452717,
+        11.980932154636923
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 8.901181657252116e-09,
+        "reference_weighted_L1": 0.0053780959072039225,
+        "relative_weighted_L1": 1.6550804989046486e-06
+      },
+      "power": 0.003512195764408442,
+      "reference_power": 0.0035122008604513573,
+      "power_relative_error": 1.450954292713647e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.2868763514646334e-18,
+        "reference_weighted_L1": 0.0053780959072039225,
+        "relative_weighted_L1": 6.111598618131531e-16
+      },
+      "reference_power_refinement_relative": 1.2347837900662346e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 4,
+      "event_count": 4820,
+      "shared_support": [
+        0.01885860127452717,
+        11.980932154636923
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 8.900193280762355e-09,
+        "reference_weighted_L1": 0.0053780959072039225,
+        "relative_weighted_L1": 1.6548967207595922e-06
+      },
+      "power": 0.003512195764437071,
+      "reference_power": 0.0035122008604513573,
+      "power_relative_error": 1.4509461414119353e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.2868763514646334e-18,
+        "reference_weighted_L1": 0.0053780959072039225,
+        "relative_weighted_L1": 6.111598618131531e-16
+      },
+      "reference_power_refinement_relative": 1.2347837900662346e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 1,
+      "event_count": 1205,
+      "shared_support": [
+        0.01885860127452717,
+        11.980932154636923
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.2683445245612412e-06,
+        "reference_weighted_L1": 0.0030686760567838873,
+        "relative_weighted_L1": 0.0004133197838713951
+      },
+      "power": 0.0020658879628530085,
+      "reference_power": 0.0020658933032533197,
+      "power_relative_error": 2.585032006637211e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 2.008736307559764e-18,
+        "reference_weighted_L1": 0.0030686760567838873,
+        "relative_weighted_L1": 6.545937956269687e-16
+      },
+      "reference_power_refinement_relative": 4.1984827416909816e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 2,
+      "event_count": 2410,
+      "shared_support": [
+        0.01885860127452717,
+        11.980932154636923
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 3.1884158461443565e-08,
+        "reference_weighted_L1": 0.0030686760567838873,
+        "relative_weighted_L1": 1.0390200161713915e-05
+      },
+      "power": 0.002065897425249805,
+      "reference_power": 0.0020658933032533197,
+      "power_relative_error": 1.9952610713090502e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 2.008736307559764e-18,
+        "reference_weighted_L1": 0.0030686760567838873,
+        "relative_weighted_L1": 6.545937956269687e-16
+      },
+      "reference_power_refinement_relative": 4.1984827416909816e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 4,
+      "event_count": 4820,
+      "shared_support": [
+        0.01885860127452717,
+        11.980932154636923
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 3.188402119228918e-08,
+        "reference_weighted_L1": 0.0030686760567838873,
+        "relative_weighted_L1": 1.0390155429343392e-05
+      },
+      "power": 0.0020658974252981176,
+      "reference_power": 0.0020658933032533197,
+      "power_relative_error": 1.9952844570678457e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 2.008736307559764e-18,
+        "reference_weighted_L1": 0.0030686760567838873,
+        "relative_weighted_L1": 6.545937956269687e-16
+      },
+      "reference_power_refinement_relative": 4.1984827416909816e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 1,
+      "event_count": 2413,
+      "shared_support": [
+        0.009430694367676158,
+        11.99676483243039
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.0714547037398872e-06,
+        "reference_weighted_L1": 0.005378095907203928,
+        "relative_weighted_L1": 0.00019922565945777946
+      },
+      "power": 0.0035121953488516447,
+      "reference_power": 0.00351220086045139,
+      "power_relative_error": 1.5692723634457767e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.2578082274960593e-18,
+        "reference_weighted_L1": 0.005378095907203928,
+        "relative_weighted_L1": 6.057549518840385e-16
+      },
+      "reference_power_refinement_relative": 1.1113054110596009e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 2,
+      "event_count": 4826,
+      "shared_support": [
+        0.009430694367676158,
+        11.99676483243039
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 2.1983389953843696e-09,
+        "reference_weighted_L1": 0.005378095907203928,
+        "relative_weighted_L1": 4.087578639941522e-07
+      },
+      "power": 0.0035121995991487832,
+      "reference_power": 0.00351220086045139,
+      "power_relative_error": 3.591202942953416e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.2578082274960593e-18,
+        "reference_weighted_L1": 0.005378095907203928,
+        "relative_weighted_L1": 6.057549518840385e-16
+      },
+      "reference_power_refinement_relative": 1.1113054110596009e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 4,
+      "event_count": 9652,
+      "shared_support": [
+        0.009430694367676158,
+        11.99676483243039
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 2.198282613804909e-09,
+        "reference_weighted_L1": 0.005378095907203928,
+        "relative_weighted_L1": 4.087473804363218e-07
+      },
+      "power": 0.0035121995991509542,
+      "reference_power": 0.00351220086045139,
+      "power_relative_error": 3.5911967616257627e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.2578082274960593e-18,
+        "reference_weighted_L1": 0.005378095907203928,
+        "relative_weighted_L1": 6.057549518840385e-16
+      },
+      "reference_power_refinement_relative": 1.1113054110596009e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 1,
+      "event_count": 2413,
+      "shared_support": [
+        0.009430694367676158,
+        11.99676483243039
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 6.003781126025193e-07,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 0.00019564727638007613
+      },
+      "power": 0.002065891972398884,
+      "reference_power": 0.0020658933032533184,
+      "power_relative_error": 6.442028890710866e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.8552838348485257e-18,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 6.045877116116805e-16
+      },
+      "reference_power_refinement_relative": 1.049620685422746e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 2,
+      "event_count": 4826,
+      "shared_support": [
+        0.009430694367676158,
+        11.99676483243039
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 7.96045567863661e-09,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 2.5941010166382734e-06
+      },
+      "power": 0.0020658943403989083,
+      "reference_power": 0.0020658933032533184,
+      "power_relative_error": 5.020325049039934e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.8552838348485257e-18,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 6.045877116116805e-16
+      },
+      "reference_power_refinement_relative": 1.049620685422746e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 4,
+      "event_count": 9652,
+      "shared_support": [
+        0.009430694367676158,
+        11.99676483243039
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 7.960451412266508e-09,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 2.594099626341604e-06
+      },
+      "power": 0.002065894340401446,
+      "reference_power": 0.0020658933032533184,
+      "power_relative_error": 5.020337333800436e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.8552838348485257e-18,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 6.045877116116805e-16
+      },
+      "reference_power_refinement_relative": 1.049620685422746e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 1,
+      "event_count": 4828,
+      "shared_support": [
+        0.0047155214484274595,
+        12.004681187841987
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 5.579362417255293e-07,
+        "reference_weighted_L1": 0.005378095907203931,
+        "relative_weighted_L1": 0.00010374233768835856
+      },
+      "power": 0.0035121994827032226,
+      "reference_power": 0.003512200860451402,
+      "power_relative_error": 3.9227488238097295e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.847202494305139e-18,
+        "reference_weighted_L1": 0.005378095907203931,
+        "relative_weighted_L1": 7.153465763137158e-16
+      },
+      "reference_power_refinement_relative": 6.173918950331095e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 2,
+      "event_count": 9656,
+      "shared_support": [
+        0.0047155214484274595,
+        12.004681187841987
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 5.525540650763135e-10,
+        "reference_weighted_L1": 0.005378095907203931,
+        "relative_weighted_L1": 1.0274157891758127e-07
+      },
+      "power": 0.0035122005437123647,
+      "reference_power": 0.003512200860451402,
+      "power_relative_error": 9.018249522928392e-08,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.847202494305139e-18,
+        "reference_weighted_L1": 0.005378095907203931,
+        "relative_weighted_L1": 7.153465763137158e-16
+      },
+      "reference_power_refinement_relative": 6.173918950331095e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 4,
+      "event_count": 19312,
+      "shared_support": [
+        0.0047155214484274595,
+        12.004681187841987
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 5.52547500023069e-10,
+        "reference_weighted_L1": 0.005378095907203931,
+        "relative_weighted_L1": 1.0274035821542984e-07
+      },
+      "power": 0.0035122005437125234,
+      "reference_power": 0.003512200860451402,
+      "power_relative_error": 9.01824500361972e-08,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 3.847202494305139e-18,
+        "reference_weighted_L1": 0.005378095907203931,
+        "relative_weighted_L1": 7.153465763137158e-16
+      },
+      "reference_power_refinement_relative": 6.173918950331095e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 1,
+      "event_count": 4828,
+      "shared_support": [
+        0.0047155214484274595,
+        12.004681187841987
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 3.1329711652822536e-07,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 0.00010209520677023664
+      },
+      "power": 0.002065892971089435,
+      "reference_power": 0.002065893303253316,
+      "power_relative_error": 1.6078462547550342e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 2.1927841702175004e-18,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 7.145701043842466e-16
+      },
+      "reference_power_refinement_relative": 1.0496206854227472e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 2,
+      "event_count": 9656,
+      "shared_support": [
+        0.0047155214484274595,
+        12.004681187841987
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.9915497241382384e-09,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 6.48993144693635e-07
+      },
+      "power": 0.0020658935621109464,
+      "reference_power": 0.002065893303253316,
+      "power_relative_error": 1.253005805293871e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 2.1927841702175004e-18,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 7.145701043842466e-16
+      },
+      "reference_power_refinement_relative": 1.0496206854227472e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 4,
+      "event_count": 19312,
+      "shared_support": [
+        0.0047155214484274595,
+        12.004681187841987
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.991549205443364e-09,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 6.489929756647559e-07
+      },
+      "power": 0.002065893562111107,
+      "reference_power": 0.002065893303253316,
+      "power_relative_error": 1.253006582013178e-07,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 2.1927841702175004e-18,
+        "reference_weighted_L1": 0.003068676056783887,
+        "relative_weighted_L1": 7.145701043842466e-16
+      },
+      "reference_power_refinement_relative": 1.0496206854227472e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 1,
+      "event_count": 1205,
+      "shared_support": [
+        3.0018046187036003e-10,
+        11.973402804856315
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 2.144137453714916e-05,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 0.0006929618268924528
+      },
+      "power": 0.009370594115856284,
+      "reference_power": 0.00937086001563762,
+      "power_relative_error": 2.8375173771864884e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.14291292871345e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 3.6937698639052803e-16
+      },
+      "reference_power_refinement_relative": 7.404756759067953e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 2,
+      "event_count": 2410,
+      "shared_support": [
+        3.0018046187036003e-10,
+        11.973402804856315
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.682506216405581e-06,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 5.4376764859839976e-05
+      },
+      "power": 0.009370652104400247,
+      "reference_power": 0.00937086001563762,
+      "power_relative_error": 2.218699639364981e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.14291292871345e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 3.6937698639052803e-16
+      },
+      "reference_power_refinement_relative": 7.404756759067953e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 4,
+      "event_count": 4820,
+      "shared_support": [
+        3.0018046187036003e-10,
+        11.973402804856315
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.682529979805379e-06,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 5.437753286698936e-05
+      },
+      "power": 0.009370652105239569,
+      "reference_power": 0.00937086001563762,
+      "power_relative_error": 2.218690682645253e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.14291292871345e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 3.6937698639052803e-16
+      },
+      "reference_power_refinement_relative": 7.404756759067953e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 1,
+      "event_count": 1205,
+      "shared_support": [
+        3.0018046187036003e-10,
+        11.973402804856315
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.1933955593584536e-05,
+        "reference_weighted_L1": 0.01662783894119555,
+        "relative_weighted_L1": 0.0007177093569278028
+      },
+      "power": 0.0053213121910613715,
+      "reference_power": 0.005321442944653431,
+      "power_relative_error": 2.457107844985557e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.414379027015273e-18,
+        "reference_weighted_L1": 0.01662783894119555,
+        "relative_weighted_L1": 3.8576143596890506e-16
+      },
+      "reference_power_refinement_relative": 1.6299371185776983e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 2,
+      "event_count": 2410,
+      "shared_support": [
+        3.0018046187036003e-10,
+        11.973402804856315
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 7.003623221748634e-07,
+        "reference_weighted_L1": 0.01662783894119555,
+        "relative_weighted_L1": 4.211986444249904e-05
+      },
+      "power": 0.005321344231214016,
+      "reference_power": 0.005321442944653431,
+      "power_relative_error": 1.8550126430267416e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.414379027015273e-18,
+        "reference_weighted_L1": 0.01662783894119555,
+        "relative_weighted_L1": 3.8576143596890506e-16
+      },
+      "reference_power_refinement_relative": 1.6299371185776983e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 1,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "face_order": 4,
+      "event_count": 4820,
+      "shared_support": [
+        3.0018046187036003e-10,
+        11.973402804856315
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 7.003711295500505e-07,
+        "reference_weighted_L1": 0.01662783894119555,
+        "relative_weighted_L1": 4.212039411897824e-05
+      },
+      "power": 0.005321344231213429,
+      "reference_power": 0.005321442944653431,
+      "power_relative_error": 1.855012654061416e-05,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.414379027015273e-18,
+        "reference_weighted_L1": 0.01662783894119555,
+        "relative_weighted_L1": 3.8576143596890506e-16
+      },
+      "reference_power_refinement_relative": 1.6299371185776983e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 1,
+      "event_count": 2413,
+      "shared_support": [
+        1.5009023096866284e-10,
+        11.98924546537655
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.0333022470906103e-05,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 0.00033395201022928
+      },
+      "power": 0.009370792319699759,
+      "reference_power": 0.009370860015637646,
+      "power_relative_error": 7.2240901874150776e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2612344309664719e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 4.0761720472161233e-16
+      },
+      "reference_power_refinement_relative": 1.851189189766983e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 2,
+      "event_count": 4826,
+      "shared_support": [
+        1.5009023096866284e-10,
+        11.98924546537655
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.2096056800089884e-07,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 1.3604986179695413e-05
+      },
+      "power": 0.00937080804023805,
+      "reference_power": 0.009370860015637646,
+      "power_relative_error": 5.546491945094114e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2612344309664719e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 4.0761720472161233e-16
+      },
+      "reference_power_refinement_relative": 1.851189189766983e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 4,
+      "event_count": 9652,
+      "shared_support": [
+        1.5009023096866284e-10,
+        11.98924546537655
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.209630704917553e-07,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 1.3605067057469023e-05
+      },
+      "power": 0.009370808040316559,
+      "reference_power": 0.009370860015637646,
+      "power_relative_error": 5.546483567167197e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2612344309664719e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 4.0761720472161233e-16
+      },
+      "reference_power_refinement_relative": 1.851189189766983e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 1,
+      "event_count": 2413,
+      "shared_support": [
+        1.5009023096866284e-10,
+        11.98924546537655
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 5.415204594248742e-06,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 0.0003256709794579826
+      },
+      "power": 0.005321410092469954,
+      "reference_power": 0.005321442944653427,
+      "power_relative_error": 6.173548004632329e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.308582026859284e-18,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 3.793987931426097e-16
+      },
+      "reference_power_refinement_relative": 8.149685592888499e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 2,
+      "event_count": 4826,
+      "shared_support": [
+        1.5009023096866284e-10,
+        11.98924546537655
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.7515976191751574e-07,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 1.0534126685792976e-05
+      },
+      "power": 0.005321418267874347,
+      "reference_power": 0.005321442944653427,
+      "power_relative_error": 4.637234550100802e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.308582026859284e-18,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 3.793987931426097e-16
+      },
+      "reference_power_refinement_relative": 8.149685592888499e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 2,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "face_order": 4,
+      "event_count": 9652,
+      "shared_support": [
+        1.5009023096866284e-10,
+        11.98924546537655
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.751607406561121e-07,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 1.0534185547236114e-05
+      },
+      "power": 0.005321418267886483,
+      "reference_power": 0.005321442944653427,
+      "power_relative_error": 4.637232269655779e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.308582026859284e-18,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 3.793987931426097e-16
+      },
+      "reference_power_refinement_relative": 8.149685592888499e-16,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 1,
+      "event_count": 4829,
+      "shared_support": [
+        7.504511548194279e-11,
+        11.997166802219352
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.673958464411634e-06,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 0.0001510572370584955
+      },
+      "power": 0.009370843134266513,
+      "reference_power": 0.009370860015637673,
+      "power_relative_error": 1.8014751188433149e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2785013815217311e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 4.131976947134751e-16
+      },
+      "reference_power_refinement_relative": 1.6660702707902797e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 2,
+      "event_count": 9658,
+      "shared_support": [
+        7.504511548194279e-11,
+        11.997166802219352
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.0528484367817607e-07,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 3.402691254374018e-06
+      },
+      "power": 0.009370847021770882,
+      "reference_power": 0.009370860015637673,
+      "power_relative_error": 1.3866247889615572e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2785013815217311e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 4.131976947134751e-16
+      },
+      "reference_power_refinement_relative": 1.6660702707902797e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "thermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 4,
+      "event_count": 19316,
+      "shared_support": [
+        7.504511548194279e-11,
+        11.997166802219352
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 1.0528499300351055e-07,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 3.402696080405875e-06
+      },
+      "power": 0.009370847021776114,
+      "reference_power": 0.009370860015637673,
+      "power_relative_error": 1.3866242306428976e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 1.2785013815217311e-17,
+        "reference_weighted_L1": 0.030941638781607585,
+        "relative_weighted_L1": 4.131976947134751e-16
+      },
+      "reference_power_refinement_relative": 1.6660702707902797e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 1,
+      "event_count": 4829,
+      "shared_support": [
+        7.504511548194279e-11,
+        11.997166802219352
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 2.4093845346637225e-06,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 0.0001449006418202945
+      },
+      "power": 0.005321434727986182,
+      "reference_power": 0.005321442944653417,
+      "power_relative_error": 1.5440675247208838e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.611641388091976e-18,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 3.9762481531569327e-16
+      },
+      "reference_power_refinement_relative": 1.6299371185777027e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 2,
+      "event_count": 9658,
+      "shared_support": [
+        7.504511548194279e-11,
+        11.997166802219352
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.379890521221365e-08,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 2.634070811433086e-06
+      },
+      "power": 0.005321436775619774,
+      "reference_power": 0.005321442944653417,
+      "power_relative_error": 1.1592783587945772e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.611641388091976e-18,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 3.9762481531569327e-16
+      },
+      "reference_power_refinement_relative": 1.6299371185777027e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "electron_factor": 4,
+      "state_mesh": "complementary_causal_count",
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "face_order": 4,
+      "event_count": 19316,
+      "shared_support": [
+        7.504511548194279e-11,
+        11.997166802219352
+      ],
+      "RHS_comparison": {
+        "absolute_weighted_L1": 4.379896034409622e-08,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 2.6340741270703594e-06
+      },
+      "power": 0.005321436775620581,
+      "reference_power": 0.005321442944653417,
+      "power_relative_error": 1.1592782070474314e-06,
+      "reference_RHS_refinement": {
+        "absolute_weighted_L1": 6.611641388091976e-18,
+        "reference_weighted_L1": 0.016627838941195558,
+        "relative_weighted_L1": 3.9762481531569327e-16
+      },
+      "reference_power_refinement_relative": 1.6299371185777027e-15,
+      "passes_population_0_1_percent": true,
+      "passes_power_0_1_percent": true
+    }
+  ],
+  "native_status": "NOT_RETESTED_HISTORICAL_FAILURE_PRESERVED",
+  "native_max_relative_RHS_error": null,
+  "native_max_relative_power_error": null,
+  "selected_precision_status": "PASS",
+  "mesh_summary": [
+    {
+      "electron_factor": 1,
+      "electron_nodes": [
+        604,
+        604
+      ],
+      "state_mesh": "complementary_causal_count",
+      "maximum_RHS_relative_error": 5.437753286698936e-05,
+      "maximum_power_relative_error": 2.218690682645253e-05,
+      "precision_status": "PASS"
+    },
+    {
+      "electron_factor": 2,
+      "electron_nodes": [
+        1208,
+        1208
+      ],
+      "state_mesh": "complementary_causal_count",
+      "maximum_RHS_relative_error": 1.3605067057469023e-05,
+      "maximum_power_relative_error": 5.546483567167197e-06,
+      "precision_status": "PASS"
+    },
+    {
+      "electron_factor": 4,
+      "electron_nodes": [
+        2416,
+        2416
+      ],
+      "state_mesh": "complementary_causal_count",
+      "maximum_RHS_relative_error": 3.402696080405875e-06,
+      "maximum_power_relative_error": 1.3866242306428976e-06,
+      "precision_status": "PASS"
+    }
+  ],
+  "reference_max_relative_RHS_refinement": 7.153465763137158e-16,
+  "runtime_seconds": 92.50937897898257,
+  "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.39",
+  "python": "3.10.20"
+}

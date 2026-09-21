@@ -1,0 +1,14 @@
+{
+  "schema": "pysnspd.stage2.closure-unit-test-run.v1",
+  "host": "geminga",
+  "account": "jdiaz",
+  "python": "3.10.20",
+  "command": "cd /home/jdiaz/pysnspd && OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 timeout 240 /home/jdiaz/.conda/envs/snspd/bin/python -m pytest tests/test_experimental_cell_closures.py -q",
+  "exit_code": 0,
+  "passed": 61,
+  "pytest_reported_seconds": 0.12,
+  "source_sha256": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+  "tests_sha256": "f7c97c60c42a7c026e1510b5d9fa0d8d50466f2e31a5c90671f89670792acff2",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "output": "61 passed in 0.12s"
+}

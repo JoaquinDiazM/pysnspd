@@ -1,0 +1,3486 @@
+{
+  "schema": "pysnspd.stage2_cells.event_diagnostics.v1",
+  "host": "geminga",
+  "python": "3.10.20",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "runner_sha256": "146c6734bea49524fdc57ef918d3c1f2e00513826fb755d09166c39632622c1c",
+  "event_code_sha256": "e9abe7b3687f49345fdcbfcfaa2955c0212a422e009700d845f0f2ed8149fc7c",
+  "coupling": "alpha2F=.03*(Omega/4)^2 on the declared [IR,4] support; zero outside",
+  "rate_prefactor": 1.0,
+  "scale_status": "synthetic normalization, no absolute material time",
+  "projection": "17 fixed hat-band nodes 0,.25,...4; positive projection preserves count and first energy moment",
+  "algebraic": [
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "event_energy_relative_error": 2.446113951708809e-16,
+      "rhs_energy_normalized_residual": 0.0,
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.0, Gamma=0.0, eta=1e-08",
+        "phonon_label": "synthetic Debye: 30 modes in N0*Delta0 units; explicit IR cutoff",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9653,
+        "active_recombination": 9518,
+        "zero_coupling_events": 13229,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 13229,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      },
+      "thermal_equilibria": [
+        {
+          "temperature": 0.08,
+          "maximum_event_relative_residual": 2.8421709430403607e-14,
+          "weighted_absolute_residual": 1.1810261647456416e-22,
+          "weighted_equilibrium_RHS_absolute": 1.4667271603740716e-22,
+          "represented_events": 19171
+        },
+        {
+          "temperature": 0.2,
+          "maximum_event_relative_residual": 1.0658141036401448e-14,
+          "weighted_absolute_residual": 4.813640460990183e-21,
+          "weighted_equilibrium_RHS_absolute": 5.879137946494735e-21,
+          "represented_events": 19171
+        },
+        {
+          "temperature": 0.5,
+          "maximum_event_relative_residual": 3.5527136788004954e-15,
+          "weighted_absolute_residual": 1.477971510559092e-19,
+          "weighted_equilibrium_RHS_absolute": 1.7902672985107984e-19,
+          "represented_events": 19171
+        }
+      ],
+      "interior_collision_entropy_production": 0.42016526585871977,
+      "negative_control_reversed_phonon_energy_sign_residual": 0.3654325629537001,
+      "physical_faces": {
+        "electron_zero_min_rhs": 0.00022238715843334305,
+        "electron_one_max_rhs": -0.003145835683365084,
+        "phonon_zero_min_rhs": 9.634767871360045e-05
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "event_energy_relative_error": 2.1964591890854383e-16,
+      "rhs_energy_normalized_residual": 1.3266649349980792e-16,
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "synthetic Debye: 30 modes in N0*Delta0 units; explicit IR cutoff",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 7261,
+        "active_recombination": 12155,
+        "zero_coupling_events": 12984,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12984,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      },
+      "thermal_equilibria": [
+        {
+          "temperature": 0.08,
+          "maximum_event_relative_residual": 2.8421709430403607e-14,
+          "weighted_absolute_residual": 4.747713611780186e-26,
+          "weighted_equilibrium_RHS_absolute": 7.434692599519178e-26,
+          "represented_events": 19416
+        },
+        {
+          "temperature": 0.2,
+          "maximum_event_relative_residual": 7.105427357600978e-15,
+          "weighted_absolute_residual": 1.0360147461643486e-21,
+          "weighted_equilibrium_RHS_absolute": 1.294365100214275e-21,
+          "represented_events": 19416
+        },
+        {
+          "temperature": 0.5,
+          "maximum_event_relative_residual": 7.105427357600976e-15,
+          "weighted_absolute_residual": 1.2439729214289276e-19,
+          "weighted_equilibrium_RHS_absolute": 1.4229290891703053e-19,
+          "represented_events": 19416
+        }
+      ],
+      "interior_collision_entropy_production": 0.43548856625897353,
+      "negative_control_reversed_phonon_energy_sign_residual": 0.8368526184245338,
+      "physical_faces": {
+        "electron_zero_min_rhs": 0.00010028758256710893,
+        "electron_one_max_rhs": -0.00301407610480475,
+        "phonon_zero_min_rhs": 0.00015279287690599886
+      }
+    },
+    {
+      "field": "depaired",
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "event_energy_relative_error": 2.1937431247010973e-16,
+      "rhs_energy_normalized_residual": 1.0912246818039234e-16,
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "synthetic Debye: 30 modes in N0*Delta0 units; explicit IR cutoff",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10891,
+        "active_recombination": 12273,
+        "zero_coupling_events": 9236,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 9236,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      },
+      "thermal_equilibria": [
+        {
+          "temperature": 0.08,
+          "maximum_event_relative_residual": 2.8421709430403607e-14,
+          "weighted_absolute_residual": 1.9845969990629316e-24,
+          "weighted_equilibrium_RHS_absolute": 2.3475744289281924e-24,
+          "represented_events": 23164
+        },
+        {
+          "temperature": 0.2,
+          "maximum_event_relative_residual": 1.0658141036401448e-14,
+          "weighted_absolute_residual": 1.7343164647125097e-21,
+          "weighted_equilibrium_RHS_absolute": 1.9732001222296815e-21,
+          "represented_events": 23164
+        },
+        {
+          "temperature": 0.5,
+          "maximum_event_relative_residual": 3.5527136788004954e-15,
+          "weighted_absolute_residual": 1.3468225957166543e-19,
+          "weighted_equilibrium_RHS_absolute": 1.4347775791290897e-19,
+          "represented_events": 23164
+        }
+      ],
+      "interior_collision_entropy_production": 0.4110627714979686,
+      "negative_control_reversed_phonon_energy_sign_residual": 0.5087050554931669,
+      "physical_faces": {
+        "electron_zero_min_rhs": 0.0,
+        "electron_one_max_rhs": -0.0027827171252530637,
+        "phonon_zero_min_rhs": 0.0003114921937905708
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "event_energy_relative_error": 2.204946689426964e-16,
+      "rhs_energy_normalized_residual": 8.770951186731901e-17,
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "synthetic Debye: 30 modes in N0*Delta0 units; explicit IR cutoff",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9901,
+        "active_recombination": 9673,
+        "zero_coupling_events": 12826,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12826,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      },
+      "thermal_equilibria": [
+        {
+          "temperature": 0.08,
+          "maximum_event_relative_residual": 2.8421709430403607e-14,
+          "weighted_absolute_residual": 9.00998576983197e-23,
+          "weighted_equilibrium_RHS_absolute": 1.089403063291551e-22,
+          "represented_events": 19574
+        },
+        {
+          "temperature": 0.2,
+          "maximum_event_relative_residual": 7.105427357600978e-15,
+          "weighted_absolute_residual": 4.1075386034318595e-21,
+          "weighted_equilibrium_RHS_absolute": 5.134566492309081e-21,
+          "represented_events": 19574
+        },
+        {
+          "temperature": 0.5,
+          "maximum_event_relative_residual": 3.552713678800495e-15,
+          "weighted_absolute_residual": 1.5365651079564146e-19,
+          "weighted_equilibrium_RHS_absolute": 1.936236440360312e-19,
+          "represented_events": 19574
+        }
+      ],
+      "interior_collision_entropy_production": 0.458370358025331,
+      "negative_control_reversed_phonon_energy_sign_residual": 0.6328977330900134,
+      "physical_faces": {
+        "electron_zero_min_rhs": 1.9883896283186347e-06,
+        "electron_one_max_rhs": -0.0032903802366177253,
+        "phonon_zero_min_rhs": 0.00046385861859523573
+      }
+    }
+  ],
+  "phonon_convergence": [
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 8.067740386741874e-06,
+      "phonon_projected_L1_relative_error": 0.0009877063098317897,
+      "phonon_projected_33_L1_relative_error": 0.002316233014285031,
+      "point_powers": {
+        "scattering": {
+          "net": 2.6208943953174263e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 2.620943336723386e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.00017544678536999647,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "scattering_power_relative_error": 1.8673551306383187e-05,
+      "recombination_power_relative_error": 2.6485528043082635e-08
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 0.0013260099057815027,
+      "phonon_projected_L1_relative_error": 0.0017830750228806775,
+      "phonon_projected_33_L1_relative_error": 0.0019705603496632633,
+      "point_powers": {
+        "scattering": {
+          "net": -2.2321931931196122e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -2.229360995293208e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.0040618962339675855,
+          "gross": 0.004067305945872811
+        }
+      },
+      "scattering_power_relative_error": 0.001268796014222301,
+      "recombination_power_relative_error": 0.001326650891759434
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 0.0010811148237997008,
+      "phonon_projected_L1_relative_error": 0.0017434699152821512,
+      "phonon_projected_33_L1_relative_error": 0.0023318995516532445,
+      "point_powers": {
+        "scattering": {
+          "net": -3.0286139912969202e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -3.025217547471745e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007392872671258769,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "scattering_power_relative_error": 0.001121451540188104,
+      "recombination_power_relative_error": 0.0011097520821540443
+    },
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 2.0433268761910763e-06,
+      "phonon_projected_L1_relative_error": 0.00039842687220880595,
+      "phonon_projected_33_L1_relative_error": 0.0009831044813949604,
+      "point_powers": {
+        "scattering": {
+          "net": 2.6208943953174263e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 2.620906592289755e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.00017544678190738771,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "scattering_power_relative_error": 4.653744290626323e-06,
+      "recombination_power_relative_error": 6.749578833564395e-09
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 0.0003392090362650633,
+      "phonon_projected_L1_relative_error": 0.000560434965989943,
+      "phonon_projected_33_L1_relative_error": 0.000610872158032846,
+      "point_powers": {
+        "scattering": {
+          "net": -2.2321931931196122e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -2.2314509974629193e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.004065910272767385,
+          "gross": 0.004067305945872811
+        }
+      },
+      "scattering_power_relative_error": 0.0003324961562380028,
+      "recombination_power_relative_error": 0.0003397439545207979
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 0.0002735162942800192,
+      "phonon_projected_L1_relative_error": 0.0005695082501283741,
+      "phonon_projected_33_L1_relative_error": 0.0008939103272375982,
+      "point_powers": {
+        "scattering": {
+          "net": -3.0286139912969202e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -3.0278088692190267e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007399006094464233,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "scattering_power_relative_error": 0.00026583845950889254,
+      "recombination_power_relative_error": 0.0002810327332994224
+    },
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 4.910249812539771e-07,
+      "phonon_projected_L1_relative_error": 8.368715491533852e-05,
+      "phonon_projected_33_L1_relative_error": 0.00029328629289657545,
+      "point_powers": {
+        "scattering": {
+          "net": 2.6208943953174263e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 2.6208974195478926e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.0001754467810144107,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "scattering_power_relative_error": 1.1538925306094003e-06,
+      "recombination_power_relative_error": 1.6598472721216009e-09
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 8.3945583938593e-05,
+      "phonon_projected_L1_relative_error": 0.0001567857522751751,
+      "phonon_projected_33_L1_relative_error": 0.0002815597785722228,
+      "point_powers": {
+        "scattering": {
+          "net": -2.2321931931196122e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -2.232004958991377e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.004066950231377913,
+          "gross": 0.004067305945872811
+        }
+      },
+      "scattering_power_relative_error": 8.432698783213847e-05,
+      "recombination_power_relative_error": 8.405575160093422e-05
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 6.723205543260944e-05,
+      "phonon_projected_L1_relative_error": 0.00012567778806990353,
+      "phonon_projected_33_L1_relative_error": 0.0002564892375968913,
+      "point_powers": {
+        "scattering": {
+          "net": -3.0286139912969202e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -3.0284116351131133e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007400574000137267,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "scattering_power_relative_error": 6.681478207140713e-05,
+      "recombination_power_relative_error": 6.91846796277089e-05
+    },
+    {
+      "field": "depaired",
+      "profile": "hot_electrons",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 8.10609346610192e-06,
+      "phonon_projected_L1_relative_error": 0.00043662906819312363,
+      "phonon_projected_33_L1_relative_error": 0.0010786445802855756,
+      "point_powers": {
+        "scattering": {
+          "net": 3.474414769711871e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 3.474483939087455e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064819818487172,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "scattering_power_relative_error": 1.9908209056398555e-05,
+      "recombination_power_relative_error": 2.908565524657566e-07
+    },
+    {
+      "field": "depaired",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 0.001339292709254525,
+      "phonon_projected_L1_relative_error": 0.001770547413085414,
+      "phonon_projected_33_L1_relative_error": 0.0020085946825701526,
+      "point_powers": {
+        "scattering": {
+          "net": -1.4630396393115621e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -1.4610633607393709e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.0035276842214430975,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "scattering_power_relative_error": 0.0013508031628734465,
+      "recombination_power_relative_error": 0.0013398142204547694
+    },
+    {
+      "field": "depaired",
+      "profile": "nonthermal",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 0.001077712956818594,
+      "phonon_projected_L1_relative_error": 0.0015121305146592484,
+      "phonon_projected_33_L1_relative_error": 0.0018197258522299165,
+      "point_powers": {
+        "scattering": {
+          "net": -2.213862962207253e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -2.2101709485887084e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006185026604934497,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "scattering_power_relative_error": 0.001667679382857408,
+      "recombination_power_relative_error": 0.0011179488120887494
+    },
+    {
+      "field": "depaired",
+      "profile": "hot_electrons",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 2.001303716513761e-06,
+      "phonon_projected_L1_relative_error": 0.000188822914364266,
+      "phonon_projected_33_L1_relative_error": 0.001076991207816759,
+      "point_powers": {
+        "scattering": {
+          "net": 3.474414769711871e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 3.474432260782804e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064816078937983,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "scattering_power_relative_error": 5.0342495335022245e-06,
+      "recombination_power_relative_error": 7.171856466617532e-08
+    },
+    {
+      "field": "depaired",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 0.0003392144789015325,
+      "phonon_projected_L1_relative_error": 0.0005625172619498517,
+      "phonon_projected_33_L1_relative_error": 0.0015865976912403303,
+      "point_powers": {
+        "scattering": {
+          "net": -1.4630396393115621e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -1.462542147666281e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.003531216862946017,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "scattering_power_relative_error": 0.0003400397582632885,
+      "recombination_power_relative_error": 0.00033975066653641633
+    },
+    {
+      "field": "depaired",
+      "profile": "nonthermal",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 0.00026904020985727697,
+      "phonon_projected_L1_relative_error": 0.0006103864725599107,
+      "phonon_projected_33_L1_relative_error": 0.001457889193195991,
+      "point_powers": {
+        "scattering": {
+          "net": -2.213862962207253e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -2.212866286051423e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006190217632665236,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "scattering_power_relative_error": 0.0004501977641996959,
+      "recombination_power_relative_error": 0.000279597619982718
+    },
+    {
+      "field": "depaired",
+      "profile": "hot_electrons",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 4.900959485139912e-07,
+      "phonon_projected_L1_relative_error": 9.951917000486367e-05,
+      "phonon_projected_33_L1_relative_error": 0.0002461804930425957,
+      "point_powers": {
+        "scattering": {
+          "net": 3.474414769711871e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 3.4744188745940296e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064815163776915,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "scattering_power_relative_error": 1.1814600244792376e-06,
+      "recombination_power_relative_error": 1.8090026919990493e-08
+    },
+    {
+      "field": "depaired",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 8.169622024693203e-05,
+      "phonon_projected_L1_relative_error": 0.0001934870819700505,
+      "phonon_projected_33_L1_relative_error": 0.00038264525487984426,
+      "point_powers": {
+        "scattering": {
+          "net": -1.4630396393115621e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -1.4629187237789877e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.0035321291787979163,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "scattering_power_relative_error": 8.264679187459684e-05,
+      "recombination_power_relative_error": 8.148108769788253e-05
+    },
+    {
+      "field": "depaired",
+      "profile": "nonthermal",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 6.668181503784758e-05,
+      "phonon_projected_L1_relative_error": 0.00012358318558686312,
+      "phonon_projected_33_L1_relative_error": 0.00032891603019720466,
+      "point_powers": {
+        "scattering": {
+          "net": -2.213862962207253e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -2.213656321510756e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006191521194426788,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "scattering_power_relative_error": 9.333942526009082e-05,
+      "recombination_power_relative_error": 6.907234185535318e-05
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 1.174538172998967e-05,
+      "phonon_projected_L1_relative_error": 0.0005950958833589067,
+      "phonon_projected_33_L1_relative_error": 0.001664201248498305,
+      "point_powers": {
+        "scattering": {
+          "net": 7.001360239582118e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.00015586977964273538,
+          "gross": 0.00015740040648589462
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 7.001502951842682e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.0001558702501500051,
+          "gross": 0.00015740040648589462
+        }
+      },
+      "scattering_power_relative_error": 2.03835048733709e-05,
+      "recombination_power_relative_error": 3.0185919990831868e-06
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 0.0013318064990142148,
+      "phonon_projected_L1_relative_error": 0.0016151993277166172,
+      "phonon_projected_33_L1_relative_error": 0.0032266777252486804,
+      "point_powers": {
+        "scattering": {
+          "net": -0.00021187502864132817,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.0028721290163340814,
+          "gross": 0.0028728364123577097
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -0.00021159412009732586,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.002868304110290418,
+          "gross": 0.0028728364123577097
+        }
+      },
+      "scattering_power_relative_error": 0.0013258218573640665,
+      "recombination_power_relative_error": 0.0013317319737068155
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "phonon_nodes": 129,
+      "electronic_weighted_L1_relative_error": 0.0010184943750301209,
+      "phonon_projected_L1_relative_error": 0.0015153135566688643,
+      "phonon_projected_33_L1_relative_error": 0.002611024041284633,
+      "point_powers": {
+        "scattering": {
+          "net": 7.848503350925031e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.0005608660818338361,
+          "gross": 0.0006550090715618418
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 7.898679534980724e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.0005602662910742953,
+          "gross": 0.0006550090715618418
+        }
+      },
+      "scattering_power_relative_error": 0.006393089460779732,
+      "recombination_power_relative_error": 0.0010694010191873958
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 2.9839753632457237e-06,
+      "phonon_projected_L1_relative_error": 0.00028571961980986465,
+      "phonon_projected_33_L1_relative_error": 0.0010182267164398839,
+      "point_powers": {
+        "scattering": {
+          "net": 7.001360239582118e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.00015586977964273538,
+          "gross": 0.00015740040648589462
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 7.001395630018586e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.0001558698958019453,
+          "gross": 0.00015740040648589462
+        }
+      },
+      "scattering_power_relative_error": 5.054794390886657e-06,
+      "recombination_power_relative_error": 7.452323997800417e-07
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 0.0003374252951388876,
+      "phonon_projected_L1_relative_error": 0.0004441436471997889,
+      "phonon_projected_33_L1_relative_error": 0.0011818505269376568,
+      "point_powers": {
+        "scattering": {
+          "net": -0.00021187502864132817,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.0028721290163340814,
+          "gross": 0.0028728364123577097
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -0.00021180360749992134,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.002871160334408025,
+          "gross": 0.0028728364123577097
+        }
+      },
+      "scattering_power_relative_error": 0.0003370908873255389,
+      "recombination_power_relative_error": 0.00033726964232717063
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "phonon_nodes": 257,
+      "electronic_weighted_L1_relative_error": 0.00026209938326258076,
+      "phonon_projected_L1_relative_error": 0.0004437089573972677,
+      "phonon_projected_33_L1_relative_error": 0.0010578450789496226,
+      "point_powers": {
+        "scattering": {
+          "net": 7.848503350925031e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.0005608660818338361,
+          "gross": 0.0006550090715618418
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 7.860720115177118e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.0005607121609592376,
+          "gross": 0.0006550090715618418
+        }
+      },
+      "scattering_power_relative_error": 0.0015565724706796725,
+      "recombination_power_relative_error": 0.00027443427153809815
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 7.310601158170125e-07,
+      "phonon_projected_L1_relative_error": 6.552826425045344e-05,
+      "phonon_projected_33_L1_relative_error": 0.0003162161640688602,
+      "point_powers": {
+        "scattering": {
+          "net": 7.001360239582118e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.00015586977964273538,
+          "gross": 0.00015740040648589462
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 7.001369172430241e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.00015586980915078662,
+          "gross": 0.00015740040648589462
+        }
+      },
+      "scattering_power_relative_error": 1.275873232823574e-06,
+      "recombination_power_relative_error": 1.8931220225245977e-07
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 8.40011156485982e-05,
+      "phonon_projected_L1_relative_error": 0.00015146745041844654,
+      "phonon_projected_33_L1_relative_error": 0.0006443028264833248,
+      "point_powers": {
+        "scattering": {
+          "net": -0.00021187502864132817,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.0028721290163340814,
+          "gross": 0.0028728364123577097
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": -0.00021185760733064736,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.002871887301544157,
+          "gross": 0.0028728364123577097
+        }
+      },
+      "scattering_power_relative_error": 8.222446407453907e-05,
+      "recombination_power_relative_error": 8.415875072110596e-05
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "phonon_nodes": 513,
+      "electronic_weighted_L1_relative_error": 6.423966262170229e-05,
+      "phonon_projected_L1_relative_error": 0.00012171724399138404,
+      "phonon_projected_33_L1_relative_error": 0.0003044917651006642,
+      "point_powers": {
+        "scattering": {
+          "net": 7.848503350925031e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.0005608660818338361,
+          "gross": 0.0006550090715618418
+        }
+      },
+      "interpolated_powers": {
+        "scattering": {
+          "net": 7.851605946969635e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.000560828314438952,
+          "gross": 0.0006550090715618418
+        }
+      },
+      "scattering_power_relative_error": 0.00039531053321623804,
+      "recombination_power_relative_error": 6.73376338976124e-05
+    }
+  ],
+  "electronic_quadrature": [
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.603718493476338e-05,
+          "gross": 7.905180035133833e-05
+        },
+        "recombination": {
+          "net": 0.0001542612794580934,
+          "gross": 0.00015594632514278538
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00024660712256919614,
+          "gross": 0.00024701487130501977
+        },
+        "recombination": {
+          "net": -0.0028103459859525845,
+          "gross": 0.002811151127270536
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 1.247808417373026e-05,
+          "gross": 0.00011178129311628215
+        },
+        "recombination": {
+          "net": -0.0005708205446862713,
+          "gross": 0.0006415935778133734
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.59849689241083e-05,
+          "gross": 7.903495635597225e-05
+        },
+        "recombination": {
+          "net": 0.00015450346084431714,
+          "gross": 0.0001561885073043277
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00024286710258018406,
+          "gross": 0.00024327479134963426
+        },
+        "recombination": {
+          "net": -0.002807191007063153,
+          "gross": 0.0028079962155989503
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 1.2254728656849747e-05,
+          "gross": 0.00011900935954983497
+        },
+        "recombination": {
+          "net": -0.0005576407266503091,
+          "gross": 0.0006472110903970726
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.597231463669589e-05,
+          "gross": 7.902432074530348e-05
+        },
+        "recombination": {
+          "net": 0.0001545028717543429,
+          "gross": 0.00015618791819081647
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00024286660713793135,
+          "gross": 0.00024327429552945887
+        },
+        "recombination": {
+          "net": -0.0028071914912053977,
+          "gross": 0.0028079966997235535
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 1.2257633836734278e-05,
+          "gross": 0.00011900471085244258
+        },
+        "recombination": {
+          "net": -0.0005576634255444423,
+          "gross": 0.0006472040948488398
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.596130164315502e-05,
+          "gross": 7.901343076492289e-05
+        },
+        "recombination": {
+          "net": 0.00015442041328874232,
+          "gross": 0.00015610545956645225
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00024286660713801296,
+          "gross": 0.00024327429378039983
+        },
+        "recombination": {
+          "net": -0.002807191491205446,
+          "gross": 0.002807996699601623
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 1.2257527723108291e-05,
+          "gross": 0.00011900470406798597
+        },
+        "recombination": {
+          "net": -0.0005576631869382788,
+          "gross": 0.0006472043319638604
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.595421501836983e-05,
+          "gross": 7.900634705020434e-05
+        },
+        "recombination": {
+          "net": 0.00015445122646026658,
+          "gross": 0.00015613627272507473
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00024286660713781385,
+          "gross": 0.0002432742903524339
+        },
+        "recombination": {
+          "net": -0.002807191491205371,
+          "gross": 0.002807996699588154
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 1.225752053528225e-05,
+          "gross": 0.00011900470141286796
+        },
+        "recombination": {
+          "net": -0.0005576631851077469,
+          "gross": 0.0006472043340771979
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 2.6155259574869492e-05,
+          "gross": 2.7114942568091284e-05
+        },
+        "recombination": {
+          "net": 0.00017583306434265446,
+          "gross": 0.0001759819443770049
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -2.3809101365093237e-06,
+          "gross": 2.383585735271717e-06
+        },
+        "recombination": {
+          "net": -0.00406110719875506,
+          "gross": 0.0040611210336366005
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -3.025028380503885e-05,
+          "gross": 4.256294516638474e-05
+        },
+        "recombination": {
+          "net": -0.0007379365588986594,
+          "gross": 0.000880588673995096
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 2.6200560581142747e-05,
+          "gross": 2.7170265510170652e-05
+        },
+        "recombination": {
+          "net": 0.00017527222142227182,
+          "gross": 0.00017542110125916505
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -2.2321843596174007e-06,
+          "gross": 2.234860441636327e-06
+        },
+        "recombination": {
+          "net": -0.004067292153495675,
+          "gross": 0.004067305988692407
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -3.0284937275218484e-05,
+          "gross": 4.4139113247736355e-05
+        },
+        "recombination": {
+          "net": -0.0007401097027542725,
+          "gross": 0.0008814085768520135
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 2.6170802813561284e-05,
+          "gross": 2.7141076432303368e-05
+        },
+        "recombination": {
+          "net": 0.00017557612732746724,
+          "gross": 0.00017572500720282357
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -2.232144081321021e-06,
+          "gross": 2.234820161024326e-06
+        },
+        "recombination": {
+          "net": -0.00406729215182638,
+          "gross": 0.004067305987023167
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -3.02861237898897e-05,
+          "gross": 4.4138973060410544e-05
+        },
+        "recombination": {
+          "net": -0.0007401080080460008,
+          "gross": 0.0008814127769089728
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 2.6173037103231124e-05,
+          "gross": 2.7143344515283327e-05
+        },
+        "recombination": {
+          "net": 0.0001754182306836092,
+          "gross": 0.00017556711054092706
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -2.2321440813293593e-06,
+          "gross": 2.234820142533023e-06
+        },
+        "recombination": {
+          "net": -0.0040672921518255046,
+          "gross": 0.004067305987022268
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -3.0286143679131494e-05,
+          "gross": 4.4138973211172664e-05
+        },
+        "recombination": {
+          "net": -0.000740108231497753,
+          "gross": 0.0008814125518895765
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 2.617402163409532e-05,
+          "gross": 2.7144329619080758e-05
+        },
+        "recombination": {
+          "net": 0.00017546356064974416,
+          "gross": 0.00017561244051218097
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -2.2321440813607275e-06,
+          "gross": 2.234820130346078e-06
+        },
+        "recombination": {
+          "net": -0.004067292151820228,
+          "gross": 0.0040673059870170005
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -3.028614464848818e-05,
+          "gross": 4.4138973329984465e-05
+        },
+        "recombination": {
+          "net": -0.0007401081752946609,
+          "gross": 0.0008814126085558089
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.005983639811582e-05,
+          "gross": 7.280027138935449e-05
+        },
+        "recombination": {
+          "net": 0.0001561718303623882,
+          "gross": 0.00015770246153912806
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.0002162499584584238,
+          "gross": 0.0002165913102732965
+        },
+        "recombination": {
+          "net": -0.0028670022396476485,
+          "gross": 0.0028677096942653422
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 24,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 5.269696434058243e-06,
+          "gross": 9.994303204335175e-05
+        },
+        "recombination": {
+          "net": -0.0005748498099694766,
+          "gross": 0.0006479463936265894
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.002671243919984e-05,
+          "gross": 7.279780242256938e-05
+        },
+        "recombination": {
+          "net": 0.00015588105361375387,
+          "gross": 0.00015741168094612407
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.0002118759941010401,
+          "gross": 0.00021221739026956596
+        },
+        "recombination": {
+          "net": -0.0028721279762301197,
+          "gross": 0.0028728353729810356
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 48,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.85580454053505e-06,
+          "gross": 0.00010987706092349614
+        },
+        "recombination": {
+          "net": -0.0005608521511359474,
+          "gross": 0.0006550184088482116
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.00049261921901e-05,
+          "gross": 7.277777388516802e-05
+        },
+        "recombination": {
+          "net": 0.00015573211591884517,
+          "gross": 0.00015726274320926743
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.0002118755755588244,
+          "gross": 0.0002122169711959936
+        },
+        "recombination": {
+          "net": -0.0028721283962979557,
+          "gross": 0.0028728357930187477
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 96,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.848529045597244e-06,
+          "gross": 0.00010986834463558874
+        },
+        "recombination": {
+          "net": -0.000560865836828207,
+          "gross": 0.0006550092726744538
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.000480440812891e-05,
+          "gross": 7.277776033885913e-05
+        },
+        "recombination": {
+          "net": 0.00015583813722689873,
+          "gross": 0.0001573687644916088
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00021187557555890619,
+          "gross": 0.00021221697047302487
+        },
+        "recombination": {
+          "net": -0.0028721283962980103,
+          "gross": 0.002872835792988555
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 192,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.848440114427816e-06,
+          "gross": 0.00010986834130883036
+        },
+        "recombination": {
+          "net": -0.0005608658839599928,
+          "gross": 0.0006550092265165735
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.000875119782034e-05,
+          "gross": 7.278171037365402e-05
+        },
+        "recombination": {
+          "net": 0.00015579249882620213,
+          "gross": 0.0001573231260259613
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00021187557555870374,
+          "gross": 0.00021221696789588122
+        },
+        "recombination": {
+          "net": -0.0028721283962979327,
+          "gross": 0.002872835792939903
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_order": 384,
+      "count_cutoff": 12.0,
+      "powers": {
+        "scattering": {
+          "net": 7.848436205084306e-06,
+          "gross": 0.0001098683414745677
+        },
+        "recombination": {
+          "net": -0.0005608659997131906,
+          "gross": 0.0006550091100178746
+        }
+      }
+    }
+  ],
+  "native_electronic_quadrature": [
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": 7.597276962423099e-05,
+          "gross": 7.902474721894324e-05
+        },
+        "recombination": {
+          "net": 0.000154382788516903,
+          "gross": 0.00015606783478969678
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": -0.00024286589840971586,
+          "gross": 0.00024327358310547012
+        },
+        "recombination": {
+          "net": -0.002807192166408486,
+          "gross": 0.0028079973748051153
+        }
+      }
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": 1.2257639354775853e-05,
+          "gross": 0.00011900471572638621
+        },
+        "recombination": {
+          "net": -0.0005576627308484824,
+          "gross": 0.0006472047753206177
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": 2.6208943953174263e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": -2.2321931931196122e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      }
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": -3.0286139912969202e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      }
+    },
+    {
+      "field": "depaired",
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": 3.474414769711871e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      }
+    },
+    {
+      "field": "depaired",
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": -1.4630396393115621e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      }
+    },
+    {
+      "field": "depaired",
+      "amplitude": 0.72,
+      "gamma": 0.2,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": -2.213862962207253e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "hot_electrons",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": 7.001360239582118e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.00015586977964273538,
+          "gross": 0.00015740040648589462
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "phonon_bubble",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": -0.00021187502864132817,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.0028721290163340814,
+          "gross": 0.0028728364123577097
+        }
+      }
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "eta": 1e-08,
+      "profile": "nonthermal",
+      "count_nodes": 180,
+      "last_count_node": 11.947813057034343,
+      "powers": {
+        "scattering": {
+          "net": 7.848503350925031e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.0005608660818338361,
+          "gross": 0.0006550090715618418
+        }
+      }
+    }
+  ],
+  "infrared_cutoff": [
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": 2.6208943978178496e-05,
+          "gross": 2.717917719366878e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13401,
+        "active_recombination": 12155,
+        "zero_coupling_events": 6844,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6844,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": -2.2321931931196127e-06,
+          "gross": 2.2348692772838935e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13401,
+        "active_recombination": 12155,
+        "zero_coupling_events": 6844,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6844,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": -3.028613991031052e-05,
+          "gross": 4.413896854625757e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13401,
+        "active_recombination": 12155,
+        "zero_coupling_events": 6844,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6844,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": 2.6208942854903883e-05,
+          "gross": 2.7179142656129373e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 6913,
+        "active_recombination": 12155,
+        "zero_coupling_events": 13332,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 13332,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": -2.2321931931196122e-06,
+          "gross": 2.234868966123871e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 6913,
+        "active_recombination": 12155,
+        "zero_coupling_events": 13332,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 13332,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": -3.0286140426658814e-05,
+          "gross": 4.413896038629758e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 6913,
+        "active_recombination": 12155,
+        "zero_coupling_events": 13332,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 13332,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": 2.6208943953174263e-05,
+          "gross": 2.7179175625025412e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 7261,
+        "active_recombination": 12155,
+        "zero_coupling_events": 12984,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12984,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": -2.2321931931196122e-06,
+          "gross": 2.2348692579507277e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 7261,
+        "active_recombination": 12155,
+        "zero_coupling_events": 12984,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12984,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": -3.0286139912969202e-05,
+          "gross": 4.4138968425161884e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 7261,
+        "active_recombination": 12155,
+        "zero_coupling_events": 12984,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12984,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": 2.620894397711618e-05,
+          "gross": 2.717917707065578e-05
+        },
+        "recombination": {
+          "net": 0.00017544678072319584,
+          "gross": 0.00017559566059626298
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 7966,
+        "active_recombination": 12155,
+        "zero_coupling_events": 12279,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12279,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": -2.2321931931196122e-06,
+          "gross": 2.234869275586161e-06
+        },
+        "recombination": {
+          "net": -0.004067292110673256,
+          "gross": 0.004067305945872811
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 7966,
+        "active_recombination": 12155,
+        "zero_coupling_events": 12279,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12279,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": -3.028613991038207e-05,
+          "gross": 4.413896853761554e-05
+        },
+        "recombination": {
+          "net": -0.0007401086041903973,
+          "gross": 0.0008814121561418846
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.0, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 7966,
+        "active_recombination": 12155,
+        "zero_coupling_events": 12279,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12279,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": 3.47441477264464e-05,
+          "gross": 3.606760900777042e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13206,
+        "active_recombination": 12273,
+        "zero_coupling_events": 6921,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6921,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": -1.463039639311562e-05,
+          "gross": 1.4649714679113408e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13206,
+        "active_recombination": 12273,
+        "zero_coupling_events": 6921,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6921,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": -2.2138629620243356e-05,
+          "gross": 5.405948496413544e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13206,
+        "active_recombination": 12273,
+        "zero_coupling_events": 6921,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6921,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": 3.4744145867690815e-05,
+          "gross": 3.6067557276097005e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10210,
+        "active_recombination": 12273,
+        "zero_coupling_events": 9917,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 9917,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": -1.4630396393115621e-05,
+          "gross": 1.4649712038727528e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10210,
+        "active_recombination": 12273,
+        "zero_coupling_events": 9917,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 9917,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": -2.2138630124790613e-05,
+          "gross": 5.40594741056848e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10210,
+        "active_recombination": 12273,
+        "zero_coupling_events": 9917,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 9917,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": 3.474414769711871e-05,
+          "gross": 3.606760716538666e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10891,
+        "active_recombination": 12273,
+        "zero_coupling_events": 9236,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 9236,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": -1.4630396393115621e-05,
+          "gross": 1.4649714503194896e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10891,
+        "active_recombination": 12273,
+        "zero_coupling_events": 9236,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 9236,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": -2.213862962207253e-05,
+          "gross": 5.405948473599548e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10891,
+        "active_recombination": 12273,
+        "zero_coupling_events": 9236,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 9236,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": 3.474414772574334e-05,
+          "gross": 3.60676089258716e-05
+        },
+        "recombination": {
+          "net": 0.00017064814855073955,
+          "gross": 0.0001711241465219579
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 11463,
+        "active_recombination": 12273,
+        "zero_coupling_events": 8664,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 8664,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": -1.4630396393115621e-05,
+          "gross": 1.4649714670517305e-05
+        },
+        "recombination": {
+          "net": -0.003532417003977603,
+          "gross": 0.0035325243430248533
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 11463,
+        "active_recombination": 12273,
+        "zero_coupling_events": 8664,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 8664,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "depaired",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": -2.2138629620274453e-05,
+          "gross": 5.40594849539367e-05
+        },
+        "recombination": {
+          "net": -0.0006191948886837051,
+          "gross": 0.0007497355960842388
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.72, Gamma=0.2, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 11463,
+        "active_recombination": 12273,
+        "zero_coupling_events": 8664,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 8664,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": 7.001360251758814e-05,
+          "gross": 7.278643033703425e-05
+        },
+        "recombination": {
+          "net": 0.00015586977964482222,
+          "gross": 0.0001574004066110049
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13042,
+        "active_recombination": 12627,
+        "zero_coupling_events": 6731,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6731,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": -0.00021187502864132817,
+          "gross": 0.0002122164248944807
+        },
+        "recombination": {
+          "net": -0.0028721290163340814,
+          "gross": 0.002872836412457741
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13042,
+        "active_recombination": 12627,
+        "zero_coupling_events": 6731,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6731,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.0,
+      "powers": {
+        "scattering": {
+          "net": 7.848503362013289e-06,
+          "gross": 0.00010986831848439696
+        },
+        "recombination": {
+          "net": -0.000560866082057933,
+          "gross": 0.0006550090717945014
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.0,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 13042,
+        "active_recombination": 12627,
+        "zero_coupling_events": 6731,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 6731,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": 7.001360055187416e-05,
+          "gross": 7.278636851306933e-05
+        },
+        "recombination": {
+          "net": 0.00015586977957926236,
+          "gross": 0.00015740040463740115
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9145,
+        "active_recombination": 8973,
+        "zero_coupling_events": 14282,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 14282,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": -0.00021187502864132815,
+          "gross": 0.00021221639323695644
+        },
+        "recombination": {
+          "net": -0.002872129016334081,
+          "gross": 0.0028728364108824007
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9145,
+        "active_recombination": 8973,
+        "zero_coupling_events": 14282,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 14282,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.02,
+      "powers": {
+        "scattering": {
+          "net": 7.848502591104527e-06,
+          "gross": 0.00010986829555361663
+        },
+        "recombination": {
+          "net": -0.0005608660785867368,
+          "gross": 0.0006550090681895609
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.02,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9145,
+        "active_recombination": 8973,
+        "zero_coupling_events": 14282,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 14282,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": 7.001360239582118e-05,
+          "gross": 7.278642329759854e-05
+        },
+        "recombination": {
+          "net": 0.00015586977964273538,
+          "gross": 0.00015740040648589462
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9901,
+        "active_recombination": 9673,
+        "zero_coupling_events": 12826,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12826,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": -0.00021187502864132817,
+          "gross": 0.00021221642086900272
+        },
+        "recombination": {
+          "net": -0.0028721290163340814,
+          "gross": 0.0028728364123577097
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9901,
+        "active_recombination": 9673,
+        "zero_coupling_events": 12826,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12826,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.01,
+      "powers": {
+        "scattering": {
+          "net": 7.848503350925031e-06,
+          "gross": 0.0001098683161599455
+        },
+        "recombination": {
+          "net": -0.0005608660818338361,
+          "gross": 0.0006550090715618418
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.01,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 9901,
+        "active_recombination": 9673,
+        "zero_coupling_events": 12826,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12826,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": 7.001360251568139e-05,
+          "gross": 7.278643009739633e-05
+        },
+        "recombination": {
+          "net": 0.00015586977964475942,
+          "gross": 0.00015740040660342243
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10301,
+        "active_recombination": 10010,
+        "zero_coupling_events": 12089,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12089,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": -0.00021187502864132815,
+          "gross": 0.00021221642470909042
+        },
+        "recombination": {
+          "net": -0.0028721290163340814,
+          "gross": 0.002872836412451676
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10301,
+        "active_recombination": 10010,
+        "zero_coupling_events": 12089,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12089,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "infrared_cutoff": 0.005,
+      "powers": {
+        "scattering": {
+          "net": 7.848503361790304e-06,
+          "gross": 0.00010986831837703582
+        },
+        "recombination": {
+          "net": -0.000560866082044226,
+          "gross": 0.000655009071780273
+        }
+      },
+      "metadata": {
+        "schema": "pysnspd.electron_phonon_events.v1",
+        "spectrum_label": "R2 fixed-count catalogue: delta=0.35, Gamma=0.65, eta=1e-08",
+        "phonon_label": "point-rate-only compact cutoff diagnostic",
+        "rate_prefactor": 1.0,
+        "rate_prefactor_convention": "8*pi*Delta0*t_ref/hbar",
+        "electron_capacity": "4*w_i",
+        "phonon_capacity": "(g_ph/N0)*d(Omega/Delta0)",
+        "energy_unit": "N0*Delta0^2",
+        "coupling_support": [
+          0.005,
+          4.0
+        ],
+        "candidate_scattering": 16110,
+        "candidate_recombination": 16290,
+        "active_scattering": 10301,
+        "active_recombination": 10010,
+        "zero_coupling_events": 12089,
+        "zero_coherence_events": 0,
+        "outside_compact_coupling_events": 12089,
+        "phonon_interpolation": "barycentric stoichiometry and geometric Bose activities; no occupation clipping"
+      }
+    }
+  ],
+  "status": "PENDING_INDEPENDENT_CONTINUOUS_REFERENCE_AND_DYNAMICAL_ADJUDICATION",
+  "runtime_seconds": 0.49171055713668466
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "pysnspd.stage2.smooth-time-scenarios.v1",
+  "steps": [
+    10,
+    20,
+    40
+  ],
+  "bgk": {
+    "field": [
+      0.72,
+      0.2
+    ],
+    "initial": "0.4*FD(.15)+0.6*FD(.5)",
+    "tau": 0.7,
+    "duration": 1.4
+  },
+  "escape": {
+    "initial": "Bose(.35)",
+    "bath": 0.12,
+    "tau": 15.0,
+    "duration": 30.0,
+    "phonon_nodes": 65,
+    "synthetic_Debye": {
+      "cutoff": 4.0,
+      "IR": 0.005,
+      "lambda": 0.1,
+      "atom_density": "10*N0*Delta0"
+    }
+  },
+  "RK4_expected_error_ratio": 16.0,
+  "allowed_ratio": [
+    12.0,
+    20.0
+  ],
+  "roundoff_policy": "100 machine epsilons times max(1, exact weighted-population norm)",
+  "sources": {
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/coupled_cells.py": "5d3d4719c8cae922d4778a7c974f9f91ecef4a5c6eee6ee3d712949eb8988c67",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+  },
+  "RK4_function_sha256": "9b160fc1062116f6e8c8d2594f622277f5a7fd5a0c569c66e92f8a9054055062",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "runner_sha256": "647ab15327a846dec177b7d0da68e05473f211c24ac335201e8e9f5a5c9da0b6"
+}

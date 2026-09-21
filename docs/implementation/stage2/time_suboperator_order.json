@@ -1,0 +1,185 @@
+{
+  "schema": "pysnspd.stage2.smooth-time-order.v1",
+  "status": "PASS",
+  "gates": {
+    "BGK_order": true,
+    "escape_order": true,
+    "escape_ledger_order": true,
+    "BGK_above_roundoff": true,
+    "escape_above_roundoff": true,
+    "BGK_valid_stages": true,
+    "escape_valid_stages": true,
+    "BGK_energy": true,
+    "escape_energy": true
+  },
+  "BGK": {
+    "field": [
+      0.72,
+      0.2
+    ],
+    "tau": 0.7,
+    "duration": 1.4,
+    "energy_matched_temperature": 0.40341805742604386,
+    "exact_solution": "p(t)=f_FD(T_equal_energy)+(p(0)-f_FD(T_equal_energy))*exp(-t/tau_kin)",
+    "initial_relaxing_population_norm": 0.11393802207370271,
+    "roundoff_floor": 2.220446049250313e-14,
+    "rows": [
+      {
+        "steps": 10,
+        "time_step": 0.13999999999999999,
+        "weighted_L1_error": 4.859677564423233e-07,
+        "relative_to_initial_relaxing_population": 4.265193897503038e-06,
+        "maximum_energy_drift_scaled": 1.1102230246251565e-16,
+        "maximum_equivalent_temperature_drift": 1.1102230246251565e-16,
+        "minimum_stage_population": 3.3681131237609877e-12,
+        "maximum_stage_population": 0.3066472248135455,
+        "RHS_calls": 40
+      },
+      {
+        "steps": 20,
+        "time_step": 0.06999999999999999,
+        "weighted_L1_error": 2.7935914261982475e-08,
+        "relative_to_initial_relaxing_population": 2.4518517834118325e-07,
+        "maximum_energy_drift_scaled": 3.3306690738754696e-16,
+        "maximum_equivalent_temperature_drift": 1.1102230246251565e-16,
+        "minimum_stage_population": 3.3706062969250944e-12,
+        "maximum_stage_population": 0.30664076969391757,
+        "RHS_calls": 80
+      },
+      {
+        "steps": 40,
+        "time_step": 0.034999999999999996,
+        "weighted_L1_error": 1.6746144710488484e-09,
+        "relative_to_initial_relaxing_population": 1.469759120415129e-08,
+        "maximum_energy_drift_scaled": 2.220446049250313e-16,
+        "maximum_equivalent_temperature_drift": 1.1102230246251565e-16,
+        "minimum_stage_population": 3.3708777928644507e-12,
+        "maximum_stage_population": 0.306640066758882,
+        "RHS_calls": 160
+      }
+    ],
+    "error_reduction_ratios": [
+      17.395806411951543,
+      16.68199740593761
+    ],
+    "observed_orders": [
+      4.120667653957678,
+      4.060220133976776
+    ],
+    "passes_RK4_reduction_with_25_percent_margin": true,
+    "above_roundoff_floor": true,
+    "valid_populations_at_every_stage": true,
+    "energy_conservation_pass": true
+  },
+  "escape": {
+    "tau": 15.0,
+    "duration": 30.0,
+    "initial_temperature_bar": 0.35,
+    "bath_temperature_bar": 0.12,
+    "exact_solution": "n(t)=n_bath+(n(0)-n_bath)*exp(-t/tau_escape); U_escape=U_ph(0)-U_ph(t)",
+    "implementation_scope": "The isolated escape term and escaping-energy ledger from CoupledCellSystem.rhs; complete coupled dynamics are not invoked.",
+    "material": {
+      "status": "SYNTHETIC_ANALYTIC_NOT_NBN",
+      "label": "RK4 order: synthetic Debye",
+      "scales": {
+        "delta0_J": 2.1065301756880164e-22,
+        "N0_per_J_m3": 5.174479102201753e+46,
+        "Tc_K": 8.65,
+        "Tb_K": 1.8309043144388033,
+        "t_ref_ps": 1.0,
+        "energy_density_scale_J_m3": 2296.159257908026,
+        "temperature_convention": "temperature_bar = k_B T / Delta0",
+        "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+        "time_convention": "dimensionless time = physical time / t_ref"
+      },
+      "cutoff_energy_bar": 4.0,
+      "infrared_cutoff_bar": 0.005,
+      "atom_density_m3": 1.0900196372255028e+26,
+      "lambda_eph_full_Debye": 0.1,
+      "lambda_eph_retained": 0.09999984375,
+      "modes_per_m3_retained": 3.270058905289675e+26,
+      "infrared_omitted_fractions": {
+        "lambda": 1.5625e-06,
+        "modes": 1.9531250000000003e-09,
+        "first_DOS_energy_moment": 2.44140625e-12
+      },
+      "support_policy": "compact declared interval, endpoints included; zero outside is a model cutoff, not extrapolation",
+      "normalization": "gSI=9*n_atom*Omega^2/OmegaD^3; gbar=gSI/N0; measure dOmega_bar"
+    },
+    "roundoff_floor": 2.220446049250313e-14,
+    "rows": [
+      {
+        "steps": 10,
+        "time_step": 3.0,
+        "weighted_L1_error": 5.928753076823702e-07,
+        "relative_to_initial_relaxing_population": 4.265193897408481e-06,
+        "escaped_energy_absolute_error": 5.745009339086504e-07,
+        "escaped_energy_relative_error": 4.932771992063262e-06,
+        "maximum_energy_ledger_residual_scaled": 0.0,
+        "minimum_stage_population": 1.4712103552268976e-06,
+        "RHS_calls": 40
+      },
+      {
+        "steps": 20,
+        "time_step": 1.5,
+        "weighted_L1_error": 3.408150751520255e-08,
+        "relative_to_initial_relaxing_population": 2.4518517803780977e-07,
+        "escaped_energy_absolute_error": 3.30252544616938e-08,
+        "escaped_energy_relative_error": 2.835609841938196e-07,
+        "maximum_energy_ledger_residual_scaled": 2.7755575615628914e-17,
+        "minimum_stage_population": 1.4723431570233659e-06,
+        "RHS_calls": 80
+      },
+      {
+        "steps": 40,
+        "time_step": 0.75,
+        "weighted_L1_error": 2.0430112348828768e-09,
+        "relative_to_initial_relaxing_population": 1.469759144704978e-08,
+        "escaped_energy_absolute_error": 1.979694255749287e-09,
+        "escaped_energy_relative_error": 1.699802350392936e-08,
+        "maximum_energy_ledger_residual_scaled": 2.7755575615628914e-17,
+        "minimum_stage_population": 1.4724665143144944e-06,
+        "RHS_calls": 160
+      }
+    ],
+    "error_reduction_ratios": [
+      17.395806433090133,
+      16.68199710960297
+    ],
+    "observed_orders": [
+      4.120667655710775,
+      4.060220108349117
+    ],
+    "passes_RK4_reduction_with_25_percent_margin": true,
+    "escaped_energy_order": {
+      "error_reduction_ratios": [
+        17.39580642974357,
+        16.681997417421506
+      ],
+      "observed_orders": [
+        4.120667655433233,
+        4.060220134969927
+      ],
+      "passes_RK4_reduction_with_25_percent_margin": true
+    },
+    "above_roundoff_floor": true,
+    "valid_populations_at_every_stage": true,
+    "energy_ledger_pass": true
+  },
+  "scenario_sha256": "04f50c04f718d2facbd36a63bc67889a3d04690db14c1eec47f9f1d038c76da3",
+  "sources": {
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/coupled_cells.py": "5d3d4719c8cae922d4778a7c974f9f91ecef4a5c6eee6ee3d712949eb8988c67",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+  },
+  "RK4_function_sha256": "9b160fc1062116f6e8c8d2594f622277f5a7fd5a0c569c66e92f8a9054055062",
+  "runner_sha256": "647ab15327a846dec177b7d0da68e05473f211c24ac335201e8e9f5a5c9da0b6",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "runtime_seconds": 0.08814031025394797,
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.39"
+}

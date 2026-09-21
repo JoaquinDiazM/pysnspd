@@ -33,6 +33,10 @@ outputs/
 !docs/implementation/stage1/catalogs/*.npz
 !docs/implementation/stage1_r2/catalogs/*.npz
 
+# Reviewed one/two-cell stage-2 diagnostics, including incomplete initial states.
+!docs/implementation/stage2/pilots/*.npz
+!docs/implementation/stage2/trajectories/*.npz
+
 # Local / temporary machine configs.
 # Keep the official Geminga baseline tracked because it now encodes the
 # pyTDGL boundary resampling that removes Voronoi warnings for the PRE mesh.

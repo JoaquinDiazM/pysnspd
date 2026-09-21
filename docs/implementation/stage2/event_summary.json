@@ -1,0 +1,265 @@
+{
+  "schema": "pysnspd.stage2.event_evidence_summary.v1",
+  "status": "STATIC_EVIDENCE_ONLY_STAGE2_NOT_CLOSED",
+  "limitations": [
+    "The continuous electronic reference and final three-grid comparison use IR=.01; the selected dynamical candidate uses .005.",
+    "Selected IR=.005 has isolated phonon interpolation and inner-quadrature checks; its exact same-cut independent continuous comparison is still pending.",
+    "The weak BCS error against ideal eta0 has a small nondecreasing floor; finite-eta reference work is separate and must not be called electronic-quadrature convergence.",
+    "A temporal reference elsewhere in stage2 exhausted its bounded run; no complete stage2 admission or production promotion follows from these static checks."
+  ],
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "kernel_sha256": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+  "factory_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+  "electronic_weak_maxima": [
+    {
+      "refinement": 1,
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "representation": "point_activities",
+      "relative_L1": 0.0001947482612437732
+    },
+    {
+      "refinement": 1,
+      "field": "normal",
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "representation": "native_pauli_point_bose",
+      "relative_L1": 0.0002913330189317995
+    },
+    {
+      "refinement": 1,
+      "field": "normal",
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "representation": "full_operator",
+      "relative_L1": 0.0002993707921886643
+    },
+    {
+      "refinement": 2,
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "representation": "point_activities",
+      "relative_L1": 0.00020131627442725162
+    },
+    {
+      "refinement": 2,
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "representation": "native_pauli_point_bose",
+      "relative_L1": 0.0002013116956422361
+    },
+    {
+      "refinement": 2,
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "representation": "full_operator",
+      "relative_L1": 0.00028280972923528974
+    },
+    {
+      "refinement": 4,
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "representation": "point_activities",
+      "relative_L1": 0.00021008852078348013
+    },
+    {
+      "refinement": 4,
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "representation": "native_pauli_point_bose",
+      "relative_L1": 0.00021008764269030112
+    },
+    {
+      "refinement": 4,
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "representation": "full_operator",
+      "relative_L1": 0.0002915110763925293
+    }
+  ],
+  "phonon_interpolation_maxima": [
+    {
+      "nodes": 129,
+      "maxima": {
+        "power_relative_error": {
+          "field": "gapless",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "power_relative_error": 0.015391872761289851
+        },
+        "gross_power_relative_error": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "gross_power_relative_error": 0.003183486480502342
+        },
+        "electronic_rhs_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "scattering",
+          "electronic_rhs_relative_L1": 0.00318808942769337
+        },
+        "phonon_17_hats_relative_L1": {
+          "field": "gapped",
+          "profile": "nonthermal",
+          "channel": "recombination",
+          "phonon_17_hats_relative_L1": 0.004515383256457063
+        },
+        "phonon_33_hats_relative_L1": {
+          "field": "depaired",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_33_hats_relative_L1": 0.023094686227066046
+        }
+      }
+    },
+    {
+      "nodes": 257,
+      "maxima": {
+        "power_relative_error": {
+          "field": "gapless",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "power_relative_error": 0.0038642907288417936
+        },
+        "gross_power_relative_error": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "scattering",
+          "gross_power_relative_error": 0.0008007793973374263
+        },
+        "electronic_rhs_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "scattering",
+          "electronic_rhs_relative_L1": 0.0008022796332454959
+        },
+        "phonon_17_hats_relative_L1": {
+          "field": "normal",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "phonon_17_hats_relative_L1": 0.0013051110569979548
+        },
+        "phonon_33_hats_relative_L1": {
+          "field": "normal",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "phonon_33_hats_relative_L1": 0.002491105447030814
+        }
+      }
+    },
+    {
+      "nodes": 513,
+      "maxima": {
+        "power_relative_error": {
+          "field": "gapless",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "power_relative_error": 0.000969205725946849
+        },
+        "gross_power_relative_error": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "gross_power_relative_error": 0.00020067746868613926
+        },
+        "electronic_rhs_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "electronic_rhs_relative_L1": 0.00020092196077998718
+        },
+        "phonon_17_hats_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_17_hats_relative_L1": 0.0003542435665165048
+        },
+        "phonon_33_hats_relative_L1": {
+          "field": "gapped",
+          "profile": "nonthermal",
+          "channel": "recombination",
+          "phonon_33_hats_relative_L1": 0.0012780018914521915
+        }
+      }
+    },
+    {
+      "nodes": 1025,
+      "maxima": {
+        "power_relative_error": {
+          "field": "gapless",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "power_relative_error": 0.00024264039759069026
+        },
+        "gross_power_relative_error": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "gross_power_relative_error": 5.021333560485369e-05
+        },
+        "electronic_rhs_relative_L1": {
+          "field": "gapless",
+          "profile": "phonon_bubble",
+          "channel": "scattering",
+          "electronic_rhs_relative_L1": 5.0309504446311324e-05
+        },
+        "phonon_17_hats_relative_L1": {
+          "field": "depaired",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_17_hats_relative_L1": 0.00010211710014837729
+        },
+        "phonon_33_hats_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_33_hats_relative_L1": 0.00038832880884626504
+        }
+      }
+    }
+  ],
+  "selected_inner_quadrature_maximum_relative_L1": 8.006813886207539e-07,
+  "selected_costs": [
+    {
+      "field": "normal",
+      "native_count_nodes": 630,
+      "active_events": 984740,
+      "network_construction_seconds": 0.0978797827847302,
+      "rhs_milliseconds_five_queries": 45.395961962640285
+    },
+    {
+      "field": "gapped",
+      "native_count_nodes": 630,
+      "active_events": 974588,
+      "network_construction_seconds": 0.07986241020262241,
+      "rhs_milliseconds_five_queries": 42.17484798282385
+    },
+    {
+      "field": "gapless",
+      "native_count_nodes": 630,
+      "active_events": 982310,
+      "network_construction_seconds": 0.099589753895998,
+      "rhs_milliseconds_five_queries": 42.258727829903364
+    }
+  ],
+  "three_grid_runtime_seconds": 229.70173495681956,
+  "selected_static_runtime_seconds": 22.579064907040447,
+  "artifact_sha256": {
+    "complementary_event_final.json": "20a200bd81b50aac86d55b3fc39c2fbc48fe1edd95b67e9bf99fcfd6664957f1",
+    "projected_phonon_convergence.json": "456b3490ecc3d3e8e11346392d4d893df8269704a7d54654201f51e89e7f92d0",
+    "projected_phonon_1025.json": "1c77a22257ac2c0eaf262b9cc76372e2b9ca5a1b4d9fdd9daba21cf678447dd7",
+    "selected_event_measurements.json": "8f358d077a48193b6f725c40827e48f16315916198aaca1fffe72cac407e08b1",
+    "weak_reference_final_comparison_1.json": "c6c413ac714e448313c00f97970f29d7e257f0db0908de5efbf8412f7fea68f4",
+    "weak_reference_final_comparison_2.json": "d05107633d4988f71277d4ea346d9caebea337c7b14032e5d98002be41efa786",
+    "weak_reference_final_comparison_4.json": "ea8e4632f8c102ac7be4d7d4a04177fd32da686b06db061844bf8cf7a0c22313"
+  },
+  "script_sha256": "afa92c6d1b5e66a671ea285403c7412ebf0e1bdd99e0d6aa32fcb86d7b21100c"
+}

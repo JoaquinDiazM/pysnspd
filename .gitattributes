@@ -1,5 +1,6 @@
 # Published document bundles carry SHA-256 manifests. Preserve their exact bytes
 # across Windows/Linux checkouts, including historical source and QA records.
+docs/GEMINGA_COMMANDS.md -text
 docs/modelo_v0_2/** -text
 docs/modelo_v0_3/** -text
 docs/modelo_v0_4/** -text
@@ -13,6 +14,8 @@ docs/implementation/stage1_r2/** -text
 sandbox/stage1_catalog_r2/** -text
 docs/implementation/stage1_closure/** -text
 sandbox/stage1_closure/** -text
+docs/implementation/stage2/** -text
+sandbox/stage2_cells/** -text
 pysnspd/experimental/** -text
 tests/test_experimental_*.py -text
 *.pdf binary

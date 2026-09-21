@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "scope": "Synthetic assessment-tool regressions only, no physical dynamics claim",
+  "gates": {
+    "refined_time_error_passes": true,
+    "interior_error_rejected": true,
+    "equal_final_values_do_not_mask_interior": true,
+    "zero_reference_nonroundoff_difference_is_undefined": true,
+    "zero_reference_roundoff_difference_is_zero": true,
+    "physical_parameter_mismatch_rejected": true,
+    "equal_capacities_wrong_energy_axis_rejected": true,
+    "NPZ_hash_tampering_rejected": true
+  },
+  "good_finest_error": 2.4038461539259533e-06,
+  "good_reduction": [
+    15.999999999964471,
+    15.99999999950262
+  ],
+  "bad_interior_error": 0.015384615384615398,
+  "assessor_sha256": "14f2c9282cf0aa84787e73110b3e5027bb2db30b5bc07fcef1ce46a96fd5c64b",
+  "selfcheck_sha256": "cf18dea15fa60b903f05f515c242f85dd5cf1755a32e46054bd7f012c75312b0"
+}
