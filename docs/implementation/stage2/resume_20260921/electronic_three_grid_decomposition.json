@@ -1,0 +1,1593 @@
+{
+  "schema": "pysnspd.stage2.electronic_three_grid_decomposition.v1",
+  "host": "geminga",
+  "status": "PASS_SEPARATED_ELECTRONIC_REFINEMENT",
+  "scope": "Historical IR=.01 electronic quadrature refined separately from fixed phonon interpolation and explicit BCS regulator bias; not a claim that combined ideal-limit errors decrease",
+  "selected_configuration_limitation": "The selected IR=.005/630/1025 static comparison is separately measured. This audit does not create three electronic grids at .005.",
+  "comparisons": [
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.082196004692882e-05,
+      "combined_vs_ideal_error": 9.186335073118186e-06,
+      "combined_vs_matched_reference_error": 9.186335073118186e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.3850961371719224e-06,
+        "pauli_reconstruction": 1.0816212834818679e-05,
+        "electronic_quadrature_vs_matched_reference": 4.312751438447726e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 1.3421280429323723e-08,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.2167810927804298e-05,
+      "combined_vs_ideal_error": 1.1316542852207186e-05,
+      "combined_vs_matched_reference_error": 1.1316542852207186e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.788899301820183e-07,
+        "pauli_reconstruction": 1.215685350986778e-05,
+        "electronic_quadrature_vs_matched_reference": 5.38925307140975e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 6.535244028865866e-09,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 4.4239944632366043e-05,
+      "combined_vs_ideal_error": 0.00012684431546290944,
+      "combined_vs_matched_reference_error": 0.00012684431546290944,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.260908445420292e-05,
+        "pauli_reconstruction": 4.423769921367812e-05,
+        "electronic_quadrature_vs_matched_reference": 1.1146927485581875e-07,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 6.402963761210469e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 2.0590299094724046e-05,
+      "combined_vs_ideal_error": 0.00010312976614712564,
+      "combined_vs_matched_reference_error": 0.00010312976614712564,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.253952618114251e-05,
+        "pauli_reconstruction": 2.0590076478321893e-05,
+        "electronic_quadrature_vs_matched_reference": 6.859453746504262e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 8.077884252569866e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 0.0002913330189317995,
+      "combined_vs_ideal_error": 0.00029937079218866436,
+      "combined_vs_matched_reference_error": 0.00029937079218866436,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.1620124759837582e-05,
+        "pauli_reconstruction": 0.00029133196358434917,
+        "electronic_quadrature_vs_matched_reference": 2.1658838752426014e-07,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 4.141200327609171e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 2.7191025411008026e-05,
+      "combined_vs_ideal_error": 5.5764161147240805e-05,
+      "combined_vs_matched_reference_error": 5.5764161147240805e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.275363481170287e-05,
+        "pauli_reconstruction": 2.719058532537493e-05,
+        "electronic_quadrature_vs_matched_reference": 7.037834463478078e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 9.3717172487599e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 1.5619601371497848e-06,
+      "combined_vs_ideal_error": 0.00010349545880855367,
+      "combined_vs_matched_reference_error": 2.2820474033831054e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.5723680437112433e-06,
+        "pauli_reconstruction": 1.5244258327652285e-06,
+        "electronic_quadrature_vs_matched_reference": 5.3739257084235383e-08,
+        "explicit_bcs_regulator_bias": 0.00010124461115131793
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 8.206926904133788e-08,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 2.550894772081407e-06,
+      "combined_vs_ideal_error": 0.0001572790667348231,
+      "combined_vs_matched_reference_error": 2.5486436661651793e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.2531719179460517e-09,
+        "pauli_reconstruction": 2.0878189797623945e-06,
+        "electronic_quadrature_vs_matched_reference": 5.25279106627336e-07,
+        "explicit_bcs_regulator_bias": 0.0001547388897634639
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 2.5352341886503263e-07,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 3.0478437257867654e-07,
+      "combined_vs_ideal_error": 0.00027553767272207527,
+      "combined_vs_matched_reference_error": 8.21569725261044e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.205136038414067e-05,
+        "pauli_reconstruction": 8.710897582571419e-08,
+        "electronic_quadrature_vs_matched_reference": 2.7320403610569665e-07,
+        "explicit_bcs_regulator_bias": 0.00019463822638091883
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 3.279280394889309e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 1.2636429497049246e-07,
+      "combined_vs_ideal_error": 0.00019248304168910743,
+      "combined_vs_matched_reference_error": 8.292484847994882e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.280501537181353e-05,
+        "pauli_reconstruction": 1.1977329201557884e-07,
+        "electronic_quadrature_vs_matched_reference": 5.028197418593206e-08,
+        "explicit_bcs_regulator_bias": 0.00010957576876847106
+      },
+      "vector_decomposition_residual": 1.693403285189207e-21,
+      "reference_refinement_relative_L1": 1.8597645888452683e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 0.00019660553446377178,
+      "combined_vs_ideal_error": 0.0002715087617141926,
+      "combined_vs_matched_reference_error": 0.00022917221346388983,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 4.236071923847475e-05,
+        "pauli_reconstruction": 0.00019660331631171112,
+        "electronic_quadrature_vs_matched_reference": 2.134268231161614e-07,
+        "explicit_bcs_regulator_bias": 4.237936160205353e-05
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 6.806503890441529e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 2.400466982420813e-05,
+      "combined_vs_ideal_error": 0.00023931101121862529,
+      "combined_vs_matched_reference_error": 6.659734064357402e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.734906266699739e-05,
+        "pauli_reconstruction": 2.3999913967716636e-05,
+        "electronic_quadrature_vs_matched_reference": 4.517599853293634e-08,
+        "explicit_bcs_regulator_bias": 0.00017272697339312354
+      },
+      "vector_decomposition_residual": 4.042631290689716e-21,
+      "reference_refinement_relative_L1": 4.9070652308084304e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 6.86540338359674e-05,
+      "combined_vs_ideal_error": 6.825311645142691e-05,
+      "combined_vs_matched_reference_error": 6.825311645142691e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.256522839811329e-06,
+        "pauli_reconstruction": 1.1545872046025989e-05,
+        "electronic_quadrature_vs_matched_reference": 6.812286682904467e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 1.2299480235422952e-08,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 6.536060138335537e-05,
+      "combined_vs_ideal_error": 6.535825947315339e-05,
+      "combined_vs_matched_reference_error": 6.535825947315339e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 7.281283000673992e-07,
+        "pauli_reconstruction": 1.2804481389129588e-05,
+        "electronic_quadrature_vs_matched_reference": 6.317068077709975e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.5046552613108805e-09,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 7.671001346188469e-05,
+      "combined_vs_ideal_error": 0.000131405309244702,
+      "combined_vs_matched_reference_error": 0.000131405309244702,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.270181395131743e-05,
+        "pauli_reconstruction": 4.7088222168103623e-05,
+        "electronic_quadrature_vs_matched_reference": 6.924661214205751e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 7.304956790950851e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 5.395401183804381e-05,
+      "combined_vs_ideal_error": 0.00011205206291283743,
+      "combined_vs_matched_reference_error": 0.00011205206291283743,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.279086291211779e-05,
+        "pauli_reconstruction": 2.1248610290303686e-05,
+        "electronic_quadrature_vs_matched_reference": 4.449842415445808e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 4.3776228012597766e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 0.00027971776319258933,
+      "combined_vs_ideal_error": 0.0002889913279917877,
+      "combined_vs_matched_reference_error": 0.0002889913279917877,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.2363275376101912e-05,
+        "pauli_reconstruction": 0.0002820929667284779,
+        "electronic_quadrature_vs_matched_reference": 4.234466289656011e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 3.7199726389349995e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 1,
+      "electron_states": 630,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 7.734260570654446e-05,
+      "combined_vs_ideal_error": 8.440646211876088e-05,
+      "combined_vs_matched_reference_error": 8.440646211876088e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.33680755214532e-05,
+        "pauli_reconstruction": 2.773552563015476e-05,
+        "electronic_quadrature_vs_matched_reference": 5.579488905978816e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.908050841627657e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 2.7170726108733314e-06,
+      "combined_vs_ideal_error": 2.200053127776167e-06,
+      "combined_vs_matched_reference_error": 2.200053127776167e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.3895516062877913e-06,
+        "pauli_reconstruction": 2.7087704037207582e-06,
+        "electronic_quadrature_vs_matched_reference": 1.5454551756465717e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 3.3553099896816647e-09,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 3.051217830010611e-06,
+      "combined_vs_ideal_error": 2.5984781697116183e-06,
+      "combined_vs_matched_reference_error": 2.5984781697116183e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.784707475015289e-07,
+        "pauli_reconstruction": 3.0425509317567433e-06,
+        "electronic_quadrature_vs_matched_reference": 2.1294250947928344e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 1.6338307163001132e-09,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.1153678589794387e-05,
+      "combined_vs_ideal_error": 9.378510519835498e-05,
+      "combined_vs_matched_reference_error": 9.378510519835498e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.263236789905682e-05,
+        "pauli_reconstruction": 1.1153278680933278e-05,
+        "electronic_quadrature_vs_matched_reference": 1.4182339081596275e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.052157144036589e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 5.165891753790067e-06,
+      "combined_vs_ideal_error": 8.780879905442324e-05,
+      "combined_vs_matched_reference_error": 8.780879905442324e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.26429117783574e-05,
+        "pauli_reconstruction": 5.165853964398595e-06,
+        "electronic_quadrature_vs_matched_reference": 8.59648820652306e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.594538758674519e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 7.28418674990698e-05,
+      "combined_vs_ideal_error": 8.144857205777377e-05,
+      "combined_vs_matched_reference_error": 8.144857205777377e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.1756940059301892e-05,
+        "pauli_reconstruction": 7.28416398539052e-05,
+        "electronic_quadrature_vs_matched_reference": 2.8101536790776695e-08,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 1.0353820829723413e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 6.8000627895640205e-06,
+      "combined_vs_ideal_error": 5.718951442924336e-05,
+      "combined_vs_matched_reference_error": 5.718951442924336e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.286928611970034e-05,
+        "pauli_reconstruction": 6.8000910886712425e-06,
+        "electronic_quadrature_vs_matched_reference": 8.80347145576273e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 2.338343410281674e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 3.9295852920094205e-07,
+      "combined_vs_ideal_error": 0.00010707004296636181,
+      "combined_vs_matched_reference_error": 2.3604486200074514e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.5780011637188762e-06,
+        "pauli_reconstruction": 3.811618124390516e-07,
+        "electronic_quadrature_vs_matched_reference": 1.5552624306857818e-08,
+        "explicit_bcs_regulator_bias": 0.00010473504590245124
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 7.2813806438063e-08,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 7.106008587314775e-07,
+      "combined_vs_ideal_error": 0.00016078060569853583,
+      "combined_vs_matched_reference_error": 7.083473277975505e-07,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.254998240975524e-09,
+        "pauli_reconstruction": 5.220186861198278e-07,
+        "electronic_quadrature_vs_matched_reference": 2.0130833838829025e-07,
+        "explicit_bcs_regulator_bias": 0.0001600757566207722
+      },
+      "vector_decomposition_residual": 2.514191290416138e-21,
+      "reference_refinement_relative_L1": 8.942856726172695e-08,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 7.675536183754262e-08,
+      "combined_vs_ideal_error": 0.00028280972923528974,
+      "combined_vs_matched_reference_error": 8.270860794830382e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.267366457732945e-05,
+        "pauli_reconstruction": 2.305678311588707e-08,
+        "electronic_quadrature_vs_matched_reference": 6.140758163364183e-08,
+        "explicit_bcs_regulator_bias": 0.0002013274924329616
+      },
+      "vector_decomposition_residual": 1.4950186191465433e-21,
+      "reference_refinement_relative_L1": 5.760235688466195e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 3.0821579587594635e-08,
+      "combined_vs_ideal_error": 0.00019600130295417497,
+      "combined_vs_matched_reference_error": 8.266404932979266e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.263407532865326e-05,
+        "pauli_reconstruction": 2.9953216062162444e-08,
+        "electronic_quadrature_vs_matched_reference": 6.408230950746751e-09,
+        "explicit_bcs_regulator_bias": 0.00011335474429766162
+      },
+      "vector_decomposition_residual": 3.386806570309767e-21,
+      "reference_refinement_relative_L1": 3.273184709042306e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 4.915832215637735e-05,
+      "combined_vs_ideal_error": 0.00012704349071969318,
+      "combined_vs_matched_reference_error": 8.323847047709235e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 4.260646671043843e-05,
+        "pauli_reconstruction": 4.915802200074722e-05,
+        "electronic_quadrature_vs_matched_reference": 2.6404831189174095e-08,
+        "explicit_bcs_regulator_bias": 4.3839819443389634e-05
+      },
+      "vector_decomposition_residual": 9.015289212458092e-22,
+      "reference_refinement_relative_L1": 6.7373760347786285e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 6.0019794222510694e-06,
+      "combined_vs_ideal_error": 0.00024045509548023967,
+      "combined_vs_matched_reference_error": 6.179261780090869e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.733358173887063e-05,
+        "pauli_reconstruction": 6.001144338695824e-06,
+        "electronic_quadrature_vs_matched_reference": 5.890082816770431e-09,
+        "explicit_bcs_regulator_bias": 0.0001786839613948342
+      },
+      "vector_decomposition_residual": 6.283511265693333e-36,
+      "reference_refinement_relative_L1": 5.847244475330993e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 3.289965570583571e-05,
+      "combined_vs_ideal_error": 3.310647046522423e-05,
+      "combined_vs_matched_reference_error": 3.310647046522423e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.2616214350783044e-06,
+        "pauli_reconstruction": 2.8931859401350415e-06,
+        "electronic_quadrature_vs_matched_reference": 3.297897072189299e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 1.5102453544372968e-08,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 3.1404558543727504e-05,
+      "combined_vs_ideal_error": 3.142725729626947e-05,
+      "combined_vs_matched_reference_error": 3.142725729626947e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 7.290787617020738e-07,
+        "pauli_reconstruction": 3.2057285540102827e-06,
+        "electronic_quadrature_vs_matched_reference": 3.110099790631419e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 6.759161549570366e-09,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 3.361114502596951e-05,
+      "combined_vs_ideal_error": 9.356848134682825e-05,
+      "combined_vs_matched_reference_error": 9.356848134682825e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.261390243414132e-05,
+        "pauli_reconstruction": 1.1893744404006843e-05,
+        "electronic_quadrature_vs_matched_reference": 3.163212294780068e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 4.3472943899186793e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 2.388804771741165e-05,
+      "combined_vs_ideal_error": 8.915541005011915e-05,
+      "combined_vs_matched_reference_error": 8.915541005011915e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.261007152309717e-05,
+        "pauli_reconstruction": 5.336262141884025e-06,
+        "electronic_quadrature_vs_matched_reference": 2.1750019606700588e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 3.1744702062538753e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 7.281782139591386e-05,
+      "combined_vs_ideal_error": 8.458682668644314e-05,
+      "combined_vs_matched_reference_error": 8.458682668644314e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.2488717102497814e-05,
+        "pauli_reconstruction": 7.053671363417628e-05,
+        "electronic_quadrature_vs_matched_reference": 2.032689243351367e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 4.559514378558332e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 2,
+      "electron_states": 1260,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 3.2453087307242344e-05,
+      "combined_vs_ideal_error": 6.492109903145723e-05,
+      "combined_vs_matched_reference_error": 6.492109903145723e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.338543628088133e-05,
+        "pauli_reconstruction": 6.936844892771288e-06,
+        "electronic_quadrature_vs_matched_reference": 2.7221900070601488e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.382829107388748e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 6.832135667099681e-07,
+      "combined_vs_ideal_error": 1.938036215965998e-06,
+      "combined_vs_matched_reference_error": 1.938036215965998e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.388432910820873e-06,
+        "pauli_reconstruction": 6.777837337450758e-07,
+        "electronic_quadrature_vs_matched_reference": 6.878714584740352e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 8.388278706434247e-10,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 7.67726559893673e-07,
+      "combined_vs_ideal_error": 8.89681206397618e-07,
+      "combined_vs_matched_reference_error": 8.89681206397618e-07,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.791053629502898e-07,
+        "pauli_reconstruction": 7.610531687705187e-07,
+        "electronic_quadrature_vs_matched_reference": 9.85879597976214e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 4.084591562793875e-10,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 2.8000765114889274e-06,
+      "combined_vs_ideal_error": 8.537262235346524e-05,
+      "combined_vs_matched_reference_error": 8.537262235346524e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.257276621546335e-05,
+        "pauli_reconstruction": 2.799921257390987e-06,
+        "electronic_quadrature_vs_matched_reference": 1.7962623186861474e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.76810564544324e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.2937611573580415e-06,
+      "combined_vs_ideal_error": 8.386425574071168e-05,
+      "combined_vs_matched_reference_error": 8.386425574071168e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.25704946247703e-05,
+        "pauli_reconstruction": 1.293747562088339e-06,
+        "electronic_quadrature_vs_matched_reference": 1.074665673893876e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 3.6994695911917875e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.82117819717195e-05,
+      "combined_vs_ideal_error": 2.8131689809053362e-05,
+      "combined_vs_matched_reference_error": 2.8131689809053362e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.180341137308866e-05,
+        "pauli_reconstruction": 1.8211734907745267e-05,
+        "electronic_quadrature_vs_matched_reference": 3.5795673109148283e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 2.5914871758958407e-13,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "normal",
+      "amplitude": 0.0,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.700212892942274e-06,
+      "combined_vs_ideal_error": 6.14382470608869e-05,
+      "combined_vs_matched_reference_error": 6.14382470608869e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.285787525222464e-05,
+        "pauli_reconstruction": 1.7002060995326476e-06,
+        "electronic_quadrature_vs_matched_reference": 1.1035480808617672e-09,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.842297056028554e-13,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 1.0015491892536493e-07,
+      "combined_vs_ideal_error": 0.00011181916456763844,
+      "combined_vs_matched_reference_error": 2.5161243102724187e-06,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.5784247948624664e-06,
+        "pauli_reconstruction": 9.529600711228579e-08,
+        "electronic_quadrature_vs_matched_reference": 6.559743375796289e-09,
+        "explicit_bcs_regulator_bias": 0.00010932809063088033
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 7.80812500921351e-09,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 2.2118304948354763e-07,
+      "combined_vs_ideal_error": 0.00016731452343342332,
+      "combined_vs_matched_reference_error": 2.1892918672374762e-07,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.254866303422408e-09,
+        "pauli_reconstruction": 1.3051162477661485e-07,
+        "electronic_quadrature_vs_matched_reference": 9.395589773109823e-08,
+        "explicit_bcs_regulator_bias": 0.00016709831733785182
+      },
+      "vector_decomposition_residual": 1.2570956893126488e-21,
+      "reference_refinement_relative_L1": 3.158690833340272e-08,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 2.552679804512946e-08,
+      "combined_vs_ideal_error": 0.0002915110763925293,
+      "combined_vs_matched_reference_error": 8.261978425073826e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.260795407055844e-05,
+        "pauli_reconstruction": 5.912484032286131e-09,
+        "electronic_quadrature_vs_matched_reference": 2.0682942593428664e-08,
+        "explicit_bcs_regulator_bias": 0.00021010314295882398
+      },
+      "vector_decomposition_residual": 2.9900371167457535e-21,
+      "reference_refinement_relative_L1": 9.941788475394934e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 7.59914022756879e-09,
+      "combined_vs_ideal_error": 0.0002009399247090028,
+      "combined_vs_matched_reference_error": 8.263010777857018e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.262260869418175e-05,
+        "pauli_reconstruction": 7.489285913151646e-09,
+        "electronic_quadrature_vs_matched_reference": 8.141579870698175e-10,
+        "explicit_bcs_regulator_bias": 0.00011832737703752298
+      },
+      "vector_decomposition_residual": 1.0680721546086553e-43,
+      "reference_refinement_relative_L1": 5.6521219814815925e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 1.2289843909871152e-05,
+      "combined_vs_ideal_error": 9.573273752258822e-05,
+      "combined_vs_matched_reference_error": 5.0005194479533626e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 4.2682443365890085e-05,
+        "pauli_reconstruction": 1.2289727818139214e-05,
+        "electronic_quadrature_vs_matched_reference": 4.7959333745088394e-09,
+        "explicit_bcs_regulator_bias": 4.5761580264578884e-05
+      },
+      "vector_decomposition_residual": 5.634521713789201e-22,
+      "reference_refinement_relative_L1": 2.996377996986979e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapped",
+      "amplitude": 0.72,
+      "gamma": 0.0,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 1e-08,
+      "reference_policy": "matched finite eta BCS",
+      "electronic_point_bose_error": 1.5004525221182985e-06,
+      "combined_vs_ideal_error": 0.0002524424094180194,
+      "combined_vs_matched_reference_error": 6.594150168625902e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.732679525397758e-05,
+        "pauli_reconstruction": 1.5003394767127883e-06,
+        "electronic_quadrature_vs_matched_reference": 7.940998139469321e-10,
+        "explicit_bcs_regulator_bias": 0.00018652256035124037
+      },
+      "vector_decomposition_residual": 2.0213156409259168e-21,
+      "reference_refinement_relative_L1": 9.135664832689928e-12,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.623256456489744e-05,
+      "combined_vs_ideal_error": 1.677068447610362e-05,
+      "combined_vs_matched_reference_error": 1.677068447610362e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.264764710014693e-06,
+        "pauli_reconstruction": 7.241322232920478e-07,
+        "electronic_quadrature_vs_matched_reference": 1.624551051233046e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 1.8280957473977995e-10,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.551406576116064e-05,
+      "combined_vs_ideal_error": 1.5547692578729462e-05,
+      "combined_vs_matched_reference_error": 1.5547692578729462e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 7.295389507878809e-07,
+        "pauli_reconstruction": 8.020052311328169e-07,
+        "electronic_quadrature_vs_matched_reference": 1.5482141236091973e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 8.18175826844758e-11,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.5567864989116905e-05,
+      "combined_vs_ideal_error": 8.484699680438267e-05,
+      "combined_vs_matched_reference_error": 8.484699680438267e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.257329195613419e-05,
+        "pauli_reconstruction": 2.9884410488216057e-06,
+        "electronic_quadrature_vs_matched_reference": 1.5066225524578763e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.460700923205245e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.116873696004523e-05,
+      "combined_vs_ideal_error": 8.412465249903889e-05,
+      "combined_vs_matched_reference_error": 8.412465249903889e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 8.257248884222765e-05,
+        "pauli_reconstruction": 1.3370649558685496e-06,
+        "electronic_quadrature_vs_matched_reference": 1.0794914030792747e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 3.992451768977688e-16,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 2.18740966760737e-05,
+      "combined_vs_ideal_error": 3.648445223381023e-05,
+      "combined_vs_matched_reference_error": 3.648445223381023e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 2.2513699216175424e-05,
+        "pauli_reconstruction": 1.7635567697731722e-05,
+        "electronic_quadrature_vs_matched_reference": 1.0014835164743707e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 5.567207677866164e-14,
+      "electronic_absolute_threshold_pass": true
+    },
+    {
+      "field": "gapless",
+      "amplitude": 0.35,
+      "gamma": 0.65,
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "refinement": 4,
+      "electron_states": 2520,
+      "reference_eta": 0.0,
+      "reference_policy": "ideal normal/gapless reference; gapless error retains any finite-eta residual",
+      "electronic_point_bose_error": 1.4716343808070847e-05,
+      "combined_vs_ideal_error": 6.236995175769414e-05,
+      "combined_vs_matched_reference_error": 6.236995175769414e-05,
+      "component_relative_L1": {
+        "fixed_phonon_interpolation": 6.335774290929782e-05,
+        "pauli_reconstruction": 1.734548137475343e-06,
+        "electronic_quadrature_vs_matched_reference": 1.3480403160465434e-05,
+        "explicit_bcs_regulator_bias": 0.0
+      },
+      "vector_decomposition_residual": 0.0,
+      "reference_refinement_relative_L1": 7.206222513533654e-14,
+      "electronic_absolute_threshold_pass": true
+    }
+  ],
+  "series": [
+    {
+      "field": "normal",
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        1.082196004692882e-05,
+        2.7170726108733314e-06,
+        6.832135667099681e-07
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        1.3421280429323723e-08,
+        3.3553099896816647e-09,
+        8.388278706434247e-10
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "normal",
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        1.2167810927804298e-05,
+        3.051217830010611e-06,
+        7.67726559893673e-07
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        6.535244028865866e-09,
+        1.6338307163001132e-09,
+        4.084591562793875e-10
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "normal",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        4.4239944632366043e-05,
+        1.1153678589794387e-05,
+        2.8000765114889274e-06
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        6.402963761210469e-16,
+        5.052157144036589e-16,
+        5.76810564544324e-16
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "normal",
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        2.0590299094724046e-05,
+        5.165891753790067e-06,
+        1.2937611573580415e-06
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        8.077884252569866e-16,
+        5.594538758674519e-16,
+        3.6994695911917875e-16
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        0.0002913330189317995,
+        7.28418674990698e-05,
+        1.82117819717195e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        4.141200327609171e-12,
+        1.0353820829723413e-12,
+        2.5914871758958407e-13
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "normal",
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        2.7191025411008026e-05,
+        6.8000627895640205e-06,
+        1.700212892942274e-06
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        9.3717172487599e-12,
+        2.338343410281674e-12,
+        5.842297056028554e-13
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        1.5619601371497848e-06,
+        3.9295852920094205e-07,
+        1.0015491892536493e-07
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        8.206926904133788e-08,
+        7.2813806438063e-08,
+        7.80812500921351e-09
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapped",
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        2.550894772081407e-06,
+        7.106008587314775e-07,
+        2.2118304948354763e-07
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        2.5352341886503263e-07,
+        8.942856726172695e-08,
+        3.158690833340272e-08
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        3.0478437257867654e-07,
+        7.675536183754262e-08,
+        2.552679804512946e-08
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        3.279280394889309e-12,
+        5.760235688466195e-12,
+        9.941788475394934e-12
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapped",
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        1.2636429497049246e-07,
+        3.0821579587594635e-08,
+        7.59914022756879e-09
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        1.8597645888452683e-12,
+        3.273184709042306e-12,
+        5.6521219814815925e-12
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        0.00019660553446377178,
+        4.915832215637735e-05,
+        1.2289843909871152e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        6.806503890441529e-12,
+        6.7373760347786285e-12,
+        2.996377996986979e-12
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapped",
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        2.400466982420813e-05,
+        6.0019794222510694e-06,
+        1.5004525221182985e-06
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        4.9070652308084304e-12,
+        5.847244475330993e-12,
+        9.135664832689928e-12
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        6.86540338359674e-05,
+        3.289965570583571e-05,
+        1.623256456489744e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        1.2299480235422952e-08,
+        1.5102453544372968e-08,
+        1.8280957473977995e-10
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapless",
+      "profile": "hot_electrons",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        6.536060138335537e-05,
+        3.1404558543727504e-05,
+        1.551406576116064e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        5.5046552613108805e-09,
+        6.759161549570366e-09,
+        8.18175826844758e-11
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        7.671001346188469e-05,
+        3.361114502596951e-05,
+        1.5567864989116905e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        7.304956790950851e-16,
+        4.3472943899186793e-16,
+        5.460700923205245e-16
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapless",
+      "profile": "phonon_bubble",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        5.395401183804381e-05,
+        2.388804771741165e-05,
+        1.116873696004523e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        4.3776228012597766e-16,
+        3.1744702062538753e-16,
+        3.992451768977688e-16
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "channel": "scattering",
+      "electronic_point_bose_errors": [
+        0.00027971776319258933,
+        7.281782139591386e-05,
+        2.18740966760737e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        3.7199726389349995e-12,
+        4.559514378558332e-12,
+        5.567207677866164e-14
+      ],
+      "all_absolute_thresholds_pass": true
+    },
+    {
+      "field": "gapless",
+      "profile": "nonthermal",
+      "channel": "recombination",
+      "electronic_point_bose_errors": [
+        7.734260570654446e-05,
+        3.2453087307242344e-05,
+        1.4716343808070847e-05
+      ],
+      "last_two_decrease": true,
+      "all_three_decrease": true,
+      "reference_budgets": [
+        5.908050841627657e-12,
+        5.382829107388748e-12,
+        7.206222513533654e-14
+      ],
+      "all_absolute_thresholds_pass": true
+    }
+  ],
+  "runtime_seconds": 4.255383448209614,
+  "maxima_by_electronic_grid": [
+    0.0002913330189317995,
+    7.28418674990698e-05,
+    2.18740966760737e-05
+  ],
+  "nondecreasing_cases": [],
+  "hashes": {
+    "script": "852aad35a6610d0c5013f5babd43321ec39199e231e8310356d492542887fe8e",
+    "reference_source": "0c7dfd59153488a68944e6f5bee512fdfc3e21f62a401ef6c367ff3d76dbf740",
+    "measured_matrix": "20a200bd81b50aac86d55b3fc39c2fbc48fe1edd95b67e9bf99fcfd6664957f1",
+    "criteria": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "factory": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "catalog": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "existing_same_eta_630_reference": "50619b1ba621904f9567bf76880c1beec7aecfa51fedd303bda75a3dc33d39ca"
+  }
+}

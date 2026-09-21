@@ -16,15 +16,6 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def require_sample_count(times, indices, cells, minimum):
-    """Each cell is evaluated at all selected physical times below."""
-    physical_times=np.asarray(times)[np.asarray(indices,dtype=int)]
-    count=len(np.unique(physical_times))
-    if np.any(~np.isfinite(physical_times)) or count<minimum:
-        raise ValueError(f'field checks require at least {minimum} distinct physical times per cell; got {count}')
-    return dict(cells=cells,distinct_physical_times_per_cell=count,required_minimum=minimum)
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('trajectories', nargs='+', type=Path)
@@ -36,9 +27,6 @@ def main():
     base = catalog
     eta = base.eta
     rows = []
-    sampling=[]
-    criteria=json.loads((ROOT/'docs/implementation/stage2/acceptance_criteria.json').read_text())
-    minimum=criteria['catalogue_field_checks']['minimum_actual_trajectory_samples']
     for item in args.trajectories:
         data = json.loads(item.read_text())
         if sha(item.with_suffix('.npz')) != data['trajectory_sha256']:
@@ -58,8 +46,6 @@ def main():
         samples = np.unique(np.r_[np.linspace(0, len(states)-1, 11, dtype=int),
                                   [np.argmin(states[:, i*block]) for i in range(cells)],
                                   [np.argmax(states[:, i*block]) for i in range(cells)]])
-        sampling.append(dict(trajectory=item.as_posix(),
-                             **require_sample_count(times,samples,cells,minimum)))
         for k in samples:
             for i in range(cells):
                 amplitude = states[k, i*block]
@@ -91,7 +77,7 @@ def main():
                   criteria_sha256=sha(ROOT/'docs/implementation/stage2/acceptance_criteria.json'),
                   amendment_sha256=sha(ROOT/'docs/implementation/stage2/review/complementary_grid_amendment.json'),
                   complementary_source_sha256=sha(ROOT/'pysnspd/experimental/refined_cells.py'),
-                  samples=len(rows), sampling_by_trajectory=sampling, maxima=maxima, cases=rows,
+                  samples=len(rows), maxima=maxima, cases=rows,
                   runtime_seconds=time.perf_counter()-started)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')

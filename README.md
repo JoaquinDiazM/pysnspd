@@ -18,9 +18,10 @@ minutes are left there for the user to execute.
 
 The [stage 2 checkpoint](docs/implementation/stage2/README.md) adds conservative
 electron-phonon events and simultaneous one/two-cell dynamics. Its static checks
-selected complementary electronic and phonon meshes; temporal admission remains
-pending after an incomplete bounded reference run. The manual continuation is
-prepared in Geminga's command notebook. This checkpoint does not close stage 2
+selected complementary electronic and phonon meshes. The user-run reference
+completed; short RK4 convergence passed at about 47 times lower measured cost.
+Full-duration temporal and dynamic-mesh admission remain pending, with a gated
+manual batch prepared in Geminga's command notebook. This checkpoint does not close stage 2
 or promote the updated model to production.
 
 Commits after the tag contain the opt-in

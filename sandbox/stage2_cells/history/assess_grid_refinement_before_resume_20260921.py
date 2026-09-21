@@ -197,11 +197,7 @@ def assess(paths,reference,parameter,source_root=ROOT):
         convergence[name]=all(b['all_roundoff_limited'] or
             (a['maximum_error_for_gate'] is not None and b['maximum_error_for_gate'] is not None
              and b['maximum_error_for_gate']<a['maximum_error_for_gate']) for a,b in zip(series[:-1],series[1:]))
-    # The first supplied mesh is the proposed candidate. Passing only the last
-    # comparison would silently admit a coarser candidate that actually failed.
-    convergent=all(convergence.values())
-    candidate_pass=rows[0]['precision_pass']
-    passed=all(row['precision_pass'] for row in rows) and convergent
+    convergent=all(convergence.values());passed=rows[-1]['precision_pass'] and convergent
     return {'schema':'pysnspd.stage2.grid-refinement-assessment.v2','status':'PASS' if passed else 'FAIL',
         'parameter':parameter,'rows':rows,'reference_path':ref['path'].as_posix(),
         'reference_sha256':ref['sha256'],'reference_trajectory_sha256':record['trajectory_sha256'],
@@ -210,9 +206,6 @@ def assess(paths,reference,parameter,source_root=ROOT):
         'population_basis':{'electrons':'129 fixed linear count hats on[0,12]; count and first COUNT-coordinate moment conserved, physical energy compared separately',
                             'phonons':'65 fixed linear energy hats on[0,4]; phonon number and energy conserved'},
         'relative_tolerance':limit,'criteria_sha256':record['criteria_sha256'],
-        'candidate_parameter_value':values[0], 'candidate_actual_grid_size':sizes[0],
-        'candidate_precision_pass':candidate_pass,
-        'all_compared_meshes_precision_pass':all(row['precision_pass'] for row in rows),
         'maximum_finest_error':rows[-1]['maximum_error'],'convergent':convergent,
         'convergence_by_observable':convergence,'reviewer_sha256':sha(__file__),
         'provenance_verified':True,'same_physical_and_time_contract':True,
@@ -253,17 +246,6 @@ def self_test():
         paths=[fixture(1,2e-5),fixture(2,5e-6),fixture(4,0.)]
         valid=assess(paths[:2],paths[-1],'electron_refinement',root)
         checks['three_true_meshes_and_all_checkpoints_pass']=valid['status']=='PASS' and valid['common_checkpoint_count']==5
-        coarse_saved=paths[0].read_bytes()
-        coarse_npz=paths[0].with_suffix('.npz');coarse_npz_saved=coarse_npz.read_bytes()
-        coarse_initial=paths[0].with_name(paths[0].stem+'_initial.npz')
-        coarse_initial_saved=coarse_initial.read_bytes()
-        fixture(1,1e-3)
-        coarse_failed=assess(paths[:2],paths[-1],'electron_refinement',root)
-        checks['failed_candidate_not_hidden_by_accurate_finer_mesh']=(
-            coarse_failed['status']=='FAIL' and not coarse_failed['candidate_precision_pass']
-            and coarse_failed['rows'][-1]['precision_pass'])
-        paths[0].write_bytes(coarse_saved);coarse_npz.write_bytes(coarse_npz_saved)
-        coarse_initial.write_bytes(coarse_initial_saved)
         phonon_paths=[fixture(1,2e-5,'phonon'),fixture(2,5e-6,'phonon'),fixture(4,0.,'phonon')]
         checks['three_true_phonon_meshes_pass']=assess(phonon_paths[:2],phonon_paths[-1],'phonon_nodes',root)['status']=='PASS'
         checks['nonzero_error_with_degenerate_reference_is_not_false_PASS']=error([1e-6],[0.])['error_for_gate'] is None

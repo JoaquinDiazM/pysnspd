@@ -18,15 +18,6 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def require_sample_count(times, indices, cells, minimum):
-    """Each cell is checked at every selected time, including extrema."""
-    physical_times=np.asarray(times)[np.asarray(indices,dtype=int)]
-    count=len(np.unique(physical_times))
-    if np.any(~np.isfinite(physical_times)) or count<minimum:
-        raise ValueError(f'support checks require at least {minimum} distinct physical times per cell; got {count}')
-    return dict(cells=cells,distinct_physical_times_per_cell=count,required_minimum=minimum)
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('trajectories', nargs='+', type=Path)
@@ -34,9 +25,6 @@ def main():
     args = parser.parse_args()
     started = time.perf_counter()
     rows = []
-    sampling=[]
-    criteria=json.loads((ROOT/'docs/implementation/stage2/acceptance_criteria.json').read_text())
-    minimum=criteria['catalogue_field_checks']['minimum_actual_trajectory_samples']
     for path in args.trajectories:
         data = json.loads(path.read_text())
         if sha(path.with_suffix('.npz')) != data['trajectory_sha256']:
@@ -67,8 +55,6 @@ def main():
             tail_count = tail @ system.catalog.count_weights[system.catalog.count_nodes > 8.]
             extrema.append(int(np.argmax(tail_count)))
         indices = np.unique(np.r_[np.linspace(0, len(states)-1, 11, dtype=int),extrema])
-        sampling.append(dict(trajectory=path.as_posix(),
-                             **require_sample_count(times,indices,system.cell_count,minimum)))
         for k in indices:
             amplitudes, populations, phonons = system.unpack(states[k])
             for i, amplitude in enumerate(amplitudes):
@@ -98,7 +84,6 @@ def main():
                     reference_orders=[16, 32], bounds=bounds, relative_bounds=fractions))
     worst = max(value for row in rows for value in row['relative_bounds'].values())
     result = dict(status='PASS' if worst <= 1e-3 else 'FAIL', rows=rows,
-        sampling_by_trajectory=sampling,
         worst_relative_upper_bound=worst,
         scope='Absorption to unresolved higher electron energies, external holes bounded by1. '
               'Linear p and n bound the geometric positive activities from above. '

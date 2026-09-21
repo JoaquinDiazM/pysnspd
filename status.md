@@ -32,12 +32,16 @@ conservative electron-phonon events, fixed-energy transport, KWT, BGK, heating
 and escape in one/two cells. Static validation selected 630 electronic and 1025
 phonon states. Earlier numerical failures and their corrections remain archived.
 
-A bounded DOP853 reference stayed incomplete. Its manual continuation, with
-progress logging, is in `/home/jdiaz/GEMINGA_COMMANDS.md`. No timed-out calculation
-was retried or split. The [admission record](docs/implementation/stage2/stage2_admission.json)
-keeps temporal and complete dynamic-mesh acceptance pending. Preliminary
-trajectories do not certify the final phonon grid. Production activation and
-the final stage-2 report await completion of those checks.
+The user-run DOP853 reference completed in 1164.55 seconds. Three short RK4
+trajectories passed comparison against it; the finest cost 24.94 seconds with
+maximum relative error 1.57e-6. The selected-grid static continuous comparison
+and a full-duration two-cell pilot also passed their scoped checks. See the
+[resumed results](docs/implementation/stage2/resume_20260921/README.md).
+The [admission record](docs/implementation/stage2/stage2_admission.json) still
+requires complete temporal and dynamic-mesh convergence. A foreground manual
+batch stops before expensive meshes if time validation fails. Its command is
+in `/home/jdiaz/GEMINGA_COMMANDS.md`; the agent did not execute the long batch.
+Production activation and the final stage-2 report remain pending.
 
 ## Experimental stage 1 closure — retained result
 

@@ -1,0 +1,33 @@
+{
+  "purpose": "Local temporal contrast against completed user-run DOP853, not full stage acceptance",
+  "common_arguments": [
+    "--case",
+    "one",
+    "--duration",
+    "0.1",
+    "--escape",
+    "inf",
+    "--heating",
+    "0",
+    "--method",
+    "rk4",
+    "--phonon-nodes",
+    "1025",
+    "--electron-refinement",
+    "1",
+    "--reaction-layout",
+    "resolved_panels",
+    "--reaction-order",
+    "2"
+  ],
+  "steps": [
+    10,
+    20,
+    40
+  ],
+  "script_sha256": "7d2d0fd5c745bcc39041c57606f890e32221f9fdbef11d4b8f7b2898a341739a",
+  "expected_seconds": 90,
+  "permitted_external_bound_seconds": 240,
+  "complete_independent_trajectories": true,
+  "tolerance_changes": false
+}

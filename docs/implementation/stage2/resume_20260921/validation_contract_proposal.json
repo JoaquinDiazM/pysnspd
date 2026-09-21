@@ -1,0 +1,93 @@
+{
+  "schema": "pysnspd.stage2.resumed-validation-proposal.v1",
+  "status": "PROPOSAL_NOT_EXECUTED_NOT_ADMISSION",
+  "criteria_path": "docs/implementation/stage2/acceptance_criteria.json",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "tolerances_changed": false,
+  "candidate": {
+    "electron_refinement": 1,
+    "electron_states": 630,
+    "phonon_nodes": 1025,
+    "infrared": 0.005,
+    "reaction_layout": "resolved_panels",
+    "reaction_order": 2,
+    "reaction_outer_order": 2,
+    "face_order": 2
+  },
+  "manual_reference_role": {
+    "completed": true,
+    "case": "one",
+    "duration": 0.1,
+    "steps": 2,
+    "method": "dop853",
+    "rtol": 1e-9,
+    "runtime_seconds": 1164.55,
+    "rhs_calls": 6843,
+    "suffices_for": "Independent short-time anchor of the unchanged physical RHS on the selected mesh, using the three common stored times.",
+    "does_not_certify": [
+      "The complete duration-2 trajectory",
+      "Two-cell transport, external heating or escape",
+      "Three temporal resolutions",
+      "Three genuine electronic or phonon grids",
+      "At least ten actual physical field/support sample times per cell"
+    ]
+  },
+  "execution": {
+    "agent_executes_long_batch": false,
+    "user_runs_in_foreground": true,
+    "threads": 1,
+    "no_overwrite_or_silent_retries": true,
+    "estimated_scope": "Hours are possible, especially for 2520 electronic states; exact aggregate time depends on the adopted temporal resolution. No long DOP853 trajectory is required by this proposal.",
+    "stop_before_expensive_meshes_unless_time_passes": true,
+    "reused_outputs_require_complete_source_parameter_grid_initial_and_archive_hash_contract": true
+  },
+  "phase_1_temporal": {
+    "provisional_until_short_RK_10_20_40_comparison_is_reviewed": true,
+    "runner": "sandbox/stage2_cells/run_coupled.py",
+    "common_arguments": ["--duration", "2", "--method", "rk4", "--phonon-nodes", "1025", "--electron-refinement", "1", "--infrared", ".005", "--reaction-layout", "resolved_panels", "--reaction-order", "2"],
+    "problems": [
+      {"name": "one_isolated", "arguments": ["--case", "one", "--escape", "inf", "--heating", "0"]},
+      {"name": "two_driven", "arguments": ["--case", "two", "--escape", "15", "--heating", ".01"]}
+    ],
+    "provisional_steps": [40, 80, 160],
+    "provisional_reference_steps": 320,
+    "reference_rule": "A separate step-halved trajectory is explicitly permitted by the frozen criteria. Preserve the short independent DOP853 comparison; if the measured complete-run errors or refinement reductions fail, stop and diagnose before selecting any replacement resolution.",
+    "assessor": "sandbox/stage2_cells/assess_time_refinement.py",
+    "requirements": ["All measured observables and capacity-weighted populations meet the unchanged time gate", "Three distinct resolutions and measured reduction at least 1.5 except roundoff", "Every level and its reference meet ledger, instantaneous balance and physical-population gates", "No clipping or correction of conserved energy"]
+  },
+  "phase_2_dynamic_meshes": {
+    "requires": "Both phase-1 temporal assessments PASS",
+    "problem": "two_driven",
+    "duration": 2,
+    "method": "rk4",
+    "steps": "Reuse the finest accepted candidate trajectory, provisionally 160, and hold the same time parameters for all refined meshes.",
+    "electron_levels": [1, 2, 4],
+    "electron_states": [630, 1260, 2520],
+    "phonon_nodes_during_electron_refinement": 1025,
+    "phonon_levels": [1025, 2049, 4097],
+    "electron_refinement_during_phonon_refinement": 1,
+    "new_trajectories_after_reusing_candidate": 4,
+    "assessor": "sandbox/stage2_cells/assess_grid_refinement.py",
+    "candidate_admission_rule": "The first supplied grid is the proposed candidate; its own precision gate must PASS, as well as the finer comparisons and the measured convergence. A PASS for 1260 versus 2520 cannot admit 630.",
+    "scope_limit": "Dynamic mesh evidence applies to this registered simultaneous two-cell problem. Do not state uniform convergence for arbitrary initial populations or all possible one-cell trajectories."
+  },
+  "phase_3_stationarity_and_boundaries": {
+    "equilibrium": {
+      "arguments": ["--case", "two", "--scenario", "equilibrium", "--duration", ".1", "--steps", "10", "--escape", "15", "--heating", "0", "--method", "rk4", "--phonon-nodes", "1025", "--electron-refinement", "1"],
+      "reference": "Analytically stationary FD/BE distributions with self-consistent amplitudes and enabled transport/escape; includes Gamma=0.1 in the second cell.",
+      "caution": "The zero-Gamma trajectory-field assessor cannot certify the finite-Gamma equilibrium spectrum; retain its separate causal reference or limit the field-assessor claim to the active zero-Gamma trajectories."
+    },
+    "boundary_cases": ["phonon_vacuum", "sparse_electrons"],
+    "boundary_duration": 0.2,
+    "boundary_time_rule": "Use a step no larger than the accepted temporal step; measure invariants and physical populations. A new three-level sequence is needed if evidence indicates this boundary problem is not controlled by that step, not merely because the scenario name changed.",
+    "isolated_channel_requirement": "Frozen criteria additionally mention boundary trajectories in isolated applicable channels. Initial inward-RHS checks alone do not satisfy that wording. Use finite-duration isolated-collision tests from n=0 and mixed exact p=0/1 as needed. Full p=1 with a positive-temperature BGK inversion is outside that closure domain and must not be forced or repaired."
+  },
+  "phase_4_postprocessing": {
+    "field_checks": "At least ten distinct actual physical times per cell, including endpoints and extrema; apply unchanged independent energy, force and derivative gates to accepted active trajectories.",
+    "upper_support": "Same minimum physical sampling, with independent absorption-to-unrepresented-states bounds and explicitly recorded disabled support.",
+    "activity": "At least one coupled trajectory resolves amplitude change >=0.02 and both e-ph and transport transfers >=1% of the preregistered available excitation scale.",
+    "selected_static_reactions": "Close the exact IR=.005 independent continuous reaction comparison and its reference-refinement budget; preserve earlier IR=.01 results separately.",
+    "infrared": "Use the already registered uncropped analytic-input omission comparison; no additional three long infrared trajectories are invented by this proposal.",
+    "final_scope": "Synthetic numerical one/two cells only. No absolute NbN rates, spatial condensate/circuit problem or full SNSPD transient is admitted."
+  }
+}

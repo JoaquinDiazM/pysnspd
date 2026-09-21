@@ -1,0 +1,16 @@
+{
+  "schema": "pysnspd.stage2.manual-batch-self-test.v1",
+  "status": "PASS",
+  "scope": "Offline synthetic guards only; no subprocess, time integration or RHS evaluation.",
+  "checks": {
+    "existing_evidence_never_overwritten": true,
+    "incomplete_rejected_without_NPZ_or_RHS": true,
+    "source_mismatch_rejected_without_NPZ_or_RHS": true,
+    "complete_result_reused_twice_without_reexecution": true,
+    "invalid_existing_result_stops_without_replacement_run": true,
+    "child_failure_stops_before_next_task_without_retry": true,
+    "FAIL_assessment_with_exit_zero_stops_before_next_task": true
+  },
+  "runner_sha256": "d2fd882891eb5f43cb61aa34b054a6b0568bab37e1100fef40505041b9be680d",
+  "elapsed_seconds": 0.09734219033271074
+}

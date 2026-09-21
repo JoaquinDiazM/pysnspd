@@ -114,15 +114,6 @@ def checkpoint_errors(run, k, reference, j, fields):
     return errors
 
 
-def invariant_checks(record, criteria):
-    """Apply the same invariant gates to every resolution and its reference."""
-    limits=criteria['coupled_trajectories']
-    return dict(ledger=record['energy_ledger_scaled_max']<=limits['energy_ledger_scaled_max'],
-        instantaneous_balance=record['instantaneous_residual_max']<=limits['instantaneous_balance_scaled_max'],
-        populations=record['minimum_electron']>=0 and record['maximum_electron']<=1
-                    and record['minimum_phonon']>=0)
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('runs', nargs='+', type=Path)
@@ -157,8 +148,6 @@ def main():
                           comparison_defined=defined,
                           checkpoints=checkpoints,final_errors=checkpoints[-1]['errors'],
                           ledger=record['energy_ledger_scaled_max'],
-                          instantaneous_balance=record['instantaneous_residual_max'],
-                          invariant_checks=invariant_checks(record,criteria),
                           minimum_electron=record['minimum_electron'], maximum_electron=record['maximum_electron'],
                           minimum_phonon=record['minimum_phonon']))
     cases.sort(key=lambda v:v['steps'])
@@ -174,10 +163,13 @@ def main():
     resolved = finest['max_error'] is None or finest['max_error'] > 100*np.finfo(float).eps
     convergence = defined and (not resolved or all(r is None or r >= 1.5 for r in ratios))
     ref=reference['record']
-    reference_checks=invariant_checks(ref,criteria)
+    reference_checks=dict(ledger=ref['energy_ledger_scaled_max']<=1e-7,
+        instantaneous_balance=ref['instantaneous_residual_max']<=1e-10,
+        populations=ref['minimum_electron']>=0 and ref['maximum_electron']<=1 and ref['minimum_phonon']>=0)
     passed = (defined and finest['max_error'] <= tolerance and convergence and len(cases)>=3
               and all(reference_checks.values())
-              and all(all(c['invariant_checks'].values()) for c in cases))
+              and all(c['ledger']<=1e-7 and c['minimum_electron']>=0 and c['maximum_electron']<=1
+                      and c['minimum_phonon']>=0 for c in cases))
     result = dict(status='PASS' if passed else 'FAIL',criteria_sha256=sha(criteria_path),
                   reference_path=args.reference.as_posix(),reference_sha256=sha(args.reference),
                   reference_checks=reference_checks,

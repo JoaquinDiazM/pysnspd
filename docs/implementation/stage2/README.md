@@ -21,17 +21,24 @@ Resultados estáticos y ensayos realizados:
   ocupaciones físicas. Usan 513 nodos fonónicos y **no certifican la candidata
   final de 1025**. Se conservan íntegros en `trajectories/` y `pilots/`.
 - Una referencia adaptativa DOP853 quedó incompleta bajo la ejecución limitada
-  a 240 segundos. No se repitió ni se fraccionó para eludir el límite.
+  a 240 segundos. La ejecución manual posterior terminó en 1164,55 s. Tres
+  ensayos cortos RK4 pasaron contra ella; el fino tardó 24,94 s y alcanzó un
+  error máximo de 1,57 × 10⁻⁶. La salida de screen y las trayectorias se
+  conservan en [la continuación](resume_20260921/README.md).
+- En esa continuación también pasaron la comparación continua al corte 0,005
+  y los controles de un piloto completo de dos celdas con 1025 nodos fonónicos.
+  El piloto no sustituye la convergencia temporal y de malla pendientes.
 
 ## Continuación necesaria
 
-Ejecutar el comando manual con progreso de [command_addendum.md](command_addendum.md),
-también añadido a `/home/jdiaz/GEMINGA_COMMANDS.md`, y devolver la salida con
-`reinicia`. El registro exacto de la ejecución incompleta está en
-[reference_handoff.json](reference_handoff.json).
+Ejecutar el nuevo lote manual de
+[resume_20260921/command_addendum.md](resume_20260921/command_addendum.md),
+también añadido a `/home/jdiaz/GEMINGA_COMMANDS.md`. Detiene el trabajo ante una
+verificación fallida y conserva las salidas. La referencia anterior ya terminó:
+su comando histórico no debe repetirse para esta continuación.
 
-Faltan el dictamen temporal frente a la referencia, los refinamientos dinámicos
-en la configuración final, los controles de soporte sobre esas trayectorias y
+Faltan el dictamen temporal de los casos completos, los refinamientos dinámicos
+en la configuración final, los controles sobre esas nuevas trayectorias y
 el informe final. El dictamen completo de puertas está en
 [stage2_admission.json](stage2_admission.json). No avanzar a la etapa espacial
 mientras siga pendiente.

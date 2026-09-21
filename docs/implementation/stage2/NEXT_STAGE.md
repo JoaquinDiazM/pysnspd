@@ -1,10 +1,10 @@
 # Primero completar la etapa 2
 
-La etapa 2 permanece pendiente. Ejecutar la referencia manual de
-`command_addendum.md` y revisar su progreso antes de lanzar nuevas trayectorias.
+La etapa 2 permanece pendiente. La referencia manual corta ya terminó y RK4
+pasó contra ella. Ejecutar el lote de `resume_20260921/command_addendum.md`.
 Faltan el control temporal independiente, los refinamientos dinámicos sobre la
-configuración de 630/1025 estados, los límites de soporte en esas trayectorias y
-la comparación continua que corresponda al corte infrarrojo 0,005. Conservar
+configuración de 630/1025 estados y los límites de soporte en esas trayectorias.
+La comparación estática continua al corte 0,005 ya pasó. Conservar
 el sondeo incompleto; no convertirlo en aprobado ni reintentarlo por fragmentos.
 
 El informe final y el avance espacial dependen de esas puertas. El plan que
