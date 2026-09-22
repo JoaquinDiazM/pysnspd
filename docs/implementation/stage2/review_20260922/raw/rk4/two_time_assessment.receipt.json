@@ -1,0 +1,37 @@
+{
+  "contract": {
+    "task": {
+      "id": "two_time_assessment",
+      "phase": "temporal",
+      "kind": "time",
+      "runs": [
+        "two_time_40",
+        "two_time_80",
+        "two_time_160"
+      ],
+      "reference": "two_time_320"
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/assess_time_refinement.py",
+      "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_20260921/two_active_40.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_80.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_160.json",
+      "--reference",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_320.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_assessment.json"
+    ],
+    "dependency_hashes": {
+      "two_time_40": "f778f1f90ad4b6b43317eaa00139ccccb5eeea926da8aff031d8e507d231a80e",
+      "two_time_80": "289aa636bad067b24c4a282ae9a56c24863f8cf3e99bea317b4343680e1c900b",
+      "two_time_160": "1c1813cd590a164a7615f87aaeae1a494871bd9190eb967682fdd4702f4a534f",
+      "two_time_320": "e193280525d2a3dcbff7d0787b5c23f03dbf2b02439e3bccff01cbad98323b65"
+    },
+    "batch_manifest_sha256": "5ae6a51b0e6ce213238fc90b35a3c87e387ea0b7ec512ff017671201235b2dd6"
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_assessment.json": "2f2eef4be9e646b28cf850217d9f89f1747834e4b1660040668182b7f306d3e5"
+  }
+}

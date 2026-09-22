@@ -1,0 +1,38 @@
+{
+  "contract": {
+    "task": {
+      "id": "two_old_rk320",
+      "phase": "reference_validation",
+      "kind": "existing_reference",
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    "command": null,
+    "batch_manifest_sha256": "9b8eafc85d487b1b9a217ac5e391fa3c5d17a246f03f04f1ce3c064d4a3177a6",
+    "dependency_hashes": {}
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json": "9907923466ed5d1bd593b0ed1607299f0afb551cb814ed3d00d108e5722a71a6",
+    "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.npz": "35f07d775ee2a7166852c026bea222010a6ec42b07dde338679f1584e2523cb4",
+    "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619"
+  }
+}

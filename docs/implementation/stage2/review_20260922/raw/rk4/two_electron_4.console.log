@@ -1,0 +1,8 @@
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "160", "--duration", "2.0", "--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "4", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "rk4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_electron_4.json"], "meaning": "t_rhs is a trial evaluation time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 6.0580584248527884, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 2.9057699804888977e-44, "maximum_electron": 0.49804998222021774, "minimum_phonon": 3.3382377953650095e-15}
+{
+  "status": "FAILED",
+  "runtime_seconds": 23.48206061916426,
+  "reason": "time stage outside Pauli/phonon support; no clipping applied"
+}
+{"event": "STOP", "elapsed_seconds": 23.483164891134948}

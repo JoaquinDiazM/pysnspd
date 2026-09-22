@@ -1,0 +1,70 @@
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "320", "--duration", "2.0", "--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "rk4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_320.json"], "meaning": "t_rhs is a trial evaluation time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.3773819631896913, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 3.540243468083482e-44, "maximum_electron": 0.4922019626507864, "minimum_phonon": 3.3382377953650095e-15}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 27.06106051011011, "t_rhs": 0.153125, "amplitudes": [0.5831347773589314, 0.9534031544922951], "minimum_electron": 2.5388480912164777e-16, "maximum_electron": 0.4922324741001754, "minimum_phonon": 7.890735356420477e-12}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 53.949272874277085, "t_rhs": 0.309375, "amplitudes": [0.6115606651840932, 0.9569699884777514], "minimum_electron": 2.0145677965346436e-15, "maximum_electron": 0.49219849217365447, "minimum_phonon": 3.660918827805573e-11}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 80.62441966496408, "t_rhs": 0.465625, "amplitudes": [0.6355351865370571, 0.9603568572734225], "minimum_electron": 6.128440705409664e-15, "maximum_electron": 0.4921240663241973, "minimum_phonon": 1.0512512306852126e-10}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 107.45281351218, "t_rhs": 0.6218750000000001, "amplitudes": [0.6558619230819333, 0.9634624992046719], "minimum_electron": 1.2219172503392048e-14, "maximum_electron": 0.49202617985844, "minimum_phonon": 2.3053724150852015e-10}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 134.16102062212303, "t_rhs": 0.7781250000000001, "amplitudes": [0.6731889184996188, 0.9662387409941596], "minimum_electron": 1.9239343897242155e-14, "maximum_electron": 0.49191592728616224, "minimum_phonon": 4.2083763849289765e-10}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 160.9378905449994, "t_rhs": 0.9343750000000001, "amplitudes": [0.6880399190896868, 0.9686642706570507], "minimum_electron": 2.6088503464349574e-14, "maximum_electron": 0.4918007039577275, "minimum_phonon": 6.732374343106475e-10}
+{"event": "RHS", "evaluations": 700, "elapsed_seconds": 187.60909976391122, "t_rhs": 1.0906250000000002, "amplitudes": [0.7008394419157292, 0.9707340042320316], "minimum_electron": 3.194777534289326e-14, "maximum_electron": 0.49168522524381936, "minimum_phonon": 1.0177009252871047e-09}
+{"event": "RHS", "evaluations": 800, "elapsed_seconds": 214.30272607225925, "t_rhs": 1.2468750000000002, "amplitudes": [0.7119327073357614, 0.9724534247074322], "minimum_electron": 3.636916927480368e-14, "maximum_electron": 0.4915723462691814, "minimum_phonon": 1.4330146642055387e-09}
+{"event": "RHS", "evaluations": 900, "elapsed_seconds": 240.91072826413438, "t_rhs": 1.4031250000000002, "amplitudes": [0.7216014403237264, 0.9738350777886483], "minimum_electron": 3.922513542818495e-14, "maximum_electron": 0.49146393138855893, "minimum_phonon": 1.974661666059568e-09}
+{"event": "RHS", "evaluations": 1000, "elapsed_seconds": 267.54558920813724, "t_rhs": 1.5593750000000002, "amplitudes": [0.7300763682687914, 0.9748961972619417], "minimum_electron": 4.061004706427525e-14, "maximum_electron": 0.4913609265822683, "minimum_phonon": 2.623111836930854e-09}
+{"event": "RHS", "evaluations": 1100, "elapsed_seconds": 294.2055583600886, "t_rhs": 1.7156250000000002, "amplitudes": [0.7375471379916032, 0.9756570126635646], "minimum_electron": 4.0743499300972144e-14, "maximum_electron": 0.4912637250272408, "minimum_phonon": 3.389903003759813e-09}
+{"event": "RHS", "evaluations": 1200, "elapsed_seconds": 320.88711135694757, "t_rhs": 1.8718750000000002, "amplitudes": [0.7441701667904036, 0.9761395096991027], "minimum_electron": 3.9894142520733823e-14, "maximum_electron": 0.4911723257780668, "minimum_phonon": 4.069849399114443e-09}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 345.80787868704647,
+  "energy_ledger_scaled_max": 2.562117185078705e-12,
+  "instantaneous_residual_max": 1.6287318715946242e-14,
+  "rhs_calls": 1292,
+  "final": {
+    "amplitudes": [
+      0.7490601294755269,
+      0.9763435167078902
+    ],
+    "electron_energy": [
+      0.0396724317232402,
+      -0.4376681692822478
+    ],
+    "excitation_energy": [
+      0.4823373927652589,
+      0.06177664081761586
+    ],
+    "phonon_energy": [
+      0.1104088493312188,
+      0.002586385816854755
+    ],
+    "temperatures": [
+      0.4076240209335776,
+      0.25148383256778795
+    ],
+    "forces": [
+      -0.04997718557942865,
+      -0.002443327512141061
+    ],
+    "escape": [
+      0.016347984613014316,
+      2.9731280778061524e-05
+    ],
+    "input": [
+      0.020000000000000014,
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.025136791863431287,
+      0.0007224912899683665
+    ],
+    "condensate_heat": [
+      0.03247334658428039,
+      0.0015239948427072491
+    ],
+    "transport": 0.05994159315383514,
+    "total": -0.285000502410934,
+    "conserved": -0.2886227865171416,
+    "minimum_electron": 3.865269452571041e-14,
+    "maximum_electron": 0.49110159037899515,
+    "minimum_phonon": 4.577855036412922e-09
+  }
+}
+{"event": "STOP", "elapsed_seconds": 345.82603106601164}

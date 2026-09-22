@@ -1,0 +1,64 @@
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "160", "--duration", "2.0", "--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "rk4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_160.json"], "meaning": "t_rhs is a trial evaluation time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.3741590976715088, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 3.540243468083482e-44, "maximum_electron": 0.4922019626507864, "minimum_phonon": 3.3382377953650095e-15}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 27.230674298014492, "t_rhs": 0.30625, "amplitudes": [0.6110360381086791, 0.9568998249688249], "minimum_electron": 1.9584879349703163e-15, "maximum_electron": 0.49219961165852166, "minimum_phonon": 3.1808022296434816e-11}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 54.17624662397429, "t_rhs": 0.61875, "amplitudes": [0.6554848979011748, 0.9634033080293816], "minimum_electron": 1.2085261013654812e-14, "maximum_electron": 0.4920282808835834, "minimum_phonon": 2.6757204715043653e-10}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 80.83220851002261, "t_rhs": 0.93125, "amplitudes": [0.687763029633844, 0.9686190344506722], "minimum_electron": 2.5959505716515814e-14, "maximum_electron": 0.491803022460612, "minimum_phonon": 7.091821463886403e-10}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 107.61919760098681, "t_rhs": 1.2437500000000001, "amplitudes": [0.7117247854797815, 0.9724221924378059], "minimum_electron": 3.6297182333722485e-14, "maximum_electron": 0.49157456791549137, "minimum_phonon": 1.4565077628005427e-09}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 134.27367193670943, "t_rhs": 1.5562500000000001, "amplitudes": [0.7299166745303162, 0.9748778067077633], "minimum_electron": 4.059681736240212e-14, "maximum_electron": 0.4913629332838466, "minimum_phonon": 2.622129797168617e-09}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 160.69332087459043, "t_rhs": 1.8687500000000001, "amplitudes": [0.7440447028947424, 0.976132285333763], "minimum_electron": 3.991960741057191e-14, "maximum_electron": 0.4911741018346715, "minimum_phonon": 4.031805861491807e-09}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 174.66309685772285,
+  "energy_ledger_scaled_max": 4.1459724542391996e-11,
+  "instantaneous_residual_max": 1.6338926739356552e-14,
+  "rhs_calls": 652,
+  "final": {
+    "amplitudes": [
+      0.7490601306198202,
+      0.9763435164285166
+    ],
+    "electron_energy": [
+      0.03967243062699044,
+      -0.4376681697930538
+    ],
+    "excitation_energy": [
+      0.48233739216432886,
+      0.06177664029374947
+    ],
+    "phonon_energy": [
+      0.1104088505495452,
+      0.0025863857521330634
+    ],
+    "temperatures": [
+      0.40762402089268013,
+      0.2514838320592842
+    ],
+    "forces": [
+      -0.0499771855287196,
+      -0.0024433284439136713
+    ],
+    "escape": [
+      0.01634798510912545,
+      2.9731277015613726e-05
+    ],
+    "input": [
+      0.020000000000000014,
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.025136790148993744,
+      0.0007224912214842268
+    ],
+    "condensate_heat": [
+      0.03247334694907888,
+      0.0015239948135982043
+    ],
+    "transport": 0.05994159257441797,
+    "total": -0.28500050286438505,
+    "conserved": -0.288622786478244,
+    "minimum_electron": 3.8653169389510077e-14,
+    "maximum_electron": 0.49110159169657996,
+    "minimum_phonon": 4.550091847827464e-09
+  }
+}
+{"event": "STOP", "elapsed_seconds": 174.6728600799106}
