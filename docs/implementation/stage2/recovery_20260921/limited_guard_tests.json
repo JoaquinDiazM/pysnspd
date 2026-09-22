@@ -1,0 +1,40 @@
+{
+  "schema": "pysnspd.stage2.limited-guards.v1",
+  "status": "PASS",
+  "scope": "Small normal-state invariant oracles and synthetic-file assessment guards; no production-sized network or detector transient.",
+  "command": [
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "sandbox/stage2_cells/recovery_20260921/test_limited_assessors.py",
+    "sandbox/stage2_cells/recovery_20260921/test_limited_ssp.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.47327083023265004,
+  "stdout": ".........................................                                [100%]\n41 passed in 0.33s\n",
+  "stderr": "",
+  "source_hashes": {
+    "sandbox/stage2_cells/recovery_20260921/test_limited_assessors.py": "6f1215a44fde5c6f94334d937691518e4526326550c5056c5dfa1f48612e0c67",
+    "sandbox/stage2_cells/recovery_20260921/test_limited_ssp.py": "adddfe53a466a206d834d254f6a87e37b32ed4f02c71c747ae571061bd61cec8",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_time.py": "ab7088308d1ab192a01357f832302d08e408b8609efe00fc648d2c3dbcf4cdfc",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_pair.py": "2b6feb29bdfb7046035d47e762e1c4221aa46cf137e8a6a764f2d1318a466f0e",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": "a291cc5999b2a2060bd96b2539987cd19f4b584bfa7c644fb7030edd54312364",
+    "sandbox/stage2_cells/assess_time_refinement.py": "fe4bb29229687653475104fe0207340cb62cb26faf7f07d50d36aa691534a9ad",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+  },
+  "source_hashes_unchanged": true,
+  "harness_sha256": "bc6f6f04212340b5e300a0993c0e5ddd7cfe1cf14952ce99967d65c8ed3308b3"
+}

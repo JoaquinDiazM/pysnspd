@@ -1,0 +1,132 @@
+{
+  "schema": "pysnspd.stage2.positive-rk4-offline-tests.v1",
+  "status": "PASS",
+  "scope": "Synthetic offline numerical guards only; no physical RHS or detector calculation.",
+  "checks": {
+    "no_rejection_is_bytewise_original_RK4": true,
+    "uniform_macro_frame_and_step_preserved": true,
+    "local_rejection_preserves_positive_state_and_linear_balance": true,
+    "rejected_and_accepted_substeps_have_complete_metadata": true,
+    "non_support_RHS_error_propagates_without_retry": true,
+    "non_support_validator_error_propagates_without_retry": true,
+    "only_validator_support_errors_trigger_bisection": true,
+    "RHS_budget_stops_before_excess_call_with_incomplete_evidence": true,
+    "depth_budget_stops_without_repair": true,
+    "invalid_initial_state_never_repaired_or_integrated": true,
+    "endpoint_rejection_reintegrates_only_failed_interval": true
+  },
+  "details": {
+    "positive_toy": {
+      "schema": "pysnspd.stage2.positive-rk4-experiment.v1",
+      "status": "COMPLETED_NOT_ADJUDICATED",
+      "method": "classical RK4 with local support-triggered bisection",
+      "source_sha256": "28b3f7d3a7bd3abba9475647e6dbb896f70d337cebfecf4979cf7d07d61bfc15",
+      "duration": 1.0,
+      "macro_steps": 1,
+      "macro_dt": 1.0,
+      "max_depth": 20,
+      "max_rhs_calls": 100000,
+      "rhs_calls": 23,
+      "completed_macro_steps": 1,
+      "accepted_substeps": [
+        {
+          "macro_index": 0,
+          "start_time": 0.0,
+          "end_time": 0.25,
+          "dt": 0.25,
+          "depth": 2,
+          "rhs_calls": 8
+        },
+        {
+          "macro_index": 0,
+          "start_time": 0.25,
+          "end_time": 0.5,
+          "dt": 0.25,
+          "depth": 2,
+          "rhs_calls": 12
+        },
+        {
+          "macro_index": 0,
+          "start_time": 0.5,
+          "end_time": 0.75,
+          "dt": 0.25,
+          "depth": 2,
+          "rhs_calls": 19
+        },
+        {
+          "macro_index": 0,
+          "start_time": 0.75,
+          "end_time": 1.0,
+          "dt": 0.25,
+          "depth": 2,
+          "rhs_calls": 23
+        }
+      ],
+      "rejected_attempts": [
+        {
+          "macro_index": 0,
+          "start_time": 0.0,
+          "dt": 1.0,
+          "depth": 0,
+          "failed_stage": "k2",
+          "failed_stage_time": 0.5,
+          "reason": "negative toy population",
+          "violation": {
+            "sector": "toy",
+            "index": 0,
+            "value": -1.0,
+            "magnitude": 1.0,
+            "lower_bound": 0.0
+          },
+          "rhs_calls": 1
+        },
+        {
+          "macro_index": 0,
+          "start_time": 0.0,
+          "dt": 0.5,
+          "depth": 1,
+          "failed_stage": "k4",
+          "failed_stage_time": 0.5,
+          "reason": "negative toy population",
+          "violation": {
+            "sector": "toy",
+            "index": 0,
+            "value": -1.0,
+            "magnitude": 1.0,
+            "lower_bound": 0.0
+          },
+          "rhs_calls": 4
+        },
+        {
+          "macro_index": 0,
+          "start_time": 0.5,
+          "dt": 0.5,
+          "depth": 1,
+          "failed_stage": "k4",
+          "failed_stage_time": 1.0,
+          "reason": "negative toy population",
+          "violation": {
+            "sector": "toy",
+            "index": 0,
+            "value": -0.140625,
+            "magnitude": 0.140625,
+            "lower_bound": 0.0
+          },
+          "rhs_calls": 15
+        }
+      ],
+      "max_depth_reached": 2,
+      "last_accepted_time": 1.0,
+      "minimum_accepted_dt": 0.25,
+      "maximum_accepted_dt": 0.25,
+      "no_clipping_or_projection": true,
+      "scope": "Corrective experiment only; positivity checks are not temporal-error or model admission."
+    }
+  },
+  "source_hashes": {
+    "sandbox/stage2_cells/recovery_20260921/test_positive_rk4.py": "7153eb1a12eca6d7af6b96e7747e335a65eb6a8ca796d58f56d38162d245dbeb",
+    "sandbox/stage2_cells/recovery_20260921/positive_rk4.py": "28b3f7d3a7bd3abba9475647e6dbb896f70d337cebfecf4979cf7d07d61bfc15",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b"
+  },
+  "runtime_seconds": 0.018054800006211735
+}

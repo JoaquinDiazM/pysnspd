@@ -1,0 +1,266 @@
+{
+  "schema": "pysnspd.stage2.completed-batch-audit.v1",
+  "status": "PASS_READ_ONLY_AUDIT",
+  "stage2_admission": false,
+  "remote_batch": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "checks": {
+    "one_reference_record_hash": true,
+    "one_40_record_hash": true,
+    "one_80_record_hash": true,
+    "one_160_record_hash": true,
+    "one_40_recomputed_error_matches": true,
+    "one_40_all_invariants_pass": true,
+    "one_40_receipt_manifest": true,
+    "one_40_receipt_parameter_contract": true,
+    "one_40_receipt_json_one_time_40": true,
+    "one_40_receipt_npz_one_time_40": true,
+    "one_40_receipt_npz_one_time_40_initial": true,
+    "one_80_recomputed_error_matches": true,
+    "one_80_all_invariants_pass": true,
+    "one_80_receipt_manifest": true,
+    "one_80_receipt_parameter_contract": true,
+    "one_80_receipt_json_one_time_80": true,
+    "one_80_receipt_npz_one_time_80": true,
+    "one_80_receipt_npz_one_time_80_initial": true,
+    "one_160_recomputed_error_matches": true,
+    "one_160_all_invariants_pass": true,
+    "one_160_receipt_manifest": true,
+    "one_160_receipt_parameter_contract": true,
+    "one_160_receipt_json_one_time_160": true,
+    "one_160_receipt_npz_one_time_160": true,
+    "one_160_receipt_npz_one_time_160_initial": true,
+    "one_reference_all_invariants_pass": true,
+    "one_criteria_unchanged": true,
+    "one_reviewer_source_unchanged": true,
+    "one_declared_PASS": true,
+    "one_independent_gate": true,
+    "two_reference_record_hash": true,
+    "two_40_record_hash": true,
+    "two_80_record_hash": true,
+    "two_160_record_hash": true,
+    "two_40_recomputed_error_matches": true,
+    "two_40_all_invariants_pass": true,
+    "two_40_receipt_manifest": true,
+    "two_40_receipt_parameter_contract": true,
+    "two_40_receipt_json_two_active_40": true,
+    "two_40_receipt_npz_two_active_40": true,
+    "two_40_receipt_npz_two_active_40_initial": true,
+    "two_80_recomputed_error_matches": true,
+    "two_80_all_invariants_pass": true,
+    "two_80_receipt_manifest": true,
+    "two_80_receipt_parameter_contract": true,
+    "two_80_receipt_json_two_time_80": true,
+    "two_80_receipt_npz_two_time_80": true,
+    "two_80_receipt_npz_two_time_80_initial": true,
+    "two_160_recomputed_error_matches": true,
+    "two_160_all_invariants_pass": true,
+    "two_160_receipt_manifest": true,
+    "two_160_receipt_parameter_contract": true,
+    "two_160_receipt_json_two_time_160": true,
+    "two_160_receipt_npz_two_time_160": true,
+    "two_160_receipt_npz_two_time_160_initial": true,
+    "two_reference_all_invariants_pass": true,
+    "two_criteria_unchanged": true,
+    "two_reviewer_source_unchanged": true,
+    "two_declared_PASS": true,
+    "two_independent_gate": true,
+    "electron2_complete": true,
+    "electron2_current_physical_sources": true,
+    "electron2_receipt_parameters": true,
+    "electron2_receipt_two_electron_2.json": true,
+    "electron2_receipt_two_electron_2.npz": true,
+    "electron2_receipt_two_electron_2_initial.npz": true
+  },
+  "temporal": [
+    {
+      "case": "one",
+      "source_contract_verified": true,
+      "reference_steps": 320,
+      "reference_ledger": 1.3798101550221986e-11,
+      "shared_checkpoint_count": 41,
+      "rows": [
+        {
+          "steps": 40,
+          "worst": {
+            "observable": "phonon_population",
+            "time": 0.7000000000000001,
+            "error": 0.00039681177041871505
+          },
+          "ledger": 6.030218338559656e-08,
+          "instantaneous_balance": 1.6028844918025698e-15,
+          "physical_populations": {
+            "minimum_electron": 4.274417143756049e-44,
+            "maximum_electron": 0.4902562381605854,
+            "minimum_phonon": 0.00043003955176456964
+          },
+          "runtime_seconds": 24.61298912903294,
+          "reused": false
+        },
+        {
+          "steps": 80,
+          "worst": {
+            "observable": "phonon_population",
+            "time": 0.7000000000000001,
+            "error": 0.00018370609201417848
+          },
+          "ledger": 3.632636386141641e-09,
+          "instantaneous_balance": 1.6028844918025698e-15,
+          "physical_populations": {
+            "minimum_electron": 4.274417143756049e-44,
+            "maximum_electron": 0.49025622223833987,
+            "minimum_phonon": 0.00042868590537668535
+          },
+          "runtime_seconds": 47.58093557972461,
+          "reused": false
+        },
+        {
+          "steps": 160,
+          "worst": {
+            "observable": "phonon_population",
+            "time": 0.35000000000000003,
+            "error": 6.143596723348075e-05
+          },
+          "ledger": 2.2285109868569464e-10,
+          "instantaneous_balance": 1.6028844918025698e-15,
+          "physical_populations": {
+            "minimum_electron": 4.274417143756049e-44,
+            "maximum_electron": 0.49025622531207724,
+            "minimum_phonon": 0.0004329530475765878
+          },
+          "runtime_seconds": 94.18090074695647,
+          "reused": false
+        }
+      ],
+      "successive_error_reductions": [
+        2.160035990467257,
+        2.990204277504468
+      ],
+      "finest_error": 6.143596723348075e-05
+    },
+    {
+      "case": "two",
+      "source_contract_verified": true,
+      "reference_steps": 320,
+      "reference_ledger": 2.562117185078705e-12,
+      "shared_checkpoint_count": 41,
+      "rows": [
+        {
+          "steps": 40,
+          "worst": {
+            "observable": "phonon_population",
+            "time": 0.9500000000000001,
+            "error": 0.00043415739712208436
+          },
+          "ledger": 1.1177783032501054e-08,
+          "instantaneous_balance": 1.6098667537933764e-14,
+          "physical_populations": {
+            "minimum_electron": 3.540243468083482e-44,
+            "maximum_electron": 0.49223259554116966,
+            "minimum_phonon": 3.3382377953650095e-15
+          },
+          "runtime_seconds": 46.00639703217894,
+          "reused": true
+        },
+        {
+          "steps": 80,
+          "worst": {
+            "observable": "phonon_population",
+            "time": 0.7000000000000001,
+            "error": 0.00014365203288597302
+          },
+          "ledger": 6.751635917012777e-10,
+          "instantaneous_balance": 1.6426963955762375e-14,
+          "physical_populations": {
+            "minimum_electron": 3.540243468083482e-44,
+            "maximum_electron": 0.4922325959563599,
+            "minimum_phonon": 3.3382377953650095e-15
+          },
+          "runtime_seconds": 88.96459259372205,
+          "reused": false
+        },
+        {
+          "steps": 160,
+          "worst": {
+            "observable": "phonon_population",
+            "time": 0.5,
+            "error": 4.7399839355602646e-05
+          },
+          "ledger": 4.1459724542391996e-11,
+          "instantaneous_balance": 1.6338926739356552e-14,
+          "physical_populations": {
+            "minimum_electron": 3.540243468083482e-44,
+            "maximum_electron": 0.4922327727480069,
+            "minimum_phonon": 3.3382377953650095e-15
+          },
+          "runtime_seconds": 178.51862604916096,
+          "reused": false
+        }
+      ],
+      "successive_error_reductions": [
+        3.022285089879002,
+        3.0306438764120704
+      ],
+      "finest_error": 4.7399839355602646e-05
+    }
+  ],
+  "completed_electron2": {
+    "steps": 160,
+    "electron_states": 1260,
+    "ledger": 4.1490533231325344e-11,
+    "instantaneous_balance": 1.578858571660291e-14,
+    "reuse_at_identical_steps_only": true
+  },
+  "failed_finest_mesh": {
+    "status": "FAILED",
+    "reason": "time stage outside Pauli/phonon support; no clipping applied",
+    "runtime_seconds": 23.509741068352014,
+    "steps": 160,
+    "electron_refinement": 4,
+    "trajectory_archive_present": false,
+    "admitted": false
+  },
+  "artifact_sha256": {
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/batch_manifest.json": "5ae6a51b0e6ce213238fc90b35a3c87e387ea0b7ec512ff017671201235b2dd6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_assessment.json": "396b0f849e368d68486cc9167c00cba4b791294604875a6feec93023ac3f144c",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_40.json": "e87b5c34147e75886724d3693c450cf08c61272b12a2d37f68da9088b32af2aa",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_40.npz": "50884abea77a6d151dc174ee0cdda5bae862cf2f3091f49e097dfa365312496f",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_40_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_80.json": "95d721f7a00da1ff4803574d2735c3d66437ecbe9eb0911ffb0ee7f5fc9cee13",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_80.npz": "b9f58b0327d3a2de8930d58e464b90ebe6ff979190fda6bed567c3ce71017cf4",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_80_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_160.json": "ec804ad91a18945ad887abb58a54346ec0032be2fd237305c65c53a87cefe509",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_160.npz": "a5b3beafea5fd2d513c3cfff5d51c081eba3ef421b004f91b97a5531946f5429",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_160_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.json": "7297dea5a67b87d6251edd5d5ae2746579fb4c79e200ada687dc90794bad5cbb",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.npz": "2b2e06a15232f2b84a44c28697ecf337fdf253088914f56d926fb724bee945f0",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_assessment.json": "4746885d5ca0b67a31d457001cebfa68b8cbd0c4e9f8dd4cf4dcf981ef755600",
+    "docs/implementation/stage2/resume_20260921/two_active_40.json": "f778f1f90ad4b6b43317eaa00139ccccb5eeea926da8aff031d8e507d231a80e",
+    "docs/implementation/stage2/resume_20260921/two_active_40.npz": "2895439777dcbfccd85d93134bf0c3c725f154c437fee8b1b7c307258b319052",
+    "docs/implementation/stage2/resume_20260921/two_active_40_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_80.json": "833fc25bbe4795af15e7843afb748c949d29d339b1e5978b483f6846ba9891e0",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_80.npz": "d550a354565cd34b4cbbb4fbe83c421106e12b16f5bebe0807abf615e9de6b2b",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_80_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_160.json": "c8de04fa37977575182894c56db1e5103511df667d938848812b342ddd4cee92",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_160.npz": "dbd31bd27d32661a715d273a1472eb26ab3804695aa9c9e2972af044836f0c66",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_160_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json": "9907923466ed5d1bd593b0ed1607299f0afb551cb814ed3d00d108e5722a71a6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.npz": "35f07d775ee2a7166852c026bea222010a6ec42b07dde338679f1584e2523cb4",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_2.json": "5ddca9df914f8c93bb4c2cb750ca65e27cbf0ad559dc6aebd1a92d0890c00d81",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_2.npz": "9b54e1b72a41ec3d5fb6c11b93ccd859caf0d67c5b93aaa7aa2014be14889579",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_2_initial.npz": "d6d113018fa2d622d3374751bb0c1ef89f564c34ab763eaaa6f4259cea69ee89",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_4.json": "c30c3471eead19cab85938dc758dd9b30be2961f524517bb2ef00a6fad32cae1"
+  },
+  "recovery_rules": [
+    "Preserve the failed e4 trajectory registration and initial archive; no population clipping.",
+    "A smaller timestep on e4 alone cannot be mixed into the existing same-time grid assessor. All compared electronic meshes must use the same method, steps and tolerance.",
+    "Candidate e1 at320 steps already exists and may be reused if320 is selected; e2 at160 cannot stand in for e2 at320.",
+    "Positivity of one smaller-step trial proves local stage admissibility only, not full time convergence or a continuous-grid PASS.",
+    "If finer grids reveal additional fast dynamics, independently bound their temporal error with a tighter complete trajectory before attributing differences to mesh resolution.",
+    "The candidate630/1025 must pass its own population/observable errors and convergence; a successful finer trajectory or conserved energy alone cannot admit it."
+  ],
+  "source_sha256": "276d0fe9b4d77ba605bf2565cecfa9ae8c1e9e14447418cd77317b8d4b1a729d",
+  "runtime_seconds": 2.1081906000035815
+}

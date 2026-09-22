@@ -22,26 +22,34 @@ findings remain explicit in A-D. The pedagogical notebook is E-r02, with eight a
 classes and 24 unanswered activities, independently versioned from the physics.
 
 Computations expected to exceed five minutes are prepared in
-`/home/jdiaz/GEMINGA_COMMANDS.md` for the user. The agent resumes after the user
-provides the output; it does not start long runs or use polling to wait for them.
+`/home/jdiaz/GEMINGA_COMMANDS.md` for the user by default. For the current stage-2
+recovery only, the user explicitly authorized an agent launch in `screen code_000`
+followed by detachment and an immediate return, without waiting or polling.
+Commands and outputs remain recorded; unrelated long computations retain the
+normal user-run policy.
 
-## Experimental stage 2 — pending temporal admission
+## Experimental stage 2 — prepared for authorized recovery launch
 
 The [stage 2 checkpoint](docs/implementation/stage2/README.md) implements
 conservative electron-phonon events, fixed-energy transport, KWT, BGK, heating
 and escape in one/two cells. Static validation selected 630 electronic and 1025
 phonon states. Earlier numerical failures and their corrections remain archived.
 
-The user-run DOP853 reference completed in 1164.55 seconds. Three short RK4
-trajectories passed comparison against it; the finest cost 24.94 seconds with
-maximum relative error 1.57e-6. The selected-grid static continuous comparison
-and a full-duration two-cell pilot also passed their scoped checks. See the
-[resumed results](docs/implementation/stage2/resume_20260921/README.md).
-The [admission record](docs/implementation/stage2/stage2_admission.json) still
-requires complete temporal and dynamic-mesh convergence. A foreground manual
-batch stops before expensive meshes if time validation fails. Its command is
-in `/home/jdiaz/GEMINGA_COMMANDS.md`; the agent did not execute the long batch.
-Production activation and the final stage-2 report remain pending.
+The completed DOP853 reference and short RK4 comparison remain archived in the
+[resumed results](docs/implementation/stage2/resume_20260921/README.md). The later
+full-duration one/two-cell temporal checks passed on the candidate mesh, with
+their records and reuse contracts independently verified. The 2520-state
+electronic refinement then failed an internal RK4 population guard. A bounded
+bisection probe exhausted 24 RHS evaluations without advancing.
+
+The [recovery experiment](docs/implementation/stage2/recovery_20260921/README.md)
+is prepared for the authorized relaunch. It registers SSPRK3 with a common flux
+factor for each event, without population clipping or an energy correction.
+Physical kernels and the frozen criteria are unchanged. New temporal comparisons
+against the archived RK320 runs precede expensive mesh calculations. The
+[admission record](docs/implementation/stage2/stage2_admission.json) remains a
+pending checkpoint: the new integrator, dynamic meshes, actual-trajectory field
+checks, final report and production activation are not yet admitted.
 
 ## Experimental stage 1 closure — retained result
 

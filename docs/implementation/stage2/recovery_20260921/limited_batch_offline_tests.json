@@ -1,0 +1,18 @@
+{
+  "schema": "pysnspd.stage2.limited-batch-offline-selftest.v1",
+  "status": "PASS",
+  "checks": {
+    "entry_argument_rk4_but_registered_method_remains_explicit_SSP": true,
+    "unreviewed_unfrozen_plan_cannot_execute": true,
+    "paired_diagnostic_cannot_be_registered_as_global_PASS": true,
+    "dry_run_has_no_child_output_directory_or_integrator_import": true,
+    "reference_reuse_verified_twice_without_reexecution_or_overwrite": true,
+    "invalid_reference_stops_before_any_child": true,
+    "failed_child_stops_without_retry_or_next_task": true,
+    "FAIL_even_with_zero_child_exit_stops_before_next_task": true,
+    "pair_result_keeps_distinct_status_and_does_not_issue_stage_admission": true
+  },
+  "scope": "Synthetic guard fixtures only; no subprocess, physical RHS or time integration.",
+  "runner_sha256": "c9d8b3aa296cb71a0030b39bb96ff0d1a5fb583c36c3d6c86ba4ef7ed306b538",
+  "elapsed_seconds": 0.2739013999962481
+}

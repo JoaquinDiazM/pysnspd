@@ -1,0 +1,874 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+jdiaz@geminga:~/pysnspd$ cd /home/jdiaz/pysnspd
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+STAGE2_PY=/home/jdiaz/.conda/envs/snspd/bin/python
+STAGE2_RUN=/home/jdiaz/pysnspd/tmp/stage2_user_$(date +%Y%m%d_%H%M%S)
+mkdir -p "$STAGE2_RUN"
+jdiaz@geminga:~/pysnspd$ "$STAGE2_PY" -u sandbox/stage2_cells/run_reference_progress.py --case one --duration 0.1 --steps 2 --escape inf --heating 0 --method dop853 --rtol 1e-9
+--phonon-nodes 1025 --electron-refinement 1 --reaction-layout resolved_panels --reaction-order 2 --output "$STAGE2_RUN/one_reference_probe.json"
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "one", "--duration", "0.1", "--steps", "2", "--
+escape", "inf", "--heating", "0", "--method", "dop853", "--rtol", "1e-9", "--phonon-nodes", "1025", "--electron-refinement", "1", "--reaction-layout", "resolved_panels", "--reac
+tion-order", "2", "--output", "/home/jdiaz/pysnspd/tmp/stage2_user_20260921_193252/one_reference_probe.json"], "meaning": "t_rhs is a trial evaluation time, not a guaranteed acc
+epted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.24247326888144016, "t_rhs": 0.0, "amplitudes": [0.6], "minimum_electron": 4.274417143756049e-44, "maximum_electron": 0.47
+536960013142937, "minimum_phonon": 0.0016666666666740751}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 17.00080311484635, "t_rhs": 1.0839648814573113e-05, "amplitudes": [0.6000030307556206], "minimum_electron": 5.34643060527
+2117e-19, "maximum_electron": 0.4753698718479833, "minimum_phonon": 0.0016666542027833449}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 33.479634654242545, "t_rhs": 0.0015431717384395119, "amplitudes": [0.6004308432478741], "minimum_electron": 7.72808411263
+1285e-17, "maximum_electron": 0.4754082327914626, "minimum_phonon": 0.001664951812166862}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 50.74986698618159, "t_rhs": 0.0028223272648678853, "amplitudes": [0.6007870277014395], "minimum_electron": 1.434088097671
+4519e-16, "maximum_electron": 0.47544018040647745, "minimum_phonon": 0.0016634422191911583}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 67.23004096793011, "t_rhs": 0.004295557116167107, "amplitudes": [0.6011961921514012], "minimum_electron": 2.2239916450979
+65e-16, "maximum_electron": 0.4754768905499735, "minimum_phonon": 0.0016616029167553694}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 84.42646137624979, "t_rhs": 0.005821170385702447, "amplitudes": [0.601618712370983], "minimum_electron": 3.07949407212351
+7e-16, "maximum_electron": 0.4755148108057659, "minimum_phonon": 0.0016597432221140875}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 101.15039073722437, "t_rhs": 0.007258548230556681, "amplitudes": [0.6020156889099855], "minimum_electron": 3.925745024393
+0096e-16, "maximum_electron": 0.4755504495377618, "minimum_phonon": 0.0016581780495864052}
+{"event": "RHS", "evaluations": 700, "elapsed_seconds": 118.50783725222573, "t_rhs": 0.008508588401995287, "amplitudes": [0.6023600560187097], "minimum_electron": 4.697343289542
+732e-16, "maximum_electron": 0.47558137384868515, "minimum_phonon": 0.001656962201580429}
+{"event": "RHS", "evaluations": 800, "elapsed_seconds": 135.27578539215028, "t_rhs": 0.010087524791190768, "amplitudes": [0.6027938754661981], "minimum_electron": 5.724525147247
+899e-16, "maximum_electron": 0.4756203424151198, "minimum_phonon": 0.0016554063620317536}
+{"event": "RHS", "evaluations": 900, "elapsed_seconds": 152.45704234018922, "t_rhs": 0.011628393341915956, "amplitudes": [0.6032159980913855], "minimum_electron": 6.789131702408
+484e-16, "maximum_electron": 0.475658272503087, "minimum_phonon": 0.0016539556285996497}
+{"event": "RHS", "evaluations": 1000, "elapsed_seconds": 169.13408668898046, "t_rhs": 0.013159660959497945, "amplitudes": [0.6036342836366259], "minimum_electron": 7.91371088734
+7327e-16, "maximum_electron": 0.47569586969502137, "minimum_phonon": 0.0016525347432069658}
+{"event": "RHS", "evaluations": 1100, "elapsed_seconds": 186.46535747824237, "t_rhs": 0.014690821944634466, "amplitudes": [0.6040513411121452], "minimum_electron": 9.11017261142
+3969e-16, "maximum_electron": 0.4757333682938191, "minimum_phonon": 0.0016510011075257251}
+{"event": "RHS", "evaluations": 1200, "elapsed_seconds": 203.241336888168, "t_rhs": 0.01621150298293117, "amplitudes": [0.6044643614203774], "minimum_electron": 1.03750566118384
+04e-15, "maximum_electron": 0.4757705155153117, "minimum_phonon": 0.001649343692856407}
+{"event": "RHS", "evaluations": 1300, "elapsed_seconds": 220.5184263959527, "t_rhs": 0.01760074567714641, "amplitudes": [0.6048406559528371], "minimum_electron": 1.1601816860394
+392e-15, "maximum_electron": 0.47580436967683787, "minimum_phonon": 0.0016477755814584113}
+{"event": "RHS", "evaluations": 1400, "elapsed_seconds": 237.26106031704694, "t_rhs": 0.01887930053090942, "amplitudes": [0.6051861055014732], "minimum_electron": 1.279441175776
+4008e-15, "maximum_electron": 0.47583545726510673, "minimum_phonon": 0.0016462874633078675}
+{"event": "RHS", "evaluations": 1500, "elapsed_seconds": 254.76031454605982, "t_rhs": 0.020238959176307775, "amplitudes": [0.605552562612022], "minimum_electron": 1.413299506216
+2853e-15, "maximum_electron": 0.4758684442224354, "minimum_phonon": 0.0016447610934489584}
+{"event": "RHS", "evaluations": 1600, "elapsed_seconds": 271.41639913013205, "t_rhs": 0.021710668964702022, "amplitudes": [0.6059481709799821], "minimum_electron": 1.56676551289
+63334e-15, "maximum_electron": 0.47590406550533076, "minimum_phonon": 0.0016432849383096271}
+{"event": "RHS", "evaluations": 1700, "elapsed_seconds": 288.5240952922031, "t_rhs": 0.022968321454145017, "amplitudes": [0.6062853773969975], "minimum_electron": 1.705301887930
+588e-15, "maximum_electron": 0.4759344365779259, "minimum_phonon": 0.001641809190319934}
+{"event": "RHS", "evaluations": 1800, "elapsed_seconds": 305.1475688740611, "t_rhs": 0.024427631297264243, "amplitudes": [0.6066756608791286], "minimum_electron": 1.874970006415
+2423e-15, "maximum_electron": 0.47596959778885867, "minimum_phonon": 0.0016399419988808175}
+{"event": "RHS", "evaluations": 1900, "elapsed_seconds": 322.4512770809233, "t_rhs": 0.026023063693707042, "amplitudes": [0.6071011339106952], "minimum_electron": 2.071899934331
+2444e-15, "maximum_electron": 0.47600794109501887, "minimum_phonon": 0.001637963541719786}
+{"event": "RHS", "evaluations": 2000, "elapsed_seconds": 339.36211797082797, "t_rhs": 0.027505295291801277, "amplitudes": [0.6074952842693959], "minimum_electron": 2.26601843429
+42266e-15, "maximum_electron": 0.47604347263310254, "minimum_phonon": 0.0016359855610666172}
+{"event": "RHS", "evaluations": 2100, "elapsed_seconds": 356.5496056061238, "t_rhs": 0.028800589828943946, "amplitudes": [0.607838833368167], "minimum_electron": 2.4447989658490
+474e-15, "maximum_electron": 0.4760744512533943, "minimum_phonon": 0.0016341779554356038}
+{"event": "RHS", "evaluations": 2200, "elapsed_seconds": 373.43103727605194, "t_rhs": 0.03038951559044404, "amplitudes": [0.6082591297935142], "minimum_electron": 2.676181410162
+0275e-15, "maximum_electron": 0.4761123613145443, "minimum_phonon": 0.0016321726981743368}
+{"event": "RHS", "evaluations": 2300, "elapsed_seconds": 390.76711721904576, "t_rhs": 0.03188849587738578, "amplitudes": [0.6086544944351983], "minimum_electron": 2.907085059539
+7263e-15, "maximum_electron": 0.47614803358090574, "minimum_phonon": 0.0016305193804904666}
+{"event": "RHS", "evaluations": 2400, "elapsed_seconds": 407.68664570106193, "t_rhs": 0.03337925396465413, "amplitudes": [0.6090465965980862], "minimum_electron": 3.149292006134
+9547e-15, "maximum_electron": 0.47618342203605846, "minimum_phonon": 0.001628914761853542}
+{"event": "RHS", "evaluations": 2500, "elapsed_seconds": 424.8563309907913, "t_rhs": 0.034963885301906306, "amplitudes": [0.609462197441223], "minimum_electron": 3.4209435419125
+19e-15, "maximum_electron": 0.47622094279773985, "minimum_phonon": 0.0016272936307966917}
+{"event": "RHS", "evaluations": 2600, "elapsed_seconds": 441.7057329658419, "t_rhs": 0.036240617001666975, "amplitudes": [0.6097961547546227], "minimum_electron": 3.650765322509
+7476e-15, "maximum_electron": 0.47625110128189424, "minimum_phonon": 0.0016261039877626677}
+{"event": "RHS", "evaluations": 2700, "elapsed_seconds": 458.7740947199054, "t_rhs": 0.03747768697372894, "amplitudes": [0.6101189816562516], "minimum_electron": 3.8830181556754
+236e-15, "maximum_electron": 0.4762802618738282, "minimum_phonon": 0.0016250363922551097}
+{"event": "RHS", "evaluations": 2800, "elapsed_seconds": 475.98152172984555, "t_rhs": 0.03909707369505756, "amplitudes": [0.6105404570871028], "minimum_electron": 4.201647701676
+738e-15, "maximum_electron": 0.4763183440145669, "minimum_phonon": 0.0016235816095356735}
+{"event": "RHS", "evaluations": 2900, "elapsed_seconds": 492.9949870938435, "t_rhs": 0.04060254579885244, "amplitudes": [0.6109311474540111], "minimum_electron": 4.5130932935904
+5e-15, "maximum_electron": 0.4763536554582961, "minimum_phonon": 0.0016220002448471258}
+{"event": "RHS", "evaluations": 3000, "elapsed_seconds": 510.05043709883466, "t_rhs": 0.04212076680003688, "amplitudes": [0.611324040865236], "minimum_electron": 4.8424273688933
+18e-15, "maximum_electron": 0.4763891765701569, "minimum_phonon": 0.0016203995573446702}
+{"event": "RHS", "evaluations": 3100, "elapsed_seconds": 527.038141313009, "t_rhs": 0.043537362825302454, "amplitudes": [0.6116896372741841], "minimum_electron": 5.1638597802447
+4e-15, "maximum_electron": 0.4764222392971648, "minimum_phonon": 0.0016188733766122417}
+{"event": "RHS", "evaluations": 3200, "elapsed_seconds": 544.1805403279141, "t_rhs": 0.04477499541857824, "amplitudes": [0.6120082604958571], "minimum_electron": 5.4561007857573
+69e-15, "maximum_electron": 0.47645106148287003, "minimum_phonon": 0.0016174871474156148}
+{"event": "RHS", "evaluations": 3300, "elapsed_seconds": 560.9218159518205, "t_rhs": 0.04627175535882968, "amplitudes": [0.612392618425573], "minimum_electron": 5.82404619944310
+95e-15, "maximum_electron": 0.4764858392078701, "minimum_phonon": 0.001615845877584013}
+{"event": "RHS", "evaluations": 3400, "elapsed_seconds": 578.1372480830178, "t_rhs": 0.047924535135830684, "amplitudes": [0.6128158031047798], "minimum_electron": 6.249196297925
+989e-15, "maximum_electron": 0.4765241418162815, "minimum_phonon": 0.0016140422468613853}
+{"event": "RHS", "evaluations": 3500, "elapsed_seconds": 595.0593889858574, "t_rhs": 0.04934823957460976, "amplitudes": [0.6131792960400256], "minimum_electron": 6.6316142024477
+176e-15, "maximum_electron": 0.476557051529388, "minimum_phonon": 0.001612617745406343}
+{"event": "RHS", "evaluations": 3600, "elapsed_seconds": 612.3014478078112, "t_rhs": 0.0508170051910382, "amplitudes": [0.613553289933261], "minimum_electron": 7.042156054742001
+4e-15, "maximum_electron": 0.476590921458625, "minimum_phonon": 0.0016111762677537274}
+{"event": "RHS", "evaluations": 3700, "elapsed_seconds": 629.0488510630094, "t_rhs": 0.052280675538923335, "amplitudes": [0.6139249754154662], "minimum_electron": 7.467755358640
+89e-15, "maximum_electron": 0.4766245918725902, "minimum_phonon": 0.0016094972500408698}
+{"event": "RHS", "evaluations": 3800, "elapsed_seconds": 646.3795884000137, "t_rhs": 0.05388695959104874, "amplitudes": [0.6143317185755837], "minimum_electron": 7.9541058779456
+02e-15, "maximum_electron": 0.47666144901856206, "minimum_phonon": 0.0016074808832428219}
+{"event": "RHS", "evaluations": 3900, "elapsed_seconds": 663.1978075830266, "t_rhs": 0.05498871820200529, "amplitudes": [0.614610007439932], "minimum_electron": 8.29955201485636
+5e-15, "maximum_electron": 0.47668667281832794, "minimum_phonon": 0.0016060814213113626}
+{"event": "RHS", "evaluations": 4000, "elapsed_seconds": 680.6687179291621, "t_rhs": 0.056386690390905055, "amplitudes": [0.6149623001429739], "minimum_electron": 8.751972911952
+718e-15, "maximum_electron": 0.4767186119151821, "minimum_phonon": 0.0016043252974486956}
+{"event": "RHS", "evaluations": 4100, "elapsed_seconds": 697.3499313080683, "t_rhs": 0.057974373952440705, "amplitudes": [0.6153612975413861], "minimum_electron": 9.285198291637
+356e-15, "maximum_electron": 0.47675479565073636, "minimum_phonon": 0.001602331271851686}
+{"event": "RHS", "evaluations": 4200, "elapsed_seconds": 714.594044032041, "t_rhs": 0.05927200269641446, "amplitudes": [0.6156865332975464], "minimum_electron": 9.73656760250817
+1e-15, "maximum_electron": 0.4767842983387414, "minimum_phonon": 0.0016006943315610663}
+{"event": "RHS", "evaluations": 4300, "elapsed_seconds": 731.35711434111, "t_rhs": 0.06083278723572723, "amplitudes": [0.6160766943434086], "minimum_electron": 1.029829064383222
+e-14, "maximum_electron": 0.47681970017444325, "minimum_phonon": 0.0015987963300670219}
+{"event": "RHS", "evaluations": 4400, "elapsed_seconds": 748.8172805891372, "t_rhs": 0.06252368720668572, "amplitudes": [0.6164981139840922], "minimum_electron": 1.0930373645875
+016e-14, "maximum_electron": 0.47685795015699145, "minimum_phonon": 0.0015968597813054552}
+{"event": "RHS", "evaluations": 4500, "elapsed_seconds": 765.5764199658297, "t_rhs": 0.06394654529476447, "amplitudes": [0.6168517122871686], "minimum_electron": 1.1481496471495
+e-14, "maximum_electron": 0.4768900538668748, "minimum_phonon": 0.0015953794110644083}
+{"event": "RHS", "evaluations": 4600, "elapsed_seconds": 782.8964378968813, "t_rhs": 0.06554332065639426, "amplitudes": [0.6172474272981472], "minimum_electron": 1.2121216197421
+911e-14, "maximum_electron": 0.47692599170151057, "minimum_phonon": 0.0015937488982638779}
+{"event": "RHS", "evaluations": 4700, "elapsed_seconds": 799.6291252691299, "t_rhs": 0.06692209774463292, "amplitudes": [0.61758818132125], "minimum_electron": 1.269189488185580
+7e-14, "maximum_electron": 0.476956946826764, "minimum_phonon": 0.0015924280425475515}
+{"event": "RHS", "evaluations": 4800, "elapsed_seconds": 816.9924293230288, "t_rhs": 0.06852577250645987, "amplitudes": [0.617983428996688], "minimum_electron": 1.33772609652965
+52e-14, "maximum_electron": 0.4769928624166364, "minimum_phonon": 0.0015910034612938086}
+{"event": "RHS", "evaluations": 4900, "elapsed_seconds": 833.732736735139, "t_rhs": 0.07007764545852554, "amplitudes": [0.6183647989858729], "minimum_electron": 1.40628734345005
+97e-14, "maximum_electron": 0.47702752724118197, "minimum_phonon": 0.0015896139979283367}
+{"event": "RHS", "evaluations": 5000, "elapsed_seconds": 850.8718307008967, "t_rhs": 0.07174107227323294, "amplitudes": [0.6187723745219843], "minimum_electron": 1.4822521747308
+88e-14, "maximum_electron": 0.47706458519485173, "minimum_phonon": 0.0015880590419515873}
+{"event": "RHS", "evaluations": 5100, "elapsed_seconds": 867.599756826181, "t_rhs": 0.07297205441401175, "amplitudes": [0.619073189166057], "minimum_electron": 1.540135418466152
+e-14, "maximum_electron": 0.4770919435376582, "minimum_phonon": 0.0015868469533557822}
+{"event": "RHS", "evaluations": 5200, "elapsed_seconds": 885.0406736209989, "t_rhs": 0.07441515725692584, "amplitudes": [0.6194249730721197], "minimum_electron": 1.6098175608851
+43e-14, "maximum_electron": 0.47712394538497876, "minimum_phonon": 0.0015853962873693295}
+{"event": "RHS", "evaluations": 5300, "elapsed_seconds": 901.7903773840517, "t_rhs": 0.07611436577517344, "amplitudes": [0.6198379923047048], "minimum_electron": 1.6944162690688
+223e-14, "maximum_electron": 0.47716152880272256, "minimum_phonon": 0.0015835662668856804}
+{"event": "RHS", "evaluations": 5400, "elapsed_seconds": 919.0358895482495, "t_rhs": 0.07775730778542193, "amplitudes": [0.6202361100122237], "minimum_electron": 1.7788642355964
+393e-14, "maximum_electron": 0.4771977674607508, "minimum_phonon": 0.0015817551911042557}
+{"event": "RHS", "evaluations": 5500, "elapsed_seconds": 935.773487125989, "t_rhs": 0.07908707022125135, "amplitudes": [0.6205574590320886], "minimum_electron": 1.84914195035241
+43e-14, "maximum_electron": 0.4772270262950489, "minimum_phonon": 0.0015803148622148548}
+{"event": "RHS", "evaluations": 5600, "elapsed_seconds": 953.1481056660414, "t_rhs": 0.08067615756595711, "amplitudes": [0.6209404481752098], "minimum_electron": 1.9354075650970
+382e-14, "maximum_electron": 0.4772619068555377, "minimum_phonon": 0.0015785808546819274}
+{"event": "RHS", "evaluations": 5700, "elapsed_seconds": 969.9427948989905, "t_rhs": 0.08193013506504553, "amplitudes": [0.6212418839546413], "minimum_electron": 2.0052503162158
+15e-14, "maximum_electron": 0.4772893671685795, "minimum_phonon": 0.0015772266311760025}
+{"event": "RHS", "evaluations": 5800, "elapsed_seconds": 987.2665568701923, "t_rhs": 0.083503441996247, "amplitudes": [0.6216191013975378], "minimum_electron": 2.095104686414191
+e-14, "maximum_electron": 0.47732373999285577, "minimum_phonon": 0.0015754410806502665}
+{"event": "RHS", "evaluations": 5900, "elapsed_seconds": 1003.980781937018, "t_rhs": 0.0852357270945497, "amplitudes": [0.6220331781700319], "minimum_electron": 2.19692861753604
+24e-14, "maximum_electron": 0.47736148294027664, "minimum_phonon": 0.0015733896395881551}
+{"event": "RHS", "evaluations": 6000, "elapsed_seconds": 1021.3260492198169, "t_rhs": 0.0868145835187706, "amplitudes": [0.6224094361165857], "minimum_electron": 2.2923958782602
+04e-14, "maximum_electron": 0.4773957890891461, "minimum_phonon": 0.0015714852755244664}
+{"event": "RHS", "evaluations": 6100, "elapsed_seconds": 1038.018743189983, "t_rhs": 0.088386923717587, "amplitudes": [0.622783060673941], "minimum_electron": 2.3900132967283397
+e-14, "maximum_electron": 0.47742986491263417, "minimum_phonon": 0.0015694563920691078}
+{"event": "RHS", "evaluations": 6200, "elapsed_seconds": 1055.2500377460383, "t_rhs": 0.08999246811108357, "amplitudes": [0.6231634663915343], "minimum_electron": 2.492332546510
+0945e-14, "maximum_electron": 0.4774645692197279, "minimum_phonon": 0.0015673445613090169}
+{"event": "RHS", "evaluations": 6300, "elapsed_seconds": 1071.9985054568388, "t_rhs": 0.09164360877159718, "amplitudes": [0.6235535106336819], "minimum_electron": 2.600361620863
+2967e-14, "maximum_electron": 0.47750016334933226, "minimum_phonon": 0.0015652140245001032}
+{"event": "RHS", "evaluations": 6400, "elapsed_seconds": 1089.4459402537905, "t_rhs": 0.09333216658480942, "amplitudes": [0.6239511766131349], "minimum_electron": 2.713801796435
+4347e-14, "maximum_electron": 0.47753646396601646, "minimum_phonon": 0.0015632355507675803}
+{"event": "RHS", "evaluations": 6500, "elapsed_seconds": 1106.2880256888457, "t_rhs": 0.09483902417613703, "amplitudes": [0.624305015296856], "minimum_electron": 2.8175828469273
+157e-14, "maximum_electron": 0.4775687731456059, "minimum_phonon": 0.0015616256838918026}
+{"event": "RHS", "evaluations": 6600, "elapsed_seconds": 1123.4452636572532, "t_rhs": 0.0965076547818808, "amplitudes": [0.6246957054568247], "minimum_electron": 2.9353280421875
+415e-14, "maximum_electron": 0.47760445743110264, "minimum_phonon": 0.0015598635782770017}
+{"event": "RHS", "evaluations": 6700, "elapsed_seconds": 1140.0476459600031, "t_rhs": 0.09808146012347344, "amplitudes": [0.6250631031320207], "minimum_electron": 3.049117061419
+1326e-14, "maximum_electron": 0.47763802401082217, "minimum_phonon": 0.0015580942804387496}
+{"event": "RHS", "evaluations": 6800, "elapsed_seconds": 1157.3893445418216, "t_rhs": 0.09941006841763125, "amplitudes": [0.6253724394386683], "minimum_electron": 3.147256626601
+68e-14, "maximum_electron": 0.47766629325565974, "minimum_phonon": 0.0015565677471240634}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 1164.5544752022251,
+  "energy_ledger_scaled_max": 2.7755575615628914e-16,
+  "instantaneous_residual_max": 1.6028844918025698e-15,
+  "rhs_calls": 6843,
+  "final": {
+    "amplitudes": [
+      0.6255095511818891
+    ],
+    "electron_energy": [
+      0.07512001646107974
+    ],
+    "excitation_energy": [
+      0.45432691008608356
+    ],
+    "phonon_energy": [
+      0.148400827090869
+    ],
+    "temperatures": [
+      0.3828313794046113
+    ],
+    "forces": [
+      -0.2900428741968528
+    ],
+    "escape": [
+      0.0
+    ],
+    "input": [
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.0034927987167954404
+    ],
+    "condensate_heat": [
+      0.008089146165875536
+    ],
+    "transport": 0.0,
+    "total": 0.22352084355194873,
+    "conserved": 0.22352084355194873,
+    "minimum_electron": 3.1914455002393485e-14,
+    "maximum_electron": 0.47767882559907626,
+    "minimum_phonon": 0.0015558795879006182
+  }
+}
+{"event": "STOP", "elapsed_seconds": 1164.5557959321886}
+jdiaz@geminga:~/pysnspd$ cd /home/jdiaz/pysnspd
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+STAGE2_BATCH=/home/jdiaz/pysnspd/tmp/stage2_validation_$(date +%Y%m%d_%H%M%S)
+/home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py --plan docs/implementation/stage2/resume_20260921/manual_validation_plan
+.json --output-root "$STAGE2_BATCH" --execute
+{"event": "BATCH_START", "utc": "2026-09-21T20:34:19.922581+00:00", "elapsed_seconds": 3.7631019949913025e-05, "plan": "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_202
+60921/manual_validation_plan.json", "contract_sha256": "5ae6a51b0e6ce213238fc90b35a3c87e387ea0b7ec512ff017671201235b2dd6", "tasks": 21}
+{"event": "TASK_START", "utc": "2026-09-21T20:34:19.929515+00:00", "elapsed_seconds": 0.00696791335940361, "index": 1, "total": 21, "task": "one_time_40", "phase": "temporal", "
+output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_40.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "one", "--steps", "40", "--duration", "2.0", "-
+-phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--r
+eaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "inf", "--heating", "0.0", "--method", "rk4
+", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_40.json"], "meaning": "t_rhs is a trial evaluation
+time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.22913975827395916, "t_rhs": 0.0, "amplitudes": [0.6], "minimum_electron": 4.274417143756049e-44, "maximum_electron": 0.47
+536960013142937, "minimum_phonon": 0.0016666666666740751}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 14.316744405310601, "t_rhs": 1.225, "amplitudes": [0.7417527306227802], "minimum_electron": 2.8431239734388185e-12, "maxi
+mum_electron": 0.48869419956830584, "minimum_phonon": 0.0007144341213045169}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 24.61298912903294,
+  "energy_ledger_scaled_max": 6.030218338559656e-08,
+  "instantaneous_residual_max": 1.6028844918025698e-15,
+  "rhs_calls": 172,
+  "final": {
+    "amplitudes": [
+      0.7593466803212935
+    ],
+    "electron_energy": [
+      0.09110122991820302
+    ],
+    "excitation_energy": [
+      0.5381431140405886
+    ],
+    "phonon_energy": [
+      0.1324196739359289
+    ],
+    "temperatures": [
+      0.4263981951505296
+    ],
+    "forces": [
+      -0.01734930156366904
+    ],
+    "escape": [
+      0.0
+    ],
+    "input": [
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.019473951871735506
+    ],
+    "condensate_heat": [
+      0.02822939738834001
+    ],
+    "transport": 0.0,
+    "total": 0.22352090385413192,
+    "conserved": 0.22352090385413192,
+    "minimum_electron": 2.62498683760006e-12,
+    "maximum_electron": 0.4902562381605854,
+    "minimum_phonon": 0.00043003955176456964
+  }
+}
+{"event": "STOP", "elapsed_seconds": 24.61748425802216}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:34:44.880455+00:00", "elapsed_seconds": 24.95791454706341, "task": "one_time_40"}
+{"event": "TASK_START", "utc": "2026-09-21T20:34:44.888218+00:00", "elapsed_seconds": 24.965675035025924, "index": 2, "total": 21, "task": "one_time_80", "phase": "temporal", "o
+utput": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_80.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "one", "--steps", "80", "--duration", "2.0", "-
+-phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--r
+eaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "inf", "--heating", "0.0", "--method", "rk4
+", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_80.json"], "meaning": "t_rhs is a trial evaluation
+time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.22905136784538627, "t_rhs": 0.0, "amplitudes": [0.6], "minimum_electron": 4.274417143756049e-44, "maximum_electron": 0.47
+536960013142937, "minimum_phonon": 0.0016666666666740751}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 14.340409212745726, "t_rhs": 0.6125, "amplitudes": [0.703988690571766], "minimum_electron": 1.5025046678740468e-12, "maxi
+mum_electron": 0.48506311870275, "minimum_phonon": 0.001084628066653985}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 28.636233560740948, "t_rhs": 1.2375, "amplitudes": [0.7422281362056562], "minimum_electron": 2.8524587473908827e-12, "max
+imum_electron": 0.4887389737057558, "minimum_phonon": 0.000705889136204025}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 42.95209927111864, "t_rhs": 1.8625, "amplitudes": [0.757403205149495], "minimum_electron": 2.732779447760181e-12, "maximu
+m_electron": 0.49009975267039313, "minimum_phonon": 0.0004693096555033864}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 47.58093557972461,
+  "energy_ledger_scaled_max": 3.632636386141641e-09,
+  "instantaneous_residual_max": 1.6028844918025698e-15,
+  "rhs_calls": 332,
+  "final": {
+    "amplitudes": [
+      0.7593466929390613
+    ],
+    "electron_energy": [
+      0.09110119327061011
+    ],
+    "excitation_energy": [
+      0.538143082668377
+    ],
+    "phonon_energy": [
+      0.1324196539139748
+    ],
+    "temperatures": [
+      0.42639818720155337
+    ],
+    "forces": [
+      -0.01734928819887832
+    ],
+    "escape": [
+      0.0
+    ],
+    "input": [
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.0194739718936896
+    ],
+    "condensate_heat": [
+      0.02822936586068951
+    ],
+    "transport": 0.0,
+    "total": 0.22352084718458493,
+    "conserved": 0.22352084718458493,
+    "minimum_electron": 2.6239393146226568e-12,
+    "maximum_electron": 0.49025622223833987,
+    "minimum_phonon": 0.00042868590537668535
+  }
+}
+{"event": "STOP", "elapsed_seconds": 47.58562433393672}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:35:32.717385+00:00", "elapsed_seconds": 72.7948539913632, "task": "one_time_80"}
+{"event": "TASK_START", "utc": "2026-09-21T20:35:32.725012+00:00", "elapsed_seconds": 72.802469545044, "index": 3, "total": 21, "task": "one_time_160", "phase": "temporal", "out
+put": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_160.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "one", "--steps", "160", "--duration", "2.0", "
+--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--
+reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "inf", "--heating", "0.0", "--method", "rk
+4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_160.json"], "meaning": "t_rhs is a trial evaluatio
+n time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.22852524230256677, "t_rhs": 0.0, "amplitudes": [0.6], "minimum_electron": 4.274417143756049e-44, "maximum_electron": 0.47
+536960013142937, "minimum_phonon": 0.0016666666666740751}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 14.447373220231384, "t_rhs": 0.30625, "amplitudes": [0.6655511175250781], "minimum_electron": 4.2578007612113414e-13, "ma
+ximum_electron": 0.4813954542641048, "minimum_phonon": 0.0013506700585878826}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 28.960379037074745, "t_rhs": 0.61875, "amplitudes": [0.7045967322727139], "minimum_electron": 1.5247687809897613e-12, "ma
+ximum_electron": 0.4851217237528995, "minimum_phonon": 0.0010877445621243766}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 43.42944745812565, "t_rhs": 0.93125, "amplitudes": [0.7280211536080651], "minimum_electron": 2.4313647464592645e-12, "max
+imum_electron": 0.48738377972872404, "minimum_phonon": 0.0008747070658584144}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 57.719596022274345, "t_rhs": 1.2437500000000001, "amplitudes": [0.7424590465268788], "minimum_electron": 2.85694141270411
+34e-12, "maximum_electron": 0.4887606773115841, "minimum_phonon": 0.0007091917327226835}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 72.1547867259942, "t_rhs": 1.5562500000000001, "amplitudes": [0.7515836394155645], "minimum_electron": 2.900132810284061e
+-12, "maximum_electron": 0.48959872327840454, "minimum_phonon": 0.0005741342798909619}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 86.59765533497557, "t_rhs": 1.8687500000000001, "amplitudes": [0.7575003105440596], "minimum_electron": 2.728163686177586
+e-12, "maximum_electron": 0.49010776129839717, "minimum_phonon": 0.00047214942155746086}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 94.18090074695647,
+  "energy_ledger_scaled_max": 2.2285109868569464e-10,
+  "instantaneous_residual_max": 1.6028844918025698e-15,
+  "rhs_calls": 652,
+  "final": {
+    "amplitudes": [
+      0.759346701080834
+    ],
+    "electron_energy": [
+      0.09110116552420888
+    ],
+    "excitation_energy": [
+      0.5381430583259814
+    ],
+    "phonon_energy": [
+      0.13241967825059076
+    ],
+    "temperatures": [
+      0.4263981808212365
+    ],
+    "forces": [
+      -0.017349291453864546
+    ],
+    "escape": [
+      0.0
+    ],
+    "input": [
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.019473947557073698
+    ],
+    "condensate_heat": [
+      0.028229365215364764
+    ],
+    "transport": 0.0,
+    "total": 0.22352084377479964,
+    "conserved": 0.22352084377479964,
+    "minimum_electron": 2.6238944236865347e-12,
+    "maximum_electron": 0.49025622531207724,
+    "minimum_phonon": 0.0004329530475765878
+  }
+}
+{"event": "STOP", "elapsed_seconds": 94.18868942698464}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:37:07.166908+00:00", "elapsed_seconds": 167.2443672963418, "task": "one_time_160"}
+{"event": "TASK_START", "utc": "2026-09-21T20:37:07.174453+00:00", "elapsed_seconds": 167.25190819893032, "index": 4, "total": 21, "task": "one_time_320", "phase": "temporal", "
+output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_320.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "one", "--steps", "320", "--duration", "2.0", "
+--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--
+reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "inf", "--heating", "0.0", "--method", "rk
+4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_320.json"], "meaning": "t_rhs is a trial evaluatio
+n time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.23081123689189553, "t_rhs": 0.0, "amplitudes": [0.6], "minimum_electron": 4.274417143756049e-44, "maximum_electron": 0.47
+536960013142937, "minimum_phonon": 0.0016666666666740751}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 14.532739775720984, "t_rhs": 0.153125, "amplitudes": [0.6372714631207871], "minimum_electron": 8.795651967107766e-14, "ma
+ximum_electron": 0.478758831929471, "minimum_phonon": 0.0015003808551858904}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 28.971114564687014, "t_rhs": 0.309375, "amplitudes": [0.6660570619494757], "minimum_electron": 4.3488456139927905e-13, "m
+aximum_electron": 0.48144310510560595, "minimum_phonon": 0.0013456695686433838}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 43.485716736875474, "t_rhs": 0.465625, "amplitudes": [0.6880086381899757], "minimum_electron": 9.651013843142883e-13, "ma
+ximum_electron": 0.4835279380107137, "minimum_phonon": 0.0012068867493151396}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 57.923567407764494, "t_rhs": 0.6218750000000001, "amplitudes": [0.7048960111761119], "minimum_electron": 1.53588699439065
+92e-12, "maximum_electron": 0.4851505826466138, "minimum_phonon": 0.0010824956211535344}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 72.40783207304776, "t_rhs": 0.7781250000000001, "amplitudes": [0.7179864305046104], "minimum_electron": 2.043883593221266
+2e-12, "maximum_electron": 0.4864150792749111, "minimum_phonon": 0.0009721922822166768}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 86.96914288774133, "t_rhs": 0.9343750000000001, "amplitudes": [0.7282034030121822], "minimum_electron": 2.43809660549147e
+-12, "maximum_electron": 0.48740133403175334, "minimum_phonon": 0.0008707442454392663}
+{"event": "RHS", "evaluations": 700, "elapsed_seconds": 101.53221187414601, "t_rhs": 1.0906250000000002, "amplitudes": [0.7362291077986035], "minimum_electron": 2.70647328647388
+46e-12, "maximum_electron": 0.4881708758436696, "minimum_phonon": 0.000784950866964448}
+{"event": "RHS", "evaluations": 800, "elapsed_seconds": 116.07997917570174, "t_rhs": 1.2468750000000002, "amplitudes": [0.742572881980848], "minimum_electron": 2.859019890800396
+e-12, "maximum_electron": 0.4887713645135208, "minimum_phonon": 0.0007057986263733354}
+{"event": "RHS", "evaluations": 900, "elapsed_seconds": 130.52289909590036, "t_rhs": 1.4031250000000002, "amplitudes": [0.7476183447637935], "minimum_electron": 2.91580371961471
+2e-12, "maximum_electron": 0.4892398738038521, "minimum_phonon": 0.0006312946165224967}
+{"event": "RHS", "evaluations": 1000, "elapsed_seconds": 145.0483200890012, "t_rhs": 1.5593750000000002, "amplitudes": [0.7516565415344914], "minimum_electron": 2.89925972794167
+3e-12, "maximum_electron": 0.4896052224850194, "minimum_phonon": 0.0005713122733439287}
+{"event": "RHS", "evaluations": 1100, "elapsed_seconds": 159.556288566906, "t_rhs": 1.7156250000000002, "amplitudes": [0.7549096634731141], "minimum_electron": 2.830206826175377
+3e-12, "maximum_electron": 0.489889964839277, "minimum_phonon": 0.0005175924114074884}
+{"event": "RHS", "evaluations": 1200, "elapsed_seconds": 174.0571779748425, "t_rhs": 1.8718750000000002, "amplitudes": [0.7575482579735113], "minimum_electron": 2.72588647075891
+07e-12, "maximum_electron": 0.490111701474492, "minimum_phonon": 0.0004698767909559104}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 187.6182247218676,
+  "energy_ledger_scaled_max": 1.3798101550221986e-11,
+  "instantaneous_residual_max": 1.6028844918025698e-15,
+  "rhs_calls": 1292,
+  "final": {
+    "amplitudes": [
+      0.7593466995821505
+    ],
+    "electron_energy": [
+      0.09110117602457363
+    ],
+    "excitation_energy": [
+      0.5381430681997594
+    ],
+    "phonon_energy": [
+      0.13241966754117301
+    ],
+    "temperatures": [
+      0.42639818364175563
+    ],
+    "forces": [
+      -0.017349288884268232
+    ],
+    "escape": [
+      0.0
+    ],
+    "input": [
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.01947395826649141
+    ],
+    "condensate_heat": [
+      0.028229364990151377
+    ],
+    "transport": 0.0,
+    "total": 0.22352084356574664,
+    "conserved": 0.22352084356574664,
+    "minimum_electron": 2.6239540650619887e-12,
+    "maximum_electron": 0.490256225344024,
+    "minimum_phonon": 0.00043163746668829566
+  }
+}
+{"event": "STOP", "elapsed_seconds": 187.63326331600547}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:40:15.079593+00:00", "elapsed_seconds": 355.15705363918096, "task": "one_time_320"}
+{"event": "TASK_START", "utc": "2026-09-21T20:40:15.087403+00:00", "elapsed_seconds": 355.1648600520566, "index": 5, "total": 21, "task": "one_time_assessment", "phase": "tempor
+al", "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_assessment.json"}
+{
+  "status": "PASS",
+  "finest_max_error": 6.143596723348075e-05,
+  "successive_max_error_reduction": [
+    2.160035990467257,
+    2.990204277504468
+  ]
+}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:40:15.178070+00:00", "elapsed_seconds": 355.25553136412054, "task": "one_time_assessment"}
+{"event": "TASK_START", "utc": "2026-09-21T20:40:15.184588+00:00", "elapsed_seconds": 355.2620435273275, "index": 6, "total": 21, "task": "two_time_40", "phase": "temporal", "ou
+tput": "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_20260921/two_active_40.json"}
+{"event": "REUSED_COMPLETE_TRAJECTORY", "utc": "2026-09-21T20:40:15.281423+00:00", "elapsed_seconds": 355.3588846051134, "task": "two_time_40", "hashes": {"/home/jdiaz/pysnspd/d
+ocs/implementation/stage2/resume_20260921/two_active_40.json": "f778f1f90ad4b6b43317eaa00139ccccb5eeea926da8aff031d8e507d231a80e", "/home/jdiaz/pysnspd/docs/implementation/stage
+2/resume_20260921/two_active_40.npz": "2895439777dcbfccd85d93134bf0c3c725f154c437fee8b1b7c307258b319052", "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_20260921/two_act
+ive_40_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619"}}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:40:15.281613+00:00", "elapsed_seconds": 355.3590654260479, "task": "two_time_40"}
+{"event": "TASK_START", "utc": "2026-09-21T20:40:15.289138+00:00", "elapsed_seconds": 355.366592051927, "index": 7, "total": 21, "task": "two_time_80", "phase": "temporal", "out
+put": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_time_80.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "80", "--duration", "2.0", "-
+-phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--r
+eaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "r
+k4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_time_80.json"], "meaning": "t_rhs is a trial evaluatio
+n time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.3741855090484023, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 3.540243468083482e-44, "maximum_electron"
+: 0.4922019626507864, "minimum_phonon": 3.3382377953650095e-15}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 26.973826834000647, "t_rhs": 0.6125, "amplitudes": [0.6547234273487733, 0.9632841216970117], "minimum_electron": 1.182023
+0845092065e-14, "maximum_electron": 0.49203244967718335, "minimum_phonon": 2.63377892333399e-10}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 53.63439626991749, "t_rhs": 1.2375, "amplitudes": [0.7113054256089462, 0.9723588992674763], "minimum_electron": 3.6141850
+81604222e-14, "maximum_electron": 0.4915790234700286, "minimum_phonon": 1.5520709094663187e-09}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 80.30496381176636, "t_rhs": 1.8625, "amplitudes": [0.7437920065847015, 0.976117207618525], "minimum_electron": 3.99678591
+599198e-14, "maximum_electron": 0.49117766502585014, "minimum_phonon": 4.631298730151698e-09}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 88.96459259372205,
+  "energy_ledger_scaled_max": 6.751635917012777e-10,
+  "instantaneous_residual_max": 1.6426963955762375e-14,
+  "rhs_calls": 332,
+  "final": {
+    "amplitudes": [
+      0.7490601326244236,
+      0.9763435112728475
+    ],
+    "electron_energy": [
+      0.03967240493345198,
+      -0.43766817034858274
+    ],
+    "excitation_energy": [
+      0.4823373673385049,
+      0.061776639497198735
+    ],
+    "phonon_energy": [
+      0.11040887669243478,
+      0.0025863857295190854
+    ],
+    "temperatures": [
+      0.4076240132167801,
+      0.25148383060251617
+    ],
+    "forces": [
+      -0.049977192918339075,
+      -0.0024433383710771653
+    ],
+    "escape": [
+      0.0163479858717629,
+      2.9731276873856914e-05
+    ],
+    "input": [
+      0.020000000000000014,
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.0251367632434667,
+      0.0007224911987284922
+    ],
+    "condensate_heat": [
+      0.03247334750157263,
+      0.0015239943378050928
+    ],
+    "transport": 0.05994159199356029,
+    "total": -0.2850005029931769,
+    "conserved": -0.28862278584454015,
+    "minimum_electron": 3.865637447398163e-14,
+    "maximum_electron": 0.49110159432888334,
+    "minimum_phonon": 5.1567259330626305e-09
+  }
+}
+{"event": "STOP", "elapsed_seconds": 88.97026530187577}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:41:44.508225+00:00", "elapsed_seconds": 444.58568518795073, "task": "two_time_80"}
+{"event": "TASK_START", "utc": "2026-09-21T20:41:44.515948+00:00", "elapsed_seconds": 444.5934049580246, "index": 8, "total": 21, "task": "two_time_160", "phase": "temporal", "o
+utput": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_time_160.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "160", "--duration", "2.0", "
+--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--
+reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "
+rk4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_time_160.json"], "meaning": "t_rhs is a trial evaluat
+ion time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.37744686380028725, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 3.540243468083482e-44, "maximum_electron
+": 0.4922019626507864, "minimum_phonon": 3.3382377953650095e-15}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 27.431547747924924, "t_rhs": 0.30625, "amplitudes": [0.6110360381086791, 0.9568998249688249], "minimum_electron": 1.95848
+79349703163e-15, "maximum_electron": 0.49219961165852166, "minimum_phonon": 3.1808022296434816e-11}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 54.78857207298279, "t_rhs": 0.61875, "amplitudes": [0.6554848979011748, 0.9634033080293816], "minimum_electron": 1.208526
+1013654812e-14, "maximum_electron": 0.4920282808835834, "minimum_phonon": 2.6757204715043653e-10}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 82.20583995990455, "t_rhs": 0.93125, "amplitudes": [0.687763029633844, 0.9686190344506722], "minimum_electron": 2.5959505
+716515814e-14, "maximum_electron": 0.491803022460612, "minimum_phonon": 7.091821463886403e-10}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 109.54868080001324, "t_rhs": 1.2437500000000001, "amplitudes": [0.7117247854797815, 0.9724221924378059], "minimum_electro
+n": 3.6297182333722485e-14, "maximum_electron": 0.49157456791549137, "minimum_phonon": 1.4565077628005427e-09}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 136.8051986140199, "t_rhs": 1.5562500000000001, "amplitudes": [0.7299166745303162, 0.9748778067077633], "minimum_electron
+": 4.059681736240212e-14, "maximum_electron": 0.4913629332838466, "minimum_phonon": 2.622129797168617e-09}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 164.08314835792407, "t_rhs": 1.8687500000000001, "amplitudes": [0.7440447028947424, 0.976132285333763], "minimum_electron
+": 3.991960741057191e-14, "maximum_electron": 0.4911741018346715, "minimum_phonon": 4.031805861491807e-09}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 178.51862604916096,
+  "energy_ledger_scaled_max": 4.1459724542391996e-11,
+  "instantaneous_residual_max": 1.6338926739356552e-14,
+  "rhs_calls": 652,
+  "final": {
+    "amplitudes": [
+      0.7490601306198202,
+      0.9763435164285166
+    ],
+    "electron_energy": [
+      0.03967243062699044,
+      -0.4376681697930538
+    ],
+    "excitation_energy": [
+      0.48233739216432886,
+      0.06177664029374947
+    ],
+    "phonon_energy": [
+      0.1104088505495452,
+      0.0025863857521330634
+    ],
+    "temperatures": [
+      0.40762402089268013,
+      0.2514838320592842
+    ],
+    "forces": [
+      -0.0499771855287196,
+      -0.0024433284439136713
+    ],
+    "escape": [
+      0.01634798510912545,
+      2.9731277015613726e-05
+    ],
+    "input": [
+      0.020000000000000014,
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.025136790148993744,
+      0.0007224912214842268
+    ],
+    "condensate_heat": [
+      0.03247334694907888,
+      0.0015239948135982043
+    ],
+    "transport": 0.05994159257441797,
+    "total": -0.28500050286438505,
+    "conserved": -0.288622786478244,
+    "minimum_electron": 3.8653169389510077e-14,
+    "maximum_electron": 0.49110159169657996,
+    "minimum_phonon": 4.550091847827464e-09
+  }
+}
+{"event": "STOP", "elapsed_seconds": 178.52855129912496}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:44:43.308599+00:00", "elapsed_seconds": 623.3860590541735, "task": "two_time_160"}
+{"event": "TASK_START", "utc": "2026-09-21T20:44:43.316191+00:00", "elapsed_seconds": 623.3936478761025, "index": 9, "total": 21, "task": "two_time_320", "phase": "temporal", "o
+utput": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_time_320.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "320", "--duration", "2.0", "
+--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--
+reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "1", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "
+rk4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_time_320.json"], "meaning": "t_rhs is a trial evaluat
+ion time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 0.37401417875662446, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 3.540243468083482e-44, "maximum_electron
+": 0.4922019626507864, "minimum_phonon": 3.3382377953650095e-15}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 27.494352286681533, "t_rhs": 0.153125, "amplitudes": [0.5831347773589314, 0.9534031544922951], "minimum_electron": 2.5388
+480912164777e-16, "maximum_electron": 0.4922324741001754, "minimum_phonon": 7.890735356420477e-12}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 54.92931554000825, "t_rhs": 0.309375, "amplitudes": [0.6115606651840932, 0.9569699884777514], "minimum_electron": 2.01456
+77965346436e-15, "maximum_electron": 0.49219849217365447, "minimum_phonon": 3.660918827805573e-11}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 82.26797543466091, "t_rhs": 0.465625, "amplitudes": [0.6355351865370571, 0.9603568572734225], "minimum_electron": 6.12844
+0705409664e-15, "maximum_electron": 0.4921240663241973, "minimum_phonon": 1.0512512306852126e-10}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 109.47824304690585, "t_rhs": 0.6218750000000001, "amplitudes": [0.6558619230819333, 0.9634624992046719], "minimum_electro
+n": 1.2219172503392048e-14, "maximum_electron": 0.49202617985844, "minimum_phonon": 2.3053724150852015e-10}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 136.71552659291774, "t_rhs": 0.7781250000000001, "amplitudes": [0.6731889184996188, 0.9662387409941596], "minimum_electro
+n": 1.9239343897242155e-14, "maximum_electron": 0.49191592728616224, "minimum_phonon": 4.2083763849289765e-10}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 164.05960462568328, "t_rhs": 0.9343750000000001, "amplitudes": [0.6880399190896868, 0.9686642706570507], "minimum_electro
+n": 2.6088503464349574e-14, "maximum_electron": 0.4918007039577275, "minimum_phonon": 6.732374343106475e-10}
+{"event": "RHS", "evaluations": 700, "elapsed_seconds": 191.1849357080646, "t_rhs": 1.0906250000000002, "amplitudes": [0.7008394419157292, 0.9707340042320316], "minimum_electron
+": 3.194777534289326e-14, "maximum_electron": 0.49168522524381936, "minimum_phonon": 1.0177009252871047e-09}
+{"event": "RHS", "evaluations": 800, "elapsed_seconds": 218.38026602379978, "t_rhs": 1.2468750000000002, "amplitudes": [0.7119327073357614, 0.9724534247074322], "minimum_electro
+n": 3.636916927480368e-14, "maximum_electron": 0.4915723462691814, "minimum_phonon": 1.4330146642055387e-09}
+{"event": "RHS", "evaluations": 900, "elapsed_seconds": 245.59657356096432, "t_rhs": 1.4031250000000002, "amplitudes": [0.7216014403237264, 0.9738350777886483], "minimum_electro
+n": 3.922513542818495e-14, "maximum_electron": 0.49146393138855893, "minimum_phonon": 1.974661666059568e-09}
+{"event": "RHS", "evaluations": 1000, "elapsed_seconds": 272.5651440387592, "t_rhs": 1.5593750000000002, "amplitudes": [0.7300763682687914, 0.9748961972619417], "minimum_electro
+n": 4.061004706427525e-14, "maximum_electron": 0.4913609265822683, "minimum_phonon": 2.623111836930854e-09}
+{"event": "RHS", "evaluations": 1100, "elapsed_seconds": 299.74851705273613, "t_rhs": 1.7156250000000002, "amplitudes": [0.7375471379916032, 0.9756570126635646], "minimum_electr
+on": 4.0743499300972144e-14, "maximum_electron": 0.4912637250272408, "minimum_phonon": 3.389903003759813e-09}
+{"event": "RHS", "evaluations": 1200, "elapsed_seconds": 326.802423377987, "t_rhs": 1.8718750000000002, "amplitudes": [0.7441701667904036, 0.9761395096991027], "minimum_electron
+": 3.9894142520733823e-14, "maximum_electron": 0.4911723257780668, "minimum_phonon": 4.069849399114443e-09}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 352.28448441484943,
+  "energy_ledger_scaled_max": 2.562117185078705e-12,
+  "instantaneous_residual_max": 1.6287318715946242e-14,
+  "rhs_calls": 1292,
+  "final": {
+    "amplitudes": [
+      0.7490601294755269,
+      0.9763435167078902
+    ],
+    "electron_energy": [
+      0.0396724317232402,
+      -0.4376681692822478
+    ],
+    "excitation_energy": [
+      0.4823373927652589,
+      0.06177664081761586
+    ],
+    "phonon_energy": [
+      0.1104088493312188,
+      0.002586385816854755
+    ],
+    "temperatures": [
+      0.4076240209335776,
+      0.25148383256778795
+    ],
+    "forces": [
+      -0.04997718557942865,
+      -0.002443327512141061
+    ],
+    "escape": [
+      0.016347984613014316,
+      2.9731280778061524e-05
+    ],
+    "input": [
+      0.020000000000000014,
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.025136791863431287,
+      0.0007224912899683665
+    ],
+    "condensate_heat": [
+      0.03247334658428039,
+      0.0015239948427072491
+    ],
+    "transport": 0.05994159315383514,
+    "total": -0.285000502410934,
+    "conserved": -0.2886227865171416,
+    "minimum_electron": 3.865269452571041e-14,
+    "maximum_electron": 0.49110159037899515,
+    "minimum_phonon": 4.577855036412922e-09
+  }
+}
+{"event": "STOP", "elapsed_seconds": 352.30237901583314}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:50:35.908903+00:00", "elapsed_seconds": 975.9863628880121, "task": "two_time_320"}
+{"event": "TASK_START", "utc": "2026-09-21T20:50:35.916653+00:00", "elapsed_seconds": 975.9941095001996, "index": 10, "total": 21, "task": "two_time_assessment", "phase": "tempo
+ral", "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_time_assessment.json"}
+{
+  "status": "PASS",
+  "finest_max_error": 4.7399839355602646e-05,
+  "successive_max_error_reduction": [
+    3.022285089879002,
+    3.0306438764120704
+  ]
+}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T20:50:36.035886+00:00", "elapsed_seconds": 976.1133474363014, "task": "two_time_assessment"}
+{"event": "TASK_START", "utc": "2026-09-21T20:50:36.042365+00:00", "elapsed_seconds": 976.1198209580034, "index": 11, "total": 21, "task": "two_electron_2", "phase": "electronic
+_mesh", "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_electron_2.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "160", "--duration", "2.0", "
+--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--
+reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "2", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "
+rk4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_electron_2.json"], "meaning": "t_rhs is a trial evalu
+ation time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 1.3556277710013092, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 3.103501669641575e-44, "maximum_electron"
+: 0.49610016787999517, "minimum_phonon": 3.3382377953650095e-15}
+{"event": "RHS", "evaluations": 100, "elapsed_seconds": 119.09364356007427, "t_rhs": 0.30625, "amplitudes": [0.611036029311947, 0.9568998206995787], "minimum_electron": 6.734537
+4547994e-16, "maximum_electron": 0.4960988735483849, "minimum_phonon": 6.948139578358742e-11}
+{"event": "RHS", "evaluations": 200, "elapsed_seconds": 237.43400246696547, "t_rhs": 0.61875, "amplitudes": [0.6554848167526028, 0.9634033066581765], "minimum_electron": 4.53828
+6666683563e-15, "maximum_electron": 0.49601305483920727, "minimum_phonon": 4.904004068408402e-10}
+{"event": "RHS", "evaluations": 300, "elapsed_seconds": 355.58846280910075, "t_rhs": 0.93125, "amplitudes": [0.6877627627306578, 0.9686190482690283], "minimum_electron": 1.03631
+56663055115e-14, "maximum_electron": 0.49590028956833165, "minimum_phonon": 1.4187781122984169e-09}
+{"event": "RHS", "evaluations": 400, "elapsed_seconds": 473.6759122190997, "t_rhs": 1.2437500000000001, "amplitudes": [0.7117242119858139, 0.9724222289576814], "minimum_electron
+": 1.515741106590964e-14, "maximum_electron": 0.4957859752241313, "minimum_phonon": 3.054613748464784e-09}
+{"event": "RHS", "evaluations": 500, "elapsed_seconds": 591.6357779861428, "t_rhs": 1.5562500000000001, "amplitudes": [0.7299156929773007, 0.9748778659757421], "minimum_electron
+": 1.756790510934704e-14, "maximum_electron": 0.49568009399388824, "minimum_phonon": 5.2390104352402315e-09}
+{"event": "RHS", "evaluations": 600, "elapsed_seconds": 709.4672467410564, "t_rhs": 1.8687500000000001, "amplitudes": [0.7440432427925621, 0.9761323607661706], "minimum_electron
+": 1.781333510164518e-14, "maximum_electron": 0.4955854954276319, "minimum_phonon": 8.33289246949697e-09}
+{
+  "status": "COMPLETED_NOT_YET_ADJUDICATED",
+  "runtime_seconds": 771.0407402748242,
+  "energy_ledger_scaled_max": 4.1490533231325344e-11,
+  "instantaneous_residual_max": 1.578858571660291e-14,
+  "rhs_calls": 652,
+  "final": {
+    "amplitudes": [
+      0.7490584595063149,
+      0.9763435954034196
+    ],
+    "electron_energy": [
+      0.039683059132266885,
+      -0.43766798939033985
+    ],
+    "excitation_energy": [
+      0.48234729730792036,
+      0.06177682438844506
+    ],
+    "phonon_energy": [
+      0.11039877698349024,
+      0.0025863021827849113
+    ],
+    "temperatures": [
+      0.40762696820664546,
+      0.25148400798589304
+    ],
+    "forces": [
+      -0.049974604487109664,
+      -0.0024433801549353443
+    ],
+    "escape": [
+      0.016347338061414567,
+      2.97266249793609e-05
+    ],
+    "input": [
+      0.020000000000000014,
+      0.0
+    ],
+    "electron_to_phonon": [
+      -0.02514751076275963,
+      0.0007224030000998218
+    ],
+    "condensate_heat": [
+      0.03247301978908412,
+      0.0015240010270871841
+    ],
+    "transport": 0.0599416847566188,
+    "total": -0.2849998510917978,
+    "conserved": -0.2886227864054039,
+    "minimum_electron": 1.7459215026870443e-14,
+    "maximum_electron": 0.4955492183995295,
+    "minimum_phonon": 1.0012308318421052e-08
+  }
+}
+{"event": "STOP", "elapsed_seconds": 771.0506056561135}
+{"event": "TASK_COMPLETE", "utc": "2026-09-21T21:03:27.374765+00:00", "elapsed_seconds": 1747.452224807348, "task": "two_electron_2"}
+{"event": "TASK_START", "utc": "2026-09-21T21:03:27.382039+00:00", "elapsed_seconds": 1747.4594950960018, "index": 12, "total": 21, "task": "two_electron_4", "phase": "electroni
+c_mesh", "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_electron_4.json"}
+{"event": "START", "observer_sha256": "1cda23a77617e8030203fc3540329afdb4224782049456222caffc985b68bb7e", "arguments": ["--case", "two", "--steps", "160", "--duration", "2.0", "
+--phonon-nodes", "1025", "--infrared", "0.005", "--face-order", "2", "--reaction-order", "2", "--reaction-layout", "resolved_panels", "--reaction-max-energy-panel", "0.125", "--
+reaction-outer-order", "2", "--reaction-max-panel", "0.5", "--electron-refinement", "4", "--reaction-method", "projected", "--escape", "15.0", "--heating", "0.01", "--method", "
+rk4", "--scenario", "driven", "--rtol", "1e-09", "--output", "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/two_electron_4.json"], "meaning": "t_rhs is a trial evalu
+ation time, not a guaranteed accepted step"}
+{"event": "RHS", "evaluations": 1, "elapsed_seconds": 6.076826491393149, "t_rhs": 0.0, "amplitudes": [0.55, 0.95], "minimum_electron": 2.9057699804888977e-44, "maximum_electron"
+: 0.49804998222021774, "minimum_phonon": 3.3382377953650095e-15}
+{
+  "status": "FAILED",
+  "runtime_seconds": 23.509741068352014,
+  "reason": "time stage outside Pauli/phonon support; no clipping applied"
+}
+{"event": "STOP", "elapsed_seconds": 23.510837625246495}
+{"event": "BATCH_STOPPED", "utc": "2026-09-21T21:03:51.035055+00:00", "elapsed_seconds": 1771.1125239231624, "exception": "RuntimeError", "reason": "Child command failed with ex
+it code 1; no retry performed.", "policy": "No retry, fallback, overwrite or continuation after a failed task."}
+Traceback (most recent call last):
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py", line 401, in <module>
+    main()
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py", line 380, in main
+    stream_command(command, output.with_suffix('.console.log'))
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py", line 190, in stream_command
+    raise RuntimeError('Child command failed with exit code '+str(code)+'; no retry performed.')
+RuntimeError: Child command failed with exit code 1; no retry performed.
+jdiaz@geminga:~/pysnspd$
+

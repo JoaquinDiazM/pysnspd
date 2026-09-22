@@ -1,0 +1,1835 @@
+{
+  "status": "PASS",
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "reference_path": "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_20260921/manual_reference/one_reference_probe.json",
+  "reference_sha256": "0ce0ebee3aeecda1e9a71ff89306dead04658b0d368f03900f00741c4ae9e28e",
+  "reference_checks": {
+    "ledger": true,
+    "instantaneous_balance": true,
+    "populations": true
+  },
+  "comparison": "Maximum over shared physical checkpoints; endpoints retained separately; no population interpolation",
+  "shared_checkpoint_times": [
+    0.0,
+    0.05,
+    0.1
+  ],
+  "reviewer_sha256": "fe4bb29229687653475104fe0207340cb62cb26faf7f07d50d36aa691534a9ad",
+  "cases": [
+    {
+      "path": "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/one_ssp_short_10.json",
+      "sha256": "4a69804aa21b37f78608ff1a157d50ed41ad5684e96b52afbce7afcc9e47e3bb",
+      "steps": 10,
+      "errors": {
+        "amplitudes": {
+          "absolute": 5.92515747577238e-09,
+          "scale": 0.6255095511818891,
+          "relative": 9.472529179733389e-09,
+          "assessment_error": 9.472529179733389e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "excitation_energy": {
+          "absolute": 1.9304708998024722e-08,
+          "scale": 0.45432691008608356,
+          "relative": 4.249078927410873e-08,
+          "assessment_error": 4.249078927410873e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "electron_energy": {
+          "absolute": 1.5826854882217134e-08,
+          "scale": 0.07512001646107974,
+          "relative": 2.1068758538434492e-07,
+          "assessment_error": 2.1068758538434492e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "phonon_energy": {
+          "absolute": 6.389937912132382e-09,
+          "scale": 0.148400827090869,
+          "relative": 4.305864082697926e-08,
+          "assessment_error": 4.305864082697926e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "escape": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "input": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "electron_to_phonon": {
+          "absolute": 3.483943508252735e-09,
+          "scale": 0.00181751658549966,
+          "relative": 1.916870270152144e-06,
+          "assessment_error": 1.916870270152144e-06,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.05
+        },
+        "condensate_heat": {
+          "absolute": 4.414801205165908e-09,
+          "scale": 0.004404111466609696,
+          "relative": 1.0024272179842081e-06,
+          "assessment_error": 1.0024272179842081e-06,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.05
+        },
+        "transport": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "electronic_population": {
+          "absolute": 2.116162987202835e-08,
+          "scale": 0.45353267988924567,
+          "relative": 4.6659548055492044e-08,
+          "assessment_error": 4.6659548055492044e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "phonon_population": {
+          "absolute": 1.350123812701353e-06,
+          "scale": 0.05526460527653224,
+          "relative": 2.4430172005131002e-05,
+          "assessment_error": 2.4430172005131002e-05,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        }
+      },
+      "max_error": 2.4430172005131002e-05,
+      "comparison_defined": true,
+      "checkpoints": [
+        {
+          "time": 0.0,
+          "errors": {
+            "amplitudes": {
+              "absolute": 0.0,
+              "scale": 0.6,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 0.0,
+              "scale": 0.4355244423000407,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 0.0,
+              "scale": 0.0716272177442841,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 0.0,
+              "scale": 0.15189362580766444,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "condensate_heat": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 0.0,
+              "scale": 0.43501693816189557,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 0.0,
+              "scale": 0.055839916221101904,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        },
+        {
+          "time": 0.05,
+          "errors": {
+            "amplitudes": {
+              "absolute": 3.36741734496826e-09,
+              "scale": 0.6133453803636765,
+              "relative": 5.4902465279376305e-09,
+              "assessment_error": 5.4902465279376305e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 1.075712080522706e-08,
+              "scale": 0.44543411886278445,
+              "relative": 2.414974594377846e-08,
+              "assessment_error": 2.414974594377846e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 8.73788386090979e-09,
+              "scale": 0.07344473432978404,
+              "relative": 1.1897223048931794e-07,
+              "assessment_error": 1.1897223048931794e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 3.4839435780753547e-09,
+              "scale": 0.15007610922216477,
+              "relative": 2.3214511597698125e-08,
+              "assessment_error": 2.3214511597698125e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 3.483943508252735e-09,
+              "scale": 0.00181751658549966,
+              "relative": 1.916870270152144e-06,
+              "assessment_error": 1.916870270152144e-06,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "condensate_heat": {
+              "absolute": 4.414801205165908e-09,
+              "scale": 0.004404111466609696,
+              "relative": 1.0024272179842081e-06,
+              "assessment_error": 1.0024272179842081e-06,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 1.2027519859263184e-08,
+              "scale": 0.4449752496814323,
+              "relative": 2.7029637868339765e-08,
+              "assessment_error": 2.7029637868339765e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 1.093507169516942e-06,
+              "scale": 0.055524277760455557,
+              "relative": 1.969421690156119e-05,
+              "assessment_error": 1.969421690156119e-05,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        },
+        {
+          "time": 0.1,
+          "errors": {
+            "amplitudes": {
+              "absolute": 5.92515747577238e-09,
+              "scale": 0.6255095511818891,
+              "relative": 9.472529179733389e-09,
+              "assessment_error": 9.472529179733389e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 1.9304708998024722e-08,
+              "scale": 0.45432691008608356,
+              "relative": 4.249078927410873e-08,
+              "assessment_error": 4.249078927410873e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 1.5826854882217134e-08,
+              "scale": 0.07512001646107974,
+              "relative": 2.1068758538434492e-07,
+              "assessment_error": 2.1068758538434492e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 6.389937912132382e-09,
+              "scale": 0.148400827090869,
+              "relative": 4.305864082697926e-08,
+              "assessment_error": 4.305864082697926e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 6.389937810217378e-09,
+              "scale": 0.0034927987167954404,
+              "relative": 1.829460649848152e-06,
+              "assessment_error": 1.829460649848152e-06,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "condensate_heat": {
+              "absolute": 7.732154047243589e-09,
+              "scale": 0.008089146165875536,
+              "relative": 9.558677626400255e-07,
+              "assessment_error": 9.558677626400255e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 2.116162987202835e-08,
+              "scale": 0.45353267988924567,
+              "relative": 4.6659548055492044e-08,
+              "assessment_error": 4.6659548055492044e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 1.350123812701353e-06,
+              "scale": 0.05526460527653224,
+              "relative": 2.4430172005131002e-05,
+              "assessment_error": 2.4430172005131002e-05,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        }
+      ],
+      "final_errors": {
+        "amplitudes": {
+          "absolute": 5.92515747577238e-09,
+          "scale": 0.6255095511818891,
+          "relative": 9.472529179733389e-09,
+          "assessment_error": 9.472529179733389e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "excitation_energy": {
+          "absolute": 1.9304708998024722e-08,
+          "scale": 0.45432691008608356,
+          "relative": 4.249078927410873e-08,
+          "assessment_error": 4.249078927410873e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "electron_energy": {
+          "absolute": 1.5826854882217134e-08,
+          "scale": 0.07512001646107974,
+          "relative": 2.1068758538434492e-07,
+          "assessment_error": 2.1068758538434492e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "phonon_energy": {
+          "absolute": 6.389937912132382e-09,
+          "scale": 0.148400827090869,
+          "relative": 4.305864082697926e-08,
+          "assessment_error": 4.305864082697926e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "escape": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "input": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "electron_to_phonon": {
+          "absolute": 6.389937810217378e-09,
+          "scale": 0.0034927987167954404,
+          "relative": 1.829460649848152e-06,
+          "assessment_error": 1.829460649848152e-06,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "condensate_heat": {
+          "absolute": 7.732154047243589e-09,
+          "scale": 0.008089146165875536,
+          "relative": 9.558677626400255e-07,
+          "assessment_error": 9.558677626400255e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "transport": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "electronic_population": {
+          "absolute": 2.116162987202835e-08,
+          "scale": 0.45353267988924567,
+          "relative": 4.6659548055492044e-08,
+          "assessment_error": 4.6659548055492044e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "phonon_population": {
+          "absolute": 1.350123812701353e-06,
+          "scale": 0.05526460527653224,
+          "relative": 2.4430172005131002e-05,
+          "assessment_error": 2.4430172005131002e-05,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        }
+      },
+      "ledger": 9.436917164373781e-09,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.47767882609051865,
+      "minimum_phonon": 0.0015554078476093121
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/one_ssp_short_20.json",
+      "sha256": "299404971679496ce4e87d4f315edb31ae64b1c3eafe14274a8fb1bf7e6ff7bc",
+      "steps": 20,
+      "errors": {
+        "amplitudes": {
+          "absolute": 7.303486704302031e-10,
+          "scale": 0.6255095511818891,
+          "relative": 1.167605944705756e-09,
+          "assessment_error": 1.167605944705756e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "excitation_energy": {
+          "absolute": 4.205726378270214e-09,
+          "scale": 0.45432691008608356,
+          "relative": 9.257048800990753e-09,
+          "assessment_error": 9.257048800990753e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "electron_energy": {
+          "absolute": 3.7770380156842975e-09,
+          "scale": 0.07512001646107974,
+          "relative": 5.028004776385013e-08,
+          "assessment_error": 5.028004776385013e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "phonon_energy": {
+          "absolute": 2.6055564372740037e-09,
+          "scale": 0.148400827090869,
+          "relative": 1.7557560078007962e-08,
+          "assessment_error": 1.7557560078007962e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "escape": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "input": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "electron_to_phonon": {
+          "absolute": 2.6055562121936326e-09,
+          "scale": 0.0034927987167954404,
+          "relative": 7.459794919371044e-07,
+          "assessment_error": 7.459794919371044e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "condensate_heat": {
+          "absolute": 5.459617515024551e-10,
+          "scale": 0.004404111466609696,
+          "relative": 1.239663790623217e-07,
+          "assessment_error": 1.239663790623217e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.05
+        },
+        "transport": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "electronic_population": {
+          "absolute": 3.513070961731586e-09,
+          "scale": 0.45353267988924567,
+          "relative": 7.746015044802263e-09,
+          "assessment_error": 7.746015044802263e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "phonon_population": {
+          "absolute": 3.60838904693086e-07,
+          "scale": 0.05526460527653224,
+          "relative": 6.529294887523859e-06,
+          "assessment_error": 6.529294887523859e-06,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        }
+      },
+      "max_error": 6.529294887523859e-06,
+      "comparison_defined": true,
+      "checkpoints": [
+        {
+          "time": 0.0,
+          "errors": {
+            "amplitudes": {
+              "absolute": 0.0,
+              "scale": 0.6,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 0.0,
+              "scale": 0.4355244423000407,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 0.0,
+              "scale": 0.0716272177442841,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 0.0,
+              "scale": 0.15189362580766444,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "condensate_heat": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 0.0,
+              "scale": 0.43501693816189557,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 0.0,
+              "scale": 0.055839916221101904,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        },
+        {
+          "time": 0.05,
+          "errors": {
+            "amplitudes": {
+              "absolute": 4.1685332963226074e-10,
+              "scale": 0.6133453803636765,
+              "relative": 6.796388184828132e-10,
+              "assessment_error": 6.796388184828132e-10,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 2.1578613895734122e-09,
+              "scale": 0.44543411886278445,
+              "relative": 4.8444007726272525e-09,
+              "assessment_error": 4.8444007726272525e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 1.907899616071518e-09,
+              "scale": 0.07344473432978404,
+              "relative": 2.5977350636256674e-08,
+              "assessment_error": 2.5977350636256674e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 1.2557712647520702e-09,
+              "scale": 0.15007610922216477,
+              "relative": 8.36756277371965e-09,
+              "assessment_error": 8.36756277371965e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 1.2557711580665765e-09,
+              "scale": 0.00181751658549966,
+              "relative": 6.909269318834567e-07,
+              "assessment_error": 6.909269318834567e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "condensate_heat": {
+              "absolute": 5.459617515024551e-10,
+              "scale": 0.004404111466609696,
+              "relative": 1.239663790623217e-07,
+              "assessment_error": 1.239663790623217e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 1.9260535248422507e-09,
+              "scale": 0.4449752496814323,
+              "relative": 4.328450910968993e-09,
+              "assessment_error": 4.328450910968993e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 2.918213109605049e-07,
+              "scale": 0.055524277760455557,
+              "relative": 5.255742582001495e-06,
+              "assessment_error": 5.255742582001495e-06,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        },
+        {
+          "time": 0.1,
+          "errors": {
+            "amplitudes": {
+              "absolute": 7.303486704302031e-10,
+              "scale": 0.6255095511818891,
+              "relative": 1.167605944705756e-09,
+              "assessment_error": 1.167605944705756e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 4.205726378270214e-09,
+              "scale": 0.45432691008608356,
+              "relative": 9.257048800990753e-09,
+              "assessment_error": 9.257048800990753e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 3.7770380156842975e-09,
+              "scale": 0.07512001646107974,
+              "relative": 5.028004776385013e-08,
+              "assessment_error": 5.028004776385013e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 2.6055564372740037e-09,
+              "scale": 0.148400827090869,
+              "relative": 1.7557560078007962e-08,
+              "assessment_error": 1.7557560078007962e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 2.6055562121936326e-09,
+              "scale": 0.0034927987167954404,
+              "relative": 7.459794919371044e-07,
+              "assessment_error": 7.459794919371044e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "condensate_heat": {
+              "absolute": 9.52566969747437e-10,
+              "scale": 0.008089146165875536,
+              "relative": 1.1775865464835931e-07,
+              "assessment_error": 1.1775865464835931e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 3.513070961731586e-09,
+              "scale": 0.45353267988924567,
+              "relative": 7.746015044802263e-09,
+              "assessment_error": 7.746015044802263e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 3.60838904693086e-07,
+              "scale": 0.05526460527653224,
+              "relative": 6.529294887523859e-06,
+              "assessment_error": 6.529294887523859e-06,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        }
+      ],
+      "final_errors": {
+        "amplitudes": {
+          "absolute": 7.303486704302031e-10,
+          "scale": 0.6255095511818891,
+          "relative": 1.167605944705756e-09,
+          "assessment_error": 1.167605944705756e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "excitation_energy": {
+          "absolute": 4.205726378270214e-09,
+          "scale": 0.45432691008608356,
+          "relative": 9.257048800990753e-09,
+          "assessment_error": 9.257048800990753e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "electron_energy": {
+          "absolute": 3.7770380156842975e-09,
+          "scale": 0.07512001646107974,
+          "relative": 5.028004776385013e-08,
+          "assessment_error": 5.028004776385013e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "phonon_energy": {
+          "absolute": 2.6055564372740037e-09,
+          "scale": 0.148400827090869,
+          "relative": 1.7557560078007962e-08,
+          "assessment_error": 1.7557560078007962e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "escape": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "input": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "electron_to_phonon": {
+          "absolute": 2.6055562121936326e-09,
+          "scale": 0.0034927987167954404,
+          "relative": 7.459794919371044e-07,
+          "assessment_error": 7.459794919371044e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "condensate_heat": {
+          "absolute": 9.52566969747437e-10,
+          "scale": 0.008089146165875536,
+          "relative": 1.1775865464835931e-07,
+          "assessment_error": 1.1775865464835931e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "transport": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "electronic_population": {
+          "absolute": 3.513070961731586e-09,
+          "scale": 0.45353267988924567,
+          "relative": 7.746015044802263e-09,
+          "assessment_error": 7.746015044802263e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "phonon_population": {
+          "absolute": 3.60838904693086e-07,
+          "scale": 0.05526460527653224,
+          "relative": 6.529294887523859e-06,
+          "assessment_error": 6.529294887523859e-06,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        }
+      },
+      "ledger": 1.1714817726993232e-09,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.47767882566404357,
+      "minimum_phonon": 0.001555947371978188
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/one_ssp_short_40.json",
+      "sha256": "95d3b4610e01474fd517824d4a6a3fcd5ce4ea38cd81c91d45feb4d2536e6da8",
+      "steps": 40,
+      "errors": {
+        "amplitudes": {
+          "absolute": 9.034062387058839e-11,
+          "scale": 0.6255095511818891,
+          "relative": 1.4442724927203972e-10,
+          "assessment_error": 1.4442724927203972e-10,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "excitation_energy": {
+          "absolute": 6.803960728163361e-10,
+          "scale": 0.45432691008608356,
+          "relative": 1.4975913988617098e-09,
+          "assessment_error": 1.4975913988617098e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "electron_energy": {
+          "absolute": 6.273693786695844e-10,
+          "scale": 0.07512001646107974,
+          "relative": 8.351560718768338e-09,
+          "assessment_error": 8.351560718768338e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "phonon_energy": {
+          "absolute": 4.814643406181318e-10,
+          "scale": 0.148400827090869,
+          "relative": 3.244350790062113e-09,
+          "assessment_error": 3.244350790062113e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "escape": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "input": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "electron_to_phonon": {
+          "absolute": 4.814639216824124e-10,
+          "scale": 0.0034927987167954404,
+          "relative": 1.3784473733549239e-07,
+          "assessment_error": 1.3784473733549239e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "condensate_heat": {
+          "absolute": 6.77677428062573e-11,
+          "scale": 0.004404111466609696,
+          "relative": 1.5387381386698916e-08,
+          "assessment_error": 1.5387381386698916e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.05
+        },
+        "transport": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required",
+          "time_of_maximum": 0.0
+        },
+        "electronic_population": {
+          "absolute": 5.191065752359599e-10,
+          "scale": 0.45353267988924567,
+          "relative": 1.1445847195900583e-09,
+          "assessment_error": 1.1445847195900583e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        },
+        "phonon_population": {
+          "absolute": 8.730436492902402e-08,
+          "scale": 0.05526460527653224,
+          "relative": 1.5797518953075244e-06,
+          "assessment_error": 1.5797518953075244e-06,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm",
+          "time_of_maximum": 0.1
+        }
+      },
+      "max_error": 1.5797518953075244e-06,
+      "comparison_defined": true,
+      "checkpoints": [
+        {
+          "time": 0.0,
+          "errors": {
+            "amplitudes": {
+              "absolute": 0.0,
+              "scale": 0.6,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 0.0,
+              "scale": 0.4355244423000407,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 0.0,
+              "scale": 0.0716272177442841,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 0.0,
+              "scale": 0.15189362580766444,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "condensate_heat": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 0.0,
+              "scale": 0.43501693816189557,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 0.0,
+              "scale": 0.055839916221101904,
+              "relative": 0.0,
+              "assessment_error": 0.0,
+              "zero_reference": false,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        },
+        {
+          "time": 0.05,
+          "errors": {
+            "amplitudes": {
+              "absolute": 5.176870043754889e-11,
+              "scale": 0.6133453803636765,
+              "relative": 8.44038319924301e-11,
+              "assessment_error": 8.44038319924301e-11,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 3.4558739203660593e-10,
+              "scale": 0.44543411886278445,
+              "relative": 7.758440079060576e-10,
+              "assessment_error": 7.758440079060576e-10,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 3.145448901342718e-10,
+              "scale": 0.07344473432978404,
+              "relative": 4.282742568335691e-09,
+              "assessment_error": 4.282742568335691e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 2.333218063199638e-10,
+              "scale": 0.15007610922216477,
+              "relative": 1.55468986722308e-09,
+              "assessment_error": 1.55468986722308e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 2.3332160032155103e-10,
+              "scale": 0.00181751658549966,
+              "relative": 1.2837384934091688e-07,
+              "assessment_error": 1.2837384934091688e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "condensate_heat": {
+              "absolute": 6.77677428062573e-11,
+              "scale": 0.004404111466609696,
+              "relative": 1.5387381386698916e-08,
+              "assessment_error": 1.5387381386698916e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 2.8961569151461305e-10,
+              "scale": 0.4449752496814323,
+              "relative": 6.508579785548868e-10,
+              "assessment_error": 6.508579785548868e-10,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 6.855165445399298e-08,
+              "scale": 0.055524277760455557,
+              "relative": 1.2346248743610948e-06,
+              "assessment_error": 1.2346248743610948e-06,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        },
+        {
+          "time": 0.1,
+          "errors": {
+            "amplitudes": {
+              "absolute": 9.034062387058839e-11,
+              "scale": 0.6255095511818891,
+              "relative": 1.4442724927203972e-10,
+              "assessment_error": 1.4442724927203972e-10,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "excitation_energy": {
+              "absolute": 6.803960728163361e-10,
+              "scale": 0.45432691008608356,
+              "relative": 1.4975913988617098e-09,
+              "assessment_error": 1.4975913988617098e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "electron_energy": {
+              "absolute": 6.273693786695844e-10,
+              "scale": 0.07512001646107974,
+              "relative": 8.351560718768338e-09,
+              "assessment_error": 8.351560718768338e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_energy": {
+              "absolute": 4.814643406181318e-10,
+              "scale": 0.148400827090869,
+              "relative": 3.244350790062113e-09,
+              "assessment_error": 3.244350790062113e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "escape": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "input": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electron_to_phonon": {
+              "absolute": 4.814639216824124e-10,
+              "scale": 0.0034927987167954404,
+              "relative": 1.3784473733549239e-07,
+              "assessment_error": 1.3784473733549239e-07,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "condensate_heat": {
+              "absolute": 1.1785002487774143e-10,
+              "scale": 0.008089146165875536,
+              "relative": 1.4568907825512859e-08,
+              "assessment_error": 1.4568907825512859e-08,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "transport": {
+              "absolute": 0.0,
+              "scale": 0.0,
+              "relative": null,
+              "assessment_error": 0.0,
+              "zero_reference": true,
+              "roundoff_limited": true,
+              "comparison_defined": true,
+              "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+            },
+            "electronic_population": {
+              "absolute": 5.191065752359599e-10,
+              "scale": 0.45353267988924567,
+              "relative": 1.1445847195900583e-09,
+              "assessment_error": 1.1445847195900583e-09,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            },
+            "phonon_population": {
+              "absolute": 8.730436492902402e-08,
+              "scale": 0.05526460527653224,
+              "relative": 1.5797518953075244e-06,
+              "assessment_error": 1.5797518953075244e-06,
+              "zero_reference": false,
+              "roundoff_limited": false,
+              "comparison_defined": true,
+              "convention": "Difference normalized by the reference observable norm"
+            }
+          }
+        }
+      ],
+      "final_errors": {
+        "amplitudes": {
+          "absolute": 9.034062387058839e-11,
+          "scale": 0.6255095511818891,
+          "relative": 1.4442724927203972e-10,
+          "assessment_error": 1.4442724927203972e-10,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "excitation_energy": {
+          "absolute": 6.803960728163361e-10,
+          "scale": 0.45432691008608356,
+          "relative": 1.4975913988617098e-09,
+          "assessment_error": 1.4975913988617098e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "electron_energy": {
+          "absolute": 6.273693786695844e-10,
+          "scale": 0.07512001646107974,
+          "relative": 8.351560718768338e-09,
+          "assessment_error": 8.351560718768338e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "phonon_energy": {
+          "absolute": 4.814643406181318e-10,
+          "scale": 0.148400827090869,
+          "relative": 3.244350790062113e-09,
+          "assessment_error": 3.244350790062113e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "escape": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "input": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "electron_to_phonon": {
+          "absolute": 4.814639216824124e-10,
+          "scale": 0.0034927987167954404,
+          "relative": 1.3784473733549239e-07,
+          "assessment_error": 1.3784473733549239e-07,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "condensate_heat": {
+          "absolute": 1.1785002487774143e-10,
+          "scale": 0.008089146165875536,
+          "relative": 1.4568907825512859e-08,
+          "assessment_error": 1.4568907825512859e-08,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "transport": {
+          "absolute": 0.0,
+          "scale": 0.0,
+          "relative": null,
+          "assessment_error": 0.0,
+          "zero_reference": true,
+          "roundoff_limited": true,
+          "comparison_defined": true,
+          "convention": "Degenerate reference: only roundoff agreement is accepted; otherwise an independently declared activity scale is required"
+        },
+        "electronic_population": {
+          "absolute": 5.191065752359599e-10,
+          "scale": 0.45353267988924567,
+          "relative": 1.1445847195900583e-09,
+          "assessment_error": 1.1445847195900583e-09,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        },
+        "phonon_population": {
+          "absolute": 8.730436492902402e-08,
+          "scale": 0.05526460527653224,
+          "relative": 1.5797518953075244e-06,
+          "assessment_error": 1.5797518953075244e-06,
+          "zero_reference": false,
+          "roundoff_limited": false,
+          "comparison_defined": true,
+          "convention": "Difference normalized by the reference observable norm"
+        }
+      },
+      "ledger": 1.4590523234048192e-10,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.47767882559974467,
+      "minimum_phonon": 0.001555963495190488
+    }
+  ],
+  "successive_max_error_reduction": [
+    3.741624850152203,
+    4.13311413451593
+  ],
+  "finest_max_error": 1.5797518953075244e-06,
+  "tolerance": 0.0001,
+  "all_comparisons_defined": true,
+  "converged": true,
+  "roundoff_limited": false,
+  "integration_contract_comparison": {
+    "policy": "Identical frozen physical kernels; explicit integration adapters verified by current source hashes.",
+    "allowed_extra_sources": [
+      "sandbox/stage2_cells/recovery_20260921/limited_ssp.py",
+      "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py"
+    ],
+    "assessor_sha256": "ab7088308d1ab192a01357f832302d08e408b8609efe00fc648d2c3dbcf4cdfc",
+    "final_stage2_admission": false
+  }
+}

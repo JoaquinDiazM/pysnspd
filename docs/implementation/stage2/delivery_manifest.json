@@ -419,8 +419,413 @@
     },
     {
       "path": "docs/implementation/stage2/README.md",
-      "bytes": 3659,
-      "sha256": "526d15e784c274c1870d9f81e89f1bbf8a91d96d0397d42a3338a3c335d60815"
+      "bytes": 4508,
+      "sha256": "310715406a6417d68bbb09fbe0f2bc9fbf6a2d0790bece03263300ada8d437a3"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/admission_before_recovery.json",
+      "bytes": 27934,
+      "sha256": "8baf28a62cee8fa65b894fc25751c4fd19f824a789af15c0c36857e175b66a09"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/batch_manifest.json",
+      "bytes": 2500,
+      "sha256": "5ae6a51b0e6ce213238fc90b35a3c87e387ea0b7ec512ff017671201235b2dd6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_160.json",
+      "bytes": 141949,
+      "sha256": "ec804ad91a18945ad887abb58a54346ec0032be2fd237305c65c53a87cefe509"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_160.npz",
+      "bytes": 2036595,
+      "sha256": "a5b3beafea5fd2d513c3cfff5d51c081eba3ef421b004f91b97a5531946f5429"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_160.receipt.json",
+      "bytes": 2246,
+      "sha256": "431019c965d7a9ff2945167f74c8cce79f50ce019d44e471d741733d5f6dc533"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_160_initial.npz",
+      "bytes": 31706,
+      "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.json",
+      "bytes": 277402,
+      "sha256": "7297dea5a67b87d6251edd5d5ae2746579fb4c79e200ada687dc90794bad5cbb"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.npz",
+      "bytes": 4040678,
+      "sha256": "2b2e06a15232f2b84a44c28697ecf337fdf253088914f56d926fb724bee945f0"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.receipt.json",
+      "bytes": 2246,
+      "sha256": "f95b81d347429e620525fd52a0c15356ceb4ce44950d3b7a929031c0d9ce36f0"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320_initial.npz",
+      "bytes": 31706,
+      "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_40.json",
+      "bytes": 40453,
+      "sha256": "e87b5c34147e75886724d3693c450cf08c61272b12a2d37f68da9088b32af2aa"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_40.npz",
+      "bytes": 533578,
+      "sha256": "50884abea77a6d151dc174ee0cdda5bae862cf2f3091f49e097dfa365312496f"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_40.receipt.json",
+      "bytes": 2239,
+      "sha256": "9506e3e8116ed805c3ee4e3d5af62005f61f1b00e1ed3f930593196dc2e2441d"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_40_initial.npz",
+      "bytes": 31706,
+      "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_80.json",
+      "bytes": 74271,
+      "sha256": "95d721f7a00da1ff4803574d2735c3d66437ecbe9eb0911ffb0ee7f5fc9cee13"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_80.npz",
+      "bytes": 1034817,
+      "sha256": "b9f58b0327d3a2de8930d58e464b90ebe6ff979190fda6bed567c3ce71017cf4"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_80.receipt.json",
+      "bytes": 2239,
+      "sha256": "fbd5ae4ac17b8e7100e042e849f02053133392338800414ed600993d0042e850"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_80_initial.npz",
+      "bytes": 31706,
+      "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_assessment.json",
+      "bytes": 652622,
+      "sha256": "396b0f849e368d68486cc9167c00cba4b791294604875a6feec93023ac3f144c"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_assessment.receipt.json",
+      "bytes": 1557,
+      "sha256": "0bb3aee0b7a04a18c436ef7d3f164a8fd8dbcb7474544efd22994981867ea88f"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_2.json",
+      "bytes": 196453,
+      "sha256": "5ddca9df914f8c93bb4c2cb750ca65e27cbf0ad559dc6aebd1a92d0890c00d81"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_2.npz",
+      "bytes": 5638224,
+      "sha256": "9b54e1b72a41ec3d5fb6c11b93ccd859caf0d67c5b93aaa7aa2014be14889579"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_2.receipt.json",
+      "bytes": 2265,
+      "sha256": "1ff41389e99f65c91f66e83d93bcd1d9976837d27ac06d149d9e2c57a63a02fc"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_2_initial.npz",
+      "bytes": 56564,
+      "sha256": "d6d113018fa2d622d3374751bb0c1ef89f564c34ab763eaaa6f4259cea69ee89"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_4.json",
+      "bytes": 5943,
+      "sha256": "c30c3471eead19cab85938dc758dd9b30be2961f524517bb2ef00a6fad32cae1"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_electron_4_initial.npz",
+      "bytes": 80252,
+      "sha256": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_160.json",
+      "bytes": 196469,
+      "sha256": "c8de04fa37977575182894c56db1e5103511df667d938848812b342ddd4cee92"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_160.npz",
+      "bytes": 4101740,
+      "sha256": "dbd31bd27d32661a715d273a1472eb26ab3804695aa9c9e2972af044836f0c66"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_160.receipt.json",
+      "bytes": 2248,
+      "sha256": "070fb1982e6d90ddc12baf501ac5353fc3fe91a9bbed1e590909af4e4357bea4"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_160_initial.npz",
+      "bytes": 44460,
+      "sha256": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json",
+      "bytes": 385566,
+      "sha256": "9907923466ed5d1bd593b0ed1607299f0afb551cb814ed3d00d108e5722a71a6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.npz",
+      "bytes": 8153694,
+      "sha256": "35f07d775ee2a7166852c026bea222010a6ec42b07dde338679f1584e2523cb4"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.receipt.json",
+      "bytes": 2248,
+      "sha256": "fff5be5f56b41c6334b5fb2c1ce4e7ee3cbfe14fe5c46260d56373ff2b491e60"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320_initial.npz",
+      "bytes": 44460,
+      "sha256": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_40.receipt.json",
+      "bytes": 2347,
+      "sha256": "c2ee330a163ff9761791ef6a050723f30d8857b2c3f3ae63a7d0f2461771016c"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_80.json",
+      "bytes": 101890,
+      "sha256": "833fc25bbe4795af15e7843afb748c949d29d339b1e5978b483f6846ba9891e0"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_80.npz",
+      "bytes": 2074061,
+      "sha256": "d550a354565cd34b4cbbb4fbe83c421106e12b16f5bebe0807abf615e9de6b2b"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_80.receipt.json",
+      "bytes": 2241,
+      "sha256": "6a14a27efb7c423ca2b35b06ae04ec6bd3ef46b6697500ce881e8cf6eace4cd2"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_80_initial.npz",
+      "bytes": 44460,
+      "sha256": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_assessment.json",
+      "bytes": 649740,
+      "sha256": "4746885d5ca0b67a31d457001cebfa68b8cbd0c4e9f8dd4cf4dcf981ef755600"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_assessment.receipt.json",
+      "bytes": 1564,
+      "sha256": "b31fb1b7f4764a7c90488106d57fb586944b9790e2526ee202bf4e32b808ffdf"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/command_addendum.md",
+      "bytes": 3254,
+      "sha256": "22973b0f7035efe61f943200eca13e745b09919f017814cd0d74221263a18918"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/command_notebook_update.json",
+      "bytes": 541,
+      "sha256": "c205d975565e6eef6ebfe984ca9e493341d2dbf51a8e36a8e4465a575cf611da"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/completed_batch_audit.json",
+      "bytes": 13962,
+      "sha256": "a7ed1861d6a62a3ec8bfa11a8e19bbdf98165c835f6440e8115d935dd1d58041"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/failed_run/screen_failure_capture.txt",
+      "bytes": 59998,
+      "sha256": "080f52720f78bc3a3fc8c81d5a385f7f5dca414cd5061ef3b0c45ffdba5a79c6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/failed_run/two_electron_4.json",
+      "bytes": 5943,
+      "sha256": "c30c3471eead19cab85938dc758dd9b30be2961f524517bb2ef00a6fad32cae1"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/failed_run/two_electron_4.progress.jsonl",
+      "bytes": 1052,
+      "sha256": "388ce3af5b1b24f44625b8654b1fc4e39556e7330e5b7748506b43146f1aac66"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/failed_run/two_electron_4_initial.npz",
+      "bytes": 80252,
+      "sha256": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/first_step_diagnosis.json",
+      "bytes": 14155,
+      "sha256": "1329b93049383b7578028f73f1f5e0127e846fd6c31ea16c8ec8b23a6504f578"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_acceptance_plan.json",
+      "bytes": 21276,
+      "sha256": "2a4ab648648d407bdd9d066ca412168bb348c5208a1657cf0c0cf7cfafcae098"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_batch_offline_tests.json",
+      "bytes": 951,
+      "sha256": "18aa9e34f7ca46beedb326610b99639b8df3b671da7b1c295c1c7f229ecea3f8"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_batch_offline_tests_archived_references.json",
+      "bytes": 952,
+      "sha256": "787ce41f13a04f338197bfa5d31effb8604a03fdd5fda3f661c490fb2aebc776"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval.integration.jsonl",
+      "bytes": 539,
+      "sha256": "545e4f333551bcefed2a2405be1977d53e6ed56b5049c7f9a0f0f97b8670e02e"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval.json",
+      "bytes": 10057,
+      "sha256": "0d505c22cb5d4f7e27a791f0394ec48ae684dcd8af84a3940b702c259e7254a6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval.npz",
+      "bytes": 133558,
+      "sha256": "8dc9cbe4cfe1f450475c211c6217648149e64dd861f0d4d8bae1ebea5c872e82"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval_initial.npz",
+      "bytes": 80252,
+      "sha256": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_first_interval_probe.integration.jsonl",
+      "bytes": 535,
+      "sha256": "df63dc01513ebe7b05fc36b005c4ad51e898432b71614d73d5d01b9d1fe81cff"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_first_interval_probe.json",
+      "bytes": 10051,
+      "sha256": "c8625d814250d5025af2aefaffd0e6ad3d29d324ad46951fc8b784b45c6600a6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_first_interval_probe.npz",
+      "bytes": 133558,
+      "sha256": "8dc9cbe4cfe1f450475c211c6217648149e64dd861f0d4d8bae1ebea5c872e82"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_first_interval_probe_initial.npz",
+      "bytes": 80252,
+      "sha256": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_guard_tests.json",
+      "bytes": 3109,
+      "sha256": "3fd6c50d5d9a52bbbb4c34061736476fecbd57b77b337473705ce47889610c37"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_short_time_assessment.json",
+      "bytes": 76331,
+      "sha256": "df87e3f9dbdaf85e0f42a58fbfe440db3f670983d1c32f7dc96840455689eb07"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_10.integration.jsonl",
+      "bytes": 749,
+      "sha256": "41e10b54b97ffc0bc737f8dfc5bb16d87d66461fb22bd80ebfd371c302df1897"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_10.json",
+      "bytes": 16447,
+      "sha256": "4a69804aa21b37f78608ff1a157d50ed41ad5684e96b52afbce7afcc9e47e3bb"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_10.npz",
+      "bytes": 154597,
+      "sha256": "069ea83ef908af44cda65dac28c76da45469f03d49c11a01792c0e59c875d781"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_10_initial.npz",
+      "bytes": 31706,
+      "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_20.integration.jsonl",
+      "bytes": 1019,
+      "sha256": "0aaea1901ddc47fc4cbd4a562c32fba3e58b261d7e6b25b2ea8644c292fcbc82"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_20.json",
+      "bytes": 24870,
+      "sha256": "299404971679496ce4e87d4f315edb31ae64b1c3eafe14274a8fb1bf7e6ff7bc"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_20.npz",
+      "bytes": 277129,
+      "sha256": "ea329a21408978836d31cfe5fb7339279592af92a6a51539a602bdb865ff2c17"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_20_initial.npz",
+      "bytes": 31706,
+      "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_40.integration.jsonl",
+      "bytes": 1555,
+      "sha256": "3d5afb2f0fb1958b2fb1376838a2d92703ebf7b440581d3a5a352d54e8190d54"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_40.json",
+      "bytes": 41741,
+      "sha256": "95d3b4610e01474fd517824d4a6a3fcd5ce4ea38cd81c91d45feb4d2536e6da8"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_40.npz",
+      "bytes": 522268,
+      "sha256": "ef8b686367d444dc387f11849bd76d6faccf5624fd2596b3bd6c847ffe956c71"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/one_ssp_short_40_initial.npz",
+      "bytes": 31706,
+      "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/positive_first_interval_probe.integration.jsonl",
+      "bytes": 3490,
+      "sha256": "9ad3dc66584ea8730641427580d7de784d46d1a6e5bd13002c92c152f98eb5ec"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/positive_first_interval_probe.json",
+      "bytes": 21549,
+      "sha256": "164209c434d7461c50d525647aec6a51733e27c8867b93e6813d130aba3a3c1c"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/positive_first_interval_probe_initial.npz",
+      "bytes": 80252,
+      "sha256": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/positive_rk4_offline_tests.json",
+      "bytes": 4344,
+      "sha256": "d7a67339968722c1938b26f5ed7d0a99ed0ca2b2f2f79866354fd1b4bd77fe4e"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/README.md",
+      "bytes": 5166,
+      "sha256": "294070f78c9794f34e5c3f3e3a298743a0bfc27a491fe05fb4ae43e3665d69dd"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/regression_result.json",
+      "bytes": 5842,
+      "sha256": "b6074dd3c7aa102fa6dee915b91ab889163d48da07a79bc30ea60341c38bea03"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/rejected_methods/limited_ssp_v1.py",
+      "bytes": 12165,
+      "sha256": "ceef217d334ff88647cac8e101b0c76a7492309c4facf8daf38d341080b9e574"
     },
     {
       "path": "docs/implementation/stage2/reference_handoff.json",
@@ -894,8 +1299,8 @@
     },
     {
       "path": "docs/implementation/stage2/stage2_admission.json",
-      "bytes": 27934,
-      "sha256": "8baf28a62cee8fa65b894fc25751c4fd19f824a789af15c0c36857e175b66a09"
+      "bytes": 29513,
+      "sha256": "b255f8560b02b60aed6c2cbc762173769f54092de37ed283451bb254e2e3e468"
     },
     {
       "path": "docs/implementation/stage2/time_suboperator_order.json",
@@ -1113,6 +1518,11 @@
       "sha256": "28e9e5c663a05f0d48de8817a41299bf6d729d483550d3a15bc1ea2536b3c49a"
     },
     {
+      "path": "sandbox/stage2_cells/diagnose_first_refined_step.py",
+      "bytes": 4351,
+      "sha256": "c57973610ca54e2aea19439eb688ca0e68e0005e7d852d8c8a4a0edc7fc4738c"
+    },
+    {
       "path": "sandbox/stage2_cells/event_diagnostics.py",
       "bytes": 13856,
       "sha256": "146c6734bea49524fdc57ef918d3c1f2e00513826fb755d09166c39632622c1c"
@@ -1196,6 +1606,86 @@
       "path": "sandbox/stage2_cells/README.md",
       "bytes": 1441,
       "sha256": "17eb078bd12f5eff30eb4295ca8e1ca6014fc2c492264f109692b7ce7f709992"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/append_command_notebook.py",
+      "bytes": 1423,
+      "sha256": "915ef2738a2bc119bad2d4f1b21bc0bc0ed9cbe00042e5e383c11bcf0ebc054b"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/assess_limited_pair.py",
+      "bytes": 3033,
+      "sha256": "2b6feb29bdfb7046035d47e762e1c4221aa46cf137e8a6a764f2d1318a466f0e"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/assess_limited_time.py",
+      "bytes": 3960,
+      "sha256": "ab7088308d1ab192a01357f832302d08e408b8609efe00fc648d2c3dbcf4cdfc"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/audit_completed_batch.py",
+      "bytes": 9391,
+      "sha256": "276d0fe9b4d77ba605bf2565cecfa9ae8c1e9e14447418cd77317b8d4b1a729d"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/launch_screen_batch.sh",
+      "bytes": 849,
+      "sha256": "36b323b098dcb15934bb2a9c28a64720eae7e2201f77f721438a2a298cadb86d"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/limited_ssp.py",
+      "bytes": 12343,
+      "sha256": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/positive_rk4.py",
+      "bytes": 8637,
+      "sha256": "28b3f7d3a7bd3abba9475647e6dbb896f70d337cebfecf4979cf7d07d61bfc15"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/prepare_recovery.py",
+      "bytes": 4872,
+      "sha256": "dc90f1af91d5ef8e28483c6ee5b5ddb8fcd183ede59ccff0840e41492e771177"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/repeat_regression.py",
+      "bytes": 475,
+      "sha256": "701ae38aedf7e843cdc55b880fac299758af7f6bdec2331c1be5082be5d3686d"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/run_limited_acceptance_batch.py",
+      "bytes": 21910,
+      "sha256": "c9d8b3aa296cb71a0030b39bb96ff0d1a5fb583c36c3d6c86ba4ef7ed306b538"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py",
+      "bytes": 2626,
+      "sha256": "a291cc5999b2a2060bd96b2539987cd19f4b584bfa7c644fb7030edd54312364"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/run_positive_coupled.py",
+      "bytes": 4573,
+      "sha256": "0a2bbff063f4ab03aa9a9d143cef05cdc5aac3363143586479d33ce1bddf9cba"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/run_short_checks.py",
+      "bytes": 1218,
+      "sha256": "43bf051d899de73946cf619c958a7b89426c872452d6d8c60c3431b02720b473"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/test_limited_assessors.py",
+      "bytes": 10262,
+      "sha256": "6f1215a44fde5c6f94334d937691518e4526326550c5056c5dfa1f48612e0c67"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/test_limited_ssp.py",
+      "bytes": 8456,
+      "sha256": "adddfe53a466a206d834d254f6a87e37b32ed4f02c71c747ae571061bd61cec8"
+    },
+    {
+      "path": "sandbox/stage2_cells/recovery_20260921/test_positive_rk4.py",
+      "bytes": 7786,
+      "sha256": "7153eb1a12eca6d7af6b96e7747e335a65eb6a8ca796d58f56d38162d245dbeb"
     },
     {
       "path": "sandbox/stage2_cells/resume_20260921/audit_electronic_three_grids.py",

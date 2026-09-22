@@ -1,0 +1,587 @@
+{
+  "schema": "pysnspd.stage2.limited-recovery-plan.v1",
+  "status": "READY_FOR_AUTHORIZED_SCREEN_RUN",
+  "date": "2026-09-21",
+  "purpose": "Adjudicate an explicitly recorded conservative SSPRK3 common event-flux experiment after RK4 and local bisection failed at negligible occupied tails; preserve all rejected runs.",
+  "authorization": "User explicitly authorized launching the long recovery in screen code_000, detaching and returning without waiting. The batch itself runs in the foreground and does not poll or schedule follow-ups.",
+  "estimates": {
+    "wall_time_hours": "3-6, uncertain",
+    "threads": 1,
+    "memory_reservation_GiB": 12
+  },
+  "prerequisites": [
+    "Root reviews the short SSP comparison against the completed DOP853 reference and the fine-grid first macro-step before launching.",
+    "All source and reference archive hashes are frozen immediately before launch.",
+    "A fresh output directory is selected."
+  ],
+  "method": {
+    "name": "ssprk3_common_flux_limited",
+    "entry_method_argument": "rk4",
+    "entry_argument_reason": "The wrapper uses the frozen runner interface and explicitly records the actual SSPRK3 method in each output.",
+    "population_clipping": false,
+    "posthoc_energy_repair": false,
+    "limiter": "One common factor per event from all donor/consumer capacities, with safety0.9; record limiter activity."
+  },
+  "criteria": {
+    "path": "docs/implementation/stage2/acceptance_criteria.json",
+    "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "thresholds_relaxed": false
+  },
+  "supplementary_finest_time_control": {
+    "status_scope": "PAIR_DIAGNOSTIC only; not an independent three-level time-admission verdict.",
+    "comparison_steps": [
+      160,
+      320
+    ],
+    "relative_observable_budget": 2.5e-05,
+    "why": "Separate fine-grid temporal contamination from electronic mesh error while retaining the three-level candidate time test against the independent existing RK4 reference."
+  },
+  "stop_policy": "Stop at the first failed process, invariant, parameter/source check, or assessment. No clipping, overwrite, retry, fallback method or skip-and-continue.",
+  "scope": "Synthetic one/two-cell numerical experiment only; no material, spatial, circuit, full-detector or production admission.",
+  "final_review_required": [
+    "Final stage2 certificate remains unissued even when the batch completes.",
+    "Interpret limiter activity and convergence against the frozen equations.",
+    "Review the equilibrium trajectory for actual stationarity and the finite-Gamma causal scope separately.",
+    "Retain all unresolved isolated-boundary and continuous-reference requirements in the final gate inventory."
+  ],
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.json": "7297dea5a67b87d6251edd5d5ae2746579fb4c79e200ada687dc90794bad5cbb",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.npz": "2b2e06a15232f2b84a44c28697ecf337fdf253088914f56d926fb724bee945f0",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json": "9907923466ed5d1bd593b0ed1607299f0afb551cb814ed3d00d108e5722a71a6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.npz": "35f07d775ee2a7166852c026bea222010a6ec42b07dde338679f1584e2523cb4",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/assess_grid_refinement.py": "b91f8dc8b641f4f8ddbf4745df96d4c5723c0d59056508f14990ea465f86e552",
+    "sandbox/stage2_cells/assess_time_refinement.py": "fe4bb29229687653475104fe0207340cb62cb26faf7f07d50d36aa691534a9ad",
+    "sandbox/stage2_cells/check_trajectory_fields.py": "df671e573d5d7dcea6f3a8dc344d36844ceb688b8f3cfefacb941594f4efa262",
+    "sandbox/stage2_cells/check_trajectory_support.py": "8d5c758ba3f53baab0cdebb43ea62aa753812f24002ac314e61de61c880e4108",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_pair.py": "2b6feb29bdfb7046035d47e762e1c4221aa46cf137e8a6a764f2d1318a466f0e",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_time.py": "ab7088308d1ab192a01357f832302d08e408b8609efe00fc648d2c3dbcf4cdfc",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/recovery_20260921/run_limited_acceptance_batch.py": "c9d8b3aa296cb71a0030b39bb96ff0d1a5fb583c36c3d6c86ba4ef7ed306b538",
+    "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": "a291cc5999b2a2060bd96b2539987cd19f4b584bfa7c644fb7030edd54312364",
+    "sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py": "d2fd882891eb5f43cb61aa34b054a6b0568bab37e1100fef40505041b9be680d",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9"
+  },
+  "tasks": [
+    {
+      "id": "one_old_rk320",
+      "phase": "reference_validation",
+      "kind": "existing_reference",
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.json",
+      "parameters": {
+        "case": "one",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_old_rk320",
+      "phase": "reference_validation",
+      "kind": "existing_reference",
+      "path": "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_40",
+      "phase": "temporal",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_80",
+      "phase": "temporal",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 80,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_160",
+      "phase": "temporal",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_time_assessment",
+      "phase": "temporal",
+      "kind": "limited_time",
+      "runs": [
+        "one_ssp_40",
+        "one_ssp_80",
+        "one_ssp_160"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ],
+      "reference": "one_old_rk320"
+    },
+    {
+      "id": "two_ssp_40",
+      "phase": "temporal",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 40,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_ssp_80",
+      "phase": "temporal",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 80,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_ssp_160",
+      "phase": "temporal",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_ssp_time_assessment",
+      "phase": "temporal",
+      "kind": "limited_time",
+      "runs": [
+        "two_ssp_40",
+        "two_ssp_80",
+        "two_ssp_160"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ],
+      "reference": "two_old_rk320"
+    },
+    {
+      "id": "two_e4_ssp_160",
+      "phase": "finest_grid_temporal_control",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 4,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_e4_ssp_320",
+      "phase": "finest_grid_temporal_control",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 4,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_e4_paired_control",
+      "phase": "finest_grid_temporal_control",
+      "kind": "limited_pair",
+      "runs": [
+        "two_e4_ssp_160",
+        "two_e4_ssp_320"
+      ],
+      "accepted_statuses": [
+        "PASS_PAIR_DIAGNOSTIC"
+      ]
+    },
+    {
+      "id": "two_e2_ssp_160",
+      "phase": "electronic_mesh",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 2,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_electron_grid",
+      "phase": "electronic_mesh",
+      "kind": "grid",
+      "runs": [
+        "two_ssp_160",
+        "two_e2_ssp_160"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ],
+      "reference": "two_e4_ssp_160",
+      "parameter": "electron_refinement"
+    },
+    {
+      "id": "two_ph2049_ssp_160",
+      "phase": "phonon_mesh",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 2049,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_ph4097_ssp_160",
+      "phase": "phonon_mesh",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 4097,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_phonon_grid",
+      "phase": "phonon_mesh",
+      "kind": "grid",
+      "runs": [
+        "two_ssp_160",
+        "two_ph2049_ssp_160"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ],
+      "reference": "two_ph4097_ssp_160",
+      "parameter": "phonon_nodes"
+    },
+    {
+      "id": "two_ssp_equilibrium",
+      "phase": "stationarity",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 10,
+        "duration": 0.1,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "equilibrium",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_vacuum",
+      "phase": "population_boundaries",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 0.2,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "phonon_vacuum",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_sparse",
+      "phase": "population_boundaries",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 0.2,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "sparse_electrons",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "actual_fields",
+      "phase": "actual_trajectory_postprocessing",
+      "kind": "fields",
+      "runs": [
+        "one_ssp_160",
+        "two_ssp_160",
+        "one_ssp_vacuum",
+        "one_ssp_sparse"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "actual_support",
+      "phase": "actual_trajectory_postprocessing",
+      "kind": "support",
+      "runs": [
+        "one_ssp_160",
+        "two_ssp_160",
+        "one_ssp_vacuum",
+        "one_ssp_sparse"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    }
+  ],
+  "prerequisite_results": {
+    "limited_short_time_assessment.json": "df87e3f9dbdaf85e0f42a58fbfe440db3f670983d1c32f7dc96840455689eb07",
+    "limited_continuous_first_interval.json": "0d505c22cb5d4f7e27a791f0394ec48ae684dcd8af84a3940b702c259e7254a6",
+    "limited_continuous_first_interval.npz": "8dc9cbe4cfe1f450475c211c6217648149e64dd861f0d4d8bae1ebea5c872e82",
+    "limited_continuous_first_interval_initial.npz": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea",
+    "regression_result.json": "b6074dd3c7aa102fa6dee915b91ab889163d48da07a79bc30ea60341c38bea03",
+    "limited_guard_tests.json": "3fd6c50d5d9a52bbbb4c34061736476fecbd57b77b337473705ce47889610c37",
+    "completed_batch_audit.json": "a7ed1861d6a62a3ec8bfa11a8e19bbdf98165c835f6440e8115d935dd1d58041"
+  }
+}

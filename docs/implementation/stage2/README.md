@@ -1,6 +1,6 @@
 # Etapa 2: celdas con cinética acoplada
 
-**Estado: pendiente de validación temporal; no cerrada ni promovida a producción.**
+**Estado: preparado para relanzamiento autorizado; etapa no cerrada ni promovida a producción.**
 
 La implementación experimental incorpora eventos electrón-fonón conservativos,
 transporte a energía fija entre espectros distintos, movilidad KWT, BGK, calor y
@@ -27,19 +27,31 @@ Resultados estáticos y ensayos realizados:
   conservan en [la continuación](resume_20260921/README.md).
 - En esa continuación también pasaron la comparación continua al corte 0,005
   y los controles de un piloto completo de dos celdas con 1025 nodos fonónicos.
-  El piloto no sustituye la convergencia temporal y de malla pendientes.
+  El lote posterior aprobó la convergencia temporal RK4 de una y dos celdas
+  en la malla candidata. Los archivos, las condiciones iniciales y la
+  reutilización se verificaron en
+  [completed_batch_audit.json](recovery_20260921/completed_batch_audit.json).
+- El refinamiento electrónico de 2520 estados falló una condición de población
+  física en una etapa interna de RK4. Un diagnóstico con bisección agotó su
+  presupuesto sin avanzar. Ambos resultados se conservan; no se recortaron
+  poblaciones ni se reinterpretó el fallo como una aprobación.
 
 ## Continuación necesaria
 
-Ejecutar el nuevo lote manual de
-[resume_20260921/command_addendum.md](resume_20260921/command_addendum.md),
-también añadido a `/home/jdiaz/GEMINGA_COMMANDS.md`. Detiene el trabajo ante una
-verificación fallida y conserva las salidas. La referencia anterior ya terminó:
-su comando histórico no debe repetirse para esta continuación.
+La [recuperación preparada](recovery_20260921/README.md) registra un ensayo
+SSPRK3 con un factor común para los flujos de cada evento. Primero debe superar
+la comparación temporal frente a las referencias RK320 archivadas; después se
+evalúan las mallas, las fronteras de población y los campos visitados. El lote
+se detiene ante cualquier fallo y conserva la evidencia.
 
-Faltan el dictamen temporal de los casos completos, los refinamientos dinámicos
-en la configuración final, los controles sobre esas nuevas trayectorias y
-el informe final. El dictamen completo de puertas está en
+Para esta recuperación, el usuario autorizó expresamente lanzar el cálculo
+largo en `screen code_000`, desacoplar la sesión y responder sin esperar ni
+sondear el proceso. Los comandos se registran en `/home/jdiaz/GEMINGA_COMMANDS.md`.
+La regla habitual de ejecución manual sigue vigente para otros cálculos largos.
+
+Faltan el dictamen temporal del nuevo integrador, los refinamientos dinámicos,
+los controles sobre esas trayectorias y el informe final. El dictamen de puertas
+conservado como punto de partida está en
 [stage2_admission.json](stage2_admission.json). No avanzar a la etapa espacial
 mientras siga pendiente.
 

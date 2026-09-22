@@ -1,10 +1,10 @@
 {
   "schema": "pysnspd.stage2.admission_checkpoint.v2",
-  "status": "READY_FOR_AUTHORIZED_SCREEN_RECOVERY",
+  "status": "PENDING_MANUAL_BATCH",
   "stage2_status": "NOT_CLOSED",
   "numerical_admission": false,
   "production_promotion": false,
-  "recommendation": "Run the authorized, source-frozen SSP recovery in code_000, detach, then review the resulting time/grid tests before admission.",
+  "recommendation": "Run the preregistered foreground RK4 batch. Review time/grid convergence, boundary cases and activity before issuing a final admission.",
   "date": "2026-09-21",
   "criteria": {
     "path": "docs/implementation/stage2/acceptance_criteria.json",
@@ -320,11 +320,24 @@
     }
   ],
   "computation_handoff": {
-    "mode": "EXPLICIT_AUTHORIZED_SCREEN_LAUNCH",
-    "screen": "3040582.code_000",
-    "output_root": "/home/jdiaz/pysnspd/tmp/stage2_recovery_20260921_ssp",
-    "wait_for_completion": false,
-    "polling": false
+    "status": "INCOMPLETE_REQUIRES_USER_RUN",
+    "command": "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 timeout --signal=TERM --kill-after=5 240 /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage2_cells/run_coupled.py --case one --duration .1 --steps 2 --escape inf --heating 0 --method dop853 --rtol 1e-9 --output docs/implementation/stage2/trajectories/one_reference_probe.json",
+    "limit_seconds": 240,
+    "observed_process_age_seconds": 189,
+    "observed_cpu_percent": 99.9,
+    "observed_RSS_KiB": 351000,
+    "exec_reported_exit_code": 1,
+    "exec_output": "",
+    "persisted_status": "INCOMPLETE",
+    "completed_trajectory_npz_present": false,
+    "process_absent_after_return": true,
+    "termination_reason": "No completion record or stderr was returned. The configured bound is known; a specific signal or remote exit124 was not reported. Do not infer a physical failure from this incomplete calculation.",
+    "retried": false,
+    "dependent_work_paused": true,
+    "selected_followup_phonon_nodes": 1025,
+    "followup_reason": "Independent population-resolution checks selected1025 nodes; the incomplete513-node probe is retained separately.",
+    "historical_only": true,
+    "resolution": "The user-run selected1025-node reference completed; preserved above. New pending work is the full-duration and mesh batch, not a repeat of that reference."
   },
   "material": {
     "status": "SYNTHETIC_ONLY_NBN_ABSOLUTE_NOT_ADMITTED",
@@ -536,48 +549,12 @@
     {
       "path": "docs/implementation/stage2/resume_20260921/command_notebook_update.json",
       "sha256": "34818d854e477c2aced672648f94fe1492da74a6f49be0c3d63e1996f172a78f"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/limited_short_time_assessment.json",
-      "sha256": "df87e3f9dbdaf85e0f42a58fbfe440db3f670983d1c32f7dc96840455689eb07"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval.json",
-      "sha256": "0d505c22cb5d4f7e27a791f0394ec48ae684dcd8af84a3940b702c259e7254a6"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval.npz",
-      "sha256": "8dc9cbe4cfe1f450475c211c6217648149e64dd861f0d4d8bae1ebea5c872e82"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval_initial.npz",
-      "sha256": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/regression_result.json",
-      "sha256": "b6074dd3c7aa102fa6dee915b91ab889163d48da07a79bc30ea60341c38bea03"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/limited_guard_tests.json",
-      "sha256": "3fd6c50d5d9a52bbbb4c34061736476fecbd57b77b337473705ce47889610c37"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/completed_batch_audit.json",
-      "sha256": "a7ed1861d6a62a3ec8bfa11a8e19bbdf98165c835f6440e8115d935dd1d58041"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/limited_acceptance_plan.json",
-      "sha256": "2a4ab648648d407bdd9d066ca412168bb348c5208a1657cf0c0cf7cfafcae098"
-    },
-    {
-      "path": "docs/implementation/stage2/recovery_20260921/command_notebook_update.json",
-      "sha256": "c205d975565e6eef6ebfe984ca9e493341d2dbf51a8e36a8e4465a575cf611da"
     }
   ],
-  "generator_sha256": "dc90f1af91d5ef8e28483c6ee5b5ddb8fcd183ede59ccff0840e41492e771177",
+  "generator_sha256": "336a6adcd2dbc13178ea0918e11e003fd30b4d7cac1f27ec1104984d6ed2e529",
   "preceding_checkpoint": {
-    "path": "docs/implementation/stage2/recovery_20260921/admission_before_recovery.json",
-    "sha256": "8baf28a62cee8fa65b894fc25751c4fd19f824a789af15c0c36857e175b66a09"
+    "path": "docs/implementation/stage2/resume_20260921/admission_before_resume.json",
+    "sha256": "5ff42f809fcaa1593e897364037d49b2c71f15633547702969617dad1ab5b01e"
   },
   "resumed_reference": {
     "schema": "pysnspd.stage2.user_run_import.v1",
@@ -634,23 +611,5 @@
     "agent_executed": false,
     "final_adjudication_required": true
   },
-  "kernel_changes": false,
-  "recovery": {
-    "plan": {
-      "path": "docs/implementation/stage2/recovery_20260921/limited_acceptance_plan.json",
-      "sha256": "2a4ab648648d407bdd9d066ca412168bb348c5208a1657cf0c0cf7cfafcae098"
-    },
-    "status": "PREPARED_NOT_YET_FULLY_VALIDATED",
-    "physical_kernel_changes": false,
-    "temporal_integrator_changed": true,
-    "population_clipping": false,
-    "posthoc_energy_repair": false,
-    "old_RK4_time_tests": "PASS on candidate mesh; not sufficient for new SSP integrator or fine mesh.",
-    "RK4_failure": "First internal stage on electronic refinement4 leaves the physical population domain.",
-    "bisection_diagnostic": "24 RHS calls, no accepted steps; archived, not selected for the relaunch.",
-    "short_SSP_time_error": 1.5797518953075244e-06,
-    "fine_first_interval_ledger_error": 6.757813753033304e-10,
-    "final_admission": false,
-    "inherited_gates_scope": "Retained prior checkpoint gates; every full SSP time/grid gate remains pending."
-  }
+  "kernel_changes": false
 }

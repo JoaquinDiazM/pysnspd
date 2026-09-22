@@ -1,0 +1,37 @@
+{
+  "contract": {
+    "task": {
+      "id": "one_time_assessment",
+      "phase": "temporal",
+      "kind": "time",
+      "runs": [
+        "one_time_40",
+        "one_time_80",
+        "one_time_160"
+      ],
+      "reference": "one_time_320"
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/assess_time_refinement.py",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_40.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_80.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_160.json",
+      "--reference",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_320.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_assessment.json"
+    ],
+    "dependency_hashes": {
+      "one_time_40": "e87b5c34147e75886724d3693c450cf08c61272b12a2d37f68da9088b32af2aa",
+      "one_time_80": "95d721f7a00da1ff4803574d2735c3d66437ecbe9eb0911ffb0ee7f5fc9cee13",
+      "one_time_160": "ec804ad91a18945ad887abb58a54346ec0032be2fd237305c65c53a87cefe509",
+      "one_time_320": "7297dea5a67b87d6251edd5d5ae2746579fb4c79e200ada687dc90794bad5cbb"
+    },
+    "batch_manifest_sha256": "5ae6a51b0e6ce213238fc90b35a3c87e387ea0b7ec512ff017671201235b2dd6"
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_validation_20260921_203419/one_time_assessment.json": "396b0f849e368d68486cc9167c00cba4b791294604875a6feec93023ac3f144c"
+  }
+}
