@@ -1,6 +1,12 @@
 # Etapa 2: celdas con cinética acoplada
 
-**Estado: preparado para relanzamiento autorizado; etapa no cerrada ni promovida a producción.**
+**Estado al 22 de septiembre: cierre numérico no admitido; etapa abierta.**
+
+La [revisión actual con plots](review_20260922/README.md) recopila los resultados
+ejecutados en Geminga. RK4 repitió el fallo de la malla electrónica fina. La
+primera trayectoria SSP completó el intervalo, pero excedió 36,5 veces el límite
+energético. Su limitador no se activó. No procede todavía emitir un informe
+final de cierre ni avanzar a la etapa espacial.
 
 La implementación experimental incorpora eventos electrón-fonón conservativos,
 transporte a energía fija entre espectros distintos, movilidad KWT, BGK, calor y
@@ -38,20 +44,15 @@ Resultados estáticos y ensayos realizados:
 
 ## Continuación necesaria
 
-La [recuperación preparada](recovery_20260921/README.md) registra un ensayo
-SSPRK3 con un factor común para los flujos de cada evento. Primero debe superar
-la comparación temporal frente a las referencias RK320 archivadas; después se
-evalúan las mallas, las fronteras de población y los campos visitados. El lote
-se detiene ante cualquier fallo y conserva la evidencia.
-
-Para esta recuperación, el usuario autorizó expresamente lanzar el cálculo
-largo en `screen code_000`, desacoplar la sesión y responder sin esperar ni
-sondear el proceso. Los comandos se registran en `/home/jdiaz/GEMINGA_COMMANDS.md`.
-La regla habitual de ejecución manual sigue vigente para otros cálculos largos.
+El único [plan manual vigente](review_20260922/manual_time_plan.json) compara
+una celda SSP con 160/320/640 pasos frente a 1280. Su coste estimado es de 26 minutos,
+un hilo y una reserva de 2 GiB. No se ha ejecutado en esta revisión. El comando
+directo está en `/home/jdiaz/GEMINGA_COMMANDS.md`, sin instrucciones de gestión
+de sesiones. Los lotes anteriores se conservan como evidencia y no deben repetirse.
 
 Faltan el dictamen temporal del nuevo integrador, los refinamientos dinámicos,
 los controles sobre esas trayectorias y el informe final. El dictamen de puertas
-conservado como punto de partida está en
+actualizado está en
 [stage2_admission.json](stage2_admission.json). No avanzar a la etapa espacial
 mientras siga pendiente.
 

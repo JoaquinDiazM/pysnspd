@@ -1,4 +1,24 @@
-# Geminga: comandos vigentes
+"""Archive the complete command notebook and prepare a separate concise draft.
+
+This is an offline documentation transform. It never writes the source notebook,
+the active mirror, or a remote file, and it never launches a calculation.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[3]
+EXPECTED_SOURCE_SHA256 = "67b3556fe57507575568139357204d62d9bd4d74eddd68a26de1d74bcdbb03b9"
+ARCHIVE = ROOT / "docs/implementation/stage2/review_20260922/GEMINGA_COMMANDS_before_cleanup.md"
+DEFAULT_DRAFT = ROOT / "tmp/stage2_review_20260922/GEMINGA_COMMANDS_clean_draft.md"
+
+
+DRAFT = """# Geminga: comandos vigentes
 
 Actualizado: 22 de septiembre de 2026. Repositorio: `/home/jdiaz/pysnspd`;
 revisión de partida: `main`, commit `6117941`. Cuenta: `jdiaz`, sin administrador.
@@ -114,3 +134,65 @@ vence su tiempo, su resultado queda incompleto y se revisa antes de continuar.
 
 No reutilizar los lanzamientos del histórico ni las instrucciones de ejecución
 de manifiestos anteriores como una continuación automática de esta revisión.
+"""
+
+
+def sha256(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", type=Path, default=ROOT / "docs/GEMINGA_COMMANDS.md")
+    parser.add_argument("--draft", type=Path, default=DEFAULT_DRAFT)
+    parser.add_argument("--expected-source-sha256", default=EXPECTED_SOURCE_SHA256)
+    args = parser.parse_args()
+    source = args.source.resolve()
+    draft = args.draft.resolve()
+    archive = ARCHIVE.resolve()
+    active = (ROOT / "docs/GEMINGA_COMMANDS.md").resolve()
+    if draft in (source, archive, active) or archive == source:
+        raise SystemExit("Refusing to overwrite the source, active mirror, or archive with a draft.")
+    if not draft.is_relative_to(ROOT) or not archive.is_relative_to(ROOT):
+        raise SystemExit("Outputs must remain inside the repository.")
+    original = source.read_bytes()
+    original_hash = sha256(original)
+    if original_hash != args.expected_source_sha256.lower():
+        raise SystemExit(f"Source changed: observed SHA256 {original_hash}; review before preparing a draft.")
+    if archive.exists() and archive.read_bytes() != original:
+        raise SystemExit("Archive already exists with different bytes; preserving it and stopping.")
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    if not archive.exists():
+        archive.write_bytes(original)
+    prepared = DRAFT.encode("utf-8")
+    if "screen" in DRAFT.lower():
+        raise SystemExit("Unexpected terminal-session instruction in active draft.")
+    draft.parent.mkdir(parents=True, exist_ok=True)
+    draft.write_bytes(prepared)
+    if source.read_bytes() != original or archive.read_bytes() != original:
+        raise SystemExit("Source/archive integrity verification failed.")
+    report = {
+        "schema": "pysnspd.command_notebook_cleanup_draft.v1",
+        "status": "DRAFT_ONLY_NO_ACTIVE_OR_REMOTE_WRITE",
+        "source": str(source),
+        "source_sha256": original_hash,
+        "archive": str(archive),
+        "archive_sha256": sha256(archive.read_bytes()),
+        "draft": str(draft),
+        "draft_sha256": sha256(prepared),
+        "original_bytes": len(original),
+        "draft_bytes": len(prepared),
+        "original_lines": len(original.splitlines()),
+        "draft_lines": len(prepared.splitlines()),
+        "source_unchanged": True,
+        "original_terminal_session_mentions": original.lower().count(b"screen"),
+        "draft_terminal_session_mentions": prepared.lower().count(b"screen"),
+        "active_long_computation_commands": 1,
+    }
+    report_path = draft.with_name("GEMINGA_COMMANDS_cleanup_provenance.json")
+    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

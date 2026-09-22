@@ -1,11 +1,11 @@
 {
   "schema": "pysnspd.stage2.admission_checkpoint.v2",
-  "status": "REVIEWED_NOT_CLOSED_PENDING_MANUAL_TIME",
+  "status": "READY_FOR_AUTHORIZED_SCREEN_RECOVERY",
   "stage2_status": "NOT_CLOSED",
   "numerical_admission": false,
   "production_promotion": false,
-  "recommendation": "Run only the new manual one-cell SSP temporal diagnostic. Retain failed RK4/SSP batches; do not restart them or proceed to spatial implementation.",
-  "date": "2026-09-22",
+  "recommendation": "Run the authorized, source-frozen SSP recovery in code_000, detach, then review the resulting time/grid tests before admission.",
+  "date": "2026-09-21",
   "criteria": {
     "path": "docs/implementation/stage2/acceptance_criteria.json",
     "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
@@ -60,70 +60,213 @@
   },
   "gates": [
     {
-      "id": "retained_static_evidence",
-      "status": "RETAINED_SCOPED_PASSES",
-      "detail": "Prior static gates remain valid only in their declared scenarios; see previous_scoped_gates."
-    },
-    {
-      "id": "RK4_candidate_time_one",
-      "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
-      "finest_error": 6.143596723348075e-05,
-      "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
-    },
-    {
-      "id": "RK4_candidate_time_two",
-      "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
-      "finest_error": 4.7399839355602646e-05,
-      "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
-    },
-    {
-      "id": "RK4_candidate_activity",
+      "id": "immutable_parent",
       "status": "PASS",
-      "detail": {
-        "preregistered_initial_excitation_energy": 0.387227852778307,
-        "initial_phonon_energy": 0.15378725161532888,
-        "scale": 0.5410151043936359,
-        "maximum_amplitude_change": 0.1990601306198202,
-        "eph_fraction": 0.0477977068670953,
-        "face_fraction": 0.11079467483925405,
-        "scope": "Measured from the time-converged candidate RK4 trajectory; dynamic mesh admission remains open.",
-        "passes": true
-      }
+      "detail": "Exact hashes of R2 source/catalog and stage1 contract/certificate preserved."
     },
     {
-      "id": "electronic_dynamic_mesh",
-      "status": "FAILED_REFINEMENT_INCOMPLETE_GATE",
-      "reason": "2520-state RK4 trajectory failed; no complete three-mesh comparison."
+      "id": "complementary_energy_and_forces",
+      "status": "PASS_SAMPLED_STATIC_DOMAIN",
+      "independent_maxima": {
+        "energy": 3.4675004456278185e-15,
+        "amplitude_derivative": 9.492406860545088e-15,
+        "gamma_derivative": 1.611537020968681e-10,
+        "spectral": 1.1368683772161603e-13
+      },
+      "moment_errors_by_refinement": {
+        "1": [
+          2.7358169008007138e-08,
+          1.953907646790043e-08,
+          4.732054381673123e-06
+        ],
+        "2": [
+          1.8212081842605699e-09,
+          1.3006843380125588e-09,
+          1.6883945030965464e-07
+        ],
+        "4": [
+          1.1550699285933774e-10,
+          8.249345651023532e-11,
+          1.0956225870994984e-07
+        ]
+      },
+      "detail": "630/1260/2520 fixed count states; high-precision implicit spectral reference and independently refined moment quadrature. This is not uniform validation of arbitrary distributions."
     },
     {
-      "id": "phonon_dynamic_mesh",
-      "status": "NOT_REACHED",
-      "reason": "2049/4097-node trajectories and three-grid assessment were not reached."
+      "id": "KWT_and_synthetic_Debye",
+      "status": "PASS",
+      "maxima": {
+        "KWT_velocity_SI_scaled": 3.680992056889131e-15,
+        "KWT_heat_SI_scaled": 7.192252722286001e-15,
+        "KWT_energy_identity_scaled": 1.765952166885242e-16,
+        "KWT_minimum_mobility_eigenvalue": 0.13171770641533342,
+        "R2_Q_plus_force_times_velocity_absolute": 2.7755575615628914e-17,
+        "Debye_mode_relative": 4.736952163853022e-16,
+        "Debye_lambda_relative": 4.163362363359108e-16,
+        "Debye_129_nodes_thermal_relative": 1.042838511124921e-15
+      },
+      "detail": "Inherited mobility algebra and synthetic SI conversions; no microscopic mobility calibration or NbN admission."
     },
     {
-      "id": "SSP_temporal_admission",
-      "status": "FAILED_COARSE_LEDGER_GATE_NOT_CONVERGED",
-      "reason": "The only complete SSP run fails the ledger gate; 80/160 runs and time comparison were not reached."
+      "id": "event_equilibrium_faces_entropy",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "maximum_relative_equilibrium_event_imbalance": 4.2632564145606005e-14,
+      "maximum_weighted_equilibrium_RHS": 1.488601832731206e-19,
+      "all_faces_inward": true,
+      "minimum_isolated_entropy_production": 0.2940413673479258,
+      "detail": "Four static fields and three temperatures on the selected 1025-node phonon grid. Boundary trajectories are a separate gate."
     },
     {
-      "id": "SSP_fine_mesh_paired_diagnostic",
-      "status": "NOT_REACHED",
-      "reason": "No fine SSP trajectory or paired temporal diagnostic exists in this batch."
+      "id": "transport_continuum",
+      "status": "PASS",
+      "mesh_summary": [
+        {
+          "electron_factor": 1,
+          "electron_nodes": [
+            630,
+            630
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 3.9462775850113324e-05,
+          "maximum_power_relative_error": 2.003174391530846e-05,
+          "precision_status": "PASS"
+        },
+        {
+          "electron_factor": 2,
+          "electron_nodes": [
+            1260,
+            1260
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 9.90866909291049e-06,
+          "maximum_power_relative_error": 5.017388097191844e-06,
+          "precision_status": "PASS"
+        },
+        {
+          "electron_factor": 4,
+          "electron_nodes": [
+            2520,
+            2520
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 2.4825285115234453e-06,
+          "maximum_power_relative_error": 1.255556308267725e-06,
+          "precision_status": "PASS"
+        }
+      ],
+      "reference_budget": 7.048293004533085e-16,
+      "detail": "Independent continuous-energy response and power on normal/gapped/gapless thermal and nonthermal profiles; not full coupled trajectories."
     },
     {
-      "id": "equilibrium_and_population_boundary_trajectories",
-      "status": "NOT_REACHED",
-      "reason": "Registered final equilibrium/vacuum/sparse trajectories were not reached; static inward-RHS tests are distinct."
+      "id": "reaction_continuum_IR_001",
+      "status": "PASS_SEPARATED_ELECTRONIC_REFINEMENT",
+      "maximum_full_RHS_relative_errors": [
+        0.0002993707921886643,
+        0.00028280972923528974,
+        0.0002915110763925293
+      ],
+      "detail": "The archived combined errors remain nonmonotone. Independent matched-eta references and point-Bose comparisons separate fixed phonon interpolation, Pauli reconstruction, quadrature and regulator bias: all18 electronic series decrease over630/1260/2520. This historical check uses IR=.01; selected IR=.005 is separately verified at630.",
+      "separated_maximum_errors": [
+        0.000291333,
+        7.28419e-05,
+        2.18741e-05
+      ]
     },
     {
-      "id": "actual_final_trajectory_fields_and_support",
-      "status": "PENDING",
-      "reason": "Historical two-cell pilot checks exist; final accepted mesh/trajectory checks were not reached."
+      "id": "selected_phonon_interpolation",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "phonon_nodes": 1025,
+      "maxima": {
+        "power_relative_error": {
+          "field": "gapless",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "power_relative_error": 0.00024264039759069026
+        },
+        "gross_power_relative_error": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "gross_power_relative_error": 5.021333560485369e-05
+        },
+        "electronic_rhs_relative_L1": {
+          "field": "gapless",
+          "profile": "phonon_bubble",
+          "channel": "scattering",
+          "electronic_rhs_relative_L1": 5.0309504446311324e-05
+        },
+        "phonon_17_hats_relative_L1": {
+          "field": "depaired",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_17_hats_relative_L1": 0.00010211710014837729
+        },
+        "phonon_33_hats_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_33_hats_relative_L1": 0.00038832880884626504
+        }
+      },
+      "detail": "Same electronic representation, analytic populations evaluated at exact transition energy as the interpolation reference; not a full continuous-reaction or time check."
     },
     {
-      "id": "final_report_and_spatial_transition",
-      "status": "NOT_ADMITTED",
-      "reason": "The required numerical gates remain failed or missing."
+      "id": "selected_collision_quadrature",
+      "status": "PASS_INTERNAL_REFINEMENT",
+      "maximum_electronic_RHS_relative_L1": 8.006813886207539e-07,
+      "detail": "630 electrons, 1025 phonons, IR=.005; inner orders2/3/4. Self-convergence does not replace an independent continuous reference."
+    },
+    {
+      "id": "selected_IR_0005_independent_reactions",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "detail": "Independent continuous reference at actual IR=.005 and630/1025 for all three registered fields/profiles; full static responses meet1e-3. No dynamic admission follows.",
+      "maximum_weak_electron_error": 0.00029703,
+      "maximum_power_error": 0.00073653,
+      "maximum_phonon_hat_error": 0.00038811
+    },
+    {
+      "id": "infrared_and_upper_support_static",
+      "status": "PASS_DECLARED_ANALYTIC_PROFILES_ONLY",
+      "detail": "Independent positive-cut omission and upper absorption bounds exist for nine analytic profiles. Actual selected coupled trajectories, external populations and arbitrary narrow distributions remain outside this result."
+    },
+    {
+      "id": "negative_controls",
+      "status": "PASS",
+      "detail": "Tests detect double condensate heat, omitted spectral work and a common incorrect collision factor."
+    },
+    {
+      "id": "smooth_RK4_suboperators",
+      "status": "PASS",
+      "detail": "BGK and escape exact exponential problems show fourth order; this cannot certify the full nonsmooth event system."
+    },
+    {
+      "id": "simultaneous_trajectories_and_time_convergence",
+      "status": "PARTIAL_SHORT_REFERENCE_PASS_FULL_DURATION_PENDING",
+      "detail": "User-run DOP853 complete on[0,.1]. RK4 10/20/40 matches at3 common times, max1.574710e-6 and reductions3.70/4.15. Full-duration one/two-cell time refinement remains pending."
+    },
+    {
+      "id": "dynamic_electron_phonon_resolution",
+      "status": "PENDING_COMPUTE",
+      "detail": "Three-grid full-trajectory electron and phonon population convergence remains unmeasured. Initial-state projection and static kernel refinement are insufficient."
+    },
+    {
+      "id": "selected_boundary_equilibrium_and_activity",
+      "status": "PENDING_COMPUTE",
+      "detail": "Repeat complete equilibrium, empty/sparse boundary, escape/heating, resolved-amplitude and channel-transfer checks on the selected 1025-phonon candidate with accepted time accuracy."
+    },
+    {
+      "id": "actual_trajectory_fields_and_support",
+      "status": "PASS_TWO_CELL_PILOT_FINAL_TRAJECTORIES_PENDING",
+      "detail": "Actual630/1025 TWO40 trajectory:22 field samples PASS; omitted absorption bound6.67e-10. Accepted time/grid trajectories still need their own checks."
+    },
+    {
+      "id": "final_regression_suite",
+      "status": "PASS",
+      "exit_code": 0,
+      "runtime_seconds": 47.09345739101991,
+      "source_hashes_unchanged": true,
+      "detail": "Fresh independent repository suite:509passed; source hashes unchanged.",
+      "evidence": "docs/implementation/stage2/resume_20260921/regression_result.json"
     }
   ],
   "historical_completed_trajectories": [
@@ -177,14 +320,11 @@
     }
   ],
   "computation_handoff": {
-    "mode": "USER_FOREGROUND_COMMAND",
-    "plan": "docs/implementation/stage2/review_20260922/manual_time_plan.json",
-    "output_root": "/home/jdiaz/pysnspd/tmp/stage2_ssp_time_20260922",
-    "expected_minutes": 26,
-    "threads": 1,
-    "memory_reservation_GiB": 2,
-    "agent_executed": false,
-    "new_trajectories_this_review": 0
+    "mode": "EXPLICIT_AUTHORIZED_SCREEN_LAUNCH",
+    "screen": "3040582.code_000",
+    "output_root": "/home/jdiaz/pysnspd/tmp/stage2_recovery_20260921_ssp",
+    "wait_for_completion": false,
+    "polling": false
   },
   "material": {
     "status": "SYNTHETIC_ONLY_NBN_ABSOLUTE_NOT_ADMITTED",
@@ -432,40 +572,12 @@
     {
       "path": "docs/implementation/stage2/recovery_20260921/command_notebook_update.json",
       "sha256": "c205d975565e6eef6ebfe984ca9e493341d2dbf51a8e36a8e4465a575cf611da"
-    },
-    {
-      "path": "docs/implementation/stage2/review_20260922/import_inventory.json",
-      "sha256": "a665ad55c8f92c4f4e81811e0a5a453d9de433890342e362f6f07f1cf41219a5"
-    },
-    {
-      "path": "docs/implementation/stage2/review_20260922/independent_audit.json",
-      "sha256": "12a22514e231e091708889c7d52372af34fb2a5a55b8291f68b4dc09b0fac496"
-    },
-    {
-      "path": "docs/implementation/stage2/review_20260922/diagnosed_ssp.json",
-      "sha256": "11569215f1f06d8a6fae56e9aea4bcdd1b843f72f91c00a7d993181df691fbea"
-    },
-    {
-      "path": "docs/implementation/stage2/review_20260922/manual_time_plan.json",
-      "sha256": "df121161d089f70d8d13a9fe988d28aacde470b9f7dbfad949e52f7f49a37637"
-    },
-    {
-      "path": "docs/implementation/stage2/review_20260922/manual_time_offline_tests.json",
-      "sha256": "4832747007c27209468473889695232b472e1f4610549cedb685c1a1cdabf8de"
-    },
-    {
-      "path": "docs/implementation/stage2/review_20260922/command_notebook_cleanup.json",
-      "sha256": "822d540cd40616c000561e901562c2ab4a4c1c66ba00198f03d3a50a310c0b94"
-    },
-    {
-      "path": "docs/implementation/stage2/review_20260922/QA_report.json",
-      "sha256": "89fc6c7218c3800042c793e072b02a91a0fbae2f087c74f416bbfe7c267c9b29"
     }
   ],
-  "generator_sha256": "fd85793dad12bda6cbe5c3eb1948175d77b3dd874287dc04d84c9358e80d09e2",
+  "generator_sha256": "dc90f1af91d5ef8e28483c6ee5b5ddb8fcd183ede59ccff0840e41492e771177",
   "preceding_checkpoint": {
-    "path": "docs/implementation/stage2/review_20260922/admission_before_review.json",
-    "sha256": "b255f8560b02b60aed6c2cbc762173769f54092de37ed283451bb254e2e3e468"
+    "path": "docs/implementation/stage2/recovery_20260921/admission_before_recovery.json",
+    "sha256": "8baf28a62cee8fa65b894fc25751c4fd19f824a789af15c0c36857e175b66a09"
   },
   "resumed_reference": {
     "schema": "pysnspd.stage2.user_run_import.v1",
@@ -520,8 +632,7 @@
     "path": "docs/implementation/stage2/resume_20260921/manual_validation_plan.json",
     "sha256": "e32ba6ee884fa86ab4800b3c86e248105c62357f15d276911a7b5c955e9c76a7",
     "agent_executed": false,
-    "final_adjudication_required": true,
-    "status": "SUPERSEDED_DO_NOT_RESTART"
+    "final_adjudication_required": true
   },
   "kernel_changes": false,
   "recovery": {
@@ -529,7 +640,7 @@
       "path": "docs/implementation/stage2/recovery_20260921/limited_acceptance_plan.json",
       "sha256": "2a4ab648648d407bdd9d066ca412168bb348c5208a1657cf0c0cf7cfafcae098"
     },
-    "status": "FAILED_SSP40_ENERGY_LEDGER",
+    "status": "PREPARED_NOT_YET_FULLY_VALIDATED",
     "physical_kernel_changes": false,
     "temporal_integrator_changed": true,
     "population_clipping": false,
@@ -541,227 +652,5 @@
     "fine_first_interval_ledger_error": 6.757813753033304e-10,
     "final_admission": false,
     "inherited_gates_scope": "Retained prior checkpoint gates; every full SSP time/grid gate remains pending."
-  },
-  "previous_scoped_gates": [
-    {
-      "id": "immutable_parent",
-      "status": "PASS",
-      "detail": "Exact hashes of R2 source/catalog and stage1 contract/certificate preserved."
-    },
-    {
-      "id": "complementary_energy_and_forces",
-      "status": "PASS_SAMPLED_STATIC_DOMAIN",
-      "independent_maxima": {
-        "energy": 3.4675004456278185e-15,
-        "amplitude_derivative": 9.492406860545088e-15,
-        "gamma_derivative": 1.611537020968681e-10,
-        "spectral": 1.1368683772161603e-13
-      },
-      "moment_errors_by_refinement": {
-        "1": [
-          2.7358169008007138e-08,
-          1.953907646790043e-08,
-          4.732054381673123e-06
-        ],
-        "2": [
-          1.8212081842605699e-09,
-          1.3006843380125588e-09,
-          1.6883945030965464e-07
-        ],
-        "4": [
-          1.1550699285933774e-10,
-          8.249345651023532e-11,
-          1.0956225870994984e-07
-        ]
-      },
-      "detail": "630/1260/2520 fixed count states; high-precision implicit spectral reference and independently refined moment quadrature. This is not uniform validation of arbitrary distributions."
-    },
-    {
-      "id": "KWT_and_synthetic_Debye",
-      "status": "PASS",
-      "maxima": {
-        "KWT_velocity_SI_scaled": 3.680992056889131e-15,
-        "KWT_heat_SI_scaled": 7.192252722286001e-15,
-        "KWT_energy_identity_scaled": 1.765952166885242e-16,
-        "KWT_minimum_mobility_eigenvalue": 0.13171770641533342,
-        "R2_Q_plus_force_times_velocity_absolute": 2.7755575615628914e-17,
-        "Debye_mode_relative": 4.736952163853022e-16,
-        "Debye_lambda_relative": 4.163362363359108e-16,
-        "Debye_129_nodes_thermal_relative": 1.042838511124921e-15
-      },
-      "detail": "Inherited mobility algebra and synthetic SI conversions; no microscopic mobility calibration or NbN admission."
-    },
-    {
-      "id": "event_equilibrium_faces_entropy",
-      "status": "PASS_DECLARED_STATIC_CASES",
-      "maximum_relative_equilibrium_event_imbalance": 4.2632564145606005e-14,
-      "maximum_weighted_equilibrium_RHS": 1.488601832731206e-19,
-      "all_faces_inward": true,
-      "minimum_isolated_entropy_production": 0.2940413673479258,
-      "detail": "Four static fields and three temperatures on the selected 1025-node phonon grid. Boundary trajectories are a separate gate."
-    },
-    {
-      "id": "transport_continuum",
-      "status": "PASS",
-      "mesh_summary": [
-        {
-          "electron_factor": 1,
-          "electron_nodes": [
-            630,
-            630
-          ],
-          "state_mesh": "complementary_causal_count",
-          "maximum_RHS_relative_error": 3.9462775850113324e-05,
-          "maximum_power_relative_error": 2.003174391530846e-05,
-          "precision_status": "PASS"
-        },
-        {
-          "electron_factor": 2,
-          "electron_nodes": [
-            1260,
-            1260
-          ],
-          "state_mesh": "complementary_causal_count",
-          "maximum_RHS_relative_error": 9.90866909291049e-06,
-          "maximum_power_relative_error": 5.017388097191844e-06,
-          "precision_status": "PASS"
-        },
-        {
-          "electron_factor": 4,
-          "electron_nodes": [
-            2520,
-            2520
-          ],
-          "state_mesh": "complementary_causal_count",
-          "maximum_RHS_relative_error": 2.4825285115234453e-06,
-          "maximum_power_relative_error": 1.255556308267725e-06,
-          "precision_status": "PASS"
-        }
-      ],
-      "reference_budget": 7.048293004533085e-16,
-      "detail": "Independent continuous-energy response and power on normal/gapped/gapless thermal and nonthermal profiles; not full coupled trajectories."
-    },
-    {
-      "id": "reaction_continuum_IR_001",
-      "status": "PASS_SEPARATED_ELECTRONIC_REFINEMENT",
-      "maximum_full_RHS_relative_errors": [
-        0.0002993707921886643,
-        0.00028280972923528974,
-        0.0002915110763925293
-      ],
-      "detail": "The archived combined errors remain nonmonotone. Independent matched-eta references and point-Bose comparisons separate fixed phonon interpolation, Pauli reconstruction, quadrature and regulator bias: all18 electronic series decrease over630/1260/2520. This historical check uses IR=.01; selected IR=.005 is separately verified at630.",
-      "separated_maximum_errors": [
-        0.000291333,
-        7.28419e-05,
-        2.18741e-05
-      ]
-    },
-    {
-      "id": "selected_phonon_interpolation",
-      "status": "PASS_DECLARED_STATIC_CASES",
-      "phonon_nodes": 1025,
-      "maxima": {
-        "power_relative_error": {
-          "field": "gapless",
-          "profile": "nonthermal",
-          "channel": "scattering",
-          "power_relative_error": 0.00024264039759069026
-        },
-        "gross_power_relative_error": {
-          "field": "gapped",
-          "profile": "phonon_bubble",
-          "channel": "recombination",
-          "gross_power_relative_error": 5.021333560485369e-05
-        },
-        "electronic_rhs_relative_L1": {
-          "field": "gapless",
-          "profile": "phonon_bubble",
-          "channel": "scattering",
-          "electronic_rhs_relative_L1": 5.0309504446311324e-05
-        },
-        "phonon_17_hats_relative_L1": {
-          "field": "depaired",
-          "profile": "phonon_bubble",
-          "channel": "recombination",
-          "phonon_17_hats_relative_L1": 0.00010211710014837729
-        },
-        "phonon_33_hats_relative_L1": {
-          "field": "gapped",
-          "profile": "phonon_bubble",
-          "channel": "recombination",
-          "phonon_33_hats_relative_L1": 0.00038832880884626504
-        }
-      },
-      "detail": "Same electronic representation, analytic populations evaluated at exact transition energy as the interpolation reference; not a full continuous-reaction or time check."
-    },
-    {
-      "id": "selected_collision_quadrature",
-      "status": "PASS_INTERNAL_REFINEMENT",
-      "maximum_electronic_RHS_relative_L1": 8.006813886207539e-07,
-      "detail": "630 electrons, 1025 phonons, IR=.005; inner orders2/3/4. Self-convergence does not replace an independent continuous reference."
-    },
-    {
-      "id": "selected_IR_0005_independent_reactions",
-      "status": "PASS_DECLARED_STATIC_CASES",
-      "detail": "Independent continuous reference at actual IR=.005 and630/1025 for all three registered fields/profiles; full static responses meet1e-3. No dynamic admission follows.",
-      "maximum_weak_electron_error": 0.00029703,
-      "maximum_power_error": 0.00073653,
-      "maximum_phonon_hat_error": 0.00038811
-    },
-    {
-      "id": "infrared_and_upper_support_static",
-      "status": "PASS_DECLARED_ANALYTIC_PROFILES_ONLY",
-      "detail": "Independent positive-cut omission and upper absorption bounds exist for nine analytic profiles. Actual selected coupled trajectories, external populations and arbitrary narrow distributions remain outside this result."
-    },
-    {
-      "id": "negative_controls",
-      "status": "PASS",
-      "detail": "Tests detect double condensate heat, omitted spectral work and a common incorrect collision factor."
-    },
-    {
-      "id": "smooth_RK4_suboperators",
-      "status": "PASS",
-      "detail": "BGK and escape exact exponential problems show fourth order; this cannot certify the full nonsmooth event system."
-    },
-    {
-      "id": "simultaneous_trajectories_and_time_convergence",
-      "status": "PARTIAL_SHORT_REFERENCE_PASS_FULL_DURATION_PENDING",
-      "detail": "User-run DOP853 complete on[0,.1]. RK4 10/20/40 matches at3 common times, max1.574710e-6 and reductions3.70/4.15. Full-duration one/two-cell time refinement remains pending."
-    },
-    {
-      "id": "dynamic_electron_phonon_resolution",
-      "status": "PENDING_COMPUTE",
-      "detail": "Three-grid full-trajectory electron and phonon population convergence remains unmeasured. Initial-state projection and static kernel refinement are insufficient."
-    },
-    {
-      "id": "selected_boundary_equilibrium_and_activity",
-      "status": "PENDING_COMPUTE",
-      "detail": "Repeat complete equilibrium, empty/sparse boundary, escape/heating, resolved-amplitude and channel-transfer checks on the selected 1025-phonon candidate with accepted time accuracy."
-    },
-    {
-      "id": "actual_trajectory_fields_and_support",
-      "status": "PASS_TWO_CELL_PILOT_FINAL_TRAJECTORIES_PENDING",
-      "detail": "Actual630/1025 TWO40 trajectory:22 field samples PASS; omitted absorption bound6.67e-10. Accepted time/grid trajectories still need their own checks."
-    },
-    {
-      "id": "final_regression_suite",
-      "status": "PASS",
-      "exit_code": 0,
-      "runtime_seconds": 47.09345739101991,
-      "source_hashes_unchanged": true,
-      "detail": "Fresh independent repository suite:509passed; source hashes unchanged.",
-      "evidence": "docs/implementation/stage2/resume_20260921/regression_result.json"
-    }
-  ],
-  "latest_review": {
-    "audit": "docs/implementation/stage2/review_20260922/independent_audit.json",
-    "audit_sha256": "12a22514e231e091708889c7d52372af34fb2a5a55b8291f68b4dc09b0fac496",
-    "report": "output/pdf/implementation/Informe_revision_etapa_2_20260922.pdf",
-    "report_sha256": "97fa33e21a3c2ca12fabf07852d4fc0db37d73648a4837d178b27e47469f84fb",
-    "current_plan_sha256": "df121161d089f70d8d13a9fe988d28aacde470b9f7dbfad949e52f7f49a37637",
-    "physical_model_changed": false,
-    "thresholds_changed": false,
-    "final_report_eligible": false,
-    "report_scope": "Results review; no closure certificate."
   }
 }

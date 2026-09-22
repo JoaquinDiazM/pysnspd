@@ -1,0 +1,183 @@
+{
+  "schema": "pysnspd.stage2.one-cell-time-plan.v1",
+  "status": "READY_FOR_USER_FOREGROUND_RUN",
+  "registered_date": "2026-09-22",
+  "purpose": "One-cell corrective SSP temporal diagnostic before any further two-cell or expensive mesh work. No physical-model change or stage-2 admission.",
+  "tasks": [
+    {
+      "id": "one_ssp_160",
+      "phase": "one_cell_time_diagnostic",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_320",
+      "phase": "one_cell_time_diagnostic",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_640",
+      "phase": "one_cell_time_diagnostic",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 640,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_1280",
+      "phase": "one_cell_time_diagnostic",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 1280,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_ssp_time_assessment",
+      "phase": "one_cell_time_diagnostic",
+      "kind": "limited_time",
+      "runs": [
+        "one_ssp_160",
+        "one_ssp_320",
+        "one_ssp_640"
+      ],
+      "reference": "one_ssp_1280",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    }
+  ],
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/assess_grid_refinement.py": "b91f8dc8b641f4f8ddbf4745df96d4c5723c0d59056508f14990ea465f86e552",
+    "sandbox/stage2_cells/assess_time_refinement.py": "fe4bb29229687653475104fe0207340cb62cb26faf7f07d50d36aa691534a9ad",
+    "sandbox/stage2_cells/check_trajectory_fields.py": "df671e573d5d7dcea6f3a8dc344d36844ceb688b8f3cfefacb941594f4efa262",
+    "sandbox/stage2_cells/check_trajectory_support.py": "8d5c758ba3f53baab0cdebb43ea62aa753812f24002ac314e61de61c880e4108",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_pair.py": "2b6feb29bdfb7046035d47e762e1c4221aa46cf137e8a6a764f2d1318a466f0e",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_time.py": "ab7088308d1ab192a01357f832302d08e408b8609efe00fc648d2c3dbcf4cdfc",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": "a291cc5999b2a2060bd96b2539987cd19f4b584bfa7c644fb7030edd54312364",
+    "sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py": "d2fd882891eb5f43cb61aa34b054a6b0568bab37e1100fef40505041b9be680d",
+    "sandbox/stage2_cells/review_20260922/run_manual_time_batch.py": "f17fcf74ce66d350752b58341251e7eb6b5470915544b327e3852244adb89afb",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9"
+  },
+  "execution": {
+    "agent_executes_during_preparation": false,
+    "user_foreground_only": true,
+    "threads": 1,
+    "expected_minutes_approximate": 25.8,
+    "runtime_basis": "Measured SSP40 runtime25.795s scaled linearly to160+320+640+1280steps. Runtime is not guaranteed.",
+    "suggested_memory_GiB": 2,
+    "memory_scope": "The630-electron/1025-phonon one-cell candidate only; no2520-state network is built.",
+    "output_directory": "tmp/stage2_ssp_time_20260922",
+    "no_screen_or_background_launch": true,
+    "no_retry_or_overwrite": true,
+    "stop_policy": "Stop immediately on any trajectory invariant/population failure or failed assessment. Preserve all successful and failed evidence. No later two-cell or mesh calculation is part of this plan."
+  },
+  "evidence_and_decision": {
+    "failed_ssp40_path": "docs/implementation/stage2/review_20260922/raw/ssp/one_ssp_40.json",
+    "failed_ssp40_sha256": "60c0d5c4343792be901acc3191cf94515055c0280ece900e287ec71d7aa18dac",
+    "diagnosis_path": "docs/implementation/stage2/review_20260922/diagnosed_ssp.json",
+    "diagnosis_sha256": "11569215f1f06d8a6fae56e9aea4bcdd1b843f72f91c00a7d993181df691fbea",
+    "criteria_unchanged": true,
+    "failed_ledger": 3.6522386154258513e-06,
+    "ledger_limit": 1e-07,
+    "SSP40_limited_events": 0,
+    "short_ledger_observed_orders": [
+      3.009981132236211,
+      3.005230981109051
+    ],
+    "reason_not_to_start_at80": "Third-order extrapolation predicts4.5653e-7 at80, still above the frozen gate; this is a forecast, not acceptance of160.",
+    "reference_rule": "Use a separate SSP1280 trajectory, permitted by the frozen step-halved-reference criterion. Reuse oldRK320 and shortDOP853 as supplemental independent cross-checks, without assumingRK320is exact at long times.",
+    "reused_computation_policy": "No old trajectory is recomputed. Existing failedSSP40, completedRK4 temporal trajectories and interrupted fine-grid runs remain intact. The four new SSP resolutions address the unresolved numerical question."
+  },
+  "scope_limits": [
+    "A PASS applies to this registered one-cell trajectory only.",
+    "Limited-event fine-grid positivity, two-cell dynamics, genuine grid convergence, stationarity and boundaries remain separate gates.",
+    "The batch emits no final stage2 admission certificate.",
+    "The old plans and physical kernels are immutable."
+  ]
+}

@@ -33,6 +33,7 @@ def payload():
         'tests/test_experimental_kinetic_events.py',
         'tests/test_experimental_refined_cells.py',
         'output/pdf/implementation/Informe_etapa_2_celdas_acopladas.pdf',
+        'output/pdf/implementation/Informe_revision_etapa_2_20260922.pdf',
     ) if (ROOT/p).is_file())
     return sorted(set(paths))
 

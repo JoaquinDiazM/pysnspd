@@ -1,0 +1,18 @@
+{
+  "schema": "pysnspd.stage2.manual-time-offline-selftest.v1",
+  "status": "PASS",
+  "checks": {
+    "entry_argument_rk4_but_registered_method_remains_explicit_SSP": true,
+    "unreviewed_unfrozen_plan_cannot_execute": true,
+    "three_level_assessment_cannot_accept_only_a_pair_diagnostic": true,
+    "dry_run_has_no_child_output_directory_or_integrator_import": true,
+    "reference_reuse_verified_twice_without_reexecution_or_overwrite": true,
+    "invalid_reference_stops_before_any_child": true,
+    "failed_child_stops_without_retry_or_next_task": true,
+    "FAIL_even_with_zero_child_exit_stops_before_next_task": true,
+    "successful_offline_batch_does_not_issue_stage_admission": true
+  },
+  "scope": "Synthetic guard fixtures only; no subprocess, physical RHS or time integration.",
+  "runner_sha256": "f17fcf74ce66d350752b58341251e7eb6b5470915544b327e3852244adb89afb",
+  "elapsed_seconds": 0.432090899994364
+}

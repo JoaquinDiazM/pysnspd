@@ -14,21 +14,19 @@ historical deliveries are included in the repository. Start with
 [release notes](docs/releases/v1.0.0.md) and [status](status.md).
 The [command notebook](docs/GEMINGA_COMMANDS.md) mirrors the user-maintained file
 `/home/jdiaz/GEMINGA_COMMANDS.md` on Geminga. Calculations expected to exceed five
-minutes are normally left there for the user to execute. For the current stage-2
-recovery, the user explicitly authorized the agent to launch the recorded long
-batch in `screen code_000`, detach and return without waiting or polling. This
-exception does not authorize unrelated long computations.
+minutes are left there for the user to execute. The active notebook contains
+one current continuation; superseded commands are retained in a separate archive.
 
 The [stage 2 checkpoint](docs/implementation/stage2/README.md) adds conservative
 electron-phonon events and simultaneous one/two-cell dynamics. Its static checks
 selected complementary electronic and phonon meshes. Full-duration RK4 temporal
 checks passed on the candidate grid, but the finest electronic grid failed a
-population guard in an internal RK stage. A bounded step-bisection probe also
-failed to advance. The [recovery experiment](docs/implementation/stage2/recovery_20260921/README.md)
-is prepared for an authorized relaunch with SSPRK3 and common conservative
-event-flux factors. Its temporal, mesh and actual-trajectory checks remain
-pending. This checkpoint does not close stage 2 or promote the updated model
-to production.
+population guard in an internal RK stage. The SSP recovery completed its first
+trajectory but exceeded the energy-ledger tolerance by a factor of 36.5.
+The [22 September results review](docs/implementation/stage2/review_20260922/README.md)
+archives the new outputs, plots and independent audit. Stage 2 remains open.
+A single-cell temporal refinement is prepared for manual execution before
+further mesh work; no production promotion is made.
 
 Commits after the tag contain the opt-in
 [stage 1 implementation](sandbox/stage1_catalog/README.md): explicit material

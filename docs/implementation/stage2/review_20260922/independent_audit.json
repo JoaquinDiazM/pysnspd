@@ -1,0 +1,1223 @@
+{
+  "schema": "pysnspd.stage2.independent-collected-results-audit.v1",
+  "date": "2026-09-22",
+  "status": "AUDITED_STAGE2_NOT_CLOSED",
+  "closure": "NO",
+  "numerical_admission": false,
+  "production_promotion": false,
+  "final_report_eligible": false,
+  "physical_RHS_evaluations": 0,
+  "new_trajectories": 0,
+  "thresholds_changed": false,
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "checks": {
+    "criteria_exactly_preserved": true,
+    "historical_source:pysnspd/experimental/cell_closures.py": true,
+    "historical_source:pysnspd/experimental/cell_transport.py": true,
+    "historical_source:pysnspd/experimental/cell_validation.py": true,
+    "historical_source:pysnspd/experimental/coupled_cells.py": true,
+    "historical_source:pysnspd/experimental/energy_catalog.py": true,
+    "historical_source:pysnspd/experimental/kinetic_events.py": true,
+    "historical_source:pysnspd/experimental/refined_cells.py": true,
+    "immutable:R2_catalogue": true,
+    "immutable:R2_query_source": true,
+    "immutable:stage1_closure_certificate": true,
+    "immutable:stage1_criteria": true,
+    "rk4:frozen_plan_hash": true,
+    "rk4:manifest:pysnspd/experimental/__init__.py": true,
+    "rk4:manifest:pysnspd/experimental/cell_closures.py": true,
+    "rk4:manifest:pysnspd/experimental/cell_transport.py": true,
+    "rk4:manifest:pysnspd/experimental/cell_validation.py": true,
+    "rk4:manifest:pysnspd/experimental/coupled_cells.py": true,
+    "rk4:manifest:pysnspd/experimental/energy_catalog.py": true,
+    "rk4:manifest:pysnspd/experimental/kinetic_events.py": true,
+    "rk4:manifest:pysnspd/experimental/material_admission.py": true,
+    "rk4:manifest:pysnspd/experimental/material_preprocessing.py": true,
+    "rk4:manifest:pysnspd/experimental/refined_cells.py": true,
+    "rk4:manifest:sandbox/stage2_cells/run_coupled.py": true,
+    "rk4:manifest:sandbox/stage2_cells/run_reference_progress.py": true,
+    "rk4:manifest:sandbox/stage2_cells/assess_time_refinement.py": true,
+    "rk4:manifest:sandbox/stage2_cells/assess_grid_refinement.py": true,
+    "rk4:manifest:sandbox/stage2_cells/check_trajectory_fields.py": true,
+    "rk4:manifest:sandbox/stage2_cells/check_trajectory_support.py": true,
+    "rk4:manifest:sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py": true,
+    "rk4:manifest:docs/implementation/stage2/acceptance_criteria.json": true,
+    "rk4:manifest:docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": true,
+    "rk4:receipt:one_time_160.receipt.json": true,
+    "rk4:receipt:one_time_320.receipt.json": true,
+    "rk4:receipt:one_time_40.receipt.json": true,
+    "rk4:receipt:one_time_80.receipt.json": true,
+    "rk4:receipt:one_time_assessment.receipt.json": true,
+    "rk4:receipt:two_electron_2.receipt.json": true,
+    "rk4:receipt:two_time_160.receipt.json": true,
+    "rk4:receipt:two_time_320.receipt.json": true,
+    "rk4:receipt:two_time_40.receipt.json": true,
+    "rk4:receipt:two_time_80.receipt.json": true,
+    "rk4:receipt:two_time_assessment.receipt.json": true,
+    "rk4:sources:one_time_160.json": true,
+    "rk4:recomputed_ledger:one_time_160.json": true,
+    "rk4:sources:one_time_320.json": true,
+    "rk4:recomputed_ledger:one_time_320.json": true,
+    "rk4:sources:one_time_40.json": true,
+    "rk4:recomputed_ledger:one_time_40.json": true,
+    "rk4:sources:one_time_80.json": true,
+    "rk4:recomputed_ledger:one_time_80.json": true,
+    "rk4:sources:two_electron_2.json": true,
+    "rk4:recomputed_ledger:two_electron_2.json": true,
+    "rk4:sources:two_electron_4.json": true,
+    "rk4:failed_initial:two_electron_4.json": true,
+    "rk4:sources:two_time_160.json": true,
+    "rk4:recomputed_ledger:two_time_160.json": true,
+    "rk4:sources:two_time_320.json": true,
+    "rk4:recomputed_ledger:two_time_320.json": true,
+    "rk4:sources:two_time_80.json": true,
+    "rk4:recomputed_ledger:two_time_80.json": true,
+    "ssp:frozen_plan_hash": true,
+    "ssp:manifest:docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": true,
+    "ssp:manifest:docs/implementation/stage2/acceptance_criteria.json": true,
+    "ssp:manifest:docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.json": true,
+    "ssp:manifest:docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.npz": true,
+    "ssp:manifest:docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320_initial.npz": true,
+    "ssp:manifest:docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json": true,
+    "ssp:manifest:docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.npz": true,
+    "ssp:manifest:docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320_initial.npz": true,
+    "ssp:manifest:pysnspd/experimental/__init__.py": true,
+    "ssp:manifest:pysnspd/experimental/cell_closures.py": true,
+    "ssp:manifest:pysnspd/experimental/cell_transport.py": true,
+    "ssp:manifest:pysnspd/experimental/cell_validation.py": true,
+    "ssp:manifest:pysnspd/experimental/coupled_cells.py": true,
+    "ssp:manifest:pysnspd/experimental/energy_catalog.py": true,
+    "ssp:manifest:pysnspd/experimental/kinetic_events.py": true,
+    "ssp:manifest:pysnspd/experimental/material_admission.py": true,
+    "ssp:manifest:pysnspd/experimental/material_preprocessing.py": true,
+    "ssp:manifest:pysnspd/experimental/refined_cells.py": true,
+    "ssp:manifest:sandbox/stage2_cells/assess_grid_refinement.py": true,
+    "ssp:manifest:sandbox/stage2_cells/assess_time_refinement.py": true,
+    "ssp:manifest:sandbox/stage2_cells/check_trajectory_fields.py": true,
+    "ssp:manifest:sandbox/stage2_cells/check_trajectory_support.py": true,
+    "ssp:manifest:sandbox/stage2_cells/recovery_20260921/assess_limited_pair.py": true,
+    "ssp:manifest:sandbox/stage2_cells/recovery_20260921/assess_limited_time.py": true,
+    "ssp:manifest:sandbox/stage2_cells/recovery_20260921/limited_ssp.py": true,
+    "ssp:manifest:sandbox/stage2_cells/recovery_20260921/run_limited_acceptance_batch.py": true,
+    "ssp:manifest:sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": true,
+    "ssp:manifest:sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py": true,
+    "ssp:manifest:sandbox/stage2_cells/run_coupled.py": true,
+    "ssp:receipt:one_old_rk320.receipt.json": true,
+    "ssp:receipt:two_old_rk320.receipt.json": true,
+    "ssp:sources:one_ssp_40.json": true,
+    "ssp:recomputed_ledger:one_ssp_40.json": true,
+    "one:independent_max_error:40": true,
+    "one:independent_max_error:80": true,
+    "one:independent_max_error:160": true,
+    "one:original_status_matches_recomputed": true,
+    "one:time_assessor_source": true,
+    "two:independent_max_error:40": true,
+    "two:independent_max_error:80": true,
+    "two:independent_max_error:160": true,
+    "two:original_status_matches_recomputed": true,
+    "two:time_assessor_source": true,
+    "selected_continuum_only_runtime_changed": true,
+    "selected_continuum_source:criteria": true,
+    "selected_continuum_source:measured": true,
+    "selected_continuum_source:catalog": true,
+    "selected_continuum_source:script": true,
+    "selected_continuum_source:kernel": true,
+    "selected_continuum_source:factory": true,
+    "selected_continuum_source:continuous_reactions.py": true,
+    "selected_continuum_source:weak_population_reference.py": true,
+    "selected_continuum_source:weak_population_finite_eta.py": true,
+    "selected_continuum_thresholds_pass": true,
+    "smoothness_sources_current": true,
+    "smoothness_initial_hash": true
+  },
+  "checked_items": 118,
+  "passed_checks": 118,
+  "batch_summaries": [
+    {
+      "family": "rk4",
+      "complete_tasks": [
+        "one_time_40",
+        "one_time_80",
+        "one_time_160",
+        "one_time_320",
+        "one_time_assessment",
+        "two_time_40",
+        "two_time_80",
+        "two_time_160",
+        "two_time_320",
+        "two_time_assessment",
+        "two_electron_2"
+      ],
+      "completed_task_count": 11,
+      "registered_task_count": 21,
+      "started_tasks": [
+        "one_time_40",
+        "one_time_80",
+        "one_time_160",
+        "one_time_320",
+        "one_time_assessment",
+        "two_time_40",
+        "two_time_80",
+        "two_time_160",
+        "two_time_320",
+        "two_time_assessment",
+        "two_electron_2",
+        "two_electron_4"
+      ],
+      "terminal_event": {
+        "event": "BATCH_STOPPED",
+        "utc": "2026-09-22T02:20:25.703086+00:00",
+        "elapsed_seconds": 1756.1401608809829,
+        "exception": "RuntimeError",
+        "reason": "Child command failed with exit code 1; no retry performed.",
+        "policy": "No retry, fallback, overwrite or continuation after a failed task."
+      },
+      "batch_complete": false
+    },
+    {
+      "family": "ssp",
+      "complete_tasks": [
+        "one_old_rk320",
+        "two_old_rk320"
+      ],
+      "completed_task_count": 2,
+      "registered_task_count": 23,
+      "started_tasks": [
+        "one_old_rk320",
+        "two_old_rk320",
+        "one_ssp_40"
+      ],
+      "terminal_event": {
+        "event": "BATCH_STOPPED",
+        "utc": "2026-09-22T01:07:51.304810+00:00",
+        "elapsed_seconds": 26.42645364999771,
+        "exception": "ValueError",
+        "reason": "Completed trajectory fails invariant/physical-population gates",
+        "policy": "No retry, fallback, clipping, overwrite or continuation after failure."
+      },
+      "batch_complete": false
+    }
+  ],
+  "manifests": [
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/batch_manifest.json",
+      "sha256": "5ae6a51b0e6ce213238fc90b35a3c87e387ea0b7ec512ff017671201235b2dd6",
+      "plan_sha256": "e32ba6ee884fa86ab4800b3c86e248105c62357f15d276911a7b5c955e9c76a7"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/ssp/batch_manifest.json",
+      "sha256": "9b8eafc85d487b1b9a217ac5e391fa3c5d17a246f03f04f1ce3c064d4a3177a6",
+      "plan_sha256": "2a4ab648648d407bdd9d066ca412168bb348c5208a1657cf0c0cf7cfafcae098"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_160.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_160.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_160_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_320.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_320.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_320_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_40.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_40.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_40_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_80.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_80.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_80_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_assessment.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_assessment.json": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_electron_2.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_electron_2.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_electron_2_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_160.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_160.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_160_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_320.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_320.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_320_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_40.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_20260921/two_active_40.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_20260921/two_active_40.npz": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/resume_20260921/two_active_40_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_80.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_80.npz": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_80_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_assessment.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_assessment.json": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/ssp/one_old_rk320.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.npz": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320_initial.npz": true
+      }
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/ssp/two_old_rk320.receipt.json",
+      "verified": true,
+      "checks": {
+        "manifest": true,
+        "registered_task": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json": true,
+        "parameters_except_output": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.npz": true,
+        "/home/jdiaz/pysnspd/docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320_initial.npz": true
+      }
+    }
+  ],
+  "trajectories": [
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160.json",
+      "sha256": "e2549474727209cc126248141d80e93aeee28785e8e44b60847597743d5c7958",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "one",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_160.json"
+      },
+      "runtime_seconds": 93.15750921424478,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 2.2285109868569464e-10,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 0.0022285109868569464,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "initial_amplitudes": [
+        0.6
+      ],
+      "final_amplitudes": [
+        0.759346701080834
+      ],
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.49025622531207724,
+      "minimum_phonon": 0.0004329530475765878,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320.json",
+      "sha256": "69029e567acbb6627df60e041cfc0ce374d1cf5b358c0b14158dac9bc50b6173",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "one",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_320.json"
+      },
+      "runtime_seconds": 185.2927077319473,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 1.3798101550221986e-11,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 0.00013798101550221986,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "initial_amplitudes": [
+        0.6
+      ],
+      "final_amplitudes": [
+        0.7593466995821505
+      ],
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.490256225344024,
+      "minimum_phonon": 0.00043163746668829566,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40.json",
+      "sha256": "eb587efdc6d5d6ed7b0cd0686d11c1dc6ae359070d2b9dfd81046c59a2cbd111",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_40.json"
+      },
+      "runtime_seconds": 24.313747528009117,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 6.030218338559656e-08,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 0.6030218338559656,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "initial_amplitudes": [
+        0.6
+      ],
+      "final_amplitudes": [
+        0.7593466803212935
+      ],
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.4902562381605854,
+      "minimum_phonon": 0.00043003955176456964,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80.json",
+      "sha256": "1f2ccefcbb375d7e7e037e8725bf221a5a2b52685639a8a59e4c0aaf764666d0",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "one",
+        "steps": 80,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/one_time_80.json"
+      },
+      "runtime_seconds": 47.36292404169217,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 3.632636386141641e-09,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 0.03632636386141641,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "initial_amplitudes": [
+        0.6
+      ],
+      "final_amplitudes": [
+        0.7593466929390613
+      ],
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.49025622223833987,
+      "minimum_phonon": 0.00042868590537668535,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2.json",
+      "sha256": "24923ddb31ea652ec68b7bd6b87c5b0137177f5bea76151e3bbe9d8302ac5083",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 2,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_electron_2.json"
+      },
+      "runtime_seconds": 769.7674727397971,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 4.1490533231325344e-11,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 0.00041490533231325344,
+      "instantaneous_balance": 1.578858571660291e-14,
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.7490584595063149,
+        0.9763435954034196
+      ],
+      "minimum_electron": 3.103501669641575e-44,
+      "maximum_electron": 0.4961155204752735,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_4.json",
+      "sha256": "c40be01eb3451c394e389055181cb7c0e4630b28da060d2b4ea3c1529edb3f28",
+      "status": "FAILED",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 4,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_electron_4.json"
+      },
+      "runtime_seconds": 23.48206061916426,
+      "completed": false,
+      "reason": "time stage outside Pauli/phonon support; no clipping applied",
+      "exception": "ValueError",
+      "completed_trajectory_present": false,
+      "numerical_admission": false
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160.json",
+      "sha256": "1c1813cd590a164a7615f87aaeae1a494871bd9190eb967682fdd4702f4a534f",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_160.json"
+      },
+      "runtime_seconds": 174.66309685772285,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 4.1459724542391996e-11,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 0.00041459724542391996,
+      "instantaneous_balance": 1.6338926739356552e-14,
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.7490601306198202,
+        0.9763435164285166
+      ],
+      "minimum_electron": 3.540243468083482e-44,
+      "maximum_electron": 0.4922327727480069,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320.json",
+      "sha256": "e193280525d2a3dcbff7d0787b5c23f03dbf2b02439e3bccff01cbad98323b65",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_320.json"
+      },
+      "runtime_seconds": 345.80787868704647,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 2.562117185078705e-12,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 2.562117185078705e-05,
+      "instantaneous_balance": 1.6287318715946242e-14,
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.7490601294755269,
+        0.9763435167078902
+      ],
+      "minimum_electron": 3.540243468083482e-44,
+      "maximum_electron": 0.4922327728200267,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80.json",
+      "sha256": "289aa636bad067b24c4a282ae9a56c24863f8cf3e99bea317b4343680e1c900b",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "two",
+        "steps": 80,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "rk4",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_validation_20260922_015109/two_time_80.json"
+      },
+      "runtime_seconds": 89.52217117603868,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 6.751635917012777e-10,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 0.006751635917012777,
+      "instantaneous_balance": 1.6426963955762375e-14,
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.7490601326244236,
+        0.9763435112728475
+      ],
+      "minimum_electron": 3.540243468083482e-44,
+      "maximum_electron": 0.4922325959563599,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "time_integration": null,
+      "physical_archive_verified": true
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/raw/ssp/one_ssp_40.json",
+      "sha256": "60c0d5c4343792be901acc3191cf94515055c0280ece900e287ec71d7aa18dac",
+      "status": "COMPLETED_NOT_YET_ADJUDICATED",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_limited",
+        "scenario": "driven",
+        "rtol": 1e-09,
+        "output": "/home/jdiaz/pysnspd/tmp/stage2_recovery_20260921_ssp/one_ssp_40.json"
+      },
+      "runtime_seconds": 25.795089866034687,
+      "completed": true,
+      "invariant_checks": {
+        "ledger": false,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "ledger": 3.6522386154258513e-06,
+      "ledger_limit": 1e-07,
+      "ledger_times_limit": 36.52238615425851,
+      "instantaneous_balance": 1.6028844918025698e-15,
+      "initial_amplitudes": [
+        0.6
+      ],
+      "final_amplitudes": [
+        0.759346102747579
+      ],
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.49025630865423975,
+      "minimum_phonon": 0.00042719027782606113,
+      "time_integration": {
+        "method": "SSPRK3 with common donor-availability event-flux factors",
+        "stats": {
+          "method": "experimental conservative-event-limited SSPRK3",
+          "safety": 0.9,
+          "status": "COMPLETED_REQUIRES_CONVERGENCE_ASSESSMENT",
+          "notes": [
+            "Physical kernels unchanged; common event extents preserve frozen-field invariants.",
+            "Formal SSPRK3 order holds only where limiter is inactive and the RHS is sufficiently smooth.",
+            "Moving-condensate ledger and temporal convergence require independent measurement.",
+            "Event/flux defects are numerical modifications, not hidden energy corrections."
+          ],
+          "forward_euler_stages": 120,
+          "integrated_external_input": 0.0,
+          "integrated_condensate_heat": 0.02823155391349991,
+          "event_evaluations": 116949055,
+          "limited_event_evaluations": 0,
+          "reaction_limited_evaluations": 0,
+          "minimum_event_factor": 1.0,
+          "integrated_absolute_extent_defect": 0.0,
+          "integrated_energy_weighted_flux_defect": 0.0,
+          "integrated_absolute_raw_extent": 0.03939745757261073,
+          "completed_steps": 40
+        },
+        "population_clipping": false,
+        "posthoc_energy_repair": false,
+        "scope": "Corrective numerical experiment; requires separate temporal and grid admission"
+      },
+      "physical_archive_verified": true
+    }
+  ],
+  "temporal_candidate_RK4": [
+    {
+      "case": "one",
+      "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
+      "steps": [
+        40,
+        80,
+        160
+      ],
+      "reference_steps": 320,
+      "common_checkpoint_count": 41,
+      "rows": [
+        {
+          "steps": 40,
+          "worst": {
+            "observable": "phonon_population",
+            "error": 0.00039681177041871505,
+            "time": 0.7000000000000001
+          },
+          "invariants": {
+            "ledger": true,
+            "instantaneous_balance": true,
+            "populations": true
+          }
+        },
+        {
+          "steps": 80,
+          "worst": {
+            "observable": "phonon_population",
+            "error": 0.00018370609201417848,
+            "time": 0.7000000000000001
+          },
+          "invariants": {
+            "ledger": true,
+            "instantaneous_balance": true,
+            "populations": true
+          }
+        },
+        {
+          "steps": 160,
+          "worst": {
+            "observable": "phonon_population",
+            "error": 6.143596723348075e-05,
+            "time": 0.35000000000000003
+          },
+          "invariants": {
+            "ledger": true,
+            "instantaneous_balance": true,
+            "populations": true
+          }
+        }
+      ],
+      "finest_error": 6.143596723348075e-05,
+      "tolerance": 0.0001,
+      "error_reductions": [
+        2.160035990467257,
+        2.990204277504468
+      ],
+      "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
+    },
+    {
+      "case": "two",
+      "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
+      "steps": [
+        40,
+        80,
+        160
+      ],
+      "reference_steps": 320,
+      "common_checkpoint_count": 41,
+      "rows": [
+        {
+          "steps": 40,
+          "worst": {
+            "observable": "phonon_population",
+            "error": 0.00043415739712208436,
+            "time": 0.9500000000000001
+          },
+          "invariants": {
+            "ledger": true,
+            "instantaneous_balance": true,
+            "populations": true
+          }
+        },
+        {
+          "steps": 80,
+          "worst": {
+            "observable": "phonon_population",
+            "error": 0.00014365203288597302,
+            "time": 0.7000000000000001
+          },
+          "invariants": {
+            "ledger": true,
+            "instantaneous_balance": true,
+            "populations": true
+          }
+        },
+        {
+          "steps": 160,
+          "worst": {
+            "observable": "phonon_population",
+            "error": 4.7399839355602646e-05,
+            "time": 0.5
+          },
+          "invariants": {
+            "ledger": true,
+            "instantaneous_balance": true,
+            "populations": true
+          }
+        }
+      ],
+      "finest_error": 4.7399839355602646e-05,
+      "tolerance": 0.0001,
+      "error_reductions": [
+        3.022285089879002,
+        3.0306438764120704
+      ],
+      "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
+    }
+  ],
+  "activity_candidate_RK4": {
+    "preregistered_initial_excitation_energy": 0.387227852778307,
+    "initial_phonon_energy": 0.15378725161532888,
+    "scale": 0.5410151043936359,
+    "maximum_amplitude_change": 0.1990601306198202,
+    "eph_fraction": 0.0477977068670953,
+    "face_fraction": 0.11079467483925405,
+    "scope": "Measured from the time-converged candidate RK4 trajectory; dynamic mesh admission remains open.",
+    "passes": true
+  },
+  "selected_static_continuum": {
+    "status": "PASS_STATIC_ONLY",
+    "changed_top_level_keys": [
+      "runtime_seconds"
+    ],
+    "maximum_error": 0.000736532523475288,
+    "maximum_reference_budget": 2.535238496115734e-07,
+    "source_path": "docs/implementation/stage2/review_20260922/raw/diagnostics/selected_continuum.json",
+    "prior_source_path": "docs/implementation/stage2/resume_20260921/selected_continuum.json"
+  },
+  "smoothness_recheck": {
+    "path": "docs/implementation/stage2/review_20260922/raw/diagnostics/rhs_smoothness_recheck.json",
+    "scope": "Static fixed-state samples only; no trajectory, no eigenvalue claim.",
+    "rhs_calls": 17,
+    "verified_initial_archive": "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160_initial.npz",
+    "interpretation": "A fixed-state finite-difference diagnostic does not prove global smoothness, exclude all stiffness, or close temporal/mesh gates."
+  },
+  "historical_static_gates": [
+    {
+      "id": "immutable_parent",
+      "recorded_status": "PASS",
+      "detail": "Exact hashes of R2 source/catalog and stage1 contract/certificate preserved.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "complementary_energy_and_forces",
+      "recorded_status": "PASS_SAMPLED_STATIC_DOMAIN",
+      "detail": "630/1260/2520 fixed count states; high-precision implicit spectral reference and independently refined moment quadrature. This is not uniform validation of arbitrary distributions.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "KWT_and_synthetic_Debye",
+      "recorded_status": "PASS",
+      "detail": "Inherited mobility algebra and synthetic SI conversions; no microscopic mobility calibration or NbN admission.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "event_equilibrium_faces_entropy",
+      "recorded_status": "PASS_DECLARED_STATIC_CASES",
+      "detail": "Four static fields and three temperatures on the selected 1025-node phonon grid. Boundary trajectories are a separate gate.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "transport_continuum",
+      "recorded_status": "PASS",
+      "detail": "Independent continuous-energy response and power on normal/gapped/gapless thermal and nonthermal profiles; not full coupled trajectories.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "reaction_continuum_IR_001",
+      "recorded_status": "PASS_SEPARATED_ELECTRONIC_REFINEMENT",
+      "detail": "The archived combined errors remain nonmonotone. Independent matched-eta references and point-Bose comparisons separate fixed phonon interpolation, Pauli reconstruction, quadrature and regulator bias: all18 electronic series decrease over630/1260/2520. This historical check uses IR=.01; selected IR=.005 is separately verified at630.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "selected_phonon_interpolation",
+      "recorded_status": "PASS_DECLARED_STATIC_CASES",
+      "detail": "Same electronic representation, analytic populations evaluated at exact transition energy as the interpolation reference; not a full continuous-reaction or time check.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "selected_collision_quadrature",
+      "recorded_status": "PASS_INTERNAL_REFINEMENT",
+      "detail": "630 electrons, 1025 phonons, IR=.005; inner orders2/3/4. Self-convergence does not replace an independent continuous reference.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "selected_IR_0005_independent_reactions",
+      "recorded_status": "PASS_DECLARED_STATIC_CASES",
+      "detail": "Independent continuous reference at actual IR=.005 and630/1025 for all three registered fields/profiles; full static responses meet1e-3. No dynamic admission follows.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "infrared_and_upper_support_static",
+      "recorded_status": "PASS_DECLARED_ANALYTIC_PROFILES_ONLY",
+      "detail": "Independent positive-cut omission and upper absorption bounds exist for nine analytic profiles. Actual selected coupled trajectories, external populations and arbitrary narrow distributions remain outside this result.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "negative_controls",
+      "recorded_status": "PASS",
+      "detail": "Tests detect double condensate heat, omitted spectral work and a common incorrect collision factor.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "smooth_RK4_suboperators",
+      "recorded_status": "PASS",
+      "detail": "BGK and escape exact exponential problems show fourth order; this cannot certify the full nonsmooth event system.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    },
+    {
+      "id": "final_regression_suite",
+      "recorded_status": "PASS",
+      "detail": "Fresh independent repository suite:509passed; source hashes unchanged.",
+      "provenance": "Retained historical gate from docs/implementation/stage2/stage2_admission.json"
+    }
+  ],
+  "failed_or_missing_gates": [
+    {
+      "id": "electronic_dynamic_mesh",
+      "status": "FAILED_REFINEMENT_INCOMPLETE_GATE",
+      "reason": "2520-state RK4 trajectory failed; no complete three-mesh comparison."
+    },
+    {
+      "id": "phonon_dynamic_mesh",
+      "status": "NOT_REACHED",
+      "reason": "2049/4097-node trajectories and three-grid assessment were not reached."
+    },
+    {
+      "id": "SSP_temporal_admission",
+      "status": "FAILED_COARSE_LEDGER_GATE_NOT_CONVERGED",
+      "reason": "The only complete SSP run fails the ledger gate; 80/160 runs and time comparison were not reached."
+    },
+    {
+      "id": "SSP_fine_mesh_paired_diagnostic",
+      "status": "NOT_REACHED",
+      "reason": "No fine SSP trajectory or paired temporal diagnostic exists in this batch."
+    },
+    {
+      "id": "equilibrium_and_population_boundary_trajectories",
+      "status": "NOT_REACHED",
+      "reason": "Registered final equilibrium/vacuum/sparse trajectories were not reached; static inward-RHS tests are distinct."
+    },
+    {
+      "id": "actual_final_trajectory_fields_and_support",
+      "status": "PENDING",
+      "reason": "Historical two-cell pilot checks exist; final accepted mesh/trajectory checks were not reached."
+    },
+    {
+      "id": "final_report_and_spatial_transition",
+      "status": "NOT_ADMITTED",
+      "reason": "The required numerical gates remain failed or missing."
+    }
+  ],
+  "conclusions": [
+    "The repeat RK4 batch confirms candidate-mesh temporal convergence but reproduces the incomplete finest electronic mesh.",
+    "The SSP40 trajectory is complete and positive, but its integrated ledger exceeds the frozen tolerance; a completed file is not acceptance.",
+    "No event limiter activated in SSP40. Its failure therefore does not establish a limiter-induced physical bias.",
+    "Energy conservation and source consistency alone cannot replace the missing distribution, mesh, boundary and actual-trajectory validations.",
+    "A final closure report is not justified by these outputs. Preserve this audit as a partial-results review; do not launch further long calculations under this read-only request."
+  ],
+  "artifact_sha256": {
+    "docs/implementation/stage2/review_20260922/raw/diagnostics/rhs_smoothness_recheck.json": "03885f2b143991ebb8b30a37651e8077912916b1ad313b1f2d10771cec3fe12c",
+    "docs/implementation/stage2/review_20260922/raw/diagnostics/selected_continuum.json": "4a30117d509ada1290021b38d64c10bbe0bd448f4aad19958e72e8d0c91db6d8",
+    "docs/implementation/stage2/review_20260922/raw/diagnostics/stage2_recovery_20260921_ssp.screen.log": "c95bacce419523e580f14fd0b91d811bbbbe1ce9bb19052e36ad0a9373650216",
+    "docs/implementation/stage2/review_20260922/raw/rk4/batch_events.jsonl": "85404aa437b995291eb38b0548c488cec194e8f012470e2265b760e0fbbe2061",
+    "docs/implementation/stage2/review_20260922/raw/rk4/batch_manifest.json": "5ae6a51b0e6ce213238fc90b35a3c87e387ea0b7ec512ff017671201235b2dd6",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160.console.log": "5b1bb5967ad18da5ac472f344e883474c4d5d5bc0dddb14a499274e125d0d0b6",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160.json": "e2549474727209cc126248141d80e93aeee28785e8e44b60847597743d5c7958",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160.npz": "a5b3beafea5fd2d513c3cfff5d51c081eba3ef421b004f91b97a5531946f5429",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160.progress.jsonl": "51e9a45becff992375c5d0e9a732dcb0b9e8bf233cc93ed58e9633981cda6f90",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160.receipt.json": "e340b23b4b777a12831a62dd5bd01dad79ff76fdbbbbe2d181f3451e2e63c01c",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_160_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320.console.log": "87d478a0ec3cce27841b71c099f915b140aa77568763b04cf7e898b1a73114d8",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320.json": "69029e567acbb6627df60e041cfc0ce374d1cf5b358c0b14158dac9bc50b6173",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320.npz": "2b2e06a15232f2b84a44c28697ecf337fdf253088914f56d926fb724bee945f0",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320.progress.jsonl": "3f7f6dfe75f9c0b33de7b492eef912286c41047a0b30f9b9cb843e14a9946a75",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320.receipt.json": "cc8766e257967042facbe57cd72dfbe9f6a22886e348cf8f2e21a5ca9c837cc8",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_320_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40.console.log": "b89886576db9808f635ff3a66c4b6a11b35ad9e86e3797d59b288a6f357b615e",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40.json": "eb587efdc6d5d6ed7b0cd0686d11c1dc6ae359070d2b9dfd81046c59a2cbd111",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40.npz": "50884abea77a6d151dc174ee0cdda5bae862cf2f3091f49e097dfa365312496f",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40.progress.jsonl": "1bd2606d71bef7b0f55f5d4bf05efef061f51317af66a035b6be29380804f543",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40.receipt.json": "2a2782fe6b6ca1225ed97503b3c543c5c24c03bd9ff9c1a8fdcc06c08b781607",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_40_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80.console.log": "af5dee74339ae22a11df5be619748e237ddcdcd68d2989b1c0d3acac4ad01d02",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80.json": "1f2ccefcbb375d7e7e037e8725bf221a5a2b52685639a8a59e4c0aaf764666d0",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80.npz": "b9f58b0327d3a2de8930d58e464b90ebe6ff979190fda6bed567c3ce71017cf4",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80.progress.jsonl": "7a04b33a0150a0b1430c4c8d9c3063821daab437e9a2877303aff49deac23ae7",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80.receipt.json": "059a86eb8b0537ec7647d5c06aeab5ff56dafb44c4cb593812c0e04f6826285f",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_80_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_assessment.console.log": "7b3c7639e76408cd003986518055febf8798be7d8e61133a1ec40e6a958da2f3",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_assessment.json": "019c505079b54fb02ea376b515558415dc4b26ccc765be46801e4cf4c139ad3f",
+    "docs/implementation/stage2/review_20260922/raw/rk4/one_time_assessment.receipt.json": "d3d217f11b88148c4e20a09f7502e5680514bf75f42544449811dcd051d52890",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2.console.log": "cc3d195796d8d999191d755ce97355602ce9452499c27141630c3790f2e80784",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2.json": "24923ddb31ea652ec68b7bd6b87c5b0137177f5bea76151e3bbe9d8302ac5083",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2.npz": "9b54e1b72a41ec3d5fb6c11b93ccd859caf0d67c5b93aaa7aa2014be14889579",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2.progress.jsonl": "e90dac00829d78f988da021ce700ef039f0bfbe4eebd063d6191ca0e2224100b",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2.receipt.json": "6a9a906925810121663f228ffaa639f353ebb0b5c44e0a46c06ab09cb3906389",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_2_initial.npz": "d6d113018fa2d622d3374751bb0c1ef89f564c34ab763eaaa6f4259cea69ee89",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_4.console.log": "f2ba463d9a22f8bc6932c8a2abbb12a64e674c7becd31f471f145258dbaca342",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_4.json": "c40be01eb3451c394e389055181cb7c0e4630b28da060d2b4ea3c1529edb3f28",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_4.progress.jsonl": "108e02b7bf7b7fa02098596e022b09dd0882fe8a5b5b0293da8d2221191b9e92",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_electron_4_initial.npz": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160.console.log": "e3a6b7dd02a480c2cbc25dc9fa47fd4657533912e4ae82c9bded91eff756cd4d",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160.json": "1c1813cd590a164a7615f87aaeae1a494871bd9190eb967682fdd4702f4a534f",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160.npz": "dbd31bd27d32661a715d273a1472eb26ab3804695aa9c9e2972af044836f0c66",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160.progress.jsonl": "eecac1e7a09d4cd3a5a4ec3028dfeb70dd731c49ad09e8f4f52149d99269abdd",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160.receipt.json": "36ceba5998c8f42893c6f1f46661a1e9d55fcd80864b374230098a3faa1ecc5d",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_160_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320.console.log": "a7406a27f7cfdf4849d905d0ea045e1b626a32ef7a9b6bd008b17000822dd15e",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320.json": "e193280525d2a3dcbff7d0787b5c23f03dbf2b02439e3bccff01cbad98323b65",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320.npz": "35f07d775ee2a7166852c026bea222010a6ec42b07dde338679f1584e2523cb4",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320.progress.jsonl": "58e26370804ee23cace41f204b62b2a9cdc82897176b48e9649686926e96e41d",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320.receipt.json": "b9041497692f663a6af47e09deec597cea90dec80662293833aaa15b7f24a941",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_320_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_40.receipt.json": "16bdf18ebbfd88c8ce1ff22376254d6bbabf6e88fd858e0d563732e9ce07ac89",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80.console.log": "c78bd94ce2bed9d9e397dabe6dc464b642e78a5ae4b60b5a194b03d3b20b2838",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80.json": "289aa636bad067b24c4a282ae9a56c24863f8cf3e99bea317b4343680e1c900b",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80.npz": "d550a354565cd34b4cbbb4fbe83c421106e12b16f5bebe0807abf615e9de6b2b",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80.progress.jsonl": "d02d7ae03191d9d5554299041e4257f1debcde3e0be0c3701f830cc370d07531",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80.receipt.json": "a8277926e5300c3866e725168d0fa31c5cbb1fc3a7361e8e53f24d7b8ba0cc14",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_80_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_assessment.console.log": "285b6719454872303b287124821e8b23d2937a4116ffcdda6f4d9f7d690cc4fe",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_assessment.json": "2f2eef4be9e646b28cf850217d9f89f1747834e4b1660040668182b7f306d3e5",
+    "docs/implementation/stage2/review_20260922/raw/rk4/two_time_assessment.receipt.json": "c3f2adf8572017f58638d6f70773f74be30acbbeb01b8f8ab76dbe49ca5ebb04",
+    "docs/implementation/stage2/review_20260922/raw/ssp/batch_events.jsonl": "aaf489df5126ced59f4fb73588e63edfe2d862c6bf8973859b437923c9429aa4",
+    "docs/implementation/stage2/review_20260922/raw/ssp/batch_manifest.json": "9b8eafc85d487b1b9a217ac5e391fa3c5d17a246f03f04f1ce3c064d4a3177a6",
+    "docs/implementation/stage2/review_20260922/raw/ssp/one_old_rk320.receipt.json": "f9adddc2dc58621b937d56d7d32611cffedf760a52e6d9ea2261840b9e99550f",
+    "docs/implementation/stage2/review_20260922/raw/ssp/one_ssp_40.console.log": "5a568bef9b2e3278133d1b0d30ece6c524b064db104c3d6be8a41ef5e1066270",
+    "docs/implementation/stage2/review_20260922/raw/ssp/one_ssp_40.integration.jsonl": "a944d8f89844161d477b72e38714e2e18a235c75b68b393a1add317a7a2a2025",
+    "docs/implementation/stage2/review_20260922/raw/ssp/one_ssp_40.json": "60c0d5c4343792be901acc3191cf94515055c0280ece900e287ec71d7aa18dac",
+    "docs/implementation/stage2/review_20260922/raw/ssp/one_ssp_40.npz": "c4f79595bf1befc828e7206dde87ba09a708b77c2dd4cc955950094d74a9d237",
+    "docs/implementation/stage2/review_20260922/raw/ssp/one_ssp_40_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/review_20260922/raw/ssp/two_old_rk320.receipt.json": "402c993649995f0165c65ebd2b36f0365373ae03a539d80f31da29446a334817",
+    "docs/implementation/stage2/resume_20260921/two_active_40.json": "f778f1f90ad4b6b43317eaa00139ccccb5eeea926da8aff031d8e507d231a80e",
+    "docs/implementation/stage2/resume_20260921/two_active_40.npz": "2895439777dcbfccd85d93134bf0c3c725f154c437fee8b1b7c307258b319052",
+    "docs/implementation/stage2/resume_20260921/two_active_40_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.json": "7297dea5a67b87d6251edd5d5ae2746579fb4c79e200ada687dc90794bad5cbb",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320.npz": "2b2e06a15232f2b84a44c28697ecf337fdf253088914f56d926fb724bee945f0",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/one_time_320_initial.npz": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.json": "9907923466ed5d1bd593b0ed1607299f0afb551cb814ed3d00d108e5722a71a6",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320.npz": "35f07d775ee2a7166852c026bea222010a6ec42b07dde338679f1584e2523cb4",
+    "docs/implementation/stage2/recovery_20260921/audit_inputs/two_time_320_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619"
+  },
+  "auditor_sha256": "4012b5f83ffbaac19d3c0376353376dacd7b321fa4ce31bd1f6b172f5a227d60",
+  "runtime_seconds": 5.841389900015201
+}

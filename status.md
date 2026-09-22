@@ -1,6 +1,6 @@
 # pySNSPD publication status
 
-Last updated: 2026-09-21
+Last updated: 2026-09-22
 
 Publication window: 2026-07-23 to 2026-10-23
 
@@ -22,13 +22,11 @@ findings remain explicit in A-D. The pedagogical notebook is E-r02, with eight a
 classes and 24 unanswered activities, independently versioned from the physics.
 
 Computations expected to exceed five minutes are prepared in
-`/home/jdiaz/GEMINGA_COMMANDS.md` for the user by default. For the current stage-2
-recovery only, the user explicitly authorized an agent launch in `screen code_000`
-followed by detachment and an immediate return, without waiting or polling.
-Commands and outputs remain recorded; unrelated long computations retain the
-normal user-run policy.
+`/home/jdiaz/GEMINGA_COMMANDS.md` for the user. Its active version contains
+only the current continuation and lightweight checks. The original notebook
+is archived separately; no session-management instructions remain active.
 
-## Experimental stage 2 — prepared for authorized recovery launch
+## Experimental stage 2 — numerical closure not admitted
 
 The [stage 2 checkpoint](docs/implementation/stage2/README.md) implements
 conservative electron-phonon events, fixed-energy transport, KWT, BGK, heating
@@ -42,14 +40,17 @@ their records and reuse contracts independently verified. The 2520-state
 electronic refinement then failed an internal RK4 population guard. A bounded
 bisection probe exhausted 24 RHS evaluations without advancing.
 
-The [recovery experiment](docs/implementation/stage2/recovery_20260921/README.md)
-is prepared for the authorized relaunch. It registers SSPRK3 with a common flux
-factor for each event, without population clipping or an energy correction.
-Physical kernels and the frozen criteria are unchanged. New temporal comparisons
-against the archived RK320 runs precede expensive mesh calculations. The
-[admission record](docs/implementation/stage2/stage2_admission.json) remains a
-pending checkpoint: the new integrator, dynamic meshes, actual-trajectory field
-checks, final report and production activation are not yet admitted.
+The [22 September review](docs/implementation/stage2/review_20260922/README.md)
+archives 73 new output files and 118 passing provenance/result checks. The repeated
+RK4 batch reproduces the fine-grid failure. The SSP40 trajectory remains positive
+but its energy error is 3.65224e-6 against 1e-7, with no event limiting activated.
+The [admission record](docs/implementation/stage2/stage2_admission.json) therefore
+keeps stage 2 open. The results report is a review, not a closure certificate.
+
+A new manual plan tests one cell at 160/320/640 steps against a separate 1280-step
+SSP reference, with an estimated 26-minute cost. It has not been executed.
+Two-cell/multigrid work follows only after temporal admission. Physical kernels,
+criteria and production solvers are unchanged.
 
 ## Experimental stage 1 closure — retained result
 
