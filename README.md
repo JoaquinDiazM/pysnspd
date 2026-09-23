@@ -45,13 +45,15 @@ controlled core, stability and dissipation diagnostics. Its
 separates source-supported values, planning margins and open inputs. The Gaussian
 photon width and Korzh transfer remain unselected; absolute NbN rates still need
 a consistent volumetric phonon DOS. Stage 4 has now started with [explicit core/KWT parameters and full2D diagnostics](docs/implementation/stage4/README.md).
-The new paths pass177 tests and79 subtests on Geminga. A bounded145-second local
-pilot prepares40 constitutive controls and six static2D states for manual execution;
-commands with progress and ETA are in the notebook. These are not time trajectories
-or physical core admission. The weak coupled transient and equal-energy kinetic
-interface remain prerequisites for dynamic capabilities that use them. Production
-and v1.0.0 are unchanged. The original stage3 sequence and stage3.5 preparation
-remain historical evidence; the stage4 guide gives the current work queue.
+The [46 completed controls and results report](docs/implementation/stage4/review_20260923/Informe_avance_etapa_4A.md)
+separate unconstrained boundary reactions from interior heating and identify an
+underresolved prescribed core. A fresh thermal Usadel reference quantifies
+constitutive spatial bias. Only two additional static cases are queued for manual
+execution with progress/ETA. Stage4 remains open; no physical core admission or
+time trajectories. Production retains Delaunay-Voronoi and adaptive first-order
+Euler; the GLL rectangle is an experimental static control. The weak coupled
+transient and kinetic interface remain prerequisites for capabilities using them.
+Production and v1.0.0 are unchanged. The stage4 guide gives the current work queue.
 The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 

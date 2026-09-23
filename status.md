@@ -4,12 +4,14 @@ Last updated: 2026-09-23
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: experimental stage4A has started without photons. Explicit KWT/core
-parameters and a complete2D static geometry are implemented. The changed paths pass
-177 tests and79 subtests on Geminga; a bounded local pilot completed in145.2s.
-Two manual campaigns (40local controls,6spatial states) are prepared with progress
-and ETA. No time trajectories, physical core admission or production promotion.
-See [current stage4](docs/implementation/stage4/README.md) and the command notebook.
+Current phase: stage4A initial campaigns completed (40 local, 6 spatial controls).
+The [results report](docs/implementation/stage4/review_20260923/Informe_avance_etapa_4A.md)
+separates boundary reactions from interior dissipation and diagnoses an unresolved
+core gradient. Two focused manual cases are prepared with progress/ETA. A new
+thermal Usadel reference quantifies constitutive spatial bias independently of
+mesh error. Stage4 remains open; no photon or physical time trajectories.
+Production retains Delaunay-Voronoi and adaptive Euler; the static GLL controls
+are experimental. See [current stage4](docs/implementation/stage4/README.md).
 
 ## Historical stage 3.5 closure and stage4 preparation
 

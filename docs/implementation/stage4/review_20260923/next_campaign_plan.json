@@ -1,0 +1,224 @@
+{
+  "schema": "pysnspd.stage4A.controls.v1",
+  "date": "2026-09-23",
+  "photon": false,
+  "purpose": "Resolve discrete core-gradient and boundary-response artifacts before physical core admission; two additional prescribed static fields only",
+  "material": {
+    "Tc_K": 8.65,
+    "Tb_K": 0.9,
+    "D_m2_s": 5e-05,
+    "R_sheet_ohm": 608,
+    "thickness_m": 7e-09,
+    "width_m": 8e-08
+  },
+  "geometry": {
+    "length_m": 1.6e-07,
+    "meaning": "2W prescribed static rectangle, not an accepted propagation domain"
+  },
+  "spectral_resolutions": {
+    "reference": {
+      "eta": 1e-08,
+      "refinement": 1
+    },
+    "count_refined": {
+      "eta": 1e-08,
+      "refinement": 2
+    },
+    "eta_halved": {
+      "eta": 5e-09,
+      "refinement": 1
+    }
+  },
+  "positive_amplitude_support": [
+    0.0001,
+    1.2
+  ],
+  "gamma_support": [
+    0,
+    2
+  ],
+  "support_policy": "New analytic vacuum and direct causal roots; no archived interpolant extrapolation, no seed acceleration outside its box",
+  "mobility_pairs_ps": {
+    "memory_effective": [
+      0.5,
+      2.47
+    ],
+    "Allmaras_reference": [
+      5,
+      24.7
+    ],
+    "Korzh_reference": [
+      6,
+      24.7
+    ]
+  },
+  "local_controls": {
+    "weak": {
+      "z": [
+        0.995,
+        0
+      ],
+      "derivatives": [
+        [
+          0,
+          0.0995
+        ],
+        [
+          0,
+          0.02
+        ]
+      ],
+      "meaning": "Near-uniform reference, not self-consistency imposed"
+    },
+    "current": {
+      "z": [
+        0.6,
+        0
+      ],
+      "derivatives": [
+        [
+          0,
+          0.39
+        ],
+        [
+          0,
+          0.03
+        ]
+      ],
+      "meaning": "Current-bearing suppressed field"
+    },
+    "small": {
+      "z": [
+        0.04,
+        0
+      ],
+      "derivatives": [
+        [
+          0.02,
+          0.08
+        ],
+        [
+          0.015,
+          0.025
+        ]
+      ],
+      "meaning": "Below previous catalogue support; raw Cartesian gradients fixed"
+    },
+    "near_normal": {
+      "z": [
+        0.001,
+        0
+      ],
+      "derivatives": [
+        [
+          0.02,
+          0.08
+        ],
+        [
+          0.015,
+          0.025
+        ]
+      ],
+      "meaning": "Direct near-zero support probe"
+    },
+    "normal": {
+      "z": [
+        0,
+        0
+      ],
+      "derivatives": [
+        [
+          0.02,
+          0.08
+        ],
+        [
+          0.015,
+          0.025
+        ]
+      ],
+      "meaning": "Exact normal point, no amplitude finite difference"
+    },
+    "high_gradient": {
+      "z": [
+        0.6,
+        0
+      ],
+      "derivatives": [
+        [
+          0,
+          0.6
+        ],
+        [
+          0,
+          0.12
+        ]
+      ],
+      "meaning": "Potential negative-symbol control; sign is a result, not time evolution"
+    }
+  },
+  "cases": [
+    {
+      "id": "2d_suppressed_d0.05_8x4_fixed_boundary",
+      "phase": "spatial",
+      "profile": "suppressed",
+      "delta_reg": 0.05,
+      "elements_x": 8,
+      "elements_y": 4,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": false,
+      "boundary_response": "fixed_prescribed_all_sides"
+    },
+    {
+      "id": "2d_suppressed_d0.1_16x8_fixed_boundary",
+      "phase": "spatial",
+      "profile": "suppressed",
+      "delta_reg": 0.1,
+      "elements_x": 16,
+      "elements_y": 8,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": false,
+      "boundary_response": "fixed_prescribed_all_sides"
+    }
+  ],
+  "pilot_cases": [],
+  "comparisons": {
+    "previous_plan": "../start_20260923/campaign_plan.json",
+    "gradients": "Compare sampled GLL derivatives, analytic input derivatives, center Gamma and center D36; a coarse negative discrete symbol is not alone physical failure of the prescribed profile",
+    "core": "delta .05 at8x4 diagnoses previous coarse-center sign; delta .1 at16x8 extends4x2/8x4 convergence",
+    "boundaries": "Keep all four boundary values fixed by conjugate reaction loads for instantaneous response; no device boundary admission",
+    "force": "Report mass-weighted volume-force norms and separate boundary reactions; no repeated global finite differences",
+    "current": "Sum oriented graph-edge currents across x sections; individual edge current is not section current",
+    "mobility": "Reuse expensive spectra/forces for all three time pairs, unconstrained history and fixed-boundary control",
+    "physical_reference": "Independent spatial physical reference D.4.4 and coupled weak transient remain pending after these two diagnostics"
+  },
+  "exclusions": [
+    "photon transfer",
+    "time integration",
+    "1D reduction",
+    "reservoir",
+    "circuit coupling",
+    "absolute phonon rates",
+    "optical latency"
+  ],
+  "execution": {
+    "manual_for_expected_over_5minutes": true,
+    "no_retry_or_overwrite": true,
+    "progress_seconds": 5,
+    "eta": "within section plus prior task average",
+    "expected_runtime_minutes": [
+      40,
+      65
+    ],
+    "estimated_memory_GiB": [
+      1,
+      2
+    ],
+    "threads": 1,
+    "agent_must_not_execute_long_campaign": true,
+    "cost_basis": "Prior561-node case518s;2145-node case estimated by spectral query growth with added dense-matrix cost. Estimate, not guarantee."
+  }
+}

@@ -1,0 +1,304 @@
+{
+  "schema": "pysnspd.stage4A.boundary_review.v1",
+  "cases": {
+    "2d_smooth_d0.1_4x2": {
+      "source_sha256": "e863adc5c0c29a81e7c00e1009c4f159d7745a17802297643c73157efd86e4de",
+      "nodes": 153,
+      "constrained_nodes": 48,
+      "mobility": {
+        "memory_effective": {
+          "original_heat_density_max_reproduction_error": 3.469446951953614e-18,
+          "original_total_heat": 0.42125700163473684,
+          "original_boundary_heat": 0.37111953905848677,
+          "original_interior_heat": 0.05013746257625,
+          "constrained_total_heat": 0.05013746257625,
+          "constrained_field_work": -0.05013746257625,
+          "constraint_work": 0.0,
+          "identity_residual": 0.0,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.061873727261279085,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Allmaras_reference": {
+          "original_heat_density_max_reproduction_error": 4.336808689942018e-19,
+          "original_total_heat": 3.5679737184432567,
+          "original_boundary_heat": 3.560794437353322,
+          "original_interior_heat": 0.007179281089934754,
+          "constrained_total_heat": 0.007179281089934753,
+          "constrained_field_work": -0.007179281089934753,
+          "constraint_work": 0.0,
+          "identity_residual": 0.0,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.061873727261279085,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Korzh_reference": {
+          "original_heat_density_max_reproduction_error": 8.881784197001252e-16,
+          "original_total_heat": 4.233660946790437,
+          "original_boundary_heat": 4.22693707086114,
+          "original_interior_heat": 0.006723875929296711,
+          "constrained_total_heat": 0.006723875929296711,
+          "constrained_field_work": -0.0067238759292967114,
+          "constraint_work": 0.0,
+          "identity_residual": -8.673617379884035e-19,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.061873727261279085,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        }
+      }
+    },
+    "2d_smooth_d0.1_8x4": {
+      "source_sha256": "cc7152217f1d02123c6fbfe55db5a3e1e5ef7df95216b49ad37f5d0283e2e0c0",
+      "nodes": 561,
+      "constrained_nodes": 96,
+      "mobility": {
+        "memory_effective": {
+          "original_heat_density_max_reproduction_error": 1.1102230246251565e-15,
+          "original_total_heat": 0.7926143136821188,
+          "original_boundary_heat": 0.7424193945694015,
+          "original_interior_heat": 0.05019491911271723,
+          "constrained_total_heat": 0.05019491911271723,
+          "constrained_field_work": -0.05019491911271723,
+          "constraint_work": 0.0,
+          "identity_residual": 0.0,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.04386930690195357,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Allmaras_reference": {
+          "original_heat_density_max_reproduction_error": 1.0658141036401503e-14,
+          "original_total_heat": 7.130142966181262,
+          "original_boundary_heat": 7.122877324575743,
+          "original_interior_heat": 0.007265641605520508,
+          "constrained_total_heat": 0.0072656416055205085,
+          "constrained_field_work": -0.007265641605520509,
+          "constraint_work": 0.0,
+          "identity_residual": -8.673617379884035e-19,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.04386930690195357,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Korzh_reference": {
+          "original_heat_density_max_reproduction_error": 7.105427357601002e-15,
+          "original_total_heat": 8.462226816934338,
+          "original_boundary_heat": 8.455402174957866,
+          "original_interior_heat": 0.0068246419764718125,
+          "constrained_total_heat": 0.006824641976471813,
+          "constrained_field_work": -0.0068246419764718125,
+          "constraint_work": 0.0,
+          "identity_residual": 8.673617379884035e-19,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.04386930690195357,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        }
+      }
+    },
+    "2d_suppressed_d0.05_4x2": {
+      "source_sha256": "a177fe9beb778c95350efa75de061fc203bb90446faf6d0b13942b1a6a61facb",
+      "nodes": 153,
+      "constrained_nodes": 48,
+      "mobility": {
+        "memory_effective": {
+          "original_heat_density_max_reproduction_error": 1.1102230246251565e-16,
+          "original_total_heat": 1.4603888626772323,
+          "original_boundary_heat": 0.37291487189771105,
+          "original_interior_heat": 1.0874739907795212,
+          "constrained_total_heat": 1.0874739907795217,
+          "constrained_field_work": -1.0874739907795217,
+          "constraint_work": 0.0,
+          "identity_residual": 0.0,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06208263616837992,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Allmaras_reference": {
+          "original_heat_density_max_reproduction_error": 2.6645352591003757e-15,
+          "original_total_heat": 4.297687687377602,
+          "original_boundary_heat": 3.5772475317938164,
+          "original_interior_heat": 0.720440155583785,
+          "constrained_total_heat": 0.7204401555837852,
+          "constrained_field_work": -0.7204401555837852,
+          "constraint_work": 0.0,
+          "identity_residual": 0.0,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06208263616837992,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Korzh_reference": {
+          "original_heat_density_max_reproduction_error": 2.220446049250313e-16,
+          "original_total_heat": 5.056423122882307,
+          "original_boundary_heat": 4.24643780734338,
+          "original_interior_heat": 0.809985315538928,
+          "constrained_total_heat": 0.809985315538928,
+          "constrained_field_work": -0.8099853155389278,
+          "constraint_work": 0.0,
+          "identity_residual": 2.220446049250313e-16,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06208263616837992,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        }
+      }
+    },
+    "2d_suppressed_d0.1_4x2": {
+      "source_sha256": "caf5393694c6d1cf0f1a7c6a62d8b0cda7e7c483424c6ea4c92728c51bd248fc",
+      "nodes": 153,
+      "constrained_nodes": 48,
+      "mobility": {
+        "memory_effective": {
+          "original_heat_density_max_reproduction_error": 2.220446049250313e-16,
+          "original_total_heat": 1.4561743941077723,
+          "original_boundary_heat": 0.3715730743442686,
+          "original_interior_heat": 1.0846013197635034,
+          "constrained_total_heat": 1.0846013197635034,
+          "constrained_field_work": -1.0846013197635034,
+          "constraint_work": 0.0,
+          "identity_residual": 0.0,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06197266982588007,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Allmaras_reference": {
+          "original_heat_density_max_reproduction_error": 1.6653345369377348e-16,
+          "original_total_heat": 4.174599380997558,
+          "original_boundary_heat": 3.5643593502053,
+          "original_interior_heat": 0.6102400307922574,
+          "constrained_total_heat": 0.6102400307922574,
+          "constrained_field_work": -0.6102400307922573,
+          "constraint_work": 0.0,
+          "identity_residual": 1.1102230246251565e-16,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06197266982588007,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Korzh_reference": {
+          "original_heat_density_max_reproduction_error": 1.6653345369377348e-16,
+          "original_total_heat": 4.908242907330813,
+          "original_boundary_heat": 4.231136144011341,
+          "original_interior_heat": 0.6771067633194717,
+          "constrained_total_heat": 0.6771067633194716,
+          "constrained_field_work": -0.6771067633194714,
+          "constraint_work": 0.0,
+          "identity_residual": 2.220446049250313e-16,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06197266982588007,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        }
+      }
+    },
+    "2d_suppressed_d0.1_8x4": {
+      "source_sha256": "30477189d551df7f5efa3241fa554f3ea02dc63e13bcb97415671f3f75b372ce",
+      "nodes": 561,
+      "constrained_nodes": 96,
+      "mobility": {
+        "memory_effective": {
+          "original_heat_density_max_reproduction_error": 8.881784197001252e-16,
+          "original_total_heat": 1.820334576990669,
+          "original_boundary_heat": 0.7425533261124048,
+          "original_interior_heat": 1.077781250878264,
+          "constrained_total_heat": 1.0777812508782638,
+          "constrained_field_work": -1.077781250878264,
+          "constraint_work": 0.0,
+          "identity_residual": -2.220446049250313e-16,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.04385518415143831,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Allmaras_reference": {
+          "original_heat_density_max_reproduction_error": 3.552713678800501e-15,
+          "original_total_heat": 7.5685430753747625,
+          "original_boundary_heat": 7.124706282891266,
+          "original_interior_heat": 0.4438367924834966,
+          "constrained_total_heat": 0.44383679248349667,
+          "constrained_field_work": -0.4438367924834967,
+          "constraint_work": 0.0,
+          "identity_residual": -5.551115123125783e-17,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.04385518415143831,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Korzh_reference": {
+          "original_heat_density_max_reproduction_error": 7.105427357601002e-15,
+          "original_total_heat": 8.938888568068412,
+          "original_boundary_heat": 8.457515651724705,
+          "original_interior_heat": 0.4813729163437075,
+          "constrained_total_heat": 0.4813729163437076,
+          "constrained_field_work": -0.4813729163437074,
+          "constraint_work": 0.0,
+          "identity_residual": 2.220446049250313e-16,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.04385518415143831,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        }
+      }
+    },
+    "2d_suppressed_d0.2_4x2": {
+      "source_sha256": "78339ef68416e3fb17635142129a998787359492cc782a0e668f87d7366b975a",
+      "nodes": 153,
+      "constrained_nodes": 48,
+      "mobility": {
+        "memory_effective": {
+          "original_heat_density_max_reproduction_error": 2.220446049250313e-16,
+          "original_total_heat": 1.4380649159923844,
+          "original_boundary_heat": 0.36655433547472527,
+          "original_interior_heat": 1.0715105805176597,
+          "constrained_total_heat": 1.0715105805176592,
+          "constrained_field_work": -1.0715105805176595,
+          "constraint_work": 0.0,
+          "identity_residual": -2.220446049250313e-16,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06155950276726994,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Allmaras_reference": {
+          "original_heat_density_max_reproduction_error": 8.326672684688674e-17,
+          "original_total_heat": 3.997809268828474,
+          "original_boundary_heat": 3.516152409440459,
+          "original_interior_heat": 0.48165685938801495,
+          "constrained_total_heat": 0.4816568593880149,
+          "constrained_field_work": -0.48165685938801484,
+          "constraint_work": 0.0,
+          "identity_residual": 5.551115123125783e-17,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06155950276726994,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        },
+        "Korzh_reference": {
+          "original_heat_density_max_reproduction_error": 1.3877787807814457e-16,
+          "original_total_heat": 4.696967486136266,
+          "original_boundary_heat": 4.173901905648913,
+          "original_interior_heat": 0.5230655804873536,
+          "constrained_total_heat": 0.5230655804873536,
+          "constrained_field_work": -0.5230655804873537,
+          "constraint_work": 0.0,
+          "identity_residual": -1.1102230246251565e-16,
+          "maximum_boundary_velocity": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "reaction_integrated_norm": 0.06155950276726994,
+          "reaction_rule": "Applied conjugate load equals G on prescribed boundary nodes; zero elsewhere"
+        }
+      }
+    }
+  },
+  "scope": "New algebraic response on archived fields. Four sides clamped, phi=0; not a reservoir/device boundary model or time trajectory.",
+  "reason": "For diagonal nodal KWT at phi=0, load=G on fixed nodes cancels their material velocity without deleting energy-work terms.",
+  "energy_kernel_queries": 0,
+  "stage4_complete": false,
+  "photon": false
+}

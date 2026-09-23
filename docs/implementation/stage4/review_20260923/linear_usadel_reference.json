@@ -1,0 +1,256 @@
+{
+  "schema": "pysnspd.stage4.thermal_linear_usadel_reference.v1",
+  "status": "COMPUTED_STATIC_REFERENCE_NOT_CORE_OR_TRAJECTORY_ADMISSION",
+  "source": "docs/modelo_v0_4/C_condensado_corriente_y_senal_v0_4.md C.29-C.31",
+  "independent_of_experimental_catalogue_and_spatial_assembly": true,
+  "physical_time_steps": 0,
+  "new_photon_runs": 0,
+  "ensemble": "Fixed imposed temperature, thermal BCS stationary gap, zero background current; not fixed occupation counts",
+  "parameters": {
+    "Tc_K": 8.65,
+    "T_K": 0.9,
+    "D_m2_s": 5e-05,
+    "ell0_nm": 4.698490897269843,
+    "T_over_Tc": 0.10404624277456648,
+    "gap_units": "kB*Tc",
+    "zero_temperature_weak_coupling_ratio": 1.7638769888620456
+  },
+  "definitions": {
+    "H": "Derivative of force normalized by N0*kB*Tc with respect to d=abs(Delta)/(kB*Tc)",
+    "HU": "Spatial-linearized Usadel response after thermal spectral relaxation",
+    "HK0": "Same homogeneous stiffness with the local K0 gradient completion",
+    "time_ratio": "t_K0/t_U=H_U/H_K0 only if identical positive mobility is imposed",
+    "wavelength": "2*pi/k, not 1/k; must additionally satisfy diffusive k*mean_free_path << 1"
+  },
+  "tail_method": {
+    "gap": "Inverse odd frequency powers 3,5,7 with Hurwitz zeta",
+    "H0": "Inverse odd frequency powers 3,5,7 with Hurwitz zeta",
+    "HU_increment": "Inverse frequency powers 2..6 with Hurwitz zeta",
+    "interpretation": "A cutoff comparison checks numerical stability, not physical uncertainty"
+  },
+  "cutoff_runs": [
+    {
+      "matsubara_count": 2500,
+      "gap_kBTc": 1.763876942591041,
+      "gap_equation_residual": 1.2878587085651816e-14,
+      "rows": [
+        {
+          "k_ell0": 0.0,
+          "H_U0_raw": 1.9999979199221516,
+          "H_U0_tail": 1.1647792131901955e-06,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.0,
+          "increment_U_tail": 0.0,
+          "H_U": 1.9999990847013647,
+          "H_K0": 1.9999990847013647,
+          "stiffness_excess_fraction": 0.0,
+          "conditional_time_K0_over_U": 1.0,
+          "spatial_wavelength_nm": null
+        },
+        {
+          "k_ell0": 0.15,
+          "H_U0_raw": 1.9999979199221516,
+          "H_U0_tail": 1.1647792131901955e-06,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.01990188983312691,
+          "increment_U_tail": 2.7533593881665567e-05,
+          "H_U": 2.0199285081283733,
+          "H_K0": 2.0353420020542496,
+          "stiffness_excess_fraction": 0.0076307126038623885,
+          "conditional_time_K0_over_U": 0.9924270742163628,
+          "spatial_wavelength_nm": 196.80992647761937
+        },
+        {
+          "k_ell0": 0.3,
+          "H_U0_raw": 1.9999979199221516,
+          "H_U0_tail": 1.1647792131901955e-06,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.07835302171430503,
+          "increment_U_tail": 0.00011013210130314924,
+          "H_U": 2.078462238516973,
+          "H_K0": 2.1413707541129052,
+          "stiffness_excess_fraction": 0.030266855192336184,
+          "conditional_time_K0_over_U": 0.9706223149470475,
+          "spatial_wavelength_nm": 98.40496323880969
+        },
+        {
+          "k_ell0": 0.5,
+          "H_U0_raw": 1.9999979199221516,
+          "H_U0_tail": 1.1647792131901955e-06,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.209956772676486,
+          "increment_U_tail": 0.00030590753069809686,
+          "H_U": 2.210261764908549,
+          "H_K0": 2.3926981664000886,
+          "stiffness_excess_fraction": 0.08254063133517042,
+          "conditional_time_K0_over_U": 0.9237528560629014,
+          "spatial_wavelength_nm": 59.04297794328581
+        },
+        {
+          "k_ell0": 1.0,
+          "H_U0_raw": 1.9999979199221516,
+          "H_U0_tail": 1.1647792131901955e-06,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.7270631919628392,
+          "increment_U_tail": 0.0012233494846702207,
+          "H_U": 2.7282856261488737,
+          "H_K0": 3.5707954114962615,
+          "stiffness_excess_fraction": 0.30880556539699144,
+          "conditional_time_K0_over_U": 0.7640554307214277,
+          "spatial_wavelength_nm": 29.521488971642906
+        }
+      ]
+    },
+    {
+      "matsubara_count": 5000,
+      "gap_kBTc": 1.763876942591041,
+      "gap_equation_residual": 1.2878587085651816e-14,
+      "rows": [
+        {
+          "k_ell0": 0.0,
+          "H_U0_raw": 1.999998793506362,
+          "H_U0_tail": 2.9119500282091547e-07,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.0,
+          "increment_U_tail": 0.0,
+          "H_U": 1.9999990847013647,
+          "H_K0": 1.9999990847013647,
+          "stiffness_excess_fraction": 0.0,
+          "conditional_time_K0_over_U": 1.0,
+          "spatial_wavelength_nm": null
+        },
+        {
+          "k_ell0": 0.15,
+          "H_U0_raw": 1.999998793506362,
+          "H_U0_tail": 2.9119500282091547e-07,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.01991565657453125,
+          "increment_U_tail": 1.3766852477324102e-05,
+          "H_U": 2.019928508128373,
+          "H_K0": 2.0353420020542496,
+          "stiffness_excess_fraction": 0.0076307126038626105,
+          "conditional_time_K0_over_U": 0.9924270742163626,
+          "spatial_wavelength_nm": 196.80992647761937
+        },
+        {
+          "k_ell0": 0.3,
+          "H_U0_raw": 1.999998793506362,
+          "H_U0_tail": 2.9119500282091547e-07,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.07840808697426843,
+          "increment_U_tail": 5.506684133973507e-05,
+          "H_U": 2.078462238516973,
+          "H_K0": 2.1413707541129052,
+          "stiffness_excess_fraction": 0.030266855192336184,
+          "conditional_time_K0_over_U": 0.9706223149470475,
+          "spatial_wavelength_nm": 98.40496323880969
+        },
+        {
+          "k_ell0": 0.5,
+          "H_U0_raw": 1.999998793506362,
+          "H_U0_tail": 2.9119500282091547e-07,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.21010972050251234,
+          "increment_U_tail": 0.00015295970467173127,
+          "H_U": 2.2102617649085485,
+          "H_K0": 2.3926981664000886,
+          "stiffness_excess_fraction": 0.08254063133517064,
+          "conditional_time_K0_over_U": 0.9237528560629011,
+          "spatial_wavelength_nm": 59.04297794328581
+        },
+        {
+          "k_ell0": 1.0,
+          "H_U0_raw": 1.999998793506362,
+          "H_U0_tail": 2.9119500282091547e-07,
+          "H_U0": 1.9999990847013647,
+          "increment_U_raw": 0.7276747728063145,
+          "increment_U_tail": 0.0006117686411948173,
+          "H_U": 2.728285626148874,
+          "H_K0": 3.5707954114962615,
+          "stiffness_excess_fraction": 0.3088055653969912,
+          "conditional_time_K0_over_U": 0.7640554307214278,
+          "spatial_wavelength_nm": 29.521488971642906
+        }
+      ]
+    }
+  ],
+  "cutoff_comparison": {
+    "maximum_corrected_HU_relative_difference": 2.198539245636704e-16,
+    "gap_absolute_difference": 0.0
+  },
+  "results": [
+    {
+      "k_ell0": 0.0,
+      "H_U0_raw": 1.999998793506362,
+      "H_U0_tail": 2.9119500282091547e-07,
+      "H_U0": 1.9999990847013647,
+      "increment_U_raw": 0.0,
+      "increment_U_tail": 0.0,
+      "H_U": 1.9999990847013647,
+      "H_K0": 1.9999990847013647,
+      "stiffness_excess_fraction": 0.0,
+      "conditional_time_K0_over_U": 1.0,
+      "spatial_wavelength_nm": null
+    },
+    {
+      "k_ell0": 0.15,
+      "H_U0_raw": 1.999998793506362,
+      "H_U0_tail": 2.9119500282091547e-07,
+      "H_U0": 1.9999990847013647,
+      "increment_U_raw": 0.01991565657453125,
+      "increment_U_tail": 1.3766852477324102e-05,
+      "H_U": 2.019928508128373,
+      "H_K0": 2.0353420020542496,
+      "stiffness_excess_fraction": 0.0076307126038626105,
+      "conditional_time_K0_over_U": 0.9924270742163626,
+      "spatial_wavelength_nm": 196.80992647761937
+    },
+    {
+      "k_ell0": 0.3,
+      "H_U0_raw": 1.999998793506362,
+      "H_U0_tail": 2.9119500282091547e-07,
+      "H_U0": 1.9999990847013647,
+      "increment_U_raw": 0.07840808697426843,
+      "increment_U_tail": 5.506684133973507e-05,
+      "H_U": 2.078462238516973,
+      "H_K0": 2.1413707541129052,
+      "stiffness_excess_fraction": 0.030266855192336184,
+      "conditional_time_K0_over_U": 0.9706223149470475,
+      "spatial_wavelength_nm": 98.40496323880969
+    },
+    {
+      "k_ell0": 0.5,
+      "H_U0_raw": 1.999998793506362,
+      "H_U0_tail": 2.9119500282091547e-07,
+      "H_U0": 1.9999990847013647,
+      "increment_U_raw": 0.21010972050251234,
+      "increment_U_tail": 0.00015295970467173127,
+      "H_U": 2.2102617649085485,
+      "H_K0": 2.3926981664000886,
+      "stiffness_excess_fraction": 0.08254063133517064,
+      "conditional_time_K0_over_U": 0.9237528560629011,
+      "spatial_wavelength_nm": 59.04297794328581
+    },
+    {
+      "k_ell0": 1.0,
+      "H_U0_raw": 1.999998793506362,
+      "H_U0_tail": 2.9119500282091547e-07,
+      "H_U0": 1.9999990847013647,
+      "increment_U_raw": 0.7276747728063145,
+      "increment_U_tail": 0.0006117686411948173,
+      "H_U": 2.728285626148874,
+      "H_K0": 3.5707954114962615,
+      "stiffness_excess_fraction": 0.3088055653969912,
+      "conditional_time_K0_over_U": 0.7640554307214278,
+      "spatial_wavelength_nm": 29.521488971642906
+    }
+  ],
+  "restrictions": [
+    "Linear amplitude perturbations only; no core, vortex or phase-slip event",
+    "No nonequilibrium frozen-population susceptibility equivalence",
+    "No mobility calibration or absolute detector latency",
+    "Unknown elastic mean free path limits experimental interpretation of short wavelengths",
+    "No validation of finite delta regularization: q_delta is zero here"
+  ],
+  "runtime_seconds": 0.03200000000651926
+}

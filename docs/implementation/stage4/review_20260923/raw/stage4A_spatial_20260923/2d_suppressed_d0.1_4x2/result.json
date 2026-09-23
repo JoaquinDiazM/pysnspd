@@ -1,0 +1,149 @@
+{
+  "kind": "full2D_static_prescribed_field",
+  "profile": "suppressed",
+  "nodes": 153,
+  "elements": [
+    4,
+    2
+  ],
+  "degree": 4,
+  "delta_reg": 0.1,
+  "population": "synthetic_fixed_count",
+  "minimum_amplitude": 0.039999999999999925,
+  "energy_bar": -11.59011222393079,
+  "energy_J": -1.2386454750851965e-19,
+  "integrated_force_norm": 0.5317253303564378,
+  "maximum_current_A": 6.555503388360744e-07,
+  "noether_max": 1.734723475976807e-16,
+  "symbol_min_eigenvalue": 1.5707963267948954,
+  "maximum_symbol_uncertainty": 0.008801107728932134,
+  "positive_symbols": 153,
+  "negative_symbols": 0,
+  "unresolved_symbols": 0,
+  "identity_checks": [
+    {
+      "step": 2e-05,
+      "field_derivative": -0.869228468225458,
+      "expected_field": -0.8692284696414172,
+      "gauge_derivative": -0.0011018936429962878,
+      "expected_gauge": -0.001101893651699408
+    },
+    {
+      "step": 1e-05,
+      "field_derivative": -0.8692284693800899,
+      "expected_field": -0.8692284696414172,
+      "gauge_derivative": -0.0011018936874052088,
+      "expected_gauge": -0.001101893651699408
+    }
+  ],
+  "mobility": {
+    "memory_effective": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 0.5,
+        "tau_ep_Tc_ps": 2.47,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 1.4561743941077718,
+      "field_work_bar": -1.4561743941077718,
+      "identity_residual_bar": 0.0,
+      "maximum_velocity_per_ps": 2.443891720360453,
+      "interpretation": "Unconstrained instantaneous descent including boundary DOFs; no reservoir/circuit/trajectory"
+    },
+    "Allmaras_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 5.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 4.174599380997558,
+      "field_work_bar": -4.174599380997558,
+      "identity_residual_bar": 0.0,
+      "maximum_velocity_per_ps": 15.405503055520986,
+      "interpretation": "Unconstrained instantaneous descent including boundary DOFs; no reservoir/circuit/trajectory"
+    },
+    "Korzh_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 6.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 4.908242907330813,
+      "field_work_bar": -4.908242907330813,
+      "identity_residual_bar": 0.0,
+      "maximum_velocity_per_ps": 18.287398672210823,
+      "interpretation": "Unconstrained instantaneous descent including boundary DOFs; no reservoir/circuit/trajectory"
+    }
+  },
+  "identity_scope": "Direct two-step field/current checks",
+  "fields_file": "fields.npz",
+  "no_trajectory": true,
+  "physical_core_admitted": false,
+  "photon": false,
+  "boundaries": "Independent prescribed input values; no current-driven reservoir or dynamic boundary admission",
+  "case": {
+    "id": "2d_suppressed_d0.1_4x2",
+    "phase": "spatial",
+    "profile": "suppressed",
+    "delta_reg": 0.1,
+    "elements_x": 4,
+    "elements_y": 2,
+    "degree": 4,
+    "population": "synthetic_fixed_count",
+    "resolution": "reference",
+    "finite_differences": true
+  },
+  "runtime_seconds": 283.3954793657176,
+  "catalogue_diagnostics": {
+    "count_states": 630,
+    "direct_queries": 2368,
+    "direct_seconds": 283.2699360353872,
+    "exact_cache": {
+      "hits": 225,
+      "misses": 2368,
+      "maxsize": 4096,
+      "currsize": 2368
+    }
+  }
+}

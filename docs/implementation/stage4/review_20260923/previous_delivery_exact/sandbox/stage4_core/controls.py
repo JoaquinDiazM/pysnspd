@@ -177,152 +177,38 @@ def cell_temperature(cat, theta):
     return float(theta*cat.vacuum.delta0_J/K_B_J_K)
 
 
-def spatial_profile(coordinates_bar, length_bar, profile):
-    """Prescribed complex field and its exact Cartesian derivatives in X,Y.
-
-    These are diagnostic input functions, not a stationary solution or a
-    photon deposition profile. Their exact derivatives provide a reference
-    independent of the GLL differentiation of their sampled values.
-    """
-    x, y = np.asarray(coordinates_bar, float).T
-    x = x-length_bar/2
+def spatial_field(model, profile):
+    x, y = model.dof_coordinates_bar.T
+    x = x-model.length_bar/2
     if profile == 'smooth':
-        sx, sy, suppression = 8., 6., .08
+        envelope = np.exp(-((x/8)**2+(y/6)**2))
+        amplitude = .95-.08*envelope
     elif profile == 'suppressed':
-        sx, sy, suppression = 2.5, 2.5, .91
+        envelope = np.exp(-((x/2.5)**2+(y/2.5)**2))
+        amplitude = .95-.91*envelope
     else:
         raise ValueError('Unregistered field profile')
-    envelope = np.exp(-((x/sx)**2+(y/sy)**2))
-    amplitude = .95-suppression*envelope
-    phase_envelope = np.exp(-(x/10)**2)
-    phase = .07*x+.025*np.sin(y/5)*phase_envelope
-    da = np.column_stack((2*suppression*x/sx**2*envelope,
-                          2*suppression*y/sy**2*envelope))
-    dp = np.column_stack((.07-.025*np.sin(y/5)*phase_envelope*2*x/100,
-                          .005*np.cos(y/5)*phase_envelope))
-    rotation = np.exp(1j*phase)
-    return amplitude*rotation, rotation[:, None]*(da+1j*amplitude[:, None]*dp)
-
-
-def spatial_field(model, profile):
-    return spatial_profile(model.dof_coordinates_bar, model.length_bar, profile)[0]
-
-
-def boundary_mask(model):
-    """Four prescribed sides, with each corner counted exactly once."""
-    mask = np.zeros(model.cells, bool)
-    mask[np.concatenate(tuple(model.boundary_dofs.values()))] = True
-    return mask
-
-
-def volume_force_metrics(model, cartesian_gradient, constrained):
-    """Norms of the volume derivative G/m, distinguishing boundary reactions."""
-    gradient = np.asarray(cartesian_gradient)
-    density = gradient/model.mass_bar[:, None]
-    square = np.sum(density*density, axis=1)
-    result = {}
-    for name, mask in (('all_dofs_including_boundary_reactions', np.ones(model.cells, bool)),
-                       ('interior', ~constrained)):
-        measure = float(np.sum(model.mass_bar[mask]))
-        integral = float(np.dot(model.mass_bar[mask], square[mask]))
-        result[name] = dict(mass_bar=measure, l2_volume_bar=float(np.sqrt(integral)),
-            rms_volume_bar=float(np.sqrt(integral/measure)) if measure else None,
-            maximum_volume_force_bar=float(np.sqrt(square[mask].max())) if np.any(mask) else None)
-    return result, density
-
-
-def section_currents(model, current_A):
-    """Oriented graph flux through every x cut; positive means left to right.
-
-    The incidence convention is B_tail=+1, B_head=-1. Edge currents already
-    include transverse quadrature weights, so they are summed without another
-    area factor. A maximum individual edge current is not a section current.
-    """
-    x = model.dof_coordinates_bar[:, 0]
-    unique_x = np.unique(x)
-    cuts = (unique_x[:-1]+unique_x[1:])/2
-    tail, head = x[model.graph_edges[:, 0]], x[model.graph_edges[:, 1]]
-    current = np.asarray(current_A)
-    flux = np.array([np.sum(current[(tail < cut)&(head > cut)])
-                     -np.sum(current[(head < cut)&(tail > cut)]) for cut in cuts])
-    return cuts*model.ell0_m, flux
-
-
-def derivative_diagnostics(model, profile, sampled, constrained):
-    _, exact = spatial_profile(model.dof_coordinates_bar, model.length_bar, profile)
-    error = sampled.derivative_quadrature_bar-exact
-    result = {}
-    for name, mask in (('all_nodes', np.ones(model.cells, bool)), ('interior', ~constrained)):
-        integral = float(np.dot(model.mass_bar[mask], np.sum(abs(error[mask])**2, axis=1)))
-        norm = float(np.dot(model.mass_bar[mask], np.sum(abs(exact[mask])**2, axis=1)))
-        result[name] = dict(l2_error_bar=float(np.sqrt(integral)),
-            relative_l2_error=float(np.sqrt(integral/norm)) if norm else None,
-            maximum_component_error=float(np.max(abs(error[mask]))) if np.any(mask) else None)
-    z = sampled.delta_quadrature_bar
-    exact_q = np.imag(np.conj(z)[:, None]*exact)/(abs(z[:, None])**2+model.delta_regularizer_bar**2)
-    exact_gamma = np.sum(exact_q*exact_q, axis=1)/model.gap_ratio
-    center = int(np.argmin(np.sum((model.dof_coordinates_bar-[model.length_bar/2, 0.])**2, axis=1)))
-    result['center'] = dict(node=center, coordinates_bar=model.dof_coordinates_bar[center].tolist(),
-        derivative_discrete=[[v.real, v.imag] for v in sampled.derivative_quadrature_bar[center]],
-        derivative_analytic=[[v.real, v.imag] for v in exact[center]],
-        derivative_error_norm=float(np.linalg.norm(error[center])),
-        gamma_discrete=float(sampled.gamma_quadrature_bar[center]),
-        gamma_analytic=float(exact_gamma[center]),
-        gamma_ratio_discrete_to_analytic=float(sampled.gamma_quadrature_bar[center]/exact_gamma[center]) if exact_gamma[center] else None)
-    return result, exact, exact_gamma
-
-
-def mobility_record(response, constrained):
-    return dict(total_heat_bar=response.condensate_heat_rate_bar,
-        interior_heat_bar=float(np.dot(response.quadrature_mass_bar[~constrained], response.heat_density_bar[~constrained])),
-        boundary_heat_bar=float(np.dot(response.quadrature_mass_bar[constrained], response.heat_density_bar[constrained])),
-        field_work_bar=response.field_energy_rate_bar,
-        boundary_work_bar=response.boundary_work_rate_bar,
-        identity_residual_bar=response.identity_residual_bar,
-        maximum_velocity_per_ps=float(np.max(abs(response.material_velocity_bar))),
-        maximum_interior_velocity_per_ps=float(np.max(abs(response.material_velocity_bar[~constrained]))) if np.any(~constrained) else None,
-        maximum_boundary_velocity_per_ps=float(np.max(abs(response.material_velocity_bar[constrained]))))
+    phase = .07*x+.025*np.sin(y/5)*np.exp(-(x/10)**2)
+    return amplitude*np.exp(1j*phase)
 
 
 def spatial_case(plan, case, cat, progress, output):
-    boundary_policy = case.get('boundary_response', 'unconstrained_instantaneous')
-    if boundary_policy not in ('unconstrained_instantaneous', 'fixed_prescribed_all_sides'):
-        raise ValueError('Unregistered boundary response '+boundary_policy)
     model = RectangularSpatialFunctional(cat, plan['geometry']['length_m'],
         plan['material']['width_m'], plan['material']['thickness_m'],
         elements_x=case['elements_x'], elements_y=case['elements_y'],
         degree=case['degree'], delta_regularizer_bar=case['delta_reg'])
     z = spatial_field(model, case['profile'])
     fields = model.sample_fields(z)
-    constrained = boundary_mask(model)
-    derivative_check, exact_derivative, exact_gamma = derivative_diagnostics(
-        model, case['profile'], fields, constrained)
     p = np.broadcast_to(population(cat, case['population']), (model.cells, len(cat.count_nodes))).copy()
     # Diagnostic fields may have a negative symbol. Record that sign without
     # evolving, clipping or turning it into an execution exception.
     base = model.evaluate(z, p, require_stability=False,
         on_quadrature=lambda i, n: progress(i+1, n, 'energy and force'))
-    force_metrics, force_density = volume_force_metrics(model, base.gradient_cartesian_bar, constrained)
-    cuts_m, cuts_A = section_currents(model, base.current_A)
-    constraint_load = np.zeros_like(base.gradient_cartesian_bar)
-    if boundary_policy == 'fixed_prescribed_all_sides':
-        # External conjugate load +G cancels the force -G at constrained DOFs.
-        # With phi=0 this yields zero material/field velocity without overwriting
-        # a computed velocity, and the constraint work is identically zero.
-        constraint_load[constrained] = base.gradient_cartesian_bar[constrained]
     eigen, uncertainty, stable = [], [], []
     for i in range(model.cells):
         s = model.principal_symbol(z[i], fields.derivative_quadrature_bar[i], p[i])
         eigen.append(s.eigenvalues); uncertainty.append(s.uncertainty); stable.append(s.stable)
         progress(i+1, model.cells, 'local stability')
-    center = derivative_check['center']['node']
-    center_analytic = model.principal_symbol(z[center], exact_derivative[center], p[center])
-    derivative_check['center'].update(
-        discrete_symbol_eigenvalues=np.asarray(eigen[center]).tolist(),
-        discrete_symbol_uncertainty=float(uncertainty[center]),
-        analytic_symbol_eigenvalues=center_analytic.eigenvalues.tolist(),
-        analytic_symbol_uncertainty=float(center_analytic.uncertainty),
-        interpretation='Signs refer to their specified gradients; a coarse discrete negative sign alone does not establish failure of this analytic profile')
     temperatures = []
     for i, (v, g, pp) in enumerate(zip(z, fields.gamma_quadrature_bar, p)):
         temperatures.append(equivalent_temperature(cat, float(abs(v)), float(g), pp))
@@ -330,22 +216,17 @@ def spatial_case(plan, case, cat, progress, output):
     theta = np.asarray(temperatures)
     heat_fields = {}
     mobility_values = {}
-    fixed_mobility_values = {}
     for name, pair in plan['mobility_pairs_ps'].items():
         mob = KWTMobility(scales(cat, plan), *pair)
         response = kwt_spatial_response(z, base.gradient_cartesian_bar,
             model.mass_bar, mob, theta, np.zeros(model.cells))
-        mobility_values[name] = dict(metadata=mob.metadata(), **mobility_record(response, constrained),
+        mobility_values[name] = dict(metadata=mob.metadata(),
+            total_heat_bar=response.condensate_heat_rate_bar,
+            field_work_bar=response.field_energy_rate_bar,
+            identity_residual_bar=response.identity_residual_bar,
+            maximum_velocity_per_ps=float(np.max(abs(response.material_velocity_bar))),
             interpretation='Unconstrained instantaneous descent including boundary DOFs; no reservoir/circuit/trajectory')
         heat_fields['heat_'+name] = response.heat_density_bar
-        heat_fields['velocity_unconstrained_'+name] = response.material_velocity_bar
-        if boundary_policy == 'fixed_prescribed_all_sides':
-            fixed = kwt_spatial_response(z, base.gradient_cartesian_bar,
-                model.mass_bar, mob, theta, np.zeros(model.cells), boundary_load_bar=constraint_load)
-            fixed_mobility_values[name] = dict(metadata=mob.metadata(), **mobility_record(fixed, constrained),
-                interpretation='Instantaneous interior descent with all four sides fixed by conjugate reaction loads; diagnostic constraint, not device boundary conditions')
-            heat_fields['heat_fixed_boundary_'+name] = fixed.heat_density_bar
-            heat_fields['velocity_fixed_boundary_'+name] = fixed.material_velocity_bar
     # One field and one gauge direction, tested at two steps. p is literally
     # fixed; this is internal energy, not thermal internal-energy differentiation.
     xx, yy = model.dof_coordinates_bar.T
@@ -374,40 +255,18 @@ def spatial_case(plan, case, cat, progress, output):
         shape=np.array(model.rectangle_shape), delta=z, gamma=fields.gamma_quadrature_bar,
         cartesian_force=base.gradient_cartesian_bar, symbol_eigenvalues=eigen,
         symbol_uncertainty=uncertainty, temperature_equivalent_K=theta*cat.vacuum.delta0_J/K_B_J_K,
-        quadrature_volume_m3=model.node_volumes_m3, quadrature_mass_bar=model.mass_bar,
-        boundary_mask=constrained, interior_mask=~constrained, constraint_load_cartesian_bar=constraint_load,
-        volume_force_cartesian_bar=force_density, derivative_discrete=fields.derivative_quadrature_bar,
-        derivative_analytic=exact_derivative, gamma_analytic=exact_gamma,
-        graph_edges=model.graph_edges, edge_current_A=base.current_A,
-        section_x_m=cuts_m, section_current_A=cuts_A, **heat_fields)
+        quadrature_volume_m3=model.node_volumes_m3, **heat_fields)
     return dict(kind='full2D_static_prescribed_field', profile=case['profile'], nodes=model.cells,
         elements=[case['elements_x'], case['elements_y']], degree=case['degree'],
         delta_reg=case['delta_reg'], population=case['population'],
         minimum_amplitude=float(min(abs(z))), energy_bar=base.energy_bar, energy_J=base.energy_J,
         integrated_force_norm=float(np.linalg.norm(base.gradient_cartesian_bar)),
         maximum_current_A=float(np.max(abs(base.current_A))),
-        historical_nodal_metrics=dict(integrated_force_norm='Unweighted Euclidean norm of integrated DOF gradients, not a volume-force norm',
-            maximum_current_A='Maximum single weighted graph-edge current, not device section current',
-            mobility='Unconstrained historical diagnostic including boundary reactions'),
-        volume_force_norms=force_metrics,
-        section_currents=dict(x_m=cuts_m.tolist(), current_A=cuts_A.tolist(),
-            maximum_absolute_A=float(np.max(abs(cuts_A))), orientation='Positive left-to-right; sum of oriented graph edges crossing each x cut'),
-        derivative_diagnostics=derivative_check,
-        response_boundary_policy=boundary_policy,
-        constraint_reaction_ledger=dict(active=boundary_policy == 'fixed_prescribed_all_sides',
-            unique_boundary_nodes=int(np.sum(constrained)),
-            external_conjugate_load_sum_cartesian_bar=np.sum(constraint_load, axis=0).tolist(),
-            integrated_load_l2_bar=float(np.linalg.norm(constraint_load)),
-            phase_torque_bar=float(np.sum(np.imag(np.conj(z)*(constraint_load[:, 0]+1j*constraint_load[:, 1])))),
-            sign='Applied conjugate load +G at fixed nodes cancels intrinsic force -G; each corner counted once',
-            array_file='fields.npz:constraint_load_cartesian_bar',
-            scope='Prescribed fixed control values, not a superconducting reservoir or device boundary admission'),
         noether_max=float(np.max(abs(base.noether_residual_bar))),
         symbol_min_eigenvalue=float(eigen[:,0].min()), maximum_symbol_uncertainty=float(uncertainty.max()),
         positive_symbols=int(sum(stable)), negative_symbols=int(np.sum(eigen[:,0]<-uncertainty)),
         unresolved_symbols=int(np.sum(abs(eigen[:,0])<=uncertainty)),
         identity_checks=identities, mobility=mobility_values,
-        mobility_fixed_boundary=fixed_mobility_values,
         identity_scope=('Direct two-step field/current checks' if identities else
                         'Uses the same tested assembly; finite differences only at registered coarse anchors'),
         fields_file='fields.npz', no_trajectory=True, physical_core_admitted=False,

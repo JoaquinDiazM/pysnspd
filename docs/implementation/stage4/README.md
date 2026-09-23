@@ -1,23 +1,41 @@
-# Etapa 4 iniciada: núcleo y disipación sin fotón
+# Etapa 4: resultados 4A y continuación enfocada
 
-La [primera implementación 4A](start_20260923/README.md) está lista para su campaña
-manual. [Estado actual](start_20260923/implementation_status.json) y
-[plan registrado](start_20260923/campaign_plan.json). El contrato de entrada
-original se conserva como fotografía de la preparación; su “no iniciada” es histórico.
+Los 40 controles locales y seis estados 2D terminaron. El
+[informe de resultados](review_20260923/Informe_avance_etapa_4A.md)
+([PDF](../../../output/pdf/implementation/Informe_avance_etapa_4A.pdf)) separa
+estabilidad constitutiva, errores de borde y resolución del núcleo.
 
-Ahora los tiempos KWT y el parámetro de núcleo son explícitos, con los valores
-heredados por defecto. Se corrigieron tres denominadores fijos que habrían roto
-la correspondencia entre energía, fuerza y corriente al variar el núcleo.
-El nuevo rectángulo usa todos sus nodos 2D, incluidos los bordes, sin continuación
-1D ni identificación transversal.
+El perfil suave cambia sólo 1,50 % en disipación interior entre mallas. La
+duplicación del calor total original proviene de mover libremente sus bordes
+prescritos. Se reconstruyó la respuesta con cargas conjugadas que los mantienen
+fijos, sin nuevas consultas espectrales. Este control no representa los bordes
+ni los contactos del dispositivo.
 
-El piloto y las pruebas de rutas modificadas pasaron. Faltan los 40 controles
-locales y seis estados 2D que ejecutará el usuario con los comandos de
-[/home/jdiaz/GEMINGA_COMMANDS.md](../../GEMINGA_COMMANDS.md).
-Son estados estáticos y respuestas instantáneas. No hay todavía un transiente
-espacial, núcleo físico admitido, fotón ni circuito acoplado en esta campaña.
+El núcleo suprimido todavía cambia 28,9 % en disipación interior. Su único signo
+espacial negativo no se reproduce con la derivada analítica del perfil; requiere
+resolver el gradiente antes de atribuirlo a la física. Se conservan por separado
+los cuatro controles locales de gradiente fuerte que sí tienen D.36 negativo.
 
-Después de recoger esos resultados se decidirá si el núcleo y la disipación
-permiten continuar, requieren otra resolución o justifican reformular el cierre.
-Los pendientes dinámicos de etapa 3 se resolverán antes del ensayo que los use.
-La memoria sigue definiendo el circuito futuro; producción y v1.0.0 permanecen iguales.
+La continuación tiene [sólo dos estados nuevos](review_20260923/next_campaign_plan.json):
+δ = 0,05 en 8×4 elementos y δ = 0,1 en 16×8, ambos de grado 4. Se compararán
+derivadas, fuerza volumétrica, calor interior y corriente sumada por sección.
+El comando manual, con barras y ETA, está en
+[GEMINGA_COMMANDS.md](../../GEMINGA_COMMANDS.md). Estimación: 40-65 min.
+
+La [referencia Usadel linealizada](review_20260923/linear_usadel_reference.md)
+actualizada a Korzh cuantifica un sesgo constitutivo de rigidez de 3,03 %
+a 98,4 nm y 30,88 % a 29,5 nm. Es una referencia térmica independiente, no un
+transiente a ocupación fija ni una validación de núcleo físico.
+
+**La etapa 4 sigue abierta.** Faltan resolución del núcleo, su referencia física
+y evolución débil con las dependencias dinámicas correspondientes de etapa 3.
+No hay fotón, hotbelt, latencia ni promoción a producción. El circuito previsto
+sigue siendo el de la memoria.
+
+[Procedencia numérica](review_20260923/solver_scope.md): producción conserva
+Delaunay-Voronoi y Euler adaptativo de primer orden; el banco 4A usa GLL 2D
+experimental y no integra el tiempo. No se ha escogido un reemplazo definitivo.
+
+La [preparación original](start_20260923/README.md) y sus estados de pendiente
+se conservan como historial. La revisión preserva resultados, fuentes y entrega
+anteriores; se verifica con `sandbox/stage4_core/verify_review.py`.

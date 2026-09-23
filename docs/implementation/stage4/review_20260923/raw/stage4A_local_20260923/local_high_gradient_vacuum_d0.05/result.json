@@ -1,0 +1,233 @@
+{
+  "kind": "local_constitutive_2D",
+  "state": {
+    "z": [
+      0.6,
+      0
+    ],
+    "derivatives": [
+      [
+        0,
+        0.6
+      ],
+      [
+        0,
+        0.12
+      ]
+    ],
+    "meaning": "Potential negative-symbol control; sign is a result, not time evolution"
+  },
+  "delta_reg": 0.05,
+  "population": "vacuum",
+  "fixed_count_in_all_variations": true,
+  "energy_density_bar": 0.07548464743624855,
+  "force_cartesian": [
+    -0.7734763223890595,
+    0.0
+  ],
+  "gradient_conjugate": [
+    [
+      0.0,
+      1.0470049802738486
+    ],
+    [
+      0.0,
+      0.2094009960547697
+    ]
+  ],
+  "gamma_bar": 0.581505764751901,
+  "q_delta": [
+    0.993103448275862,
+    0.1986206896551724
+  ],
+  "symbol_matrix": [
+    [
+      1.5707963267948966,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      -0.5708266384520333,
+      0.0,
+      -0.4631669877816894
+    ],
+    [
+      0.0,
+      0.0,
+      1.5707963267948966,
+      0.0
+    ],
+    [
+      0.0,
+      -0.4631669877816894,
+      0.0,
+      1.652374902900076
+    ]
+  ],
+  "symbol_eigenvalues": [
+    -0.6634600360083711,
+    1.5707963267948966,
+    1.5707963267948966,
+    1.7450083004564139
+  ],
+  "symbol_uncertainty": 5.696963748525774e-10,
+  "symbol_stable": false,
+  "verdict": "NEGATIVE_LOCAL_SYMBOL",
+  "fd_identity": {
+    "expected": -0.024343701718419264,
+    "estimates": [
+      -0.024343701559084715,
+      -0.02434370167184174
+    ],
+    "absolute_errors": [
+      1.59334549026946e-10,
+      4.657752308845353e-11
+    ]
+  },
+  "equivalent_temperature_K": 0.0,
+  "mobility": {
+    "memory_effective": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 0.5,
+        "tau_ep_Tc_ps": 2.47,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "velocity": [
+        0.1301063622636573,
+        0.0
+      ],
+      "heat": 0.10063419060311235,
+      "matrix": [
+        [
+          0.16820988373864357,
+          0.0
+        ],
+        [
+          0.0,
+          22.390197108345724
+        ]
+      ],
+      "taupsi_ps": 4.795047586708814,
+      "Tmob_K": 0.9,
+      "power_identity_residual": 0.0
+    },
+    "Allmaras_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 5.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "velocity": [
+        0.013059291305530992,
+        0.0
+      ],
+      "heat": 0.01010105261200953,
+      "matrix": [
+        [
+          0.016883892793504482,
+          0.0
+        ],
+        [
+          0.0,
+          223.06777818022442
+        ]
+      ],
+      "taupsi_ps": 47.95047586708815,
+      "Tmob_K": 0.9,
+      "power_identity_residual": 0.0
+    },
+    "Korzh_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 6.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "velocity": [
+        0.010887627710967249,
+        0.0
+      ],
+      "heat": 0.008421322241420162,
+      "matrix": [
+        [
+          0.014076226247415445,
+          0.0
+        ],
+        [
+          0.0,
+          267.5612331232367
+        ]
+      ],
+      "taupsi_ps": 57.515418060202165,
+      "Tmob_K": 0.9,
+      "power_identity_residual": 0.0
+    }
+  },
+  "mobility_scope": "Local algebraic response to partial density derivative at fixed gradient; not full spatial Euler-Lagrange RHS",
+  "normal_point_fd_scope": "At exactly zero only gradient variations are tested, not unsupported amplitude neighbourhood",
+  "no_trajectory": true,
+  "physical_core_admitted": false,
+  "case": {
+    "id": "local_high_gradient_vacuum_d0.05",
+    "phase": "local",
+    "control": "high_gradient",
+    "population": "vacuum",
+    "delta_reg": 0.05,
+    "resolution": "reference"
+  },
+  "runtime_seconds": 0.009985667653381824,
+  "catalogue_diagnostics": {
+    "count_states": 630,
+    "direct_queries": 0,
+    "direct_seconds": 0.0,
+    "exact_cache": {
+      "hits": 0,
+      "misses": 0,
+      "maxsize": 4096,
+      "currsize": 0
+    }
+  }
+}

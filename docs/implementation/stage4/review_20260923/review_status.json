@@ -1,0 +1,32 @@
+{
+  "schema": "pysnspd.stage4A.review.status.v1",
+  "date": "2026-09-23",
+  "stage4_started": true,
+  "stage4_complete": false,
+  "initial_local_cases_completed": 40,
+  "initial_spatial_cases_completed": 6,
+  "raw_outputs_verified": 52,
+  "initial_spatial_core_mesh_resolved": false,
+  "local_negative_controls": 4,
+  "coarse_spatial_negative_not_a_confirmed_continuum_failure": true,
+  "algebraic_boundary_projection_completed": true,
+  "boundary_projection_cases": 6,
+  "boundary_projection_spectral_queries": 0,
+  "independent_thermal_linear_reference_completed": true,
+  "physical_core_reference_complete": false,
+  "time_trajectories": 0,
+  "photon_transfer_admitted": false,
+  "production_promotion": false,
+  "production_mesh": "Delaunay-Voronoi finite volume, unchanged",
+  "production_condensate_time": "Adaptive first-order Euler with local implicit amplitude, unchanged",
+  "experimental_control_mesh": "2D GLL rectangle, no time integrator selected",
+  "next_manual_plan": "next_campaign_plan.json",
+  "next_cases": 2,
+  "pending": [
+    "Resolve core gradients and interior response using the focused manual plan",
+    "Complete independent physical core reference before admitting core dynamics",
+    "Prepare efficient consistent energy/derivative reuse before extensive time trajectories",
+    "Complete weak spatial transient with appropriate boundary/circuit and stage3 dependencies before capabilities that use them"
+  ],
+  "current_facts_not_gates": "No new universal tolerance certificate. Diagnose signs with resolved gradients and compare physically relevant response sensitivity."
+}

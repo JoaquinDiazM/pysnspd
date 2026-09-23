@@ -1,0 +1,557 @@
+{
+  "schema": "pysnspd.stage4A.independent_review.v1",
+  "date": "2026-09-23",
+  "meaning": "Audit of completed prescribed static fields; no new physical trajectory, no production admission",
+  "stage4_complete": false,
+  "photon": false,
+  "identity": {
+    "local": {
+      "cases_expected": 40,
+      "cases_completed": 40,
+      "task_ids_match": true,
+      "plan_hash_matches": true,
+      "source_hashes_match_current": false,
+      "source_hashes_current_or_archived": {
+        "pysnspd/experimental/energy_catalog.py": "current",
+        "pysnspd/experimental/refined_cells.py": "current",
+        "pysnspd/experimental/cell_closures.py": "current",
+        "pysnspd/experimental/spatial_functional.py": "current",
+        "pysnspd/experimental/spatial_nodal.py": "current",
+        "pysnspd/experimental/spatial_open.py": "current",
+        "pysnspd/experimental/mixed_spatial.py": "current",
+        "pysnspd/experimental/rectangular_spatial.py": "current",
+        "pysnspd/experimental/spatial_dynamics.py": "current",
+        "sandbox/stage4_core/run_campaign.py": "current",
+        "sandbox/stage4_core/controls.py": "archived"
+      },
+      "all_source_hashes_verified": true,
+      "source_files": 11,
+      "output_files_checked": 40,
+      "missing": [],
+      "hash_or_size_mismatch": [],
+      "batch_runtime_seconds": 27.229675305075943,
+      "summary_sha256": "34430dca197d552fa3cc8936e1ca3ed4ff22898764bb87c66636f0d980f45f0f",
+      "identity_sha256": "24dd68ed5451ec965514dcded81ecc62258154d23ebe9f78ed8cf1e4da5d7767",
+      "source_hashes_matched_at_initial_receipt": true
+    },
+    "spatial": {
+      "cases_expected": 6,
+      "cases_completed": 6,
+      "task_ids_match": true,
+      "plan_hash_matches": true,
+      "source_hashes_match_current": false,
+      "source_hashes_current_or_archived": {
+        "pysnspd/experimental/energy_catalog.py": "current",
+        "pysnspd/experimental/refined_cells.py": "current",
+        "pysnspd/experimental/cell_closures.py": "current",
+        "pysnspd/experimental/spatial_functional.py": "current",
+        "pysnspd/experimental/spatial_nodal.py": "current",
+        "pysnspd/experimental/spatial_open.py": "current",
+        "pysnspd/experimental/mixed_spatial.py": "current",
+        "pysnspd/experimental/rectangular_spatial.py": "current",
+        "pysnspd/experimental/spatial_dynamics.py": "current",
+        "sandbox/stage4_core/run_campaign.py": "current",
+        "sandbox/stage4_core/controls.py": "archived"
+      },
+      "all_source_hashes_verified": true,
+      "source_files": 11,
+      "output_files_checked": 12,
+      "missing": [],
+      "hash_or_size_mismatch": [],
+      "batch_runtime_seconds": 1878.240161947906,
+      "summary_sha256": "89b9198b6e3e9dad0b03996cb4e477ed1bd6a59b926d769424936b43ede7ab27",
+      "identity_sha256": "d59d512e6dea75a51d9a9f4c2c0b9b398d210b663e876ac1a71886640762542f",
+      "source_hashes_matched_at_initial_receipt": true
+    }
+  },
+  "local": {
+    "verdict_counts": {
+      "POSITIVE_LOCAL_SYMBOL": 36,
+      "NEGATIVE_LOCAL_SYMBOL": 4
+    },
+    "negative_controls": [
+      {
+        "id": "local_high_gradient_vacuum_d0.05",
+        "lambda_min": -0.6634600360083711,
+        "uncertainty": 5.696963748525774e-10,
+        "population": "vacuum",
+        "delta_reg": 0.05
+      },
+      {
+        "id": "local_high_gradient_vacuum_d0.1",
+        "lambda_min": -0.4346414416340092,
+        "uncertainty": 5.396104360075387e-10,
+        "population": "vacuum",
+        "delta_reg": 0.1
+      },
+      {
+        "id": "local_high_gradient_synthetic_fixed_count_d0.05",
+        "lambda_min": -0.5876902765397519,
+        "uncertainty": 1.2100796340531585e-08,
+        "population": "synthetic_fixed_count",
+        "delta_reg": 0.05
+      },
+      {
+        "id": "local_high_gradient_synthetic_fixed_count_d0.1",
+        "lambda_min": -0.3693948324973696,
+        "uncertainty": 1.038691694979621e-08,
+        "population": "synthetic_fixed_count",
+        "delta_reg": 0.1
+      }
+    ],
+    "fd_max_absolute_error_final_step": 5.6523435737476646e-08,
+    "kwt_max_absolute_power_identity_residual": 4.336808689942018e-19,
+    "spectral_anchors": [
+      {
+        "control": "current",
+        "resolution": "count_refined",
+        "energy_absolute_change": 5.83408751864134e-10,
+        "force_relative_change": 9.691611878020805e-10,
+        "lambda_min_absolute_change": 3.726731145903273e-09,
+        "equivalent_temperature_K_absolute_change": 1.3229813244919342e-08
+      },
+      {
+        "control": "current",
+        "resolution": "eta_halved",
+        "energy_absolute_change": 2.538736998403124e-10,
+        "force_relative_change": 1.1598153817469328e-09,
+        "lambda_min_absolute_change": 1.5072498804613588e-10,
+        "equivalent_temperature_K_absolute_change": 4.9461914564119525e-09
+      },
+      {
+        "control": "small",
+        "resolution": "count_refined",
+        "energy_absolute_change": 1.7408408048424917e-10,
+        "force_relative_change": 3.1297527523403553e-08,
+        "lambda_min_absolute_change": 3.507628092425108e-07,
+        "equivalent_temperature_K_absolute_change": 3.2769628344198054e-08
+      },
+      {
+        "control": "small",
+        "resolution": "eta_halved",
+        "energy_absolute_change": 1.1509654340713382e-11,
+        "force_relative_change": 1.6296490719442335e-09,
+        "lambda_min_absolute_change": 1.2054640841085984e-08,
+        "equivalent_temperature_K_absolute_change": 1.405847882551825e-09
+      }
+    ]
+  },
+  "spatial": {
+    "2d_smooth_d0.1_4x2": {
+      "nodes": 153,
+      "runtime_seconds": 285.3054307056591,
+      "energy_bar": -12.03764725731882,
+      "gamma_relative_mass_weighted_L2_error_vs_analytic_profile": 0.00030326598778757585,
+      "gamma_max_absolute_error_vs_analytic_profile": 2.793294393144477e-06,
+      "center_gamma_discrete": 0.0027187562204479244,
+      "center_gamma_analytic": 0.002719803167404987,
+      "negative_symbols": 0,
+      "negative_coordinates_nm": [],
+      "negative_lambda_values": [],
+      "negative_local_uncertainties": [],
+      "regions": {
+        "all": {
+          "nodes": 153,
+          "mass_bar": 34.053487289288775,
+          "force_density_L2": 0.41033613765883936,
+          "force_density_RMS": 0.0703167791605909,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.42125700163473684,
+            "Allmaras_reference": 3.5679737184432567,
+            "Korzh_reference": 4.233660946790437
+          }
+        },
+        "boundary": {
+          "nodes": 48,
+          "mass_bar": 2.5114446875850476,
+          "force_density_L2": 0.25250030853485395,
+          "force_density_RMS": 0.15933093485213093,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.37111953905848677,
+            "Allmaras_reference": 3.560794437353322,
+            "Korzh_reference": 4.22693707086114
+          }
+        },
+        "interior": {
+          "nodes": 105,
+          "mass_bar": 31.542042601703727,
+          "force_density_L2": 0.3234491305577703,
+          "force_density_RMS": 0.05759185685200082,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.05013746257625,
+            "Allmaras_reference": 0.007179281089934753,
+            "Korzh_reference": 0.006723875929296711
+          }
+        }
+      }
+    },
+    "2d_suppressed_d0.05_4x2": {
+      "nodes": 153,
+      "runtime_seconds": 136.19759808527306,
+      "energy_bar": -11.589619392574319,
+      "gamma_relative_mass_weighted_L2_error_vs_analytic_profile": 0.6332823146232889,
+      "gamma_max_absolute_error_vs_analytic_profile": 0.0462544663688084,
+      "center_gamma_discrete": 0.046679682950767305,
+      "center_gamma_analytic": 0.00042521658195890095,
+      "negative_symbols": 1,
+      "negative_coordinates_nm": [
+        [
+          80.0,
+          0.0
+        ]
+      ],
+      "negative_lambda_values": [
+        -0.78485642905098
+      ],
+      "negative_local_uncertainties": [
+        2.849641704602727e-05
+      ],
+      "regions": {
+        "all": {
+          "nodes": 153,
+          "mass_bar": 34.053487289288775,
+          "force_density_L2": 1.187158927930809,
+          "force_density_RMS": 0.20343612103021486,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.4603888626772323,
+            "Allmaras_reference": 4.297687687377602,
+            "Korzh_reference": 5.056423122882307
+          }
+        },
+        "boundary": {
+          "nodes": 48,
+          "mass_bar": 2.5114446875850476,
+          "force_density_L2": 0.2534340582128245,
+          "force_density_RMS": 0.15992014288111198,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.37291487189771105,
+            "Allmaras_reference": 3.577247531793817,
+            "Korzh_reference": 4.24643780734338
+          }
+        },
+        "interior": {
+          "nodes": 105,
+          "mass_bar": 31.542042601703727,
+          "force_density_L2": 1.1597920064837517,
+          "force_density_RMS": 0.20650720284925003,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.087473990779521,
+            "Allmaras_reference": 0.720440155583785,
+            "Korzh_reference": 0.8099853155389279
+          }
+        }
+      }
+    },
+    "2d_suppressed_d0.1_4x2": {
+      "nodes": 153,
+      "runtime_seconds": 283.3954793657176,
+      "energy_bar": -11.59011222393079,
+      "gamma_relative_mass_weighted_L2_error_vs_analytic_profile": 0.2225143857365103,
+      "gamma_max_absolute_error_vs_analytic_profile": 0.005778370835758528,
+      "center_gamma_discrete": 0.0058314913079845175,
+      "center_gamma_analytic": 5.312047222598922e-05,
+      "negative_symbols": 0,
+      "negative_coordinates_nm": [],
+      "negative_lambda_values": [],
+      "negative_local_uncertainties": [],
+      "regions": {
+        "all": {
+          "nodes": 153,
+          "mass_bar": 34.053487289288775,
+          "force_density_L2": 1.1871541866209183,
+          "force_density_RMS": 0.2034353085411116,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.4561743941077723,
+            "Allmaras_reference": 4.174599380997558,
+            "Korzh_reference": 4.908242907330813
+          }
+        },
+        "boundary": {
+          "nodes": 48,
+          "mass_bar": 2.5114446875850476,
+          "force_density_L2": 0.25298520080006925,
+          "force_density_RMS": 0.15963690809377812,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.3715730743442686,
+            "Allmaras_reference": 3.5643593502053,
+            "Korzh_reference": 4.231136144011341
+          }
+        },
+        "interior": {
+          "nodes": 105,
+          "mass_bar": 31.542042601703727,
+          "force_density_L2": 1.1598851456018062,
+          "force_density_RMS": 0.2065237867700201,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.0846013197635034,
+            "Allmaras_reference": 0.6102400307922574,
+            "Korzh_reference": 0.6771067633194717
+          }
+        }
+      }
+    },
+    "2d_suppressed_d0.2_4x2": {
+      "nodes": 153,
+      "runtime_seconds": 137.60418410180137,
+      "energy_bar": -11.591555092343318,
+      "gamma_relative_mass_weighted_L2_error_vs_analytic_profile": 0.17184130973586093,
+      "gamma_max_absolute_error_vs_analytic_profile": 0.002330978914445783,
+      "center_gamma_discrete": 0.00045342864182830765,
+      "center_gamma_analytic": 4.130391747601415e-06,
+      "negative_symbols": 0,
+      "negative_coordinates_nm": [],
+      "negative_lambda_values": [],
+      "negative_local_uncertainties": [],
+      "regions": {
+        "all": {
+          "nodes": 153,
+          "mass_bar": 34.053487289288775,
+          "force_density_L2": 1.1839649194321666,
+          "force_density_RMS": 0.20288878344616124,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.4380649159923844,
+            "Allmaras_reference": 3.997809268828474,
+            "Korzh_reference": 4.696967486136266
+          }
+        },
+        "boundary": {
+          "nodes": 48,
+          "mass_bar": 2.5114446875850476,
+          "force_density_L2": 0.251299675327398,
+          "force_density_RMS": 0.1585733198913078,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.36655433547472527,
+            "Allmaras_reference": 3.516152409440459,
+            "Korzh_reference": 4.173901905648913
+          }
+        },
+        "interior": {
+          "nodes": 105,
+          "mass_bar": 31.542042601703727,
+          "force_density_L2": 1.1569880741072316,
+          "force_density_RMS": 0.20600794761312446,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.0715105805176597,
+            "Allmaras_reference": 0.4816568593880149,
+            "Korzh_reference": 0.5230655804873535
+          }
+        }
+      }
+    },
+    "2d_smooth_d0.1_8x4": {
+      "nodes": 561,
+      "runtime_seconds": 517.7688461309299,
+      "energy_bar": -12.037640403580658,
+      "gamma_relative_mass_weighted_L2_error_vs_analytic_profile": 7.462592104441937e-05,
+      "gamma_max_absolute_error_vs_analytic_profile": 9.853742038655987e-07,
+      "center_gamma_discrete": 0.0027207885416088524,
+      "center_gamma_analytic": 0.002719803167404987,
+      "negative_symbols": 0,
+      "negative_coordinates_nm": [],
+      "negative_lambda_values": [],
+      "negative_local_uncertainties": [],
+      "regions": {
+        "all": {
+          "nodes": 561,
+          "mass_bar": 34.05348728928877,
+          "force_density_L2": 0.4820376149159262,
+          "force_density_RMS": 0.08260382014737956,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.7926143136821187,
+            "Allmaras_reference": 7.130142966181262,
+            "Korzh_reference": 8.462226816934338
+          }
+        },
+        "boundary": {
+          "nodes": 96,
+          "mass_bar": 1.2663640585704266,
+          "force_density_L2": 0.3572605718458076,
+          "force_density_RMS": 0.3174722727079671,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.7424193945694015,
+            "Allmaras_reference": 7.122877324575743,
+            "Korzh_reference": 8.455402174957866
+          }
+        },
+        "interior": {
+          "nodes": 465,
+          "mass_bar": 32.78712323071835,
+          "force_density_L2": 0.32361264808137724,
+          "force_density_RMS": 0.05651631418005644,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.05019491911271723,
+            "Allmaras_reference": 0.007265641605520508,
+            "Korzh_reference": 0.0068246419764718125
+          }
+        }
+      }
+    },
+    "2d_suppressed_d0.1_8x4": {
+      "nodes": 561,
+      "runtime_seconds": 517.966562661808,
+      "energy_bar": -11.613580355180078,
+      "gamma_relative_mass_weighted_L2_error_vs_analytic_profile": 0.04255462298131756,
+      "gamma_max_absolute_error_vs_analytic_profile": 0.0008761042073807287,
+      "center_gamma_discrete": 0.00014050625880699942,
+      "center_gamma_analytic": 5.312047222598922e-05,
+      "negative_symbols": 0,
+      "negative_coordinates_nm": [],
+      "negative_lambda_values": [],
+      "negative_local_uncertainties": [],
+      "regions": {
+        "all": {
+          "nodes": 561,
+          "mass_bar": 34.05348728928877,
+          "force_density_L2": 1.1254604757378095,
+          "force_density_RMS": 0.1928632369012219,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.820334576990669,
+            "Allmaras_reference": 7.5685430753747625,
+            "Korzh_reference": 8.938888568068412
+          }
+        },
+        "boundary": {
+          "nodes": 96,
+          "mass_bar": 1.2663640585704266,
+          "force_density_L2": 0.3571460302985407,
+          "force_density_RMS": 0.31737048771349524,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 0.7425533261124048,
+            "Allmaras_reference": 7.124706282891266,
+            "Korzh_reference": 8.457515651724703
+          }
+        },
+        "interior": {
+          "nodes": 465,
+          "mass_bar": 32.78712323071835,
+          "force_density_L2": 1.0672900240749794,
+          "force_density_RMS": 0.18639351298374884,
+          "instantaneous_unconstrained_heat": {
+            "memory_effective": 1.077781250878264,
+            "Allmaras_reference": 0.4438367924834966,
+            "Korzh_reference": 0.48137291634370744
+          }
+        }
+      }
+    }
+  },
+  "new_light_diagnostic": {
+    "purpose": "Isolate underresolved spatial derivative from constitutive principal symbol at prescribed suppressed center",
+    "analytic_field": "z=(0.95-0.91 exp[-(x/2.5)^2-(y/2.5)^2]) exp[i(0.07x+0.025 sin(y/5) exp[-(x/10)^2])], centered dimensionless x,y",
+    "analytic_center": {
+      "z": [
+        0.04,
+        0.0
+      ],
+      "derivatives": [
+        [
+          0.0,
+          0.0028
+        ],
+        [
+          0.0,
+          0.0002
+        ]
+      ]
+    },
+    "population": "synthetic_fixed_count",
+    "spectral_resolution": "reference",
+    "method": "Existing controls.catalogue, population, RectangularSpatialFunctional.principal_symbol with analytic center derivatives, no time advance",
+    "results": [
+      {
+        "delta_reg": 0.05,
+        "gamma": 0.00042521658195890285,
+        "lambda_min": 1.5707963267948966,
+        "eigenvalues": [
+          1.5707963267948966,
+          1.5707963267948966,
+          7.503669259832629,
+          7.552454082118088
+        ],
+        "uncertainty": 0.0017904285166940878,
+        "positive": true
+      },
+      {
+        "delta_reg": 0.1,
+        "gamma": 5.312047222598955e-05,
+        "lambda_min": 1.5707963267948966,
+        "eigenvalues": [
+          1.5707963267948966,
+          1.5707963267948966,
+          2.3199849318730856,
+          2.3204666867640924
+        ],
+        "uncertainty": 0.00046163532655504885,
+        "positive": true
+      },
+      {
+        "delta_reg": 0.2,
+        "gamma": 4.130391747601444e-06,
+        "lambda_min": 1.5707963267948963,
+        "eigenvalues": [
+          1.5707963267948963,
+          1.5707963267948966,
+          1.629089530553152,
+          1.6290904636560932
+        ],
+        "uncertainty": 1.3717530227481946e-05,
+        "positive": true
+      }
+    ],
+    "kernel_runtime_seconds": [
+      6.5,
+      4.9689999999827705,
+      4.313000000023749
+    ],
+    "conclusion": "The coarse delta=.05 negative center is not evidence for a negative continuum symbol of that prescribed field; its gamma is about 109.78 times the analytic value. Do not increase delta to mask spatial underresolution.",
+    "script_sha256": "a0b85a41d6331f591d2ca7d7f8dff82340aa39d02090c32dfe07619362899921"
+  },
+  "recommendations": [
+    "Accept identity/source reproduction and constitutive directional derivative/KWT algebra diagnostics; do not claim full stage4 completion.",
+    "Resolve prescribed narrow-core gradients with analytic derivative comparison and spatial refinement, including delta=.05 and .1; four independent local high-gradient negative controls remain valid exclusions.",
+    "Declare actual boundary constraints before interpreting total KWT heating or evolving. Current unconstrained boundary reactions dominate heat; removing boundary samples in plots alone does not implement those constraints.",
+    "Use volume-weighted interior force and interior dissipation plus the analytic-profile Gamma error to separate interior convergence from boundary reactions; do not use Euclidean integrated force or max edge current as mesh-invariant observables.",
+    "After boundary implementation and resolved spatial field, use a bounded smooth weak non-photon transient/reference for time/energy accounting before a core transient. Physical photon or jitter remains excluded."
+  ],
+  "mesh_comparisons": {
+    "smooth": {
+      "energy_relative_change": 5.693586143028736e-07,
+      "interior_force_L2_relative_change": 0.000505543246707596,
+      "Korzh_interior_heat_relative_change": 0.014986303768047327,
+      "Korzh_boundary_heat_ratio": 2.0003614989317255,
+      "Korzh_boundary_heat_fraction_fine": 0.9991935170110526
+    },
+    "suppressed": {
+      "energy_relative_change": -0.0020248407259450094,
+      "interior_force_L2_relative_change": -0.07983128491466618,
+      "Korzh_interior_heat_relative_change": -0.28907383233951445,
+      "Korzh_boundary_heat_ratio": 1.9988758016437946,
+      "Korzh_boundary_heat_fraction_fine": 0.9461484598808767
+    }
+  },
+  "norm_convention": {
+    "force_density": "F_i=G_i/m_i, where G_i is the integrated Cartesian nodal gradient and m_i is quadrature mass",
+    "L2": "sqrt(sum_i m_i |F_i|^2)",
+    "RMS": "L2 / sqrt(sum_i m_i)",
+    "boundary_mask": "All four outer GLL node rows; internal element boundaries remain interior",
+    "caution": "Post-processing only, not an implemented boundary condition or projected transient; heat is stored algebraic response before constraints",
+    "edge_current_caution": "maximum_current_A is an integrated graph-edge current, not a mesh-invariant current density or whole-section current"
+  },
+  "spatial_identity_residuals": {
+    "max_noether_absolute": 3.0184188481996443e-16,
+    "max_kwt_power_absolute": 8.881784197001252e-16,
+    "field_fd_max_absolute": 2.369557217107854e-09,
+    "gauge_fd_max_absolute": 6.462559740821883e-11,
+    "field_fd_max_relative": 3.748896471010225e-09,
+    "gauge_fd_max_relative": 4.096542439786955e-08
+  },
+  "cost_estimate": {
+    "measured_no_FD_561_nodes_seconds": [
+      517.7688461309299,
+      517.966562661808
+    ],
+    "no_FD_2145_nodes_16x8_degree4_rough_seconds": 1980.0911764705882,
+    "estimate_qualification": "Linear direct-spectrum query estimate only; actual cost can change with cache and spectral support. User-run command, not launched by audit."
+  },
+  "related_followup": "boundary_response_review.json postprocesses the same six fields with explicit static boundary constraints and no new spectral queries; it does not resolve the interior core mesh or create trajectories."
+}

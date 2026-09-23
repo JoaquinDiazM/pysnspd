@@ -1,0 +1,44 @@
+{
+  "plan_sha256": "e8a0010e23bfc50efe56cab0eccdbd6545f2b40ff14a35a2809e62d6be9e200f",
+  "sources": {
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "pysnspd/experimental/cell_closures.py": "6617523ff7c9032bfebe2f8bd11594c8eb1a0a85f1795d005fc61b6c6b324176",
+    "pysnspd/experimental/spatial_functional.py": "200ceb881908283fdac5f34eb1675c78d10e004dee1c8a26787af32aa1d28157",
+    "pysnspd/experimental/spatial_nodal.py": "068a912ccefa9368a97b217961805ae0630fbfda33adb12acd904e28796b7cf8",
+    "pysnspd/experimental/spatial_open.py": "ce2698f4b59280bdfefa052a002d0e8102a28b86b3d2b9ee61afe32ff58603b2",
+    "pysnspd/experimental/mixed_spatial.py": "564ea9e620b19de3005b903a7ee26bab71b4401493a9b7d390cc0f7437c2fe69",
+    "pysnspd/experimental/rectangular_spatial.py": "c1be38b481d815f36e224bc19066bfdf1e12d48412186de3e6523a53da5f961f",
+    "pysnspd/experimental/spatial_dynamics.py": "1de2f9a87dfab4b0afc7d94db9494ea7fd1d5976eda03862a6f8f79d48d374ba",
+    "sandbox/stage4_core/run_campaign.py": "6c37ed8b2117dbbb41d83751bf3a9014de43c31b7b56f0f45539c360445fbdbc",
+    "sandbox/stage4_core/controls.py": "41e1becda526860bdab8a26a095da7e3ff7da746d94d16e0910374ccdd87a13e"
+  },
+  "phase": "spatial",
+  "task_ids": [
+    "2d_smooth_d0.1_4x2",
+    "2d_suppressed_d0.05_4x2",
+    "2d_suppressed_d0.1_4x2",
+    "2d_suppressed_d0.2_4x2",
+    "2d_smooth_d0.1_8x4",
+    "2d_suppressed_d0.1_8x4"
+  ],
+  "material": {
+    "Tc_K": 8.65,
+    "Tb_K": 0.9,
+    "D_m2_s": 5e-05,
+    "R_sheet_ohm": 608,
+    "thickness_m": 7e-09,
+    "width_m": 8e-08,
+    "conductivity_S_m": 234962.40601503762,
+    "N0_per_J_m3": 9.153297821093998e+46,
+    "ell0_m": 4.698490895830414e-09,
+    "N0_convention": "single-spin; sigma=2e^2 N0 D"
+  },
+  "python": "3.10.20",
+  "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.39",
+  "threads": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  }
+}

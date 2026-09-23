@@ -1,0 +1,233 @@
+{
+  "kind": "local_constitutive_2D",
+  "state": {
+    "z": [
+      0.001,
+      0
+    ],
+    "derivatives": [
+      [
+        0.02,
+        0.08
+      ],
+      [
+        0.015,
+        0.025
+      ]
+    ],
+    "meaning": "Direct near-zero support probe"
+  },
+  "delta_reg": 0.05,
+  "population": "synthetic_fixed_count",
+  "fixed_count_in_all_variations": true,
+  "energy_density_bar": 0.08217896082163353,
+  "force_cartesian": [
+    -0.010535200505411423,
+    -0.00037717314236984135
+  ],
+  "gradient_conjugate": [
+    [
+      0.031415926535897934,
+      0.1256789840430295
+    ],
+    [
+      0.023561944901923447,
+      0.039274682513446714
+    ]
+  ],
+  "gamma_bar": 0.0006367231651210333,
+  "q_delta": [
+    0.03198720511795281,
+    0.009996001599360253
+  ],
+  "symbol_matrix": [
+    [
+      1.5707963267948966,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.5708583400253984,
+      0.0,
+      -4.0300160146944903e-05
+    ],
+    [
+      0.0,
+      0.0,
+      1.5707963267948966,
+      0.0
+    ],
+    [
+      0.0,
+      -4.0300160146944903e-05,
+      0.0,
+      1.5709747067378228
+    ]
+  ],
+  "symbol_eigenvalues": [
+    1.5707963267948963,
+    1.5707963267948966,
+    1.5708457462253524,
+    1.5709873005378685
+  ],
+  "symbol_uncertainty": 5.67084259430302e-09,
+  "symbol_stable": true,
+  "verdict": "POSITIVE_LOCAL_SYMBOL",
+  "fd_identity": {
+    "expected": 0.052288592031798434,
+    "estimates": [
+      0.052288800109212545,
+      0.05228864405279476
+    ],
+    "absolute_errors": [
+      2.0807741411138503e-07,
+      5.202099632312107e-08
+    ]
+  },
+  "equivalent_temperature_K": 2.321643911598053,
+  "mobility": {
+    "memory_effective": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 0.5,
+        "tau_ep_Tc_ps": 2.47,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "velocity": [
+        0.01907443440068085,
+        0.0006829249689823024
+      ],
+      "heat": 0.0002012105718950438,
+      "matrix": [
+        [
+          1.810543082771252,
+          0.0
+        ],
+        [
+          0.0,
+          1.8106405050247525
+        ]
+      ],
+      "taupsi_ps": 1.8361287644987616,
+      "Tmob_K": 2.321643911598053,
+      "power_identity_residual": 2.710505431213761e-20
+    },
+    "Allmaras_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 5.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "velocity": [
+        0.01902383422784247,
+        0.0006847414335841424
+      ],
+      "heat": 0.0002006781740502449,
+      "matrix": [
+        [
+          1.8057401202825563,
+          0.0
+        ],
+        [
+          0.0,
+          1.8154565017058175
+        ]
+      ],
+      "taupsi_ps": 18.361287644987616,
+      "Tmob_K": 2.321643911598053,
+      "power_identity_residual": 0.0
+    },
+    "Korzh_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 6.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "velocity": [
+        0.01900189233733264,
+        0.0006855321191272728
+      ],
+      "heat": 0.00020044731005960695,
+      "matrix": [
+        [
+          1.8036573986012214,
+          0.0
+        ],
+        [
+          0.0,
+          1.8175528480632552
+        ]
+      ],
+      "taupsi_ps": 21.970389490625063,
+      "Tmob_K": 2.321643911598053,
+      "power_identity_residual": 0.0
+    }
+  },
+  "mobility_scope": "Local algebraic response to partial density derivative at fixed gradient; not full spatial Euler-Lagrange RHS",
+  "normal_point_fd_scope": "At exactly zero only gradient variations are tested, not unsupported amplitude neighbourhood",
+  "no_trajectory": true,
+  "physical_core_admitted": false,
+  "case": {
+    "id": "local_near_normal_synthetic_fixed_count_d0.05",
+    "phase": "local",
+    "control": "near_normal",
+    "population": "synthetic_fixed_count",
+    "delta_reg": 0.05,
+    "resolution": "reference"
+  },
+  "runtime_seconds": 0.921515597961843,
+  "catalogue_diagnostics": {
+    "count_states": 630,
+    "direct_queries": 11,
+    "direct_seconds": 0.9107463010586798,
+    "exact_cache": {
+      "hits": 3,
+      "misses": 11,
+      "maxsize": 4096,
+      "currsize": 11
+    }
+  }
+}

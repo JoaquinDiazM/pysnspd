@@ -1,0 +1,12 @@
+{
+  "manual_command": "cd /home/jdiaz/pysnspd\nenv OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \\\n  /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/run_campaign.py \\\n  --plan docs/implementation/stage4/review_20260923/next_campaign_plan.json \\\n  --phase spatial --output-root tmp/stage4A_core_followup_20260923 --execute",
+  "expected_minutes": [
+    40,
+    65
+  ],
+  "processes": 1,
+  "threads": 1,
+  "reserve_memory_GiB": 2,
+  "output_root": "tmp/stage4A_core_followup_20260923",
+  "executed_by_agent": false
+}

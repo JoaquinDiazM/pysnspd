@@ -1,0 +1,31 @@
+{
+  "host": "geminga",
+  "python": "/home/jdiaz/.conda/envs/snspd/bin/python",
+  "timeout_seconds": 240,
+  "exit_code": 0,
+  "pytest_passed": 68,
+  "subtests_passed": 56,
+  "pytest_reported_seconds": 0.25,
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_stage4_mobility.py",
+    "tests/test_stage4_core_parameter.py",
+    "tests/test_stage4_rectangular.py",
+    "tests/test_stage4_campaign.py",
+    "tests/test_stage4_review_controls.py",
+    "tests/test_experimental_spatial_dynamics.py"
+  ],
+  "source_sha256": {
+    "tests/test_stage4_mobility.py": "0a8ee92170831b913442b8a96680e02ad035c00d72f606d0f9bb7792dae0760e",
+    "tests/test_stage4_core_parameter.py": "35495edfc0125d4afb7d13d3e7855c6aec4fb18c1c22d5f51e0a53d60b9e4168",
+    "tests/test_stage4_rectangular.py": "275484cc56e083f473bcf79792c38d6deaad17cf2e41e6101ee2d185ff4d1bde",
+    "tests/test_stage4_campaign.py": "fc036e4b049ad86d1dd761dfda4df1e53deabfb1cb59c8142ed05a37d6b64db6",
+    "tests/test_stage4_review_controls.py": "9e325d2d641e78f97d8716d2f131c9aa3a51de1f21ade87eee209a877974eab2",
+    "tests/test_experimental_spatial_dynamics.py": "02d82b76bed1a227ae6c6f58cb57065a29a8dcc010a28e87c91a7a8d80e3d14d",
+    "sandbox/stage4_core/controls.py": "b250caef9c83e7ce2e4406dc2153686053b2b64518e19579cdc21d7cc72e05ad"
+  },
+  "output": "....................................................................                     [100%]\n68 passed, 56 subtests passed in 0.25s\n"
+}
