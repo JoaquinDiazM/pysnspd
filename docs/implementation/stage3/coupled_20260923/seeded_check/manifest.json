@@ -1,0 +1,100 @@
+{
+  "registration": {
+    "schema": "pysnspd.seeded-causal-catalog.checks.v3",
+    "status": "FROZEN_BEFORE_PHYSICAL_RESULTS",
+    "purpose": "Accelerate the same causal inverse using a predictor. No approximate spectral energy returned.",
+    "catalogue": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "refinement": 1,
+    "amplitude_bounds": [
+      0.985,
+      1.005
+    ],
+    "gamma_bounds": [
+      0.003,
+      0.009
+    ],
+    "degrees": [
+      6
+    ],
+    "selected_degree": 6,
+    "selection_policy": "The degree6 rejected raw energy fit is used only as an internal Newton predictor; original causal equations, brackets, tolerance, count weights and implicit derivatives retained.",
+    "fractional_probes": [
+      [
+        0.13,
+        0.17
+      ],
+      [
+        0.27,
+        0.83
+      ],
+      [
+        0.46,
+        0.39
+      ],
+      [
+        0.61,
+        0.71
+      ],
+      [
+        0.89,
+        0.24
+      ],
+      [
+        0.73,
+        0.94
+      ],
+      [
+        0.04,
+        0.58
+      ],
+      [
+        0.98,
+        0.08
+      ],
+      [
+        0.36,
+        0.52
+      ]
+    ],
+    "occupation": "FD at direct instantaneous spectrum, theta0.12, plus0.001*exp(-((x-0.035)/0.01)^2); freeze the same p during patch/direct comparisons.",
+    "theta": 0.12,
+    "limits": {
+      "pointwise_relative_energy": 0.001,
+      "weighted_relative_kernel_L1": 0.001,
+      "moment_error_over_absolute_weighted_reference": 0.001,
+      "relative_principal_matrix": 0.001
+    },
+    "interpretation": "0.1% sampled interpolation budget reserves room inside1% spatial observable budget. No global supremum claim. Positive ordered energies, exact native count weights, support and principal sign remain mandatory. Off-grid source calls are independent causal solves; no trajectory is inferred.",
+    "benchmark_repetitions": 3,
+    "execution": {
+      "timeout_seconds": 240,
+      "threads": 1,
+      "overwrite": false
+    },
+    "excluded": [
+      "outside-field-box queries",
+      "reservoir continuation to zero current",
+      "material rate certification",
+      "full coupled trajectory",
+      "production"
+    ],
+    "predictor": "docs/implementation/stage3/coupled_20260923/raw/patch_check/patch_degree6.npz",
+    "predictor_sha256": "1504c06a39d34f84361047a558cc128a7bfb5012bae9fa76554f12ff9fc18403",
+    "predictor_manifest": "docs/implementation/stage3/coupled_20260923/raw/patch_check/manifest.json",
+    "predecessors": {
+      "raw_energy": "REJECTED_NONMONOTONE",
+      "log_increments": "REJECTED_FORCE_ACCURACY"
+    }
+  },
+  "sources": {
+    "pysnspd/experimental/local_energy_patch.py": "3017898b7bdc64f44ac9e7534b9fdd4caa20e9c596c064efdf04123a59a5f2bc",
+    "pysnspd/experimental/seeded_count_catalog.py": "58992d87883a59d2502fee214d232471e078e5b3dfe2e49566598963946458c1",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/spatial_functional.py": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+    "sandbox/stage3_spatial/coupled_20260923/check_seeded_catalog.py": "3540aa9237490742e263dc34a95e13e58e48a998debe49601f56d09cb3e624b8",
+    "docs/implementation/stage3/coupled_20260923/seeded_registration.json": "da24ab821f7ad9778ee05c6126db4e417c7708a6cca1eeedf1ea2425971d2278",
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage3/coupled_20260923/raw/patch_check/patch_degree6.npz": "1504c06a39d34f84361047a558cc128a7bfb5012bae9fa76554f12ff9fc18403"
+  }
+}

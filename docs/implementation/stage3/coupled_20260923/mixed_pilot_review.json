@@ -1,0 +1,287 @@
+{
+  "schema": "pysnspd.stage3.mixed_pilot_independent_review.v1",
+  "date": "2026-09-23",
+  "status": "SAVED_PILOT_VERIFIED_SCOPE_LIMITED",
+  "method": "Postprocessing of saved numbers only. No new spectrum, dynamics or physical trajectory evaluated.",
+  "raw_directory": "docs/implementation/stage3/coupled_20260923/raw/mixed_pilot",
+  "input_inventory_sha256": {
+    "m0_helix/arrays.npz": "2453caf88102b10a54f0f12c39535aea1f042b2af5bfd33fffe424cca0519ab8",
+    "m0_helix/derivative_checks.json": "c03aa07168ba6ded61d74fe42c62b1071cf8d84ad20bbb13a65448c3509aa9e6",
+    "m0_helix/direct_reference_probes.json": "1324042acf310ac9f4b9d4b420e9557e02358b864e69cf43a8fb32bc99f85e43",
+    "m0_helix/initial.npz": "04a3b378de9adea84106ede901519623504c621107071eab6057fe909579b87c",
+    "m0_helix/preparation.npz": "ac2021c7feea0987de96407b0eb816a7924fcb6d5a286a524172b7864237bd32",
+    "m0_helix/result.json": "4e87dd15b890d67e79a3886f08b0ea1a9f24a19665e6e17fc1aa48dc7434762c",
+    "m0_smooth_perturbation/arrays.npz": "333e0c87a5179427f12ea503b2cfca38f382d07558bb33e3e630716f2804ad7e",
+    "m0_smooth_perturbation/derivative_checks.json": "c30261f5a083e5666cd86657a00593828d91aa8868fb0c27dca3eb51f953f359",
+    "m0_smooth_perturbation/direct_reference_probes.json": "0063ffbcdb4da107de1665ac086013443f2ab74f584e1e02bf522d2a0568536a",
+    "m0_smooth_perturbation/initial.npz": "af7533839d9606596e095ea5cb775c1204224289255bea66d0cc48bfae399634",
+    "m0_smooth_perturbation/preparation.npz": "2e026146110e1b6d8fe9bc1c3f33041d1ef662dfe281fd8d1b97dda7396c034f",
+    "m0_smooth_perturbation/result.json": "d117886e80751be546d9359913d35470b9f7acdd356b2d6a0d00ff2b5d8f54d8",
+    "manifest.json": "e5794e29cbd2787b00fbb6918a92ab59271c45800a06de7c7e3916f1c017c5d3",
+    "progress.jsonl": "b0cdd8e164d100c9b8a2774b84d01440d20877867d4f432c103a20ea564bfb0c",
+    "summary.json": "b0c875c03a30b56af8fc7795f692c16a5873224a8535de7bed74ce706a3b3804"
+  },
+  "source_hash_checks": {
+    "pysnspd/experimental/energy_catalog.py": true,
+    "pysnspd/experimental/refined_cells.py": true,
+    "pysnspd/experimental/spatial_functional.py": true,
+    "pysnspd/experimental/spatial_open.py": true,
+    "pysnspd/experimental/mixed_spatial.py": true,
+    "pysnspd/experimental/cell_closures.py": true,
+    "pysnspd/experimental/cell_validation.py": true,
+    "pysnspd/experimental/electrical_ports.py": true,
+    "pysnspd/experimental/spatial_dynamics.py": true,
+    "pysnspd/experimental/local_energy_patch.py": true,
+    "pysnspd/experimental/seeded_count_catalog.py": true,
+    "sandbox/stage3_spatial/coupled_20260923/run_mixed_check.py": true,
+    "sandbox/stage3_spatial/progress.py": true,
+    "docs/implementation/stage3/coupled_20260923/mixed_registration.json": true,
+    "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md": true,
+    "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md": true,
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": true,
+    "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L720_E16/reservoir.json": true
+  },
+  "seed_artifact_hash_checks": {
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/manifest.json": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/summary.json": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/probes.json": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/patch_degree6.npz": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/raw/patch_check/manifest.json": true
+  },
+  "registration_matches": true,
+  "runtime_seconds": 78.34474501432851,
+  "issues": [],
+  "cases": [
+    {
+      "case": "m0_helix",
+      "status": "PASS_MIXED_INSTANTANEOUS_IDENTITIES",
+      "artifacts": {
+        "preparation.npz": true,
+        "initial.npz": true,
+        "arrays.npz": true,
+        "derivative_checks.json": true,
+        "direct_reference_probes.json": true
+      },
+      "finite_arrays": true,
+      "initial_field_and_populations_unchanged": true,
+      "shape": {
+        "dofs": 45,
+        "quadratures": 55,
+        "count_nodes": 630,
+        "edges": 76
+      },
+      "population_bounds": [
+        3.433822075679884e-44,
+        0.4591642000852629
+      ],
+      "registered_metrics": {
+        "noether_absolute": 1.0332025791881094e-16,
+        "electrical_current_relative": 1.9621976942277004e-16,
+        "instantaneous_power_relative": 4.049193274304728e-18,
+        "port_power_relative": 1.1363649323667282e-15,
+        "heat_moment_relative": 2.889672305551114e-17,
+        "temperature_absolute": 1.609823385706477e-15,
+        "interface_trace_absolute": 0.0,
+        "interface_force_absolute": 2.081675229768095e-17
+      },
+      "independent_array_metrics": {
+        "noether_absolute": 1.0332025791881094e-16,
+        "electrical_current_relative": 1.9621976942277004e-16,
+        "instantaneous_power_relative": 4.049193274304728e-18,
+        "port_power_relative": 1.1363649323667282e-15,
+        "temperature_absolute": 1.609823385706477e-15
+      },
+      "redundant_arithmetic_absolute_differences": {
+        "field_rate_bar": 0.0,
+        "condensate_rate_bar": 2.220446049250313e-16,
+        "normal_rate_bar": 0.0,
+        "total_rate_bar": 0.0,
+        "source_heat_bar": 2.5131806358213993e-16,
+        "circuit_rhs_max_absolute": 0.0
+      },
+      "KWT_identity_residual_bar": -1.942890293094024e-16,
+      "circuit_residual_W": 0.0,
+      "CM9_residual_W": 3.0181692016011076e-24,
+      "derivative_checks": {
+        "status": "NOT_REPEATED_IDENTITIES_UNIT_AND_PILOT",
+        "performed": false
+      },
+      "direct_reference_probes": {
+        "count": 3,
+        "unique_quadratures": 3,
+        "maximum_errors": {
+          "pointwise_relative_energy": 1.2276617721814185e-14,
+          "weighted_relative_kernel_L1": 1.5666671642610823e-15,
+          "moment_error_over_absolute_weighted_reference": 2.9468690643137167e-16,
+          "relative_principal_matrix": 2.7047269528670215e-35
+        },
+        "passed": true,
+        "minimum_sign_margin": 1.5707957517522753
+      },
+      "principal_minimum": 1.5707963267948961,
+      "principal_uncertainty_maximum": 2.875213105535208e-07,
+      "principal_margin_minimum": 1.5707960392735858,
+      "endpoint_diagnosis": {
+        "terminal_dofs": [
+          0,
+          44
+        ],
+        "condensate_heat_rate_bar": 1.0114594255582996,
+        "terminal_heat_rate_bar": 1.011458984062433,
+        "terminal_fraction": 0.9999995635061028,
+        "interior_heat_rate_bar": 4.414958665081979e-07,
+        "terminal_material_speed_bar": [
+          2.8533287101065135,
+          2.853328710106515
+        ],
+        "maximum_interior_material_speed_bar": 0.0003602681553831858,
+        "maximum_material_speed_dof": 44,
+        "terminal_quadrature_mass_bar": [
+          1.07721697123003,
+          1.07721697123003
+        ]
+      }
+    },
+    {
+      "case": "m0_smooth_perturbation",
+      "status": "PASS_MIXED_INSTANTANEOUS_IDENTITIES",
+      "artifacts": {
+        "preparation.npz": true,
+        "initial.npz": true,
+        "arrays.npz": true,
+        "derivative_checks.json": true,
+        "direct_reference_probes.json": true
+      },
+      "finite_arrays": true,
+      "initial_field_and_populations_unchanged": true,
+      "shape": {
+        "dofs": 45,
+        "quadratures": 55,
+        "count_nodes": 630,
+        "edges": 76
+      },
+      "population_bounds": [
+        3.431450415310842e-44,
+        0.4592027652064821
+      ],
+      "registered_metrics": {
+        "noether_absolute": 9.487835741366112e-17,
+        "electrical_current_relative": 1.9621976942277004e-16,
+        "instantaneous_power_relative": 1.2748175275704536e-18,
+        "port_power_relative": 6.486867014276544e-16,
+        "heat_moment_relative": 7.596913495143194e-17,
+        "temperature_absolute": 1.817990202823694e-15,
+        "interface_trace_absolute": 0.0,
+        "interface_force_absolute": 2.7755575615628914e-17
+      },
+      "independent_array_metrics": {
+        "noether_absolute": 9.487835741366112e-17,
+        "electrical_current_relative": 6.198935098463487e-17,
+        "instantaneous_power_relative": 1.2748175275704536e-18,
+        "port_power_relative": 3.243433507138272e-16,
+        "temperature_absolute": 1.817990202823694e-15
+      },
+      "redundant_arithmetic_absolute_differences": {
+        "field_rate_bar": 0.0,
+        "condensate_rate_bar": 2.220446049250313e-16,
+        "normal_rate_bar": 0.0,
+        "total_rate_bar": 0.0,
+        "source_heat_bar": 2.990229591715021e-16,
+        "circuit_rhs_max_absolute": 0.0
+      },
+      "KWT_identity_residual_bar": -2.220446049250313e-16,
+      "circuit_residual_W": 0.0,
+      "CM9_residual_W": 9.502176702185384e-25,
+      "derivative_checks": {
+        "force": {
+          "predicted_from_arrays": 0.004375953134315401,
+          "error": 6.756134714180906e-12,
+          "reference_uncertainty": 9.473902565226844e-12,
+          "registered_tolerance": 4.4759531275592666e-07,
+          "passed": true,
+          "scope": "Directional derivative; FD energy samples themselves were not archived, stored estimates verified arithmetically."
+        },
+        "current": {
+          "predicted_from_arrays": 1.0802697837512347,
+          "error": 5.42530464997526e-11,
+          "reference_uncertainty": 5.6843418860808015e-11,
+          "registered_tolerance": 0.00010803697836969817,
+          "passed": true,
+          "scope": "Directional derivative; FD energy samples themselves were not archived, stored estimates verified arithmetically."
+        }
+      },
+      "direct_reference_probes": {
+        "count": 3,
+        "unique_quadratures": 3,
+        "maximum_errors": {
+          "pointwise_relative_energy": 1.835699052458614e-14,
+          "weighted_relative_kernel_L1": 9.188570884542078e-16,
+          "moment_error_over_absolute_weighted_reference": 3.113333809476195e-16,
+          "relative_principal_matrix": 0.0
+        },
+        "passed": true,
+        "minimum_sign_margin": 1.570795746374484
+      },
+      "principal_minimum": 1.570796326794896,
+      "principal_uncertainty_maximum": 2.90210206299044e-07,
+      "principal_margin_minimum": 1.5707960365846902,
+      "endpoint_diagnosis": {
+        "terminal_dofs": [
+          0,
+          44
+        ],
+        "condensate_heat_rate_bar": 1.0115389586271255,
+        "terminal_heat_rate_bar": 1.011458984062433,
+        "terminal_fraction": 0.9999209377315521,
+        "interior_heat_rate_bar": 7.997456469261608e-05,
+        "terminal_material_speed_bar": [
+          2.8533287101065135,
+          2.853328710106515
+        ],
+        "maximum_interior_material_speed_bar": 0.014015101535803268,
+        "maximum_material_speed_dof": 44,
+        "terminal_quadrature_mass_bar": [
+          1.07721697123003,
+          1.07721697123003
+        ]
+      }
+    }
+  ],
+  "preserved_scope": {
+    "instantaneous_algebra": true,
+    "mesh_convergence_admission": false,
+    "temporal_admission": false,
+    "kinetic_interface_admission": false,
+    "stage3_closed": false,
+    "production": false
+  },
+  "evidence_limits": [
+    "FD force and current were executed only for smooth_perturbation/m0, as registered; helix has no new FD PASS.",
+    "Original FD energy samples and all instantaneous spectra are not archived. Their evaluations are not independently repeated here; stored FD estimates and moment metadata are checked, with input/source hashes.",
+    "Temperature equality is an initialization/inversion identity for thermal occupations, not thermal relaxation.",
+    "Three direct-source quadratures per case test local source equivalence; they do not certify all spectral resolutions.",
+    "Normal heat allocation conserves total power but its spatial local accuracy has no admission from this pilot."
+  ],
+  "decision": {
+    "keep_existing_instantaneous_PASS": true,
+    "recommend_six_free_boundary_snapshots_for_device_precision": false,
+    "next_step": "Register and test a physical terminal/reservoir loading with explicit mechanical/phase work before a costly mixed-mesh campaign.",
+    "permitted_future_six_snapshot_scope": "Sensitivity of the reservoir-loaded instantaneous state and its induced perturbation, with the free state retained as a historical control; no transient certificate.",
+    "no_retrospective_threshold_change": true
+  },
+  "boundary_inference": {
+    "status": "ANALYTIC_INFERENCE_NOT_MEASURED_MESH_LAW",
+    "condition": "Nonzero imposed initial helix q=0.1 with all material DOFs free and zero conjugate terminal load.",
+    "argument": "At fixed polynomial degree, residual integrated terminal phase force is O(J), terminal GLL temporal mass is O(h); material speed is O(1/h), terminal heat density O(1/h^2), integrated terminal QDelta O(1/h) at t=0.",
+    "limitations": "Assumes finite nonzero mobility and current as h decreases. A parabolic boundary layer may regularize at positive time; no divergence of total dissipated energy or finite-time trajectory is inferred.",
+    "meaning": "The pilot identities remain correct; a mesh study of raw initial QDelta in this free boundary scenario would mainly resolve its boundary incompatibility."
+  },
+  "next_weak_transient_observables": [
+    "Ib, Is, vc, Vdev and Vout with circuit-state derivatives and prescribed terminal conditions.",
+    "Amplitude, q/Gamma, gauge-invariant material velocity and terminal reactions/work.",
+    "Interior and terminal QDelta separately, normal Joule heat, equivalent temperature and electronic excess energy.",
+    "Domain+circuit energy versus source, external resistor losses, escape and reservoir flux/work; internal heat is not counted twice.",
+    "Population bounds, finite states, catalogue domain and D.36 margin at saved times.",
+    "Time-step comparison of induced observables against the compatible reference state; scope and precision fixed before results."
+  ]
+}

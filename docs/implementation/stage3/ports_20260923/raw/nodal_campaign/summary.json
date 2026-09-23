@@ -1,0 +1,398 @@
+{
+  "status": "STATIC_CAMPAIGN_COMPLETE_SCOPE_LIMITED",
+  "runtime_seconds": 470.7021251190454,
+  "completed_cases": 18,
+  "declared_spatial_order": 4,
+  "registered_fd_cells": [
+    16
+  ],
+  "cases_with_directional_fd": [
+    "uniform_vacuum_n16",
+    "uniform_thermal_n16",
+    "weak_amplitude_thermal_n16",
+    "weak_phase_thermal_n8",
+    "weak_phase_thermal_n16",
+    "weak_phase_nonthermal_n16",
+    "weak_amplitude_vacuum_n16"
+  ],
+  "cases_without_repeated_fd": [
+    "uniform_vacuum_n8",
+    "uniform_vacuum_n32",
+    "uniform_thermal_n8",
+    "uniform_thermal_n32",
+    "weak_amplitude_thermal_n8",
+    "weak_amplitude_thermal_n32",
+    "weak_phase_thermal_n32",
+    "weak_phase_nonthermal_n8",
+    "weak_phase_nonthermal_n32",
+    "weak_amplitude_vacuum_n8",
+    "weak_amplitude_vacuum_n32"
+  ],
+  "negative_control": {
+    "status": "PASS_EXPECTED_REJECTION",
+    "amplitude_over_Delta0": 0.6,
+    "bare_q_times_ell0": 1.0,
+    "q_delta": 0.9729729729729729,
+    "measured_eigenvalues": [
+      -0.3066196208689418,
+      1.5707963267948966
+    ],
+    "reference_eigenvalues": [
+      -0.3066196208691767,
+      1.5707963267948966
+    ],
+    "error": 2.349231920106831e-13,
+    "uncertainty": 5.318730852895835e-10,
+    "admitted_for_evolution": false
+  },
+  "grid_comparisons": [
+    {
+      "case": "uniform_vacuum",
+      "status": "STATIC_IDENTITIES_ONLY",
+      "reason": "Uniform induced responses vanish; no relative zero-over-zero grid admission.",
+      "energy_density": [
+        -0.4823918834398391,
+        -0.48237838912053527,
+        -0.4823775241359466
+      ],
+      "mean_current_A": [
+        7.747891278473753e-06,
+        7.786981817894655e-06,
+        7.789509539806259e-06
+      ],
+      "continuum_reference": {
+        "energy_bar": -20.785010221566598,
+        "force_radial_density_bar": -0.18053035977354356,
+        "link_current_bar": 0.15908354847397144,
+        "nodal_amplitude_bar": 0.9,
+        "first_derivative_symbol_Q": 0.09999890656213026,
+        "negative_laplacian_symbol_K": 0.009999963532393833,
+        "q_delta_bar": 0.09877940770161647,
+        "gamma_bar": 0.005531775428499169,
+        "continuum_energy_density": -0.4823774661076957,
+        "continuum_current_bar": 0.15908701898407634
+      }
+    },
+    {
+      "case": "uniform_thermal",
+      "status": "STATIC_IDENTITIES_ONLY",
+      "reason": "Uniform induced responses vanish; no relative zero-over-zero grid admission.",
+      "energy_density": [
+        -0.48141288125262827,
+        -0.48139943327124335,
+        -0.4813985712660424
+      ],
+      "mean_current_A": [
+        7.739073788279528e-06,
+        7.778033906330359e-06,
+        7.78055315683112e-06
+      ],
+      "continuum_reference": {
+        "energy_bar": -20.742828435746787,
+        "force_radial_density_bar": -0.17957016868762637,
+        "link_current_bar": 0.1589006341097363,
+        "nodal_amplitude_bar": 0.9,
+        "first_derivative_symbol_Q": 0.09999890656213026,
+        "negative_laplacian_symbol_K": 0.009999963532393833,
+        "q_delta_bar": 0.09877940770161647,
+        "gamma_bar": 0.005531775428499169,
+        "continuum_energy_density": -0.4813985134378087,
+        "continuum_current_bar": 0.1589040929768486
+      }
+    },
+    {
+      "case": "weak_amplitude_thermal",
+      "status": "PASS_REGISTERED_SPATIAL_RESPONSE",
+      "metrics": {
+        "excess_energy_density_bar": {
+          "coarse_medium_difference": 3.6025757104725777e-07,
+          "medium_fine_difference": 2.699887828095434e-08,
+          "fine_norm": 0.0004099952545484791,
+          "richardson_conservative_estimate": 2.187308071033437e-09,
+          "richardson_denominator": 15,
+          "relative_estimate": 5.334959482500066e-06,
+          "observed_order": 3.7380573757315743,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        },
+        "induced_force_modes": {
+          "coarse_medium_difference": 3.685674631040819e-05,
+          "medium_fine_difference": 2.7500167466691733e-06,
+          "fine_norm": 0.03866170092423829,
+          "richardson_conservative_estimate": 2.2173313606125304e-07,
+          "richardson_denominator": 15,
+          "relative_estimate": 5.735214198044795e-06,
+          "observed_order": 3.7444164071099664,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        },
+        "induced_current_modes": {
+          "coarse_medium_difference": 1.8944004382064664e-05,
+          "medium_fine_difference": 1.2431831748896689e-05,
+          "fine_norm": 0.0038701898370571077,
+          "richardson_conservative_estimate": 2.373254662287593e-05,
+          "richardson_denominator": 3,
+          "relative_estimate": 0.006132140184865495,
+          "observed_order": 0.6077024360915564,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        }
+      },
+      "relative_certificate_observables": [
+        "excess_energy_density_bar",
+        "induced_force_modes",
+        "induced_current_modes"
+      ],
+      "absolute_control_observables": [],
+      "unresolved_observables": []
+    },
+    {
+      "case": "weak_phase_thermal",
+      "status": "PASS_REGISTERED_SPATIAL_RESPONSE",
+      "metrics": {
+        "excess_energy_density_bar": {
+          "coarse_medium_difference": 6.115623265171398e-06,
+          "medium_fine_difference": 4.5045493905818384e-07,
+          "fine_norm": 8.402136550485692e-05,
+          "richardson_conservative_estimate": 3.581705616523584e-08,
+          "richardson_denominator": 15,
+          "relative_estimate": 0.00042628509962939614,
+          "observed_order": 3.7630448370984038,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        },
+        "induced_force_modes": {
+          "coarse_medium_difference": 0.0002020740444005788,
+          "medium_fine_difference": 1.5265561159783785e-05,
+          "fine_norm": 0.010228645519995682,
+          "richardson_conservative_estimate": 1.2474666753903008e-06,
+          "richardson_denominator": 15,
+          "relative_estimate": 0.00012195814909722548,
+          "observed_order": 3.7265314963442355,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        },
+        "induced_current_modes": {
+          "coarse_medium_difference": 0.0009255061902251315,
+          "medium_fine_difference": 2.01567591613395e-05,
+          "fine_norm": 0.016323223599744422,
+          "richardson_conservative_estimate": 6.7189197204464996e-06,
+          "richardson_denominator": 3,
+          "relative_estimate": 0.00041161720780150926,
+          "observed_order": 5.520907035970371,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        }
+      },
+      "relative_certificate_observables": [
+        "excess_energy_density_bar",
+        "induced_force_modes",
+        "induced_current_modes"
+      ],
+      "absolute_control_observables": [],
+      "unresolved_observables": []
+    },
+    {
+      "case": "weak_phase_nonthermal",
+      "status": "PASS_REGISTERED_SPATIAL_RESPONSE",
+      "metrics": {
+        "excess_energy_density_bar": {
+          "coarse_medium_difference": 6.067138691831018e-06,
+          "medium_fine_difference": 4.4681155929630293e-07,
+          "fine_norm": 8.386742149853168e-05,
+          "richardson_conservative_estimate": 3.552116537222943e-08,
+          "richardson_denominator": 15,
+          "relative_estimate": 0.0004235394952836522,
+          "observed_order": 3.7632778762071504,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        },
+        "induced_force_modes": {
+          "coarse_medium_difference": 0.0002004601962958201,
+          "medium_fine_difference": 1.5142907059961467e-05,
+          "fine_norm": 0.01013621067704944,
+          "richardson_conservative_estimate": 1.2373785261599874e-06,
+          "richardson_denominator": 15,
+          "relative_estimate": 0.00012207505995920925,
+          "observed_order": 3.726601702790677,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        },
+        "induced_current_modes": {
+          "coarse_medium_difference": 0.0009163857187864468,
+          "medium_fine_difference": 1.979264327132358e-05,
+          "fine_norm": 0.016293261244771998,
+          "richardson_conservative_estimate": 6.597547757107861e-06,
+          "richardson_denominator": 3,
+          "relative_estimate": 0.00040492493540694984,
+          "observed_order": 5.532918775801609,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        }
+      },
+      "relative_certificate_observables": [
+        "excess_energy_density_bar",
+        "induced_force_modes",
+        "induced_current_modes"
+      ],
+      "absolute_control_observables": [],
+      "unresolved_observables": []
+    },
+    {
+      "case": "weak_amplitude_vacuum",
+      "status": "SPATIAL_RESPONSE_SCOPE_LIMITED",
+      "metrics": {
+        "excess_energy_density_bar": {
+          "coarse_medium_difference": 2.811348967713583e-08,
+          "medium_fine_difference": 1.8349559506949421e-09,
+          "fine_norm": 0.00041007150598009904,
+          "richardson_conservative_estimate": null,
+          "richardson_denominator": 15,
+          "relative_estimate": null,
+          "observed_order": 3.9374452082170746,
+          "near_zero_response": false,
+          "difference_unresolved": true,
+          "degenerate": true,
+          "passed": null,
+          "status": "ROUND_OFF_LIMITED",
+          "relative_certificate": false,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "ROUND_OFF_LIMITED_NO_RELATIVE_CERTIFICATE"
+        },
+        "induced_force_modes": {
+          "coarse_medium_difference": 2.650565235365214e-06,
+          "medium_fine_difference": 1.7300130744983234e-07,
+          "fine_norm": 0.038663816280509584,
+          "richardson_conservative_estimate": 1.2080193791218945e-08,
+          "richardson_denominator": 15,
+          "relative_estimate": 3.1244183718379e-07,
+          "observed_order": 3.9374452023488105,
+          "near_zero_response": false,
+          "difference_unresolved": false,
+          "degenerate": false,
+          "passed": true,
+          "status": "PASS_RELATIVE_ESTIMATE",
+          "relative_certificate": true,
+          "analytic_zero": false,
+          "absolute_control_passed": null,
+          "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+        },
+        "induced_current_modes": {
+          "coarse_medium_difference": 0.0,
+          "medium_fine_difference": 0.0,
+          "fine_norm": 0.0,
+          "richardson_conservative_estimate": null,
+          "richardson_denominator": 3,
+          "relative_estimate": null,
+          "observed_order": null,
+          "near_zero_response": true,
+          "difference_unresolved": true,
+          "degenerate": true,
+          "passed": true,
+          "status": "PASS_ANALYTIC_ZERO_ABSOLUTE",
+          "relative_certificate": false,
+          "analytic_zero": true,
+          "absolute_control_passed": true,
+          "interpretation": "ANALYTIC_ZERO_ABSOLUTE_CONTROL_NO_RELATIVE_CERTIFICATE"
+        },
+        "isolated_gradient": {
+          "errors": [
+            0.004001551643847025,
+            0.00026062682837064754,
+            1.645819561695293e-05
+          ],
+          "passed": true,
+          "status": "PASS_ANALYTIC_GRADIENT"
+        }
+      },
+      "relative_certificate_observables": [
+        "induced_force_modes"
+      ],
+      "absolute_control_observables": [
+        "induced_current_modes"
+      ],
+      "unresolved_observables": [
+        "excess_energy_density_bar"
+      ]
+    }
+  ],
+  "spatial_precision_fully_resolved": false,
+  "stage3_closed": false,
+  "production_promotion": false,
+  "new_trajectories": 0,
+  "circuit_and_physical_boundaries_implemented": false,
+  "source_hashes": {
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "pysnspd/experimental/spatial_functional.py": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+    "pysnspd/experimental/spatial_nodal.py": "068a912ccefa9368a97b217961805ae0630fbfda33adb12acd904e28796b7cf8",
+    "sandbox/stage3_spatial/progress.py": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f",
+    "sandbox/stage3_spatial/run_nodal_batch.py": "33755bc913ff34da1a169ccf806465a6dbc3c6d0ab5a3aedceebb475a8c74cbe",
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage3/nodal_20260923/registration.json": "cedab95157aad073a3308aa3a9f322cfd887bbe1b45d9d594b503d05636ac0e8"
+  }
+}

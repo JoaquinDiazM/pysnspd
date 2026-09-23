@@ -1,0 +1,164 @@
+{
+  "method": "Saved data only; no physical calculations",
+  "figures": {
+    "open": {
+      "sources": {
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/manifest.json": "5c7334b3163f6138a4315aa35b211d1f12ebf1c633d3445d326ac45cd797840d",
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/summary.json": "9eee59cca14e9f7c4649606cd5a09f88cb16cc664a03a366a52f26a5c7ae33ee",
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L360_E4/result.json": "9617bdfa7a99ff5b87f171bff163b65ced5c72155247495f9a84ac34e4d10942",
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L360_E8/result.json": "c5ed644e92e23120c51871fc5fbdff7d92dbeb6628c27330f1931ec6dc28f3b3",
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L720_E8/result.json": "3b84c5504262e57b8cc2a92239e050a1362213f8b32307db8ad1bd8075ef56d0",
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L720_E16/result.json": "940fe5c2b2f383137b30650cbbce11a3d662b28b5c7477e92465b36385a896f7",
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L1080_E12/result.json": "921985b448aa2d1f2aa47d423ac3b4a887e1ed777494d1f8d7562362a9e53027",
+        "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L1080_E24/result.json": "42e52afd888b5eba67861b4c0d8f648ea261f8d9a39f30e78bddd869f15b9bc7"
+      },
+      "rows": [
+        {
+          "case": "open_L360_E4",
+          "length_nm": 360.0,
+          "element_length_nm": 90.0,
+          "current_relative": 6.034830388441363e-06,
+          "endpoint_q_relative": 0.0007130058884058377
+        },
+        {
+          "case": "open_L360_E8",
+          "length_nm": 360.0,
+          "element_length_nm": 45.0,
+          "current_relative": 9.044130279123697e-08,
+          "endpoint_q_relative": 4.86823483888954e-05
+        },
+        {
+          "case": "open_L720_E8",
+          "length_nm": 720.0,
+          "element_length_nm": 90.0,
+          "current_relative": 6.034830390015519e-06,
+          "endpoint_q_relative": 0.0007130058884088908
+        },
+        {
+          "case": "open_L720_E16",
+          "length_nm": 720.0,
+          "element_length_nm": 45.0,
+          "current_relative": 9.04413234126699e-08,
+          "endpoint_q_relative": 4.8682348397222075e-05
+        },
+        {
+          "case": "open_L1080_E12",
+          "length_nm": 1080.0,
+          "element_length_nm": 90.0,
+          "current_relative": 6.034830391117428e-06,
+          "endpoint_q_relative": 0.0007130058884091683
+        },
+        {
+          "case": "open_L1080_E24",
+          "length_nm": 1080.0,
+          "element_length_nm": 45.0,
+          "current_relative": 9.044132750547337e-08,
+          "endpoint_q_relative": 4.868234839361385e-05
+        }
+      ],
+      "scope": "Six saved static open cases. Element length is not uniform nodal spacing; no temporal accuracy claim.",
+      "artifacts": {
+        "01_open_errors.png": "aef57dfcf9bed2d96ebf479ad1337019ebe0a6dbea714bc73c1ee8cc912f8b69",
+        "01_open_errors.pdf": "bcd65362ad6e33b3a3b27c581ce7896092c097c228668641c9a84c8a2e141c96"
+      },
+      "script_sha256": "d7b3913e20cea8a0131dbaf5de20eb2e3b654580e35c2ae55865915fe7a67576",
+      "canvas_inches": [
+        7.0,
+        3.2
+      ],
+      "dpi": 300
+    },
+    "seeded": {
+      "sources": {
+        "docs/implementation/stage3/coupled_20260923/seeded_check/summary.json": "dfea58ea760e5f55ee0c9c81ccc1792c8de42766655a22c42e80f522517f1c41",
+        "docs/implementation/stage3/coupled_20260923/seeded_check/probes.json": "766dc716c14aaa2c9f9b5c0190228d56e6e51ccb4bb1b3ee1fa27e039d06ec80"
+      },
+      "source_ms": 124.01935271918774,
+      "seeded_ms": 65.13051067789395,
+      "speedup": 1.9041667480933993,
+      "energy_differences": [
+        1.3531437060164056e-14,
+        3.9339885019615935e-15,
+        5.064001825381852e-16,
+        4.716485395470968e-15,
+        2.1915713166535183e-15,
+        9.596151093546653e-15,
+        4.420534595920447e-15,
+        2.5172318866284433e-15,
+        3.822883928654788e-15
+      ],
+      "derivative_weighted_L1_differences": [
+        1.455066615631681e-15,
+        9.474248771337913e-16,
+        1.1761206461951576e-15,
+        6.412087157598738e-16,
+        1.5021921733999957e-15,
+        4.383678676973175e-16,
+        9.526744481668594e-16,
+        1.2648158835853206e-15,
+        8.197478143922736e-16
+      ],
+      "scope": "Same causal equations with different Newton initialization. Predictor loading is not predictor construction time.",
+      "artifacts": {
+        "02_causal_kernel.png": "49e75b49ddeab1d5cfc8a46e0ea689c28316eefdee202550ba61a8bbbc3e6048",
+        "02_causal_kernel.pdf": "4e37ee47db9b806da4d9c5998361f013776664bdb7d0f6375dcaedb67cd7345b"
+      },
+      "script_sha256": "d7b3913e20cea8a0131dbaf5de20eb2e3b654580e35c2ae55865915fe7a67576",
+      "canvas_inches": [
+        7.0,
+        3.2
+      ],
+      "dpi": 300
+    },
+    "mixed": {
+      "sources": {
+        "docs/implementation/stage3/coupled_20260923/raw/mixed_pilot/summary.json": "b0c875c03a30b56af8fc7795f692c16a5873224a8535de7bed74ce706a3b3804",
+        "docs/implementation/stage3/coupled_20260923/raw/mixed_pilot/manifest.json": "e5794e29cbd2787b00fbb6918a92ab59271c45800a06de7c7e3916f1c017c5d3",
+        "docs/implementation/stage3/coupled_20260923/raw/mixed_pilot/m0_helix/result.json": "4e87dd15b890d67e79a3886f08b0ea1a9f24a19665e6e17fc1aa48dc7434762c",
+        "docs/implementation/stage3/coupled_20260923/raw/mixed_pilot/m0_smooth_perturbation/result.json": "d117886e80751be546d9359913d35470b9f7acdd356b2d6a0d00ff2b5d8f54d8"
+      },
+      "profiles": [
+        "helix",
+        "smooth_perturbation"
+      ],
+      "QDelta_nW": [
+        16.299304795900305,
+        16.30058644269442
+      ],
+      "Joule_nW": [
+        0.025427076499360633,
+        0.028130324411204565
+      ],
+      "material_speed_bar": [
+        2.853328710106515,
+        2.853328710106515
+      ],
+      "field_speed_bar": [
+        3.745717658892945,
+        3.745684865881117
+      ],
+      "CM9_residual_W": [
+        3.0181692016011076e-24,
+        9.502176702185384e-25
+      ],
+      "perturbation_relative_changes_percent": [
+        0.00786319913741385,
+        10.631375226766261,
+        0.0,
+        -0.00087548007657171
+      ],
+      "scope": "Energía espacial 2D+1D y álgebra instantánea KWT, potencial, calor y circuito CM.9. Sin integración temporal ni transporte cinético 2D.",
+      "warning": "Instantaneous free boundary response. Neither profile is a DC solution or an evolved trajectory.",
+      "artifacts": {
+        "03_mixed_instantaneous.png": "2b07bb5f5837345e3657b93651feb5cfae17c3b741d16146f45a9b5551bc53ab",
+        "03_mixed_instantaneous.pdf": "cae0416fee016c691798a6283fef7d07956b702dc896711ea08a628666029847"
+      },
+      "script_sha256": "d7b3913e20cea8a0131dbaf5de20eb2e3b654580e35c2ae55865915fe7a67576",
+      "canvas_inches": [
+        7.0,
+        3.2
+      ],
+      "dpi": 300
+    }
+  }
+}

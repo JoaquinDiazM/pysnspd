@@ -1,0 +1,355 @@
+{
+  "schema": "pysnspd.stage3.ports.saved_validation_review.v1",
+  "status": "PASS_REVIEWED_SAVED_EVIDENCE",
+  "errors": [],
+  "review_method": "Hashes and arithmetic on recorded JSON/NPZ only. No catalogue calls, minimization, time integration or repeated physical experiment.",
+  "source_checks": {
+    "open": {
+      "pysnspd/experimental/energy_catalog.py": {
+        "recorded_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+        "current_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+      },
+      "pysnspd/experimental/refined_cells.py": {
+        "recorded_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+        "current_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+      },
+      "pysnspd/experimental/spatial_functional.py": {
+        "recorded_sha256": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+        "current_sha256": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e"
+      },
+      "pysnspd/experimental/spatial_open.py": {
+        "recorded_sha256": "2bf381c4ef6391bc7412cafdf4f8f9afbb912f6a5cb8835ed13e53d75c6656ab",
+        "current_sha256": "2bf381c4ef6391bc7412cafdf4f8f9afbb912f6a5cb8835ed13e53d75c6656ab"
+      },
+      "pysnspd/experimental/superconducting_reservoir.py": {
+        "recorded_sha256": "ad1ba9f984fad51df31bad405a861f965541ee105a7e40c1d4fbe5fa7d5f8a38",
+        "current_sha256": "ad1ba9f984fad51df31bad405a861f965541ee105a7e40c1d4fbe5fa7d5f8a38"
+      },
+      "sandbox/stage3_spatial/progress.py": {
+        "recorded_sha256": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f",
+        "current_sha256": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f"
+      },
+      "sandbox/stage3_spatial/ports_20260923/run_open_batch.py": {
+        "recorded_sha256": "61c5b36587b7e407af92daf47917e0f0f8d1a4af3dad5f83bb3d38875739b279",
+        "current_sha256": "61c5b36587b7e407af92daf47917e0f0f8d1a4af3dad5f83bb3d38875739b279"
+      },
+      "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": {
+        "recorded_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+        "current_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+      },
+      "docs/implementation/stage3/ports_20260923/open_registration.json": {
+        "recorded_sha256": "9f269dec40d563d12be3a49c26c624fefcd54acde1655ec6993dd0b7799251f3",
+        "current_sha256": "9f269dec40d563d12be3a49c26c624fefcd54acde1655ec6993dd0b7799251f3"
+      }
+    },
+    "electrical": {
+      "sandbox/stage3_spatial/ports_20260923/diagnose_electrical.py": {
+        "recorded_sha256": "c1de99a84a7944dff52b63f1b66369cba7a0eb97db010ab945a083ca1d3977e1",
+        "current_sha256": "c1de99a84a7944dff52b63f1b66369cba7a0eb97db010ab945a083ca1d3977e1"
+      },
+      "pysnspd/experimental/electrical_ports.py": {
+        "recorded_sha256": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+        "current_sha256": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530"
+      },
+      "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md": {
+        "recorded_sha256": "abd65bad241de5873b497baad90195b7cafa936c01468675cabe31c3f38ed3e5",
+        "current_sha256": "abd65bad241de5873b497baad90195b7cafa936c01468675cabe31c3f38ed3e5"
+      }
+    }
+  },
+  "input_inventory": {
+    "electrical/electrical_arrays.npz": {
+      "sha256": "3b6d298ad29c124e21066d3a9efc4d0ead42af8f5bf5cf62cb7bd0b97df882ee",
+      "bytes": 41301
+    },
+    "electrical/electrical_diagnostics.json": {
+      "sha256": "f4fdaeb2576b1530838fe7aae63fe5854765f53c9031a62d6ee2dce29febadc5",
+      "bytes": 4671
+    },
+    "electrical/electrical_diagnostics.pdf": {
+      "sha256": "499f1ba886764038eef4a9d1f5bb5f0f28236dab797a8481cd8b2c0df8a92277",
+      "bytes": 35729
+    },
+    "electrical/electrical_diagnostics.png": {
+      "sha256": "e1eaa2c8e2fec4d394f3fccdd06b30c8759182312d651f32593be0e8ca2922b6",
+      "bytes": 308970
+    },
+    "electrical/manifest.json": {
+      "sha256": "ccf137fd238489decf8bc99bb302f6bee0cbb377d71ea13e21dd5408d7d898b7",
+      "bytes": 1180
+    },
+    "nodal_audit.json": {
+      "sha256": "1607044ea13fee706f4f9d94ab0852f62abe7b069ae9262ff933aa7fc206b77a",
+      "bytes": 62031
+    },
+    "nodal_closure.md": {
+      "sha256": "062cb667ef854d19d23398d26649a13e8f4a38b8b6f0cba847dc833446998ce3",
+      "bytes": 3514
+    },
+    "open_pilot/manifest.json": {
+      "sha256": "f66f9201a4cebfb353521925011a7f7cfa3e367e3bffe7152d4ac5ede200979c",
+      "bytes": 4913
+    },
+    "open_pilot/open_L360_E4/iterations.json": {
+      "sha256": "373f204243f6f5f5927e383df79212286d9b523eff00b9ce6e7d719d0ef1d545",
+      "bytes": 146
+    },
+    "open_pilot/open_L360_E4/reservoir.json": {
+      "sha256": "da7036137bbb6df954cd98c13d2859ae75f8d0fb23993c1d3f0ce8992b7e87a1",
+      "bytes": 20589
+    },
+    "open_pilot/open_L360_E4/result.json": {
+      "sha256": "da57a5c2c51a833be9e9c066ce18d024d9451eab9d56a59e658645ce3f3cdf08",
+      "bytes": 3301
+    },
+    "open_pilot/progress.jsonl": {
+      "sha256": "af1f8f0d269242d3e70003962670bb8aa486e48a494afded9e2a7df6b93ec1bb",
+      "bytes": 6179
+    },
+    "open_pilot/summary.json": {
+      "sha256": "5fe643f57d9e06419451d23d7aade6ffa6e89d0d5b9081e6b214b1ea085a20f3",
+      "bytes": 4141
+    },
+    "open_pilot.console.log": {
+      "sha256": "07bf9c2b1d32bd18b17159748edb91376c45955c8cc671777e7cbc1b96523e28",
+      "bytes": 2494
+    },
+    "open_registration.json": {
+      "sha256": "9f269dec40d563d12be3a49c26c624fefcd54acde1655ec6993dd0b7799251f3",
+      "bytes": 2928
+    },
+    "tests.log": {
+      "sha256": "fbd656244d0337d7e573ae54304052d0f97a6cd67d3240f7b56677e686125707",
+      "bytes": 257
+    }
+  },
+  "tests": {
+    "reported_passed": 168,
+    "reported_subtests_passed": 23,
+    "reported_runtime_seconds": 9.87,
+    "log_sha256": "fbd656244d0337d7e573ae54304052d0f97a6cd67d3240f7b56677e686125707",
+    "scope": "Counts verified in supplied log; this compact log does not enumerate the command or individual tests. No independent suite rerun in this review."
+  },
+  "open_pilot": {
+    "runtime_seconds": 20.857511637732387,
+    "nodes": 17,
+    "solver": {
+      "success": true,
+      "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+      "iterations": 0,
+      "evaluations": 1,
+      "active_bounds": false
+    },
+    "criteria": {
+      "stationarity_absolute": 0.0001,
+      "current_relative": 0.01,
+      "endpoint_q_relative": 0.01,
+      "amplitude_absolute": 0.001
+    },
+    "metrics": {
+      "stationarity_absolute": 1.935527688182138e-05,
+      "current_relative": 6.034830388441363e-06,
+      "endpoint_q_relative": 0.0007130058884058377,
+      "amplitude_absolute": 1.1102230246251565e-16,
+      "minimum_principal_eigenvalue": 1.5707963267948963,
+      "maximum_symbol_uncertainty": 2.825233075988816e-07,
+      "global_phase_residual": -3.0531133177191805e-16
+    },
+    "recomputed_current_relative": 6.034830388340133e-06,
+    "recomputed_endpoint_q_relative": 0.0007130058884058377,
+    "amplitude_bar": 0.9952181913919729,
+    "current_A": 8.633512818265575e-06,
+    "inductance_partition": {
+      "total_reference_H": 1e-08,
+      "resolved_differential_H": 1.6662127065912317e-10,
+      "exterior_fixed_H": 9.833378729340877e-09,
+      "reference_current_A": 8.633512818265575e-06,
+      "reference_q_bare_bar": 0.1,
+      "reference_amplitude_bar": 0.9952181913919729,
+      "bath_theta": 0.12,
+      "resolved_length_m": 3.6e-07,
+      "scope": "Uniform reference branch on the declared resolved length; exterior value fixed before dynamics."
+    },
+    "thermal_hessian_reduced_slope": 1.7381356360514781,
+    "interpretation": "Initial uniform-amplitude helix already met the criteria: zero minimizer iterations and one objective evaluation. This validates static consistency, not relaxation from a disturbed state."
+  },
+  "electrical": {
+    "status": "PASS_PRESCRIBED_ELECTRICAL_CHECKS",
+    "arrays": {
+      "node_position_m": {
+        "shape": [
+          13
+        ],
+        "dtype": "float64"
+      },
+      "phi_V": {
+        "shape": [
+          13
+        ],
+        "dtype": "float64"
+      },
+      "exact_phi_V": {
+        "shape": [
+          13
+        ],
+        "dtype": "float64"
+      },
+      "gauge_phi_V": {
+        "shape": [
+          13
+        ],
+        "dtype": "float64"
+      },
+      "I_total_A": {
+        "shape": [
+          12
+        ],
+        "dtype": "float64"
+      },
+      "I_normal_A": {
+        "shape": [
+          12
+        ],
+        "dtype": "float64"
+      },
+      "I_super_A": {
+        "shape": [
+          12
+        ],
+        "dtype": "float64"
+      },
+      "time_s": {
+        "shape": [
+          581
+        ],
+        "dtype": "float64"
+      },
+      "circuit_exact": {
+        "shape": [
+          581,
+          3
+        ],
+        "dtype": "float64"
+      },
+      "circuit_numerical": {
+        "shape": [
+          581,
+          3
+        ],
+        "dtype": "float64"
+      },
+      "Vout_exact_V": {
+        "shape": [
+          581
+        ],
+        "dtype": "float64"
+      },
+      "Vout_numerical_V": {
+        "shape": [
+          581
+        ],
+        "dtype": "float64"
+      },
+      "CM8_residual_W": {
+        "shape": [
+          581
+        ],
+        "dtype": "float64"
+      }
+    },
+    "graph": {
+      "passed": true,
+      "nodes": 13,
+      "faces": 12,
+      "geometry": {
+        "length_m": 3.6e-07,
+        "cross_section_m2": 8.399999999999999e-16
+      },
+      "conductivity_S_m": 250000.0,
+      "conductivity_scope": "Illustrative explicitly selected input, not a material characterization.",
+      "superconducting_current_A": 1.8e-05,
+      "injected_current_A": 3e-05,
+      "voltage_V": 0.020571428571428567,
+      "reference_shift_V": 0.125,
+      "metrics": {
+        "potential_error_relative": 3.373073425510458e-16,
+        "current_residual_relative": 3.3881317890172014e-16,
+        "total_current_error_relative": 2.2587545260114677e-16,
+        "gauge_potential_error_relative": 6.746146851020916e-16,
+        "gauge_current_error_relative": 0.0,
+        "gauge_voltage_error_relative": 0.0,
+        "gauge_power_error_relative": 1.7156338630729467e-16,
+        "port_face_power_residual_relative": 0.0,
+        "power_decomposition_residual_relative": 1.7156338630729467e-16
+      },
+      "power_W": {
+        "port": 6.17142857142857e-07,
+        "normal_joule": 2.468571428571428e-07,
+        "superconducting": 3.702857142857143e-07,
+        "face": 6.17142857142857e-07
+      }
+    },
+    "circuit_metrics": {
+      "maximum_scaled_state_error": 4.295258900436037e-11,
+      "maximum_state_error_SI": [
+        6.77375636051053e-16,
+        1.288577670130811e-15,
+        7.126556289538399e-13
+      ],
+      "state_units": [
+        "A",
+        "A",
+        "V"
+      ],
+      "scaling_SI": [
+        2.9999999999999997e-05,
+        2.9999999999999997e-05,
+        0.3
+      ],
+      "maximum_Vout_error_V": 6.445175339611642e-14,
+      "instantaneous_power_residual_W": 1.6940658945086007e-21,
+      "instantaneous_power_residual_relative": 1.8822954383428899e-16
+    },
+    "recomputed_scaled_state_error": 4.295258900436037e-11,
+    "recomputed_instantaneous_power_relative": 4.1175212713750717e-16,
+    "prescribed_resistance_ohm": 1000.0,
+    "Lk_ext_H": 7e-09,
+    "sampled_peak_V": 0.0014250058275230148,
+    "sampled_peak_time_s": 5.422221006501592e-11,
+    "interpretation": "Prescribed electrical subsystem only. The 7 nH external inductance is a separate illustrative input and is not the 9.833 nH identified by the reservoir pilot."
+  },
+  "stage_scope": {
+    "stage3a": "Development closed for registered periodic static cases, retaining one ROUND_OFF_LIMITED spatial observable.",
+    "stage3b": "One open uniform-helix pilot plus algebraic interfaces; six-case length/resolution campaign still pending user execution.",
+    "stage3d": "Prescribed-resistor circuit and potential-graph algebra only; no coupled detector response.",
+    "stage3_closed": false,
+    "production_promotion": false
+  },
+  "findings": [
+    {
+      "severity": "scope",
+      "item": "Zero-iteration pilot",
+      "meaning": "Do not describe this as demonstrated nonlinear relaxation, convergence basin or recovery from a perturbation."
+    },
+    {
+      "severity": "scope",
+      "item": "Separate inductance values",
+      "meaning": "The circuit input is 7 nH; the physical reservoir pilot identifies 0.166621 nH resolved and 9.833379 nH exterior. They are not a jointly simulated device."
+    },
+    {
+      "severity": "scope",
+      "item": "Prescribed output pulse",
+      "meaning": "1.425 mV is the circuit response to an imposed 1000 ohm step; it is not an SNSPD detection pulse or latency."
+    },
+    {
+      "severity": "scope",
+      "item": "Necessary remaining evidence",
+      "meaning": "Open length/resolution comparisons, nonuniform reservoir exchange and spatial kinetic/condensate/potential/circuit evolution remain outside this evidence."
+    },
+    {
+      "severity": "traceability",
+      "item": "Open result provenance granularity",
+      "meaning": "Frozen source/registration hashes and summary/result identity are verified. The open producer did not issue per-result output receipts; this review inventories all observed output hashes without claiming an earlier cryptographic receipt."
+    }
+  ]
+}

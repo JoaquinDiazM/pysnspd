@@ -1,0 +1,30 @@
+{
+  "schema": "pysnspd.stage3.electrical-prescribed-diagnostic.v1",
+  "started_at_utc": "2026-09-23T17:56:17.220875+00:00",
+  "source_sha256": {
+    "sandbox/stage3_spatial/ports_20260923/diagnose_electrical.py": "c1de99a84a7944dff52b63f1b66369cba7a0eb97db010ab945a083ca1d3977e1",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md": "abd65bad241de5873b497baad90195b7cafa936c01468675cabe31c3f38ed3e5"
+  },
+  "parameters": {
+    "Lk_ext_H": 7e-09,
+    "R_bias_ohm": 10000.0,
+    "L_bias_H": 1e-06,
+    "R_load_ohm": 50.0,
+    "C_couple_F": 1e-10,
+    "V_bias_V": 0.3
+  },
+  "tolerances": {
+    "graph_relative": 1e-11,
+    "circuit_state_scaled": 1e-08,
+    "circuit_instantaneous_power_relative": 1e-12
+  },
+  "scope": "Graph algebra and a prescribed resistor driving the external circuit; no detector evolution.",
+  "Lk_ext_scope": "Explicit diagnostic input only; resolved/exterior inductance partition is not identified.",
+  "environment": {
+    "python": "3.10.20",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "matplotlib": "3.10.8"
+  }
+}

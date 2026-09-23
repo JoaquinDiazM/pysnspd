@@ -1,0 +1,210 @@
+{
+  "status": "PASS_MIXED_INSTANTANEOUS_IDENTITIES",
+  "mesh": {
+    "id": "m0",
+    "elements_x": 2,
+    "elements_y": 1,
+    "left_elements": 1,
+    "right_elements": 1,
+    "longitudinal_element_length_m": 1.8e-07
+  },
+  "profile": {
+    "id": "smooth_perturbation",
+    "amplitude_perturbation": -0.001,
+    "phase_perturbation": 0.002
+  },
+  "scope": "Energía espacial 2D+1D y álgebra instantánea KWT, potencial, calor y circuito CM.9. Sin integración temporal ni transporte cinético 2D.",
+  "runtime_seconds": 66.69513054518029,
+  "dofs": 45,
+  "quadrature_points": 55,
+  "edges": 76,
+  "catalogue_mode": "EXACT_CORRECTED_CAUSAL_EXACT_KEY_CACHE",
+  "causal_evaluations": 932,
+  "cache_hits": 278,
+  "direct_reference_probes": [
+    {
+      "reason": "minimum_amplitude",
+      "quadrature_index": 27,
+      "amplitude": 0.994218191391973,
+      "gamma": 0.005470732041541879,
+      "metrics": {
+        "pointwise_relative_energy": 1.2120687802103148e-14,
+        "weighted_relative_kernel_L1": 7.417064124648148e-16,
+        "moment_error_over_absolute_weighted_reference": 1.2491883588593259e-16,
+        "relative_principal_matrix": 0.0
+      },
+      "sign_margin": 1.570795746374484,
+      "passed": true
+    },
+    {
+      "reason": "maximum_Gamma",
+      "quadrature_index": 40,
+      "amplitude": 0.9952899729929798,
+      "gamma": 0.005616080974833832,
+      "metrics": {
+        "pointwise_relative_energy": 3.3947215646927436e-15,
+        "weighted_relative_kernel_L1": 9.188570884542078e-16,
+        "moment_error_over_absolute_weighted_reference": 4.815168975393109e-17,
+        "relative_principal_matrix": 0.0
+      },
+      "sign_margin": 1.5707957706808253,
+      "passed": true
+    },
+    {
+      "reason": "maximum_transverse_q",
+      "quadrature_index": 28,
+      "amplitude": 0.9956851593698615,
+      "gamma": 0.00547351121590906,
+      "metrics": {
+        "pointwise_relative_energy": 1.835699052458614e-14,
+        "weighted_relative_kernel_L1": 8.779383545311667e-16,
+        "moment_error_over_absolute_weighted_reference": 3.113333809476195e-16,
+        "relative_principal_matrix": 0.0
+      },
+      "sign_margin": 1.5707957543001414,
+      "passed": true
+    }
+  ],
+  "metrics": {
+    "noether_absolute": 9.487835741366112e-17,
+    "electrical_current_relative": 1.9621976942277004e-16,
+    "instantaneous_power_relative": 1.2748175275704536e-18,
+    "port_power_relative": 6.486867014276544e-16,
+    "heat_moment_relative": 7.596913495143194e-17,
+    "temperature_absolute": 1.817990202823694e-15,
+    "interface_trace_absolute": 0.0,
+    "interface_force_absolute": 2.7755575615628914e-17
+  },
+  "derivative_checks": {
+    "performed": true,
+    "status": "PASS",
+    "registered_case": {
+      "mesh": "m0",
+      "profile": "smooth_perturbation"
+    },
+    "force": {
+      "status": "PASS",
+      "predicted": 0.004375953134315401,
+      "fd_estimates": [
+        0.004375953137033169,
+        0.004375953127559266
+      ],
+      "error": 6.756134714180906e-12,
+      "reference_uncertainty": 9.473902565226844e-12,
+      "tolerance": 4.4759531275592666e-07
+    },
+    "current": {
+      "status": "PASS",
+      "predicted": 1.080269783751235,
+      "fd_estimates": [
+        1.080269783753825,
+        1.0802697836969817
+      ],
+      "error": 5.4253268544357525e-11,
+      "reference_uncertainty": 5.6843418860808015e-11,
+      "tolerance": 0.00010803697836969817
+    }
+  },
+  "minimum_principal_eigenvalue": 1.570796326794896,
+  "maximum_principal_uncertainty": 2.90210206299044e-07,
+  "internal_energy_bar": -42.28156632192205,
+  "free_energy_bar": -42.33073606931409,
+  "gradient_remainder_bar": 0.013344816562405756,
+  "energy_scale_J": 1.61146402752671e-20,
+  "maximum_material_speed_bar": 2.853328710106515,
+  "maximum_field_speed_bar": 3.745684865881117,
+  "potential": {
+    "Vdev_V": -0.00029509081341501527,
+    "port_power_W": -2.5221936169692395e-09,
+    "normal_joule_W": 2.8130324411204566e-11,
+    "superconducting_power_W": -2.550323941380445e-09
+  },
+  "interface_reactions_bar": {
+    "left_lead": {
+      "real": 0.0001348048696706997,
+      "imag": 0.1772419304234397
+    },
+    "left_rectangle": {
+      "real": 0.000134811062064085,
+      "imag": -0.1772419918055128
+    },
+    "right_rectangle": {
+      "real": 0.1629535959632734,
+      "imag": -0.0697196299472807
+    },
+    "right_lead": {
+      "real": -0.16305951903117777,
+      "imag": 0.06947167283073981
+    },
+    "interpretation": "Restricted integrated force contributions, including endpoint quadrature local terms; not isolated pointwise continuum tractions. Their sums are the shared DOF forces."
+  },
+  "energy_rate": {
+    "field_rate_bar": -1.1698002600161928,
+    "explicit_link_work_bar": 0.0,
+    "electron_population_rate_bar": 1.0132845963783066,
+    "phonon_rate_bar": 0.0,
+    "total_rate_bar": -0.15651566363788616
+  },
+  "CM9": {
+    "domain_energy_rate_W": -2.5221936169692387e-09,
+    "combined_energy_rate_W": -3.7268771791483697e-13,
+    "expected_external_rate_W": -3.726877179157872e-13,
+    "device_port_residual_W": 8.271806125530277e-25,
+    "circuit_residual_W": 0.0,
+    "residual_W": 9.502176702185384e-25
+  },
+  "circuit": {
+    "parameters": {
+      "Lk_ext_H": 9.666757458681755e-09,
+      "R_bias_ohm": 10000.0,
+      "L_bias_H": 1e-06,
+      "R_load_ohm": 50.0,
+      "C_couple_F": 1e-10,
+      "V_bias_V": 0.08633512818265575
+    },
+    "state": [
+      8.633512818265575e-06,
+      8.547177690082918e-06,
+      0.0
+    ],
+    "state_derivative_SI": [
+      -4.31675640913283,
+      30972.905972234665,
+      863.3512818265659
+    ],
+    "outputs": {
+      "Ib_A": 8.633512818265575e-06,
+      "Is_A": 8.547177690082918e-06,
+      "I_RF_A": 8.633512818265659e-08,
+      "vc_V": 0.0,
+      "Vd_V": 4.31675640913283e-06,
+      "Vdev_V": -0.00029509081341501527,
+      "Vout_V": 4.31675640913283e-06
+    },
+    "CM8": {
+      "stored_energy_rate_W": 2.521820929251324e-09,
+      "device_power_W": -2.5221936169692395e-09,
+      "bias_joule_W": 7.453754358315599e-07,
+      "load_joule_W": 3.726877179157872e-13,
+      "source_power_W": 7.453754358315599e-07,
+      "residual_W": 0.0
+    }
+  },
+  "heat": {
+    "condensate_rate_bar": 1.0115389586271257,
+    "normal_rate_bar": 0.0017456377511807849,
+    "deposited_rate_bar": 1.0132845963783066,
+    "moment_residual_bar": 7.697835424647081e-17
+  },
+  "artifacts_sha256": {
+    "preparation.npz": "2e026146110e1b6d8fe9bc1c3f33041d1ef662dfe281fd8d1b97dda7396c034f",
+    "initial.npz": "af7533839d9606596e095ea5cb775c1204224289255bea66d0cc48bfae399634",
+    "arrays.npz": "333e0c87a5179427f12ea503b2cfca38f382d07558bb33e3e630716f2804ad7e",
+    "derivative_checks.json": "c30261f5a083e5666cd86657a00593828d91aa8868fb0c27dca3eb51f953f359",
+    "direct_reference_probes.json": "0063ffbcdb4da107de1665ac086013443f2ab74f584e1e02bf522d2a0568536a"
+  },
+  "stage3_closed": false,
+  "temporal_admission": false,
+  "kinetic_interface_admission": false,
+  "production": false
+}

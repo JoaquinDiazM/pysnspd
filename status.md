@@ -1,12 +1,14 @@
 # pySNSPD publication status
 
-Last updated: 2026-09-22
+Last updated: 2026-09-23
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: release 1.0.0 preserves the thesis implementation and publishes the
-complete model 0.4 documentation, including notebook E-r02. The first experimental
-implementation stage follows the release tag: admit data and build the catalogue.
+Current phase: experimental stage 3 development is closed within the scope
+explicitly authorized by the user; stage 3.5 research is open. The weak coupled
+transient and kinetic 2D–1D interface remain requirements before stages 4–5.
+Release 1.0.0 still preserves the thesis implementation and model 0.4 documentation,
+including notebook E-r02. No production promotion has occurred.
 
 ## Release 1.0.0 and next-stage boundary
 
@@ -21,12 +23,13 @@ states, and the supplied phonon DOS is not normalized with verified units. These
 findings remain explicit in A-D. The pedagogical notebook is E-r02, with eight active
 classes and 24 unanswered activities, independently versioned from the physics.
 
-Computations expected to exceed five minutes are prepared in
-`/home/jdiaz/GEMINGA_COMMANDS.md` for the user. Its active version contains
-only the current continuation and lightweight checks. The original notebook
-is archived separately; no session-management instructions remain active.
+No long calculation is currently pending. Future computations expected to exceed
+five minutes must be recorded in `/home/jdiaz/GEMINGA_COMMANDS.md` and supplied
+in the chat as exact copyable commands, with their purpose, outputs and estimated
+resources. The user launches them; completed batches are not automatically repeated.
+The notebook preserves historical commands separately and lists lightweight checks.
 
-## Experimental stage 2 — development closed; stage 3 prepared
+## Experimental stage 2 — retained development closure
 
 The user-authorized [development closure](docs/implementation/stage2/closure_20260922/closure_decision.json)
 accepts the implemented conservative events, fixed-energy transport, KWT, BGK,
@@ -44,11 +47,34 @@ by 0.004565%, exceeding its auxiliary 0.0025% budget. Its original FAIL remains;
 the [strict numerical admission record](docs/implementation/stage2/stage2_admission.json)
 does not become a complete dynamic mesh certificate.
 
-The [stage 3 sequence](docs/implementation/stage3/README.md) is prepared and has
-not started: spatial energy and stability, boundaries/reservoirs, charge
-conservation, the thesis three-state circuit, then weak dynamics and localized
-synthetic deposition. Each experiment will register its own scope and checks.
-No further long run is requested now; production solvers and `v1.0.0` are unchanged.
+## Experimental stage 3 — development closed; stage 3.5 research open
+
+The [user-authorized closure](docs/implementation/stage3/closure_20260923/README.md)
+accepts the static spatial work and instantaneous material/potential/KWT/heating,
+three-state circuit and prescribed-reservoir balances within their recorded scope.
+The completed batch contains six mixed-domain snapshots and took 355.651 s.
+For the perturbed profile, medium-to-fine differences are 0.043961% in total
+condensate heating and 0.96757% in maximum material speed. Those are descriptive
+mesh sensitivities; no retrospective accuracy threshold was introduced.
+The focused regression passes 243 tests and 46 subtests in 10.29 s.
+
+The [final report](docs/implementation/stage3/closure_20260923/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.md)
+([PDF](output/pdf/implementation/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.pdf))
+and [current sequence](docs/implementation/SECUENCIA_VIGENTE.md) distinguish
+development closure from completion of the original stage 3 contract. The latter,
+temporal admission, full D.27, kinetic-interface admission and production promotion
+remain false. A current-dependent reservoir, conservative equal-energy interface
+transport and a weak coupled trajectory with integrated balances remain required
+before stages 4–5. No detector pulse, latency or hotbelt formation is claimed.
+
+[Stage 3.5](docs/implementation/stage3_5/README.md) opens documentary research into
+the model's physical domain of confidence: 127 parameter entries in 15 families,
+with separate Korzh and Allmaras experimental/model sources. No ranges or sweep
+are adopted. L2D/W = 1.5–6 is only an example to investigate; transverse 1D
+sufficiency must be tested during the future transient. Physical scope is distinct
+from a statistical confidence interval. No long calculation is pending. The new
+delivery checker is `sandbox/stage3_spatial/closure_20260923/verify_delivery.py`;
+the completed six-case batch must not be repeated. `v1.0.0` remains unchanged.
 
 The earlier [RK4/SSP review](docs/implementation/stage2/review_20260922/README.md)
 and [scope review](docs/implementation/stage2/practical_review_20260922/validation_scope_review.md)

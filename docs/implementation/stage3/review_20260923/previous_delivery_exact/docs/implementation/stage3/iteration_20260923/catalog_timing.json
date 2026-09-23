@@ -1,0 +1,459 @@
+{
+  "scope": "Timing only; no spatial verdict",
+  "runtime_seconds": 0.3092363588511944,
+  "electronic_nodes": 630,
+  "host": "geminga",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "catalog_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+  "amplitude_support": [
+    0.08,
+    1.5
+  ],
+  "gamma_support": [
+    0.0,
+    1.2
+  ],
+  "delta0_J": 2.1065301756880164e-22,
+  "D_m2_s": 0.0001581,
+  "N0_per_J_m3": 5.174479102201753e+46,
+  "metadata": {
+    "Tc_K": 8.65,
+    "admission_status": "PENDING_ALL_ACCEPTANCE_GATES",
+    "amplitude_self_consistency": "not imposed",
+    "array_units": {
+      "count_nodes": "Delta0",
+      "count_weights": "Delta0",
+      "delta_energy_derivatives": "d(E/Delta0)/d(absDelta/Delta0) at fixed physical Gamma and count",
+      "excitation_energies": "Delta0",
+      "gamma_energy_derivatives": "d(E/Delta0)/d(Gamma/Delta0) at fixed x",
+      "gamma_energy_offsets": "Delta0; E(Gamma)-E(0) at fixed count and amplitude",
+      "gamma_ratio_axis": "dimensionless Gamma/absDelta",
+      "potential": "N0 Delta0^2"
+    },
+    "builder_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "count_breaks": [
+      0.0,
+      1e-06,
+      1e-05,
+      3e-05,
+      0.0001,
+      0.0003,
+      0.001,
+      0.003,
+      0.01,
+      0.02,
+      0.05,
+      0.1,
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0,
+      12.0
+    ],
+    "count_max": 11.999999999999996,
+    "count_order": 180,
+    "count_order_per_segment": 10,
+    "count_quadrature": "explicit nodes and weights (builder uses Gauss-Legendre)",
+    "energy_representation": "direct E_BCS analytic plus compensated Gamma energy correction",
+    "eta_over_Delta0": 1e-08,
+    "experimental": true,
+    "gamma_coordinate_scale": 5.443310539518174e-13,
+    "gamma_offset_diagnostics": [
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.08,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 1.2747106797648563e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 1.2753686995381486e-14,
+        "max_abs_transition_log_discrepancy": 1.7763568309576565e-15,
+        "minimum_energy_increment": 7.473736213237103e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 216,
+        "runtime_seconds": 2.623401278629899,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 9.133209211741505
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.09608433007998939,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 3.552713678800411e-15,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 3.552713678800501e-15,
+        "max_abs_transition_log_discrepancy": 3.552713673051887e-15,
+        "minimum_energy_increment": 7.512842292722866e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 216,
+        "runtime_seconds": 2.6165809999220073,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 11.730126733377968
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.11540248108650443,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 2.2124265028282336e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 2.2121193765656244e-14,
+        "max_abs_transition_log_discrepancy": 1.7763568289700523e-15,
+        "minimum_energy_increment": 7.804801249733373e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 208,
+        "runtime_seconds": 2.477645738981664,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 10.866790788258495
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.1386046260595678,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 1.0904143072971705e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 1.0907941216942163e-14,
+        "max_abs_transition_log_discrepancy": 1.7763568217197382e-15,
+        "minimum_energy_increment": 8.359438974370192e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 208,
+        "runtime_seconds": 2.5817599669098854,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 10.297748677963263
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.16647165801151267,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 2.1212822919603684e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 2.120525977034049e-14,
+        "max_abs_transition_log_discrepancy": 4.9507595047542936e-15,
+        "minimum_energy_increment": 9.134596690163477e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 200,
+        "runtime_seconds": 2.496037197764963,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 1.6072148498995695e-06
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.19994147171676618,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 3.805467232651641e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 3.805289416902724e-14,
+        "max_abs_transition_log_discrepancy": 1.7763568145080075e-15,
+        "minimum_energy_increment": 9.943255385724825e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 200,
+        "runtime_seconds": 2.4999017133377492,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 11.730126733377968
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.2401405295639078,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 2.972215318811728e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 2.9726221484338566e-14,
+        "max_abs_transition_log_discrepancy": 1.7763568034924065e-15,
+        "minimum_energy_increment": 1.077731431875506e-09,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 192,
+        "runtime_seconds": 2.4870794569142163,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 11.730126733377968
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.28842177385252465,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 1.636435354654357e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 1.637578961322106e-14,
+        "max_abs_transition_log_discrepancy": 2.6645350493033047e-15,
+        "minimum_energy_increment": 1.1644063491189627e-09,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 192,
+        "runtime_seconds": 2.5120653570629656,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 7.358819136598049
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.3464101615137754,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 2.6858370160669107e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 2.6867397195928788e-14,
+        "max_abs_transition_log_discrepancy": 3.5527135848185433e-15,
+        "minimum_energy_increment": 1.1445631109552323e-09,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 192,
+        "runtime_seconds": 2.5343436393886805,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 10.866790788258495
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.4160573537744004,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 3.1947436746211285e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 3.197442310920451e-14,
+        "max_abs_transition_log_discrepancy": 1.7763566800886634e-15,
+        "minimum_energy_increment": 9.968286196482268e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 184,
+        "runtime_seconds": 2.4148986977525055,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 10.297748677963263
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.49970740140333014,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 8.910256303976924e-15,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 8.93729534823251e-15,
+        "max_abs_transition_log_discrepancy": 2.969702678030681e-14,
+        "minimum_energy_increment": 8.826435693443102e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 184,
+        "runtime_seconds": 2.505356623791158,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 1.6029521585048776e-07
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.6001756362481416,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 1.1431235683286394e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 1.1435297153639112e-14,
+        "max_abs_transition_log_discrepancy": 1.7763566151063319e-15,
+        "minimum_energy_increment": 7.981646454879865e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 176,
+        "runtime_seconds": 2.341920250095427,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 11.730126733377968
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.7208434242404261,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 2.9284976058940966e-13,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 2.928768338961163e-13,
+        "max_abs_transition_log_discrepancy": 4.2396678281169016e-15,
+        "minimum_energy_increment": 7.405489554912492e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 176,
+        "runtime_seconds": 2.452055796980858,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 1.1349366333110156e-05
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 0.8657719688838367,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 1.3550631517973963e-13,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 1.3555823130673161e-13,
+        "max_abs_transition_log_discrepancy": 3.5527126899911364e-15,
+        "minimum_energy_increment": 7.078572172858344e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 176,
+        "runtime_seconds": 2.5039461771957576,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 9.133209211741505
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 1.039838995402961,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 3.1196021445343825e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 3.108624468950438e-14,
+        "max_abs_transition_log_discrepancy": 1.7763561661157422e-15,
+        "minimum_energy_increment": 6.98989088832036e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 168,
+        "runtime_seconds": 2.4068791228346527,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 11.730126733377968
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 1.2489029158042833,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 2.5670350318621683e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 2.5757174171303632e-14,
+        "max_abs_transition_log_discrepancy": 1.7763558681581047e-15,
+        "minimum_energy_increment": 7.136462532031373e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 168,
+        "runtime_seconds": 2.4987386912107468,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 11.730126733377968
+      },
+      {
+        "anchor_max_abs": 0.0,
+        "delta": 1.5,
+        "eta": 1e-08,
+        "interpretation": "Nodal potential/quadrature diagnostic; not final integrated-current error.",
+        "max_abs_direct_log_discrepancy_below_threshold": 3.422202048814556e-14,
+        "max_abs_reconstructed_nodal_energy_discrepancy": 3.419486915845482e-14,
+        "max_abs_transition_log_discrepancy": 1.2568836439314087e-14,
+        "minimum_energy_increment": 7.523219824889793e-10,
+        "offset_units": "Delta0",
+        "order": 8,
+        "quadrature_spectrum_calls": 160,
+        "runtime_seconds": 2.2133277622051537,
+        "shape": [
+          148,
+          180
+        ],
+        "threshold": 1e-10,
+        "transition_worst_count": 1.1174206216727272e-06
+      }
+    ],
+    "gamma_slope_reference": "-N2 R2/N1 from the same causal finite-eta spectrum at each node",
+    "gap_ratio": 1.7638769888620456,
+    "interpolant": "closed-form vacuum energy and its derivatives",
+    "interpolation_field_coordinate": "r=Gamma/absDelta; physical support from vacuum axes",
+    "interpolation_policy": "common energy; Hermite Delta with exact nodal amplitude slope; Hermite Gamma coordinate with causal nodal slope; positivity and monotonicity checked without repair",
+    "inversion_method": "causal batched quartic plus safeguarded vector Newton in state count",
+    "iteration": "stage1_r2",
+    "material_status": "reference electronic scales; not admission of absolute NbN phonon data",
+    "model_documentation": "0.4",
+    "normal_endpoint": "exact separate state; no interpolation from zero to first positive node",
+    "occupation_policy": "p(x) held fixed; no thermal reduction",
+    "production_connected": false,
+    "quadrature_description": "common segmented Gauss-Legendre nodes fixed across all fields",
+    "ratio_derivative_chain": "E_Delta|r=E_Delta|Gamma+r E_Gamma; E_r=Delta E_Gamma; physical forces restore chain",
+    "reference_hashes": {
+      "docs/implementation/stage1_r2/acceptance_criteria.json": "ef8164fe9f7d7d27f4ecbba1a318fc8642ea3dcc9723dd2e1a9d9c1447dc6bfb"
+    },
+    "refinement_new_ratio_nodes": [
+      0.0002612940447849904
+    ],
+    "refinement_offset_policy": "below physical Gamma=1e-10 integrate E_Gamma from existing left anchor with Gauss8; otherwise use direct E-E_BCS",
+    "refinement_policy": "old nodes retained exactly; new nodes from the same causal equations",
+    "refinement_seed_sha256": "ff6499f07f678ab3dc9b9028317286fbd35d30d06489074ed0f786f3aef247dc",
+    "schema": "pysnspd.experimental.occupation_catalog.v5",
+    "scope": "uniform fixed-p finite-count quadrature; no spatial PDE",
+    "spectral_policy": "direct complex causal solve; no independent c/s interpolation",
+    "units": {
+      "N0": "one spin / (J m^3)",
+      "axes": "Delta0",
+      "potential": "N0 Delta0^2"
+    },
+    "vacuum_evaluation": "closed_form"
+  },
+  "rows": [
+    {
+      "amplitude": 0.9,
+      "gamma": 0.0,
+      "seconds": 0.00012440374121069908,
+      "finite": true
+    },
+    {
+      "amplitude": 0.9,
+      "gamma": 0.005,
+      "seconds": 0.11935156583786011,
+      "finite": true
+    },
+    {
+      "amplitude": 0.93,
+      "gamma": 0.007,
+      "seconds": 0.12279862398281693,
+      "finite": true
+    }
+  ]
+}

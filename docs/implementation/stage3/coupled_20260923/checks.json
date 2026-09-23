@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "passed_tests": 102,
+  "passed_subtests": 17,
+  "runtime_seconds": 0.59,
+  "environment": "Geminga snspd Python, OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1, timeout240",
+  "command": "python -m pytest -q tests/test_experimental_mixed_spatial.py tests/test_experimental_spatial_dynamics.py tests/test_experimental_seeded_count_catalog.py tests/test_experimental_seeded_count_catalog_contract.py tests/test_experimental_electrical_ports.py tests/test_experimental_local_energy_patch.py tests/test_experimental_local_energy_patch_guards.py tests/test_experimental_monotone_energy_patch.py",
+  "sources": {
+    "pysnspd/experimental/mixed_spatial.py": "69f3bd210f3fe60e6a09d4cf6de405d011d82404b525d6ffc07a76af55d523a8",
+    "tests/test_experimental_mixed_spatial.py": "8d6a0559cb972e8a6c56d1d9af007a072dfabf99772b0a8f6add969171f00c57",
+    "pysnspd/experimental/spatial_dynamics.py": "1de2f9a87dfab4b0afc7d94db9494ea7fd1d5976eda03862a6f8f79d48d374ba",
+    "tests/test_experimental_spatial_dynamics.py": "02d82b76bed1a227ae6c6f58cb57065a29a8dcc010a28e87c91a7a8d80e3d14d",
+    "pysnspd/experimental/seeded_count_catalog.py": "58992d87883a59d2502fee214d232471e078e5b3dfe2e49566598963946458c1",
+    "tests/test_experimental_seeded_count_catalog.py": "53ef1f6467eb6d7bb287a069e94210afcaf0aa373fd53e4ccbd1d057305dea8e",
+    "tests/test_experimental_seeded_count_catalog_contract.py": "236e978f6ffbdad5345f596da4b63f66dcfe61e7655256efb63f3c8a5ff2c0c1",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "tests/test_experimental_electrical_ports.py": "4a68166755bb3492f31a4bfb97d98ae1193d1e2db15e9d8bb6d9e13a916cf39d",
+    "pysnspd/experimental/local_energy_patch.py": "3017898b7bdc64f44ac9e7534b9fdd4caa20e9c596c064efdf04123a59a5f2bc",
+    "tests/test_experimental_local_energy_patch.py": "d1a5fae6b12fd76e5d79e038e832867fc1ae3e02940bd76c889d9a0f3d017107",
+    "tests/test_experimental_local_energy_patch_guards.py": "4849b89bf0010593eb00693b69a484dda142bce51e4f18155ee00972371ac254",
+    "pysnspd/experimental/monotone_energy_patch.py": "865a958aafd675b2615e76c7a12bd258a452a79cb76f08b1efef9ae1b5da5db8",
+    "tests/test_experimental_monotone_energy_patch.py": "be8f765c97c4d2a38f9bb95cf357fed664156958ca4ff73afbd55a4b22b25747"
+  },
+  "log_sha256": "6b6b868d54ed18e6b142c0d183ea28036d35d5f5cec2d048e7f5277100538270",
+  "reservoir_tests": {
+    "passed_tests": 5,
+    "passed_subtests": 6,
+    "runtime_seconds": 0.09,
+    "log_sha256": "50c73310082d34f7d02f16934814bf7249e8b17b00a382790630be0c65fa3391",
+    "sources": {
+      "pysnspd/experimental/reservoir_spatial_dynamics.py": "52e03e829e285c8c7f429b5348c6ab42fde3274cc370a0fe93525b4913d219b1",
+      "tests/test_experimental_reservoir_spatial_dynamics.py": "bcd6e229e1f5fb09aaf080ae00deb5c0b0464756da118eca6393545a82102785"
+    }
+  }
+}

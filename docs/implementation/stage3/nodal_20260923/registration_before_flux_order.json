@@ -1,0 +1,257 @@
+{
+  "schema": "pysnspd.stage3.nodal_registration.v1",
+  "registration_id": "stage3a-nodal-fourth-20260923",
+  "status": "FROZEN_BEFORE_PHYSICAL_CASE_RESULTS",
+  "date": "2026-09-23",
+  "frozen_at_utc": "2026-09-23T15:57:08.429645+00:00",
+  "repository_before_iteration": "12c41b120858fb8643a6862b8fb805aa3dda5e26",
+  "scope": "Segundo ensayo numérico 3A: energía nodal con diferencias covariantes de cuarto orden y Laplaciano positivo. Mismos seis perfiles físicos, poblaciones y tolerancia espacial del 1 %. Sin tiempo, bordes físicos ni circuito.",
+  "decision_to_support": "Determinar si la implementaciÃ³n conserva las derivadas y signos del funcional comÃºn, reproduce el gradiente espacial conocido con precisiÃ³n Ãºtil y admite los estados suaves registrados, para preparar el trabajo de bordes 3B.",
+  "preregistration_policy": {
+    "cases_and_thresholds_frozen_before_case_outputs": true,
+    "implementation_source_hashes": "Se congelarÃ¡n en el manifiesto de ejecuciÃ³n despuÃ©s de escribir y revisar la implementaciÃ³n, antes de ejecutar los casos. El manifiesto incluirÃ¡ el SHA256 de este registro.",
+    "changes": "Un cambio posterior a la observaciÃ³n de resultados necesita un registro nuevo que preserve Ã©ste y sus fallos. No se elevan tolerancias para reclasificar un resultado.",
+    "previous_entry_contract": "La propuesta del 22 de septiembre describÃ­a una etapa preparada y no iniciada. Este registro concreta el ensayo 3A autorizado ahora; no altera el cierre ni los resultados histÃ³ricos de etapa 2.",
+    "criteria_authorship": "Propuesta tÃ©cnica de los agentes para la tarea autorizada. No atribuye al usuario aprobaciÃ³n explÃ­cita de cada cifra numÃ©rica."
+  },
+  "geometry": {
+    "length_m": 3.6e-07,
+    "width_m": 1.2e-07,
+    "thickness_m": 7e-09,
+    "cross_section_m2": 8.4e-16,
+    "Tc_K": 8.65,
+    "description": "ReducciÃ³n longitudinal 1D de dimensiones tomadas del segmento resuelto de la memoria; la periodicidad es un control diagnÃ³stico nuevo y no un borde del dispositivo."
+  },
+  "cell_counts": [
+    8,
+    16,
+    32
+  ],
+  "normalization": {
+    "field": "z=Delta/Delta0; Delta0 es la escala del catÃ¡logo",
+    "coordinate": "X=x/ell0, ell0=sqrt(hbar*D/(2*kB*Tc))",
+    "bcs_ratio": "r=Delta0/(kB*Tc)",
+    "regularization_delta_bar": 0.1,
+    "gradient_coefficient": "kappa=pi/4",
+    "q_delta": "q_delta=Im(conj(z)*d)/(abs(z)^2+0.1^2)",
+    "gamma_bar": "Gamma/Delta0=q_delta^2/r",
+    "density": "Densidad CONTINUA: u_bar(a,Gamma_bar,p)+kappa*(abs(dz/dX)^2-a^2*q_delta^2). La energía discreta usa el término integrado Re(z^dagger L4 z) declarado en total_energy; no reemplazarlo por abs(D4z)^2.",
+    "total_energy": "U_bar=h*sum_nodes[u(a_i,Gamma_i,p_i)-kappa*a_i^2*q_i^2]+kappa*h*Re(z^dagger*L4*z)",
+    "force": "Derivada cartesiana de U_bar; la densidad de fuerza nodal se obtiene dividiendo por h. La fuerza compleja delta_U/delta_Delta_conjugate lleva el factor 1/2 respecto del gradiente cartesiano.",
+    "phase_link": "U_link=exp(i*alpha). alpha representa el incremento de fase adicional; un potencial vector fÃ­sico corresponde a alpha_A=-(2e/hbar)*integral(A dx).",
+    "current": "J_link=partial(U_bar)/partial(alpha_link). I=(2e/hbar)*(N0*Delta0^2*S*ell0)*J_link con sentido positivo de izquierda a derecha."
+  },
+  "spatial_discretization": {
+    "scheme": "Potencial y poblaciones nodales; derivada covariante D4 antiautoadjunta y Laplaciano positivo L4, ambos de cuarto orden.",
+    "definitions": "Cz_i=exp(i*alpha_i)*z_(i+1), con torsión en el cierre. D4=[8(C-C†)-(C²-C†²)]/(12h), L4=[30I-16(C+C†)+(C²+C†²)]/(12h²); a_i=abs(z_i), q_i=Im(conj(z_i)*(D4z)_i)/(a_i²+0.01).",
+    "continuous_profile": "xi_j=2*pi*j/N, X_j=j*L/(N*ell0); z_j=(amplitude_base+amplitude_modulation*cos(xi_j))*exp(i*(q_bare_ell0*X_j+phase_modulation*sin(xi_j)))",
+    "boundary": "Periodicidad torcida: el vecino del Ãºltimo enlace es exp(i*twist)*z_0, twist=q_bare_ell0*L/ell0. No duplicar el twist en todos los enlaces cuando ya estÃ¡ presente en z_j.",
+    "same_profile_under_refinement": true,
+    "uniform_reference_warning": "La amplitud nodal a es exacta para una hélice. El símbolo D4 es i*(8sin(alpha)-sin(2alpha))/(6h); el de L4 es (30-32cos(alpha)+2cos(2alpha))/(12h²). El oráculo de energía/fuerza/corriente deriva estas expresiones a p fijo. No confundir el símbolo discreto con q continuo.",
+    "positive_gradient": "Para t=sin²(kh/2), L4-D4†D4 tiene símbolo16*t³*(2+t)/(9h²)>=0; L4 no pierde el modo alternante. La regularización garantiza a²*q²<=abs(D4z)². No se usa solamente abs(D4z)² como energía de gradiente.",
+    "current": "Derivar respecto de cada enlace fundamental alpha_i, repartiendo también el aporte de las rutas de dos enlaces. Los estados son nodales; la corriente conjugada sigue en caras físicas."
+  },
+  "catalogue": {
+    "source": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "source_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "representation": "Malla complementaria directa refined_count_catalog(base, refinement=1), 630 nodos. CatÃ¡logo R2 original preservado.",
+    "electronic_nodes": 630,
+    "support": "Toda consulta, incluidos los puntos de diferencias finitas, debe permanecer dentro de vacuum.delta_axis y vacuum.gamma_axis. El regulador causal y las escalas materiales se heredan y se registran en las salidas.",
+    "expected_case_amplitudes": [
+      0.87,
+      0.93
+    ],
+    "expected_field_scope": "Mismos flujos débiles; Gamma calculado con D4z en cada nodo.",
+    "normal_point": "No se usa el punto normal ni amplitudes de nÃºcleo en los seis casos. El control negativo usa a=0.60, dentro del soporte.",
+    "cache_policy": "Cache exacta de kernels dependientes de amplitud y Gamma dentro de una evaluaciÃ³n, sin redondear campos ni poblaciones. Las ocupaciones se ponderan de nuevo; no reutilizar momentos de otra poblaciÃ³n. Registrar llamadas y coste."
+  },
+  "population_preparation": {
+    "reference_amplitude": 0.9,
+    "reference_q_bare_ell0": 0.1,
+    "reference_gamma_bar": "[(0.9^2/(0.9^2+0.1^2))*0.1]^2/r",
+    "kBT_over_Delta0": 0.12,
+    "thermal": "p_ref(x)=1/(exp(E_ref(x)/0.12)+1), con E_ref del catÃ¡logo complementario en el campo de referencia continuo registrado. Se prepara una sola vez y se mantiene igual en todos los nodos y durante todas las variaciones de campo.",
+    "nonthermal": "p_ref(x)+0.02*exp(-((x-0.035)/0.01)^2)",
+    "nonthermal_count_center": 0.035,
+    "nonthermal_count_width": 0.01,
+    "nonthermal_bump_amplitude": 0.02,
+    "vacuum": "p(x)=0",
+    "admission": "Todos los valores deben ser finitos y pertenecer a [0,1]. No se recortan. La suma tÃ©rmica mÃ¡s la perturbaciÃ³n registrada estÃ¡ acotada a priori por 0.52.",
+    "derivative_constraint": "Durante cada variaciÃ³n se congela p(x). Recalcular una Fermi-Dirac a campo perturbado evaluarÃ­a otra derivada y no implementarÃ­a D.8-D.10."
+  },
+  "cases": [
+    {
+      "id": "uniform_vacuum",
+      "amplitude_base": 0.9,
+      "amplitude_modulation": 0.0,
+      "phase_modulation": 0.0,
+      "q_bare_ell0": 0.1,
+      "occupation": "vacuum"
+    },
+    {
+      "id": "uniform_thermal",
+      "amplitude_base": 0.9,
+      "amplitude_modulation": 0.0,
+      "phase_modulation": 0.0,
+      "q_bare_ell0": 0.1,
+      "occupation": "thermal"
+    },
+    {
+      "id": "weak_amplitude_thermal",
+      "amplitude_base": 0.9,
+      "amplitude_modulation": 0.03,
+      "phase_modulation": 0.0,
+      "q_bare_ell0": 0.1,
+      "occupation": "thermal"
+    },
+    {
+      "id": "weak_phase_thermal",
+      "amplitude_base": 0.9,
+      "amplitude_modulation": 0.0,
+      "phase_modulation": 0.1,
+      "q_bare_ell0": 0.1,
+      "occupation": "thermal"
+    },
+    {
+      "id": "weak_phase_nonthermal",
+      "amplitude_base": 0.9,
+      "amplitude_modulation": 0.0,
+      "phase_modulation": 0.1,
+      "q_bare_ell0": 0.1,
+      "occupation": "nonthermal"
+    },
+    {
+      "id": "weak_amplitude_vacuum",
+      "amplitude_base": 0.9,
+      "amplitude_modulation": 0.03,
+      "phase_modulation": 0.0,
+      "q_bare_ell0": 0.0,
+      "occupation": "vacuum"
+    }
+  ],
+  "fd_steps": [
+    0.001,
+    0.0005,
+    0.00025
+  ],
+  "derivative_checks": {
+    "reference": "D5(h)=[U(-2h)-8U(-h)+8U(h)-U(2h)]/(12h), por una ruta que consulta Ãºnicamente la energÃ­a discreta, sin usar las fuerzas/corrientes analÃ­ticas para formar la referencia.",
+    "directions": "Direcciones cartesianas y de fase de enlace deterministas, normalizadas con max(abs(direction))=1, con variaciones no uniformes y al menos una componente media no nula. Registrar las direcciones completas en el manifiesto antes de ejecutar los casos.",
+    "scope": "Diferencias independientes de energía para los seis casos en N=16 y el piloto weak_phase_thermal N=8. N=8/32 del lote sin esas 24 consultas redundantes conservan pruebas gauge, oráculo, D.36 y resultados espaciales. Guardar NOT_REPEATED_UNIT_AND_N16_REFERENCES, no inventar un pase de FD en puntos no calculados.",
+    "analytic_force_pairing": "sum_j(Re(G_j)*Re(v_j)+Im(G_j)*Im(v_j)), donde G es el gradiente cartesiano de U_bar, no la mitad compleja de D.10.",
+    "analytic_current_pairing": "sum_links(J_link*alpha_direction)",
+    "reference_uncertainty": "abs(D5(h_min)-D5(2*h_min)); informar tambiÃ©n la diferencia entre los dos pasos mayores. Si no se resuelve la derivada dentro del presupuesto, resultado INCONCLUSIVE y conservar los datos.",
+    "error_budget": "abs(candidate-reference) <= derivative_absolute + derivative_relative*abs(reference). La incertidumbre de la referencia no debe superar reference_budget_fraction de este presupuesto. No usar una energÃ­a de fondo para normalizar la derivada.",
+    "global_phase": "Una rotaciÃ³n global del campo deja la energÃ­a y la corriente invariantes y rota covariantemente la fuerza; se comprueba ademÃ¡s la derivada energÃ©tica nula en esa direcciÃ³n.",
+    "reuse_rationale": "La suite nueva comprueba derivadas en estados no uniformes y enlaces arbitrarios. El contraste completo a N16 por cada población/tipo de perturbación controla su uso físico; la convergencia espacial se mide con las tres mallas independientemente. No se reutilizan resultados numéricos del operador anterior."
+  },
+  "thresholds": {
+    "derivative_relative": 0.0001,
+    "derivative_absolute": 1e-08,
+    "reference_budget_fraction": 0.2,
+    "global_phase_scaled_error": 1e-10,
+    "gradient_finest_relative_error": 0.01,
+    "nonlinear_mesh_response_target_relative": 0.01,
+    "spatial_response_absolute_floor": 1e-08
+  },
+  "spatial_precision": {
+    "binding_analytic_control": "En weak_amplitude_vacuum q=0 restar u_a(a_i,0) de G_i/h. Comparar el resto con -2*kappa*a'' de la modulación cosenoidal. El término local se evalúa en el nodo, sin promediar vecinos.",
+    "gradient_norm": "RMS del error nodal dividido por RMS de la referencia analÃ­tica no nula; informar tambiÃ©n su proyecciÃ³n sobre el coseno prescrito.",
+    "gradient_acceptance": "Errores decrecientes de8a16a32celdas y error32<=0.01. Orden esperado cuatro (razón16); se informa el orden observado, sin imponer una banda rígida.",
+    "nonuniform_cases": "Para los cuatro casos no uniformes, comparar energÃ­a de exceso, fuerza inducida y corriente inducida. La referencia uniforme de cada caso tiene amplitud nodal0.9, el mismo q_bare, la misma malla y la misma poblaciÃ³n congelada; por tanto weak_phase_nonthermal usa tambiÃ©n una referencia uniforme no tÃ©rmica.",
+    "energy_response": "(U_bar-U_bar_uniform)/L_bar, escalar firmado; usar el valor absoluto al calcular la norma.",
+    "force_response": "F_j=exp(-i*q_bare*X_j)*(G_cartesian_j/h-G_cartesian_uniform_j/h). Calcular coeficientes Fourier c_k=(1/N)*sum_j F_j*exp(-i*k*2*pi*j/N), k=0,+1,-1,+2,-2.",
+    "current_response": "Restar J_link_uniform de J_link y calcular los mismos coeficientes Fourier k=0,+1,-1,+2,-2 en los puntos medios xi=2*pi*(j+0.5)/N.",
+    "response_norm": "Norma euclÃ­dea compleja de los cinco coeficientes para fuerza y corriente. Las comparaciones usan los mismos modos fÃ­sicos y la misma poblaciÃ³n en las tres mallas. No interpolar por Ã­ndice una seÃ±al cuyo punto fÃ­sico cambia.",
+    "richardson": "Con Q8,Q16,Q32 como los vectores/escalar anteriores, d1=norm(Q16-Q8),d2=norm(Q32-Q16). Para diferencias positivas y decrecientes, ratio=d1/d2>1; estimaciÃ³n del error fino=max(d2/15,d2/(ratio-1)). Exigir error_estimado/norm(Q32)<=0.01 cuando norm(Q32)>1e-8. Es una estimaciÃ³n condicional de rÃ©gimen asintÃ³tico, no una cota rigurosa. Informar orden observado log2(ratio), sin imponer una banda rÃ­gida alrededor de cuatro. Si ratio<=1, resultado INCONCLUSIVE_SPATIAL_ESTIMATE; un presupuesto incumplido conserva FAIL para ese observable sin bloquear trabajo independiente. El divisor15=2^4-1 corresponde al orden formal nuevo; se declara antes de correr. El término con la razón observada impide atribuir orden cuatro cuando el refinamiento observado es peor. La tolerancia final sigue en1%.",
+    "near_zero": "Para norm(Q32)<=1e-8 o diferencias degeneradas dentro de1e-8, informar valores y errores absolutos; una respuesta limitada por redondeo se marca ROUND_OFF_LIMITED, sin inventar error relativo ni PASS de convergencia. Una referencia exactamente nula conocida se controla por el presupuesto absoluto declarado.",
+    "uniform_cases": "Uniform_vacuum y uniform_thermal se comparan con la referencia discreta uniforme y se informan diferencias respecto del lÃ­mite continuo. No aplicar cocientes de respuestas inducidas0/0.",
+    "no_background_hiding": "No normalizar un incremento espacial pequeÃ±o sÃ³lo por la gran energÃ­a uniforme del condensado.",
+    "scope_of_pass": "Las identidades, el control analÃ­tico de gradiente y la precisiÃ³n de las respuestas registradas tienen dictÃ¡menes separados. Sus pases autorizan continuar el desarrollo de bordes en ese alcance; no certifican precisiÃ³n espacial universal, espectro continuo, dinÃ¡mica ni2D."
+  },
+  "principal_symbol": {
+    "definition": "A z y p fijos, w=(-Im(z),Re(z)), s=abs(z)^2+0.1^2, beta=1/r: M=2*kappa*I+[2*beta*u_Gamma+4*beta^2*q_delta^2*u_GammaGamma-2*kappa*abs(z)^2]*outer(w,w)/s^2.",
+    "reference": "Hessiano local respecto del gradiente, no Hessiano de toda la energÃ­a nodal ni pendiente de una rama de gap autoconsistente.",
+    "curvature": "Diferencias de u_Gamma a p fijo con tres pasos y una estimaciÃ³n de incertidumbre. En q_delta=0 no se requiere u_GammaGamma. Todos los puntos deben permanecer en Gamma>=0 y en el soporte del catÃ¡logo.",
+    "acceptance": "El menor valor propio de cada estado evaluado debe ser positivo y su incertidumbre menor que su margen al cero. No se aÃ±ade un umbral arbitrario de rigidez. Valores no positivos o signo no certificado rechazan ese estado para evoluciÃ³n, conservando su diagnÃ³stico.",
+    "scope": "CondiciÃ³n necesaria del bloque del condensado en la geometrÃ­a probada; no prueba completa del sistema cinÃ©tico ni de todas las direcciones 2D. La precisiÃ³n espectral de la curvatura debe distinguirse de la incertidumbre de diferenciaciÃ³n."
+  },
+  "spectral_refinement": {
+    "scope": "Contraste independiente de la representaciÃ³n ocupacional para los estados del lote completo, separado de las diferencias finitas de D.36 y del refinamiento espacial.",
+    "candidate_nodes": 630,
+    "reference_nodes": 1260,
+    "factory": "refined_count_catalog(base,refinement=2), sin alterar el catÃ¡logo R2 archivado",
+    "selection": "En cada caso de la malla espacial de32 celdas, elegir el enlace con menor lambda_min candidata, el de mayor Gamma y el de menor amplitud; deduplicar Ã­ndices. La regla se fija ahora, antes de ver los resultados. Para vacÃ­o basta ademÃ¡s la referencia analÃ­tica exacta, sin integrales ocupacionales innecesarias.",
+    "populations": "Preparar la misma funciÃ³n continua p_ref(x) usando E_ref en amplitud0.9 y Gamma de referencia registrado sobre los nuevos1260 nodos; aÃ±adir la misma perturbaciÃ³n gaussiana para nonthermal. No interpolar el vector p630 ni cambiar temperatura o parÃ¡metros.",
+    "comparisons": "A los mismos campos locales z,d, comparar u,u_a,u_Gamma, matriz principal, lambda_min y sus incertidumbres de diferenciaciÃ³n. Registrar diferencias absolutas y escaladas, sin equiparar una diferencia630/1260 a una cota rigurosa del continuo.",
+    "sign_check": "En cada punto representativo exigir min(lambda630,lambda1260)-uncertainty630-uncertainty1260-abs(lambda1260-lambda630)>0. El resultado sostiene el signo en las resoluciones y estados muestreados, no un certificado global del regulador, del espectro continuo o de otros campos.",
+    "pilot_exclusion": "El piloto de ocho celdas informa solamente la estabilidad numÃ©rica del catÃ¡logo630. No sustituye este contraste ni completa admisiÃ³n3A."
+  },
+  "negative_control": {
+    "id": "D36_vacuum_fixed_amplitude",
+    "amplitude_base": 0.6,
+    "q_bare_ell0": 1.0,
+    "regularization_delta_bar": 0.1,
+    "occupation": "vacuum",
+    "construction": "Prueba constitutiva local z=0.6 real, d=i*0.6, p=0, a y p fijos; no necesita una trayectoria ni una malla torcida de gran incremento.",
+    "independent_reference": "VacÃ­o con Gamma<a: u_Gamma=pi*a/2-2*Gamma/3 y u_GammaGamma=-2/3. La rigidez de fase publicada -0.34343 usa energÃ­as kBTc; convertir unidades antes de comparar con Delta0.",
+    "required_outcome": "Detectar el menor valor propio negativo y rechazar explÃ­citamente el estado para evoluciÃ³n. No recortar rigidez ni modificar el funcional."
+  },
+  "physical_guards": [
+    "Campos, energÃ­a, fuerza y corriente finitos",
+    "Ocupaciones fÃ­sicas y congeladas durante la derivaciÃ³n",
+    "Soporte de catÃ¡logo respetado sin extrapolaciÃ³n",
+    "Gamma calculado del flujo regularizado, con todas sus contribuciones a fuerza/corriente",
+    "Sin proyecciÃ³n de energÃ­a, recorte de poblaciones o rigidez",
+    "Resultados histÃ³ricos preservados; ningÃºn pase de etapa 2 sustituye estas pruebas"
+  ],
+  "execution": {
+    "pilot": "weak_phase_thermal, ocho celdas: preparaciÃ³n, evaluaciÃ³n, coste y controles limitados explÃ­citos; timeout240s. No completa refinamiento espacial ni los otros casos.",
+    "full_validation": "Seis casos por tres mallas; FD en N16, negativos y símbolos, oráculos, gauge en todos los casos. N32 contrasta630/1260 en puntos representativos. Coste estimado con piloto nuevo; lote>5min al usuario.",
+    "timeout_uncertain_seconds": 240,
+    "agent_max_expected_seconds": 300,
+    "threads": 1,
+    "output_policy": "Directorio nuevo, comandos y hashes, parÃ¡metros efectivos, versiones, duraciones y progreso por unidad de trabajo. No sobrescribir resultados ni reintentar automÃ¡ticamente un timeout.",
+    "user_command_notebook": "/home/jdiaz/GEMINGA_COMMANDS.md",
+    "admission": "Sin promociÃ³n automÃ¡tica a producciÃ³n ni admisiÃ³n material. Un fallo estructural detiene el cÃ¡lculo afectado; precisiÃ³n insuficiente conserva su dictamen y limita las conclusiones."
+  },
+  "inputs": [
+    {
+      "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+      "sha256": "db67d19adff15c1aa797e73349f3f22aca85d426e54c1cfe0827d1b7ad13dd87"
+    },
+    {
+      "path": "docs/implementation/stage3/entry_contract.json",
+      "sha256": "8a19f3ff9a20622d12429cd2b990be675fd92e69aa2c61d9cfc168269c02aa53",
+      "role": "Propuesta previa, preservada aquÃ­ como antecedente"
+    },
+    {
+      "path": "pysnspd/experimental/refined_cells.py",
+      "sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    {
+      "path": "docs/implementation/stage3/review_20260923/raw/static_campaign/summary.json",
+      "sha256": "3ac5a445fcc1d2be9a066e78cd41d300f1b8a8c3e81d11555d612085e562d9f1",
+      "role": "Resultado precedente preservado, no reutilizado como resultado del operador nodal"
+    }
+  ],
+  "predecessor": {
+    "registration": "docs/implementation/stage3/iteration_20260923/registration.json",
+    "sha256": "05fac6d65bbc7a3ab829d22ac3e7e0404cb670cc782bd059d3e5abdc50e09d35",
+    "verdict": "STATIC_CAMPAIGN_PRECISION_TARGET_NOT_MET",
+    "reason": "El punto medio cartesiano cambia artificialmente la amplitud de una hélice fuera del equilibrio; derivadas discretas correctas pero sesgo espacial grande."
+  },
+  "declared_spatial_order": 4,
+  "richardson_denominator": 15,
+  "fd_cells": [
+    16
+  ],
+  "preexecution_wording_correction": {
+    "previous_sha256": "a4a42ba9355910fae4e3a0fda61f7712ed506c443433f1b39c82563bd96ad0da",
+    "reason": "Distinguir densidad continua de energía discreta y explicitar razón16. Sin cambios de casos, operadores ni tolerancias; no se ha ejecutado el candidato."
+  }
+}

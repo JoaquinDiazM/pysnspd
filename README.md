@@ -27,11 +27,23 @@ basis for the next implementation stage. The [final report](docs/implementation/
 trajectories, 21 completed tasks and passing candidate-grid ONE/TWO temporal tests.
 The 2049-node phonon pair missed its supplementary temporal budget (0.004565%
 versus 0.0025%); that failure and the incomplete dynamic mesh certificate remain
-explicit. The [prepared stage 3 sequence](docs/implementation/stage3/README.md)
-starts with spatial energy, then boundaries, charge conservation and the thesis
-three-state circuit, followed by weak dynamics. Stage 3 implementation has not
-started; neither this development closure nor the retained tests promote the
-updated model to production. The [stage 2 guide](docs/implementation/stage2/README.md)
+explicit. [Stage 3 development is now closed with user-authorized limits](docs/implementation/stage3/closure_20260923/README.md).
+The six mixed-domain snapshots with prescribed reservoir load completed in
+355.651 s. For the perturbed case, the medium-to-fine changes are 0.043961% in
+total condensate heating and 0.96757% in maximum material speed. These describe
+mesh sensitivity, not a new convergence certificate. The focused regression
+passes 243 tests and 46 subtests in 10.29 s. The
+[closure report](docs/implementation/stage3/closure_20260923/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.md)
+([PDF](output/pdf/implementation/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.pdf))
+preserves the original incomplete-contract, temporal, full-D.27, kinetic-interface
+and production-admission flags. A weak coupled transient remains required before
+stages 4–5. The [current sequence](docs/implementation/SECUENCIA_VIGENTE.md) opens
+[stage 3.5 research](docs/implementation/stage3_5/README.md): 127 parameter entries
+in 15 families, with Korzh/Allmaras source distinctions. The example
+L2D/W = 1.5–6 is not an adopted validity range; a 1D continuation remains
+conditional on the relevant transverse dynamics. No long calculation is pending,
+and the completed batch should not be repeated. Production is unchanged.
+The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 
 Commits after the tag contain the opt-in
@@ -563,4 +575,3 @@ See `LICENSE` in the repository.
 Joaquin Andres Diaz Monge  
 Universidad de Chile, Departamento de Ingenieria Electrica  
 GitHub: `JoaquinDiazM`
-

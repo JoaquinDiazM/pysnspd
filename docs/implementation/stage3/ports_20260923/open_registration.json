@@ -1,0 +1,30 @@
+{
+  "schema": "pysnspd.stage3.open_static.v1",
+  "status": "FROZEN_BEFORE_PHYSICAL_RESULTS",
+  "scope": "Fundamento longitudinal abierto 3B: equilibrio térmico con amplitudes de reservorio y corriente impuesta variacionalmente. No es una interfaz 2D-1D ni un transiente.",
+  "catalogue": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+  "count_nodes": 630,
+  "bath_theta": 0.12,
+  "q_bare_bar": 0.1,
+  "continuation_qs": [0.05],
+  "amplitude_bracket": [0.8, 1.02],
+  "degree": 4,
+  "geometry": {"central_length_m": 3.6e-7, "cross_section_m2": 8.4e-16},
+  "boundary": "Amplitudes terminales fijadas por F_a=0 del reservorio. Se minimiza F+J*theta_left con theta_right=0 solamente como gauge global. No se fija simultáneamente una diferencia de fase física. El flujo natural discreto debe reproducir q_b en los extremos bajo refinamiento.",
+  "energy": "U=sum M*u-kappa*sum M*a^2*q_delta^2+kappa*Re(z^dagger K z). M,D,K ensamblados GLL. K-D^dagger M D es semidefinida positiva y MD+D^T M es el término de borde. F térmica incluye entropía; su gradiente equivale a variar U a ocupaciones instantáneas congeladas.",
+  "solver": {"method": "L-BFGS-B", "max_iterations": 120, "max_evaluations": 180, "gradient_tolerance": 0.00002, "function_tolerance": 1e-13, "phase_trust_radius_rad": 0.15},
+  "criteria": {"stationarity_absolute": 0.0001, "current_relative": 0.01, "endpoint_q_relative": 0.01, "amplitude_absolute": 0.001},
+  "criteria_context": "Tolerancias de utilidad estática, no precisión de señal: error corriente/borde 1%, desviación absoluta amplitud 0.001. Ninguna cota activa, extrapolación ni D.36 no resuelto. Comparar explícitamente resoluciones y longitudes; esta solución uniforme no demuestra ausencia de reflexiones dinámicas.",
+  "pilot": {"id": "open_L360_E4", "length_m": 3.6e-7, "elements": 4},
+  "cases": [
+    {"id": "open_L360_E4", "length_m": 3.6e-7, "elements": 4},
+    {"id": "open_L360_E8", "length_m": 3.6e-7, "elements": 8},
+    {"id": "open_L720_E8", "length_m": 7.2e-7, "elements": 8},
+    {"id": "open_L720_E16", "length_m": 7.2e-7, "elements": 16},
+    {"id": "open_L1080_E12", "length_m": 1.08e-6, "elements": 12},
+    {"id": "open_L1080_E24", "length_m": 1.08e-6, "elements": 24}
+  ],
+  "execution": {"pilot_timeout_seconds": 240, "full_batch": "USER_ONLY_IF_EXPECTED_OVER_300_SECONDS", "threads": 1, "overwrite": false, "automatic_retry": false},
+  "interpretation": "Continua el mismo segmento de360nm con0,180,360nm por extremo y dos resoluciones. La partición CM.6 se identifica para cada dominio antes de cualquier dinámica, total10nH menos inductancia diferencial resuelta. No restar dinámicamente ni confundir esta corriente débil con el sesgo histórico30microA.",
+  "excluded": ["condiciones transparentes 2D-1D", "pulso electrónico no uniforme", "cinética espacial evolutiva", "KWT temporal", "señal de detección", "admisión de producción"]
+}

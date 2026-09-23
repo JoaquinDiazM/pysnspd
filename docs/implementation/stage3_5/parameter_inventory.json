@@ -1,0 +1,4644 @@
+{
+  "schema": "pysnspd.stage3_5.parameter_inventory.v1",
+  "date": "2026-09-23",
+  "status": "RESEARCH_INVENTORY_NO_PARAMETER_RANGE_ADOPTED",
+  "scope": "Inventario de familias físicas, de cierre, numéricas y de observación para investigación documental de dominio de confianza. No autoriza barridos ni nuevas simulaciones.",
+  "user_decision": "Cerrar desarrollo de etapa3 e iniciar investigación3.5. El transiente débil acoplado y la interfaz cinética quedan pendientes explícitos antes de etapas4–5.",
+  "confidence_definition": "Dominio de confianza físico: conjunto de condiciones donde aproximaciones, entradas y observables tienen justificación suficiente. No es un intervalo estadístico ni un certificado universal; un intervalo estadístico necesita población de datos y modelo probabilístico definidos.",
+  "range_policy": "Los rangos matemáticos, las cajas de catálogo, los puntos ensayados y el ejemplo1.5–6W NO son rangos físicos adoptados. Cualquier propuesta posterior requiere justificación y queda propuesta hasta decisión explícita.",
+  "units_policy": "Las variables bar se normalizan por Delta0,N0Delta0²,ell0=sqrt(hbarD/(2kBTc)),t_ref. sigma_n es conductividad; s_gamma o sigma_gamma es ancho espacial; eta_causal no es retención fotónica; Gamma no es delta_regularizer.",
+  "inventory_completeness": "Cobertura de todas las familias expuestas por el contrato continuo, la adenda circuital, módulos experimentales, configuraciones y observadores históricos leídos. No pretende listar cada constante interna de biblioteca ni parámetros de fenómenos fuera de alcance sin denominarlos futuros.",
+  "counts": {
+    "parameters": 127,
+    "families": 15
+  },
+  "families": [
+    "material",
+    "bath",
+    "geometry",
+    "photon",
+    "electronic_state",
+    "condensate",
+    "kinetic",
+    "boundaries",
+    "circuit",
+    "catalogue",
+    "spatial_numerics",
+    "time_numerics",
+    "observation",
+    "provenance",
+    "experiment_reference"
+  ],
+  "source_index": [
+    {
+      "id": "D",
+      "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+      "sha256": "db67d19adff15c1aa797e73349f3f22aca85d426e54c1cfe0827d1b7ad13dd87"
+    },
+    {
+      "id": "CM",
+      "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+      "sha256": "abd65bad241de5873b497baad90195b7cafa936c01468675cabe31c3f38ed3e5"
+    },
+    {
+      "id": "cfg",
+      "path": "configs/geminga_local_v3.yaml",
+      "sha256": "cdb274d1b8c257ee58de06f872a8fcdb9a9e8a263455823c88ee485183366ab9"
+    },
+    {
+      "id": "config",
+      "path": "pysnspd/config.py",
+      "sha256": "0208fd1c04961276f971feb699c48bc0cc344220467e8ff987ebe7d6f190fd3a"
+    },
+    {
+      "id": "catalog",
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+    },
+    {
+      "id": "energy",
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    {
+      "id": "refined",
+      "path": "pysnspd/experimental/refined_cells.py",
+      "sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+    },
+    {
+      "id": "mixed",
+      "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+      "sha256": "89ce95cd93b1185c9eaa5e9ca1f7c5615ab2fc8b25317c9636b7ec820abe69c7"
+    },
+    {
+      "id": "open",
+      "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+      "sha256": "9f269dec40d563d12be3a49c26c624fefcd54acde1655ec6993dd0b7799251f3"
+    },
+    {
+      "id": "nodal",
+      "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+      "sha256": "cedab95157aad073a3308aa3a9f322cfd887bbe1b45d9d594b503d05636ac0e8"
+    },
+    {
+      "id": "seed",
+      "path": "docs/implementation/stage3/coupled_20260923/seeded_registration.json",
+      "sha256": "da24ab821f7ad9778ee05c6126db4e417c7708a6cca1eeedf1ea2425971d2278"
+    },
+    {
+      "id": "cells",
+      "path": "pysnspd/experimental/cell_closures.py",
+      "sha256": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d"
+    },
+    {
+      "id": "coupled",
+      "path": "sandbox/stage2_cells/run_coupled.py",
+      "sha256": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9"
+    },
+    {
+      "id": "spatial",
+      "path": "pysnspd/experimental/mixed_spatial.py",
+      "sha256": "69f3bd210f3fe60e6a09d4cf6de405d011d82404b525d6ffc07a76af55d523a8"
+    },
+    {
+      "id": "dynamics",
+      "path": "pysnspd/experimental/spatial_dynamics.py",
+      "sha256": "1de2f9a87dfab4b0afc7d94db9494ea7fd1d5976eda03862a6f8f79d48d374ba"
+    },
+    {
+      "id": "res",
+      "path": "pysnspd/experimental/superconducting_reservoir.py",
+      "sha256": "ad1ba9f984fad51df31bad405a861f965541ee105a7e40c1d4fbe5fa7d5f8a38"
+    },
+    {
+      "id": "post",
+      "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+      "sha256": "fb27cf53a790c30123088e41cff4542768c67ee421f0a9ee1b27615e3836db56"
+    },
+    {
+      "id": "rtrans",
+      "path": "pysnspd/experimental/reservoir_transport.py",
+      "sha256": "ac508bd8f56d3d43d978d206763a0eda6ea22b70f49d22c4447142925fb2f3af"
+    },
+    {
+      "id": "ports",
+      "path": "pysnspd/experimental/electrical_ports.py",
+      "sha256": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530"
+    },
+    {
+      "id": "timing",
+      "path": "pysnspd/analysis/timing.py",
+      "sha256": "94717900825a24e267e33de6fe4fece41d3e90378de32ff4fa5a0a924a32c26e"
+    },
+    {
+      "id": "photon",
+      "path": "pysnspd/excitation/photon.py",
+      "sha256": "12805534f5d72365a558d53538c13c6d7b6261e152d4222ec89652c52ae5dc1c"
+    },
+    {
+      "id": "material",
+      "path": "docs/implementation/stage1_closure/material_findings.md",
+      "sha256": "508b4b636239cd09a2f3e8660084e1f92b962c38bde79fcc8a4312977ba613ae"
+    },
+    {
+      "id": "admission",
+      "path": "pysnspd/experimental/material_admission.py",
+      "sha256": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f"
+    },
+    {
+      "id": "events",
+      "path": "pysnspd/experimental/kinetic_events.py",
+      "sha256": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f"
+    },
+    {
+      "id": "transport",
+      "path": "pysnspd/experimental/cell_transport.py",
+      "sha256": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75"
+    },
+    {
+      "id": "guard",
+      "path": "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py",
+      "sha256": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4"
+    },
+    {
+      "id": "closure",
+      "path": "docs/implementation/stage2/closure_20260922/closure_decision.json",
+      "sha256": "4a970bd1522ab776c920c08117f04ff0fc1048e1ce469e5edd9b4639855d7c73"
+    },
+    {
+      "id": "criteria",
+      "path": "docs/implementation/stage2/acceptance_criteria.json",
+      "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+    },
+    {
+      "id": "experiment",
+      "path": "docs/implementation/stage3_5/reference_experiment.md",
+      "sha256": "c7be50157d35fe256323c6b3456a4aa13d203ed7a2b91c2d26d07385051ec580"
+    },
+    {
+      "id": "sources",
+      "path": "docs/implementation/stage3_5/source_register.json",
+      "sha256": "82dbaf0803fc9423b6ca073b9cfff80c6c45f31266400a9320c3f30b1992ee32"
+    }
+  ],
+  "known_cross_scenario_conflicts": [
+    {
+      "parameter": "sigma_n",
+      "values": [
+        420000,
+        250000
+      ],
+      "unit": "S/m",
+      "resolution": "Conservar escenarios; resolver coherencia Einstein antes de interpretación material única."
+    },
+    {
+      "parameter": "T_b",
+      "values": [
+        "0.9K",
+        "theta0.12"
+      ],
+      "resolution": "No equivalentes; convertir y escoger explícitamente."
+    },
+    {
+      "parameter": "C_couple",
+      "values": [
+        "CM100pF",
+        "YAMLv3 C_rf1pF"
+      ],
+      "resolution": "CM es contrato previsto; no heredar YAML antiguo automáticamente."
+    },
+    {
+      "parameter": "KWT_times",
+      "values": [
+        ".50/2.47ps seleccionados",
+        ".5e1/24.7ps defaults legacy"
+      ],
+      "resolution": "Leer valor efectivo y fuente; BGK0.7ps es otro parámetro sintético."
+    },
+    {
+      "parameter": "Lext",
+      "values": [
+        "10nH total memoria",
+        "9.666757458681755nH exterior referencia720nm"
+      ],
+      "resolution": "Partición según dominio y estado; 10nH no default exterior."
+    }
+  ],
+  "stage3_strict_closure_gap": [
+    {
+      "id": "weak_coupled_transient",
+      "status": "NOT_IMPLEMENTED_AS_COMPLETE_SPATIAL_SYSTEM",
+      "required_before_stages_4_5": true,
+      "details": "Integración conjunta Delta complejo,p,n,potencial elíptico y3 estados CM4 con Gamma variable, calor y balances acumulados; instantáneas KWT no sustituyen esta prueba."
+    },
+    {
+      "id": "kinetic_interface_2D_1D",
+      "status": "NOT_ASSEMBLED_IN_MIXED_SYSTEM",
+      "required_before_stages_4_5": true,
+      "details": "Flujo conservativo a energía común y continuidadf(E), modos transversales y conteo único de volúmenes; R sólo asegura traza del condensado/potencial."
+    },
+    {
+      "id": "moving_reservoir",
+      "status": "ONLY_STATIC_BRANCH_AND_FIXED_RADIUS_INSTANTANEOUS_CONTROL",
+      "required_before_stages_4_5": true,
+      "details": "Falta radioa_b(Is(t)), derivada de rama y ledger de trabajo/energía al cambiarIs; soporte de rama y normal externo requieren control."
+    },
+    {
+      "id": "domain_and_numerical_sensitivity",
+      "status": "SCOPE_SPECIFIC_INSTANTANEOUS_EVIDENCE_ONLY",
+      "required_before_stages_4_5": true,
+      "details": "Extensión de domínio, convergencia de tiempo/espacio/espectro para observables dinámicos; incompleto previo no se vuelvePASS."
+    },
+    {
+      "id": "material_absolute_admission",
+      "status": "NB_N_ABSOLUTE_PHONON_RATES_UNRESOLVED",
+      "required_before_detector_prediction": true,
+      "details": "Se puede continuar algoritmo con Debye sintético identificado; no llamar a eso predicción cuantitativaNbN."
+    }
+  ],
+  "parameters": [
+    {
+      "id": "Tc",
+      "family": "material",
+      "symbol": "T_c",
+      "name": "Temperatura crítica",
+      "units": "K",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": 8.65,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "T_c>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Fija Delta0,tau0,ell0; misma convención de gap en energía y corriente.",
+      "research_required": "Procedencia de película, incertidumbre y variación por fabricación."
+    },
+    {
+      "id": "D",
+      "family": "material",
+      "symbol": "D",
+      "name": "Difusividad electrónica normal",
+      "units": "m^2/s",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": 0.0001581,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "D>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Einstein sigma_n=2e²N0D; fija Gamma,ell0 y transporte.",
+      "research_required": "Distinguir medición de calibración a Ic; no heredar calibración como validación microscópica."
+    },
+    {
+      "id": "sigma_n",
+      "family": "material",
+      "symbol": "sigma_n",
+      "name": "Conductividad normal",
+      "units": "S/m",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": [
+        {
+          "value": 420000,
+          "scope": "D.2/YAML y Einstein del catálogo"
+        },
+        {
+          "value": 250000,
+          "scope": "escenario mixed instantáneo, declarado por el runner"
+        }
+      ],
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "sigma_n>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Cambiar sigma sin N0 oD coherentes rompe identificación de un único material; balance algebraico puede seguir pasando.",
+      "research_required": "Resolver consistencia material antes de transiente cuantitativo; conservar escenarios anteriores."
+    },
+    {
+      "id": "N0",
+      "family": "material",
+      "symbol": "N_0",
+      "name": "DOS normal por espín",
+      "units": "J^-1 m^-3",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": 5.174479102201753e+46,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "N0>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Capacidades4N0dx y energíaN0Delta0²; depende de sigma,D por Einstein.",
+      "research_required": "Auditar degeneraciones, estimación experimental e incertidumbre."
+    },
+    {
+      "id": "gap_ratio",
+      "family": "material",
+      "symbol": "r_BCS=Delta0/(kB Tc)",
+      "name": "Razón de gap débil",
+      "units": "1",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": 1.7638769888620456,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Fijada por cierre de acoplamiento débil",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "YAML/tabla puede redondear1.764; no cambiar sólo gap manteniendo fuerzas.",
+      "research_required": "Evaluar límite de aplicabilidad a NbN frente a acoplamiento fuerte; rederivar si cambia."
+    },
+    {
+      "id": "delta0",
+      "family": "material",
+      "symbol": "Delta_0",
+      "name": "Escala de energía del gap",
+      "units": "J",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 2.1065301756880164e-22,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Delta0>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Derivada de Tc y razón débil; no parámetro libre independiente.",
+      "research_required": "Mantener conversiones J/eV/meV/K explícitas."
+    },
+    {
+      "id": "lambda_L",
+      "family": "material",
+      "symbol": "lambda_L",
+      "name": "Penetración London histórica",
+      "units": "m",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": 5.4e-07,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "lambda_L>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Usada para referencia inductiva histórica; A=0 no resuelve apantallamiento.",
+      "research_required": "Determinar si se usa sólo partición exterior o se necesita modelo electromagnético."
+    },
+    {
+      "id": "n_atom",
+      "family": "material",
+      "symbol": "n_at",
+      "name": "Densidad atómica/fonónica",
+      "units": "m^-3",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": [
+        {
+          "value": 4.8e+28,
+          "scope": "YAML ion_density_nm3=48; no acredita convención DOS"
+        },
+        {
+          "value": "10*N0*Delta0",
+          "scope": "Debye sintético etapa2"
+        }
+      ],
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "n_at>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "IntegralDOS=3n_at exige distinguir porátomo y por celda cristalina.",
+      "research_required": "Confirmar densidad, número de átomos/celda y normalización de tabla fuente."
+    },
+    {
+      "id": "bath",
+      "family": "bath",
+      "symbol": "T_b; theta_b=kB T_b/Delta0",
+      "name": "Temperatura del baño",
+      "units": "K; 1",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": [
+        {
+          "value": 0.9,
+          "units": "K",
+          "scope": "memoria/D/YAML"
+        },
+        {
+          "value": 0.12,
+          "units": "kB T/Delta0",
+          "scope": "etapas2–3 sintéticas; no0.9K"
+        }
+      ],
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Tb>=0; movilidad necesita piso positivo",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Controla FD,BE,movilidad,escape y ramareservorio.",
+      "research_required": "Medición del baño y consistencia de unidades antes de combinar escenarios."
+    },
+    {
+      "id": "width",
+      "family": "geometry",
+      "symbol": "W",
+      "name": "Ancho de región y continuaciones",
+      "units": "m",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 1.2e-07,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "W>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Modo transversal, secciónWd, corriente crítica ygaussiana.",
+      "research_required": "Variación física por fabricación; relación con escalas de difusión y condensado."
+    },
+    {
+      "id": "thickness",
+      "family": "geometry",
+      "symbol": "d_f",
+      "name": "Espesor",
+      "units": "m",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 7e-09,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "d_f>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Volúmenes, conductancia, energía depositada y escape.",
+      "research_required": "Validez de película uniforme2D ydependencia deescape coninterfaz/espesor."
+    },
+    {
+      "id": "length_2D",
+      "family": "geometry",
+      "symbol": "L_2D",
+      "name": "Longitud de región2D",
+      "units": "m",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": 3.6e-07,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "L2D>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Debe contener perturbación y región de modos transversales antes de reducción1D.",
+      "research_required": "Diseñar distancia a interfaces según observable y ventana temporal, no sólo razón geométrica."
+    },
+    {
+      "id": "aspect_ratio",
+      "family": "geometry",
+      "symbol": "L_2D/W",
+      "name": "Razón de aspecto de región2D",
+      "units": "1",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": {
+        "current": 3,
+        "user_example": [
+          1.5,
+          6
+        ],
+        "example_status": "EJEMPLO_USUARIO_PARA_INVESTIGAR_NO_RANGO_ADOPTADO"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "research_only_for_range",
+      "mathematical_domain": "L2D/W>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Cambiar L también cambia masa, longitudresuelta yLext.",
+      "research_required": "Justificar posibles rangos con sensibilidad dinámica futura; no adoptar1.5–6 como dominio válido."
+    },
+    {
+      "id": "lead_left",
+      "family": "geometry",
+      "symbol": "L_left",
+      "name": "Longitud de continuación izquierda",
+      "units": "m",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": 1.8e-07,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Lleft>=0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Puerto energético ypartición Lext; distancia del evento.",
+      "research_required": "Definir error de frontera admisible por observable y t_obs."
+    },
+    {
+      "id": "lead_right",
+      "family": "geometry",
+      "symbol": "L_right",
+      "name": "Longitud de continuación derecha",
+      "units": "m",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": 1.8e-07,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Lright>=0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "No necesita igualarizquierda si geometría/evento asimétrico.",
+      "research_required": "Investigar extensión independiente sin atribuir simetría universal."
+    },
+    {
+      "id": "section_leads",
+      "family": "geometry",
+      "symbol": "S_c=W*d_f",
+      "name": "Sección de continuaciones",
+      "units": "m^2",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 8.4e-16,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Sc>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Continuidad de flujo integrado exige medidas2D y1D coherentes.",
+      "research_required": "Evaluar transición de sección sólo con contrato nuevo, nofactor corrector ad hoc."
+    },
+    {
+      "id": "resolved_length",
+      "family": "geometry",
+      "symbol": "L_res",
+      "name": "Longitud entre puertos de dominio energético",
+      "units": "m",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": {
+        "mixed": 7.2e-07,
+        "open_trials": [
+          3.6e-07,
+          7.2e-07,
+          1.08e-06
+        ]
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.6"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Lres=Lleft+L2D+Lright",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Su almacenamiento ya está enUres; requiere Lext>0 traspartición.",
+      "research_required": "Convergencia por extensión de dominio a resolución física comparable."
+    },
+    {
+      "id": "interface_R",
+      "family": "geometry",
+      "symbol": "R; quadrature_to_dof",
+      "name": "Identificación de traza2D–1D",
+      "units": "matriz sin unidades",
+      "roles": [
+        "cierre",
+        "numerico"
+      ],
+      "current_value": "one-hot; modo transversal uniforme de Delta yphi; p por cuadratura separado",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Identificación conservativa y volúmenes sin duplicar",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "R^Tgrad yR^TM R; f(E) continuidad pendiente, no igualdad por índicep.",
+      "research_required": "Posponer prueba de suficiencia1D transversal a transiente: medir modos superiores/flujo en interfaz antesde descartar."
+    },
+    {
+      "id": "observation_time",
+      "family": "geometry",
+      "symbol": "t_obs",
+      "name": "Ventana temporal de interés",
+      "units": "s",
+      "roles": [
+        "observacion",
+        "fisico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.1.1"
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": null
+        }
+      ],
+      "implementation_status": "planned_not_implemented",
+      "mathematical_domain": "t_obs>t0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Condiciona distancia al reservorio, coste, escalasRC/LC,recuperación.",
+      "research_required": "Registrar observable primario y ventana antes de fijar largo de continuaciones."
+    },
+    {
+      "id": "boundary_tolerance",
+      "family": "geometry",
+      "symbol": "epsilon_border(O,t_obs)",
+      "name": "Presupuesto de contaminación por borde",
+      "units": "unidades deobservable orelativo",
+      "roles": [
+        "observacion",
+        "numerico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25-D.27"
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "research_only_for_range",
+      "mathematical_domain": ">=0 y fijado antes de resultado",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Prueba por extensión de dominio; no sustituida por equilibrio uniforme.",
+      "research_required": "Proponer diferencia máxima observable físicamente útil; no usar umbral retrospectivo."
+    },
+    {
+      "id": "diffusion_scales",
+      "family": "geometry",
+      "symbol": "sqrt(D_eff t), W²/(pi²D_eff)",
+      "name": "Escalas difusivas y relajación transversal",
+      "units": "m; s",
+      "roles": [
+        "fisico",
+        "observacion"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17-D.20"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Estimaciones sólo con coeficiente efectivo adecuado",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "PDEdifusiva no tiene frente de velocidad finita; colas instantáneas pueden ser pequeñas. Potencial elíptico también global.",
+      "research_required": "Investigar envolventes y sensibilidad deobservables; no usar distancia=v*t como protección de borde."
+    },
+    {
+      "id": "geometry_extensions",
+      "family": "geometry",
+      "symbol": "curvatura, rugosidad, estrechamientos",
+      "name": "Geometría no rectangular",
+      "units": "m; 1",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "planned_not_implemented",
+      "mathematical_domain": "Fuera del prototipo rectangular actual",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "Un valor empleado o un dominio matemático no constituye un intervalo físico validado."
+      },
+      "couplings_and_restrictions": "Cambios de corriente y modos; requieren nueva discretización/verificación.",
+      "research_required": "Decidir alcance científico antes de agregar parámetros noidentificados."
+    },
+    {
+      "id": "Egamma",
+      "family": "photon",
+      "symbol": "E_gamma=hc/lambda",
+      "name": "Energía incidente",
+      "units": "J; eV",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": {
+        "wavelength_m": 1.064e-06,
+        "scope": "YAML histórico; no nueva inyección experimental"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ],
+      "implementation_status": "planned_for_new_model",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Retención temprana determinaEin; no depositar energía incidente yretenida a la vez.",
+      "research_required": "Procedencia de fotón y rango objetivo experimental."
+    },
+    {
+      "id": "Ein",
+      "family": "photon",
+      "symbol": "E_in",
+      "name": "Energía retenida a t0",
+      "units": "J",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ],
+      "implementation_status": "planned_for_new_model",
+      "mathematical_domain": "0<=Ein<=Egamma",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Pérdidas anteriores a t0 distintas de escape posterior; saltoúnico enfonones.",
+      "research_required": "Investigar cascada,retención vsposición/material/energía; identificar con fuente independiente."
+    },
+    {
+      "id": "retention",
+      "family": "photon",
+      "symbol": "eta_ret=Ein/Egamma",
+      "name": "Fracción retenida temprana",
+      "units": "1",
+      "roles": [
+        "cierre"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ],
+      "implementation_status": "planned_for_new_model",
+      "mathematical_domain": "0<=eta_ret<=1",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No confundir con eta causal; dependencia de t0 y s_gamma; no dobleconteo.",
+      "research_required": "¿Se necesita valor único o transferencia condicionada al evento? Sin adoptarlo."
+    },
+    {
+      "id": "photon_position",
+      "family": "photon",
+      "symbol": "r0=(x0,y0)",
+      "name": "Posición del impacto",
+      "units": "m",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "pysnspd/excitation/photon.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "planned_for_new_model",
+      "mathematical_domain": "Dentro región2D",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Cercanía a borde afecta pérdidas; normalizar gaussiana no predice retención.",
+      "research_required": "Distribución de absorción óptica y posición conocida/sintética."
+    },
+    {
+      "id": "photon_sigma",
+      "family": "photon",
+      "symbol": "s_gamma",
+      "name": "Desviación estándar espacial de depósito",
+      "units": "m",
+      "roles": [
+        "cierre",
+        "fisico"
+      ],
+      "current_value": {
+        "legacy_sigma_m": 1e-08,
+        "scope": "PhotonBubbleParams; no inferir radio/disco equivalente"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "pysnspd/excitation/photon.py",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "planned_for_new_model",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Gaussiana exp(-r²/(2s²)); ancho heredado debe convertirse; acoplado a t0.",
+      "research_required": "Fuente y sensibilidad física de cascada; resolución debe separar s_gamma y h."
+    },
+    {
+      "id": "handoff_time",
+      "family": "photon",
+      "symbol": "t0",
+      "name": "Tiempo de transferencia desde cascada omitida",
+      "units": "s",
+      "roles": [
+        "cierre",
+        "fisico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ],
+      "implementation_status": "planned_for_new_model",
+      "mathematical_domain": "Definido respecto llegadafotón",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Ein,s_gamma,p0,n0 coherentes a t0; latencia añade etapa omitida si se compara experimental.",
+      "research_required": "Definir origen temporal y datosde cascada; no cero implícito experimental."
+    },
+    {
+      "id": "spectral_injection",
+      "family": "photon",
+      "symbol": "alpha²F/g_ph; normalization_M1",
+      "name": "Forma espectral de inyección",
+      "units": "ocupaciónporenergía",
+      "roles": [
+        "cierre"
+      ],
+      "current_value": "D.30 prescribe fonones proporcionalesalpha²F/g_ph normalizados aEin",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ],
+      "implementation_status": "planned_for_new_model",
+      "mathematical_domain": "Sólo soportecomún, integralOmega alpha²F>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Recomputar normalizador tras preprocesado; no una temperatura fonónica como variableprimaria.",
+      "research_required": "Comparar forma efectiva con cascada sin activar alternativa por defecto."
+    },
+    {
+      "id": "fano",
+      "family": "photon",
+      "symbol": "F; distribución de Ein",
+      "name": "Fluctuaciones Fano opcionales",
+      "units": "1; J",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ],
+      "implementation_status": "optional_not_enabled",
+      "mathematical_domain": "F>=0 si se especifica su definición",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "DESACTIVADO determinista; factorFno definepor sísolo distribuciónni correlaciones.",
+      "research_required": "Revisión de fuente/ensemble yrelaciónconjitter antes de extensión estocástica."
+    },
+    {
+      "id": "Delta_state",
+      "family": "electronic_state",
+      "symbol": "Delta(r,t)",
+      "name": "Campo complejo del condensado",
+      "units": "J oDelta0",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": "Pilotoa=.9952181913919729,qbareell0=.1; perfilperturbado−.001 en amplitud",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.1"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Amplitudcatálogo admitida o normalexacto; D36positivo",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Estado, no parámetromaterial; complejoscartesianos conservan significado en ceros.",
+      "research_required": "Definir ramaDC propia y perturbación pequeña; no heredarhélice libre como equilibrio."
+    },
+    {
+      "id": "p_state",
+      "family": "electronic_state",
+      "symbol": "p(x,r,t)",
+      "name": "Ocupaciones electrónicas",
+      "units": "1",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": "PilotoFDtheta.12; otrosensayos no térmicos declarados",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "0<=p<=1, energia dentro de inversióntérmica",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Mantenerp fijoenvariaciones; transporte aenergíafija, no índicecomún.",
+      "research_required": "Dominio físico de perfiles no térmicos ycapacidad de soporte."
+    },
+    {
+      "id": "n_state",
+      "family": "electronic_state",
+      "symbol": "n(Omega,r,t)",
+      "name": "Ocupaciones fonónicas",
+      "units": "1",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": "BEtheta.12 en etapa2; no sector dinámico activo en mixed",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "n>=0; Omega>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Una población porvolumenfísico; sin duplicacióninterfaces.",
+      "research_required": "Admisión material yretención antes de interpretaciónNbN."
+    },
+    {
+      "id": "TE",
+      "family": "electronic_state",
+      "symbol": "T_E",
+      "name": "Temperatura electrónica equivalente por energía",
+      "units": "K o kBT/Delta0",
+      "roles": [
+        "cierre",
+        "observacion"
+      ],
+      "current_value": "Calculada por inversiónde momento; no variableevolutiva independiente",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Energía dentro rangoFD de tabla aT>=0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No biyectiva con distribuciónp: mismaE admitefuerzas distintas.",
+      "research_required": "Investigar rango de inversión antes de calentamiento fuerte; rechazar saturaciónno recortar."
+    },
+    {
+      "id": "Tph_equiv",
+      "family": "electronic_state",
+      "symbol": "T_ph,eq",
+      "name": "Temperatura fonónica equivalente diagnóstica",
+      "units": "K",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Sólo si inversión deenergía posible",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "n espectral no determinado por temperatura; antiguoTphno es nuevoestado.",
+      "research_required": "Elegir observables espectrales ademásde temperaturaequivalente."
+    },
+    {
+      "id": "delta_reg",
+      "family": "condensate",
+      "symbol": "delta/Delta0",
+      "name": "Regularizador físico efectivo del núcleo",
+      "units": "1",
+      "roles": [
+        "cierre"
+      ],
+      "current_value": 0.1,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "delta>0 fijo; no tendera0 conh",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Fuerza núcleo yD36dependenfuerte; no alterarlo para reparar estabilidad.",
+      "research_required": "Estudiar valideznúcleo con fuentes independientes; anteriores .05,.10,.20 son diagnósticos, no intervalo admitido."
+    },
+    {
+      "id": "qbare",
+      "family": "condensate",
+      "symbol": "q_bare; theta",
+      "name": "Gradiente fase y fase",
+      "units": "m^-1; rad",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": {
+        "q_bare_ell0": 0.1,
+        "perturbation_rad": 0.002,
+        "scope": "mixed; nodoanterior usa.1rad"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/superconducting_reservoir.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "RamaSC estable ycatálogo/D36",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "q_delta=Im(Delta*DDelta)/(absDelta²+delta²); no variableextra.",
+      "research_required": "Mapear dominio de rama ydepareamiento sin confundir fasegeneradora yflujo regularizado."
+    },
+    {
+      "id": "Gamma",
+      "family": "condensate",
+      "symbol": "Gamma=hbarD|q_delta|²/2",
+      "name": "Depareamiento por flujo",
+      "units": "J oDelta0",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": "Derivado; catálogoGamma/Delta0 entre0 y1.2",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Gamma>=0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "CambioenD,q,delta cambiaespectro; derivaGamma contadaunay sola vez.",
+      "research_required": "Control de soporte y estabilidad por estado; caja de catálogono aseguraestabilidad."
+    },
+    {
+      "id": "K0",
+      "family": "condensate",
+      "symbol": "K0; kappa=pi/4",
+      "name": "Rigidez de gradiente",
+      "units": "según D.8; kappa sinunidades",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": "K0=piN0hbarD/(8kBTc); kappa=pi/4",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Fijado por escalas",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "RestarK0rhoqdelta² evita dobleconteo; no añadirGLq²independiente.",
+      "research_required": "Límites de aproximación local frenteUsadel no local a escalascortas."
+    },
+    {
+      "id": "D36",
+      "family": "condensate",
+      "symbol": "lambda_min(M), incertidumbre",
+      "name": "Admisibilidad del símbolo principal",
+      "units": "unidades normalizadas de rigidez",
+      "roles": [
+        "numerico",
+        "fisico"
+      ],
+      "current_value": "Se exige signo positivo con margen mayor incertidumbre",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.36"
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "lambda_min>uncertainty>=0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "4x4en2D,2x2leads; Hessiano localgradiente, no totalnodal; signo no pruebaestabilidadglobal.",
+      "research_required": "Mapear cuándo puede garantizarse durante trayectoria; parar sin reparar rigidez."
+    },
+    {
+      "id": "kwt_times",
+      "family": "condensate",
+      "symbol": "tau_ee(Tc),tau_ep(Tc)",
+      "name": "Tiempos efectivos movilidad KWT",
+      "units": "ps",
+      "roles": [
+        "cierre",
+        "fisico"
+      ],
+      "current_value": {
+        "selected": [
+          0.5,
+          2.47
+        ],
+        "legacy_config_defaults": [
+          5,
+          24.7
+        ]
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/config.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "taupsi^-1=(Tmob/Tc)/.5+(Tmob/Tc)^3/2.47; independientes deBGK ytasaseph explícitas.",
+      "research_required": "Resolver procedencia ydistinción entre valores YAML seleccionados ydefaults; calibraciónseparada."
+    },
+    {
+      "id": "mobility_floor",
+      "family": "condensate",
+      "symbol": "T_mob=max(T_E,T_b)",
+      "name": "Piso de temperatura para movilidad",
+      "units": "K",
+      "roles": [
+        "cierre"
+      ],
+      "current_value": "D.11; mismoTb seleccionado",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Tmob>0 enesquemaactual",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Cambia tiempoKWTsin reducirp aFD.",
+      "research_required": "Sensibilidad en vacío y régimen fueraequilibrio, sin alterarel balance."
+    },
+    {
+      "id": "time_scale",
+      "family": "condensate",
+      "symbol": "t_ref; tau0",
+      "name": "Escala de nondimensionalización y escala GL",
+      "units": "ps; s",
+      "roles": [
+        "numerico",
+        "fisico"
+      ],
+      "current_value": {
+        "t_ref_ps": 1,
+        "tau0": "pi*hbar/(8*kB*Tc)"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "tref>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No confundirtiempoescala condt ni taukin.",
+      "research_required": "Verificar todas tasas yobservablesSI al acoplarcircuito."
+    },
+    {
+      "id": "vector_potential",
+      "family": "condensate",
+      "symbol": "A; link_phases",
+      "name": "Potencial vector y enlaces de calibre",
+      "units": "Wb/m; rad",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": {
+        "physical_A": 0,
+        "link_phase_rule": "−2e/hbar integral A·dl"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Finitos ycalibre consistente",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "A=0 físico; fasesdeprueba pueden variar para corrienteporvariación.",
+      "research_required": "Campo externo/apantallamiento requeriríanextensión; no inferirde testgauge."
+    },
+    {
+      "id": "Qdelta",
+      "family": "condensate",
+      "symbol": "Q_Delta",
+      "name": "Disipación condensado",
+      "units": "W/m^3",
+      "roles": [
+        "fisico",
+        "observacion"
+      ],
+      "current_value": "KWT positivo y depósitoelectrónicoexactamenteuna vez",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.13"
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "QDelta>=0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Reservoriophaseworksignado no es calor; superpower tampoco se sumaJoule.",
+      "research_required": "Elegir normascorrectas para pequeñasrespuestas sin normalizarpor energía devacío."
+    },
+    {
+      "id": "taukin",
+      "family": "kinetic",
+      "symbol": "tau_kin",
+      "name": "Tiempo de relajación BGK conservativa",
+      "units": "ps",
+      "roles": [
+        "cierre",
+        "fisico"
+      ],
+      "current_value": {
+        "value": 0.7,
+        "scope": "escenario sintético etapa2; valor físico no identificado"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17"
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0 o infinito para desactivar ensayo",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Constante en energía en cada celda; conserva energía, no número de QP; independiente de taupsi.",
+      "research_required": "Identificación cinética independiente y dependencia material/estado antes de usarlo para latencia."
+    },
+    {
+      "id": "tauescape",
+      "family": "kinetic",
+      "symbol": "tau_esc",
+      "name": "Escape fonónico al sustrato",
+      "units": "ps",
+      "roles": [
+        "cierre",
+        "fisico"
+      ],
+      "current_value": 15,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Entrada efectiva de interfaz; escape posterior distinto de pérdidas antes de t0.",
+      "research_required": "Dependencia de película/sustrato/espectro y validez de constante."
+    },
+    {
+      "id": "alpha2F",
+      "family": "kinetic",
+      "symbol": "alpha²F(Omega)",
+      "name": "Función de Eliashberg energética",
+      "units": "1 en convención D",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": "Debye sintético para dinámica; forma NbN condicionada v1 para investigación",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.14-D.19"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=0 y soporte dentro de g_ph",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Convención de tasa y factores de espín/paridad; misma tabla en inyección y colisiones.",
+      "research_required": "Establecer procedencia, unidades, interpolación y soporte común sin renormalización silenciosa."
+    },
+    {
+      "id": "gphonon",
+      "family": "kinetic",
+      "symbol": "g_ph(Omega)",
+      "name": "DOS fonónica absoluta",
+      "units": "J^-1 m^-3",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": "NbN absoluto no admitido; Debye sintético normalizado",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.34"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=0; integral=3*n_at cuando todos los modos presentes",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Jacobiano de energía/frecuencia, base átomo/celda; cortar negativos sólo derivado trazable autorizado.",
+      "research_required": "Obtener transformación específica del archivo Simon y metadatos originales; cercanía de integral a3 no prueba unidad."
+    },
+    {
+      "id": "lambdaeph",
+      "family": "kinetic",
+      "symbol": "lambda=2 integral alpha²F/Omega",
+      "name": "Acoplamiento integrado",
+      "units": "1",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": {
+        "synthetic": 0.1,
+        "raw_positive_NbN": 1.215665,
+        "scope": "No son el mismo material"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=0 finito",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No identifica unidad de DOS ni prefactor absoluto de tasas.",
+      "research_required": "Contrastar con fuente de cada material; no usar como único certificado."
+    },
+    {
+      "id": "OmegaD",
+      "family": "kinetic",
+      "symbol": "Omega_D",
+      "name": "Corte Debye sintético",
+      "units": "Delta0",
+      "roles": [
+        "cierre"
+      ],
+      "current_value": 4,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Densidad de modos y lambda normalizadas conjuntamente.",
+      "research_required": "Sólo prueba de algoritmo; rango NbN requiere fuente material."
+    },
+    {
+      "id": "rate_prefactor",
+      "family": "kinetic",
+      "symbol": "8*pi*N0/hbar y factores de representación",
+      "name": "Prefactor de colisiones",
+      "units": "según unidades de estado/tiempo",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": "Runner usa8*pi*scales.quantum_rate_scale",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.15"
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Coherente con t_ref,Delta0,capacidades",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Recombinación incluye factor1/2 para pares; misma reacción actualiza electrones y fonones.",
+      "research_required": "Auditar unidades y degeneraciones por ley continua, no ajuste de tiempos a señal."
+    },
+    {
+      "id": "DL",
+      "family": "kinetic",
+      "symbol": "D_L=N1²-R2²",
+      "name": "Difusión espectral",
+      "units": "1",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": "Evaluada con espectro local; transporte a energía fija",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17"
+        },
+        {
+          "path": "pysnspd/experimental/cell_transport.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=0 sobre soporte físico",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Difusividad efectiva no simplementeD para cualquierp; remapeo entre espectros distintos.",
+      "research_required": "Justificar escalas difusivas usadas para tamaño de dominio en estados no térmicos."
+    },
+    {
+      "id": "face_rate",
+      "family": "kinetic",
+      "symbol": "D*t_ref/l_face²",
+      "name": "Escala de transporte de dos celdas",
+      "units": "1",
+      "roles": [
+        "numerico",
+        "fisico"
+      ],
+      "current_value": {
+        "value": 0.2,
+        "scope": "ensayo2celdas, no geometría mixta"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_transport.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "En malla real se construye con geometría, medidas yD; no copiar0.2 como material.",
+      "research_required": "Construcción conservativa2D/1D y comparación a energía fija."
+    },
+    {
+      "id": "heating_closure",
+      "family": "kinetic",
+      "symbol": "H[p,E,Tstar]; Tstar=max(TE,Tb)",
+      "name": "Distribución espectral del calor",
+      "units": "s^-1",
+      "roles": [
+        "cierre"
+      ],
+      "current_value": "D.18; capacidad vacante1-p y normalizador energético",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.18"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Denominador positivo si hay potencia; no tabla saturada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Sólo Joule normal +QDelta, no trabajo SC ni trabajoreservorio como calor.",
+      "research_required": "Admisibilidad y soporte bajo potencia alta; no clipping ni temperatura impuesta."
+    },
+    {
+      "id": "external_heating",
+      "family": "kinetic",
+      "symbol": "P_ext",
+      "name": "Calentamiento externo de prueba",
+      "units": "N0Delta0²/t_ref",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": {
+        "value": 0.01,
+        "scope": "ensayo etapa2; apagado en mixed"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=0 si corresponde",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No fuente óptica continua después de salto D.30.",
+      "research_required": "No transferir fuente sintética al detector sin mecanismo declarado."
+    },
+    {
+      "id": "extra_phonon_physics",
+      "family": "kinetic",
+      "symbol": "transporte lateral; colisiones ph-ph",
+      "name": "Mecanismos fonónicos excluidos",
+      "units": "según modelo futuro",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": "No activos",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.1.1"
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "excluded_current_model",
+      "mathematical_domain": "Fuera del contrato actual",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Escape local no requiere flujo fonónico lateral artificial.",
+      "research_required": "Investigar cuándo exclusión limita observable; no activarlos implícitamente."
+    },
+    {
+      "id": "insulating_sides",
+      "family": "boundaries",
+      "symbol": "n·Z=0; n·Phi_f=0; n·grad(phi)=0",
+      "name": "Paredes laterales aislantes",
+      "units": "flujo apropiado",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": "Contrato continuo; funcional mixto usa borde natural",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.24"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Corrientes laterales nulas con misma normal/medidas",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Dos condiciones reales condensado; fonones locales sin flujo ficticio.",
+      "research_required": "Completar cinética y prueba transiente con conservación en paredes."
+    },
+    {
+      "id": "reservoir_branch",
+      "family": "boundaries",
+      "symbol": "a_b(Is),q_b(Is)",
+      "name": "Rama estable del reservorio",
+      "units": "Delta0; ell0^-1",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": {
+        "sample_a": 0.9952181913919729,
+        "sample_q": 0.1,
+        "amplitude_bracket": [
+          0.8,
+          1.02
+        ],
+        "scope": "rama térmica muestreada"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/experimental/superconducting_reservoir.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.26"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Faa>0 y dJ/dq reducido>0; catálogo y D36 admitidos",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "CorrienteIs total de circuito fija rama; no Ib ni js local arbitrario.",
+      "research_required": "Continuación y derivadas da_b/dIs para borde móvil antes de dinámica; no globalizar muestra."
+    },
+    {
+      "id": "reservoir_population",
+      "family": "boundaries",
+      "symbol": "f_b=FD(E,Tb); n_b=BE",
+      "name": "Población de reservorio",
+      "units": "1",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": "Contrato; helper de transporte aislado existe",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        },
+        {
+          "path": "pysnspd/experimental/reservoir_transport.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Mismo E físico compartido; soporte común",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Última celda fonónica activa conserva escape, no pinning artificial.",
+      "research_required": "Ensamblar flujo cinético interfaz/reservorio sin doble conteo de volumen y energía."
+    },
+    {
+      "id": "reservoir_load",
+      "family": "boundaries",
+      "symbol": "Ltheta=−Iin/Iscale; reacción radial",
+      "name": "Carga de fase y radio terminal",
+      "units": "gradiente de energía normalizado",
+      "roles": [
+        "cierre",
+        "numerico"
+      ],
+      "current_value": {
+        "reference_current_A": 8.633512818265575e-06,
+        "fixed_radius": 0.9952181913919729,
+        "scope": "postproceso instantáneo de radio fijo"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Inyección balanceada; radio>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Fase no fijada en ambos extremos; reacción/trabajo explícitos; no sustituyea_b(Is(t)).",
+      "research_required": "Implementar movimiento radial impuesto por rama y ledger correspondiente durante transiente."
+    },
+    {
+      "id": "normal_trace",
+      "family": "boundaries",
+      "symbol": "n·j_n exterior",
+      "name": "Flujo normal de borde",
+      "units": "A/m²; A integrado",
+      "roles": [
+        "fisico",
+        "observacion"
+      ],
+      "current_value": "Cero externo por contrato D27; arista interior piloto residual~−0.041935%Iref",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Distinguir traza exterior de arista interior",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No anular corriente interior ni usarla como imposición externa.",
+      "research_required": "Validar traza discretizada/refinamiento en nuevo transiente; no promover algebraiczero a convergencia."
+    },
+    {
+      "id": "potential_reference",
+      "family": "boundaries",
+      "symbol": "phi_R=0",
+      "name": "Referencia de potencial",
+      "units": "V",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": "Nodo derecho0V",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Sólo fija constante; grafo conectado",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No imponer flujo adicional; calibre mantiene potencia si suma inyección0.",
+      "research_required": "Documentar todos los planos de puerto y signos antes de acoplar."
+    },
+    {
+      "id": "interface_kinetic",
+      "family": "boundaries",
+      "symbol": "f_2D(E)=f_1D(E)",
+      "name": "Interfaz cinética transparente",
+      "units": "1; flujos",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": "PLANTEADA; no implementada en mixed",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/reservoir_transport.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "planned_not_implemented",
+      "mathematical_domain": "Igualenergía, no mismo índicex",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "ProlongaciónR del condensado no implementa transporte de ocupaciones.",
+      "research_required": "Completar remapeo/flujo conservativo y controlar modos transversales durante transiente."
+    },
+    {
+      "id": "reservoir_work",
+      "family": "boundaries",
+      "symbol": "W_res; Q_e,out",
+      "name": "Trabajo y calor intercambiados con exterior",
+      "units": "W",
+      "roles": [
+        "fisico",
+        "observacion"
+      ],
+      "current_value": "CM9 instantáneo registra trabajo de fase y reacción radial",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.9"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Signado; no calor positivo por definición",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Carga, potencial y circuito usan Is consistente; flujos cancelan sólo internos.",
+      "research_required": "Balance integrado en tiempo, incluido da_b/dIs y energía transportada."
+    },
+    {
+      "id": "Ib",
+      "family": "circuit",
+      "symbol": "I_b",
+      "name": "Corriente de polarización (estado)",
+      "units": "A",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": "Iref en postproceso; 30µA históricoDCideal",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.1-CM.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Dinámica por Lbias; no fuente de corriente fija",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Ib−Is=IRF; fuente realVbias.",
+      "research_required": "Acoplar conjuntamente con Is,vc; estado inicial DC propio."
+    },
+    {
+      "id": "Is",
+      "family": "circuit",
+      "symbol": "I_s",
+      "name": "Corriente total del detector (estado)",
+      "units": "A",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": {
+        "postprocess": 8.633512818265575e-06,
+        "raw_mixed_fraction_of_Iref": 0.99
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.1-CM.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Debe quedar dentro de rama reservorio usada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Is=js+jn integrado; no corrienteSC aislada ni Ib.",
+      "research_required": "Monitor de rama/soporte y corriente con frontera móvil."
+    },
+    {
+      "id": "vc",
+      "family": "circuit",
+      "symbol": "v_c=V_d−V_out",
+      "name": "Voltaje del condensador (estado)",
+      "units": "V",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 0,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.1-CM.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Real finito",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "DotaCdotvc=Ib−Is; noVout=Vd.",
+      "research_required": "PreparaciónDC y respuestaacoplada sin capacitancia ficticia del detector."
+    },
+    {
+      "id": "Rbias",
+      "family": "circuit",
+      "symbol": "R_bias",
+      "name": "Resistencia de polarización",
+      "units": "ohm",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 10000,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Vbias/Rbias sólo corrienteDCideal superconductora.",
+      "research_required": "Medición/incertidumbre térmica/ruido si observable lo requiere."
+    },
+    {
+      "id": "Lbias",
+      "family": "circuit",
+      "symbol": "L_bias",
+      "name": "Inductancia de polarización",
+      "units": "H",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 1e-06,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "EnergíaLbiasIb²/2; escala con resistencia.",
+      "research_required": "Dependencia frecuencia/parasitismos sólo con datos."
+    },
+    {
+      "id": "Rload",
+      "family": "circuit",
+      "symbol": "R_load",
+      "name": "Carga de lectura",
+      "units": "ohm",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 50,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Vout=Rload(Ib−Is), disipaciónexterna no calor detector.",
+      "research_required": "Impedancia real y banda si se compara traza experimental."
+    },
+    {
+      "id": "Ccouple",
+      "family": "circuit",
+      "symbol": "C_couple",
+      "name": "Capacitancia serie de lectura",
+      "units": "F",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": [
+        {
+          "value": 1e-10,
+          "scope": "CM vigente"
+        },
+        {
+          "value": 1e-12,
+          "scope": "YAMLv3 histórico C_rf; no heredar"
+        }
+      ],
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "C vc²/2; cambia forma y tiempos de señal.",
+      "research_required": "Resolver config única del experimento y verificar unidades/alias antes de acoplamiento."
+    },
+    {
+      "id": "Vbias",
+      "family": "circuit",
+      "symbol": "V_bias",
+      "name": "Fuente de tensión",
+      "units": "V",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": [
+        {
+          "value": 0.3,
+          "scope": "memoria"
+        },
+        {
+          "value": 0.08633512818265575,
+          "scope": "mixed, RbiasIref"
+        }
+      ],
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=0 para orientación seleccionada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No ajustar a pulso; fija estado DC con Vdev.",
+      "research_required": "Escoger escenario científico, distinguir sesgohistórico30µA de débil8.6335µA."
+    },
+    {
+      "id": "Ltotal",
+      "family": "circuit",
+      "symbol": "L_k,total",
+      "name": "Referencia histórica total",
+      "units": "H",
+      "roles": [
+        "fisico"
+      ],
+      "current_value": 1e-08,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1-§3"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Incluye almacenamiento resuelto; nunca defaultLext.",
+      "research_required": "Fuente/medición y partición a mismoestado,geometría,puertos."
+    },
+    {
+      "id": "Lext",
+      "family": "circuit",
+      "symbol": "L_k,ext",
+      "name": "Inductancia exterior constante",
+      "units": "H",
+      "roles": [
+        "fisico",
+        "cierre"
+      ],
+      "current_value": 9.666757458681755e-09,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.6"
+        },
+        {
+          "path": "pysnspd/experimental/superconducting_reservoir.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0 explícito",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Total menos diferencialresuelta en referencia; no restar inductanciahotspot instantánea.",
+      "research_required": "Recalcular partición si cambiaLres, material o referencia; congelar antes de corrida."
+    },
+    {
+      "id": "Vdev",
+      "family": "circuit",
+      "symbol": "V_dev=phi_L−phi_R",
+      "name": "Voltaje pasivo de región resuelta",
+      "units": "V",
+      "roles": [
+        "observacion",
+        "fisico"
+      ],
+      "current_value": "Calculado en puertos extremos dominio energético",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.3"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Puertos equipotenciales o integralpotencia adecuada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "IsVdev trabajo entrante; central100nm esotroobservable.",
+      "research_required": "Cotejar signos del backend histórico de corriente/voltaje conjuntamente."
+    },
+    {
+      "id": "Vout",
+      "family": "circuit",
+      "symbol": "V_out; I_RF; V_d",
+      "name": "Señal de carga antes de amplificador",
+      "units": "V; A",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": "CM.2: IRF=Ib−Is,Vout=RloadIRF,Vd=vc+Vout",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.2"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No equivale alVdev ni vc",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Electrónica externa filtra señal; distinguirlatencia material ylectura.",
+      "research_required": "Definir señal operativa y ubicación antes de fijar umbral."
+    },
+    {
+      "id": "Gface",
+      "family": "circuit",
+      "symbol": "G_face=sigma*S/l",
+      "name": "Conductancia del grafo normal",
+      "units": "S",
+      "roles": [
+        "numerico",
+        "fisico"
+      ],
+      "current_value": "Geometría abierta/mixed y sigmaescenario explícita",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0, grafo conectado, inyecciónbalanceada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Noether de corrienteSC + potencial elíptico; JouleΣGdphi².",
+      "research_required": "Exactitud local del repartoJoule y refinamiento geométrico, no sólo potencia global."
+    },
+    {
+      "id": "amplitude_box",
+      "family": "catalogue",
+      "symbol": "absDelta/Delta0 box",
+      "name": "Dominio positivo de amplitud del catálogo",
+      "units": "1",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "min": 0.08,
+        "max": 1.5,
+        "nodes": 17,
+        "normal_point": "Delta=0 exacto separado"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No extrapolar entre0 y.08 ni fuera caja",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Los ceros necesitan contrato efectivo y espectro adecuado; caja no equivale dominio físico.",
+      "research_required": "Cobertura requerida por trayectoria débil; estudiar núcleo aparte sin esconder hueco de soporte."
+    },
+    {
+      "id": "gamma_box",
+      "family": "catalogue",
+      "symbol": "Gamma/Delta0; Gamma/absDelta",
+      "name": "Caja de depareamiento y coordenada de tabla",
+      "units": "1",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "gamma_min": 0,
+        "gamma_max": 1.2,
+        "gamma_nodes": 4,
+        "ratio_nodes": 155,
+        "ratio_max": 15
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Estado dentro soporte2D real de catálogo",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Cambio de coordenada no libera límites; respetar físicoGamma al derivar.",
+      "research_required": "Rango necesario vs estabilidadD36; no confundir disponibilidad de tabla con admisión."
+    },
+    {
+      "id": "eta",
+      "family": "catalogue",
+      "symbol": "eta/Delta0",
+      "name": "Regulador causal numérico",
+      "units": "1",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": 1e-08,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.3"
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">0 numérico; referenciaideal eta→0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No ensanchamiento físico ni tasa inelástica; etaforma pisoerror distinto de cuadratura.",
+      "research_required": "Separar contraste de eta de refinamiento de nodos; no calibrarregulador a la señal."
+    },
+    {
+      "id": "xmax",
+      "family": "catalogue",
+      "symbol": "x_max/Delta0",
+      "name": "Corte de conteo electrónico",
+      "units": "1",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": 12,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/refined_cells.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "x>0 ypesospositivos",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Emax depende deDelta,Gamma; pérdidas haciafuera y capacidad térmica debenacotarse.",
+      "research_required": "Cotas de colas para fuentes/poblaciones/observables; no usar sólo pequeñeza de p."
+    },
+    {
+      "id": "electron_nodes",
+      "family": "catalogue",
+      "symbol": "N_e; refinamiento",
+      "name": "Nodos de ocupaciones electrónicas",
+      "units": "conteo",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "archived_table_nodes": 180,
+        "complementary_candidate": 630,
+        "refinement_probes": [
+          1260,
+          2520
+        ]
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/refined_cells.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No equivalentes a ejeuniformeE",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Gauss segmentado, densidad cerca gap, capacidad y remapeo; repetir controles apropiados por escenario.",
+      "research_required": "Refinamiento de observables realmente usados; anterior certificadodinámico global incompleto."
+    },
+    {
+      "id": "count_partition",
+      "family": "catalogue",
+      "symbol": "breaks; bulk_spacing; order; edge_order",
+      "name": "Regla de cuadratura de estados",
+      "units": "Delta0; enteros",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "bulk_spacing": 0.02,
+        "order": 2,
+        "edge_order": 8
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/experimental/refined_cells.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Pesospositivos/nodosordenados",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Refinamiento no altera física; representa p enconteo, no interpolación poríndice.",
+      "research_required": "Conservar funciones continuas depreparación al comparar mallas."
+    },
+    {
+      "id": "phonon_grid",
+      "family": "catalogue",
+      "symbol": "N_ph; Omega_min; Omega_max",
+      "name": "Representación fonónica y corteIR",
+      "units": "nodos;Delta0",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "candidate_nodes": 1025,
+        "probes": [
+          2049,
+          4097
+        ],
+        "Omega_min": 0.005,
+        "synthetic_Omega_max": 4
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Omega>0 ypesospositivos",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "OmisiónIR afectaBE; requiere cotasenergía/rates, no sólo conteo.",
+      "research_required": "Refinar espectro yIR por observable; no decir convergencia con sólo2mallas."
+    },
+    {
+      "id": "reaction_quadrature",
+      "family": "catalogue",
+      "symbol": "orders; panel widths; layout",
+      "name": "Cuadratura interna de colisiones",
+      "units": "enteros;Delta0",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "inner_order": 2,
+        "outer_order": 2,
+        "max_energy_panel": 0.125,
+        "max_panel": 0.5,
+        "layout": "resolved_panels",
+        "method": "projected"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/kinetic_events.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Momentos estequiométricos ycapacidades consistentes",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Comparar continuo independiente, no test que copie implementación.",
+      "research_required": "Delimitar precisión/coste para estadosde dominio3.5 antesde barridos."
+    },
+    {
+      "id": "face_quadrature",
+      "family": "catalogue",
+      "symbol": "face_order",
+      "name": "Cuadratura de transporte a energía común",
+      "units": "entero",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": 2,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_transport.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Soporte compartido yconservaciónenergía",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Transportep enconteo requiere reconstrucción aenergía común.",
+      "research_required": "Convergencia para espectrosvecinos distintos, interfaz2D–1D todavía porensamblar."
+    },
+    {
+      "id": "matsubara",
+      "family": "catalogue",
+      "symbol": "N_M; T_a; tail",
+      "name": "Matsubara, temperatura auxiliar y cola",
+      "units": "entero;K",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "legacy_n_matsubara": 500,
+        "experimental_Ta": "identidad D.7/control, no temperatura física"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.5-D.7"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Sumarenormalizada ycola convergidas; Ta>0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Vacío electrónicoactual tiene expresión/tabulaciónpropia; no nuevos gradoslibresmateriales.",
+      "research_required": "Independencia auxiliar yconsistencia energía-fuerza; distinguir método histórico y actual."
+    },
+    {
+      "id": "newton",
+      "family": "catalogue",
+      "symbol": "tol_causal; brackets; branch",
+      "name": "Resolución causal e inversión de conteo",
+      "units": "relativo/absolutonormalizado",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "tolerance": "4e-14*max(1,abs(Ebar))"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/seeded_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Rama originalcausal, soporte,energíaordenada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No aceptar raízpolinómica sólo cuadrada; mismas derivadasimplícitas.",
+      "research_required": "Coste yresiduo dentro de caja, sin aflojar tolerancia para hacerpasarcaso."
+    },
+    {
+      "id": "predictor",
+      "family": "catalogue",
+      "symbol": "Chebyshev_degree; seed_box",
+      "name": "Predictor del Newton causal exacto",
+      "units": "entero;1",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "degree": 6,
+        "a_bounds": [
+          0.985,
+          1.005
+        ],
+        "Gamma_bounds": [
+          0.003,
+          0.009
+        ],
+        "representation": "predictor_then_exact_causal_Newton"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/seeded_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Sólo evidenciaPASS yhashes delpredictor",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No devuelve energíaaproximada; parches energía anteriores rechazados; caja predictora no dominiofísico.",
+      "research_required": "Investigar aceleración certificable sin transformar fitlocal enleyfísica."
+    },
+    {
+      "id": "material_preprocess",
+      "family": "catalogue",
+      "symbol": "dedup; negative_tail; common_support; unit_factors",
+      "name": "Tratamiento de datos fonónicos",
+      "units": "operaciones yfactoresSI",
+      "roles": [
+        "numerico",
+        "material"
+      ],
+      "current_value": "DerivadoNbNv1 trazable: firstduplicate, DOSnegativa→0, alpha²Ffuera soporte→0; sin renormalizar DOS",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/material_admission.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No repetir transformaciones silenciosamente",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Cambio de soporte altera momentos ynormalizador inyección; fuente específica sigue pendiente.",
+      "research_required": "Identificar tablaoriginal yconvención de columna; separarsensibilidadforma de admisiónabsoluta."
+    },
+    {
+      "id": "sem_degree",
+      "family": "spatial_numerics",
+      "symbol": "p_SEM",
+      "name": "Grado GLL de elementos espectrales",
+      "units": "entero",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": 4,
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": ">=1 según implementación",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Energía ygradientecomparten masa/rigidez, Dpositivo; pno esocupaciónelectrónica.",
+      "research_required": "Estudiar refinamiento h/p con soluciónsuave; no formalorden a todosobservables."
+    },
+    {
+      "id": "spatial_mesh",
+      "family": "spatial_numerics",
+      "symbol": "N_x,N_y,N_L,N_R; h",
+      "name": "Elementos y espaciado mixto",
+      "units": "enteros;m",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "meshes": [
+          [
+            2,
+            1,
+            1,
+            1
+          ],
+          [
+            4,
+            2,
+            2,
+            2
+          ],
+          [
+            8,
+            4,
+            4,
+            4
+          ]
+        ],
+        "longitudinal_element_m": [
+          1.8e-07,
+          9e-08,
+          4.5e-08
+        ]
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Geometría fijada alrefinar",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "NodosGLL no tienenespaciado uniforme; interfacesone-hot ymedidas conservativas.",
+      "research_required": "Resolver perfilesde s_gamma ylongitudescondensado/difusivas; tresinstantáneas sonsensibilidad."
+    },
+    {
+      "id": "legacy_mesh",
+      "family": "spatial_numerics",
+      "symbol": "target_spacing; seed; smoothing",
+      "name": "Malla Delaunay histórica",
+      "units": "m;entero",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "spacing_m": 4e-09,
+        "seed": 222222,
+        "boundary_points": 208,
+        "smooth": 100
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "legacy_only",
+      "mathematical_domain": "Histórico v1.0.0, no mallaGLL experimental",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Cambio de discretización requiere controlespropios; no trasladar número de nodos como precisión.",
+      "research_required": "Sólo comparar historia con adaptadores/alcance explícitos."
+    },
+    {
+      "id": "fd_controls",
+      "family": "spatial_numerics",
+      "symbol": "h_FD; D5; curvature steps",
+      "name": "Pasos de diferencias independientes",
+      "units": "normalizado",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "mixed": [
+          0.0005,
+          0.00025
+        ],
+        "nodal": [
+          0.001,
+          0.0005,
+          0.00025
+        ]
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Incertidumbre de referencia dentro presupuesto declarado",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "pcongelado, perturbaciónmismaenergía; D36curvaturaotrocontrol.",
+      "research_required": "Separar redondeo/truncamiento, espectro ymesh; no ampliar tolerancia retrospectiva."
+    },
+    {
+      "id": "static_solver",
+      "family": "spatial_numerics",
+      "symbol": "L-BFGS-B; gradient/function tolerances",
+      "name": "Preparación estacionaria abierta",
+      "units": "normalizado",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "max_iterations": 120,
+        "max_evaluations": 180,
+        "gtol": 2e-05,
+        "ftol": 1e-13,
+        "phase_trust_radius_rad": 0.15
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No cotaactiva ni extrapolación, rama estable",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Escenariosestáticos de utilidad no preparan automáticamenteDCmixto.",
+      "research_required": "Preparar equilibrioconmismas ecuaciones,bordes ycorriente antesde perturbarlo."
+    },
+    {
+      "id": "joule_allocation",
+      "family": "spatial_numerics",
+      "symbol": "half-face then quadrature-mass",
+      "name": "Asignación local de calor normal",
+      "units": "regla",
+      "roles": [
+        "numerico",
+        "cierre"
+      ],
+      "current_value": "Mitad por extremo decara, masaentrecuadraturasdeDOF identificado",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Suma potenciaexacta",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Exactitud espacialdecalor local no probadapor ledgerglobal.",
+      "research_required": "Verificar perfilJoule bajo refinamiento antesde afirmar tiempodetección."
+    },
+    {
+      "id": "time_method",
+      "family": "time_numerics",
+      "symbol": "SSPRK3+common_flux+subnormal_guard",
+      "name": "Integrador de poblaciones acotadas",
+      "units": "método",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": "Etapa2 guardado; no integrador espacial/circuital completo",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage2/closure_20260922/closure_decision.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "0<=p<=1,n>=0 sin clipping/energíarepair",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Limitadorcomúneventos conservativo; guardlongdouble sólo subnormal; fuentescongeladas.",
+      "research_required": "Diseñar integración temporal acoplada Γvariable, frontera,circuito; no trasplantar admisión etapa2."
+    },
+    {
+      "id": "dt",
+      "family": "time_numerics",
+      "symbol": "dt; N_steps; rtol,atol",
+      "name": "Paso temporal y control de error",
+      "units": "s;entero;unidadesporvariable",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "legacy_dt_s": 1e-15,
+        "stage2_tref_ps": 1,
+        "new_spatial_dt": null
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Debe resolvercircuito,KWT,transporte,colisiones ypreservarsoporte",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Paso lectura/sampling no dtintegración; escalasdispares pueden rigidez.",
+      "research_required": "Registrarpresupuesto por observable y estudiar convergencia conreferencia antesdebarridos."
+    },
+    {
+      "id": "checkpoint",
+      "family": "time_numerics",
+      "symbol": "checkpoint_times; sampling_dt",
+      "name": "Muestreo guardado de resultados",
+      "units": "s",
+      "roles": [
+        "numerico",
+        "observacion"
+      ],
+      "current_value": {
+        "legacy_snapshots_per_ps": 10
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Tiemposordenados, coberturaeventos yconfirmación",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Interpolacióncruce puedeintroducirerroraunqueRHS integradofino.",
+      "research_required": "Elegir muestreo según tiempos/subida ycriteriodelectura, independientede dt."
+    },
+    {
+      "id": "numerical_budgets",
+      "family": "time_numerics",
+      "symbol": "epsilon_t,epsilon_x,epsilon_E,epsilon_ref",
+      "name": "Presupuestos de precisión",
+      "units": "unidades deobservable;relativo",
+      "roles": [
+        "numerico",
+        "observacion"
+      ],
+      "current_value": {
+        "historical_time": 0.0001,
+        "historical_aux_pair": 2.5e-05,
+        "stage3_nodal_response": 0.01,
+        "scope": "preservados sóloensayosoriginales"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage2/acceptance_criteria.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage2/closure_20260922/closure_decision.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Nuevos presupuestos deben fijarseantes deresultados",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Identidades,precisiónobservable yvalidez física distintos; no normalizationvacío para señalpequeña.",
+      "research_required": "Definir mínimoefecto físico aresolver; heredar resultados no umbrales ciegamente."
+    },
+    {
+      "id": "stopping",
+      "family": "time_numerics",
+      "symbol": "admissibility checks; maxcost; retry policy",
+      "name": "Paradas y límites de cálculo",
+      "units": "conteos;s",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": "Soporte/causalidad/positividad/D36/branch; no reintentoautónomo largo",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.36"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No corregir estado para ocultar falla",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Límites computacionales no parámetrosfísicos; interrupción=INCOMPLETE.",
+      "research_required": "Diseñar deteccióntemprana y costos; >5min comandousuario en cuaderno ychat."
+    },
+    {
+      "id": "threshold",
+      "family": "observation",
+      "symbol": "V_thr; polarity",
+      "name": "Discriminador de detección",
+      "units": "V;categoría",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": {
+        "legacy_threshold_V": 0.0001,
+        "polarity": "positive"
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Umbralfinito>0; señal/orientacióndeclarada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "100µV esdefault software no umbralexperimental adoptado; Vout antesdeamplificar.",
+      "research_required": "Datos delectrónica ydefiniciónoperativa para compararlatencias."
+    },
+    {
+      "id": "readout_windows",
+      "family": "observation",
+      "symbol": "baseline,confirmation,hysteresis,peak",
+      "name": "Ventanas del detector lógico",
+      "units": "s;1",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": {
+        "baseline_ps": 10,
+        "confirmation_ps": 0.5,
+        "hysteresis": 0.1,
+        "peak_confirmation_ps": 2,
+        "peak_drop_fraction": 0.01,
+        "post_peak_safety_ps": 10
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No confundirpersistencia lógica contiempo físico",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Dependen muestreo,ruido yseñal; defaultslegacy.",
+      "research_required": "Investigar robustez dedefinición,registrarantes de comparar yno ajustara un pulso."
+    },
+    {
+      "id": "recovery",
+      "family": "observation",
+      "symbol": "hold; current fraction; residuals",
+      "name": "Definición de recuperación",
+      "units": "s;A;V;K;1",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": {
+        "hold_ps": 10,
+        "current_fraction": 0.9,
+        "I_rel": 0.01,
+        "I_abs_A": 5e-08,
+        "V_rel": 0.01,
+        "V_abs_V": 1e-05,
+        "T_abs_K": 0.05,
+        "Delta_rel": 0.02,
+        "spatial_quantile": 0.995,
+        "max_guard_factor": 4
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Recuperación eléctrica no igual eficiencia ni estadototal",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "T_Eequivalente no espectrop completo; 90%corriente no pruebaPDEdetección.",
+      "research_required": "Definirobservable de recuperación que se quiererepresentar sin asumir equivalencias."
+    },
+    {
+      "id": "latency",
+      "family": "observation",
+      "symbol": "t_latency=t_cross−t_event",
+      "name": "Latencia determinista",
+      "units": "s",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": "Postprocesolegacy existente; sin transiente experimentalnuevo",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Origendet0/fotón yseñaldecruce explícitos",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Incorporación de cascadaomitida noautomática; fracciónconstante distinta umbralfijo.",
+      "research_required": "Separartiempofísicomaterial,tiempocircuital yretardo delectrónica."
+    },
+    {
+      "id": "jitter",
+      "family": "observation",
+      "symbol": "sigma_t; FWHM_t; distribution",
+      "name": "Dispersión temporal/jitter experimental",
+      "units": "s",
+      "roles": [
+        "observacion",
+        "fisico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": null
+        }
+      ],
+      "implementation_status": "research_only_not_enabled",
+      "mathematical_domain": "Requiere ensemble o distribución de entradas/ruidos declarada",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "FWHM en referencias comoKorzh no igual latencia única; FWHM=2sqrt(2ln2)sigma sólo si distribuciónGaussiana.",
+      "research_required": "Revisión documental específica de definición/dataset Korzh, posición/energía/ruido/timinginstrumental; no activar estocasticidad."
+    },
+    {
+      "id": "electronics_transfer",
+      "family": "observation",
+      "symbol": "H_readout(omega); gain; bandwidth; cable_delay",
+      "name": "Cadena de lectura y amplificación",
+      "units": "transferencia;Hz;s",
+      "roles": [
+        "observacion",
+        "fisico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§2"
+        }
+      ],
+      "implementation_status": "planned_not_implemented",
+      "mathematical_domain": "Datos medidos o escenario explícito",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Rload, Ccouple no modelan toda electrónica; ancho de banda no dt numérico.",
+      "research_required": "Recoger impedancias,banda,retardos,ganancia y calibración antesdecomparedetector."
+    },
+    {
+      "id": "noise",
+      "family": "observation",
+      "symbol": "S_V,S_I; trigger_noise; timing_reference",
+      "name": "Ruido de lectura y referencia temporal",
+      "units": "V²/Hz;A²/Hz;s",
+      "roles": [
+        "observacion",
+        "fisico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "optional_not_enabled",
+      "mathematical_domain": "PSD>=0, definición estadística",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Efecto umbralpendienteseñal; no convertirerrornumérico enjitter.",
+      "research_required": "Fuentes/medidas y correlaciones; investigación sin activar ruido."
+    },
+    {
+      "id": "event_ensemble",
+      "family": "observation",
+      "symbol": "position/energy/bias distributions; repetitions",
+      "name": "Distribución de condiciones de evento",
+      "units": "distribuciones",
+      "roles": [
+        "fisico",
+        "observacion"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "research_only_not_enabled",
+      "mathematical_domain": "Debe tener medida ynormalizaciónconocidas",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Fano,absorciónespacial,ruido distintascontribuciones; no suma varianzas sinindependencia.",
+      "research_required": "Separar dominiofísico de confianza de intervalosestadísticos sobreensemble."
+    },
+    {
+      "id": "observables",
+      "family": "observation",
+      "symbol": "Q,energy,force,current,voltages,latency,switching",
+      "name": "Lista de observables con escala propia",
+      "units": "varias",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": "Instantáneosconledger; latencia/switchingnuevos no calculados",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Cada dictamen lleva escenario yreferencia",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Precisión deenergíagrande no prueba fuerza,incrementos pequeños ni umbrales.",
+      "research_required": "Elegir pocosobservablesprimarios para futuro ensayodébil; registrar restoexploratorio."
+    },
+    {
+      "id": "boundary_distances",
+      "family": "geometry",
+      "symbol": "d_center,L; d_center,R; d_region,L; d_region,R",
+      "name": "Distancias desde el centro de deposición y desde una región perturbada definida por separado",
+      "units": "m",
+      "roles": [
+        "fisico",
+        "numerico"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25-D.30"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Distancias>0; centro dentro de los planos; región perturbada definida mediante umbral explícito de campo o energía",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "d_center mide desde el centro de deposición hasta cada plano y es la distancia de la fórmula erfc. d_region mide desde una región definida por un umbral declarado; no sustituye d_center. La gaussiana tiene soporte infinito, sin borde compacto. Ninguna distancia es automáticamente L2D ni el largo total del dispositivo.",
+      "research_required": "Analizar cola difusiva y sensibilidad futura al dominio dentro de ventana registrada."
+    },
+    {
+      "id": "linear_diffusion_filter",
+      "family": "geometry",
+      "symbol": "tau=t-t0; sigma²(tau); epsilon_exterior(tau)",
+      "name": "Filtro analítico de influencia lejana, condicional",
+      "units": "s;m²;1",
+      "roles": [
+        "numerico",
+        "observacion"
+      ],
+      "current_value": null,
+      "current_value_status": "NO_FIJADO",
+      "source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17-D.20"
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "D constante, difusión lineal en espacio libre, perfil gaussiano en t0 y tau=t-t0>=0; distancias desde su centro",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "sigma²(tau)=s_gamma²+2D*tau por coordenada; epsilon_exterior=.5erfc(d_center,L/sqrt(2*s_gamma²+4D*tau))+.5erfc(d_center,R/sqrt(2*s_gamma²+4D*tau)). Es fracción instantánea de masa exterior, no escape acumulado ni probabilidad de primer paso, y no garantiza el PDE acoplado.",
+      "research_required": "Investigar utilidad como preselección documental; epsilon depende del observable, no prefijar1e-10; confirmar después con transiente."
+    },
+    {
+      "id": "Ic_calibration",
+      "family": "material",
+      "symbol": "I_c,target; gamma_max_fraction; D_warn",
+      "name": "Calibración histórica de corriente crítica",
+      "units": "A;1;m²/s",
+      "roles": [
+        "material",
+        "numerico"
+      ],
+      "current_value": {
+        "Ic_A": 3.88e-05,
+        "n_gamma_sweep": 160,
+        "gamma_max_fraction": 0.8,
+        "D_warn_range": [
+          5e-05,
+          0.0005
+        ]
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/config.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "legacy_only",
+      "mathematical_domain": "Valores de calibración histórica; avisos no intervalos físicos",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "D inferido deIc no validación independiente; regularización nueva cambia rama.",
+      "research_required": "Revisar qué parámetros medidos y cuáles inferidos, con correlación de errores."
+    },
+    {
+      "id": "legacy_thermal_catalog",
+      "family": "catalogue",
+      "symbol": "N_Te,N_Tph,N_delta,N_q,N_energy,N_omega",
+      "name": "Tablas térmicas de producción históricas",
+      "units": "enteros",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "dos": [
+          21,
+          26,
+          2000,
+          500
+        ],
+        "phase_space": [
+          40,
+          40,
+          21,
+          26,
+          1200
+        ]
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/config.py",
+          "locator": null
+        }
+      ],
+      "implementation_status": "legacy_only",
+      "mathematical_domain": "No representaciónp/n del nuevo modelo",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Te/Tph tabulados antiguos no se deben incorporar como variables extra al modelo espectral.",
+      "research_required": "Mantener sólo referencia histórica para comparación de coste y salidas."
+    },
+    {
+      "id": "material_provenance",
+      "family": "provenance",
+      "symbol": "data_SHA,units,normalization,source_revision",
+      "name": "Identidad de datos y convenciones",
+      "units": "metadatos",
+      "roles": [
+        "material",
+        "numerico"
+      ],
+      "current_value": "R2catalogue y derivadoNbN v1 conSHA; fuentes declaradas por registros",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Bytes y unidades auditables",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Un material diferente puede compartir nombresNbN sin misma película; hash no acredita física.",
+      "research_required": "Matriz de evidencia por parámetro, permitir desconocido explícito."
+    },
+    {
+      "id": "run_identity",
+      "family": "provenance",
+      "symbol": "source_SHA,initial_SHA,registration,versions",
+      "name": "Identidad reproducible del cálculo",
+      "units": "metadatos",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": "Manifiestos congelados; directorios nuevos; versiones y resultados preservados",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/seeded_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "Reuso sólo con contrato/hash completo compatible",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No reusar resultado deotra física/método como si fuera nueva prueba.",
+      "research_required": "Definir futuros paquetes manuales con alcance, costes y rechazo de estados inválidos."
+    },
+    {
+      "id": "execution_resources",
+      "family": "provenance",
+      "symbol": "threads, RAM, runtime, progress",
+      "name": "Recursos y política de ejecución",
+      "units": "conteos;GiB;s",
+      "roles": [
+        "numerico"
+      ],
+      "current_value": {
+        "diagnostic_threads": 1,
+        "max_agent_expected_s": 300,
+        "uncertain_timeout_s": 240,
+        "legacy_parallel_workers": 16
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ],
+      "implementation_status": "experimental_implemented_scope_limited",
+      "mathematical_domain": "No >5min autónomo, no dividir para eludir límite",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Recursos no alteran dominiofísico; previsiónETA aproximada yfallo no100%.",
+      "research_required": "Todo comando largo en /home/jdiaz/GEMINGA_COMMANDS.md y bloque copiable en chat; esperar usuario."
+    },
+    {
+      "id": "sample_identity",
+      "family": "experiment_reference",
+      "symbol": "sample_id; fabrication; width; Tb; bias",
+      "name": "Identidad de muestra y adquisición",
+      "units": "metadatos;SI",
+      "roles": [
+        "observacion",
+        "material"
+      ],
+      "current_value": "K20: varias muestras de7nm, longitudactiva5µm, anchos60/80/100/120nm; no un único detector",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "Cada observación vinculada a una muestra y montaje",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "No combinar récords,simulaciones1D y medidas con distintoancho/baño/polarización.",
+      "research_required": "Seleccionar casoexperimental identificable antes de proponer valoresdel modelo."
+    },
+    {
+      "id": "sheet_resistance",
+      "family": "experiment_reference",
+      "symbol": "R_square; RRR",
+      "name": "Resistencia de hoja y razón residual",
+      "units": "ohm/cuadro;1",
+      "roles": [
+        "material"
+      ],
+      "current_value": {
+        "K20_fabrication_room_temperature": 340,
+        "K20_RRR": 0.8,
+        "K20_simulation": 608,
+        "A20_model": 600
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": ">0; temperatura de medición explícita",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "sigma=1/(R_square*d) sólo con película/temperatura coherentes; ajuste no medición.",
+      "research_required": "Trazar espesor,temperatura,resistividad yfuente juntoa incertidumbre."
+    },
+    {
+      "id": "substrate",
+      "family": "experiment_reference",
+      "symbol": "substrate; oxide; wafer_thickness",
+      "name": "Sustrato y capas ópticas/térmicas",
+      "units": "material;m",
+      "roles": [
+        "material",
+        "fisico"
+      ],
+      "current_value": {
+        "K20": "Si/300nmSiO2",
+        "reflection_example_wafer_m": 0.0005
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "Caso yversión de fuente específicos",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Sustrato afectaescape y trayectoriasópticas; colasIRF puedeninstrumentales.",
+      "research_required": "Geometría y propiedades del sustrato de muestraelegida; no ajustarcola con cinética detector."
+    },
+    {
+      "id": "phonon_gamma_legacy",
+      "family": "experiment_reference",
+      "symbol": "gamma_ph",
+      "name": "Parámetro fonónico del modelo térmico de referencia",
+      "units": "1",
+      "roles": [
+        "cierre"
+      ],
+      "current_value": {
+        "K20_fit": 60,
+        "A20_calculated": 23.8,
+        "A20_approximation": 20
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "No esGamma de Usadel ni parametroautomáticodelmodelo espectral",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Resume relaciones térmicas del modelo anterior; DOSnueva debedefinircapacidades directamente.",
+      "research_required": "Derivar correspondencia si útil; nunca igualar gamma_ph yGamma/Delta0."
+    },
+    {
+      "id": "fit_energy_variances",
+      "family": "experiment_reference",
+      "symbol": "sigma_F; sigma_nonuniform; retention",
+      "name": "Dispersión energética ajustada en referencia",
+      "units": "meV;1",
+      "roles": [
+        "cierre",
+        "observacion"
+      ],
+      "current_value": {
+        "K20_1550_sigma_F_meV": 92,
+        "K20_1550_sigma_nonuniform_meV": 40,
+        "K20_retention": 0.667
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "Parámetrosdel modelo histórico, no nuevas entradasactivas",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "sigmaenergética no s_gamma espacial; distribución ycovarianza no derivadasdeanchosaislados.",
+      "research_required": "Investigar identificación y dobleconteo de pérdidas; Fano permaneceapagado."
+    },
+    {
+      "id": "optical_chain",
+      "family": "experiment_reference",
+      "symbol": "lambda; polarization; focus; optical_path",
+      "name": "Configuración óptica por adquisición",
+      "units": "m;polarización;s",
+      "roles": [
+        "observacion",
+        "fisico"
+      ],
+      "current_value": "K20 latencia775/1550nm; otras muestras/espectros no mezclados",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "Mismos ajustesdelectura y recorrido óptico calibrado",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Diferenciasentre máximosajustados IRF requieren calibraciónretardos; foco no hotbelt40nm.",
+      "research_required": "Datos de foco/absorción, polarización y filtros porlongituddeonda."
+    },
+    {
+      "id": "tapers",
+      "family": "experiment_reference",
+      "symbol": "taper_geometry; illuminated_region",
+      "name": "Transiciones geométricas y región iluminada",
+      "units": "m;metadatos",
+      "roles": [
+        "fisico",
+        "observacion"
+      ],
+      "current_value": "K20 incluye tapers; geometría completa pendiente",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "Fuera rectánguloactual; no reflejado porL2D/W",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Detecciones en taper pueden cambiarcolasIRF; dominioactivo no ópticalfocus.",
+      "research_required": "Separar eventos delnanohilo y transiciónantes de interpretaciónlatencia."
+    },
+    {
+      "id": "observation_uncertainty",
+      "family": "experiment_reference",
+      "symbol": "CI95%; covariance; fitted_IRF_peak",
+      "name": "Convenciones de incertidumbre y ajuste",
+      "units": "según observable",
+      "roles": [
+        "observacion"
+      ],
+      "current_value": "K20 usaFWHM deIRF y diferencia de máximosajustados; barrasCI95% deben conservarse como tales",
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "CI no sigma ni FWHM; incertidumbreno reportada no es0",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "Ajustes,covarianzas,métododetrigger y filtros comunes porcomparación.",
+      "research_required": "Obtener datos/procedencia y covarianzas; no conversión automática entreancho,CI,media,máximo."
+    },
+    {
+      "id": "experimental_readout",
+      "family": "experiment_reference",
+      "symbol": "L_add,H_readout,sampling",
+      "name": "Montaje de lectura de referencia",
+      "units": "H;Hz;ganancia",
+      "roles": [
+        "observacion",
+        "fisico"
+      ],
+      "current_value": {
+        "K20_inductor_H": 9.6e-08,
+        "amplifier_nominal_Hz": 1500000000,
+        "gain_dB": 50,
+        "acquisition_GS_s": [
+          40,
+          80
+        ],
+        "processing_filter_Hz": 6000000000
+      },
+      "current_value_status": "VALOR_O_ESCENARIO_IDENTIFICADO_NO_RANGO_VALIDADO",
+      "source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ],
+      "implementation_status": "reference_only_not_adopted",
+      "mathematical_domain": "Valores de montaje K20, no sustituciónautomática deCM",
+      "confidence_range": {
+        "status": "DESCONOCIDO_NO_ADOPTADO",
+        "bounds": null,
+        "explanation": "El dominio matemático y los puntos ensayados no certifican un rango físico."
+      },
+      "couplings_and_restrictions": "96nH adicional distinto de10nHtotalmemoria; bandaamplificador distinta defiltro/muestreo.",
+      "research_required": "Justificar correspondencia circuito antes de reproducirK20; no agregarL para hacercoincidir latencia."
+    }
+  ],
+  "no_changes_to_historical_contracts": true,
+  "simulations_run_by_this_inventory": 0,
+  "numerical_admission": false,
+  "production_promotion": false
+}

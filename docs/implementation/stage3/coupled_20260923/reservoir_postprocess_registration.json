@@ -1,0 +1,37 @@
+{
+  "schema": "pysnspd.stage3.saved_reservoir_snapshot.v1",
+  "status": "REGISTERED_AFTER_EXPLORATORY_ALGEBRA_BEFORE_FORMAL_POSTPROCESS",
+  "date": "2026-09-23",
+  "purpose": "Aislar el defecto de extremos libres observado en el piloto sin repetir espectros: imponer una carga de fase derivada de Iref y una reacción radial de radio fijo, y comprobar el balance instantáneo incluyendo trabajo de reservorio.",
+  "history": "El piloto libre y una exploración algebraica sobre sus arrays (QDelta corregida aproximada6.19e-7/8.015e-5) ya se observaron. Esa exploración guió la condición física de borde; no las tolerancias de identidades, y no se impone ningún criterio de magnitud de QDelta. No es un prerregistro ciego. El primer intento formal quedó detenido por igualdad bit-a-bit de masas GLL entreLinux yWindows (diferencia relativa2.58e-15), antes de nuevo KWT o depósito; se preservan su carpeta, manifiesto y fuentes exactas. Esta recuperación usa las masas archivadas, con validación geométrica de redondeo64eps, sin alterar criterios físicos.",
+  "geometry_recovery": "Mapas y aristas deben ser idénticos. La masa GLL reconstruida sólo verifica consistencia con la archivada dentro de64eps relativos; KWT, calor, energías y reparto nodal usan los pesos archivados exactamente. No se modifican pesos para reparar un balance.",
+  "input_mixed_registration_sha256": "89ce95cd93b1185c9eaa5e9ca1f7c5615ab2fc8b25317c9636b7ec820abe69c7",
+  "input_mixed_runner_sha256": "e4fc32a7113d97b0a8327c402380243070db6c30bc8a166e757c8afcce26b6c4",
+  "input_contract": "Lote completado por run_mixed_check congelado con summary PASS y cada result PASS. Verificar fuentes, catálogo, registro, SHA de cada NPZ y igualdad de cada resultado con el resumen. Se admite el piloto de dos casos o el lote de seis ya registrado.",
+  "reservoir": {
+    "reference_current_A": 8.633512818265575e-6,
+    "fixed_terminal_amplitude_bar": 0.9952181913919729,
+    "phase_load_rule": "Ltheta_left=-Iref/Iscale; Ltheta_right=+Iref/Iscale, Iscale=(2e/hbar)*energy_scale_J. La carga no se toma del gradiente discreto medido.",
+    "radial_reaction_rule": "F_radial=Re(conj(z)/abs(z)*G) en cada extremo; KWT resuelve con G-F. Así da/dtau=0 sin modificar velocidades después del solve. Registrar la reacción y su trabajo, incluso el residuo de redondeo.",
+    "phase_boundary": "No se fija la fase en ambos extremos. Las dos fases evolucionarían según su fuerza menos la carga prescrita; aquí sólo se calcula la velocidad instantánea.",
+    "normal_boundary_scope": "Iexterna_total=Iref y carga superconductora externa=Iref. Su diferencia externa es cero por contrato. La corriente normal de la arista interior adyacente se mide por separado; no acredita un flujo normal continuo exactamente nulo en el borde D.27."
+  },
+  "circuit_update": "Ib=Is=Iref, vc=0, Vbias=Rbias*Iref y la misma Lext9.666757458681755nH del estado de referencia720nm. Resolver otra vez solamente el problema lineal de potencial con los js guardados; el piloto usó Is=0.99Iref y su potencial no se reutiliza.",
+  "spectrum_recovery": "Únicamente porque el runner archivado preparó p=FD(E,theta0.12), recuperar E=theta*(log1p(-p)-log(p)) con 0<p<0.5. Verificar positividad, orden, reproducción de p y del momento energético del depósito original antes del nuevo depósito. Es decodificación del estado guardado, no consulta espectral nueva ni catálogo reutilizable para otros campos/poblaciones.",
+  "heating": "Reutilizar la ley D.18 de ElectronicCell con los E recuperados y la población guardada. Depositar una vez QDelta nuevo más Joule del nuevo potencial; no añadir pérdidas de resistores externos ni trabajo de reservorio como calor.",
+  "ledger": "CM9 usa reservoir_power_into_W=(energy_scale_J/t_ref)*Re(load_conjugate*material_velocity). Separar fase y reacción radial. Usar el campo y p guardados, sus gradientes y sus corrientes conjugadas; sin nuevo espectro ni paso temporal.",
+  "criteria": {
+    "original_heat_moment_relative": 1e-10,
+    "FD_recovery_relative": 1e-12,
+    "temperature_absolute": 1e-10,
+    "terminal_radius_rate_absolute": 1e-12,
+    "radial_reaction_work_relative": 1e-10,
+    "instantaneous_power_relative": 1e-10,
+    "heat_moment_relative": 1e-10,
+    "current_continuity_relative": 1e-10,
+    "KWT_identity_relative": 1e-10
+  },
+  "interpretation": "Los criterios acreditan álgebra y consistencia del postproceso. QDelta, velocidades, Vdev y corriente normal adyacente se informan sin imponer que sean cero. Ni reducción del calor ni cancelación de un gradiente forman un criterio ajustable de aceptación.",
+  "execution": {"new_output_directory": true, "overwrite": false, "retry": false, "new_spectral_queries": 0, "time_steps": 0},
+  "excluded": ["transiente", "radio dinámico a_b(Is(t))", "derivada da_b/dIs", "admisión completa D.27", "intercambio cinético con reservorios", "transporte 2D", "normal boundary trace convergence", "producción"]
+}

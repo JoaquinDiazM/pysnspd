@@ -1,0 +1,53 @@
+{
+  "schema": "pysnspd.stage3_5.parameter_research.v1",
+  "date": "2026-09-23",
+  "status": "RESEARCH_OPEN_INITIAL_EVIDENCE_AND_INVENTORY",
+  "authorizing_request": "Close stage3 development and initiate stage3.5 research into the physical/numerical confidence domain before final stages4–5.",
+  "stage3_development_closure": "../stage3/closure_20260923/closure_decision.json",
+  "purpose": "Establish physically justified ranges, joint constraints, margins and interpretation limits for every relevant variable family; not a simulation sweep testing whether all combinations pass.",
+  "confidence_domain_meaning": "A supported domain of physical validity and numerical use, not an assigned statistical confidence interval.",
+  "primary_experiment": "Korzh et al., 2020, Demonstration of sub-3 ps temporal resolution with a superconducting nanowire single-photon detector",
+  "complementary_reference": "Allmaras, 2020 doctoral thesis; each model and temperature belongs to its own stated scenario.",
+  "source_register": "source_register.json",
+  "parameter_inventory": "parameter_inventory.json",
+  "research_plan": "research_plan.md",
+  "geometry_policy": {
+    "spatial_dimensions": [2, 1],
+    "primary_representation": "2D strip; thickness is a material/geometric parameter rather than a resolved third dimension.",
+    "one_dimensional_reduction": "Optional and conditional on future full-transient evidence of negligible transverse variation for all relevant fields and populations over the observation window.",
+    "illustrative_L2D_over_W": [1.5, 6.0],
+    "illustrative_interval_status": "USER_EXAMPLE_FOR_FUTURE_STUDY_NOT_ADOPTED_BOUND",
+    "tradeoff": "Resolve formation and evolution of the hotbelt, avoid materially early/strong influence from terminal boundaries, and control computational cost.",
+    "required_distinctions": ["physical device length", "resolved2D length", "optional1D continuations", "distance from absorption and excited region to external boundaries", "observation window"],
+    "boundary_margin": "Choose through physical transport/escape scales and an observable-specific influence budget. Diffusion has nonzero tails immediately; absence of a sharp arrival does not mean absence of contamination.",
+    "no_boundary_fix_by_deletion": "Do not remove energy, clip populations or inject an artificial diffusive sink to force a shorter domain to pass."
+  },
+  "research_outputs": [
+    "A selected, identifiable reference sample and measurement configuration",
+    "A range ledger with units, provenance, uncertainty, hypothesis status and coupled constraints",
+    "A distinction between measured values, published model fits, inherited scenarios and numerical choices",
+    "Candidate domain lengths, reduction criteria and observation-window/boundary margins",
+    "Observable definitions and numerical budgets justified by physical scales and experimental comparison",
+    "Explicit unknowns, extrapolation triggers and the future evidence needed to resolve them"
+  ],
+  "requirements_for_each_range": ["variable", "units", "scenario_or_sample", "source_location", "bound_or_unknown", "evidence_status", "correlations_and_constraints", "affected_observable", "margin_rationale", "extrapolation_risk", "next_evidence"],
+  "observable_policy": {
+    "latency_vs_jitter": "Do not equate deterministic latency or time-step size with the width of an experimental timing distribution.",
+    "measurement_chain": "Declare optical reference, propagation, electrical response, threshold, noise and deconvolution assumptions for each comparison.",
+    "statistical_model": "A deterministic trajectory does not by itself predict a jitter FWHM. Additional physical distributions must be justified and registered if a statistical prediction is attempted.",
+    "numerical_budget": "Do not inherit an excessively strict universal tolerance. Allocate accuracy to the observable and use relative criteria only away from zero."
+  },
+  "carryover_requirements_before_stage4_5": [
+    "Weak coupled spatial trajectory and its time/space/spectral evidence",
+    "Current-dependent reservoir branch and consistent dynamic work",
+    "Kinetic equal-energy interface transport and shared phonon ownership",
+    "Complete external boundary conditions and dynamic influence of domain length",
+    "Physical justification of any1D reduction and continued spatial admissibility D.36"
+  ],
+  "completed_in_this_delivery": "Initial source research, code-parameter inventory and plan. No final range or device-specific confidence domain is admitted.",
+  "new_simulation_campaign_executed": false,
+  "final_parameter_ranges_adopted": false,
+  "new_physics_activated": false,
+  "production_promotion": false,
+  "exit_condition": "Reviewed range/constraint ledger with explicit unresolved limits and decision on what stages4–5 can physically claim; all necessary carried-over implementation gates remain binding."
+}

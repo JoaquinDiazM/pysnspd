@@ -9,6 +9,8 @@
 - Do not launch computations known or reasonably expected to take more than five minutes.
 - Write those commands, their purpose, expected outputs and estimated resources to
   `/home/jdiaz/GEMINGA_COMMANDS.md`. Preserve the existing entries.
+- Also include the exact long-run command explicitly in the chat, in a copyable
+  code block. Do not refer the user only to the command notebook.
 - Leave useful commands the user may want to try in that same file, including
   reproducible lightweight diagnostics.
 - For a required long calculation, stop the dependent work and wait for the user

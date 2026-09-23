@@ -1,91 +1,77 @@
 # Geminga: comandos vigentes
 
-Actualizado el 22 de septiembre de 2026. Cuenta `jdiaz`, sin administrador.
+Actualizado el 23 de septiembre de 2026. Cuenta `jdiaz`, sin administrador.
 
-## Cierre de desarrollo de etapa 2
+## Estado actual: sin cálculo largo pendiente
 
-La etapa 2 queda cerrada como desarrollo por decisión del usuario. El informe
-final está en `docs/implementation/stage2/closure_20260922/Informe_cierre_etapa_2.md`
-y `output/pdf/implementation/Informe_cierre_etapa_2.pdf`; la decisión verificable
-está en `docs/implementation/stage2/closure_20260922/closure_decision.json`.
-El certificado numérico estricto de mallas permanece incompleto y los fallos
-históricos conservan su dictamen. No hay promoción a producción.
+El usuario autorizó el cierre de desarrollo de la etapa 3 y la apertura de
+investigación 3.5. El lote de seis instantáneas mixtas con carga de reservorio
+ya terminó en **355,651 s**. **No repetir ese lote ni los lotes históricos.**
+La regresión focalizada aprobó 243 pruebas y 46 subpruebas en 10,29 s.
 
-La etapa 3 queda preparada, no iniciada: energía espacial y estabilidad,
-bordes/reservorios, conservación de carga, circuito de tres variables y después
-dinámica débil y deposición localizada sintética. Su contrato está en
-`docs/implementation/stage3/entry_contract.json`.
+La [guía de cierre](implementation/stage3/closure_20260923/README.md) y el
+[informe final](implementation/stage3/closure_20260923/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.md)
+([PDF](../output/pdf/implementation/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.pdf))
+registran el alcance: energía y balances instantáneos, con sensibilidad de malla.
+No se ha completado el contrato temporal original, toda D.27, la interfaz
+cinética ni una admisión de producción. Los datos originales no se reclasifican.
 
-## No hace falta ejecutar otro lote largo ahora
+La [secuencia vigente](implementation/SECUENCIA_VIGENTE.md) mantiene el transiente
+débil y la interfaz cinética como requisitos antes de etapas 4–5. La
+[etapa 3.5](implementation/stage3_5/README.md) investiga parámetros, fuentes
+Korzh/Allmaras y límites de aplicación; no ejecuta barridos ni adopta rangos.
+El inventario tiene 127 entradas en 15 familias. L2D/W = 1,5–6 es sólo un
+ejemplo, y la reducción transversal 1D sigue siendo condicional.
 
-El lote `tmp/stage2_guarded_acceptance_20260922` completó 21 tareas y 13
-trayectorias en unos 94,5 minutos. Las trayectorias tienen poblaciones físicas
-y balances válidos. El fallo fue una diferencia temporal fonónica de
-**0,004565 %**, frente a un presupuesto auxiliar de **0,0025 %**.
-El resultado original queda como FAIL; no se relajan sus tolerancias.
+## Verificación ligera reproducible
 
-Ese presupuesto no es un requisito físico fundamental ni una dependencia de
-un ensayo espacial estático con ocupaciones congeladas. La ruta vigente prepara
-la secuencia de etapa 3, empezando por ese ensayo y sus controles propios,
-y conserva abierta la certificación dinámica de mallas. No se propone repetir
-ahora las 35 tareas ni completar automáticamente las mallas más caras.
-Los datos ya obtenidos se reutilizarán
-cuando sean compatibles con la pregunta siguiente.
-
-El modelo previsto adopta el circuito de tres variables de la memoria.
-Documento vigente: `docs/implementation/MODELO_VIGENTE.md`.
-Ecuaciones: `docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md`.
-Todavía no se implementa el nuevo acoplamiento espacial/circuital.
-
-Histórico íntegro de la libreta anterior:
-[GEMINGA_COMMANDS_before_scope_review.md](/home/jdiaz/pysnspd/docs/implementation/stage2/practical_review_20260922/GEMINGA_COMMANDS_before_scope_review.md).
-Sus órdenes son históricas; no constituyen una cola de trabajos pendientes.
-
-## Comprobaciones ligeras opcionales
-
-Preparación:
+Desde la copia sincronizada de `main`:
 
 ```bash
 cd /home/jdiaz/pysnspd
-NOTEBOOK_PY=/home/jdiaz/.conda/envs/snspd/bin/python
+env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  sandbox/stage3_spatial/closure_20260923/verify_delivery.py
 ```
 
-Ver el cierre vigente y comprobar sus referencias (segundos; sin dinámica):
+Propósito: verificar la integridad y coherencia de la entrega y sus referencias.
+Lee los resultados guardados; no construye espectros, no evalúa una trayectoria
+y no repite el lote físico. Recursos previstos: un proceso, un hilo, memoria
+pequeña frente a una simulación; duración de segundos, condicionada a la lectura
+de archivos. La salida de terminal informa el dictamen y las discrepancias.
 
-```bash
-timeout --signal=TERM --kill-after=5s 240s "$NOTEBOOK_PY" sandbox/stage2_cells/closure_20260922/show_closure.py --verify
-```
+La auditoría aritmética de las seis instantáneas ya está conservada en
+`docs/implementation/stage3/closure_20260923/full_reservoir_review.json`
+y su explicación en `full_reservoir_review.md`. Su fuente es
+`sandbox/stage3_spatial/closure_20260923/audit_full_reservoir.py`.
+Ese script histórico escribe con exclusión de archivos existentes: **no es un
+comando de repetición sobre esta entrega**. Para la revisión cotidiana se usa
+el verificador anterior, sin sobrescribir la auditoría.
 
-Salida esperada: resumen del cierre de desarrollo, certificado numérico pendiente
-y etapa 3 preparada, con verificación de sus referencias. No crea trayectorias;
-usa un proceso ligero de lectura y memoria de orden de decenas de MB.
+## Historial preservado
 
-Consultar la revisión anterior y sus hashes (segundos; antecedente histórico):
+La libreta anterior, incluido el comando del lote que ya terminó, se conserva
+íntegra en
+[implementation/stage3/closure_20260923/GEMINGA_COMMANDS_before_closure.md](implementation/stage3/closure_20260923/GEMINGA_COMMANDS_before_closure.md).
+Sus enlaces mantienen accesibles las entradas previas. Las instrucciones de
+«pendiente» o «siguiente cálculo» de esos archivos son históricas, no una cola
+actual de trabajo. El solver de producción y `v1.0.0` no cambian.
 
-```bash
-timeout --signal=TERM --kill-after=5s 240s "$NOTEBOOK_PY" sandbox/stage2_cells/practical_review_20260922/show_checkpoint.py --verify
-```
+## Política para futuros cálculos
 
-Verificar la entrega documental y numérica completa por hashes (segundos):
+Un cálculo conocido o razonablemente previsto de más de cinco minutos se
+prepara para ejecución del usuario. Su entrada incluirá propósito, comando
+exacto, directorio nuevo, salidas, duración y memoria estimadas. El mismo comando
+se incluirá explícitamente en un bloque copiable del chat; no se remitirá al
+usuario únicamente a esta libreta.
 
-```bash
-"$NOTEBOOK_PY" sandbox/stage2_cells/verify_delivery.py
-```
+Los corredores mostrarán progreso por tareas o pasos útiles, tiempo transcurrido
+y ETA cuando exista una estimación. Una ETA no es una garantía de duración.
+Después de entregar un cálculo largo se espera a que el usuario lo ejecute y
+avise «reinicia» o equivalente. No se usan trabajos de fondo, sondeos ni sesiones
+para eludir esa entrega.
 
-Informe anterior de revisión, conservado como antecedente:
-`output/pdf/implementation/Informe_revision_criterios_y_circuito_20260922.pdf`.
-La comparación circuital usa una resistencia prescrita, no un transitorio
-calculado del detector; su CSV y parámetros están en
-`docs/implementation/stage2/practical_review_20260922/`.
-
-## Política para cálculos posteriores
-
-Conservar unidades, signos, balances y dominios físicos. Antes de exigir una
-precisión dinámica nueva, fijar el observable del dispositivo y la diferencia
-que queremos resolver. Registrar el presupuesto antes de nuevas mediciones.
-Repetir trayectorias sólo ante cambios pertinentes o una incertidumbre que
-impida decidir. No transformar un fallo histórico en PASS cambiando su umbral.
-
-Todo cálculo estimado por encima de cinco minutos quedará aquí con propósito,
-comando, salidas y recursos para ejecución del usuario. No hay ningún comando
-largo nuevo recomendado en esta entrega. No se han lanzado trabajos de fondo.
+Los chequeos ligeros de duración incierta usan un timeout acotado de 240 s.
+Si vence, el intento queda incompleto: se conserva su evidencia y se entrega
+el comando sin límite para ejecución del usuario. No se reinicia repetidamente
+ni se divide un cálculo largo para eludir el límite.

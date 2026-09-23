@@ -1,0 +1,179 @@
+{
+  "registration": {
+    "schema": "pysnspd.stage3.mixed_instantaneous_registration.v1",
+    "status": "FROZEN_BEFORE_MATERIAL_CASE_RESULTS",
+    "date": "2026-09-23",
+    "scope": "Energía espacial 2D+1D y álgebra instantánea KWT, potencial, calor y circuito CM.9. Sin integración temporal ni transporte cinético 2D.",
+    "catalogue": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "catalogue_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "refinement": 1,
+    "count_nodes": 630,
+    "catalogue_policy": "Catálogo causal DIRECTO. Los interpolantes de energía ensayados fueron rechazados y --patch-dir queda deshabilitado; no hay fallback. Una futura semilla sólo podrá acelerar la misma resolución causal exacta, con validación y trazabilidad separadas.",
+    "numerical_catalogue_option": "--seed-dir admite exclusivamente PASS_SEEDED_CAUSAL_CATALOG con fuentes, predictor y métricas verificadas. La semilla predice el inicio; el mismo Newton causal corrige energías con tolerancia4e-14 y deriva fuerzas implícitas. El resultado se identifica como EXACT_CORRECTED. Tres cuadraturas representativas por caso se contrastan con la resolución causal directa a p fijo; no son un certificado global del espectro.",
+    "reference_reservoir": {
+      "path": "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L720_E16/reservoir.json",
+      "sha256": "9934fb5d937b2207c018b127b4b0e659dd6aec6b741db315570e90c7e3d93a85",
+      "scope": "Valores de rama uniforme para fijar el ensayo y la partición exterior antes del cálculo; este estado mixto no se anuncia como solución estacionaria de esa rama."
+    },
+    "geometry": {
+      "rectangle_length_m": 3.6e-07,
+      "width_m": 1.2e-07,
+      "thickness_m": 7e-09,
+      "left_length_m": 1.8e-07,
+      "right_length_m": 1.8e-07
+    },
+    "degree": 4,
+    "meshes": [
+      {
+        "id": "m0",
+        "elements_x": 2,
+        "elements_y": 1,
+        "left_elements": 1,
+        "right_elements": 1,
+        "longitudinal_element_length_m": 1.8e-07
+      },
+      {
+        "id": "m1",
+        "elements_x": 4,
+        "elements_y": 2,
+        "left_elements": 2,
+        "right_elements": 2,
+        "longitudinal_element_length_m": 9e-08
+      },
+      {
+        "id": "m2",
+        "elements_x": 8,
+        "elements_y": 4,
+        "left_elements": 4,
+        "right_elements": 4,
+        "longitudinal_element_length_m": 4.5e-08
+      }
+    ],
+    "pilot_mesh": "m0",
+    "profiles": [
+      {
+        "id": "helix",
+        "amplitude_perturbation": 0.0,
+        "phase_perturbation": 0.0
+      },
+      {
+        "id": "smooth_perturbation",
+        "amplitude_perturbation": -0.001,
+        "phase_perturbation": 0.002
+      }
+    ],
+    "field": {
+      "amplitude_base": 0.9952181913919729,
+      "q_bare_bar": 0.1,
+      "envelope": "En el rectángulo sin(pi*x/L)^2*cos(2*pi*y/W); cero en las continuaciones. x=0..L, y=-W/2..W/2. z=(a0+da*envelope)*exp(i*(q*x/ell0+dtheta*envelope)).",
+      "interface": "R identifica únicamente el modo de traza transversal uniforme. Las ocupaciones permanecen por cuadratura y espectro sectorial. No se acredita la condición cinética f(E) de D.25 ni modos transversales superiores en las continuaciones.",
+      "boundary": "No se fijan velocidades ni se imponen cargas de reservorio. Todas las DOF responden a KWT con boundary_load=0. Es un estado instantáneo libre, no una solución DC ni un ensayo de reservorios físicos."
+    },
+    "bath_theta": 0.12,
+    "time_reference_ps": 1.0,
+    "normal_conductivity_S_m": 250000.0,
+    "conductivity_scope": "Entrada explícita del escenario, no una nueva caracterización del material.",
+    "circuit": {
+      "reference_current_A": 8.633512818265575e-06,
+      "detector_current_fraction": 0.99,
+      "bias_current_fraction": 1.0,
+      "initial_capacitor_voltage_V": 0.0,
+      "Lk_ext_H": 9.666757458681755e-09,
+      "R_bias_ohm": 10000.0,
+      "L_bias_H": 1e-06,
+      "R_load_ohm": 50.0,
+      "C_couple_F": 1e-10,
+      "V_bias_rule": "R_bias*reference_current_A, calculado sin ajustar al resultado.",
+      "state_scope": "Ib=Iref, Is=0.99*Iref, vc=0: estado deliberadamente no estacionario; Is denota corriente total del detector."
+    },
+    "heat_allocation": "Cada cara asigna la mitad de su potencia Joule a cada DOF extremo; dentro de un DOF identificado se reparte por masa de cuadratura. Conserva la potencia; su exactitud espacial local requiere una validación independiente.",
+    "sources_active": "Sólo depósito electrónico de QDelta+Joule normal en el instante. Sin colisiones e-ph, BGK, transporte electrónico, escape fonónico ni energía fotónica añadida. No se integra ninguna población.",
+    "fd_steps": [
+      0.0005,
+      0.00025
+    ],
+    "fd_case": {
+      "mesh": "m0",
+      "profile": "smooth_perturbation"
+    },
+    "fd_scope": "Antes de resultados materiales mixtos se limita el control físico nuevo a smooth_perturbation/m0, tanto en piloto como en full. Dos derivadas direccionales (fuerza cartesiana y corriente conjugada), D5 con dos pasos y diferencia entre ambas referencias como incertidumbre. Las unidades ya verifican componentes y enlaces; otros casos declaran NOT_REPEATED_IDENTITIES_UNIT_AND_PILOT, nunca PASS de diferencias no ejecutadas. Se congelan las mismas ocupaciones durante las variaciones; no se retermalizan.",
+    "criteria": {
+      "derivative_absolute": 1e-08,
+      "derivative_relative": 0.0001,
+      "reference_budget_fraction": 0.2,
+      "noether_absolute": 1e-10,
+      "electrical_current_relative": 1e-10,
+      "instantaneous_power_relative": 1e-10,
+      "heat_moment_relative": 1e-10,
+      "temperature_absolute": 1e-10,
+      "interface_trace_absolute": 1e-14,
+      "interface_force_absolute": 1e-12
+    },
+    "criteria_scope": "Pruebas de identidades y del signo D.36, no tolerancias de un pulso ni admisión temporal. Ningún residuo se repara. La incertidumbre FD excesiva deja el resultado inconcluso, no PASS.",
+    "mesh_comparison": "Guardar energías, potencia, velocidad y campos de las tres mallas. Este lote informa sensibilidad; no introduce un certificado de convergencia nuevo ni infiere exactitud de transientes a partir de tres instantáneas.",
+    "execution": {
+      "threads": 1,
+      "automatic_retry": false,
+      "overwrite": false,
+      "policy": "No ejecución por el agente si el tiempo esperado supera300s; piloto incierto sólo con timeout240 externo. Este registro no autoriza una corrida larga autónoma."
+    },
+    "excluded": [
+      "trayectoria temporal",
+      "transporte cinético 2D",
+      "colisiones y dinámica fonónica",
+      "remapeo f(E) en la interfaz",
+      "condiciones de reservorio dinámicas",
+      "latencia o pulso de detector",
+      "admisión de producción"
+    ]
+  },
+  "source_sha256": {
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "pysnspd/experimental/spatial_functional.py": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+    "pysnspd/experimental/spatial_open.py": "2bf381c4ef6391bc7412cafdf4f8f9afbb912f6a5cb8835ed13e53d75c6656ab",
+    "pysnspd/experimental/mixed_spatial.py": "69f3bd210f3fe60e6a09d4cf6de405d011d82404b525d6ffc07a76af55d523a8",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/spatial_dynamics.py": "1de2f9a87dfab4b0afc7d94db9494ea7fd1d5976eda03862a6f8f79d48d374ba",
+    "pysnspd/experimental/local_energy_patch.py": "3017898b7bdc64f44ac9e7534b9fdd4caa20e9c596c064efdf04123a59a5f2bc",
+    "pysnspd/experimental/seeded_count_catalog.py": "58992d87883a59d2502fee214d232471e078e5b3dfe2e49566598963946458c1",
+    "sandbox/stage3_spatial/coupled_20260923/run_mixed_check.py": "e4fc32a7113d97b0a8327c402380243070db6c30bc8a166e757c8afcce26b6c4",
+    "sandbox/stage3_spatial/progress.py": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f",
+    "docs/implementation/stage3/coupled_20260923/mixed_registration.json": "89ce95cd93b1185c9eaa5e9ca1f7c5615ab2fc8b25317c9636b7ec820abe69c7",
+    "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md": "db67d19adff15c1aa797e73349f3f22aca85d426e54c1cfe0827d1b7ad13dd87",
+    "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md": "abd65bad241de5873b497baad90195b7cafa936c01468675cabe31c3f38ed3e5",
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L720_E16/reservoir.json": "9934fb5d937b2207c018b127b4b0e659dd6aec6b741db315570e90c7e3d93a85"
+  },
+  "arguments": {
+    "registration": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+    "output_root": "/home/jdiaz/pysnspd/tmp/stage3_reservoir_full_20260923/mixed_control",
+    "patch_dir": null,
+    "seed_dir": "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check",
+    "pilot": false,
+    "execute": true
+  },
+  "started_at_utc": "2026-09-23T19:21:02.772640+00:00",
+  "python": "3.10.20",
+  "numpy": "2.2.6",
+  "seed_validation": {
+    "artifact": "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/patch_degree6.npz",
+    "limits": {
+      "pointwise_relative_energy": 0.001,
+      "weighted_relative_kernel_L1": 0.001,
+      "moment_error_over_absolute_weighted_reference": 0.001,
+      "relative_principal_matrix": 0.001
+    },
+    "selected_degree": 6,
+    "representation": "predictor_then_exact_causal_Newton",
+    "verified_files": {
+      "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/manifest.json": "f766ed076b55bcd9c33893bc68fea54e644ffd70f3040200e13b13ca75e4905a",
+      "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/summary.json": "dfea58ea760e5f55ee0c9c81ccc1792c8de42766655a22c42e80f522517f1c41",
+      "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/probes.json": "766dc716c14aaa2c9f9b5c0190228d56e6e51ccb4bb1b3ee1fa27e039d06ec80",
+      "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/patch_degree6.npz": "1504c06a39d34f84361047a558cc128a7bfb5012bae9fa76554f12ff9fc18403",
+      "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/raw/patch_check/manifest.json": "174c512d9cd523dccb81f24dc94f5a4d788de2d57904fc1cd77e0878b6985837"
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "case_id": "m2_smooth_perturbation",
+  "status": "PASS_SAVED_RESERVOIR_INSTANTANEOUS_IDENTITIES",
+  "runtime_seconds": 0.26224931376054883,
+  "reference_current_A": 8.633512818265575e-06,
+  "mesh": {
+    "id": "m2",
+    "elements_x": 8,
+    "elements_y": 4,
+    "left_elements": 4,
+    "right_elements": 4,
+    "longitudinal_element_length_m": 4.5e-08
+  },
+  "energy_scale_J": 1.61146402752671e-20,
+  "time_scale_s": 1e-12,
+  "metrics": {
+    "original_heat_moment_relative": 2.1961622947447873e-16,
+    "FD_recovery_relative": 7.122076911958378e-15,
+    "temperature_absolute": 1.790234627208065e-15,
+    "terminal_radius_rate_absolute": 7.227036160798032e-18,
+    "radial_reaction_work_relative": 2.2251965730605825e-20,
+    "instantaneous_power_relative": 1.0682443019681963e-13,
+    "heat_moment_relative": 6.84344751745202e-17,
+    "current_continuity_relative": 2.3760987703538563e-16,
+    "KWT_identity_relative": 6.843036343417628e-17
+  },
+  "free": {
+    "condensate_rate_bar": 4.042523442681163,
+    "maximum_material_speed_bar": 11.408531710213895,
+    "terminal_condensate_rate_bar": 4.042445535492028
+  },
+  "reservoir": {
+    "condensate_rate_bar": 7.790718916822698e-05,
+    "maximum_material_speed_bar": 0.012418664614085091,
+    "terminal_condensate_rate_bar": 3.306569993319313e-14,
+    "work_rate_bar": -3.6560397549117065e-07,
+    "work_power_W": -5.891576548247784e-15,
+    "phase_work_rate_bar": -3.6560397549117065e-07,
+    "radial_reaction_work_rate_bar": -1.733588103539212e-24,
+    "decomposition_residual_bar": 0.0
+  },
+  "terminal": {
+    "nodes": [
+      0,
+      560
+    ],
+    "injection_A": [
+      8.633512818265575e-06,
+      -8.633512818265575e-06
+    ],
+    "phase_load_bar": [
+      -0.176320453541593,
+      0.176320453541593
+    ],
+    "radial_reaction_bar": [
+      2.3223168311416233e-07,
+      2.3223168363159501e-07
+    ],
+    "fixed_radius_bar": [
+      0.9952181913919729,
+      0.9952181913919729
+    ],
+    "radius_rate_bar": [
+      -7.227036160798032e-18,
+      -2.3787333963470897e-19
+    ],
+    "phase_balance_residual_bar": [
+      -1.5946650389064843e-08,
+      1.594665269277762e-08
+    ],
+    "adjacent_internal_edges": [
+      0,
+      575
+    ],
+    "adjacent_internal_normal_current_A": [
+      -7.808260924635622e-13,
+      -7.808262113396293e-13
+    ],
+    "adjacent_internal_normal_current_over_Iref": [
+      -9.044129648033879e-08,
+      -9.044131024948116e-08
+    ],
+    "normal_current_scope": "Interior graph face next to remote terminal; not an admitted continuous external-boundary normal flux.",
+    "external_normal_injection_algebraic_A": [
+      0.0,
+      0.0
+    ]
+  },
+  "potential": {
+    "Vdev_V": 6.601974643251557e-10,
+    "port_power_W": 5.699823270837661e-15,
+    "normal_joule_W": 1.935841387192474e-12,
+    "super_power_W": -1.9301415639216373e-12
+  },
+  "circuit": {
+    "parameters": {
+      "Lk_ext_H": 9.666757458681755e-09,
+      "R_bias_ohm": 10000.0,
+      "L_bias_H": 1e-06,
+      "R_load_ohm": 50.0,
+      "C_couple_F": 1e-10,
+      "V_bias_V": 0.08633512818265575
+    },
+    "state": [
+      8.633512818265575e-06,
+      8.633512818265575e-06,
+      0.0
+    ],
+    "state_derivative_SI": [
+      0.0,
+      -0.06829564796127471,
+      0.0
+    ],
+    "CM8": {
+      "stored_energy_rate_W": -5.6998232708376604e-15,
+      "device_power_W": 5.699823270837661e-15,
+      "bias_joule_W": 7.453754358315599e-07,
+      "load_joule_W": 0.0,
+      "source_power_W": 7.453754358315599e-07,
+      "residual_W": 0.0
+    }
+  },
+  "CM9": {
+    "domain_energy_rate_W": -1.917532772043794e-16,
+    "combined_energy_rate_W": -5.89157654804204e-15,
+    "expected_external_rate_W": -5.891576548247784e-15,
+    "device_port_residual_W": 2.057428126906921e-25,
+    "circuit_residual_W": 0.0,
+    "residual_W": 2.057436015515973e-25
+  },
+  "energy_rate": {
+    "field_rate_bar": -0.00019804844627348928,
+    "explicit_link_work_bar": 0.0,
+    "electron_population_rate_bar": 0.0001980365469525036,
+    "phonon_rate_bar": 0.0,
+    "total_rate_bar": -1.1899320985692997e-08
+  },
+  "heat": {
+    "deposited_rate_bar": 0.00019803654695250354,
+    "condensate_rate_bar": 7.790718916822698e-05,
+    "normal_rate_bar": 0.00012012935778427655,
+    "residual_bar": 1.3552527156068805e-20
+  },
+  "recovery": {
+    "archived_deposited_rate_bar": 4.044229435253732,
+    "reconstructed_original_deposited_rate_bar": 4.044229435253733,
+    "geometry_mass_relative_roundoff": 0.0,
+    "mass_used": "EXACT_ARCHIVED_QUADRATURE_MASS",
+    "spectrum_scope": "Decoded ONLY from saved thermal populations and their declared temperature; no new causal spectrum."
+  },
+  "input_record_sha256": "5d718336a4c1e4337fb49ee4617f2befd04ec1512bee25f1121fe5ccc2c994cb",
+  "artifacts_sha256": {
+    "arrays.npz": "73aea6d411d59b31bd6685bc8fcdf5d08171b11635f2dd428911c7a0fe218f35",
+    "recovery_preconditions.json": "194a4d9cba16cc7599fd57e2063dc67bc282780da73ee4fe7af9559132b0f418"
+  },
+  "new_spectral_queries": 0,
+  "time_steps": 0,
+  "stage3_closed": false,
+  "temporal_admission": false,
+  "full_D27_admission": false,
+  "normal_boundary_trace_admission": false,
+  "production": false
+}

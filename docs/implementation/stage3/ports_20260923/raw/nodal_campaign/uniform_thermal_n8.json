@@ -1,0 +1,424 @@
+{
+  "schema": "pysnspd.stage3.nodal-static-case.v1",
+  "case": {
+    "id": "uniform_thermal",
+    "amplitude_base": 0.9,
+    "amplitude_modulation": 0.0,
+    "phase_modulation": 0.0,
+    "q_bare_ell0": 0.1,
+    "occupation": "thermal"
+  },
+  "cells": 8,
+  "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+  "scope": "Fixed nodal populations, periodic 1D fourth-order static functional; no time, physical terminals or circuit.",
+  "declared_spatial_order": 4,
+  "source_hashes": {
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "pysnspd/experimental/spatial_functional.py": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+    "pysnspd/experimental/spatial_nodal.py": "068a912ccefa9368a97b217961805ae0630fbfda33adb12acd904e28796b7cf8",
+    "sandbox/stage3_spatial/progress.py": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f",
+    "sandbox/stage3_spatial/run_nodal_batch.py": "33755bc913ff34da1a169ccf806465a6dbc3c6d0ab5a3aedceebb475a8c74cbe",
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage3/nodal_20260923/registration.json": "cedab95157aad073a3308aa3a9f322cfd887bbe1b45d9d594b503d05636ac0e8"
+  },
+  "runtime_seconds": 9.316923605743796,
+  "initial_sha256": "a789e7ed5bb3fb18ac86ed1c494dbe5c91a9fd2e1ea23ad9c18212594e276e76",
+  "energy_bar": -20.743445034163123,
+  "energy_J": -3.342731547953144e-19,
+  "length_bar": 43.08867884920118,
+  "h_bar": 5.3860848561501475,
+  "ell0_m": 8.354862799574418e-09,
+  "energy_scale_J": 1.61146402752671e-20,
+  "electron_nodes": 630,
+  "derivative_checks": {
+    "status": "NOT_REPEATED_UNIT_AND_N16_REFERENCES",
+    "performed": false,
+    "scope": "No directional finite differences on this grid; structural checks below are separate. Derivative evidence is delegated to unit tests and registered N16 references, whose completion must be reported independently.",
+    "registered_fd_cells": [
+      16
+    ]
+  },
+  "global_phase_error": 8.245120931263746e-17,
+  "global_phase_checks": {
+    "energy": 8.245120931263746e-17,
+    "force_covariance": 1.5671457702085673e-15,
+    "current_invariance": 5.551115123125783e-17,
+    "directional_energy": 1.2883001455099603e-18
+  },
+  "uniform_reference": {
+    "energy_bar": -20.74344503416312,
+    "force_radial_density_bar": -0.17955588950548068,
+    "link_current_bar": 0.15805350951172073,
+    "nodal_amplitude_bar": 0.9,
+    "first_derivative_symbol_Q": 0.09972900092968777,
+    "negative_laplacian_symbol_K": 0.009990888120521553,
+    "q_delta_bar": 0.09851279360127695,
+    "gamma_bar": 0.005501954254411337,
+    "continuum_energy_density": -0.4813985134378087,
+    "continuum_current_bar": 0.1589040929768486
+  },
+  "uniform_reference_errors": {
+    "energy": 8.245120931263746e-17,
+    "force": 1.6741517394969296e-16,
+    "current": 1.1102230246251565e-16
+  },
+  "principal_symbols": [
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9521788828185958
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185958
+      ],
+      "uncertainty": 6.719360318954986e-07,
+      "stable": true,
+      "gamma": 0.005501954254411333,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "matrix": [
+        [
+          1.6711416909456414,
+          -0.16793087672728424
+        ],
+        [
+          -0.16793087672728424,
+          1.8518335186678505
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185953
+      ],
+      "uncertainty": 6.719360318954989e-07,
+      "stable": true,
+      "gamma": 0.005501954254411336,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "matrix": [
+        [
+          1.8665705190119308,
+          -0.15912493409877113
+        ],
+        [
+          -0.15912493409877113,
+          1.6564046906015613
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185955
+      ],
+      "uncertainty": 6.719360318954996e-07,
+      "stable": true,
+      "gamma": 0.005501954254411341,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "matrix": [
+        [
+          1.9514061054587948,
+          0.017150120112415106
+        ],
+        [
+          0.017150120112415106,
+          1.5715691041546973
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185955
+      ],
+      "uncertainty": 6.719360318954998e-07,
+      "stable": true,
+      "gamma": 0.005501954254411341,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "matrix": [
+        [
+          1.836364263786381,
+          0.1753757379167367
+        ],
+        [
+          0.1753757379167367,
+          1.686610945827111
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185955
+      ],
+      "uncertainty": 6.719360318954997e-07,
+      "stable": true,
+      "gamma": 0.005501954254411342,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "matrix": [
+        [
+          1.6425193883303693,
+          0.14902928228446394
+        ],
+        [
+          0.14902928228446394,
+          1.8804558212831228
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185955
+      ],
+      "uncertainty": 6.719360318954997e-07,
+      "stable": true,
+      "gamma": 0.005501954254411342,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "matrix": [
+        [
+          1.573881172865853,
+          -0.034161238329421896
+        ],
+        [
+          -0.034161238329421896,
+          1.949094036747639
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185955
+      ],
+      "uncertainty": 6.719360318954989e-07,
+      "stable": true,
+      "gamma": 0.005501954254411336,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    },
+    {
+      "matrix": [
+        [
+          1.702687076780106,
+          -0.1813991769925674
+        ],
+        [
+          -0.1813991769925674,
+          1.820288132833386
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9521788828185953
+      ],
+      "uncertainty": 6.719360318954989e-07,
+      "stable": true,
+      "gamma": 0.005501954254411336,
+      "curvatures": [
+        -0.640450977114071,
+        -0.6404565652640137,
+        -0.6404579614027739
+      ],
+      "fd_steps": [
+        0.0002,
+        0.0001,
+        5e-05
+      ]
+    }
+  ],
+  "spectral_sign_comparison": {
+    "status": "NOT_RUN_PILOT_OR_COARSER_GRID",
+    "probes": []
+  },
+  "symbol_scope": "Longitudinal sign on the candidate spectral quadrature; FD uncertainty excludes spectral/regulator error.",
+  "excess_energy_density_bar": 0.0,
+  "induced_force_modes": {
+    "real": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "imag": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "induced_current_modes": {
+    "real": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "imag": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "analytic_gradient": null,
+  "observable_arrays": {
+    "x_over_ell0": [
+      0.0,
+      5.3860848561501475,
+      10.772169712300295,
+      16.15825456845044,
+      21.54433942460059,
+      26.93042428075074,
+      32.31650913690088,
+      37.70259399305103
+    ],
+    "amplitude": [
+      0.9,
+      0.8999999999999999,
+      0.9,
+      0.8999999999999999,
+      0.9,
+      0.9000000000000001,
+      0.9,
+      0.9
+    ],
+    "phase": [
+      0.0,
+      0.5386084856150147,
+      1.0772169712300295,
+      1.6158254568450443,
+      2.154433942460059,
+      2.693042428075074,
+      3.231650913690088,
+      3.770259399305103
+    ],
+    "force_density": {
+      "real": [
+        -0.17955588950548068,
+        -0.15413495531910534,
+        -0.08507017780597248,
+        0.008082513472449194,
+        0.09894661323087676,
+        0.16179363875315037,
+        0.17882823836340744,
+        0.1452270065272906
+      ],
+      "imag": [
+        -1.8515101979961254e-17,
+        -0.0921017535385825,
+        -0.15812457843157907,
+        -0.1793738844761749,
+        -0.14983285749875985,
+        -0.0778661410056995,
+        0.016148641427214002,
+        0.10559088043589128
+      ]
+    },
+    "current_A": [
+      7.739073788279528e-06,
+      7.739073788279528e-06,
+      7.73907378827953e-06,
+      7.739073788279525e-06,
+      7.739073788279531e-06,
+      7.739073788279523e-06,
+      7.73907378827953e-06,
+      7.739073788279523e-06
+    ],
+    "gamma": [
+      0.005501954254411333,
+      0.005501954254411336,
+      0.005501954254411341,
+      0.005501954254411341,
+      0.005501954254411342,
+      0.005501954254411342,
+      0.005501954254411336,
+      0.005501954254411336
+    ],
+    "energy_density": [
+      -0.4814128812526283,
+      -0.48141288125262827,
+      -0.4814128812526282,
+      -0.4814128812526282,
+      -0.4814128812526282,
+      -0.48141288125262827,
+      -0.48141288125262827,
+      -0.48141288125262827
+    ]
+  },
+  "arrays_sha256": "17cbf67e95f79da388d5f8e1e45cdf3af4fcfabccd95534129ec6ed74d312a1a"
+}

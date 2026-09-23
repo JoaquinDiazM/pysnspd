@@ -1,0 +1,255 @@
+{
+  "schema": "pysnspd.stage3_5.primary_source_register.v1",
+  "created_date": "2026-09-23",
+  "status": "REFERENCE_RESEARCH_PREPARATION",
+  "physical_admission": false,
+  "new_physics_computations": 0,
+  "scope": "Preparación de contraste experimental; no cierre de transiente ni interfaz cinética.",
+  "conventions": {
+    "pdf_page_numbers": "1-based",
+    "allmaras_chapter3_printed_page": "PDF page minus 12",
+    "uncertainty_default": "not_reported; never interpreted as zero",
+    "nominal_or_fitted_values": "must retain provenance; not independently measured material admission",
+    "L2D_over_W_example": {"values": [1.5, 6], "status": "USER_ILLUSTRATION_NOT_ADOPTED"}
+  },
+  "sources": [
+    {
+      "id": "K20_VOR",
+      "title": "Demonstration of sub-3 ps temporal resolution with a superconducting nanowire single-photon detector",
+      "authors": "Boris Korzh et al.",
+      "year": 2020,
+      "journal": "Nature Photonics",
+      "volume": 14,
+      "pages": "250-255",
+      "doi": "10.1038/s41566-020-0589-x",
+      "url": "https://www.nature.com/articles/s41566-020-0589-x",
+      "publication_date": "2020-03-02",
+      "access": "publisher metadata and abstract inspected; full typeset article not retrieved",
+      "primary": true,
+      "local_sha256": null
+    },
+    {
+      "id": "K20_ACCEPTED",
+      "record_url": "https://eprints.lancs.ac.uk/id/eprint/140252/",
+      "url": "https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf",
+      "version": "Author accepted manuscript, with appended supplementary information",
+      "primary": true,
+      "pages": 37,
+      "main_pdf_pages": [1, 26],
+      "supplement_pdf_pages": [27, 37],
+      "access": "web PDF text inspected; screenshot retrieval failed",
+      "local_sha256": null,
+      "retrieval_date": "2026-09-23"
+    },
+    {
+      "id": "K20_SUPPLEMENT_RECORD",
+      "record_url": "https://authors.library.caltech.edu/records/pfv6a-2nb82",
+      "url": "https://authors.library.caltech.edu/records/pfv6a-2nb82/files/41566_2020_589_MOESM1_ESM.pdf?download=1",
+      "primary": true,
+      "repository_reported_md5": "51622426b94f77bf0d981da8f08cc3c0",
+      "hash_independently_verified": false,
+      "access": "record inspected; direct download failed; contents inspected in K20_ACCEPTED appendix",
+      "local_sha256": null
+    },
+    {
+      "id": "K18_PREPRINT",
+      "url": "https://arxiv.org/abs/1804.06839",
+      "pdf_url": "https://arxiv.org/pdf/1804.06839",
+      "year": 2018,
+      "primary": true,
+      "role": "Historical version only; do not overwrite 2020 observations",
+      "reported_best_jitter_ps": [2.7, 4.6],
+      "reported_uncertainty_ps": [0.2, 0.2],
+      "local_sha256": null
+    },
+    {
+      "id": "A20",
+      "title": "Modeling and Development of Superconducting Nanowire Single-Photon Detectors",
+      "author": "Jason Paul Allmaras",
+      "year": 2020,
+      "type": "Caltech doctoral thesis",
+      "primary": true,
+      "record_url": "https://thesis.caltech.edu/13748/",
+      "doi": "10.7907/wgak-vs11",
+      "url": "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf",
+      "local_file": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf",
+      "local_sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96",
+      "prior_provenance_manifest": "docs/modelo_v0_4/verificaciones/manifiesto_v0_4.json",
+      "pages": 259,
+      "visual_pages_checked": [93, 107],
+      "access": "local PDF, extracted text and selected rendered pages"
+    }
+  ],
+  "observables": [
+    {"id": "jitter_FWHM", "definition": "Full width at half maximum of the event-time IRF", "not_equivalent_to": ["single-trajectory latency", "Gaussian standard deviation", "intrinsic-only response"], "source": "K20_ACCEPTED", "pdf_pages": [3, 25, 26]},
+    {"id": "relative_latency", "definition": "Difference of fitted IRF peak times for two wavelengths under unchanged calibrated readout", "positive_sign": "1550 nm later than 775 nm", "source": "K20_ACCEPTED", "pdf_pages": [12, 24]},
+    {"id": "absolute_latency", "definition": "Absorption-to-registration delay under an explicitly defined registration rule", "availability": "not directly established by the relative-latency experiment", "source": "A20", "printed_pages": [64, 65], "pdf_pages": [76, 77]},
+    {"id": "system_temporal_resolution", "definition": "Reported detector-plus-measurement timing performance; retains readout and instrumental contributions", "source": "K20_VOR"},
+    {"id": "normalized_PCR", "definition": "Normalized photon count rate; not automatically absolute detection efficiency", "source": "K20_ACCEPTED", "pdf_pages": [24, 25]}
+  ],
+  "cases": [
+    {
+      "id": "K20_NbN_family",
+      "kind": "experimental_device_family",
+      "source": "K20_ACCEPTED",
+      "locators": ["Methods, PDF 9-11", "Figure 2-3 captions, PDF 23-24"],
+      "parameters": {
+        "material": "NbN",
+        "thickness_nm": 7,
+        "thickness_qualifier": "nominal",
+        "active_length_um": 5,
+        "widths_nm": [60, 80, 100, 120],
+        "bath_temperature_K": 0.9,
+        "substrate": "Si with thermal SiO2",
+        "oxide_thickness_nm": 300,
+        "Tc_K": 8.65,
+        "as_deposited_room_temperature_sheet_resistance_ohm": 340,
+        "RRR": 0.8,
+        "switching_current_range_uA": [16, 35],
+        "switching_current_range_width_endpoints_nm": [60, 120]
+      },
+      "uncertainties": "not_reported_for_above_parameters",
+      "restriction": "Family-wide values do not uniquely identify a record-jitter device or bias."
+    },
+    {
+      "id": "K20_80nm_relative_latency",
+      "kind": "paired_wavelength_measurement",
+      "source": "K20_ACCEPTED",
+      "locators": ["PDF 4-5", "Figure 1 caption, PDF 22"],
+      "width_nm": 80,
+      "wavelengths_nm": [775, 1550],
+      "bias_currents_uA": [15.5, 21.5],
+      "high_bias_comparison": {
+        "bias_uA": 21.5,
+        "latency_1550_minus_775_ps": 4.2,
+        "latency_uncertainty_ps": 0.4,
+        "jitter_1550_ps": 4.6,
+        "jitter_1550_uncertainty_ps": 0.2,
+        "jitter_775_ps": 3.8,
+        "jitter_775_uncertainty_ps": 0.3,
+        "uncertainty_interpretation": "Quoted ± values; figure-wide confidence bounds are specified as 95%, do not relabel as standard deviations."
+      },
+      "optical_artifact": {"wavelength_nm": 1550, "secondary_peak_delay_ps": 12.4, "uncertainty_ps": 0.4, "relative_peak_amplitude": 0.06, "wafer_thickness_um": 500, "interpretation": "back reflection, not intrinsic latency tail"}
+    },
+    {
+      "id": "K20_best_system_resolution",
+      "kind": "reported_best_performance_not_single_parameter_case",
+      "source": "K20_VOR",
+      "values": [
+        {"spectral_region": "visible", "jitter_ps": 2.6, "uncertainty_ps": 0.2},
+        {"wavelength_nm": 1550, "jitter_ps": 4.3, "uncertainty_ps": 0.2}
+      ],
+      "additional_locator": "A20 printed p.61 (PDF 73) identifies the 2.6 ps record with 532 nm; K20 Fig.4 uses 120 nm width.",
+      "exact_bias_by_record": null,
+      "restriction": "Do not attach the 80 nm paired-wavelength case's bias to both record values."
+    },
+    {
+      "id": "K20_readout",
+      "kind": "experimental_chain",
+      "source": "K20_ACCEPTED",
+      "locators": ["Methods, PDF 9-12", "Figure 2 caption, PDF 23"],
+      "series_inductor_length_mm": 1.5,
+      "series_inductor_width_um": 1,
+      "series_inductance_nH": 96,
+      "inductance_provenance": "Estimate assuming 64 pH/square from similar-film pulse shapes",
+      "amplifier": {"model": "Cosmic Microwave CITLF1", "stage_temperature_K": 4, "nominal_gain_dB": 50, "nominal_bandwidth_GHz": 1.5, "low_cut_MHz": 1, "noise_temperature_K_upper": 7},
+      "digitizer_sampling_GSa_s": [40, 80],
+      "selected_digitizer_analog_bandwidth_GHz": 6,
+      "instrumental_split_sync_jitter_ps": 1.5,
+      "instrumental_jitter_locator": "PDF 12, divided synchronization pulse control",
+      "bias_T": "resistive current bias; complete calibrated impedance not identified in accepted text",
+      "restriction": "Not the thesis-memory circuit parameterization; requires explicit port/transfer mapping."
+    },
+    {
+      "id": "K20_optics",
+      "kind": "multiple_optical_setups",
+      "source": "K20_ACCEPTED",
+      "locators": ["Methods, PDF 11-12"],
+      "free_space": true,
+      "sources": [
+        {"nominal_wavelength_nm": 800, "pulse_duration_fs": 130, "repetition_MHz": 76, "type": "Ti:sapphire"},
+        {"wavelengths_nm": [600, 1200], "pulse_duration_fs": 200, "type": "OPO"},
+        {"wavelength_nm": 400, "generation": "type-I BBO second harmonic"},
+        {"wavelength_nm": 273, "pump_nm": 820, "generation": "BBO tripling"},
+        {"wavelength_nm": 532, "pump_nm": 1064, "pump_pulse_duration_ps": 0.7, "generation": "0.5 mm PPLN second harmonic"}
+      ],
+      "paired_latency_protocol": "775/1550 synchronized optical paths; filter-delay calibration; unchanged trigger/amplifier settings at each bias",
+      "spot_size_and_absorption_profile": null,
+      "uncertainties": "not_reported"
+    },
+    {
+      "id": "K20_hotbelt_model",
+      "kind": "historical_simulation_and_fit_not_material_measurement",
+      "source": "K20_ACCEPTED",
+      "locators": ["Supplementary Note 3, PDF 31-32", "Supplementary Table 1, PDF 33"],
+      "parameters": {"width_nm": 80, "thickness_nm": 7, "Tc_K": 8.65, "D_cm2_s": 0.5, "sheet_resistance_ohm": 608, "phonon_parameter_gamma": 60, "initial_hotbelt_length_nm": 40, "tau_ee_at_Tc_ps": 6, "tau_ep_at_Tc_ps": 24.7, "tau_escape_ps": 20, "mean_retained_photon_energy_fraction": 0.667, "sigma_Fano_1550_meV": 92, "sigma_nonuniformity_1550_meV": 40},
+      "fit_provenance": ["retained fraction", "fluctuation scale", "electron-electron time"],
+      "bath_temperature_in_table": null,
+      "restriction": "A20 p.95 specifies 2 K for its corresponding 1D calculations; not an experimental 0.9 K measurement."
+    },
+    {
+      "id": "A20_polarization_experiments",
+      "kind": "experimental_extension",
+      "source": "A20",
+      "printed_pages": [63, 64, 65, 66, 68, 70, 71],
+      "pdf_pages": [75, 76, 77, 78, 80, 82, 83],
+      "widths_nm": [60, 80, 100, 120],
+      "bath_temperatures_K": [1, 4],
+      "wavelengths_nm": [532, 775, 1064, 1550],
+      "polarization_definitions": {"TE": "electric field parallel to wire", "TM": "electric field perpendicular to wire"},
+      "photon_count_rate_kcps": [10, 50],
+      "figure_3_3": {"width_nm": 100, "bath_temperature_K": 1},
+      "restriction": "Do not equate these measurements and biases with K20's 0.9 K figures."
+    },
+    {
+      "id": "A20_earlier_2D_model",
+      "kind": "historical_model_parameterization",
+      "source": "A20",
+      "printed_pages": [80, 81, 82, 87],
+      "pdf_pages": [92, 93, 94, 99],
+      "parameters": {"Tc_K": 8.65, "D_cm2_s": 0.5, "sheet_resistance_ohm": 600, "tau0_ns": 1.87, "tau_escape_ps": 9.4, "average_sound_speed_m_s": 4912, "mass_density_g_cm3": 8.3, "Debye_temperature_K": 664, "single_spin_N0_eV_inv_cm_inv3": 1.49e22, "phonon_gamma_estimated": 23.8, "phonon_gamma_used": 20},
+      "figure_3_10_example": {"width_nm": 120, "bath_K": 4, "bias_over_depairing_at_bath": 0.6, "initial_hotspot_nm": [15, 15], "initial_T_over_Tc": 2.53},
+      "hotspot_measurement": false,
+      "restriction": "Illustrative numerical initial condition, not optical waist or uniquely measured material."
+    },
+    {
+      "id": "A20_generalized_TDGL_cases",
+      "kind": "historical_model_comparison",
+      "source": "A20",
+      "printed_pages": [95, 98, 99, 101],
+      "pdf_pages": [107, 110, 111, 113],
+      "one_dimensional": {"width_nm": 80, "bath_K": 2, "initial_hotbelt_length_nm": 40, "sheet_resistance_ohm": 608, "phonon_gamma": 60, "tau_escape_ps": 20},
+      "two_dimensional_fit": {"bath_K": 4, "widths_nm": [80, 100, 120], "D_cm2_s": 0.5, "sheet_resistance_ohm": 600, "tau_ee_at_Tc_ps": 5, "phonon_gamma": 60},
+      "restriction": "Qualitative/fit comparisons, not a universal 1D validity claim or permission to count initial phonon escape twice."
+    }
+  ],
+  "interpretation_risks": [
+    {"id": "versions", "detail": "2018 and 2020 best jitter figures and acquisition details differ."},
+    {"id": "film_vs_fit", "detail": "340 ohm/square room-temperature initial film, 608 ohm/square hotbelt fit and 600/650 ohm/square thesis model variants have different provenance."},
+    {"id": "switching_current", "detail": "K20 PDF13 uses 33 uA vs depairing estimate38.8 uA; family caption PDF24 reaches35 uA. Exact device/condition association unresolved."},
+    {"id": "tail_origin", "detail": "Wafer reflections and taper events must not be inferred to be intrinsic condensate delay statistics.", "source": "K20_ACCEPTED", "pdf_pages": [22, 28, 29]},
+    {"id": "transverse_physics", "detail": "Polarization/transverse absorption remain relevant even for some narrow-wire cases; no width-only 1D threshold established.", "source": "A20", "printed_pages": [70, 71, 98]},
+    {"id": "double_counting", "detail": "Initial retained photon energy, subsequent phonon escape and external/resolved inductance require separate ledgers."}
+  ],
+  "missing_for_reproduction": [
+    "Raw event-time data, fitted IRF covariance and digitization/trigger settings for the selected point",
+    "Exact specimen and bias assignment for each record value",
+    "Calibrated readout transfer function, input impedance and noise spectrum",
+    "Full taper/contact geometry and optical absorption profile",
+    "Independent uncertainty/covariance for inferred material parameters",
+    "Source-approved finite-domain and transverse-homogeneity criteria over the required transient window"
+  ],
+  "data_access": {
+    "publisher_statement": "Data supporting plots available from corresponding author upon reasonable request",
+    "public_raw_events_retrieved": false,
+    "curve_digitization_performed": false,
+    "communication_with_authors": false
+  },
+  "next_research_gates": [
+    "Choose one fully identified experiment before assigning model parameters.",
+    "Preregister observables, tolerances and independent numerical comparisons.",
+    "Demonstrate transverse relaxation and any hotbelt in actual transient fields before a 1D interface.",
+    "Vary domain/interface distance and establish absence of artificial terminal contamination.",
+    "Admit kinetic energy-conserving interface and circuit/readout mapping before later stages."
+  ]
+}

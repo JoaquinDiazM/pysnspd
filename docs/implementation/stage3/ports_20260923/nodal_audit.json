@@ -1,0 +1,1826 @@
+{
+  "schema": "pysnspd.stage3.nodal_saved_audit.v1",
+  "status": "PASS_SAVED_DATA_AUDIT",
+  "scope": "Only archived JSON/NPZ arithmetic and hashes; no model call, spectrum solve or trajectory.",
+  "script_sha256": "9999210b54c8200ec6cbca7eb63e9cd95830df3f9a9c40ae5888d146a77c7bd1",
+  "registration_sha256": "cedab95157aad073a3308aa3a9f322cfd887bbe1b45d9d594b503d05636ac0e8",
+  "raw_directory": "docs\\implementation\\stage3\\ports_20260923\\raw\\nodal_campaign",
+  "raw_inventory": {
+    "manifest.json": {
+      "sha256": "f973c27e538294b13bd122f6236d6098366ff9723868574ba59f3ade7b417a5b",
+      "bytes": 1740
+    },
+    "negative_control.json": {
+      "sha256": "15d7861a7d660f8710cc3989a0e6d92b76cdda28248fb7eb7030f96cf66cd3ec",
+      "bytes": 407
+    },
+    "progress.jsonl": {
+      "sha256": "01cf3cbf043f21a6fae03368b42f0d3c36daf7c309c568e08a9d9273c9e61a85",
+      "bytes": 366934
+    },
+    "summary.json": {
+      "sha256": "29ac145f54df2cf4524e31e657a32693f5934ef34ec7d5f5389229a7edb385d0",
+      "bytes": 15480
+    },
+    "uniform_thermal_n16.json": {
+      "sha256": "8aa90d5cf14350d00b28519f7e9a8f3e9d41a1d993df65d32813f34d3bfe988e",
+      "bytes": 17224
+    },
+    "uniform_thermal_n16.npz": {
+      "sha256": "878da6d7a20868c7623ed14623d8e9a83c855c2201b901dd19017d8a736b6a95",
+      "bytes": 11501
+    },
+    "uniform_thermal_n16.receipt.json": {
+      "sha256": "9b81d4ffaa6dbbe607346c19ebcca6a5b2ecdec79abc0fce5119c5d1b9c46511",
+      "bytes": 1245
+    },
+    "uniform_thermal_n16_initial.npz": {
+      "sha256": "bd0a265e509f0d376bf71ed7bd1188eced7ffda21c5488b751406571bfc679a4",
+      "bytes": 10887
+    },
+    "uniform_thermal_n32.json": {
+      "sha256": "acd09e93c5a9a24673811bcde344247768c3fc99af84795029d49d2322c83d22",
+      "bytes": 35917
+    },
+    "uniform_thermal_n32.npz": {
+      "sha256": "2a1480abf7cede428498708d8f2fb903aba754ab44507afcc039758ab68397e4",
+      "bytes": 12680
+    },
+    "uniform_thermal_n32.receipt.json": {
+      "sha256": "4d08e192ece76b1ed03df9b10470f84a7e2cd72abb5a6fcfe317253edd031ec6",
+      "bytes": 1245
+    },
+    "uniform_thermal_n32_initial.npz": {
+      "sha256": "35b2816360776744f9df03b60b03d66954250959b05b3803a903782e68620397",
+      "bytes": 12136
+    },
+    "uniform_thermal_n8.json": {
+      "sha256": "0f89b800711f8601bc7e6fdd68517350cd1f9fb1af144e41c77ff296c68d4eeb",
+      "bytes": 10405
+    },
+    "uniform_thermal_n8.npz": {
+      "sha256": "17cbf67e95f79da388d5f8e1e45cdf3af4fcfabccd95534129ec6ed74d312a1a",
+      "bytes": 10886
+    },
+    "uniform_thermal_n8.receipt.json": {
+      "sha256": "75a2602b2fbf0b1b8a0cd3012c4a3cf206d59e0a3201181053a14e84f82107b5",
+      "bytes": 1245
+    },
+    "uniform_thermal_n8_initial.npz": {
+      "sha256": "a789e7ed5bb3fb18ac86ed1c494dbe5c91a9fd2e1ea23ad9c18212594e276e76",
+      "bytes": 10238
+    },
+    "uniform_vacuum_n16.json": {
+      "sha256": "34430653398a6dca25eb37c93323f8f15cb3a46e7ca8ca8e63262e81d7a2aecb",
+      "bytes": 17245
+    },
+    "uniform_vacuum_n16.npz": {
+      "sha256": "2090ecceb53f53a635320a7606abd64ac2e8eab4d656da6a9b99b2d0bed5901d",
+      "bytes": 6043
+    },
+    "uniform_vacuum_n16.receipt.json": {
+      "sha256": "6285814a6b161b458c78048961a292d63c48ec0b6327a67689de141bb88766a1",
+      "bytes": 1245
+    },
+    "uniform_vacuum_n16_initial.npz": {
+      "sha256": "6d5466db53e019bcaeb68bd4b9169cd5615c4830a55bc5c0e613d99c0c3ae1e0",
+      "bytes": 5424
+    },
+    "uniform_vacuum_n32.json": {
+      "sha256": "b405f1eb267ee21797768f891ab7a470d9719c715ab6feba9b4ab0c134f8c57b",
+      "bytes": 29447
+    },
+    "uniform_vacuum_n32.npz": {
+      "sha256": "aeb9886636cbc84039c910e6665f6cc3f3ea88f55d925aa167090cb01f8321f2",
+      "bytes": 6686
+    },
+    "uniform_vacuum_n32.receipt.json": {
+      "sha256": "c3b9e92e8f6958d17a181957d395956deb7d44acddbfffa4cf121b164193f4b2",
+      "bytes": 1245
+    },
+    "uniform_vacuum_n32_initial.npz": {
+      "sha256": "b53eeacde9f1d782f930f1993ba6841886b57b7548aa6a68787817a8f45ec8af",
+      "bytes": 6141
+    },
+    "uniform_vacuum_n8.json": {
+      "sha256": "c3fa2a0d57d5b08d6c8fff916d307254fbfa6fbe498df4ef6c6ef4a335d44584",
+      "bytes": 10372
+    },
+    "uniform_vacuum_n8.npz": {
+      "sha256": "5ca605300864a2bae54b18de9b20569cd11fe47b0980e4c8828e24ecdcd65731",
+      "bytes": 5711
+    },
+    "uniform_vacuum_n8.receipt.json": {
+      "sha256": "cfdfca925a7b9c420fc3ff7d68007697d6556f5be93fd430fe2228d689f74591",
+      "bytes": 1245
+    },
+    "uniform_vacuum_n8_initial.npz": {
+      "sha256": "b930af139d133726b66b3b514b5a87f5a3e3274d0214c74dd436cf464f1be972",
+      "bytes": 5063
+    },
+    "weak_amplitude_thermal_n16.json": {
+      "sha256": "6e40b53677d82d66ab228fb56d511cc2f030771206d0e2ff302a541356149f38",
+      "bytes": 17716
+    },
+    "weak_amplitude_thermal_n16.npz": {
+      "sha256": "81d44101ed768b37db0bbaae802f0938b8a1acc8965ad53072499339c9a1a15f",
+      "bytes": 11560
+    },
+    "weak_amplitude_thermal_n16.receipt.json": {
+      "sha256": "a0db9d5617c93fddb6137404bc4762b7a8cd98094b5d1cdda7cc9fe529ff6d3e",
+      "bytes": 1245
+    },
+    "weak_amplitude_thermal_n16_initial.npz": {
+      "sha256": "021c4daf4e750c4372f94840faea1d006057be09b61f2c918d2f2d31687bafc1",
+      "bytes": 10889
+    },
+    "weak_amplitude_thermal_n32.json": {
+      "sha256": "bbcbafac61d19b3efdd20e7af6ba954f0b1d897b6ad9b8fe3d1483b8a7060a4c",
+      "bytes": 36349
+    },
+    "weak_amplitude_thermal_n32.npz": {
+      "sha256": "55ab396bb53cb786f06b1894b8704b614c2a44f9f004d8d24c444f85e640ea48",
+      "bytes": 12806
+    },
+    "weak_amplitude_thermal_n32.receipt.json": {
+      "sha256": "4d22a09dc78918d3047549a3bf7c9e84b914637fe60e1e9aa21a678f6282421c",
+      "bytes": 1245
+    },
+    "weak_amplitude_thermal_n32_initial.npz": {
+      "sha256": "429be85d57ec10c247c7dc133cc508879552adbc9cfd7e3170c7fd717383d63c",
+      "bytes": 12138
+    },
+    "weak_amplitude_thermal_n8.json": {
+      "sha256": "e460338650b5a4c938573f7aaf69a777fd4aedcaac84b9e1d2734f76c91d2aad",
+      "bytes": 10771
+    },
+    "weak_amplitude_thermal_n8.npz": {
+      "sha256": "369d4f05a157d6f1dda35fca3c61b691d22437d845d41f5f42b041dd7dea8efe",
+      "bytes": 10910
+    },
+    "weak_amplitude_thermal_n8.receipt.json": {
+      "sha256": "17c16731a5c14c5640efa2eedbd6121c03a67c6e854dc4677da3fb7fb1057be1",
+      "bytes": 1245
+    },
+    "weak_amplitude_thermal_n8_initial.npz": {
+      "sha256": "b979f292e6d7070ab229ac7a64686027dbb1da6db38b28e12d0a4e73b84a1d9c",
+      "bytes": 10240
+    },
+    "weak_amplitude_vacuum_n16.json": {
+      "sha256": "cda5db10c020fbce9d568ce09a8ac8af4826047c9e3d23126007f7a2932160a1",
+      "bytes": 14249
+    },
+    "weak_amplitude_vacuum_n16.npz": {
+      "sha256": "18a83de74e49c60a920fc7b72ebe31c02c0c76a7b168feac43d56bfd3c09b543",
+      "bytes": 5661
+    },
+    "weak_amplitude_vacuum_n16.receipt.json": {
+      "sha256": "7ac556fb571acc0225d2b87bdb60d12546ec6101104f4e376de26dc660d001ad",
+      "bytes": 1245
+    },
+    "weak_amplitude_vacuum_n16_initial.npz": {
+      "sha256": "3570ba60478db640adda703e38ec418d9efa96a15443150888cbe4f3a08252b2",
+      "bytes": 5140
+    },
+    "weak_amplitude_vacuum_n32.json": {
+      "sha256": "1ed3c67ac76a6c5acfba7273f25d41b97362b7a4b78cd45b4e89fb842824ef4c",
+      "bytes": 23381
+    },
+    "weak_amplitude_vacuum_n32.npz": {
+      "sha256": "9bcd756e8f09171005fcd235ed69f63e077364b724285444c4748933fd8e56df",
+      "bytes": 5912
+    },
+    "weak_amplitude_vacuum_n32.receipt.json": {
+      "sha256": "1ed78ab8298829020a788018f07c2dc0968b8fa1a1c233c0ffeebcb5a99e9b8e",
+      "bytes": 1245
+    },
+    "weak_amplitude_vacuum_n32_initial.npz": {
+      "sha256": "575843fb43286a5993b40956a4185a807ffe5d88bf3bba3fcd692b8c55fe1816",
+      "bytes": 5552
+    },
+    "weak_amplitude_vacuum_n8.json": {
+      "sha256": "ab544eb1d203ff2465bfb2fc48b071c8cd358000894b6bbad16fae0ab9723562",
+      "bytes": 8904
+    },
+    "weak_amplitude_vacuum_n8.npz": {
+      "sha256": "430bfc5688cd24e222f62dca410a2295a8cbcabf8cbb45771ec1aeb84968aae4",
+      "bytes": 5526
+    },
+    "weak_amplitude_vacuum_n8.receipt.json": {
+      "sha256": "75df8170459370d06a2a9aba18c58af4f1d7aa2cc9e2d555c71d37440204973d",
+      "bytes": 1245
+    },
+    "weak_amplitude_vacuum_n8_initial.npz": {
+      "sha256": "0f69c0871204d3820b6c887a98edf29292d22e0849ac10e5505228a0836bc73b",
+      "bytes": 4927
+    },
+    "weak_phase_nonthermal_n16.json": {
+      "sha256": "453d6cec3075afc93c05e24c59600428fe944348af0217477dc9551ea1f6515c",
+      "bytes": 17679
+    },
+    "weak_phase_nonthermal_n16.npz": {
+      "sha256": "60ab648c219518b76f4196997c53589e0f31c4014b269293be7d1ef5d703eacb",
+      "bytes": 11557
+    },
+    "weak_phase_nonthermal_n16.receipt.json": {
+      "sha256": "6f321533ec0748995b28f3ba2ff184b463731b46af76ac0031b9c5f13ece57aa",
+      "bytes": 1245
+    },
+    "weak_phase_nonthermal_n16_initial.npz": {
+      "sha256": "00fdbc81d6b7e7fd3e02de1f7fa5ff2a0c0e93dd3d58eb81fc7ff8467d5d97e8",
+      "bytes": 10888
+    },
+    "weak_phase_nonthermal_n32.json": {
+      "sha256": "7aeb9864b3ecb6ee9d3e5d8790a4ce237a4a06680deee105b4577e0dd78cfea3",
+      "bytes": 36175
+    },
+    "weak_phase_nonthermal_n32.npz": {
+      "sha256": "b6af3ed27bd2e29fa2e8cbfb803500b0932f55b1e0b1b2a82626ae5948efac51",
+      "bytes": 12809
+    },
+    "weak_phase_nonthermal_n32.receipt.json": {
+      "sha256": "6a7ad3b604ec0d5fba0b015958b62c43a0076652c239be47c78fe73e1a998ad7",
+      "bytes": 1245
+    },
+    "weak_phase_nonthermal_n32_initial.npz": {
+      "sha256": "45bf01418b955afbc88236064e7a1aa8cf2edd7ad9ef380c168d38bec0375e25",
+      "bytes": 12140
+    },
+    "weak_phase_nonthermal_n8.json": {
+      "sha256": "dc0854d6659cdba37ff281f2f3a36c1f0ab3ff2abe72beb0cfad1faaa0616e2d",
+      "bytes": 10777
+    },
+    "weak_phase_nonthermal_n8.npz": {
+      "sha256": "ce3e852ba2c45b29c19305f2727884c1ff61a5d9559b8efb118ac5126fdfefe5",
+      "bytes": 10908
+    },
+    "weak_phase_nonthermal_n8.receipt.json": {
+      "sha256": "5c9da205666a527c92a225a4e242d84171150dec689cde1ad6b06f5132ef5959",
+      "bytes": 1245
+    },
+    "weak_phase_nonthermal_n8_initial.npz": {
+      "sha256": "76c1d2994ecaf255b50cdcd7c2a2b85f9c72df6626e7d1c5c748232c1644e2e9",
+      "bytes": 10239
+    },
+    "weak_phase_thermal_n16.json": {
+      "sha256": "ea7e683628c4b46020621d177290aff1fccf914c0efb31305f560ef59d05a6ca",
+      "bytes": 17647
+    },
+    "weak_phase_thermal_n16.npz": {
+      "sha256": "41dc07d3f4b5722bbaa0b1ef2dd58f990ec55d7d86a596a9f4f539fa71527daa",
+      "bytes": 11557
+    },
+    "weak_phase_thermal_n16.receipt.json": {
+      "sha256": "04b366a42868b38f2a67202448f8e794cbbba6e86bc355e65d63ac91a9a650a8",
+      "bytes": 1245
+    },
+    "weak_phase_thermal_n16_initial.npz": {
+      "sha256": "e5006a749f5d535d02399a1a4dbf79250c3acc7776c06fc336329782ddfb57ce",
+      "bytes": 10886
+    },
+    "weak_phase_thermal_n32.json": {
+      "sha256": "58d4426d8cf728bf42dcb63f6b1fb5ffd380f4496c0cdea0b0301e0e338dc575",
+      "bytes": 36140
+    },
+    "weak_phase_thermal_n32.npz": {
+      "sha256": "6862797d0beb71ca6dd266637758339f7cee55921ef76b1b83ee51a05e0647fe",
+      "bytes": 12801
+    },
+    "weak_phase_thermal_n32.receipt.json": {
+      "sha256": "f6040102277368cc33a1d10a1ffad6fe3045cccb1e559ee1dc5a02bac9d9ecd0",
+      "bytes": 1245
+    },
+    "weak_phase_thermal_n32_initial.npz": {
+      "sha256": "c96bb8bce0affb30e00340e06684f8fb93a60ed9ed9bc93042a650462eb3a205",
+      "bytes": 12135
+    },
+    "weak_phase_thermal_n8.json": {
+      "sha256": "f391021799b4b7138e5a7fd34dd0a98ec8991ab2419454fc9c96ac1b19b9ead9",
+      "bytes": 11244
+    },
+    "weak_phase_thermal_n8.npz": {
+      "sha256": "ab12ef377f83c4b2c6123c8a59e546821e61685bf5347cbd2424a5879ae4029a",
+      "bytes": 10904
+    },
+    "weak_phase_thermal_n8.receipt.json": {
+      "sha256": "67df1005e542acf29ed770d1cda657c3bb5d6ebc834316afcfc75bcab03cc304",
+      "bytes": 1245
+    },
+    "weak_phase_thermal_n8_initial.npz": {
+      "sha256": "bb86f6f7e186eb8b530284f7fd2a1fdc442272328448f4e977d90492d6588528",
+      "bytes": 10236
+    }
+  },
+  "source_checks": {
+    "pysnspd/experimental/energy_catalog.py": {
+      "recorded_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+      "current_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    "pysnspd/experimental/refined_cells.py": {
+      "recorded_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+      "current_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+    },
+    "pysnspd/experimental/spatial_functional.py": {
+      "recorded_sha256": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+      "current_sha256": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e"
+    },
+    "pysnspd/experimental/spatial_nodal.py": {
+      "recorded_sha256": "068a912ccefa9368a97b217961805ae0630fbfda33adb12acd904e28796b7cf8",
+      "current_sha256": "068a912ccefa9368a97b217961805ae0630fbfda33adb12acd904e28796b7cf8"
+    },
+    "sandbox/stage3_spatial/progress.py": {
+      "recorded_sha256": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f",
+      "current_sha256": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f"
+    },
+    "sandbox/stage3_spatial/run_nodal_batch.py": {
+      "recorded_sha256": "33755bc913ff34da1a169ccf806465a6dbc3c6d0ab5a3aedceebb475a8c74cbe",
+      "current_sha256": "33755bc913ff34da1a169ccf806465a6dbc3c6d0ab5a3aedceebb475a8c74cbe"
+    },
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": {
+      "recorded_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+      "current_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+    },
+    "docs/implementation/stage3/nodal_20260923/registration.json": {
+      "recorded_sha256": "cedab95157aad073a3308aa3a9f322cfd887bbe1b45d9d594b503d05636ac0e8",
+      "current_sha256": "cedab95157aad073a3308aa3a9f322cfd887bbe1b45d9d594b503d05636ac0e8"
+    }
+  },
+  "integrity_errors": [],
+  "completed_results": 18,
+  "sampled_nodes": 336,
+  "cases_with_fd": [
+    "uniform_vacuum_n16",
+    "uniform_thermal_n16",
+    "weak_amplitude_thermal_n16",
+    "weak_phase_thermal_n8",
+    "weak_phase_thermal_n16",
+    "weak_phase_nonthermal_n16",
+    "weak_amplitude_vacuum_n16"
+  ],
+  "cases_without_repeated_fd": [
+    "uniform_vacuum_n8",
+    "uniform_vacuum_n32",
+    "uniform_thermal_n8",
+    "uniform_thermal_n32",
+    "weak_amplitude_thermal_n8",
+    "weak_amplitude_thermal_n32",
+    "weak_phase_thermal_n32",
+    "weak_phase_nonthermal_n8",
+    "weak_phase_nonthermal_n32",
+    "weak_amplitude_vacuum_n8",
+    "weak_amplitude_vacuum_n32"
+  ],
+  "recorded_runtime_seconds": 470.7021251190454,
+  "recorded_batch_status": "STATIC_CAMPAIGN_COMPLETE_SCOPE_LIMITED",
+  "case_checks": [
+    {
+      "task": "uniform_vacuum_n8",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 1.4432899320127035e-15,
+      "uniform_oracle_error": 2.226392293388e-16,
+      "min_eigenvalue": 1.5707963267948966,
+      "symbol_uncertainty": 6.051287871809492e-12,
+      "spectral_status": "VACUUM_NO_OCCUPIED_SPECTRAL_QUADRATURE"
+    },
+    {
+      "task": "uniform_vacuum_n16",
+      "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+      "performed_fd": true,
+      "force_error": 3.7052583223839974e-12,
+      "current_error": 1.0049738818906917e-12,
+      "max_fd_budget_fraction": 2.924547583193035e-08,
+      "gauge_error": 8.8164920776615475e-16,
+      "uniform_oracle_error": 3.3306690738754696e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 6.216057105509412e-12,
+      "spectral_status": "VACUUM_NO_OCCUPIED_SPECTRAL_QUADRATURE"
+    },
+    {
+      "task": "uniform_vacuum_n32",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 6.958641650980173e-16,
+      "uniform_oracle_error": 6.02864880922098e-16,
+      "min_eigenvalue": 1.5707963267948961,
+      "symbol_uncertainty": 6.0838494374750976e-12,
+      "spectral_status": "VACUUM_NO_OCCUPIED_SPECTRAL_QUADRATURE"
+    },
+    {
+      "task": "uniform_thermal_n8",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 1.5671457702085673e-15,
+      "uniform_oracle_error": 1.6741517394969296e-16,
+      "min_eigenvalue": 1.5707963267948966,
+      "symbol_uncertainty": 6.719360318954998e-07,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "uniform_thermal_n16",
+      "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+      "performed_fd": true,
+      "force_error": 1.5720758028692217e-12,
+      "current_error": 8.536726880947754e-12,
+      "max_fd_budget_fraction": 1.104403921515736e-07,
+      "gauge_error": 8.005932084973443e-16,
+      "uniform_oracle_error": 3.608224830031759e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 6.659551965479594e-07,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "uniform_thermal_n32",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 6.856526084140016e-16,
+      "uniform_oracle_error": 5.923298041923318e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 6.655733170791534e-07,
+      "spectral_status": "PASS_SAMPLED_SPECTRAL_SIGN"
+    },
+    {
+      "task": "weak_amplitude_thermal_n8",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 1.1290471298580859e-15,
+      "uniform_oracle_error": 1.6741517394969296e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 6.775419420087356e-07,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "weak_amplitude_thermal_n16",
+      "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+      "performed_fd": true,
+      "force_error": 2.6403879083147785e-12,
+      "current_error": 5.689226867389152e-12,
+      "max_fd_budget_fraction": 8.864476465945699e-08,
+      "gauge_error": 8.005932084973443e-16,
+      "uniform_oracle_error": 3.608224830031759e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 6.790708467052661e-07,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "weak_amplitude_thermal_n32",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 8.313941646659417e-16,
+      "uniform_oracle_error": 5.923298041923318e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 6.792433011349581e-07,
+      "spectral_status": "PASS_SAMPLED_SPECTRAL_SIGN"
+    },
+    {
+      "task": "weak_phase_thermal_n8",
+      "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+      "performed_fd": true,
+      "force_error": 1.3474776849875525e-11,
+      "current_error": 1.142197447734361e-12,
+      "max_fd_budget_fraction": 1.0870449831052805e-07,
+      "gauge_error": 1.793620188084545e-15,
+      "uniform_oracle_error": 1.6741517394969296e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 1.1332172943931726e-06,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "weak_phase_thermal_n16",
+      "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+      "performed_fd": true,
+      "force_error": 6.090905557698534e-12,
+      "current_error": 3.1024072200125374e-12,
+      "max_fd_budget_fraction": 5.034979837922884e-08,
+      "gauge_error": 9.485749680535094e-16,
+      "uniform_oracle_error": 3.608224830031759e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 1.158877700196323e-06,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "weak_phase_thermal_n32",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 7.221785298249065e-16,
+      "uniform_oracle_error": 5.923298041923318e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 1.1607588659385146e-06,
+      "spectral_status": "PASS_SAMPLED_SPECTRAL_SIGN"
+    },
+    {
+      "task": "weak_phase_nonthermal_n8",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 1.669954059090464e-15,
+      "uniform_oracle_error": 1.9449506628068541e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 2.7175163731765616e-05,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "weak_phase_nonthermal_n16",
+      "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+      "performed_fd": true,
+      "force_error": 1.2811529614964456e-11,
+      "current_error": 1.517230785452739e-12,
+      "max_fd_budget_fraction": 1.0675506447199384e-07,
+      "gauge_error": 1.0299525296675035e-15,
+      "uniform_oracle_error": 3.3306690738754696e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 2.787875740925049e-05,
+      "spectral_status": "NOT_RUN_PILOT_OR_COARSER_GRID"
+    },
+    {
+      "task": "weak_phase_nonthermal_n32",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 7.621420282514214e-16,
+      "uniform_oracle_error": 5.9551054924119e-16,
+      "min_eigenvalue": 1.5707963267948963,
+      "symbol_uncertainty": 2.7930415802999554e-05,
+      "spectral_status": "PASS_SAMPLED_SPECTRAL_SIGN"
+    },
+    {
+      "task": "weak_amplitude_vacuum_n8",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 9.915856152441513e-16,
+      "uniform_oracle_error": 0.0,
+      "min_eigenvalue": 1.5707963267948966,
+      "symbol_uncertainty": 2.8917189167445944e-14,
+      "spectral_status": "VACUUM_NO_OCCUPIED_SPECTRAL_QUADRATURE"
+    },
+    {
+      "task": "weak_amplitude_vacuum_n16",
+      "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+      "performed_fd": true,
+      "force_error": 1.7380541450506826e-12,
+      "current_error": 1.1842378929335002e-12,
+      "max_fd_budget_fraction": 0.00011842378789093065,
+      "gauge_error": 8.455206652451151e-16,
+      "uniform_oracle_error": 0.0,
+      "min_eigenvalue": 1.5707963267948966,
+      "symbol_uncertainty": 2.8917189167445944e-14,
+      "spectral_status": "VACUUM_NO_OCCUPIED_SPECTRAL_QUADRATURE"
+    },
+    {
+      "task": "weak_amplitude_vacuum_n32",
+      "status": "PASS_STATIC_STRUCTURE_WITHOUT_REPEATED_FD",
+      "performed_fd": false,
+      "force_error": null,
+      "current_error": null,
+      "max_fd_budget_fraction": null,
+      "gauge_error": 6.335327934766281e-16,
+      "uniform_oracle_error": 5.551115123125783e-17,
+      "min_eigenvalue": 1.5707963267948966,
+      "symbol_uncertainty": 2.8917189167445944e-14,
+      "spectral_status": "VACUUM_NO_OCCUPIED_SPECTRAL_QUADRATURE"
+    }
+  ],
+  "maxima": {
+    "force_fd_error": 1.3474776849875525e-11,
+    "current_fd_error": 8.536726880947754e-12,
+    "fd_budget_fraction": 0.00011842378789093065,
+    "gauge_error": 1.793620188084545e-15,
+    "uniform_oracle_error": 6.02864880922098e-16,
+    "symbol_fd_uncertainty": 2.7930415802999554e-05,
+    "spectral_matrix_shift": 4.0538973614368066e-09,
+    "spectral_moment_scaled_shift": 5.393927456342023e-09,
+    "relative_spatial_estimate": 0.006132140184865495
+  },
+  "minimum_eigenvalue": 1.5707963267948961,
+  "spectral_probe_count": 12,
+  "spectral_probes": [
+    {
+      "task": "uniform_thermal_n32",
+      "link": 1,
+      "coarse_min": 1.5707963267948963,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 6.655733170791505e-07,
+      "fine_uncertainty": 6.655738539548648e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948963,
+        1.9520990369611506
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        1.952099036875626
+      ],
+      "eigenvalue_absolute_differences": [
+        2.220446049250313e-16,
+        8.552469843436938e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        1.4135798584282297e-16,
+        4.381165956172664e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.5776681178336804,
+          -0.0507248561821889
+        ],
+        [
+          -0.0507248561821889,
+          1.9452272459223667
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.577668117832139,
+          -0.05072485617081151
+        ],
+        [
+          -0.05072485617081151,
+          1.9452272458383835
+        ]
+      ],
+      "matrix_operator_norm_difference": 8.552458642532776e-11,
+      "matrix_scaled_operator_norm_difference": 4.381160218295665e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4815529017213655,
+          -0.17999894884988665,
+          1.4083754654648626
+        ],
+        "fine": [
+          -0.4815529017089782,
+          -0.17999894883282694,
+          1.408375465216603
+        ],
+        "absolute_differences": [
+          1.2387313397255184e-11,
+          1.705971475196577e-11,
+          2.4825963507169035e-10
+        ],
+        "scaled_differences": [
+          1.2387313397255184e-11,
+          1.705971475196577e-11,
+          1.7627375739147015e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 2.220446049250313e-16,
+      "remaining_positive_margin": 1.570794995647725
+    },
+    {
+      "task": "uniform_thermal_n32",
+      "link": 4,
+      "coarse_min": 1.5707963267948966,
+      "fine_min": 1.5707963267948968,
+      "coarse_uncertainty": 6.655733170791516e-07,
+      "fine_uncertainty": 6.65573853954866e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948966,
+        1.9520990369611506
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948968,
+        1.9520990368756257
+      ],
+      "eigenvalue_absolute_differences": [
+        2.220446049250313e-16,
+        8.552492047897431e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        1.4135798584282295e-16,
+        4.3811773308314666e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.6711206827439953,
+          -0.1678957188926324
+        ],
+        [
+          -0.1678957188926324,
+          1.851774681012052
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.671120682721493,
+          -0.16789571885497406
+        ],
+        [
+          -0.16789571885497406,
+          1.8517746809490294
+        ]
+      ],
+      "matrix_operator_norm_difference": 8.552476222569716e-11,
+      "matrix_scaled_operator_norm_difference": 4.3811692240052166e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4815529017213655,
+          -0.17999894884988663,
+          1.4083754654648626
+        ],
+        "fine": [
+          -0.4815529017089782,
+          -0.1799989488328269,
+          1.408375465216603
+        ],
+        "absolute_differences": [
+          1.2387313397255184e-11,
+          1.705971475196577e-11,
+          2.4825963507169035e-10
+        ],
+        "scaled_differences": [
+          1.2387313397255184e-11,
+          1.705971475196577e-11,
+          1.7627375739147015e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 2.220446049250313e-16,
+      "remaining_positive_margin": 1.5707949956477252
+    },
+    {
+      "task": "uniform_thermal_n32",
+      "link": 17,
+      "coarse_min": 1.5707963267948966,
+      "fine_min": 1.5707963267948968,
+      "coarse_uncertainty": 6.655733170791534e-07,
+      "fine_uncertainty": 6.655738539548678e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948966,
+        1.9520990369611506
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948968,
+        1.9520990368756257
+      ],
+      "eigenvalue_absolute_differences": [
+        2.220446049250313e-16,
+        8.552492047897431e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        1.4135798584282295e-16,
+        4.3811773308314666e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.7869595496017285,
+          0.18893671903650908
+        ],
+        [
+          0.18893671903650908,
+          1.7359358141543186
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.786959549553244,
+          0.18893671899413128
+        ],
+        [
+          0.18893671899413128,
+          1.7359358141172785
+        ]
+      ],
+      "matrix_operator_norm_difference": 8.552472927601752e-11,
+      "matrix_scaled_operator_norm_difference": 4.3811675360949714e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4815529017213655,
+          -0.17999894884988663,
+          1.4083754654648626
+        ],
+        "fine": [
+          -0.4815529017089782,
+          -0.1799989488328269,
+          1.408375465216603
+        ],
+        "absolute_differences": [
+          1.2387313397255184e-11,
+          1.705971475196577e-11,
+          2.4825963507169035e-10
+        ],
+        "scaled_differences": [
+          1.2387313397255184e-11,
+          1.705971475196577e-11,
+          1.7627375739147015e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 2.220446049250313e-16,
+      "remaining_positive_margin": 1.5707949956477252
+    },
+    {
+      "task": "weak_amplitude_thermal_n32",
+      "link": 0,
+      "coarse_min": 1.5707963267948966,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 6.527085514149886e-07,
+      "fine_uncertainty": 6.527093079274821e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948966,
+        1.8913182393490915
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        1.891318239272258
+      ],
+      "eigenvalue_absolute_differences": [
+        0.0,
+        7.683342850839381e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        0.0,
+        4.0624273013915306e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.8913182393490915
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.891318239272258
+        ]
+      ],
+      "matrix_operator_norm_difference": 7.683342850839381e-11,
+      "matrix_scaled_operator_norm_difference": 4.0624273013915306e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4861254982607429,
+          -0.12531528070847686,
+          1.4554474651780998
+        ],
+        "fine": [
+          -0.48612549824784634,
+          -0.12531528069144096,
+          1.455447464928708
+        ],
+        "absolute_differences": [
+          1.2896572698650743e-11,
+          1.703590046808756e-11,
+          2.493918405122031e-10
+        ],
+        "scaled_differences": [
+          1.2896572698650743e-11,
+          1.703590046808756e-11,
+          1.7135063031932865e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 0.0,
+      "remaining_positive_margin": 1.5707950213770372
+    },
+    {
+      "task": "weak_amplitude_thermal_n32",
+      "link": 15,
+      "coarse_min": 1.5707963267948963,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 6.789726693520533e-07,
+      "fine_uncertainty": 6.789732412299014e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948963,
+        2.015524714649791
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        2.0155247145542083
+      ],
+      "eigenvalue_absolute_differences": [
+        2.220446049250313e-16,
+        9.558265290365853e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        1.4135798584282297e-16,
+        4.742321054832582e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.9317374565304635,
+          0.17390304081020425
+        ],
+        [
+          0.17390304081020425,
+          1.6545835849142239
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.9317374564528889,
+          0.17390304077282848
+        ],
+        [
+          0.17390304077282848,
+          1.654583584896216
+        ]
+      ],
+      "matrix_operator_norm_difference": 9.558241664820193e-11,
+      "matrix_scaled_operator_norm_difference": 4.74230933304843e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4755040040989523,
+          -0.23169077357338916,
+          1.362208896481972
+        ],
+        "fine": [
+          -0.47550400408706517,
+          -0.23169077355630233,
+          1.3622088962349443
+        ],
+        "absolute_differences": [
+          1.1887157924661551e-11,
+          1.708683194934224e-11,
+          2.470277316035663e-10
+        ],
+        "scaled_differences": [
+          1.1887157924661551e-11,
+          1.708683194934224e-11,
+          1.8134350193008919e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 2.220446049250313e-16,
+      "remaining_positive_margin": 1.5707949688489855
+    },
+    {
+      "task": "weak_amplitude_thermal_n32",
+      "link": 16,
+      "coarse_min": 1.5707963267948968,
+      "fine_min": 1.5707963267948968,
+      "coarse_uncertainty": 6.792433011349581e-07,
+      "fine_uncertainty": 6.792440168809061e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948968,
+        2.0168073704143348
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948968,
+        2.016807370318549
+      ],
+      "eigenvalue_absolute_differences": [
+        0.0,
+        9.578560167256e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        0.0,
+        4.749367891165081e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.8813669883488904,
+          0.20509463439883266
+        ],
+        [
+          0.20509463439883266,
+          1.7062367088603412
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.881366988282192,
+          0.20509463435478642
+        ],
+        [
+          0.20509463435478642,
+          1.706236708831254
+        ]
+      ],
+      "matrix_operator_norm_difference": 9.578562538254614e-11,
+      "matrix_scaled_operator_norm_difference": 4.749369066784848e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.47537041639433686,
+          -0.2326838445945277,
+          1.3613044499272517
+        ],
+        "fine": [
+          -0.47537041638245947,
+          -0.23268384457744032,
+          1.361304449680249
+        ],
+        "absolute_differences": [
+          1.187738796204485e-11,
+          1.7087387060854553e-11,
+          2.4700264056320975e-10
+        ],
+        "scaled_differences": [
+          1.187738796204485e-11,
+          1.7087387060854553e-11,
+          1.8144555438809234e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 0.0,
+      "remaining_positive_margin": 1.5707949683075788
+    },
+    {
+      "task": "weak_phase_thermal_n32",
+      "link": 0,
+      "coarse_min": 1.5707963267948966,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 4.126977363761281e-07,
+      "fine_uncertainty": 4.1269844116836584e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948966,
+        1.9474571763030764
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        1.9474571763370188
+      ],
+      "eigenvalue_absolute_differences": [
+        0.0,
+        3.394240444265506e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        0.0,
+        1.742908899619425e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9474571763030764
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9474571763370188
+        ]
+      ],
+      "matrix_operator_norm_difference": 3.394240444265506e-11,
+      "matrix_scaled_operator_norm_difference": 1.742908899619425e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4791171597393442,
+          -0.17728387386763636,
+          1.4072627522902663
+        ],
+        "fine": [
+          -0.4791171597273604,
+          -0.17728387385068428,
+          1.4072627520726004
+        ],
+        "absolute_differences": [
+          1.1983802838955171e-11,
+          1.6952078629728362e-11,
+          2.176658853159097e-10
+        ],
+        "scaled_differences": [
+          1.1983802838955171e-11,
+          1.6952078629728362e-11,
+          1.546732371018375e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 0.0,
+      "remaining_positive_margin": 1.570795501398719
+    },
+    {
+      "task": "weak_phase_thermal_n32",
+      "link": 2,
+      "coarse_min": 1.5707963267948968,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 4.270138160399078e-07,
+      "fine_uncertainty": 4.2701450725069597e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948968,
+        1.9478332133984786
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        1.947833213431057
+      ],
+      "eigenvalue_absolute_differences": [
+        2.220446049250313e-16,
+        3.2578384434600594e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        1.4135798584282297e-16,
+        1.672544867289465e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.60535370295849,
+          -0.1087896744668261
+        ],
+        [
+          -0.1087896744668261,
+          1.9132758372348853
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.605353702961476,
+          -0.10878967447622623
+        ],
+        [
+          -0.10878967447622623,
+          1.9132758372644778
+        ]
+      ],
+      "matrix_operator_norm_difference": 3.2578529742254124e-11,
+      "matrix_scaled_operator_norm_difference": 1.6725523272533123e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4793140961562594,
+          -0.17750347866611585,
+          1.4073530362077211
+        ],
+        "fine": [
+          -0.479314096144245,
+          -0.1775034786491542,
+          1.407353035987689
+        ],
+        "absolute_differences": [
+          1.2014389483283594e-11,
+          1.6961654303315754e-11,
+          2.2003221467059575e-10
+        ],
+        "scaled_differences": [
+          1.2014389483283594e-11,
+          1.6961654303315754e-11,
+          1.5634471880481346e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 2.220446049250313e-16,
+      "remaining_positive_margin": 1.570795472766573
+    },
+    {
+      "task": "weak_phase_thermal_n32",
+      "link": 4,
+      "coarse_min": 1.5707963267948963,
+      "fine_min": 1.5707963267948963,
+      "coarse_uncertainty": 4.7147022720275174e-07,
+      "fine_uncertainty": 4.714707988019312e-07,
+      "coarse_eigenvalues": [
+        1.5707963267948963,
+        1.9488835855202433
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948963,
+        1.9488835855485664
+      ],
+      "eigenvalue_absolute_differences": [
+        0.0,
+        2.8323121625817294e-11
+      ],
+      "eigenvalue_scaled_differences": [
+        0.0,
+        1.45329981923189e-11
+      ],
+      "coarse_matrix": [
+        [
+          1.6946342386133744,
+          -0.1774421263459114
+        ],
+        [
+          -0.1774421263459114,
+          1.8250456737017653
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.6946342386226514,
+          -0.17744212635920395
+        ],
+        [
+          -0.17744212635920395,
+          1.8250456737208114
+        ]
+      ],
+      "matrix_operator_norm_difference": 2.8323160121214957e-11,
+      "matrix_scaled_operator_norm_difference": 1.4533017944857198e-11,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4798645196459723,
+          -0.17811718075698196,
+          1.4076051041910491
+        ],
+        "fine": [
+          -0.4798645196338705,
+          -0.17811718073999275,
+          1.407605103964076
+        ],
+        "absolute_differences": [
+          1.2101819546472825e-11,
+          1.6989215589902074e-11,
+          2.269731069759473e-10
+        ],
+        "scaled_differences": [
+          1.2101819546472825e-11,
+          1.6989215589902074e-11,
+          1.612477152411206e-10
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 0.0,
+      "remaining_positive_margin": 1.5707953838538702
+    },
+    {
+      "task": "weak_phase_nonthermal_n32",
+      "link": 0,
+      "coarse_min": 1.5707963267948966,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 8.29821378218377e-06,
+      "fine_uncertainty": 8.29820056732933e-06,
+      "coarse_eigenvalues": [
+        1.5707963267948966,
+        1.9442594094554084
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        1.9442594134411715
+      ],
+      "eigenvalue_absolute_differences": [
+        0.0,
+        3.985763052938296e-09
+      ],
+      "eigenvalue_scaled_differences": [
+        0.0,
+        2.0500160757271785e-09
+      ],
+      "coarse_matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9442594094554084
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9442594134411715
+        ]
+      ],
+      "matrix_operator_norm_difference": 3.985763052938296e-09,
+      "matrix_scaled_operator_norm_difference": 2.0500160757271785e-09,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.4778906470264329,
+          -0.17589845458035183,
+          1.4019069390556411
+        ],
+        "fine": [
+          -0.47789064857848734,
+          -0.1758984563476242,
+          1.4019069465191183
+        ],
+        "absolute_differences": [
+          1.5520544294211902e-09,
+          1.7672723562345283e-09,
+          7.463477169622479e-09
+        ],
+        "scaled_differences": [
+          1.5520544294211902e-09,
+          1.7672723562345283e-09,
+          5.323803543561867e-09
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 0.0,
+      "remaining_positive_margin": 1.570779730380547
+    },
+    {
+      "task": "weak_phase_nonthermal_n32",
+      "link": 2,
+      "coarse_min": 1.5707963267948966,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 8.643158573505635e-06,
+      "fine_uncertainty": 8.64314466288854e-06,
+      "coarse_eigenvalues": [
+        1.5707963267948966,
+        1.944609525282818
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        1.944609529299123
+      ],
+      "eigenvalue_absolute_differences": [
+        0.0,
+        4.016305066301129e-09
+      ],
+      "eigenvalue_scaled_differences": [
+        0.0,
+        2.0653529697289345e-09
+      ],
+      "coarse_matrix": [
+        [
+          1.6050582353084928,
+          -0.10785951619015312
+        ],
+        [
+          -0.10785951619015312,
+          1.9103476167692215
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.6050582356766079,
+          -0.10785951734901202
+        ],
+        [
+          -0.10785951734901202,
+          1.9103476204174117
+        ]
+      ],
+      "matrix_operator_norm_difference": 4.016305305439305e-09,
+      "matrix_scaled_operator_norm_difference": 2.0653530927038413e-09,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.47808683191155216,
+          -0.17611765848827596,
+          1.4019678428662092
+        ],
+        "fine": [
+          -0.47808683346465414,
+          -0.1761176602560411,
+          1.4019678503740154
+        ],
+        "absolute_differences": [
+          1.5531019803560753e-09,
+          1.7677651287240082e-09,
+          7.507806154549712e-09
+        ],
+        "scaled_differences": [
+          1.5531019803560753e-09,
+          1.7677651287240082e-09,
+          5.35519138512826e-09
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 0.0,
+      "remaining_positive_margin": 1.5707790404916602
+    },
+    {
+      "task": "weak_phase_nonthermal_n32",
+      "link": 3,
+      "coarse_min": 1.5707963267948963,
+      "fine_min": 1.5707963267948966,
+      "coarse_uncertainty": 9.08577591288486e-06,
+      "fine_uncertainty": 9.085761318170576e-06,
+      "coarse_eigenvalues": [
+        1.5707963267948963,
+        1.9450289853469513
+      ],
+      "fine_eigenvalues": [
+        1.5707963267948966,
+        1.9450289894008486
+      ],
+      "eigenvalue_absolute_differences": [
+        2.220446049250313e-16,
+        4.053897217914937e-09
+      ],
+      "eigenvalue_scaled_differences": [
+        1.4135798584282297e-16,
+        2.0842348571697685e-09
+      ],
+      "coarse_matrix": [
+        [
+          1.644408981811052,
+          -0.14875966056442727
+        ],
+        [
+          -0.14875966056442727,
+          1.8714163303307956
+        ]
+      ],
+      "fine_matrix": [
+        [
+          1.6444089826084656,
+          -0.14875966217587502
+        ],
+        [
+          -0.14875966217587502,
+          1.8714163335872795
+        ]
+      ],
+      "matrix_operator_norm_difference": 4.0538973614368066e-09,
+      "matrix_scaled_operator_norm_difference": 2.0842349309588332e-09,
+      "electronic_moments": {
+        "names": [
+          "u",
+          "u_a",
+          "u_Gamma"
+        ],
+        "coarse": [
+          -0.478322452249728,
+          -0.17638090805004122,
+          1.402040016380445
+        ],
+        "fine": [
+          -0.4783224538040963,
+          -0.17638090981840232,
+          1.4020400239429471
+        ],
+        "absolute_differences": [
+          1.5543683007379627e-09,
+          1.768361096443627e-09,
+          7.56250218003629e-09
+        ],
+        "scaled_differences": [
+          1.5543683007379627e-09,
+          1.768361096443627e-09,
+          5.393927456342023e-09
+        ]
+      },
+      "scale_definition": "Absolute difference / max(1, absolute fine value); matrices use spectral operator norm.",
+      "sampled_spectral_shift": 2.220446049250313e-16,
+      "remaining_positive_margin": 1.570778155257665
+    }
+  ],
+  "negative_control": {
+    "status": "PASS_EXPECTED_REJECTION",
+    "amplitude_over_Delta0": 0.6,
+    "bare_q_times_ell0": 1.0,
+    "q_delta": 0.9729729729729729,
+    "measured_eigenvalues": [
+      -0.3066196208689418,
+      1.5707963267948966
+    ],
+    "reference_eigenvalues": [
+      -0.3066196208691767,
+      1.5707963267948966
+    ],
+    "error": 2.349231920106831e-13,
+    "uncertainty": 5.318730852895835e-10,
+    "admitted_for_evolution": false
+  },
+  "spatial_metrics": [
+    {
+      "case": "weak_amplitude_thermal",
+      "observable": "excess_energy_density_bar",
+      "coarse_medium_difference": 3.6025757104725777e-07,
+      "medium_fine_difference": 2.699887828095434e-08,
+      "fine_norm": 0.0004099952545484791,
+      "richardson_conservative_estimate": 2.187308071033437e-09,
+      "richardson_denominator": 15,
+      "relative_estimate": 5.334959482500066e-06,
+      "observed_order": 3.7380573757315743,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_amplitude_thermal",
+      "observable": "induced_force_modes",
+      "coarse_medium_difference": 3.685674631040819e-05,
+      "medium_fine_difference": 2.7500167466691733e-06,
+      "fine_norm": 0.03866170092423829,
+      "richardson_conservative_estimate": 2.2173313606125304e-07,
+      "richardson_denominator": 15,
+      "relative_estimate": 5.735214198044795e-06,
+      "observed_order": 3.7444164071099664,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_amplitude_thermal",
+      "observable": "induced_current_modes",
+      "coarse_medium_difference": 1.8944004382064664e-05,
+      "medium_fine_difference": 1.2431831748896689e-05,
+      "fine_norm": 0.0038701898370571077,
+      "richardson_conservative_estimate": 2.373254662287593e-05,
+      "richardson_denominator": 3,
+      "relative_estimate": 0.006132140184865495,
+      "observed_order": 0.6077024360915564,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_phase_thermal",
+      "observable": "excess_energy_density_bar",
+      "coarse_medium_difference": 6.115623265171398e-06,
+      "medium_fine_difference": 4.5045493905818384e-07,
+      "fine_norm": 8.402136550485692e-05,
+      "richardson_conservative_estimate": 3.581705616523584e-08,
+      "richardson_denominator": 15,
+      "relative_estimate": 0.00042628509962939614,
+      "observed_order": 3.7630448370984038,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_phase_thermal",
+      "observable": "induced_force_modes",
+      "coarse_medium_difference": 0.0002020740444005788,
+      "medium_fine_difference": 1.5265561159783785e-05,
+      "fine_norm": 0.010228645519995682,
+      "richardson_conservative_estimate": 1.2474666753903008e-06,
+      "richardson_denominator": 15,
+      "relative_estimate": 0.00012195814909722548,
+      "observed_order": 3.7265314963442355,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_phase_thermal",
+      "observable": "induced_current_modes",
+      "coarse_medium_difference": 0.0009255061902251315,
+      "medium_fine_difference": 2.01567591613395e-05,
+      "fine_norm": 0.016323223599744422,
+      "richardson_conservative_estimate": 6.7189197204464996e-06,
+      "richardson_denominator": 3,
+      "relative_estimate": 0.00041161720780150926,
+      "observed_order": 5.520907035970371,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_phase_nonthermal",
+      "observable": "excess_energy_density_bar",
+      "coarse_medium_difference": 6.067138691831018e-06,
+      "medium_fine_difference": 4.4681155929630293e-07,
+      "fine_norm": 8.386742149853168e-05,
+      "richardson_conservative_estimate": 3.552116537222943e-08,
+      "richardson_denominator": 15,
+      "relative_estimate": 0.0004235394952836522,
+      "observed_order": 3.7632778762071504,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_phase_nonthermal",
+      "observable": "induced_force_modes",
+      "coarse_medium_difference": 0.0002004601962958201,
+      "medium_fine_difference": 1.5142907059961467e-05,
+      "fine_norm": 0.01013621067704944,
+      "richardson_conservative_estimate": 1.2373785261599874e-06,
+      "richardson_denominator": 15,
+      "relative_estimate": 0.00012207505995920925,
+      "observed_order": 3.726601702790677,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_phase_nonthermal",
+      "observable": "induced_current_modes",
+      "coarse_medium_difference": 0.0009163857187864468,
+      "medium_fine_difference": 1.979264327132358e-05,
+      "fine_norm": 0.016293261244771998,
+      "richardson_conservative_estimate": 6.597547757107861e-06,
+      "richardson_denominator": 3,
+      "relative_estimate": 0.00040492493540694984,
+      "observed_order": 5.532918775801609,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_amplitude_vacuum",
+      "observable": "excess_energy_density_bar",
+      "coarse_medium_difference": 2.811348967713583e-08,
+      "medium_fine_difference": 1.8349559506949421e-09,
+      "fine_norm": 0.00041007150598009904,
+      "richardson_conservative_estimate": null,
+      "richardson_denominator": 15,
+      "relative_estimate": null,
+      "observed_order": 3.9374452082170746,
+      "near_zero_response": false,
+      "difference_unresolved": true,
+      "degenerate": true,
+      "passed": null,
+      "status": "ROUND_OFF_LIMITED",
+      "relative_certificate": false,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "ROUND_OFF_LIMITED_NO_RELATIVE_CERTIFICATE"
+    },
+    {
+      "case": "weak_amplitude_vacuum",
+      "observable": "induced_force_modes",
+      "coarse_medium_difference": 2.650565235365214e-06,
+      "medium_fine_difference": 1.7300130744983234e-07,
+      "fine_norm": 0.038663816280509584,
+      "richardson_conservative_estimate": 1.2080193791218945e-08,
+      "richardson_denominator": 15,
+      "relative_estimate": 3.1244183718379e-07,
+      "observed_order": 3.9374452023488105,
+      "near_zero_response": false,
+      "difference_unresolved": false,
+      "degenerate": false,
+      "passed": true,
+      "status": "PASS_RELATIVE_ESTIMATE",
+      "relative_certificate": true,
+      "analytic_zero": false,
+      "absolute_control_passed": null,
+      "interpretation": "CONDITIONAL_EXTRAPOLATION_ESTIMATE"
+    },
+    {
+      "case": "weak_amplitude_vacuum",
+      "observable": "induced_current_modes",
+      "coarse_medium_difference": 0.0,
+      "medium_fine_difference": 0.0,
+      "fine_norm": 0.0,
+      "richardson_conservative_estimate": null,
+      "richardson_denominator": 3,
+      "relative_estimate": null,
+      "observed_order": null,
+      "near_zero_response": true,
+      "difference_unresolved": true,
+      "degenerate": true,
+      "passed": true,
+      "status": "PASS_ANALYTIC_ZERO_ABSOLUTE",
+      "relative_certificate": false,
+      "analytic_zero": true,
+      "absolute_control_passed": true,
+      "interpretation": "ANALYTIC_ZERO_ABSOLUTE_CONTROL_NO_RELATIVE_CERTIFICATE"
+    }
+  ],
+  "relative_spatial_pass_count": 10,
+  "relative_spatial_unresolved_count": 1,
+  "spatial_fail_count": 0,
+  "analytic_gradient_errors": [
+    0.004001551643847025,
+    0.00026062682837064754,
+    1.645819561695293e-05
+  ],
+  "decision": {
+    "stage3a_development_closed_registered_scope": true,
+    "accepted_for_stage3b_boundary_development": true,
+    "spatial_precision_fully_resolved": false,
+    "universal_spatial_accuracy_certified": false,
+    "stage3_closed": false,
+    "production_promotion": false
+  },
+  "limitations": [
+    "One vacuum amplitude energy response remains ROUND_OFF_LIMITED: below the declared absolute difference floor, not a demonstrated machine-roundoff limit or relative PASS.",
+    "Largest conditional response estimate is the thermal amplitude current; its observed order is about 0.608. No fourth-order current claim follows.",
+    "Directional force/current FD covers six N16 cases and one reused N8 pilot; no claim that FD was repeated in all 18 cases.",
+    "D.36 is a local longitudinal constitutive condition, not the complete discrete Hessian or a proof of dynamical/2D stability.",
+    "630/1260 comparisons cover preregistered representative nodes, not all fields or the exact spectral continuum.",
+    "Periodic static fields with frozen populations do not certify physical terminals, reservoirs, coupled potential/circuit, time evolution, material NbN or detector observables."
+  ],
+  "next_work": [
+    "Reuse this exact periodic nodal evidence without rerunning unchanged cases.",
+    "Validate open-boundary work, charge/current continuity and reservoir exchange with their own registered controls.",
+    "Validate circuit state and work/power balances before a spatial transient; refine space and time against the intended transient observables."
+  ]
+}

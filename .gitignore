@@ -50,6 +50,14 @@ outputs/
 !docs/implementation/stage2/practical_review_20260922/raw/
 !docs/implementation/stage2/practical_review_20260922/raw/**
 
+# Reviewed eight-cell static stage-3 pilot; full campaign output stays in tmp.
+!docs/implementation/stage3/iteration_20260923/pilot/*.npz
+!docs/implementation/stage3/iteration_20260923/history/initial_pilot/pilot/*.npz
+!docs/implementation/stage3/review_20260923/raw/
+!docs/implementation/stage3/review_20260923/raw/**
+!docs/implementation/stage3/review_20260923/previous_delivery_exact/**/*.npz
+!docs/implementation/stage3/nodal_20260923/pilot/*.npz
+
 # Local / temporary machine configs.
 # Keep the official Geminga baseline tracked because it now encodes the
 # pyTDGL boundary resampling that removes Voronoi warnings for the PRE mesh.
@@ -58,3 +66,19 @@ outputs/
 #configs/*smoke*.yaml
 #configs/*tmp*.yaml
 #configs/*scratch*.yaml
+
+# Stage 3 open-boundary evidence
+!docs/implementation/stage3/ports_20260923/raw/
+!docs/implementation/stage3/ports_20260923/raw/**
+!docs/implementation/stage3/ports_20260923/electrical/*.npz
+
+# Reviewed mixed-spatial and causal-accelerator diagnostics.
+!docs/implementation/stage3/coupled_20260923/raw/
+!docs/implementation/stage3/coupled_20260923/raw/**
+!docs/implementation/stage3/coupled_20260923/seeded_check/*.npz
+!docs/implementation/stage3/coupled_20260923/reservoir_postprocess*/**/*.npz
+!docs/implementation/stage3/coupled_20260923/reservoir_reproduction_geminga/**/*.npz
+
+# Completed stage-3 development closure: reviewed user-run snapshots.
+!docs/implementation/stage3/closure_20260923/raw/
+!docs/implementation/stage3/closure_20260923/raw/**

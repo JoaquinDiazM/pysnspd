@@ -1,0 +1,172 @@
+{
+  "schema": "pysnspd.stage3.reservoir_postprocess_review.v1",
+  "date": "2026-09-23",
+  "status": "VERIFIED_RESERVOIR_SNAPSHOT_POSTPROCESS",
+  "issues": [],
+  "source_hash_checks": {
+    "pysnspd/experimental/reservoir_spatial_dynamics.py": true,
+    "pysnspd/experimental/spatial_dynamics.py": true,
+    "pysnspd/experimental/cell_closures.py": true,
+    "pysnspd/experimental/cell_validation.py": true,
+    "pysnspd/experimental/electrical_ports.py": true,
+    "pysnspd/experimental/mixed_spatial.py": true,
+    "pysnspd/experimental/spatial_open.py": true,
+    "pysnspd/experimental/spatial_functional.py": true,
+    "pysnspd/experimental/energy_catalog.py": true,
+    "sandbox/stage3_spatial/coupled_20260923/postprocess_saved_reservoir.py": true,
+    "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json": true,
+    "sandbox/stage3_spatial/progress.py": true
+  },
+  "input_artifact_hash_checks": {
+    "manifest.json": true,
+    "summary.json": true,
+    "m0_helix/preparation.npz": true,
+    "m0_helix/initial.npz": true,
+    "m0_helix/arrays.npz": true,
+    "m0_helix/derivative_checks.json": true,
+    "m0_helix/direct_reference_probes.json": true,
+    "m0_helix/result.json": true,
+    "m0_smooth_perturbation/preparation.npz": true,
+    "m0_smooth_perturbation/initial.npz": true,
+    "m0_smooth_perturbation/arrays.npz": true,
+    "m0_smooth_perturbation/derivative_checks.json": true,
+    "m0_smooth_perturbation/direct_reference_probes.json": true,
+    "m0_smooth_perturbation/result.json": true
+  },
+  "output_inventory_sha256": {
+    "m0_helix/arrays.npz": "4310173e751aeadd6999c2199ffdd5e31e2ce102dc63d07a0b290013315c89aa",
+    "m0_helix/recovery_preconditions.json": "9aeb28b20953abd9fafc35321e557452a1a06b663a7e602e1d4286f7b01b5a59",
+    "m0_helix/result.json": "ab5d199cc33b1b47189e9e753f323e61ffe9561fef37ff52f7af1b3e92365571",
+    "m0_smooth_perturbation/arrays.npz": "4ccc15ebbaf189f5a1f0d62326d8d88c6950525644347eeba176993bd57ae508",
+    "m0_smooth_perturbation/recovery_preconditions.json": "4e010ec81838c3941b1e495323a9653fc0cab551b74718368f86a61aa2dfba69",
+    "m0_smooth_perturbation/result.json": "0cef7179fa95e7f29b2d4b4d19518fa4e92ea9a0049687b9d50f33c36675cd4d",
+    "manifest.json": "c635069fd06c6afd6ed98f8d65ea9cf8aa4a1cce505657ea52234aebe4d13442",
+    "summary.json": "ff1cd9457bc4f0a913a2d11f14edeee33e4acf7e071a639fa231e1200015280e"
+  },
+  "criteria_unchanged_since_failed_preparation": true,
+  "first_attempt_preserved": {
+    "failure_sha256": "63dc26e1832067823069e8a6373edb052601aa8ce7aa8fc6109caee36b6c2e94",
+    "reason": "Bitwise cross-platform GLL mass comparison failed before KWT; recovery uses exact archived mass, with geometry consistency bounded by64eps."
+  },
+  "registration_scope": "Explicitly retrospective to exploratory algebra; formal results follow the revised registration. No claim of blind preregistration.",
+  "cases": [
+    {
+      "case": "m0_helix",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 0.0,
+      "registered_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "FD_recovery_relative": 6.85944804748078e-15,
+        "temperature_absolute": 1.609823385706477e-15,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.0597888785532195e-19,
+        "instantaneous_power_relative": 1.0344419934430122e-15,
+        "heat_moment_relative": 0.0,
+        "current_continuity_relative": 9.810988471138502e-17,
+        "KWT_identity_relative": 2.2452786376533147e-16
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.059788878553219e-19,
+        "instantaneous_power_relative": 7.241093954101085e-16,
+        "heat_moment_relative": 0.0,
+        "current_continuity_relative": 1.6556043045046223e-16,
+        "KWT_identity_relative": 2.2452786376533147e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": 5.6545549686242126e-27,
+      "KWT_recomputed_residual_bar": -1.0842021724855044e-19,
+      "geometry_mass_relative_roundoff": 2.5766002910199187e-15,
+      "condensate_heat_free_bar": 1.0114594255582998,
+      "condensate_heat_loaded_bar": 6.192158880574841e-07,
+      "condensate_heat_terminal_bar": 1.7772002154928615e-07,
+      "maximum_material_speed_bar": 0.001196040396186751,
+      "reservoir_work_power_W": -6.829373225666907e-12,
+      "radial_reaction_work_rate_bar": 1.7205356741102976e-22,
+      "Vdev_V": 9.044961228169691e-07,
+      "adjacent_normal_current_over_Iref": [
+        -0.0004193494955313932,
+        -0.0004193494955316509
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory."
+    },
+    {
+      "case": "m0_smooth_perturbation",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 0.0,
+      "registered_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "FD_recovery_relative": 6.973562093862296e-15,
+        "temperature_absolute": 1.817990202823694e-15,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.0597888785532195e-19,
+        "instantaneous_power_relative": 3.066560219367479e-16,
+        "heat_moment_relative": 3.2561527800566715e-16,
+        "current_continuity_relative": 3.9282278058269397e-17,
+        "KWT_identity_relative": 1.2791457881964605e-16
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.059788878553219e-19,
+        "instantaneous_power_relative": 1.0221867397891596e-16,
+        "heat_moment_relative": 3.2561527800566715e-16,
+        "current_continuity_relative": 6.74505457390772e-17,
+        "KWT_identity_relative": 1.2791457881964605e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": 8.077935669463161e-28,
+      "KWT_recomputed_residual_bar": 5.421010862427522e-20,
+      "geometry_mass_relative_roundoff": 2.5766002910199187e-15,
+      "condensate_heat_free_bar": 1.0115389586271257,
+      "condensate_heat_loaded_bar": 8.015228471416534e-05,
+      "condensate_heat_terminal_bar": 1.7772002154928615e-07,
+      "maximum_material_speed_bar": 0.014015101535803268,
+      "reservoir_work_power_W": -6.829373225666907e-12,
+      "radial_reaction_work_rate_bar": 1.7205356741102976e-22,
+      "Vdev_V": 9.15340354093472e-07,
+      "adjacent_normal_current_over_Iref": [
+        -0.0004193494955313932,
+        -0.0004193494955316453
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory."
+    }
+  ],
+  "decision": {
+    "recommend_six_loaded_snapshots": true,
+    "purpose": "Measure mesh sensitivity of the compatible-current/fixed-radius snapshot, induced interior response and residual adjacent normal current.",
+    "no_new_admission_threshold": true,
+    "stage3_closed": false,
+    "temporal_admission": false,
+    "full_D27_admission": false,
+    "normal_boundary_trace_admission": false,
+    "production": false
+  },
+  "limitations": [
+    "FD means Fermi–Dirac decoding here, not a new finite-difference or spectral validation.",
+    "Recovered energies apply only to the unchanged archived thermal populations/fields; cannot serve as a spectrum at changed fields or arbitrary nonequilibrium populations.",
+    "Boundary load is prescribed from Iref independently of the discrete gradient. Radius reactions are solved inside KWT and their work is explicit.",
+    "Bias state changed from original Is=.99Iref to Ib=Is=Iref; the voltage/Joule change cannot be attributed solely to a numerical improvement.",
+    "External normal injection zero follows the imposed contract; adjacent internal normal current is a measured discretization diagnostic, not proof of D.27 boundary-trace convergence.",
+    "Fixed radius excludes da_b/dIs, reservoir kinetics, time integration and a detector pulse."
+  ]
+}

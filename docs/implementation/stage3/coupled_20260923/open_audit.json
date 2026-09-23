@@ -1,0 +1,590 @@
+{
+  "schema": "pysnspd.stage3.open_full_saved_audit.v1",
+  "status": "PASS_SAVED_OPEN_AUDIT",
+  "method": "Offline hashes and arithmetic on archived records only; no spectrum, field, minimization or time evolution evaluated.",
+  "script_sha256": "69fb0d31d199e5e442947de63f11b692c5ac5f6a281986d8c6e30bb042400f6f",
+  "raw_directory": "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923",
+  "source_checks": {
+    "pysnspd/experimental/energy_catalog.py": {
+      "recorded_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+      "current_sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    "pysnspd/experimental/refined_cells.py": {
+      "recorded_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+      "current_sha256": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+    },
+    "pysnspd/experimental/spatial_functional.py": {
+      "recorded_sha256": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+      "current_sha256": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e"
+    },
+    "pysnspd/experimental/spatial_open.py": {
+      "recorded_sha256": "2bf381c4ef6391bc7412cafdf4f8f9afbb912f6a5cb8835ed13e53d75c6656ab",
+      "current_sha256": "2bf381c4ef6391bc7412cafdf4f8f9afbb912f6a5cb8835ed13e53d75c6656ab"
+    },
+    "pysnspd/experimental/superconducting_reservoir.py": {
+      "recorded_sha256": "ad1ba9f984fad51df31bad405a861f965541ee105a7e40c1d4fbe5fa7d5f8a38",
+      "current_sha256": "ad1ba9f984fad51df31bad405a861f965541ee105a7e40c1d4fbe5fa7d5f8a38"
+    },
+    "sandbox/stage3_spatial/progress.py": {
+      "recorded_sha256": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f",
+      "current_sha256": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f"
+    },
+    "sandbox/stage3_spatial/ports_20260923/run_open_batch.py": {
+      "recorded_sha256": "61c5b36587b7e407af92daf47917e0f0f8d1a4af3dad5f83bb3d38875739b279",
+      "current_sha256": "61c5b36587b7e407af92daf47917e0f0f8d1a4af3dad5f83bb3d38875739b279"
+    },
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": {
+      "recorded_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+      "current_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970"
+    },
+    "docs/implementation/stage3/ports_20260923/open_registration.json": {
+      "recorded_sha256": "9f269dec40d563d12be3a49c26c624fefcd54acde1655ec6993dd0b7799251f3",
+      "current_sha256": "9f269dec40d563d12be3a49c26c624fefcd54acde1655ec6993dd0b7799251f3"
+    }
+  },
+  "registration_sha256": "9f269dec40d563d12be3a49c26c624fefcd54acde1655ec6993dd0b7799251f3",
+  "raw_inventory": {
+    "manifest.json": {
+      "sha256": "5c7334b3163f6138a4315aa35b211d1f12ebf1c633d3445d326ac45cd797840d",
+      "bytes": 4907
+    },
+    "open_L1080_E12/iterations.json": {
+      "sha256": "1239b1a174bf413a1428e381d3b114227725f0503f62fa9538687ecb78db3edf",
+      "bytes": 147
+    },
+    "open_L1080_E12/reservoir.json": {
+      "sha256": "7b075833f95d3a895e3ee29309d198c2a5adb0f33c33f0871c00366eaf5fe6be",
+      "bytes": 20589
+    },
+    "open_L1080_E12/result.json": {
+      "sha256": "921985b448aa2d1f2aa47d423ac3b4a887e1ed777494d1f8d7562362a9e53027",
+      "bytes": 7211
+    },
+    "open_L1080_E24/iterations.json": {
+      "sha256": "4340e5122899c2314c7f55435d2e830c6ef38c0eb5441ad8554719a512f3f9e2",
+      "bytes": 146
+    },
+    "open_L1080_E24/reservoir.json": {
+      "sha256": "7b075833f95d3a895e3ee29309d198c2a5adb0f33c33f0871c00366eaf5fe6be",
+      "bytes": 20589
+    },
+    "open_L1080_E24/result.json": {
+      "sha256": "42e52afd888b5eba67861b4c0d8f648ea261f8d9a39f30e78bddd869f15b9bc7",
+      "bytes": 13193
+    },
+    "open_L360_E4/iterations.json": {
+      "sha256": "1a268d2949cc2ea339b9eb948a6742c0b515aa3b3b938ae5972ecb1dcb8a5a26",
+      "bytes": 146
+    },
+    "open_L360_E4/reservoir.json": {
+      "sha256": "da7036137bbb6df954cd98c13d2859ae75f8d0fb23993c1d3f0ce8992b7e87a1",
+      "bytes": 20589
+    },
+    "open_L360_E4/result.json": {
+      "sha256": "9617bdfa7a99ff5b87f171bff163b65ced5c72155247495f9a84ac34e4d10942",
+      "bytes": 3300
+    },
+    "open_L360_E8/iterations.json": {
+      "sha256": "182847fc9585ed307cb01564f27ddf5bce2c381e15c04247729fceebb443c52e",
+      "bytes": 146
+    },
+    "open_L360_E8/reservoir.json": {
+      "sha256": "da7036137bbb6df954cd98c13d2859ae75f8d0fb23993c1d3f0ce8992b7e87a1",
+      "bytes": 20589
+    },
+    "open_L360_E8/result.json": {
+      "sha256": "c5ed644e92e23120c51871fc5fbdff7d92dbeb6628c27330f1931ec6dc28f3b3",
+      "bytes": 5300
+    },
+    "open_L720_E16/iterations.json": {
+      "sha256": "6c6a4b2427c0d5d379e6db774ec40cde45ed2733c264e4195e8429f74b8ed5b5",
+      "bytes": 146
+    },
+    "open_L720_E16/reservoir.json": {
+      "sha256": "9934fb5d937b2207c018b127b4b0e659dd6aec6b741db315570e90c7e3d93a85",
+      "bytes": 20589
+    },
+    "open_L720_E16/result.json": {
+      "sha256": "940fe5c2b2f383137b30650cbbce11a3d662b28b5c7477e92465b36385a896f7",
+      "bytes": 9263
+    },
+    "open_L720_E8/iterations.json": {
+      "sha256": "804099003c9213a3cd1307f41bd131e9eef77a16a4a5c7d1f6d51f3db0ed4f03",
+      "bytes": 147
+    },
+    "open_L720_E8/reservoir.json": {
+      "sha256": "9934fb5d937b2207c018b127b4b0e659dd6aec6b741db315570e90c7e3d93a85",
+      "bytes": 20589
+    },
+    "open_L720_E8/result.json": {
+      "sha256": "3b84c5504262e57b8cc2a92239e050a1362213f8b32307db8ad1bd8075ef56d0",
+      "bytes": 5280
+    },
+    "progress.jsonl": {
+      "sha256": "0a5e813348dc76d00b1a42a4a15c528856f0cd51334d5bda6829bd8948aeed85",
+      "bytes": 75318
+    },
+    "summary.json": {
+      "sha256": "9eee59cca14e9f7c4649606cd5a09f88cb16cc664a03a366a52f26a5c7ae33ee",
+      "bytes": 50823
+    }
+  },
+  "integrity_errors": [],
+  "recorded_status": "OPEN_STATIC_BATCH_COMPLETE_SCOPE_LIMITED",
+  "recorded_runtime_seconds": 271.2805110909976,
+  "criteria": {
+    "stationarity_absolute": 0.0001,
+    "current_relative": 0.01,
+    "endpoint_q_relative": 0.01,
+    "amplitude_absolute": 0.001
+  },
+  "case_count": 6,
+  "node_evaluations": 294,
+  "cases": [
+    {
+      "task": "open_L360_E4",
+      "case": {
+        "id": "open_L360_E4",
+        "length_m": 3.6e-07,
+        "elements": 4
+      },
+      "nodes": 17,
+      "element_width_m": 9e-08,
+      "runtime_seconds": 20.76029310328886,
+      "solver": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "evaluations": 1,
+        "active_bounds": false
+      },
+      "metrics": {
+        "stationarity_absolute": 1.935527688182138e-05,
+        "current_relative": 6.034830388441363e-06,
+        "endpoint_q_relative": 0.0007130058884058377,
+        "amplitude_absolute": 1.1102230246251565e-16,
+        "minimum_principal_eigenvalue": 1.5707963267948963,
+        "maximum_symbol_uncertainty": 2.825233075988816e-07,
+        "global_phase_residual": -3.0531133177191805e-16
+      },
+      "recomputed": {
+        "current_relative": 6.034830388340133e-06,
+        "endpoint_q_relative": 0.0007130058884058377,
+        "amplitude_absolute": 1.1102230246251565e-16
+      },
+      "mean_current_A": 8.633524448161053e-06,
+      "reference_current_A": 8.633512818265575e-06,
+      "reference_amplitude_bar": 0.9952181913919729,
+      "current_peak_to_peak_A": 8.094378006166943e-11,
+      "q_end_bare_bar": [
+        0.09992869941115942,
+        0.09992869941116106
+      ],
+      "free_energy_density_bar": -0.4912049905212282,
+      "internal_energy_density_bar": -0.49063442842911775,
+      "L_res_H": 1.6662127065912317e-10,
+      "L_ext_H": 9.833378729340877e-09,
+      "branch_differential_current_bar": 1.7381356360514781,
+      "branch_curvature": 1.9865027272404716,
+      "reservoir_population_sha256": "940e90cacdfb8b2e4e6875e823c5f71f5cc6ff0d169f14b47b060ae26cff7197"
+    },
+    {
+      "task": "open_L360_E8",
+      "case": {
+        "id": "open_L360_E8",
+        "length_m": 3.6e-07,
+        "elements": 8
+      },
+      "nodes": 33,
+      "element_width_m": 4.5e-08,
+      "runtime_seconds": 33.65831398637965,
+      "solver": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "evaluations": 1,
+        "active_bounds": false
+      },
+      "metrics": {
+        "stationarity_absolute": 6.319388474755195e-07,
+        "current_relative": 9.044130279123697e-08,
+        "endpoint_q_relative": 4.86823483888954e-05,
+        "amplitude_absolute": 2.220446049250313e-16,
+        "minimum_principal_eigenvalue": 1.5707963267948963,
+        "maximum_symbol_uncertainty": 2.820482247040962e-07,
+        "global_phase_residual": 2.4424906541753444e-15
+      },
+      "recomputed": {
+        "current_relative": 9.044130275937141e-08,
+        "endpoint_q_relative": 4.86823483888954e-05,
+        "amplitude_absolute": 2.220446049250313e-16
+      },
+      "mean_current_A": 8.633513000247097e-06,
+      "reference_current_A": 8.633512818265575e-06,
+      "reference_amplitude_bar": 0.9952181913919729,
+      "current_peak_to_peak_A": 1.1976892374865105e-12,
+      "q_end_bare_bar": [
+        0.09999513176516112,
+        0.09999513176516185
+      ],
+      "free_energy_density_bar": -0.49120499034398596,
+      "internal_energy_density_bar": -0.4906344282510767,
+      "L_res_H": 1.6662127065912317e-10,
+      "L_ext_H": 9.833378729340877e-09,
+      "branch_differential_current_bar": 1.7381356360514781,
+      "branch_curvature": 1.9865027272404716,
+      "reservoir_population_sha256": "940e90cacdfb8b2e4e6875e823c5f71f5cc6ff0d169f14b47b060ae26cff7197"
+    },
+    {
+      "task": "open_L720_E8",
+      "case": {
+        "id": "open_L720_E8",
+        "length_m": 7.2e-07,
+        "elements": 8
+      },
+      "nodes": 33,
+      "element_width_m": 9e-08,
+      "runtime_seconds": 31.68221372179687,
+      "solver": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "evaluations": 1,
+        "active_bounds": false
+      },
+      "metrics": {
+        "stationarity_absolute": 1.9355276882751553e-05,
+        "current_relative": 6.034830390015519e-06,
+        "endpoint_q_relative": 0.0007130058884088908,
+        "amplitude_absolute": 1.1102230246251565e-16,
+        "minimum_principal_eigenvalue": 1.5707963267948961,
+        "maximum_symbol_uncertainty": 2.825233075988795e-07,
+        "global_phase_residual": -3.3306690738754696e-16
+      },
+      "recomputed": {
+        "current_relative": 6.034830389909891e-06,
+        "endpoint_q_relative": 0.0007130058884088908,
+        "amplitude_absolute": 1.1102230246251565e-16
+      },
+      "mean_current_A": 8.63352444816106e-06,
+      "reference_current_A": 8.633512818265575e-06,
+      "reference_amplitude_bar": 0.9952181913919729,
+      "current_peak_to_peak_A": 8.094378007522196e-11,
+      "q_end_bare_bar": [
+        0.09992869941115912,
+        0.09992869941116017
+      ],
+      "free_energy_density_bar": -0.4912049905212282,
+      "internal_energy_density_bar": -0.49063442842911775,
+      "L_res_H": 3.3324254131824633e-10,
+      "L_ext_H": 9.666757458681755e-09,
+      "branch_differential_current_bar": 1.7381356360514781,
+      "branch_curvature": 1.9865027272404716,
+      "reservoir_population_sha256": "940e90cacdfb8b2e4e6875e823c5f71f5cc6ff0d169f14b47b060ae26cff7197"
+    },
+    {
+      "task": "open_L720_E16",
+      "case": {
+        "id": "open_L720_E16",
+        "length_m": 7.2e-07,
+        "elements": 16
+      },
+      "nodes": 65,
+      "element_width_m": 4.5e-08,
+      "runtime_seconds": 60.34810728114098,
+      "solver": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "evaluations": 1,
+        "active_bounds": false
+      },
+      "metrics": {
+        "stationarity_absolute": 6.319388475671637e-07,
+        "current_relative": 9.04413234126699e-08,
+        "endpoint_q_relative": 4.8682348397222075e-05,
+        "amplitude_absolute": 2.220446049250313e-16,
+        "minimum_principal_eigenvalue": 1.5707963267948963,
+        "maximum_symbol_uncertainty": 2.820481693355024e-07,
+        "global_phase_residual": -3.0531133177191805e-16
+      },
+      "recomputed": {
+        "current_relative": 9.044132336244719e-08,
+        "endpoint_q_relative": 4.8682348397222075e-05,
+        "amplitude_absolute": 2.220446049250313e-16
+      },
+      "mean_current_A": 8.633513000247217e-06,
+      "reference_current_A": 8.633512818265575e-06,
+      "reference_amplitude_bar": 0.9952181913919729,
+      "current_peak_to_peak_A": 1.1976893865643093e-12,
+      "q_end_bare_bar": [
+        0.09999513176516028,
+        0.09999513176516331
+      ],
+      "free_energy_density_bar": -0.49120499034398596,
+      "internal_energy_density_bar": -0.4906344282510767,
+      "L_res_H": 3.3324254131824633e-10,
+      "L_ext_H": 9.666757458681755e-09,
+      "branch_differential_current_bar": 1.7381356360514781,
+      "branch_curvature": 1.9865027272404716,
+      "reservoir_population_sha256": "940e90cacdfb8b2e4e6875e823c5f71f5cc6ff0d169f14b47b060ae26cff7197"
+    },
+    {
+      "task": "open_L1080_E12",
+      "case": {
+        "id": "open_L1080_E12",
+        "length_m": 1.08e-06,
+        "elements": 12
+      },
+      "nodes": 49,
+      "element_width_m": 9e-08,
+      "runtime_seconds": 43.586536867078394,
+      "solver": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "evaluations": 1,
+        "active_bounds": false
+      },
+      "metrics": {
+        "stationarity_absolute": 1.9355276882832932e-05,
+        "current_relative": 6.034830391117428e-06,
+        "endpoint_q_relative": 0.0007130058884091683,
+        "amplitude_absolute": 2.220446049250313e-16,
+        "minimum_principal_eigenvalue": 1.5707963267948963,
+        "maximum_symbol_uncertainty": 2.8252330759887807e-07,
+        "global_phase_residual": -6.938893903907228e-16
+      },
+      "recomputed": {
+        "current_relative": 6.03483039108721e-06,
+        "endpoint_q_relative": 0.0007130058884091683,
+        "amplitude_absolute": 2.220446049250313e-16
+      },
+      "mean_current_A": 8.633524448161075e-06,
+      "reference_current_A": 8.633512818265575e-06,
+      "reference_amplitude_bar": 0.9952181913919729,
+      "current_peak_to_peak_A": 8.094378008199822e-11,
+      "q_end_bare_bar": [
+        0.09992869941115909,
+        0.09992869941116017
+      ],
+      "free_energy_density_bar": -0.4912049905212283,
+      "internal_energy_density_bar": -0.49063442842911775,
+      "L_res_H": 4.998638119773697e-10,
+      "L_ext_H": 9.500136188022631e-09,
+      "branch_differential_current_bar": 1.7381356360514781,
+      "branch_curvature": 1.9865027272404716,
+      "reservoir_population_sha256": "940e90cacdfb8b2e4e6875e823c5f71f5cc6ff0d169f14b47b060ae26cff7197"
+    },
+    {
+      "task": "open_L1080_E24",
+      "case": {
+        "id": "open_L1080_E24",
+        "length_m": 1.08e-06,
+        "elements": 24
+      },
+      "nodes": 97,
+      "element_width_m": 4.5e-08,
+      "runtime_seconds": 81.1782184750773,
+      "solver": {
+        "success": true,
+        "message": "CONVERGENCE: NORM OF PROJECTED GRADIENT <= PGTOL",
+        "iterations": 0,
+        "evaluations": 1,
+        "active_bounds": false
+      },
+      "metrics": {
+        "stationarity_absolute": 6.319388474212768e-07,
+        "current_relative": 9.044132750547337e-08,
+        "endpoint_q_relative": 4.868234839361385e-05,
+        "amplitude_absolute": 2.220446049250313e-16,
+        "minimum_principal_eigenvalue": 1.5707963267948963,
+        "maximum_symbol_uncertainty": 2.8204816933550625e-07,
+        "global_phase_residual": 2.220446049250313e-15
+      },
+      "recomputed": {
+        "current_relative": 9.044132748306235e-08,
+        "endpoint_q_relative": 4.868234839361385e-05,
+        "amplitude_absolute": 2.220446049250313e-16
+      },
+      "mean_current_A": 8.633513000247158e-06,
+      "reference_current_A": 8.633512818265575e-06,
+      "reference_amplitude_bar": 0.9952181913919729,
+      "current_peak_to_peak_A": 1.197689520395515e-12,
+      "q_end_bare_bar": [
+        0.09999513176516064,
+        0.09999513176516325
+      ],
+      "free_energy_density_bar": -0.4912049903439859,
+      "internal_energy_density_bar": -0.49063442825107667,
+      "L_res_H": 4.998638119773697e-10,
+      "L_ext_H": 9.500136188022631e-09,
+      "branch_differential_current_bar": 1.7381356360514781,
+      "branch_curvature": 1.9865027272404716,
+      "reservoir_population_sha256": "940e90cacdfb8b2e4e6875e823c5f71f5cc6ff0d169f14b47b060ae26cff7197"
+    }
+  ],
+  "resolution_comparisons": [
+    {
+      "length_m": 3.6e-07,
+      "cases": [
+        "open_L360_E4",
+        "open_L360_E8"
+      ],
+      "nodes": [
+        17,
+        33
+      ],
+      "reference_errors": {
+        "stationarity_absolute": {
+          "coarse": 1.935527688182138e-05,
+          "fine": 6.319388474755195e-07,
+          "reduction_factor": 30.628401718207677,
+          "decreasing": true
+        },
+        "current_relative": {
+          "coarse": 6.034830388441363e-06,
+          "fine": 9.044130279123697e-08,
+          "reduction_factor": 66.72648670675815,
+          "decreasing": true
+        },
+        "endpoint_q_relative": {
+          "coarse": 0.0007130058884058377,
+          "fine": 4.86823483888954e-05,
+          "reduction_factor": 14.646086559137245,
+          "decreasing": true
+        }
+      },
+      "mean_current_difference_A": -1.1447913956722086e-11,
+      "free_energy_density_difference_bar": 1.772422209000979e-10,
+      "internal_energy_density_difference_bar": 1.780410263663157e-10,
+      "interpretation": "Two resolutions against the same uniform reference. Decreasing errors support this helix only; no three-level order or perturbed-boundary certificate."
+    },
+    {
+      "length_m": 7.2e-07,
+      "cases": [
+        "open_L720_E8",
+        "open_L720_E16"
+      ],
+      "nodes": [
+        33,
+        65
+      ],
+      "reference_errors": {
+        "stationarity_absolute": {
+          "coarse": 1.9355276882751553e-05,
+          "fine": 6.319388475671637e-07,
+          "reduction_factor": 30.62840171523786,
+          "decreasing": true
+        },
+        "current_relative": {
+          "coarse": 6.034830390015519e-06,
+          "fine": 9.04413234126699e-08,
+          "reduction_factor": 66.72647150992597,
+          "decreasing": true
+        },
+        "endpoint_q_relative": {
+          "coarse": 0.0007130058884088908,
+          "fine": 4.8682348397222075e-05,
+          "reduction_factor": 14.64608655669488,
+          "decreasing": true
+        }
+      },
+      "mean_current_difference_A": -1.1447913843219671e-11,
+      "free_energy_density_difference_bar": 1.772422209000979e-10,
+      "internal_energy_density_difference_bar": 1.780410263663157e-10,
+      "interpretation": "Two resolutions against the same uniform reference. Decreasing errors support this helix only; no three-level order or perturbed-boundary certificate."
+    },
+    {
+      "length_m": 1.08e-06,
+      "cases": [
+        "open_L1080_E12",
+        "open_L1080_E24"
+      ],
+      "nodes": [
+        49,
+        97
+      ],
+      "reference_errors": {
+        "stationarity_absolute": {
+          "coarse": 1.9355276882832932e-05,
+          "fine": 6.319388474212768e-07,
+          "reduction_factor": 30.628401722437385,
+          "decreasing": true
+        },
+        "current_relative": {
+          "coarse": 6.034830391117428e-06,
+          "fine": 9.044132750547337e-08,
+          "reduction_factor": 66.72646850249085,
+          "decreasing": true
+        },
+        "endpoint_q_relative": {
+          "coarse": 0.0007130058884091683,
+          "fine": 4.868234839361385e-05,
+          "reduction_factor": 14.646086557786116,
+          "decreasing": true
+        }
+      },
+      "mean_current_difference_A": -1.144791391775857e-11,
+      "free_energy_density_difference_bar": 1.7724238743355158e-10,
+      "internal_energy_density_difference_bar": 1.7804108187746692e-10,
+      "interpretation": "Two resolutions against the same uniform reference. Decreasing errors support this helix only; no three-level order or perturbed-boundary certificate."
+    }
+  ],
+  "length_comparisons": [
+    {
+      "element_width_m": 9e-08,
+      "cases": [
+        "open_L360_E4",
+        "open_L720_E8",
+        "open_L1080_E12"
+      ],
+      "mean_current_range_A": 2.202285662861181e-20,
+      "free_energy_density_range_bar": 1.1102230246251565e-16,
+      "internal_energy_density_range_bar": 0.0,
+      "scope": "Uniform material and initial helix. Tiny length sensitivity does not test dynamic reflections or a localized excitation."
+    },
+    {
+      "element_width_m": 4.5e-08,
+      "cases": [
+        "open_L360_E8",
+        "open_L720_E16",
+        "open_L1080_E24"
+      ],
+      "mean_current_range_A": 1.2027867851011065e-19,
+      "free_energy_density_range_bar": 5.551115123125783e-17,
+      "internal_energy_density_range_bar": 5.551115123125783e-17,
+      "scope": "Uniform material and initial helix. Tiny length sensitivity does not test dynamic reflections or a localized excitation."
+    }
+  ],
+  "maxima": {
+    "stationarity_absolute": 1.9355276882832932e-05,
+    "current_relative": 6.034830391117428e-06,
+    "endpoint_q_relative": 0.0007130058884091683,
+    "amplitude_absolute": 2.220446049250313e-16,
+    "minimum_principal_eigenvalue": 1.5707963267948963,
+    "maximum_symbol_uncertainty": 2.825233075988816e-07,
+    "global_phase_residual": 2.4424906541753444e-15
+  },
+  "all_cases_initial_helix_only": true,
+  "decision": {
+    "registered_open_uniform_static_campaign_accepted": true,
+    "may_continue_coupled_development": true,
+    "stage3b_general_boundary_validation_complete": false,
+    "stage3_closed": false,
+    "production_promotion": false
+  },
+  "limitations": [
+    "Every optimizer stopped at its initial uniform-amplitude helix: 0 iterations, 1 objective evaluation. No relaxation from disturbed data was demonstrated.",
+    "Two resolutions at each length test this reference branch; they do not supply a universal error estimate or certify an observed spatial order.",
+    "No localized excitation, reservoir population perturbation, boundary reflection, 2D-1D transparency or detector transient was tested.",
+    "The D.36 values are recorded minima/uncertainties. The producer did not save individual matrices here, so this audit checks their reported margins but cannot recompute their spectra.",
+    "The producer froze source/registration hashes but did not issue per-output receipts. This audit inventories observed output hashes and verifies cross-file identity; it does not invent prior receipts.",
+    "Stationarity is cross-checked against its iteration log; full gradient arrays were not archived and are not reconstructed through new physical evaluations."
+  ],
+  "next_work": [
+    "Reuse the six unchanged static cases and their exact source contract.",
+    "Give the coupled spatial experiment its own preregistered state, circuit, reservoir exchange and energy/current accounting controls.",
+    "Assess perturbation sensitivity and spatial/temporal refinement on the coupled observables before interpreting a detector signal."
+  ]
+}

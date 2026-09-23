@@ -1,0 +1,963 @@
+{
+  "schema": "pysnspd.stage3.full_reservoir_independent_review.v1",
+  "date": "2026-09-23",
+  "status": "VERIFIED_SIX_SNAPSHOT_CAMPAIGN_SCOPE_LIMITED",
+  "issues": [],
+  "method": "Offline arithmetic on saved arrays only; no catalogue query, PDE RHS, time integration or new material calculation.",
+  "source_hash_checks": {
+    "postprocess": {
+      "pysnspd/experimental/reservoir_spatial_dynamics.py": true,
+      "pysnspd/experimental/spatial_dynamics.py": true,
+      "pysnspd/experimental/cell_closures.py": true,
+      "pysnspd/experimental/cell_validation.py": true,
+      "pysnspd/experimental/electrical_ports.py": true,
+      "pysnspd/experimental/mixed_spatial.py": true,
+      "pysnspd/experimental/spatial_open.py": true,
+      "pysnspd/experimental/spatial_functional.py": true,
+      "pysnspd/experimental/energy_catalog.py": true,
+      "sandbox/stage3_spatial/coupled_20260923/postprocess_saved_reservoir.py": true,
+      "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json": true,
+      "sandbox/stage3_spatial/progress.py": true
+    },
+    "mixed": {
+      "pysnspd/experimental/energy_catalog.py": true,
+      "pysnspd/experimental/refined_cells.py": true,
+      "pysnspd/experimental/spatial_functional.py": true,
+      "pysnspd/experimental/spatial_open.py": true,
+      "pysnspd/experimental/mixed_spatial.py": true,
+      "pysnspd/experimental/cell_closures.py": true,
+      "pysnspd/experimental/cell_validation.py": true,
+      "pysnspd/experimental/electrical_ports.py": true,
+      "pysnspd/experimental/spatial_dynamics.py": true,
+      "pysnspd/experimental/local_energy_patch.py": true,
+      "pysnspd/experimental/seeded_count_catalog.py": true,
+      "sandbox/stage3_spatial/coupled_20260923/run_mixed_check.py": true,
+      "sandbox/stage3_spatial/progress.py": true,
+      "docs/implementation/stage3/coupled_20260923/mixed_registration.json": true,
+      "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md": true,
+      "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md": true,
+      "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": true,
+      "docs/implementation/stage3/coupled_20260923/raw/stage3b_open_full_20260923/open_L720_E16/reservoir.json": true
+    },
+    "batch": {
+      "sandbox/stage3_spatial/coupled_20260923/run_reservoir_batch.py": true,
+      "sandbox/stage3_spatial/coupled_20260923/run_mixed_check.py": true,
+      "sandbox/stage3_spatial/coupled_20260923/postprocess_saved_reservoir.py": true,
+      "docs/implementation/stage3/coupled_20260923/mixed_registration.json": true,
+      "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json": true,
+      "pysnspd/experimental/reservoir_spatial_dynamics.py": true
+    }
+  },
+  "seed_artifact_hash_checks": {
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/manifest.json": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/summary.json": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/probes.json": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/seeded_check/patch_degree6.npz": true,
+    "/home/jdiaz/pysnspd/docs/implementation/stage3/coupled_20260923/raw/patch_check/manifest.json": true
+  },
+  "input_hash_checks": {
+    "manifest.json": true,
+    "summary.json": true,
+    "m0_helix/preparation.npz": true,
+    "m0_helix/initial.npz": true,
+    "m0_helix/arrays.npz": true,
+    "m0_helix/derivative_checks.json": true,
+    "m0_helix/direct_reference_probes.json": true,
+    "m0_helix/result.json": true,
+    "m0_smooth_perturbation/preparation.npz": true,
+    "m0_smooth_perturbation/initial.npz": true,
+    "m0_smooth_perturbation/arrays.npz": true,
+    "m0_smooth_perturbation/derivative_checks.json": true,
+    "m0_smooth_perturbation/direct_reference_probes.json": true,
+    "m0_smooth_perturbation/result.json": true,
+    "m1_helix/preparation.npz": true,
+    "m1_helix/initial.npz": true,
+    "m1_helix/arrays.npz": true,
+    "m1_helix/derivative_checks.json": true,
+    "m1_helix/direct_reference_probes.json": true,
+    "m1_helix/result.json": true,
+    "m1_smooth_perturbation/preparation.npz": true,
+    "m1_smooth_perturbation/initial.npz": true,
+    "m1_smooth_perturbation/arrays.npz": true,
+    "m1_smooth_perturbation/derivative_checks.json": true,
+    "m1_smooth_perturbation/direct_reference_probes.json": true,
+    "m1_smooth_perturbation/result.json": true,
+    "m2_helix/preparation.npz": true,
+    "m2_helix/initial.npz": true,
+    "m2_helix/arrays.npz": true,
+    "m2_helix/derivative_checks.json": true,
+    "m2_helix/direct_reference_probes.json": true,
+    "m2_helix/result.json": true,
+    "m2_smooth_perturbation/preparation.npz": true,
+    "m2_smooth_perturbation/initial.npz": true,
+    "m2_smooth_perturbation/arrays.npz": true,
+    "m2_smooth_perturbation/derivative_checks.json": true,
+    "m2_smooth_perturbation/direct_reference_probes.json": true,
+    "m2_smooth_perturbation/result.json": true
+  },
+  "raw_inventory_sha256": {
+    "manifest.json": "4351c5cfef4c55ab44c2f4f7ebb83d20ac8717e21458780fc74c89aec01f0747",
+    "mixed_control/m0_helix/arrays.npz": "2453caf88102b10a54f0f12c39535aea1f042b2af5bfd33fffe424cca0519ab8",
+    "mixed_control/m0_helix/derivative_checks.json": "c03aa07168ba6ded61d74fe42c62b1071cf8d84ad20bbb13a65448c3509aa9e6",
+    "mixed_control/m0_helix/direct_reference_probes.json": "1324042acf310ac9f4b9d4b420e9557e02358b864e69cf43a8fb32bc99f85e43",
+    "mixed_control/m0_helix/initial.npz": "04a3b378de9adea84106ede901519623504c621107071eab6057fe909579b87c",
+    "mixed_control/m0_helix/preparation.npz": "ac2021c7feea0987de96407b0eb816a7924fcb6d5a286a524172b7864237bd32",
+    "mixed_control/m0_helix/result.json": "40c8a8535f4776dc0de78786d441c5bcdfbb8e9261d0ffe9f16ac79c697e52cf",
+    "mixed_control/m0_smooth_perturbation/arrays.npz": "333e0c87a5179427f12ea503b2cfca38f382d07558bb33e3e630716f2804ad7e",
+    "mixed_control/m0_smooth_perturbation/derivative_checks.json": "c30261f5a083e5666cd86657a00593828d91aa8868fb0c27dca3eb51f953f359",
+    "mixed_control/m0_smooth_perturbation/direct_reference_probes.json": "0063ffbcdb4da107de1665ac086013443f2ab74f584e1e02bf522d2a0568536a",
+    "mixed_control/m0_smooth_perturbation/initial.npz": "af7533839d9606596e095ea5cb775c1204224289255bea66d0cc48bfae399634",
+    "mixed_control/m0_smooth_perturbation/preparation.npz": "2e026146110e1b6d8fe9bc1c3f33041d1ef662dfe281fd8d1b97dda7396c034f",
+    "mixed_control/m0_smooth_perturbation/result.json": "431ef625950a8edfccf897f6f8e1c0f490562599ccc1d4a16efa3a76fdf1a491",
+    "mixed_control/m1_helix/arrays.npz": "6d0c3dd08e6dd66decb640e743194771e8f4da320b46d83e0c901dbaef421f6d",
+    "mixed_control/m1_helix/derivative_checks.json": "c03aa07168ba6ded61d74fe42c62b1071cf8d84ad20bbb13a65448c3509aa9e6",
+    "mixed_control/m1_helix/direct_reference_probes.json": "2f5a92d00c5854431b86f1c3e2f09876a546099bf4c7c4476954ec1b1f90370b",
+    "mixed_control/m1_helix/initial.npz": "e3faf1ce43c14d93838385171a0398b8105af0546bc1212c57c7026a9df3f931",
+    "mixed_control/m1_helix/preparation.npz": "fb306f5e2c3167a6de33620ec2edb4f598cabd0c43359278fa5b71ee93221e58",
+    "mixed_control/m1_helix/result.json": "2b0a09d46289105062e357534a7b51368e0a2c492d5fa048fbc3d1a75d77a63b",
+    "mixed_control/m1_smooth_perturbation/arrays.npz": "0f405b09000be26b72cb27c50eca3490141864de0419f0c538fce7e936867a18",
+    "mixed_control/m1_smooth_perturbation/derivative_checks.json": "c03aa07168ba6ded61d74fe42c62b1071cf8d84ad20bbb13a65448c3509aa9e6",
+    "mixed_control/m1_smooth_perturbation/direct_reference_probes.json": "87cf9c04ebc3ade2cb5120da1cb34636205d5abcc65f137c02ec442e9955cf04",
+    "mixed_control/m1_smooth_perturbation/initial.npz": "fbc11bae14107fcc9da87ff438519a8be343758ea4b2ddf1095a643371d1570c",
+    "mixed_control/m1_smooth_perturbation/preparation.npz": "c450e941be4128ba72aaf786b0bc6339612a263f5b39cad9d08ba35ac3aa9c30",
+    "mixed_control/m1_smooth_perturbation/result.json": "5c617fa81314cf57ae7bce620513154e17297a8aeb6ed97636241d4e8d662532",
+    "mixed_control/m2_helix/arrays.npz": "665a7864a1c29c88a1beb80b9144449e9e11e5aaba1d642b3ae5d72f298a7f46",
+    "mixed_control/m2_helix/derivative_checks.json": "c03aa07168ba6ded61d74fe42c62b1071cf8d84ad20bbb13a65448c3509aa9e6",
+    "mixed_control/m2_helix/direct_reference_probes.json": "ff1d38da2e492e160c8479d04261d49895b658f495b934b53a60e10af1b836ea",
+    "mixed_control/m2_helix/initial.npz": "04f09110968f4ffd792207ff8d9669cab8bcc838fcf342105ea87b0180ae36bf",
+    "mixed_control/m2_helix/preparation.npz": "faeca4990f23a475bab61d2a69fba2379ddbe14d6bdbf09817665ff853e320e5",
+    "mixed_control/m2_helix/result.json": "6c2418b017796d610658c2d47eca697726242841c89683ef608a7f4c0d13a0f3",
+    "mixed_control/m2_smooth_perturbation/arrays.npz": "5005e1d5c0967d9030a518a13b8de97611ad541635d347179e241fda577638b9",
+    "mixed_control/m2_smooth_perturbation/derivative_checks.json": "c03aa07168ba6ded61d74fe42c62b1071cf8d84ad20bbb13a65448c3509aa9e6",
+    "mixed_control/m2_smooth_perturbation/direct_reference_probes.json": "edcb98d568996a220737148412192cfd8a1ef53554e3075cb22d1015da5d7387",
+    "mixed_control/m2_smooth_perturbation/initial.npz": "48e495eb67a3265e5e1a29ebbee52039327e98f57269723d2f8bf9ca871b39cd",
+    "mixed_control/m2_smooth_perturbation/preparation.npz": "3523d4fce2e033793937fa51a6069b9f86badea06e7d7d9e291947a1bb3e58ee",
+    "mixed_control/m2_smooth_perturbation/result.json": "5d718336a4c1e4337fb49ee4617f2befd04ec1512bee25f1121fe5ccc2c994cb",
+    "mixed_control/manifest.json": "f71a70d58ad192185e4226aba7ee95f2a3c61714bb602437f830fc3d9b526d9b",
+    "mixed_control/progress.jsonl": "d4865d8007016e0faf5e4b384ebf469fcf7e91414ecb68653183be58fc9f82ae",
+    "mixed_control/summary.json": "a19f197e6522ed6dc5d869f6129fdd75929e99e4df08f01dc02c6b7558003e22",
+    "reservoir/m0_helix/arrays.npz": "c2357889c0eff60f59ecf0653fcf4fc0f14cc67a20c58dcbd6964f1bf0a63d1d",
+    "reservoir/m0_helix/recovery_preconditions.json": "54683930db34e8a90f797ea01baefdecc0b70a39b600f39cc2a2ebf894785fd5",
+    "reservoir/m0_helix/result.json": "815d37bea1d735b1016ec3408694aedf92fc40a76ebfc0ff227f213506f390f2",
+    "reservoir/m0_smooth_perturbation/arrays.npz": "8138f72e91fb2ec2f26688f2bfdba110c57fb645f881210429ee3c5bb14d9624",
+    "reservoir/m0_smooth_perturbation/recovery_preconditions.json": "75aedbba1771a863d373ec93071d6f55077ffa1d552752151984a1b24805d356",
+    "reservoir/m0_smooth_perturbation/result.json": "ae6742ba034ddbf1bb5381eea29782c746eb5229449b3a009acdaa5d64db3325",
+    "reservoir/m1_helix/arrays.npz": "46450248ed04b56e8286628331eed0f8e828ebdfd555ec6e4373ef2348cf45e2",
+    "reservoir/m1_helix/recovery_preconditions.json": "a437a3cad2c51d98f77de3c4a2122eb6733f255df9c73f5aafbf75f8d1ff5f72",
+    "reservoir/m1_helix/result.json": "c93f44f701b74893771c09971579910d3f8310075b5b5443c21a695a2c94ef21",
+    "reservoir/m1_smooth_perturbation/arrays.npz": "28185b546f71004db77bbed39b0f1d95f023f8510d2a0ca220596cc7c539ded7",
+    "reservoir/m1_smooth_perturbation/recovery_preconditions.json": "10286b368af633da3390512e53f7553ebcd2fc9c63933b44096dbeaa2868087f",
+    "reservoir/m1_smooth_perturbation/result.json": "8b0f9a605d5fd39898f0ba02cab5a84a901010fec40bf8c56c33c3d6a120ad15",
+    "reservoir/m2_helix/arrays.npz": "761f7e9d7dd7b455b38ecb7e8720a240903f2fa52be9f5f5cfaaefff4c61f5cb",
+    "reservoir/m2_helix/recovery_preconditions.json": "e7c3771fc6f8b7102d8a9596231287bfad6a266236ef8dcaac014eb23b909cc5",
+    "reservoir/m2_helix/result.json": "caf1d6816a6ee778084ea48b4e7cfa1ecf381b944a49e4b36ff443f4ce88006a",
+    "reservoir/m2_smooth_perturbation/arrays.npz": "73aea6d411d59b31bd6685bc8fcdf5d08171b11635f2dd428911c7a0fe218f35",
+    "reservoir/m2_smooth_perturbation/recovery_preconditions.json": "194a4d9cba16cc7599fd57e2063dc67bc282780da73ee4fe7af9559132b0f418",
+    "reservoir/m2_smooth_perturbation/result.json": "289b8df8b58c596efe187c55a2394220dd80234fade1aea80f8d22103a995bf1",
+    "reservoir/manifest.json": "01bb582f4e8dd159a8291f29550a1ba89b40df63e50cbb1cefa9adbe38389fd5",
+    "reservoir/summary.json": "50b1fbb531b9493ebe85307c4419b9cafab98345a1478bac74916f15fd021b51",
+    "summary.json": "463006ae9779385ba31cb4a3ea620b380fb6991b0881e5b9a7e49567a9d3b2d4"
+  },
+  "runtime_seconds": {
+    "total": 355.65119880530983,
+    "material": 354.6976556391455,
+    "postprocess": 0.6140481168404222
+  },
+  "cases": [
+    {
+      "case": "m0_helix",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 0.0,
+      "decoded_energies_formula_relative_roundoff": 0.0,
+      "registered_metrics": {
+        "original_heat_moment_relative": 2.1918699562106227e-16,
+        "FD_recovery_relative": 6.85944804748078e-15,
+        "temperature_absolute": 1.609823385706477e-15,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.2159346046514203e-19,
+        "instantaneous_power_relative": 1.8619955881974227e-15,
+        "heat_moment_relative": 1.8196941566619277e-16,
+        "current_continuity_relative": 9.810988471138502e-17,
+        "KWT_identity_relative": 2.245278637653316e-16
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.059788878553219e-19,
+        "instantaneous_power_relative": 8.275535947544101e-16,
+        "heat_moment_relative": 1.8196941566619277e-16,
+        "current_continuity_relative": 1.6556043045046223e-16,
+        "KWT_identity_relative": 3.367917956479974e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": 6.462348535570529e-27,
+      "KWT_recomputed_residual_bar": -1.6263032587282567e-19,
+      "geometry_mass_relative_roundoff": 0.0,
+      "condensate_heat_free_bar": 1.0114594255582998,
+      "condensate_heat_loaded_bar": 6.192158880574841e-07,
+      "condensate_heat_terminal_bar": 1.7772002154928615e-07,
+      "maximum_material_speed_bar": 0.001196040396186751,
+      "reservoir_work_power_W": -6.829373225666907e-12,
+      "radial_reaction_work_rate_bar": 1.7205356741102976e-22,
+      "Vdev_V": 9.044961228169687e-07,
+      "adjacent_normal_current_over_Iref": [
+        -0.0004193494955313932,
+        -0.00041934949553165094
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory.",
+      "mesh": "m0",
+      "profile": "helix",
+      "dofs": 45,
+      "quadratures": 55,
+      "energy_bar": -42.28158319920261,
+      "free_energy_bar": -42.330752681856566,
+      "gradient_remainder_bar": 0.0133433525512401,
+      "principal_minimum": 1.5707963267948961,
+      "principal_uncertainty_maximum": 2.875213105535208e-07,
+      "principal_margin_minimum": 1.5707960392735858,
+      "noether_recomputed_absolute": 1.0332025791881094e-16,
+      "amplitude_range": [
+        0.9952181913919728,
+        0.9952181913919731
+      ],
+      "gamma_range": [
+        0.005472350304356868,
+        0.005605317299161713
+      ],
+      "adjacent_normal_current_max_abs_over_Iref": 0.00041934949553165094
+    },
+    {
+      "case": "m0_smooth_perturbation",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 1.3877787807814457e-17,
+      "decoded_energies_formula_relative_roundoff": 1.3878219348318193e-16,
+      "registered_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "FD_recovery_relative": 6.973562093862296e-15,
+        "temperature_absolute": 1.817990202823694e-15,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.2159346046514203e-19,
+        "instantaneous_power_relative": 4.088746959156696e-16,
+        "heat_moment_relative": 2.17076852003778e-16,
+        "current_continuity_relative": 4.3689558035538644e-17,
+        "KWT_identity_relative": 1.2791457881964605e-16
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "terminal_radius_rate_absolute": 1.3133765441093553e-18,
+        "radial_reaction_work_relative": 4.059788878553219e-19,
+        "instantaneous_power_relative": 2.044373479578348e-16,
+        "heat_moment_relative": 1.08538426001889e-16,
+        "current_continuity_relative": 6.74505457390772e-17,
+        "KWT_identity_relative": 1.2791457881964605e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": 1.6155871338926322e-27,
+      "KWT_recomputed_residual_bar": -5.421010862427522e-20,
+      "geometry_mass_relative_roundoff": 0.0,
+      "condensate_heat_free_bar": 1.0115389586271257,
+      "condensate_heat_loaded_bar": 8.015228471416534e-05,
+      "condensate_heat_terminal_bar": 1.7772002154928615e-07,
+      "maximum_material_speed_bar": 0.014015101535803268,
+      "reservoir_work_power_W": -6.829373225666907e-12,
+      "radial_reaction_work_rate_bar": 1.7205356741102976e-22,
+      "Vdev_V": 9.153403540934591e-07,
+      "adjacent_normal_current_over_Iref": [
+        -0.0004193494955313932,
+        -0.00041934949553164595
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory.",
+      "mesh": "m0",
+      "profile": "smooth_perturbation",
+      "dofs": 45,
+      "quadratures": 55,
+      "energy_bar": -42.28156632192205,
+      "free_energy_bar": -42.33073606931409,
+      "gradient_remainder_bar": 0.013344816562405756,
+      "principal_minimum": 1.570796326794896,
+      "principal_uncertainty_maximum": 2.90210206299044e-07,
+      "principal_margin_minimum": 1.5707960365846902,
+      "noether_recomputed_absolute": 9.487835741366112e-17,
+      "amplitude_range": [
+        0.994218191391973,
+        0.996218191391973
+      ],
+      "gamma_range": [
+        0.00546727787491505,
+        0.005616080974833832
+      ],
+      "adjacent_normal_current_max_abs_over_Iref": 0.00041934949553164595
+    },
+    {
+      "case": "m1_helix",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 0.0,
+      "decoded_energies_formula_relative_roundoff": 0.0,
+      "registered_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "FD_recovery_relative": 3.639538436164295e-15,
+        "temperature_absolute": 1.582067810090848e-15,
+        "terminal_radius_rate_absolute": 6.205168905803506e-18,
+        "radial_reaction_work_relative": 4.11547931314809e-18,
+        "instantaneous_power_relative": 4.17382260199568e-16,
+        "heat_moment_relative": 1.953605194280635e-16,
+        "current_continuity_relative": 1.9621976942277004e-16,
+        "KWT_identity_relative": 0.0
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "terminal_radius_rate_absolute": 6.205168905803506e-18,
+        "radial_reaction_work_relative": 4.1154793131480904e-18,
+        "instantaneous_power_relative": 1.284253108306363e-16,
+        "heat_moment_relative": 3.516489349705143e-16,
+        "current_continuity_relative": 1.9621976942277004e-16,
+        "KWT_identity_relative": 1.388836520424682e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": -2.524354896707238e-29,
+      "KWT_recomputed_residual_bar": -1.6940658945086007e-21,
+      "geometry_mass_relative_roundoff": 0.0,
+      "condensate_heat_free_bar": 2.0212467986513185,
+      "condensate_heat_loaded_bar": 1.007839455171481e-09,
+      "condensate_heat_terminal_bar": 7.361125789537035e-11,
+      "maximum_material_speed_bar": 3.4424273781272306e-05,
+      "reservoir_work_power_W": -1.9656210137862046e-13,
+      "radial_reaction_work_rate_bar": -5.0199523424311867e-23,
+      "Vdev_V": 3.045796182509289e-09,
+      "adjacent_normal_current_over_Iref": [
+        -6.034830379510244e-06,
+        -6.034830385087171e-06
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory.",
+      "mesh": "m1",
+      "profile": "helix",
+      "dofs": 153,
+      "quadratures": 171,
+      "energy_bar": -42.281578637887264,
+      "free_energy_bar": -42.330748171388244,
+      "gradient_remainder_bar": 0.013334437468490187,
+      "principal_minimum": 1.5707963267948957,
+      "principal_uncertainty_maximum": 2.825233077144813e-07,
+      "principal_margin_minimum": 1.5707960442715887,
+      "noether_recomputed_absolute": 4.163336342344337e-16,
+      "amplitude_range": [
+        0.9952181913919728,
+        0.995218191391973
+      ],
+      "gamma_range": [
+        0.005548640558886933,
+        0.005560175561194951
+      ],
+      "adjacent_normal_current_max_abs_over_Iref": 6.034830385087171e-06
+    },
+    {
+      "case": "m1_smooth_perturbation",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 4.440892098500626e-16,
+      "decoded_energies_formula_relative_roundoff": 7.069225508819682e-16,
+      "registered_metrics": {
+        "original_heat_moment_relative": 0.0,
+        "FD_recovery_relative": 7.1012943896910764e-15,
+        "temperature_absolute": 1.790234627208065e-15,
+        "terminal_radius_rate_absolute": 6.205168905803506e-18,
+        "radial_reaction_work_relative": 6.446337253316252e-19,
+        "instantaneous_power_relative": 1.4725038930084682e-14,
+        "heat_moment_relative": 1.340980644553834e-16,
+        "current_continuity_relative": 1.9621976942277004e-16,
+        "KWT_identity_relative": 2.552902417396923e-16
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 2.1951635201771338e-16,
+        "terminal_radius_rate_absolute": 6.205168905803506e-18,
+        "radial_reaction_work_relative": 6.446337253316252e-19,
+        "instantaneous_power_relative": 1.4964572953776128e-14,
+        "heat_moment_relative": 0.0,
+        "current_continuity_relative": 1.9621976942277004e-16,
+        "KWT_identity_relative": 2.552902417396923e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": -2.996409262391491e-26,
+      "KWT_recomputed_residual_bar": -5.421010862427522e-20,
+      "geometry_mass_relative_roundoff": 0.0,
+      "condensate_heat_free_bar": 2.021324670583494,
+      "condensate_heat_loaded_bar": 7.787294001487005e-05,
+      "condensate_heat_terminal_bar": 7.361125789537035e-11,
+      "maximum_material_speed_bar": 0.012538824348946667,
+      "reservoir_work_power_W": -1.9656210137862046e-13,
+      "radial_reaction_work_rate_bar": -5.0199523424311867e-23,
+      "Vdev_V": 3.6945356984307873e-09,
+      "adjacent_normal_current_over_Iref": [
+        -6.034830379510244e-06,
+        -6.034830385036585e-06
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory.",
+      "mesh": "m1",
+      "profile": "smooth_perturbation",
+      "dofs": 153,
+      "quadratures": 171,
+      "energy_bar": -42.28156358329887,
+      "free_energy_bar": -42.33073325043708,
+      "gradient_remainder_bar": 0.013335796078889834,
+      "principal_minimum": 1.5707963267948957,
+      "principal_uncertainty_maximum": 2.851332850959776e-07,
+      "principal_margin_minimum": 1.5707960416616114,
+      "noether_recomputed_absolute": 4.163336342344337e-16,
+      "amplitude_range": [
+        0.994218191391973,
+        0.996218191391973
+      ],
+      "gamma_range": [
+        0.005532514860951285,
+        0.0055761020170286444
+      ],
+      "adjacent_normal_current_max_abs_over_Iref": 6.034830385036585e-06
+    },
+    {
+      "case": "m2_helix",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 1.3877787807814457e-17,
+      "decoded_energies_formula_relative_roundoff": 1.3864358964991074e-16,
+      "registered_metrics": {
+        "original_heat_moment_relative": 2.1962698372122226e-16,
+        "FD_recovery_relative": 3.63953846214179e-15,
+        "temperature_absolute": 1.582067810090848e-15,
+        "terminal_radius_rate_absolute": 7.227036160798032e-18,
+        "radial_reaction_work_relative": 4.741710210372366e-18,
+        "instantaneous_power_relative": 8.033784153638407e-16,
+        "heat_moment_relative": 1.1613521062474589e-16,
+        "current_continuity_relative": 3.924395388455401e-16,
+        "KWT_identity_relative": 3.710507257927032e-16
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 4.3925396744244452e-16,
+        "terminal_radius_rate_absolute": 7.227036160798032e-18,
+        "radial_reaction_work_relative": 4.741675687294583e-18,
+        "instantaneous_power_relative": 6.694820128032005e-16,
+        "heat_moment_relative": 0.0,
+        "current_continuity_relative": 2.6060438126461648e-17,
+        "KWT_identity_relative": 3.710507257927032e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": -3.944304526105059e-30,
+      "KWT_recomputed_residual_bar": -1.3565762045869654e-22,
+      "geometry_mass_relative_roundoff": 0.0,
+      "condensate_heat_free_bar": 4.042445535495405,
+      "condensate_heat_loaded_bar": 3.4088131012555084e-12,
+      "condensate_heat_terminal_bar": 3.306569993319313e-14,
+      "maximum_material_speed_bar": 1.0318024549600507e-06,
+      "reservoir_work_power_W": -5.8915765482477845e-15,
+      "radial_reaction_work_rate_bar": -1.7335754817647285e-24,
+      "Vdev_V": 1.1127274251291455e-11,
+      "adjacent_normal_current_over_Iref": [
+        -9.044129648033878e-08,
+        -9.044131016360174e-08
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory.",
+      "mesh": "m2",
+      "profile": "helix",
+      "dofs": 561,
+      "quadratures": 595,
+      "energy_bar": -42.28157862254414,
+      "free_energy_bar": -42.33074815611396,
+      "gradient_remainder_bar": 0.013334426509891192,
+      "principal_minimum": 1.570796326794896,
+      "principal_uncertainty_maximum": 2.8204822481985365e-07,
+      "principal_margin_minimum": 1.5707960447466716,
+      "noether_recomputed_absolute": 1.5395727989449401e-15,
+      "amplitude_range": [
+        0.9952181913919727,
+        0.995218191391973
+      ],
+      "gamma_range": [
+        0.005556020456379122,
+        0.005556796819524508
+      ],
+      "adjacent_normal_current_max_abs_over_Iref": 9.044131016360174e-08
+    },
+    {
+      "case": "m2_smooth_perturbation",
+      "artifact_hash_checks": {
+        "arrays.npz": true,
+        "recovery_preconditions.json": true
+      },
+      "unchanged_field_and_populations": true,
+      "exact_archived_mass": true,
+      "exact_mapping": true,
+      "finite_arrays": true,
+      "decoded_energies_positive_and_ordered": true,
+      "decoded_energies_formula_max_error": 4.440892098500626e-16,
+      "decoded_energies_formula_relative_roundoff": 7.071054647027181e-16,
+      "registered_metrics": {
+        "original_heat_moment_relative": 2.1961622947447873e-16,
+        "FD_recovery_relative": 7.122076911958378e-15,
+        "temperature_absolute": 1.790234627208065e-15,
+        "terminal_radius_rate_absolute": 7.227036160798032e-18,
+        "radial_reaction_work_relative": 2.2251965730605825e-20,
+        "instantaneous_power_relative": 1.0682443019681963e-13,
+        "heat_moment_relative": 6.84344751745202e-17,
+        "current_continuity_relative": 2.3760987703538563e-16,
+        "KWT_identity_relative": 6.843036343417628e-17
+      },
+      "independently_recomputed_metrics": {
+        "original_heat_moment_relative": 6.588486884234362e-16,
+        "terminal_radius_rate_absolute": 7.227036160798032e-18,
+        "radial_reaction_work_relative": 2.225180372021091e-20,
+        "instantaneous_power_relative": 1.0560477413153077e-13,
+        "heat_moment_relative": 1.368689503490404e-16,
+        "current_continuity_relative": 1.7015933129630841e-16,
+        "KWT_identity_relative": 1.3686072686835255e-16
+      },
+      "phase_load_formula_max_error": 2.7755575615628914e-17,
+      "circuit_rhs_max_error": 0.0,
+      "CM9_recomputed_residual_W": 2.0443409244893043e-25,
+      "KWT_recomputed_residual_bar": 2.710505431213761e-20,
+      "geometry_mass_relative_roundoff": 0.0,
+      "condensate_heat_free_bar": 4.042523442681163,
+      "condensate_heat_loaded_bar": 7.790718916822699e-05,
+      "condensate_heat_terminal_bar": 3.306569993319313e-14,
+      "maximum_material_speed_bar": 0.012418664614085091,
+      "reservoir_work_power_W": -5.8915765482477845e-15,
+      "radial_reaction_work_rate_bar": -1.7335754817647285e-24,
+      "Vdev_V": 6.601974643251557e-10,
+      "adjacent_normal_current_over_Iref": [
+        -9.044129648033879e-08,
+        -9.044131024948116e-08
+      ],
+      "scope": "Snapshot with fixed terminal radius and Iref load; not a new spectrum or trajectory.",
+      "mesh": "m2",
+      "profile": "smooth_perturbation",
+      "dofs": 561,
+      "quadratures": 595,
+      "energy_bar": -42.281563551656575,
+      "free_energy_bar": -42.33073321903268,
+      "gradient_remainder_bar": 0.013335784978728284,
+      "principal_minimum": 1.5707963267948952,
+      "principal_uncertainty_maximum": 2.849616583736277e-07,
+      "principal_margin_minimum": 1.5707960418332383,
+      "noether_recomputed_absolute": 1.5223492807631465e-15,
+      "amplitude_range": [
+        0.994218191391973,
+        0.996218191391973
+      ],
+      "gamma_range": [
+        0.0055397373714002685,
+        0.00557300389682344
+      ],
+      "adjacent_normal_current_max_abs_over_Iref": 9.044131024948116e-08
+    }
+  ],
+  "finite_difference_scope": {
+    "m0_helix": {
+      "performed": false,
+      "status": "NOT_REPEATED_IDENTITIES_UNIT_AND_PILOT"
+    },
+    "m0_smooth_perturbation": {
+      "performed": true,
+      "status": "PASS",
+      "force": {
+        "error": 6.756134714180906e-12,
+        "reference_uncertainty": 9.473902565226844e-12,
+        "tolerance": 4.4759531275592666e-07,
+        "passed": true
+      },
+      "current": {
+        "error": 5.42530464997526e-11,
+        "reference_uncertainty": 5.6843418860808015e-11,
+        "tolerance": 0.00010803697836969817,
+        "passed": true
+      }
+    },
+    "m1_helix": {
+      "performed": false,
+      "status": "NOT_REPEATED_IDENTITIES_UNIT_AND_PILOT"
+    },
+    "m1_smooth_perturbation": {
+      "performed": false,
+      "status": "NOT_REPEATED_IDENTITIES_UNIT_AND_PILOT"
+    },
+    "m2_helix": {
+      "performed": false,
+      "status": "NOT_REPEATED_IDENTITIES_UNIT_AND_PILOT"
+    },
+    "m2_smooth_perturbation": {
+      "performed": false,
+      "status": "NOT_REPEATED_IDENTITIES_UNIT_AND_PILOT"
+    }
+  },
+  "direct_source_probe_maximum_errors": {
+    "pointwise_relative_energy": 1.835699052458614e-14,
+    "weighted_relative_kernel_L1": 1.5666671642610823e-15,
+    "moment_error_over_absolute_weighted_reference": 5.721188903385188e-16,
+    "relative_principal_matrix": 4.803057558856033e-22
+  },
+  "comparison": {
+    "helix": {
+      "energy_bar": {
+        "values": [
+          -42.28158319920261,
+          -42.281578637887264,
+          -42.28157862254414
+        ],
+        "absolute_coarse_to_medium": 4.561315343210026e-06,
+        "absolute_medium_to_fine": 1.5343125880917796e-08,
+        "medium_to_fine_relative_to_fine": 3.628796837953677e-10,
+        "successive_difference_decreases": true,
+        "observed_order": 8.21571366760793,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "condensate_heat_loaded_bar": {
+        "values": [
+          6.192158880574841e-07,
+          1.007839455171481e-09,
+          3.4088131012555084e-12
+        ],
+        "absolute_coarse_to_medium": 6.182080486023126e-07,
+        "absolute_medium_to_fine": 1.0044306420702254e-09,
+        "medium_to_fine_relative_to_fine": 294.6570000274527,
+        "successive_difference_decreases": true,
+        "observed_order": 9.265570680339923,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "condensate_heat_terminal_bar": {
+        "values": [
+          1.7772002154928615e-07,
+          7.361125789537035e-11,
+          3.306569993319313e-14
+        ],
+        "absolute_coarse_to_medium": 1.7764641029139078e-07,
+        "absolute_medium_to_fine": 7.357819219543716e-11,
+        "medium_to_fine_relative_to_fine": 2225.2119974504276,
+        "successive_difference_decreases": true,
+        "observed_order": 11.237442685955726,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "maximum_material_speed_bar": {
+        "values": [
+          0.001196040396186751,
+          3.4424273781272306e-05,
+          1.0318024549600507e-06
+        ],
+        "absolute_coarse_to_medium": 0.0011616161224054786,
+        "absolute_medium_to_fine": 3.3392471326312257e-05,
+        "medium_to_fine_relative_to_fine": 32.36324081784158,
+        "successive_difference_decreases": true,
+        "observed_order": 5.12046670291011,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "Vdev_V": {
+        "values": [
+          9.044961228169687e-07,
+          3.045796182509289e-09,
+          1.1127274251291455e-11
+        ],
+        "absolute_coarse_to_medium": 9.014503266344594e-07,
+        "absolute_medium_to_fine": 3.0346689082579975e-09,
+        "medium_to_fine_relative_to_fine": 272.72347564416214,
+        "successive_difference_decreases": true,
+        "observed_order": 8.214565063014147,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "adjacent_normal_current_max_abs_over_Iref": {
+        "values": [
+          0.00041934949553165094,
+          6.034830385087171e-06,
+          9.044131016360174e-08
+        ],
+        "absolute_coarse_to_medium": 0.00041331466514656377,
+        "absolute_medium_to_fine": 5.944389074923569e-06,
+        "medium_to_fine_relative_to_fine": 65.72648123043112,
+        "successive_difference_decreases": true,
+        "observed_order": 6.11956819689127,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "principal_minimum": {
+        "values": [
+          1.5707963267948961,
+          1.5707963267948957,
+          1.570796326794896
+        ],
+        "absolute_coarse_to_medium": 4.440892098500626e-16,
+        "absolute_medium_to_fine": 2.220446049250313e-16,
+        "medium_to_fine_relative_to_fine": 1.4135798584282302e-16,
+        "successive_difference_decreases": true,
+        "observed_order": 1.0,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "principal_uncertainty_maximum": {
+        "values": [
+          2.875213105535208e-07,
+          2.825233077144813e-07,
+          2.8204822481985365e-07
+        ],
+        "absolute_coarse_to_medium": 4.998002839039507e-09,
+        "absolute_medium_to_fine": 4.750828946276382e-10,
+        "medium_to_fine_relative_to_fine": 0.0016844030659334136,
+        "successive_difference_decreases": true,
+        "observed_order": 3.3951005524029663,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "reservoir_work_power_W": {
+        "values": [
+          -6.829373225666907e-12,
+          -1.9656210137862046e-13,
+          -5.8915765482477845e-15
+        ],
+        "absolute_coarse_to_medium": 6.632811124288287e-12,
+        "absolute_medium_to_fine": 1.9067052483037268e-13,
+        "medium_to_fine_relative_to_fine": 32.36324322851751,
+        "successive_difference_decreases": true,
+        "observed_order": 5.120466700110301,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      }
+    },
+    "smooth_perturbation": {
+      "energy_bar": {
+        "values": [
+          -42.28156632192205,
+          -42.28156358329887,
+          -42.281563551656575
+        ],
+        "absolute_coarse_to_medium": 2.7386231806758587e-06,
+        "absolute_medium_to_fine": 3.1642294118228165e-08,
+        "medium_to_fine_relative_to_fine": 7.483709555719217e-10,
+        "successive_difference_decreases": true,
+        "observed_order": 6.435452761296954,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "condensate_heat_loaded_bar": {
+        "values": [
+          8.015228471416534e-05,
+          7.787294001487005e-05,
+          7.790718916822699e-05
+        ],
+        "absolute_coarse_to_medium": 2.2793446992952943e-06,
+        "absolute_medium_to_fine": 3.424915335694257e-08,
+        "medium_to_fine_relative_to_fine": 0.0004396147996430406,
+        "successive_difference_decreases": true,
+        "observed_order": 6.056406980923094,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "condensate_heat_terminal_bar": {
+        "values": [
+          1.7772002154928615e-07,
+          7.361125789537035e-11,
+          3.306569993319313e-14
+        ],
+        "absolute_coarse_to_medium": 1.7764641029139078e-07,
+        "absolute_medium_to_fine": 7.357819219543716e-11,
+        "medium_to_fine_relative_to_fine": 2225.2119974504276,
+        "successive_difference_decreases": true,
+        "observed_order": 11.237442685955726,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "maximum_material_speed_bar": {
+        "values": [
+          0.014015101535803268,
+          0.012538824348946667,
+          0.012418664614085091
+        ],
+        "absolute_coarse_to_medium": 0.0014762771868566012,
+        "absolute_medium_to_fine": 0.000120159734861576,
+        "medium_to_fine_relative_to_fine": 0.009675737174292666,
+        "successive_difference_decreases": true,
+        "observed_order": 3.618938188578186,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "Vdev_V": {
+        "values": [
+          9.153403540934591e-07,
+          3.6945356984307873e-09,
+          6.601974643251557e-10
+        ],
+        "absolute_coarse_to_medium": 9.116458183950283e-07,
+        "absolute_medium_to_fine": 3.0343382341056314e-09,
+        "medium_to_fine_relative_to_fine": 4.596107071097718,
+        "successive_difference_decreases": true,
+        "observed_order": 8.230947714526996,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "adjacent_normal_current_max_abs_over_Iref": {
+        "values": [
+          0.00041934949553164595,
+          6.034830385036585e-06,
+          9.044131024948116e-08
+        ],
+        "absolute_coarse_to_medium": 0.00041331466514660936,
+        "absolute_medium_to_fine": 5.944389074787104e-06,
+        "medium_to_fine_relative_to_fine": 65.72648116651102,
+        "successive_difference_decreases": true,
+        "observed_order": 6.119568196924549,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "principal_minimum": {
+        "values": [
+          1.570796326794896,
+          1.5707963267948957,
+          1.5707963267948952
+        ],
+        "absolute_coarse_to_medium": 2.220446049250313e-16,
+        "absolute_medium_to_fine": 4.440892098500626e-16,
+        "medium_to_fine_relative_to_fine": 2.827159716856462e-16,
+        "successive_difference_decreases": false,
+        "observed_order": -1.0,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "principal_uncertainty_maximum": {
+        "values": [
+          2.90210206299044e-07,
+          2.851332850959776e-07,
+          2.849616583736277e-07
+        ],
+        "absolute_coarse_to_medium": 5.076921203066399e-09,
+        "absolute_medium_to_fine": 1.7162672234985926e-10,
+        "medium_to_fine_relative_to_fine": 0.0006022800517423672,
+        "successive_difference_decreases": true,
+        "observed_order": 4.886607765089913,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      },
+      "reservoir_work_power_W": {
+        "values": [
+          -6.829373225666907e-12,
+          -1.9656210137862046e-13,
+          -5.8915765482477845e-15
+        ],
+        "absolute_coarse_to_medium": 6.632811124288287e-12,
+        "absolute_medium_to_fine": 1.9067052483037268e-13,
+        "medium_to_fine_relative_to_fine": 32.36324322851751,
+        "successive_difference_decreases": true,
+        "observed_order": 5.120466700110301,
+        "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+      }
+    }
+  },
+  "induced_perturbation_minus_helix": {
+    "energy_bar": {
+      "values": [
+        1.687728055799198e-05,
+        1.5054588395457813e-05,
+        1.5070887563695123e-05
+      ],
+      "absolute_coarse_to_medium": 1.8226921625341674e-06,
+      "absolute_medium_to_fine": 1.629916823731037e-08,
+      "medium_to_fine_relative_to_fine": 0.001081500221431822,
+      "successive_difference_decreases": true,
+      "observed_order": 6.805128768417382,
+      "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+    },
+    "condensate_heat_loaded_bar": {
+      "values": [
+        7.953306882610786e-05,
+        7.787193217541488e-05,
+        7.79071857594139e-05
+      ],
+      "absolute_coarse_to_medium": 1.661136650692982e-06,
+      "absolute_medium_to_fine": 3.525358399902303e-08,
+      "medium_to_fine_relative_to_fine": 0.00045250747611253785,
+      "successive_difference_decreases": true,
+      "observed_order": 5.55825701466493,
+      "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+    },
+    "Vdev_V": {
+      "values": [
+        1.0844231276490406e-08,
+        6.487395159214982e-10,
+        6.490701900738643e-10
+      ],
+      "absolute_coarse_to_medium": 1.0195491760568907e-08,
+      "absolute_medium_to_fine": 3.306741523660502e-13,
+      "medium_to_fine_relative_to_fine": 0.000509458233366748,
+      "successive_difference_decreases": true,
+      "observed_order": 14.912161557634006,
+      "scope": "Descriptive only; no registered mesh-accuracy threshold or convergence certificate."
+    }
+  },
+  "mesh_scope": "Three meshes of the same geometry/profile. The registration requested sensitivity only; no quantitative accuracy certificate is added after results.",
+  "decision": {
+    "development_closure_supported": true,
+    "authority": "The parent reports explicit user choice: cerrar desarrollo e iniciar3.5. This review supports only that bounded development closure.",
+    "closed_development_scope": "Common spatial energy, forces/current, mixed2D+1D uniform-trace interface, potential and instantaneous KWT/heat/three-state-circuit/reservoir work in the registered weak states.",
+    "stage3_complete_physical_dynamic_admission": false,
+    "temporal_admission": false,
+    "full_D27_admission": false,
+    "kinetic_interface_admission": false,
+    "production": false,
+    "proceed_to_stage3_5_research": true,
+    "stage3_5_scope": "Research physical/numerical operating ranges, margin definitions and required future evidence; no simulation sweep implied."
+  },
+  "pending_before_claiming_complete_transients": [
+    {
+      "stage": "3B",
+      "requirement": "Dynamic reservoir amplitude a_b(Is), derivative da_b/dIs and consistent reservoir work/energy exchange."
+    },
+    {
+      "stage": "3B",
+      "requirement": "Kinetic f(E) matching and conservative energy flux through the2D–1D interface; the present map admits the uniform field trace only."
+    },
+    {
+      "stage": "3B",
+      "requirement": "External normal-boundary trace and continuation-length influence in the intended dynamic scenario; an adjacent internal face is not that certificate."
+    },
+    {
+      "stage": "3D/3E",
+      "requirement": "A weak coupled time trajectory with spatial field, occupations and the memory circuit, assessed at common physical times with integrated CM9."
+    },
+    {
+      "stage": "3E",
+      "requirement": "Prospectively registered localized deposition and applicable time/space/spectral accuracy for its observables."
+    }
+  ],
+  "interpretation_limits": [
+    "No six-case FD claim: new finite-difference force/current controls exist only for m0/smooth_perturbation.",
+    "Three direct-source samples per case and D.36 at saved quadratures are sampled evidence, not a global material/range certificate.",
+    "FD energy decoding is valid only for the saved thermal preparation. Fermi–Dirac inversion is not new microscopic validation.",
+    "CM9 is instantaneous; no energy history, current pulse, latency or detector threshold was simulated.",
+    "Small pairwise changes describe mesh sensitivity; near-zero baseline observables need absolute reporting, not relative claims.",
+    "The raw stage3_closed=false values are preserved; a separate user-authorized development decision does not rewrite them.",
+    "The initial entry_contract.json is historical preparation. Any current status should identify the later records rather than reinterpret its unstarted flags."
+  ]
+}

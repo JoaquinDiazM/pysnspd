@@ -1,0 +1,395 @@
+{
+  "schema": "pysnspd.stage3.static-case.v1",
+  "case": {
+    "id": "weak_amplitude_vacuum",
+    "amplitude_base": 0.9,
+    "amplitude_modulation": 0.03,
+    "phase_modulation": 0.0,
+    "q_bare_ell0": 0.0,
+    "occupation": "vacuum"
+  },
+  "cells": 8,
+  "status": "PASS_STATIC_IDENTITIES_AND_SAMPLED_SYMBOL",
+  "scope": "Fixed populations, periodic 1D static functional; no time, physical terminals or circuit.",
+  "source_hashes": {
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "pysnspd/experimental/spatial_functional.py": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e",
+    "sandbox/stage3_spatial/progress.py": "85365edda8567d393152007078c2ac44ae680888202a6f1582b62f87083f7e7f",
+    "sandbox/stage3_spatial/run_static_batch.py": "2802ba3fcecf3cab7506a4e7455a7ab9e1a21d11a82542dfefb0ac3cdcc95edc",
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage3/iteration_20260923/registration.json": "05fac6d65bbc7a3ab829d22ac3e7e0404cb670cc782bd059d3e5abdc50e09d35"
+  },
+  "runtime_seconds": 0.0048306467942893505,
+  "initial_sha256": "26b0aba5604a8afa75f90cee1e1b8680aa543174d031701c0a2d17f4dbabbd47",
+  "energy_bar": -21.11307662853321,
+  "energy_J": -3.4022963497296177e-19,
+  "length_bar": 43.08867884920118,
+  "h_bar": 5.3860848561501475,
+  "ell0_m": 8.354862799574418e-09,
+  "energy_scale_J": 1.61146402752671e-20,
+  "electron_nodes": 630,
+  "derivative_checks": {
+    "force": {
+      "predicted": -0.5193263699275098,
+      "fd_estimates": [
+        -0.5193263699275382,
+        -0.5193263699307948,
+        -0.5193263699219131
+      ],
+      "absolute_error": 5.596745289437877e-12,
+      "tolerance": 5.194263699219131e-05,
+      "fd_uncertainty": 8.881784197001252e-12,
+      "status": "PASS",
+      "passed": true
+    },
+    "current": {
+      "predicted": 0.0,
+      "fd_estimates": [
+        5.921189464667501e-13,
+        1.1842378929335002e-12,
+        1.1842378929335002e-12
+      ],
+      "absolute_error": 1.1842378929335002e-12,
+      "tolerance": 1.0000000118423789e-08,
+      "fd_uncertainty": 0.0,
+      "status": "PASS",
+      "passed": true
+    }
+  },
+  "global_phase_error": 8.245120931263746e-17,
+  "global_phase_checks": {
+    "energy": 8.245120931263746e-17,
+    "force_covariance": 1.1208895152576446e-15,
+    "current_invariance": 8.864158490489978e-17,
+    "directional_energy": 0.0
+  },
+  "uniform_reference": {
+    "energy_bar": -21.128189726205193,
+    "force_radial_density_bar": -0.18964892818408732,
+    "link_current_bar": 0.0,
+    "continuum_energy_density": -0.49034201768283936,
+    "continuum_current_bar": 0.0
+  },
+  "uniform_reference_errors": {
+    "energy": 0.0,
+    "force": 0.0,
+    "current": 0.0
+  },
+  "principal_symbols": [
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9161136515090607
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9161136515090607
+      ],
+      "uncertainty": 2.7229612719410464e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    },
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.946795043566988
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.946795043566988
+      ],
+      "uncertainty": 2.7665621524405816e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    },
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9918565734140043
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9918565734140043
+      ],
+      "uncertainty": 2.8305984378306503e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    },
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          2.024965283939459
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        2.024965283939459
+      ],
+      "uncertainty": 2.8776487453391425e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    },
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          2.024965283939459
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        2.024965283939459
+      ],
+      "uncertainty": 2.8776487453391425e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    },
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9918565734140043
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9918565734140043
+      ],
+      "uncertainty": 2.8305984378306503e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    },
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.946795043566988
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.946795043566988
+      ],
+      "uncertainty": 2.7665621524405816e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    },
+    {
+      "matrix": [
+        [
+          1.5707963267948966,
+          0.0
+        ],
+        [
+          0.0,
+          1.9161136515090607
+        ]
+      ],
+      "eigenvalues": [
+        1.5707963267948966,
+        1.9161136515090607
+      ],
+      "uncertainty": 2.7229612719410464e-14,
+      "stable": true,
+      "gamma": 0.0,
+      "curvatures": [],
+      "fd_steps": []
+    }
+  ],
+  "spectral_sign_comparison": {
+    "status": "VACUUM_NO_OCCUPIED_SPECTRAL_QUADRATURE",
+    "probes": []
+  },
+  "symbol_scope": "Longitudinal sign on the candidate spectral quadrature; FD uncertainty excludes spectral/regulator error.",
+  "excess_energy_density_bar": 0.00035074404868326966,
+  "induced_force_modes": {
+    "real": [
+      0.00015091220580200143,
+      0.023381418279276214,
+      0.0004268273052833449,
+      0.023381418279276214,
+      0.00015091220580200143
+    ],
+    "imag": [
+      1.4230153513872246e-18,
+      -2.6020852139652106e-18,
+      0.0,
+      2.6020852139652106e-18,
+      -1.4230153513872246e-18
+    ]
+  },
+  "induced_current_modes": {
+    "real": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "imag": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "analytic_gradient": {
+    "relative_rms": 0.05035879644824313,
+    "measured": [
+      0.0009515553637163554,
+      0.000672851250358264,
+      2.7755575615628914e-17,
+      -0.000672851250358264,
+      -0.0009515553637164387,
+      -0.000672851250358264,
+      2.7755575615628914e-17,
+      0.000672851250358264
+    ],
+    "expected": [
+      0.0010020156667143953,
+      0.0007085320727889085,
+      2.83847936791154e-19,
+      -0.0007085320727889084,
+      -0.0010020156667143953,
+      -0.0007085320727889086,
+      -1.8406729184059277e-19,
+      0.0007085320727889083
+    ]
+  },
+  "observable_arrays": {
+    "x_over_ell0": [
+      0.0,
+      5.3860848561501475,
+      10.772169712300295,
+      16.15825456845044,
+      21.54433942460059,
+      26.93042428075074,
+      32.31650913690088,
+      37.70259399305103
+    ],
+    "amplitude": [
+      0.93,
+      0.9212132034355964,
+      0.9,
+      0.8787867965644036,
+      0.87,
+      0.8787867965644036,
+      0.9,
+      0.9212132034355964
+    ],
+    "phase": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "force_density": {
+      "real": [
+        -0.14215827841584225,
+        -0.15615518912660992,
+        -0.18952392529040799,
+        -0.22228901263099804,
+        -0.2356822745185577,
+        -0.22228901263099804,
+        -0.18952392529040799,
+        -0.15615518912660992
+      ],
+      "imag": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "current_A": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "gamma": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "energy_density": [
+      -0.4946034037494832,
+      -0.49224027769294415,
+      -0.4882181002937854,
+      -0.4849033128004119,
+      -0.4849033128004119,
+      -0.4882181002937854,
+      -0.49224027769294415,
+      -0.4946034037494832
+    ]
+  },
+  "arrays_sha256": "2df2ee1bb76e1a366460832e0f3d7bcb6d326fe06bec1e8a11751b9d40a2da5a"
+}

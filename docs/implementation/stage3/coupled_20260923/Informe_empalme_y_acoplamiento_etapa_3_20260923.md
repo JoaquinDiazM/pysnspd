@@ -1,0 +1,71 @@
+# Etapa 3: empalme y acoplamiento
+
+Informe de avance con resultados · 23 septiembre 2026 · Modelo 0.4 experimental
+
+## Los seis casos abiertos terminaron
+
+<b>La campaña ejecutada pasó en 4,52 minutos.</b> Se compararon longitudes de 360, 720 y 1080 nm, cada una con elementos de 90 y 45 nm. Al refinar, disminuyen los errores de corriente y de gradiente terminal respecto de la rama uniforme.
+
+![Se muestran diferencias respecto de la referencia; las tres longitudes tienen prácticamente los mismos errores. El tamaño indicado es el del elemento, con cinco nodos de Gauss-Lobatto por elemento.](figures/01_open_errors.png)
+
+| Medida | 90 nm | 45 nm |
+| --- | --- | --- |
+| Error máximo de corriente | 0,000603 % | 0,00000904 % |
+| Error del gradiente terminal | 0,07130 % | 0,004868 % |
+| Residuo estacionario | 1,94e-5 | 6,32e-7 |
+
+El tramo resuelto de 720 nm aporta <b>0,333243 nH</b>; la porción exterior queda fija en <b>9,666757 nH</b>. Esta partición se utiliza en el circuito de tres estados de la memoria.
+
+Los seis optimizadores pararon en la hélice inicial: cero iteraciones y una evaluación. El resultado acredita esa rama estática; no demuestra relajación desde una perturbación, ausencia de reflexión ni un pulso del detector. Auditoría independiente: open_audit.json.
+
+## Acelerar sin sustituir la energía
+
+<b>La alternativa aceptada usa una tabla sólo para iniciar Newton.</b> El cálculo causal original corrige después las energías y obtiene sus derivadas implícitas. Conserva los 630 estados de integración, la ecuación, el intervalo admisible y la tolerancia del solver.
+
+![Nueve puntos de prueba, tres repeticiones por consulta. El contraste usa la misma ecuación causal con otra inicialización; no constituye un nuevo oráculo físico independiente.](figures/02_causal_kernel.png)
+
+| Resultado medido | Valor |
+| --- | --- |
+| Tiempo mediano por kernel: original / acelerado | 124,0 / 65,1 ms |
+| Factor de aceleración del kernel | 1,904 |
+| Mayor diferencia relativa de energía | 1,35e-14 |
+| Mayor diferencia ponderada de kernels | 1,50e-15 |
+
+No se utiliza la interpolación directa de energías: produjo cruces entre niveles. La reconstrucción con incrementos positivos corrigió el orden, pero falló en las fuerzas. Ambos intentos quedan archivados; sus energías y fuerzas están deshabilitadas en el corredor.
+
+El factor 1,904 corresponde sólo al kernel espectral corregido, no al RHS completo ni al transiente. La caja ensayada es |Δ|/Δ₀ entre 0,985 y 1,005 y Γ/Δ₀ entre 0,003 y 0,009, sin extrapolación. Los 0,0076 s de build_seconds son carga de una tabla ya construida, no coste de construirla.
+
+## El empalme ya intercambia energía
+
+<b>El piloto mixto pasó en 78.3 s.</b> Un rectángulo de 360 × 120 × 7 nm se une a dos continuaciones de 180 nm: 45 grados de libertad del condensado y 55 cuadraturas espectrales. Se ensayaron una hélice y una perturbación suave.
+
+![Comparación instantánea. Los extremos libres producen relajación incluso en la hélice; el calor mostrado no debe interpretarse como respuesta a un fotón ni como señal de detección.](figures/03_mixed_instantaneous.png)
+
+| Control | Resultado |
+| --- | --- |
+| Fuerza y corriente frente a diferencias finitas | Errores absolutos 6,76e-12 / 5,43e-11 |
+| Menor autovalor espacial D.36 | 1,570796; incertidumbre ≤ 2,91e-7 |
+| Residuo absoluto de potencia material + circuito | ≤ 3,02e-24 W |
+| Pruebas de módulos nuevos y regresiones | 102 pruebas + 17 subpruebas; 0,59 s |
+
+La corriente deriva de la energía del empalme. Se resuelven el potencial, la respuesta KWT y el depósito de calor del condensado más Joule normal, junto al circuito de la memoria. La traza del condensado es uniforme en cada sección de unión; el transporte cinético a igual energía aún está pendiente.
+
+La etapa 3 sigue abierta. El siguiente paso debe tratar los reservorios antes de interpretar la respuesta temporal. La identidad instantánea no acredita integración temporal, distribución espacial exacta del calor ni la condición cinética completa de la interfaz. Producción y v1.0.0 permanecen sin cambios.
+
+## El reservorio permite ver la perturbación
+
+<b>El 99.999956 % del calor de la hélice libre procedía de sus extremos.</b> Por eso se descartó ampliar esa prueba como objetivo de precisión. Se aplicó una carga prescrita por la corriente de referencia y se mantuvo fija la amplitud terminal mediante su reacción explícita.
+
+![Se reutilizan los campos y poblaciones guardados. Se resuelve otra vez el potencial con Ib = Is = 8,63351 µA y se contabiliza el trabajo del reservorio. Las aristas interiores próximas al extremo no son la traza normal externa de D.27.](figures/04_reservoir_boundary.png)
+
+| Con carga prescrita | Hélice | Perturbación |
+| --- | --- | --- |
+| Calor del condensado, unidades del modelo | 6.19e-07 | 8.02e-05 |
+| Velocidad material máxima, por τ | 0.0012 | 0.014 |
+| Voltaje del dominio (µV) | 0.9045 | 0.9153 |
+
+El balance material + circuito + reservorio cierra con residuo absoluto ≤ <b>4.85e-27 W</b>. El trabajo del borde se registra con signo y no se suma como calor. Este postproceso no requirió consultas espectrales nuevas ni pasos de tiempo.
+
+<b>Siguiente cálculo preparado: seis instantáneas en tres mallas, con esta misma carga.</b> Estimación: 8-15 minutos, un hilo de CPU; comando en GEMINGA_COMMANDS.md con barras y ETA. Se compararán la respuesta con reservorio y su sensibilidad espacial antes de construir el transiente débil.
+
+La carga se selecciona a partir de Iref, no para cancelar la fuerza medida. La amplitud fija pertenece a este diagnóstico; siguen pendientes su dependencia de Is(t), el intercambio cinético y la condición completa D.27. La lectura espectral desde p térmico sólo decodifica este estado guardado. No se declara terminada la etapa 3.

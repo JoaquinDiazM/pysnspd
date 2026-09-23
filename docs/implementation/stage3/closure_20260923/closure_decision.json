@@ -1,0 +1,62 @@
+{
+  "schema": "pysnspd.stage3.development_closure.v1",
+  "date": "2026-09-23",
+  "status": "DEVELOPMENT_CLOSED_USER_AUTHORIZED_WITH_LIMITS",
+  "authority": {
+    "user_choice": "Cerrar desarrollo e iniciar 3.5",
+    "context": "Explicit choice after being told that the original stage3 contract also included a weak coupled transient and full kinetic matching that remain pending."
+  },
+  "development_closed": true,
+  "original_stage3_full_contract_complete": false,
+  "strict_numerical_admission": false,
+  "temporal_admission": false,
+  "full_D27_admission": false,
+  "kinetic_interface_admission": false,
+  "production_promotion": false,
+  "accepted_scope": [
+    "Common discrete spatial energy, forces and current in admitted static weak states",
+    "Uniform-trace condensate matching between 2D rectangle and 1D continuations",
+    "Instantaneous charge/potential, KWT, heating and thesis three-state circuit",
+    "Prescribed-current fixed-radius reservoir snapshot with explicit work",
+    "Scoped mesh-sensitivity evidence and causal seed accelerator"
+  ],
+  "completed_user_batch": {
+    "path": "raw/stage3_reservoir_full_20260923",
+    "cases": 6,
+    "runtime_seconds": 355.65119880530983,
+    "status": "RESERVOIR_INSTANTANEOUS_BATCH_PASS_SCOPE_LIMITED"
+  },
+  "evidence": "full_reservoir_review.json",
+  "mesh_claim": "Descriptive sensitivity only; no retrospective mesh accuracy threshold, full transient, latency, hotbelt or device admission.",
+  "preserved_verdicts": "Original raw stage3_closed=false and prior failures are unchanged. This administrative development closure does not relabel their scientific evidence.",
+  "pending_before_stage4_5": [
+    {
+      "stage": "3B",
+      "requirement": "Dynamic reservoir amplitude a_b(Is), derivative da_b/dIs and consistent reservoir work/energy exchange."
+    },
+    {
+      "stage": "3B",
+      "requirement": "Kinetic f(E) matching and conservative energy flux through the 2D-1D interface; the present map admits the uniform field trace only."
+    },
+    {
+      "stage": "3B",
+      "requirement": "External normal-boundary trace and continuation-length influence in the intended dynamic scenario; an adjacent internal face is not that certificate."
+    },
+    {
+      "stage": "3D/3E",
+      "requirement": "A weak coupled time trajectory with spatial field, occupations and the memory circuit, assessed at common physical times with integrated CM9."
+    },
+    {
+      "stage": "3E",
+      "requirement": "Prospectively registered localized deposition and applicable time/space/spectral accuracy for its observables."
+    }
+  ],
+  "next_stage": {
+    "id": "3.5",
+    "status": "RESEARCH_OPEN_WITH_INITIAL_SOURCE_BASE",
+    "contract": "../../stage3_5/entry_contract.json",
+    "purpose": "Research justified physical/numerical operating ranges and margins; no simulation sweep or final domain selection in this delivery."
+  },
+  "production_solver_changed": false,
+  "release_tag": "v1.0.0 remains unchanged"
+}
