@@ -1,0 +1,111 @@
+# Informe final · Investigación de parámetros 3.5
+
+23 de septiembre de 2026 · Cierre autorizado de investigación · Etapa 4 preparada sin fotón
+
+## Cierre de investigación 3.5
+
+<b>Resultado:</b> queda preparada la etapa 4 para estudiar núcleo, estabilidad y disipación con estados controlados sin fotón. No se modifica aún el solver.
+
+Decisión recibida: «Cerrar investigación 3.5 y preparar etapa 4 sin fotón». El cierre cubre la investigación de rangos y límites; la transferencia fotónica y el dominio físico completo siguen abiertos.
+
+| Entregable | Resultado de esta iteración |
+| --- | --- |
+| 127 variables / 15 familias | Cada entrada tiene restricciones acopladas, observables afectados, margen propuesto y evidencia que falta. |
+| Cascada histórica de Allmaras | Separamos energía electrónica y fonónica; cuantificamos dos radios del perfil fonónico. |
+| Fuente NbN de Simon et al. | 14 commits revisados; identificada la información mínima para admitir la densidad de modos por volumen. |
+| Movilidad y núcleo | Se verificó qué parámetros puede cambiar realmente el código y qué soporte falta cerca de amplitud cero. |
+| Etapa 4 | Contrato de entrada y primera secuencia preparados. Ningún transiente nuevo ni comando largo pendiente. |
+
+Qué significa el dominio de confianza
+
+Un valor útil depende de la muestra, el estado y el observable. Por eso el registro no entrega 127 intervalos independientes: una longitud depende del tiempo observado; un paso temporal depende del operador y la malla; una tasa material depende de sus unidades y normalización.
+
+Se mantiene como referencia provisional el hilo de 80 nm de Korzh: Tc=8,65 K, baño 0,9 K, D=0,5 cm²/s, R□=608 Ω y espesor 7 nm. Son valores del escenario publicado, con ajustes que no se reinterpretan como mediciones independientes. El circuito sigue siendo el de la memoria.
+
+Lectura detallada: use_domain.json, stage4_readiness.md y docs/implementation/stage4/entry_contract.json. Los resultados anteriores y v1.0.0 se preservan.
+
+## 1 · Qué aprendimos de la cascada
+
+La extracción anterior usaba energía total. Ahora se leen por separado electrones y fonones en dos figuras originales de Allmaras. Esto permite evaluar el perfil fonónico con su propia energía, sin confundirlo con el radio de toda la excitación.
+
+![A20: caso histórico de 1 eV, baño 4,325 K y geometría cilíndrica. Barras: márgenes de lectura y de cola no mostrada, no intervalos físicos de Korzh.](figures/cascade_partition_shape.png)
+
+| Tiempo A20 | Energía electrónica | Radio 50 % fonónico | Radio 90 % fonónico |
+| --- | --- | --- | --- |
+| 0,0935 ps | 6,6–7,8 % | 1,51–1,62 nm | 3,30–3,63 nm |
+| 0,1870 ps | 7,1–9,0 % | 1,55–1,67 nm | 3,43–3,88 nm |
+
+<b>Decisión:</b> no fijar todavía un ancho gaussiano. Una gaussiana 2D siempre tiene R90/R50≈1,823; las cotas fonónicas históricas están por encima de 2. La discrepancia persiste después de separar la cola electrónica.
+
+Esto no descarta una aproximación gaussiana con error controlado. Sí impide deducir un ancho único a partir de un radio total y tratarlo como dato del dispositivo. Tampoco una preparación sólo fonónica reproduce exactamente estos instantes: queda energía electrónica apreciable.
+
+Controles ligeros: 12 muestras visibles y cuatro comparaciones entre figuras; diferencia máxima cruzada ≤0,00040 de la energía del fotón. La identidad de suma coincide dentro del margen de lectura. No se extrapoló la región tapada por leyendas ni se supuso nula toda la cola exterior.
+
+Fuente: <link href="https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf">Allmaras, tesis 2020, figs. 2.6–2.8</link>. El cálculo histórico omite e–e, propagación fonónica y escape; no se traslada sin más a 0,9 K ni a los dos colores de Korzh.
+
+## 2 · NbN: la escala que falta identificar
+
+La forma espectral derivada en etapa 1 sigue siendo utilizable dentro de su admisión condicionada. El recorte negativo autorizado no resuelve la normalización absoluta. Revisar los 14 commits públicos confirmó que el archivo “_2.dat” esperado por el lector no está publicado.
+
+| Tabla pública | Integral de la columna de DOS |
+| --- | --- |
+| Al, con cabecera estados/THz | 3,00075 |
+| Nb, con cabecera estados/THz | 5,98360 |
+| TiN, con cabecera estados/THz | 6,01791 |
+| NbN sin cabecera, original / derivado | 0,70842 / 0,71995 en el eje guardado |
+
+No existe una normalización universal a tres modos demostrada por esas tablas. Interpretar la ordenada NbN como estados/meV aproxima su integral a tres; esa coincidencia no prueba la unidad. También importa si el conteo corresponde a átomo o fórmula unidad.
+
+Información mínima suficiente
+
+Necesitamos la densidad de modos por energía y volumen, gph(E). Con ella se relacionan energía fonónica y ocupaciones, y se fija su evolución dinámica. No hace falta recuperar por separado dos convenciones redundantes de conteo, ni repetir toda la microscopía.
+
+| Vía futura | Qué aporta y qué no |
+| --- | --- |
+| Exportación trazable | Unidad, base de conteo y volumen vinculados a las columnas originales. Permite convertir directamente a gph(E). |
+| Calibración efectiva independiente | Fija la escala usando capacidad calorífica de una muestra y rango térmico declarados. Es otro cierre material, no la normalización recuperada del archivo histórico. |
+
+<b>Decisión:</b> ninguna renormalización nueva se aplica en esta entrega. La alternativa acústica de Allmaras queda documentada para una calibración futura; no certifica por sí sola los modos ópticos. La etapa 4 inicial usa controles sin fotón que no requieren afirmar tasas NbN absolutas.
+
+Fuentes: <link href="https://github.com/qnngroup/proj-KE-solver">repositorio público de Simon et al.</link>, <link href="https://arxiv.org/html/2501.13791v3">artículo y convenciones</link>, <link href="https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf">Allmaras, pp. 13–16</link>. El diagnóstico material conserva hashes, unidades, inferencias y escenarios separados.
+
+## 3 · Cambiar la disipación no cambia sólo el reloj
+
+La movilidad relaciona una fuerza del modelo con la rapidez de cambio del condensado. Su componente radial cambia la amplitud; su componente tangencial cambia la dirección compleja, relacionada con la fase. El cierre KWT responde de forma distinta en ambas direcciones.
+
+![Cocientes respecto de los tiempos heredados, con amplitud normalizada igual a uno y fuerza cartesiana fija. Son cuentas algebraicas del cierre, no velocidades medidas ni predicciones de latencia.](figures/mobility_components.png)
+
+| Escenario comparado | τee / τep (ps) | Uso en etapa 4 |
+| --- | --- | --- |
+| Heredado efectivo | 0,50 / 2,47 | Conservar como referencia y valor por defecto |
+| Allmaras | 5,0 / 24,7 | Comparación de cierre, sin adopción automática |
+| Korzh | 6,0 / 24,7 | Comparación de cierre, sin adopción automática |
+
+<b>Resultado:</b> a baja temperatura, los tiempos publicados reducen la movilidad radial aproximadamente por un factor 10–12 y aumentan la tangencial aproximadamente por el mismo factor. No se puede corregir una trayectoria heredada multiplicando todo su eje temporal.
+
+Hoy KWTMobility contiene tiempos escritos directamente en el código. La primera modificación será exponerlos y registrar los valores usados, manteniendo los valores por defecto. El parámetro de núcleo δ necesita la misma consistencia entre energía y derivadas.
+
+El catálogo positivo empieza en 0,08 Δ0; su punto normal aislado no cubre el intervalo hasta cero. Un ensayo de núcleo requerirá consulta causal directa o soporte adicional allí. La buena resolución de una perturbación suave no acredita por sí sola ese núcleo.
+
+## 4 · Márgenes útiles y siguiente secuencia
+
+| Variable o grupo | Margen de planificación y límite |
+| --- | --- |
+| Longitud 2D | 4W, 6W y 8W son candidatos del estudio; 4W sirve como diagnóstico corto. 1,5–6W no es un intervalo universal. |
+| Ventana y extremos | Con D normal=0,5 cm²/s, el filtro auxiliar gaussiano exige revisar dominio al pasar de 50 a 100–200 ps. No mide el error del transiente acoplado. |
+| Malla y núcleo | Grado 4 y h=10–20 nm para diagnóstico suave; comparar h=5–10 nm donde se estudie el núcleo. El depósito real puede exigir más resolución. |
+| Parámetro δ/Δ0 | Referencia 0,10; comparar 0,05 / 0,10 / 0,20 como sensibilidad del modelo, no intervalo medido. |
+| Tiempo y observables | No hay dt universal. El presupuesto futuro de 0,1 ps para latencia relativa sólo sirve al ensayo que defina ese observable. |
+| Fotón | Ancho, reparto y reloj de transferencia abiertos. Retención 0,667 es referencia ajustada de Korzh, no una medición universal. |
+
+Primera secuencia de etapa 4
+
+<b>1.</b> Exponer tiempos KWT y δ de forma consistente, conservando los valores heredados por defecto. <b>2.</b> Preparar escalas materiales coherentes y controles sin fotón. <b>3.</b> Comparar fuerza, corriente, disipación y frontera de estabilidad. <b>4.</b> Extender sólo el soporte de amplitud que esos controles necesiten. <b>5.</b> Medir el coste de un piloto acotado antes de preparar un cálculo largo.
+
+Una rigidez principal negativa es un límite del modelo candidato, no algo que se arregle reduciendo dt. Los errores se juzgarán por su efecto en el diagnóstico; no se añaden tolerancias relativas universales sobre cantidades casi nulas.
+
+Los transientes posteriores deben resolver los pendientes de bordes, trabajo y balances que utilicen. Se conserva 2D hasta justificar una reducción transversal. El circuito mantiene la topología de la memoria y recalcula la inductancia exterior según el dominio resuelto.
+
+<b>Recomendación:</b> continuar con el diagnóstico sin fotón. La investigación ha identificado qué comparar y qué información física falta; otra corrida larga no resolvería por sí sola las unidades de la tabla o la transferencia óptica. No hay ningún comando largo requerido en este cierre.
+
+Verificación de entrega: extracción documental, cuadraturas, fórmulas, cobertura de 127 entradas y preservación de la cadena histórica. No se presenta como una nueva validación de transientes. El siguiente informe deberá recomendar continuar o reformular a partir del núcleo y la disipación observados.

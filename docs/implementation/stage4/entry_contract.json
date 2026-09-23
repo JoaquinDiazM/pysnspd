@@ -1,0 +1,112 @@
+{
+  "schema": "pysnspd.stage4.entry.v1",
+  "status": "PREPARED_NOT_STARTED",
+  "date": "2026-09-23",
+  "authorized_scope": "NON_PHOTON_DIAGNOSTICS",
+  "source_decision": "../stage3_5/assessment_r2_20260923/closure_decision.json",
+  "parameters_reference": "../stage3_5/assessment_r2_20260923/use_domain.json",
+  "physical_photon_width_nm": null,
+  "physical_photon_transfer_admitted": false,
+  "production_changes": false,
+  "new_physical_runs": 0,
+  "first_sequence": [
+    {
+      "id": "4A1",
+      "task": "Parameterize experimental KWT times and finite core completion consistently; preserve inherited defaults and record values",
+      "validation": "Energy/force/current identities and positive KWT dissipation on changed paths; no global time rescaling"
+    },
+    {
+      "id": "4A2",
+      "task": "Prepare coherent K20 material scale and registered non-photon controls within supported states",
+      "validation": "Einstein, gap convention, catalogue support and causal branch; distinguish fixed-population variations from thermal equilibrium"
+    },
+    {
+      "id": "4A3",
+      "task": "Compare common-functional force/current, D36 and radial/tangential response for registered core/mobility cases",
+      "validation": "Separate numerical sensitivity from closure sensitivity; no regularity claimed from mesh refinement alone"
+    },
+    {
+      "id": "4A4",
+      "task": "Extend justified near-zero support only where the core study needs it",
+      "validation": "No interpolation across0<a<.08 without evidence; normal point and local seed are insufficient"
+    },
+    {
+      "id": "4A5",
+      "task": "Bounded cost pilot before any long campaign",
+      "validation": "At most240s if uncertain; timeout incomplete. No unattended long job."
+    }
+  ],
+  "reference_material": {
+    "Tc_K": 8.65,
+    "Tb_K": 0.9,
+    "D_m2_s": 5e-05,
+    "R_sheet_ohm": 608,
+    "thickness_m": 7e-09,
+    "width_m": 8e-08,
+    "interpretation": "Fitted reference; not independent measured errors"
+  },
+  "core_reference_delta_over_Delta0": 0.1,
+  "core_comparison_set": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "comparison_is_not_physical_confidence_interval": true,
+  "mobility_comparisons_tau_ee_tau_ep_ps": {
+    "memory_effective": [
+      0.5,
+      2.47
+    ],
+    "Allmaras_reference": [
+      5.0,
+      24.7
+    ],
+    "Korzh_reference": [
+      6.0,
+      24.7
+    ]
+  },
+  "BGK": {
+    "synthetic_tau_bar": 0.7,
+    "physical_ps": ".7*t_ref_ps",
+    "material_identified": false,
+    "disabled_control_available": true
+  },
+  "circuit_reference": {
+    "topology": "CM three state",
+    "Rb_ohm": 10000.0,
+    "Lb_H": 1e-06,
+    "RL_ohm": 50,
+    "C_F": 1e-10,
+    "L_total_reference_H": 1e-08,
+    "L_external": "recompute total-minus-resolved at the declared reference"
+  },
+  "later_dynamic_requirements": [
+    "Weak coupled trajectory of fields/populations/potential and circuit when used",
+    "Stable current-dependent reservoir branch, reaction work and external trace when used",
+    "Equal-energy kinetic transport and single phonon ownership if2D–1D interface used",
+    "Full2D until transverse reduction has evidence",
+    "State support, causality, energy/current balance and positive D36"
+  ],
+  "blocked_claims": [
+    "Korzh photon hotbelt",
+    "absolute NbN kinetic rates without volume DOS convention",
+    "optical relative latency",
+    "jitter or measured IRF reproduction",
+    "production promotion"
+  ],
+  "expected_report": [
+    "Identity checks",
+    "Core and mobility sensitivity",
+    "Stability/use frontier",
+    "Remaining support and physical limits",
+    "Continue/reformulate recommendation"
+  ],
+  "execution_policy": {
+    "agent_max_expected_seconds": 300,
+    "uncertain_timeout_seconds": 240,
+    "long_command_location": "/home/jdiaz/GEMINGA_COMMANDS.md and chat",
+    "progress_and_eta_required": true,
+    "runnable_long_job_prepared": false
+  }
+}

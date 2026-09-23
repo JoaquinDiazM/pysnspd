@@ -1,0 +1,564 @@
+{
+  "schema": "pysnspd.stage3_5.stage4_readiness_review.r2",
+  "date": "2026-09-23",
+  "status": "RECOMMENDED_SCOPED_STAGE4_PREPARATION_NOT_PHYSICAL_ADMISSION",
+  "new_physical_calculations": 0,
+  "implementation_changes": false,
+  "historical_verdicts_changed": false,
+  "inventory_review": {
+    "count": 127,
+    "families": 15,
+    "exact_base_ids": true,
+    "all_physical_confidence_intervals_unadmitted": true,
+    "status_counts": {
+      "REFERENCE_SCENARIO": 2,
+      "USER_SELECTED_ADJUSTED_REFERENCE": 2,
+      "DERIVED_JOINT_CONSTRAINT": 9,
+      "PRESERVED_MODEL_ASSUMPTION": 1,
+      "DERIVED_MODEL_VALUE": 1,
+      "DERIVED_OR_UNIDENTIFIED": 1,
+      "ABSOLUTE_RATE_IDENTIFICATION_OPEN": 5,
+      "USER_SELECTED_REFERENCE": 1,
+      "REFERENCE_NOMINAL": 1,
+      "PROPOSED_DOMAIN_DESIGN": 3,
+      "CONDITIONAL_DOMAIN_OR_INTERFACE": 5,
+      "DERIVED_GEOMETRY": 1,
+      "PROPOSED_OBSERVATION_WINDOW": 1,
+      "ANALYTICAL_PREFILTER_NOT_ERROR_BOUND": 2,
+      "DERIVED_PLANNING_SCALES": 1,
+      "DERIVED_FROM_SELECTED_WAVELENGTHS": 1,
+      "SOURCE_REFERENCE_PROPOSED": 2,
+      "CONTROLLED_REFERENCE_PROPOSED": 1,
+      "USER_DEFERRED_PENDING_CASCADE": 1,
+      "USER_SELECTED_TIME_ORIGIN": 1,
+      "PRESERVED_MODEL_CLOSURE": 1,
+      "DEFERRED_NOT_ACTIVATED": 4,
+      "DYNAMIC_STATE_CONSTRAINT": 3,
+      "DERIVED_DIAGNOSTIC": 2,
+      "PRESERVED_EFFECTIVE_PARAMETER_UNCALIBRATED": 1,
+      "MANDATORY_CONTINUOUS_ADMISSIBILITY": 1,
+      "UNIDENTIFIED_EFFECTIVE_MOBILITY_WITH_REFERENCES": 1,
+      "PRESERVED_CLOSURE": 1,
+      "PRESERVED_APPROXIMATION": 1,
+      "NOT_IDENTIFIED": 1,
+      "REFERENCE_SCENARIOS_NOT_CONFIDENCE_INTERVAL": 1,
+      "SOURCE_SPECIFIC_NOT_UNIVERSAL_RANGE": 1,
+      "REQUIRES_MATERIAL_SUPPORT_REDESIGN": 7,
+      "LEGACY_OR_SYNTHETIC_NOT_TRANSFERABLE": 3,
+      "PRESERVED_ENERGY_ACCOUNTING_REQUIRES_SPATIAL_CHECK": 2,
+      "INACTIVE_IN_PHOTON_SCENARIO": 1,
+      "OMITTED_PHYSICS_LIMIT": 1,
+      "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED": 7,
+      "GAUGE_CHOICE": 1,
+      "PROPOSED_REFERENCE_BIAS_POINTS": 3,
+      "INITIAL_EQUILIBRIUM_CONDITION": 1,
+      "PRESERVED_MEMORY_CIRCUIT_SCENARIO": 5,
+      "DERIVED_ENERGY_PARTITION": 1,
+      "SEPARATE_OBSERVABLE_DEFINITIONS": 4,
+      "AVAILABLE_TABLE_COVERAGE_ONLY": 2,
+      "RETAINED_VERIFIED_NUMERICAL_CONTROL": 1,
+      "ALGORITHMIC_CONTROL_NOT_PHYSICAL_RANGE": 2,
+      "LOCAL_ACCELERATOR_ONLY": 1,
+      "PROPOSED_NUMERICAL_START": 1,
+      "PROPOSED_RESOLUTION": 1,
+      "DIAGNOSTIC_SPECIFIC_NOT_PHYSICAL_MARGIN": 2,
+      "UNADMITTED_SPATIAL_INTEGRATOR_DESIGN": 2,
+      "PROPOSED_OUTPUT_CADENCE": 1,
+      "PROPOSED_OBSERVABLE_BUDGET": 1,
+      "STRUCTURAL_STOPS_PRESERVED": 1,
+      "EXPERIMENTAL_MAPPING_INCOMPLETE": 9,
+      "NO_TARGET_REFIT_BY_DEFAULT": 1,
+      "TRACEABILITY_AND_COST_RULE": 3,
+      "SOURCE_SPECIFIC_REFERENCE": 3
+    },
+    "family_dependencies": [
+      {
+        "family": "material",
+        "parameter_ids": [
+          "Tc",
+          "D",
+          "sigma_n",
+          "N0",
+          "gap_ratio",
+          "delta0",
+          "lambda_L",
+          "n_atom",
+          "Ic_calibration"
+        ],
+        "dependency": "Joint scales before every new material scenario; absolute phonon rates before material kinetic claims, not all static controls."
+      },
+      {
+        "family": "bath",
+        "parameter_ids": [
+          "bath"
+        ],
+        "dependency": "Explicit reference temperature and compatible initial state; not inferred from old pilot theta."
+      },
+      {
+        "family": "geometry",
+        "parameter_ids": [
+          "width",
+          "thickness",
+          "length_2D",
+          "aspect_ratio",
+          "lead_left",
+          "lead_right",
+          "section_leads",
+          "resolved_length",
+          "interface_R",
+          "observation_time",
+          "boundary_tolerance",
+          "diffusion_scales",
+          "geometry_extensions",
+          "boundary_distances",
+          "linear_diffusion_filter"
+        ],
+        "dependency": "Declare control/domain; dynamic boundary influence when claiming device behavior; no optical width selected."
+      },
+      {
+        "family": "photon",
+        "parameter_ids": [
+          "Egamma",
+          "Ein",
+          "retention",
+          "photon_position",
+          "photon_sigma",
+          "handoff_time",
+          "spectral_injection",
+          "fano"
+        ],
+        "dependency": "Deferred cascade transfer requirement before physical photon preparation; not required for non-photon diagnostics."
+      },
+      {
+        "family": "electronic_state",
+        "parameter_ids": [
+          "Delta_state",
+          "p_state",
+          "n_state",
+          "TE",
+          "Tph_equiv"
+        ],
+        "dependency": "Supported fixed populations for static derivatives; supported evolving populations and energy inversion for dynamics."
+      },
+      {
+        "family": "condensate",
+        "parameter_ids": [
+          "delta_reg",
+          "qbare",
+          "Gamma",
+          "K0",
+          "D36",
+          "kwt_times",
+          "mobility_floor",
+          "time_scale",
+          "vector_potential",
+          "Qdelta"
+        ],
+        "dependency": "Common energy, D36, explicit effective mobility, core support and delta sensitivity before core claims."
+      },
+      {
+        "family": "kinetic",
+        "parameter_ids": [
+          "taukin",
+          "tauescape",
+          "alpha2F",
+          "gphonon",
+          "lambdaeph",
+          "OmegaD",
+          "rate_prefactor",
+          "DL",
+          "face_rate",
+          "heating_closure",
+          "external_heating",
+          "extra_phonon_physics"
+        ],
+        "dependency": "Synthetic tests allowed as controls; dimensional material kernels and identifiable closure dependencies before NbN dissipation claims."
+      },
+      {
+        "family": "boundaries",
+        "parameter_ids": [
+          "insulating_sides",
+          "reservoir_branch",
+          "reservoir_population",
+          "reservoir_load",
+          "normal_trace",
+          "potential_reference",
+          "interface_kinetic",
+          "reservoir_work"
+        ],
+        "dependency": "Mandatory only when used; dynamic radius/work and external traces before coupled open-device interpretation."
+      },
+      {
+        "family": "circuit",
+        "parameter_ids": [
+          "Ib",
+          "Is",
+          "vc",
+          "Rbias",
+          "Lbias",
+          "Rload",
+          "Ccouple",
+          "Vbias",
+          "Ltotal",
+          "Lext",
+          "Vdev",
+          "Vout",
+          "Gface"
+        ],
+        "dependency": "CM retained; reference inductance partition and shared work before coupled time trajectory; experiment hardware not silently substituted."
+      },
+      {
+        "family": "catalogue",
+        "parameter_ids": [
+          "amplitude_box",
+          "gamma_box",
+          "eta",
+          "xmax",
+          "electron_nodes",
+          "count_partition",
+          "phonon_grid",
+          "reaction_quadrature",
+          "face_quadrature",
+          "matsubara",
+          "newton",
+          "predictor",
+          "material_preprocess",
+          "legacy_thermal_catalog"
+        ],
+        "dependency": "Causal support for queried states; core and physical energy extent require extension before being used."
+      },
+      {
+        "family": "spatial_numerics",
+        "parameter_ids": [
+          "sem_degree",
+          "spatial_mesh",
+          "legacy_mesh",
+          "fd_controls",
+          "static_solver",
+          "joule_allocation"
+        ],
+        "dependency": "Observable-specific evidence for actual operator/domain; old smooth static campaign does not admit cores."
+      },
+      {
+        "family": "time_numerics",
+        "parameter_ids": [
+          "time_method",
+          "dt",
+          "checkpoint",
+          "numerical_budgets",
+          "stopping"
+        ],
+        "dependency": "Prospective weak time test before stronger spatial dynamics; dt not dictated by experimental jitter."
+      },
+      {
+        "family": "observation",
+        "parameter_ids": [
+          "threshold",
+          "readout_windows",
+          "recovery",
+          "latency",
+          "jitter",
+          "electronics_transfer",
+          "noise",
+          "event_ensemble",
+          "observables"
+        ],
+        "dependency": "Declare physical port/time origin/event; IRF and noise mapping are stage5 dependencies, not static entry gates."
+      },
+      {
+        "family": "provenance",
+        "parameter_ids": [
+          "material_provenance",
+          "run_identity",
+          "execution_resources"
+        ],
+        "dependency": "Hash source/inputs and record scope and compute policy for each new study."
+      },
+      {
+        "family": "experiment_reference",
+        "parameter_ids": [
+          "sample_identity",
+          "sheet_resistance",
+          "substrate",
+          "phonon_gamma_legacy",
+          "fit_energy_variances",
+          "optical_chain",
+          "tapers",
+          "observation_uncertainty",
+          "experimental_readout"
+        ],
+        "dependency": "Keep selected sample and fit provenance; measured waveform/jitter reproduction deferred to stage5."
+      }
+    ]
+  },
+  "closure_recommendation": {
+    "documentary_review_can_close_with_limits": true,
+    "formal_closure_executed_by_this_review": false,
+    "complete_physical_confidence_domain_admitted": false,
+    "Korzh_cascade_characterized": false,
+    "width_selected": false,
+    "user_decision_preserved": "Caracterizar primero la cascada; dejar el ancho abierto",
+    "required_wording": "Documentary scope/constraints review may close; cascade transfer remains an explicit dependency before physical photon preparation. Do not call it cascade validation.",
+    "grounding": "Stage3.5 entry_contract exit_condition permits reviewed constraints and explicit unresolved limits with a stage4-5 claim decision."
+  },
+  "stage4_tracks": [
+    {
+      "id": "4A",
+      "purpose": "Non-photon static/instantaneous core-functional and dissipation diagnostics",
+      "preparation_ready": true,
+      "campaign_executed": false,
+      "requires_photon_width": false,
+      "requires_absolute_phonon_rates": false,
+      "needs": [
+        "coherent units and material scenario",
+        "supported populations and causal queries",
+        "same functional for energy force current",
+        "state-specific D36 when admitting spatial use",
+        "prospective scoped observables"
+      ],
+      "possible_outputs": [
+        "energy force current identities",
+        "D36 admitted/rejected-state diagnostics",
+        "radial/tangential KWT coefficient comparison"
+      ],
+      "claim_limit": "No hotspot, latency, vortex-core or device certification from weak instantaneous states."
+    },
+    {
+      "id": "4B",
+      "purpose": "Weak coupled spatial evolution completing used stage3 dynamic dependencies",
+      "ready_for_device_dynamic_claim": false,
+      "requires_photon_width": false,
+      "needs": [
+        "time integration of actual coupled state",
+        "Pauli/phonon support",
+        "integrated shared-energy ledger",
+        "relevant time/space/spectral comparison",
+        "dynamic boundary work and normal trace if open",
+        "kinetic equal-energy interface only if mixed2D1D is used"
+      ],
+      "claim_limit": "Periodic/isolated/fixed-radius controls retain their restricted scope; no automatic fullD27 admission."
+    },
+    {
+      "id": "4C",
+      "purpose": "Core suppression, barriers and first phase events",
+      "ready_for_physical_core_claim": false,
+      "requires_photon_width_for_controlled_nonphotonic_case": false,
+      "needs": [
+        "continuous near-zero amplitude support",
+        "D36 along admitted trajectory",
+        "delta closure sensitivity",
+        "spatial reference appropriate to the stated regime",
+        "explicit KWT/BGK scenario and heat accounting"
+      ],
+      "claim_limit": "Physical photon/hotbelt interpretation additionally requires cascade-compatible transfer."
+    },
+    {
+      "id": "5",
+      "purpose": "Complete detector and experimental timing comparison",
+      "ready": false,
+      "deferable_from_4A": [
+        "calibrated instrument transfer and trigger",
+        "event ensemble/noise for IRF or jitter",
+        "precise optical/cascade clock for optical latency"
+      ],
+      "not_deferable_if_needed_in_4": [
+        "core support and D36",
+        "dynamic boundary/interface actually used",
+        "material kinetic normalization if claiming NbN dissipation",
+        "closure identification or declared conditional dependence"
+      ]
+    }
+  ],
+  "critical_findings": [
+    {
+      "id": "KWT_HARDCODED",
+      "source": "pysnspd/experimental/cell_closures.py:KWTMobility.coefficients",
+      "implemented_times_at_Tc_ps": [
+        0.5,
+        2.47
+      ],
+      "Allmaras_reference_ps": [
+        5,
+        24.7
+      ],
+      "K20_reference_ps": [
+        6,
+        24.7
+      ],
+      "new_pair_adopted": false,
+      "required_next": "Explicit experimental parameterization before comparing dynamic pairs; preserve default and record actual values. Algebraic comparison may precede it.",
+      "reason": "KWT changes radial1/R and tangentialR responses, not a common time scale."
+    },
+    {
+      "id": "BGK_UNIDENTIFIED",
+      "source": "pysnspd/experimental/coupled_cells.py",
+      "default_tau_kin_normalized": 0.7,
+      "ps_only_if_tref_ps": 1.0,
+      "physical_NbN_time_identified": false,
+      "control_options": [
+        "declared synthetic historical value",
+        "term disabled via infinity"
+      ],
+      "restriction": "Neither control calibrates NbN or represents a high-energy electron cascade."
+    },
+    {
+      "id": "DELTA_EFFECTIVE",
+      "source": "pysnspd/experimental/spatial_functional.py",
+      "reference_delta_over_Delta0": 0.1,
+      "historical_comparison_values": [
+        0.05,
+        0.1,
+        0.2
+      ],
+      "physical_interval_admitted": false,
+      "restriction": "Mesh refinement does not identify effective core closure; compare all common-energy derivatives consistently."
+    },
+    {
+      "id": "D36_REQUIRED",
+      "requirement": "Positive principal-symbol sign resolved against its numerical uncertainty along every admitted spatial trajectory",
+      "arbitrary_positive_margin_added": false,
+      "restriction": "Negative-sign diagnostic is legitimate; a trajectory with negative/unresolved sign is not continued by clipping or smaller dt."
+    },
+    {
+      "id": "CATALOGUE_CORE_GAP",
+      "positive_amplitude_min_Delta0_approx": 0.08,
+      "separate_normal_endpoint_does_not_fill_gap": true,
+      "weak_seed_amplitude_Delta0": [
+        0.985,
+        1.005
+      ],
+      "weak_seed_Gamma_Delta0": [
+        0.003,
+        0.009
+      ],
+      "restriction": "No extrapolation into a core; support extension/direct causal evaluation needs its own evidence."
+    },
+    {
+      "id": "PHYSICAL_SPECTRAL_SUPPORT",
+      "conditional_NbN_positive_phonon_support_meV_approx": 67.784,
+      "candidate_electron_Emax_meV_approx": 15.832,
+      "synthetic_phonon_cutoff_meV_approx": 5.259,
+      "restriction": "State-count xmax12 is not a physical energy bound; more nodes do not repair absent energy processes."
+    },
+    {
+      "id": "CIRCUIT_SCOPE",
+      "selected": "CM memory three-state network",
+      "total_reference_H": 1e-08,
+      "C_F": 1e-10,
+      "K20_added_inductor_not_adopted_H": 9.6e-08,
+      "restriction": "Recompute resolved/external partition at reference when material/domain changes; dynamic source/load/reservoir work counted once."
+    },
+    {
+      "id": "TIMING_SCOPE",
+      "time_origin": "energy transfer",
+      "optical_cascade_offset_known": false,
+      "proposed_relative_crossing_numerical_budget_ps": 0.1,
+      "applies_to_static_force_accuracy": false,
+      "applies_as_fixed_dt": false,
+      "IRF_peak_equivalence_assumed": false
+    },
+    {
+      "id": "PHOTON_WIDTH_OPEN",
+      "decision": "USER_DEFERRED_PENDING_CASCADE",
+      "retention_0_667": "historical fitted reference, not an adopted universal transfer fraction",
+      "gaussian_width_range_nm": null,
+      "allowed_nonphoton_controls": "Uniform and smooth amplitude/phase/population perturbations with declared numerical or mechanism purpose; not disguised optical deposition."
+    }
+  ],
+  "proportional_validation_policy": {
+    "no_127_parameter_cartesian_sweep": true,
+    "no_automatic_rerun_of_all_historical_campaigns": true,
+    "no_retrospective_threshold_changes": true,
+    "unknown_experimental_details_not_global_entry_gates": true,
+    "structural_support_causality_energy_and_D36_not_waived": true,
+    "tests_follow_actual_dependencies": true,
+    "short_pilot_before_costly_dynamic_campaign": true,
+    "agent_computations_expected_over_5min": false
+  },
+  "sources": [
+    {
+      "path": "docs/implementation/SECUENCIA_VIGENTE.md",
+      "sha256": "e688fa128b3fb73e5efad8be980d741824489e150e8f94d6018e37be823771b4"
+    },
+    {
+      "path": "docs/implementation/stage3_5/entry_contract.json",
+      "sha256": "015d56a0c72303bb14a34ed76dc32df6ecbf1fb8f962bf44cd318b2e1a74e54e"
+    },
+    {
+      "path": "docs/implementation/stage3_5/parameter_inventory.json",
+      "sha256": "5639d2691fc24a18e1689029ad24de1636ba9586c09dd0b158902914c41533da"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/range_ledger.json",
+      "sha256": "4d688f2115aa38318343fe6064fd5d5d74d60f5f2a5960bc81518b922c09474d"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/user_decisions.json",
+      "sha256": "157437adc39ed73eab98e6584ac6e1d6bc503c9a6ffc5f9d0f79a6aa26537cc7"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/cascade_plan.json",
+      "sha256": "0cfcbdad6f71843e02ae9ac73a7543b12e6773be2e97f45b519aff93664019bf"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/material_kinetics.md",
+      "sha256": "709ef49bc350c57ae542aa057bd899b36fde84bacd160d045b17a40fbfa49b95"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/circuit_observables.md",
+      "sha256": "28670fe4119a23c36a646204e928bc0942a78b6206a873a7782eded7303aa94a"
+    },
+    {
+      "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+      "sha256": "db67d19adff15c1aa797e73349f3f22aca85d426e54c1cfe0827d1b7ad13dd87"
+    },
+    {
+      "path": "docs/implementation/stage3/closure_20260923/closure_decision.json",
+      "sha256": "ce3ecb14bc551542b359d908ba793a279ff01808997b421ff8c786f57fc85c1a"
+    },
+    {
+      "path": "pysnspd/experimental/cell_closures.py",
+      "sha256": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d"
+    },
+    {
+      "path": "pysnspd/experimental/coupled_cells.py",
+      "sha256": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df"
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+    },
+    {
+      "path": "pysnspd/experimental/spatial_functional.py",
+      "sha256": "1258c510cfa9c853514590933cc664bbe71f36bb022e9fe2f82adae18ce15c3e"
+    },
+    {
+      "path": "pysnspd/experimental/spatial_nodal.py",
+      "sha256": "068a912ccefa9368a97b217961805ae0630fbfda33adb12acd904e28796b7cf8"
+    },
+    {
+      "path": "pysnspd/experimental/mixed_spatial.py",
+      "sha256": "69f3bd210f3fe60e6a09d4cf6de405d011d82404b525d6ffc07a76af55d523a8"
+    },
+    {
+      "path": "pysnspd/experimental/seeded_count_catalog.py",
+      "sha256": "58992d87883a59d2502fee214d232471e078e5b3dfe2e49566598963946458c1"
+    },
+    {
+      "path": "pysnspd/experimental/spatial_dynamics.py",
+      "sha256": "1de2f9a87dfab4b0afc7d94db9494ea7fd1d5976eda03862a6f8f79d48d374ba"
+    },
+    {
+      "path": "pysnspd/experimental/reservoir_spatial_dynamics.py",
+      "sha256": "52e03e829e285c8c7f429b5348c6ab42fde3274cc370a0fe93525b4913d219b1"
+    },
+    {
+      "path": "pysnspd/experimental/reservoir_transport.py",
+      "sha256": "ac508bd8f56d3d43d978d206763a0eda6ea22b70f49d22c4447142925fb2f3af"
+    },
+    {
+      "path": "pysnspd/experimental/electrical_ports.py",
+      "sha256": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530"
+    }
+  ]
+}

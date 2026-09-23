@@ -1,24 +1,24 @@
-# Estado vigente de la investigación 3.5
+# Estado vigente: investigación 3.5 cerrada; etapa 4 preparada
 
-La [revisión del23 de septiembre](research_20260923/README.md) contiene la
-investigación de fuentes, las decisiones recibidas y el registro de127 variables.
-El objetivo seleccionado es el hilo80nm de Korzh, con dos colores y tiempo
-contado desde la transferencia al modelo. La referencia material es provisional
-y sus ajustes no se tratan como mediciones.
+El usuario eligió **«Cerrar investigación 3.5 y preparar etapa 4 sin fotón»**.
+La [entrega final r2](assessment_r2_20260923/README.md) cierra el estudio de fuentes,
+rangos condicionales y límites. Su [informe](assessment_r2_20260923/Informe_cierre_investigacion_etapa_3_5.md)
+resume resultados y decisiones. El [registro de uso](assessment_r2_20260923/use_domain.json)
+cubre las 127 variables originales en 15 familias.
 
-La fracción retenida y el perfil gaussiano se investigan además con los
-trabajos de jitter/latencia2019–2020 y Zotova–Vodolazov2012. No se aprobó el
-intervalo exploratorio inicialmente sugerido; las propuestas derivadas de las
-fuentes distinguen el sector energético y el momento de preparación.
+La [etapa 4](../stage4/README.md) está preparada, no iniciada: núcleo, estabilidad
+y disipación con estados controlados sin fotón. El diagnóstico inicial es
+estático/instantáneo. Los ensayos dinámicos posteriores deben acreditar las
+capacidades que utilicen, incluidos los pendientes de etapa 3.
 
-Se eligió **caracterizar primero la cascada y dejar el ancho abierto**. La
-fracción0,667 de Korzh queda documentada como referencia de su ajuste; su
-traslado a la preparación fonónica requiere separar pérdidas previas y posteriores.
+Se mantiene la referencia ajustada de Korzh para el hilo de 80 nm y el objetivo
+futuro de hotbelt y latencia relativa 775/1550 nm desde la transferencia. Los
+ajustes materiales no son mediciones independientes. El ancho gaussiano,
+reparto y reloj de transferencia siguen abiertos; la extracción histórica de
+Allmaras no los determina para Korzh. La tabla NbN necesita una densidad de
+modos por volumen trazable antes de admitir sus tasas absolutas.
 
-No se ejecutaron transientes ni se activaron cambios físicos. La etapa sigue
-abierta: las hipótesis elegidas y las propuestas numéricas no equivalen a una
-admisión física global ni a completar los requisitos dinámicos pendientes.
-
-Los archivos iniciales de esta carpeta forman parte del cierre publicado de
-etapa3 y se conservan. Para el trabajo actual, usar esta entrada y la revisión
-enlazada, no interpretar el inventario inicial como una elección final de rangos.
+No hay transientes nuevos, parámetros físicos activados ni cálculo largo
+pendiente. La producción y `v1.0.0` permanecen iguales. La [revisión r1](research_20260923/README.md)
+y los archivos iniciales de esta carpeta son evidencia histórica preservada;
+sus estados de abierto no constituyen la cola vigente.

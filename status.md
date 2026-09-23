@@ -4,15 +4,26 @@ Last updated: 2026-09-23
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: experimental stage 3 development is closed within the scope
-explicitly authorized by the user; stage 3.5 research is open. The weak coupled
-transient and kinetic 2D–1D interface remain requirements before stages 4–5.
-Release 1.0.0 still preserves the thesis implementation and model 0.4 documentation,
-including notebook E-r02. No production promotion has occurred.
+Current phase: stage 3 development and stage 3.5 parameter research are closed
+within explicitly authorized scopes. Stage 4 is prepared, not started, for
+controlled non-photon core, stability and dissipation diagnostics. Release 1.0.0
+preserves the thesis implementation and model 0.4 documentation. No production
+promotion has occurred.
 
-## Stage 3.5: source research and cascade decision
+## Stage 3.5 closed; stage 4 prepared without photons
 
-The [current review](docs/implementation/stage3_5/CURRENT.md) documents127 parameters in15 families. Priorities are80nm Korzh hotbelt formation and775/1550nm relative latency from model handoff. The adjusted material reference uses D=0.5cm²/s and608Ω/square with correlated derived quantities. The user explicitly chose cascade characterization before Gaussian width selection. Published retention0.667 is a fitted reference, not a universal measurement. No new transients or solver-parameter changes were made; physical ranges and the weak coupled transient remain open.
+The user selected “Cerrar investigación 3.5 y preparar etapa 4 sin fotón”. The
+[current delivery](docs/implementation/stage3_5/CURRENT.md) covers 127 variables in
+15 families with coupled restrictions, observable relevance and next evidence.
+The historical Allmaras extraction leaves about 7–9% electronic energy at
+0.187 ps; even its phonon-only profile is not an exact single Gaussian. No
+physical width is selected for Korzh. NbN retains its conditional shape, while
+absolute volumetric mode normalization remains open. The
+[final report](docs/implementation/stage3_5/assessment_r2_20260923/Informe_cierre_investigacion_etapa_3_5.md)
+and [stage 4 contract](docs/implementation/stage4/entry_contract.json) define the
+result and next tasks. No new physical trajectories or solver-parameter changes
+were made, and no long job is pending. Dynamic stage 3 dependencies remain
+required for the capabilities actually used; static controls can proceed.
 
 ## Release 1.0.0 and next-stage boundary
 
@@ -51,7 +62,7 @@ by 0.004565%, exceeding its auxiliary 0.0025% budget. Its original FAIL remains;
 the [strict numerical admission record](docs/implementation/stage2/stage2_admission.json)
 does not become a complete dynamic mesh certificate.
 
-## Experimental stage 3 — development closed; stage 3.5 research open
+## Historical stage 3 closure — preserved evidence
 
 The [user-authorized closure](docs/implementation/stage3/closure_20260923/README.md)
 accepts the static spatial work and instantaneous material/potential/KWT/heating,
@@ -69,15 +80,15 @@ development closure from completion of the original stage 3 contract. The latter
 temporal admission, full D.27, kinetic-interface admission and production promotion
 remain false. A current-dependent reservoir, conservative equal-energy interface
 transport and a weak coupled trajectory with integrated balances remain required
-before stages 4–5. No detector pulse, latency or hotbelt formation is claimed.
+before dynamic studies using those capabilities. The current stage 4 entry permits static non-photon diagnostics first. No detector pulse, latency or hotbelt formation is claimed.
 
-[Stage 3.5](docs/implementation/stage3_5/README.md) opens documentary research into
+The original [stage 3.5 opening](docs/implementation/stage3_5/README.md) began documentary research into
 the model's physical domain of confidence: 127 parameter entries in 15 families,
 with separate Korzh and Allmaras experimental/model sources. No ranges or sweep
-are adopted. L2D/W = 1.5–6 is only an example to investigate; transverse 1D
+were adopted at that opening. L2D/W = 1.5–6 remains only an example, not a universal validity interval; transverse 1D
 sufficiency must be tested during the future transient. Physical scope is distinct
-from a statistical confidence interval. No long calculation is pending. The new
-delivery checker is `sandbox/stage3_spatial/closure_20260923/verify_delivery.py`;
+from a statistical confidence interval. No long calculation is pending. That historical delivery checker is
+`sandbox/stage3_spatial/closure_20260923/verify_delivery.py`;
 the completed six-case batch must not be repeated. `v1.0.0` remains unchanged.
 
 The earlier [RK4/SSP review](docs/implementation/stage2/review_20260922/README.md)

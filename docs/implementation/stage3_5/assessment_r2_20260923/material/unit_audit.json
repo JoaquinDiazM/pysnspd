@@ -1,0 +1,169 @@
+{
+  "schema": "pysnspd.stage3_5.r2.material_unit_audit.v1",
+  "status": "DOCUMENTARY_AND_ALGEBRAIC_ONLY_NOT_ABSOLUTE_DOS_ADMISSION",
+  "new_trajectories": 0,
+  "new_rhs_evaluations": 0,
+  "revision": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+  "script_sha256": "f725e191d0286edb8d391e1d94412e7b83a62876453cef6f6c993fbd3bc67097",
+  "preparation_note": "An initial guard used the older wrapped-source hash e94f1127... and stopped before writing a result. Corrected to source_numeric_payload_sha256 from stage1_closure/material_results.json. Exact upstream git blob is d479ac67a90d86ba704597ad8f8a11e673e5dd27; no data were changed.",
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.5.3"
+  },
+  "inputs": {
+    "Al-a2f-phdos.dat": {
+      "sha256": "92141ffe404fcf52afcf86c5fbbb3421b6cb3f4378b4204bfa64fb550462bebc",
+      "bytes": 49049,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/Al-a2f-phdos.dat"
+    },
+    "explicit_euler.m": {
+      "sha256": "560c0bc56cccdc68f359eb1ff3586ba277bda7ba73f53ef51aa6b31238f4a42a",
+      "bytes": 1440,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/explicit_euler.m"
+    },
+    "f.m": {
+      "sha256": "e3fce75da2307b5e7a8e85854675bdb6d08b2f965dc0a914f2b129545ae8c28c",
+      "bytes": 4120,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/f.m"
+    },
+    "g.m": {
+      "sha256": "2ca4c6c5defe468b626d95456db26baee919f44a40a6a9622b001b504b472131",
+      "bytes": 3584,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/g.m"
+    },
+    "nb-a2f-phdos.dat": {
+      "sha256": "0f5bfe8832085cd7f964481066a6f6a6fde2f3092e3c5d2c5a7dcd521bdf43f7",
+      "bytes": 49049,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nb-a2f-phdos.dat"
+    },
+    "nbn-a2f-ph.dat": {
+      "sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+      "bytes": 575952,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat"
+    },
+    "README.md": {
+      "sha256": "a64effd30b63fae2614730b228610f33e1725ee795f960c9f9795d0e8c317afc",
+      "bytes": 805,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/README.md"
+    },
+    "solver.m": {
+      "sha256": "ec46c0b82f091bbb21f8d0ebcfa36546f2d46672fcab0f9fe3195c266fe30b50",
+      "bytes": 16613,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/solver.m"
+    },
+    "TiN-prim-a2f-phdos.dat": {
+      "sha256": "291bcc13a45249c856a24d161c35ed0f1557e163d016b872ce958564c21eaebd",
+      "bytes": 49049,
+      "url": "https://raw.githubusercontent.com/qnngroup/proj-KE-solver/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/TiN-prim-a2f-phdos.dat"
+    }
+  },
+  "tables": {
+    "Al-a2f-phdos.dat": {
+      "first_line": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "has_header": true,
+      "rows_raw": 1000,
+      "rows_stable_first_unique": 1000,
+      "integral_column3_on_stored_axis_raw": 3.0007460978514997,
+      "negative_column3_nodes": 0,
+      "axis_min": 0.0,
+      "axis_max": 20.0,
+      "moments": {
+        "lambda_if_column2_is_dimensionless_alpha2F": 0.5125398333357709,
+        "alpha2F_energy_integral_eV_if_axis_is_nu_THz": 0.006725998839792953,
+        "alpha2F_first_energy_moment_eV2_if_axis_is_nu_THz": 0.00019387743802626046,
+        "normal_empty_band_single_particle_emission_limit_ps_inverse": 64.2053014078656,
+        "inverse_of_that_formal_limit_ps": 0.015575037856258593,
+        "warning": "Conditional quadrature only: normal empty final band, no phonons, rho=1, coherence=1, E above phonon support. This is not a measured lifetime, a cascade time, a thermalization time, or a bound for the superconducting detector. No RHS or trajectory was evaluated."
+      }
+    },
+    "nb-a2f-phdos.dat": {
+      "first_line": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "has_header": true,
+      "rows_raw": 1000,
+      "rows_stable_first_unique": 1000,
+      "integral_column3_on_stored_axis_raw": 5.983601987665501,
+      "negative_column3_nodes": 0,
+      "axis_min": 0.0,
+      "axis_max": 20.0,
+      "moments": {
+        "lambda_if_column2_is_dimensionless_alpha2F": 1.1146852780838217,
+        "alpha2F_energy_integral_eV_if_axis_is_nu_THz": 0.009036464511674053,
+        "alpha2F_first_energy_moment_eV2_if_axis_is_nu_THz": 0.0001626033551904558,
+        "normal_empty_band_single_particle_emission_limit_ps_inverse": 86.26063450991819,
+        "inverse_of_that_formal_limit_ps": 0.011592773525043114,
+        "warning": "Conditional quadrature only: normal empty final band, no phonons, rho=1, coherence=1, E above phonon support. This is not a measured lifetime, a cascade time, a thermalization time, or a bound for the superconducting detector. No RHS or trajectory was evaluated."
+      }
+    },
+    "TiN-prim-a2f-phdos.dat": {
+      "first_line": "#E (THz)\t           a^2F\t PhDOS (st/THz)",
+      "has_header": true,
+      "rows_raw": 1000,
+      "rows_stable_first_unique": 1000,
+      "integral_column3_on_stored_axis_raw": 6.017908533027998,
+      "negative_column3_nodes": 0,
+      "axis_min": 0.0,
+      "axis_max": 20.0,
+      "moments": {
+        "lambda_if_column2_is_dimensionless_alpha2F": 0.9125654859419836,
+        "alpha2F_energy_integral_eV_if_axis_is_nu_THz": 0.01709734056891976,
+        "alpha2F_first_energy_moment_eV2_if_axis_is_nu_THz": 0.0007887592292446713,
+        "normal_empty_band_single_particle_emission_limit_ps_inverse": 163.20845879512726,
+        "inverse_of_that_formal_limit_ps": 0.006127133405844379,
+        "warning": "Conditional quadrature only: normal empty final band, no phonons, rho=1, coherence=1, E above phonon support. This is not a measured lifetime, a cascade time, a thermalization time, or a bound for the superconducting detector. No RHS or trajectory was evaluated."
+      }
+    },
+    "nbn-a2f-ph.dat": {
+      "first_line": "0\t   3.360544e-86\t    1.54621e-13",
+      "has_header": false,
+      "rows_raw": 11999,
+      "rows_stable_first_unique": 11995,
+      "integral_column3_on_stored_axis_raw": 0.708420057503863,
+      "negative_column3_nodes": 361,
+      "axis_min": 0.0,
+      "axis_max": 20.0,
+      "moments": {
+        "lambda_if_column2_is_dimensionless_alpha2F": 1.2156653384926526,
+        "alpha2F_energy_integral_eV_if_axis_is_nu_THz": 0.017800266180665558,
+        "alpha2F_first_energy_moment_eV2_if_axis_is_nu_THz": 0.0006907188297621339,
+        "normal_empty_band_single_particle_emission_limit_ps_inverse": 169.9184734478857,
+        "inverse_of_that_formal_limit_ps": 0.005885175282643425,
+        "warning": "Conditional quadrature only: normal empty final band, no phonons, rho=1, coherence=1, E above phonon support. This is not a measured lifetime, a cascade time, a thermalization time, or a bound for the superconducting detector. No RHS or trajectory was evaluated."
+      }
+    }
+  },
+  "existing_shape": {
+    "path": "docs/implementation/stage1_closure/material_nbn_shape_v1.csv",
+    "sha256": "7bffe65c19505d203e3b4705e4000d093c487f2ed02d79e0519c754f28d3c537",
+    "policy": "Existing stage1 stable-first common-support derivative; read without modification",
+    "integral_on_stored_axis": 0.7199501383113989,
+    "conditional_modes_if_column3_states_per_THz": 0.7199501383113989,
+    "conditional_modes_if_column3_states_per_meV": 2.9774745304103165,
+    "conversion_ratio_between_those_hypotheses": 4.135667696923859,
+    "neither_hypothesis_is_selected": true,
+    "moments": {
+      "lambda_if_column2_is_dimensionless_alpha2F": 1.2106667698212896,
+      "alpha2F_energy_integral_eV_if_axis_is_nu_THz": 0.017691947881838525,
+      "alpha2F_first_energy_moment_eV2_if_axis_is_nu_THz": 0.0006852466379834406,
+      "normal_empty_band_single_particle_emission_limit_ps_inverse": 168.8844844166906,
+      "inverse_of_that_formal_limit_ps": 0.005921207051399042,
+      "warning": "Conditional quadrature only: normal empty final band, no phonons, rho=1, coherence=1, E above phonon support. This is not a measured lifetime, a cascade time, a thermalization time, or a bound for the superconducting detector. No RHS or trajectory was evaluated."
+    }
+  },
+  "energy_axis_convention": {
+    "formula": "E=h*nu=hbar*omega; omega=2*pi*nu",
+    "h_eV_ps": 0.004135667696923859,
+    "meV_per_THz_cycles_per_second": 4.135667696923859,
+    "code_h_eV_ps_using_upstream_rounded_hbar": 0.004135592569185604
+  },
+  "BG19_cell_count_comparison_not_SI25_metadata": {
+    "structure": "delta-NbN rocksalt, 2 atoms per primitive formula unit, 6 branches",
+    "theoretical_volume_A3_per_formula_unit": 21.67,
+    "experimental_volume_A3_per_formula_unit": 21.16,
+    "theoretical_formula_units_nm_inverse3": 46.14674665436086,
+    "experimental_formula_units_nm_inverse3": 47.25897920604915,
+    "theoretical_atoms_nm_inverse3": 92.29349330872172,
+    "experimental_atoms_nm_inverse3": 94.5179584120983,
+    "source": "BG19 Table I; these volumes do not identify the upstream NbN file's DFPT cell"
+  },
+  "elapsed_seconds": 0.06300000002374873
+}

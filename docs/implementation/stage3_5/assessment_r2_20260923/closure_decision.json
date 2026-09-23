@@ -1,0 +1,31 @@
+{
+  "schema": "pysnspd.stage3_5.research_closure.v1",
+  "date": "2026-09-23",
+  "research_closed": true,
+  "physical_domain_complete": false,
+  "photon_transfer_admitted": false,
+  "stage4_prepared": true,
+  "stage4_started": false,
+  "new_physical_transients": 0,
+  "physics_activated": false,
+  "production_promotion": false,
+  "stage4_scope": "NON_PHOTON_DIAGNOSTICS",
+  "user_answer": "Cerrar investigación 3.5 y preparar etapa 4 sin fotón",
+  "physical_width_nm": null,
+  "range_records": 127,
+  "meaning": "Close research into parameters, coupled restrictions and unknowns. Prepare non-photon core/dissipation diagnostics; do not declare Korzh transfer or detector prediction admitted.",
+  "evidence": [
+    "use_domain.json",
+    "cascade/cascade_partition.json",
+    "material/material_assessment.md",
+    "planning_scales.json",
+    "stage4_readiness.json"
+  ],
+  "preserved_requirements": [
+    "Material rates before physical NbN kinetic predictions",
+    "Cascade transfer before photon/hotbelt predictions",
+    "Weak coupled dynamics and used boundary/interface capabilities before dynamic claims",
+    "Core support and D36 before core trajectory claims"
+  ],
+  "long_calculation_pending": false
+}

@@ -36,14 +36,20 @@ passes 243 tests and 46 subtests in 10.29 s. The
 [closure report](docs/implementation/stage3/closure_20260923/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.md)
 ([PDF](output/pdf/implementation/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.pdf))
 preserves the original incomplete-contract, temporal, full-D.27, kinetic-interface
-and production-admission flags. A weak coupled transient remains required before
-stages 4–5. The [current sequence](docs/implementation/SECUENCIA_VIGENTE.md) opens
-[stage 3.5 research](docs/implementation/stage3_5/README.md): 127 parameter entries
-in 15 families, with Korzh/Allmaras source distinctions. The example
-L2D/W = 1.5–6 is not an adopted validity range; a 1D continuation remains
-conditional on the relevant transverse dynamics. No long calculation is pending,
-and the completed batch should not be repeated. Production is unchanged.
-The [current stage 3.5 review](docs/implementation/stage3_5/CURRENT.md) covers all127 inventory entries and the selected80nm Korzh reference. It distinguishes fitted material inputs, photon retention, geometry and numerical planning from measured validity ranges. The user chose to characterize the cascade before selecting the Gaussian width; no new transients or production parameters are introduced.
+and production-admission flags. The [stage 3.5 research closure](docs/implementation/stage3_5/CURRENT.md)
+now reviews all 127 parameter entries in 15 families. The user authorized closing
+research and preparing [stage 4 without photons](docs/implementation/stage4/README.md):
+controlled core, stability and dissipation diagnostics. Its
+[final report](docs/implementation/stage3_5/assessment_r2_20260923/Informe_cierre_investigacion_etapa_3_5.md)
+([PDF](output/pdf/implementation/Informe_cierre_investigacion_etapa_3_5.pdf))
+separates source-supported values, planning margins and open inputs. The Gaussian
+photon width and Korzh transfer remain unselected; absolute NbN rates still need
+a consistent volumetric phonon DOS. Stage 4 is prepared, not started. The weak
+coupled transient and equal-energy kinetic interface remain prerequisites for
+the dynamic capabilities that use them, rather than for static non-photon controls.
+The original [stage 3 sequence](docs/implementation/SECUENCIA_VIGENTE.md) is preserved
+as historical evidence. No new physical trajectories or long pending jobs were
+introduced, and production is unchanged.
 The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 

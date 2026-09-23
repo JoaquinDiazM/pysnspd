@@ -2,86 +2,59 @@
 
 Actualizado el 23 de septiembre de 2026. Cuenta `jdiaz`, sin administrador.
 
-## Estado actual: investigación 3.5; sin cálculo largo pendiente
+## Estado: investigación 3.5 cerrada; etapa 4 preparada sin fotón
 
-La [revisión vigente](implementation/stage3_5/CURRENT.md) investiga las127
-variables del inventario. El usuario eligió formación del hotbelt y latencia
-relativa775/1550nm en el hilo80nm de Korzh; tiempo desde transferencia; referencia
-material ajustada D=0,5cm²/s y608Ω por cuadrado. Después de revisar Allmaras y
-Zotova–Vodolazov, eligió **caracterizar primero la cascada y dejar el ancho
-gaussiano abierto**. No se adoptan5–20nm ni la equivalencia histórica1,4–1,9nm.
+La decisión recibida fue **«Cerrar investigación 3.5 y preparar etapa 4 sin fotón»**.
+El [informe final](implementation/stage3_5/assessment_r2_20260923/Informe_cierre_investigacion_etapa_3_5.md)
+y el [contrato de etapa 4](implementation/stage4/README.md) son la entrada vigente.
+El ancho, reparto y reloj de transferencia de Korzh siguen abiertos. La etapa 4
+comenzará con controles del núcleo, estabilidad y disipación sin fotón.
 
-El [informe de investigación](implementation/stage3_5/research_20260923/Informe_investigacion_etapa_3_5_r1.md)
-contiene resultados documentales y figuras analíticas. El
-[plan de cascada](implementation/stage3_5/research_20260923/cascade_characterization.md)
-identifica los datos de transferencia que faltan. No se ejecutaron transientes
-nuevos, no se modificaron parámetros físicos y no hay un lote largo por lanzar.
-No repetir las corridas de etapas2–3. El desarrollo3 permanece cerrado dentro
-del alcance acordado, con requisitos dinámicos aún pendientes antes de4–5.
+**No hay cálculo largo pendiente.** No repetir lotes de etapas 2–3. Las tareas
+de implementación de etapa 4 están definidas pero aún no tienen un corredor
+físico preparado. Por eso no se ofrece un comando de simulación ficticio.
 
-## Verificación ligera reproducible
+## Verificación ligera de la entrega actual
 
 ```bash
 cd /home/jdiaz/pysnspd
 env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   /home/jdiaz/.conda/envs/snspd/bin/python \
-  sandbox/stage3_5/research_20260923/verify_delivery.py
+  sandbox/stage3_5/assessment_r2_20260923/verify_delivery.py
 ```
 
-Comprueba integridad,127 entradas, decisiones recibidas y entregas históricas.
-Lee archivos, sin resolver espectros ni trayectorias. Duración prevista:
-segundos;1proceso/1hilo; memoria pequeña frente a una simulación. La salida es
-JSON en terminal, con dictamen y conteos. El verificador anterior aislado usa
-su libreta histórica; el actual aplica esa copia preservada al revisar la cadena.
+Duración prevista: segundos; 1 proceso, sin RHS ni transientes. Comprueba hashes,
+127 entradas, decisión recibida, preparación sin fotón y cadena histórica.
+La salida es JSON en la terminal. Es opcional; la entrega ya incluye su ejecución.
 
-Para regenerar las figuras analíticas y el registro, desde la raíz del repo:
-
-```bash
-/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/geometry_scales.py
-/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/profile_comparison.py
-/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/build_range_ledger.py
-```
-
-Cada comando tarda segundos, usa1proceso y genera los JSON/PNG documentados en
-`docs/implementation/stage3_5/research_20260923/`. Son fórmulas y contabilidad;
-no caracterizan por sí solos una cascada. Regenerar PNG con otra versión de
-Matplotlib puede cambiar sus bytes: conservar la entrega publicada y generar
-una revisión antes de actualizar su manifiesto. Estos comandos son opcionales,
-no una ejecución requerida al usuario.
-
-La libreta que acompañó el cierre de etapa3 se conserva exactamente en
-[research_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md](implementation/stage3_5/research_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md),
-incluidos los resultados y comandos originales. La cadena sigue verificable.
-
-## Lectura reproducible de la cascada histórica de Allmaras
+## Reproducción opcional de las figuras y cuentas
 
 ```bash
 cd /home/jdiaz/pysnspd
 env PYTHONPATH=/home/jdiaz/pysnspd/tmp/stage3_5_document_deps \
-  /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/digitize_a20_radial.py
-/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/plot_cascade_shape.py
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  sandbox/stage3_5/assessment_r2_20260923/cascade_extract_partition.py
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/assessment_r2_20260923/cascade_plot_summary.py
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/assessment_r2_20260923/planning_scales.py
 ```
 
-Entrada: PDF de Allmaras2020 en `tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf`,
-con SHA verificado por el script. Extrae4 radios visibles de la figura2.7(a),
-registra el margen de lectura y genera `cascade_digitization.json` y
-`figures/04_cascade_shape.png` en la revisión. No usa zonas tapadas por la leyenda.
-La dependencia pdfplumber0.11.8 está instalada sólo en
-`tmp/stage3_5_document_deps`; el comando la activa sin modificar el entorno
-físico. Su instalación aislada tardó unos3s. La extracción reproducida en
-Geminga coincidió exactamente con el JSON local.
-Tiempo previsto: segundos,1 proceso; sin simulación de cascada. Son comandos
-opcionales. Regenerar figuras puede cambiar bytes según bibliotecas; revisar
-el manifiesto antes de publicar otra versión.
+Extrae las figuras originales 2.6(a)/2.8(a) de Allmaras desde el PDF preservado
+en `tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf`, comprueba su hash y
+genera las cotas y PNG bajo `docs/implementation/stage3_5/assessment_r2_20260923/`.
+El último comando evalúa 36 estados algebraicos de movilidad y 16 combinaciones
+auxiliares de longitud/ventana; no predice trayectorias. Duración: segundos por
+comando; un proceso, memoria dominada por el PDF (~100 MB) y su extracción.
+Las dependencias documentales están aisladas de las bibliotecas del solver.
+Regenerar PNG con otras versiones puede cambiar bytes: conservar la entrega
+publicada y revisar el manifiesto antes de sustituirla.
 
 ## Historial preservado
 
-La libreta anterior, incluido el comando del lote que ya terminó, se conserva
-íntegra en
-[implementation/stage3/closure_20260923/GEMINGA_COMMANDS_before_closure.md](implementation/stage3/closure_20260923/GEMINGA_COMMANDS_before_closure.md).
-Sus enlaces mantienen accesibles las entradas previas. Las instrucciones de
-«pendiente» o «siguiente cálculo» de esos archivos son históricas, no una cola
-actual de trabajo. El solver de producción y `v1.0.0` no cambian.
+La libreta que acompañó r1 se conserva íntegra en
+[assessment_r2_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md](implementation/stage3_5/assessment_r2_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md).
+Incluye la reproducción anterior y los enlaces a todas las entradas previas.
+Los estados de abierto o pendiente en ese historial no son una cola vigente.
+La producción y `v1.0.0` se conservan.
 
 ## Política para futuros cálculos
 

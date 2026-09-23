@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "scope": "Documentary closure and non-photon stage4 preparation; no new physical runs",
+  "pdf": {
+    "path": "output/pdf/implementation/Informe_cierre_investigacion_etapa_3_5.pdf",
+    "sha256": "5fa4fec457973c76d260b5dfcd0a2a91ce488b6a06789a53ee104cc19ca75e75",
+    "pages": 5,
+    "links": 4,
+    "visual_review": "All five final Poppler pages inspected. Tables, plot legends, fonts and margins readable; no clipped content."
+  },
+  "figures": [
+    {
+      "path": "docs/implementation/stage3_5/assessment_r2_20260923/figures/cascade_partition_shape.png",
+      "sha256": "bf93a3ef650507a8a3ba13a509eb6456536babe4e6ff945a841964a7a25e19f8",
+      "visual_review": "PASS"
+    },
+    {
+      "path": "docs/implementation/stage3_5/assessment_r2_20260923/figures/mobility_components.png",
+      "sha256": "346f918a06f51297974f395dc1aa452b216e8aaf2bbb917e9e8c2d6419ffc43a",
+      "visual_review": "PASS"
+    }
+  ],
+  "local_checks": {
+    "python_scripts_parsed": 7,
+    "json_files_parsed": 13,
+    "parameter_entries": 127,
+    "families": 15,
+    "all_entry_review_paths_exist": true,
+    "source_index_unchanged": true,
+    "unrelated_files_preserved": 86,
+    "mobility_algebra": "Zero-amplitude isotropy and reciprocal radial/tangential product verified at three temperatures",
+    "cascade": "12 visible samples;4 cross-figure envelopes overlap; phonon percentile ratios outside exact-Gaussian identity",
+    "independent_relative_links_checked": 81,
+    "entry_review_links_checked": 254,
+    "broken_local_links": 0
+  },
+  "independent_review": "Stage4 scope, physical inference and links reviewed separately; corrected phonon-feedback wording and BGK normalized-time units",
+  "new_physical_transients": 0,
+  "solver_parameters_changed": false,
+  "stage4_started": false,
+  "preservation_check": "Delivery manifest verifies the frozen165+91+36 predecessor records using archived front doors."
+}

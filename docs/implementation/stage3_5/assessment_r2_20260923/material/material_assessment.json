@@ -1,0 +1,105 @@
+{
+  "schema": "pysnspd.stage3_5.r2.material_assessment.v1",
+  "date": "2026-09-23",
+  "status": "RESEARCH_CLOSED_CONDITIONAL_SHAPE_ABSOLUTE_MATERIAL_NOT_ADMITTED",
+  "user_decision": "Cerrar investigación 3.5 y preparar etapa 4 sin fotón",
+  "new_trajectories": 0,
+  "new_physical_rhs_evaluations": 0,
+  "production_changes": false,
+  "r1_and_stage1_artifacts_modified": false,
+  "summary": "The missing information is the physical volumetric phonon DOS g_ph(E), not separate arbitrary normalizations of F and N. The available NbN shape remains useful; no absolute hotbelt or photon-latency admission follows.",
+  "repository": {
+    "url": "https://github.com/qnngroup/proj-KE-solver",
+    "revision": "5b6bd747f80016da5ccd51db73c110a8ecc6abf6",
+    "commits_audited": 14,
+    "tree_inventory": "repository_history_audit.json",
+    "public_nbn_paths_in_audited_history": ["nbn-a2f-ph.dat"],
+    "nbn_blob_sha1": "d479ac67a90d86ba704597ad8f8a11e673e5dd27",
+    "nbn_numeric_payload_sha256": "9aeea0948033d771deedae40da0cb4dc59fef80ac6ea41ac4d3a67b180efc610",
+    "local_historical_copy_with_added_header_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+    "upstream_file_has_header": false,
+    "expected_solver_file": "nbn-a2f-ph_2.dat",
+    "expected_solver_file_found": false,
+    "DFPT_input_or_postprocessing_generator_found": false,
+    "full_original_downloads_are_in_tmp_not_delivery": true
+  },
+  "new_evidence": [
+    {"id": "M-R2-1", "fact": "Headered Al, Nb, TiN tables integrate to 3.00074610, 5.98360199 and 6.01790853 on their stored THz axis. No universal normalization to three is inferable.", "source": "unit_audit.json"},
+    {"id": "M-R2-2", "fact": "The missing _2 file is absent from every one of the 14 public historical trees; additional searches of that history are not required.", "source": "repository_history_audit.json"},
+    {"id": "M-R2-3", "fact": "The kinetic combinations depend on g_ph=N_b F_b. Consistent reciprocal changes of the two factors are a basis convention; changing only one changes physics.", "source": "Own dimensional/algebraic derivation from the energy and electron-phonon kernels"},
+    {"id": "M-R2-4", "fact": "Upstream solver N=50 and tau_escape=10 ps differ from SI25 table N=48 and tau_escape=15 ps; neither collection is the selected Korzh80nm film calibration.", "source": "solver.m lines82,131; SI25 Table I"}
+  ],
+  "units": {
+    "code_energy": "eV",
+    "code_time": "ps",
+    "frequency_relation": "E=h*nu=hbar*omega; omega=2*pi*nu",
+    "THz_means_cycles_per_second_in_solver": true,
+    "meV_per_THz": 4.135667696923859,
+    "DOS_jacobian": "F_E(E)=F_nu(nu)/h with compatible energy and time units",
+    "alpha2F_transformation": "A_E(E)=A_nu(nu) under the convention lambda=2 integral A dE/E; do not apply the DOS Jacobian to A",
+    "public_NbN_ordinate_units": "UNRESOLVED",
+    "public_NbN_axis_THZ_interpretation": "CONDITIONAL_ON_INTENDED_READER_NOT_FILE_METADATA",
+    "states_per_meV_hypothesis_selected": false,
+    "renormalization_to_three_selected": false,
+    "atom_formula_unit_factor_two_selected": false
+  },
+  "minimal_absolute_material_contract": {
+    "required_functions": [
+      {"name": "A(E)=alpha2F(E)", "units": "dimensionless in the SI25 energy-integral convention"},
+      {"name": "g_ph(E)", "units": "modes per energy per volume"}
+    ],
+    "required_electronic_quantity": "N0 normal-state DOS per spin per energy per volume",
+    "energy_identity": "U_ph=integral E*g_ph(E)*n(E) dE",
+    "phonon_rate_combination": "N0*A(E)/g_ph(E), multiplied by channel prefactors and the electronic phase-space integral",
+    "basis_invariance": "F_b->c*F_b, N_b->N_b/c, alpha2->alpha2/c leaves energy and rates unchanged",
+    "condition_not_met_by_current_table": "A volumetric normalization with unit/base/volume or independent effective heat-capacity anchor",
+    "full_new_DFPT_required": false
+  },
+  "finite_future_options_not_adopted": [
+    {
+      "option": "Recover an explicitly normalized export",
+      "minimum_evidence": "Energy variable and unit; phonon DOS base; number of atoms and volume of that base; transformation linking F and A columns",
+      "benefit": "Direct g_ph conversion without ad hoc amplitude",
+      "requires_new_microscopic_simulation": false,
+      "status": "PENDING_METADATA_OR_EQUIVALENT_EXPORT"
+    },
+    {
+      "option": "Declare an effective volumetric heat-capacity calibration",
+      "candidate_anchor": "A20 acoustic Cph=Bph*T^3 and v_avg=4912 m/s",
+      "formula": "Bph=2*pi^2*kB^4/(5*hbar^3*v_avg^3)",
+      "scope": "Low-temperature acoustic scenario, not the full-band optical DOS nor a measurement of the Korzh device",
+      "required_checks": ["Declared reference temperature/range", "Independent source and sample scope", "Mode-count consistency", "Explicit uncertainty and sensitivity of predictions"],
+      "scale_factor_chosen": false,
+      "status": "SUPPORTED_ALTERNATIVE_NOT_CALIBRATED_OR_ADOPTED"
+    }
+  ],
+  "rates_and_cascade": {
+    "electronic_kernel_scale_recoverable_conditionally": "2*pi/hbar integral A(E)...dE for specified phonon occupations",
+    "phonon_feedback_and_energy_to_occupation_require_gph": true,
+    "lambda_original": 1.2156653384926526,
+    "lambda_derived_stage1": 1.2106667698212896,
+    "single_particle_normal_empty_band_emission_rate_original_ps_inverse": 169.9184734478857,
+    "formal_rate_warning": "Conditional algebraic limit only: not a physical detector lifetime, cascade time, thermalization time, or superconducting bound",
+    "SI25_high_energy_ee_operator_present": false,
+    "A20_nominal_ee_dimensionless_coefficient": 12.3,
+    "A20_tau0_kinetic_ns": 1.87,
+    "A20_tau_ep_10K_ps": 16,
+    "BGK_equals_cascade_ee_assumed": false,
+    "minimum_future_cascade_terms": ["Energy-dependent electron-electron redistribution", "Consistent A and g_ph for emission/absorption/recombination/pair creation", "Substrate escape", "Transport and depth averaging"],
+    "photon_width_selected": false,
+    "photon_retention_selected_by_this_audit": false,
+    "handoff_time_selected": false
+  },
+  "sources": [
+    {"id": "QNN25", "url": "https://github.com/qnngroup/proj-KE-solver/tree/5b6bd747f80016da5ccd51db73c110a8ecc6abf6", "type": "primary_public_code_and_data", "read": "14 trees; solver.m, f.m, g.m, explicit_euler.m and four original material tables", "hash_register": "unit_audit.json"},
+    {"id": "SI25", "url": "https://arxiv.org/html/2501.13791v3", "doi": "10.1103/3m2k-mzr6", "type": "primary_author_manuscript_v3", "locators": ["Eq1a/1b", "SectionII definition of N and lambda", "AppendixVII.1 energy and initial condition", "AppendixVII.4 DFPT", "TableI"], "warning": "Current report uses the identified author-manuscript version; public code constants are not all identical to its TableI"},
+    {"id": "BG19", "url": "https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevB.99.104508/fulltext", "doi": "10.1103/PhysRevB.99.104508", "type": "primary_article", "locators": ["TableI volume per formula unit", "Figures5/6 phonon branches and DOS", "TableIII coupling and composition"], "warning": "Independent NbN calculation, not metadata for the SI25 file"},
+    {"id": "QE", "url": "https://www.quantum-espresso.org/Doc/INPUT_MATDYN.html", "type": "official_code_documentation", "locators": ["fldos: states/cm^-1 and 3*nat"]},
+    {"id": "EPW", "url": "https://docs.epw-code.org/tutorials/tutorial_04/index.html", "type": "official_code_tutorial", "locators": ["pb.a2f column units", "phonon DOS plotting conversion"]},
+    {"id": "A20", "url": "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf", "doi": "10.7907/wgak-vs11", "type": "primary_thesis_read_local_original_PDF", "locators": ["printed13 Eq2.5/2.8", "printed15-16 material parameters", "printed24-25 electron-electron study"], "local_original_pdf": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf", "sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96"}
+  ],
+  "deliverables": ["material_assessment.md", "material_assessment.json", "unit_audit.json", "repository_commits.json", "repository_tree.json", "repository_history_audit.json"],
+  "reproduction_script": "sandbox/stage3_5/assessment_r2_20260923/material_unit_audit.py",
+  "remaining_long_calculation": false,
+  "scientific_limit": "Closing documentary investigation does not close absolute phonon calibration, the cascade, transient validation, or production admission. Stage4 is prepared without a photon."
+}
