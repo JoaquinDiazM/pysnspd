@@ -1,0 +1,403 @@
+{
+  "schema": "pysnspd.stage3_5.material_kinetics_research.v1",
+  "date": "2026-09-23",
+  "status": "DOCUMENTARY_RESEARCH_NO_MODEL_CHANGES",
+  "new_physics_simulations": 0,
+  "operations": "Read-only sources and algebraic conversions, no numerical physics solves",
+  "orientation": {
+    "experiment": "Korzh2020 NbN80nm",
+    "observables": [
+      "relative_latency775_1550",
+      "hotbelt_before_jitter"
+    ],
+    "user_decision": "K20/Allmaras reference adopted provisionally for research; fit inputs remain hypotheses, not measurements",
+    "research_anchor": {
+      "D_m2_s": 5e-05,
+      "R_sheet_ohm": 608,
+      "d_m": 7e-09,
+      "Tc_K": 8.65
+    },
+    "code_parameters_changed": false,
+    "physical_admission": false
+  },
+  "sources": [
+    {
+      "id": "K20",
+      "doi": "10.1038/s41566-020-0589-x",
+      "url": "https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf",
+      "type": "primary_accepted_article_and_supplement",
+      "locators": [
+        "PDF9-10 material",
+        "PDF33 supplementary table1"
+      ],
+      "uncertainty": "Material/model table uncertainty not reported"
+    },
+    {
+      "id": "A20",
+      "doi": "10.7907/wgak-vs11",
+      "url": "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf",
+      "type": "primary_thesis",
+      "locators": [
+        "printed15-16/PDF27-28 material and Einstein",
+        "printed38/PDF50 acoustic escape",
+        "printed53-54/PDF65-66 DOS limits",
+        "printed94-99/PDF106-111 KWT and fits"
+      ],
+      "local_file": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf"
+    },
+    {
+      "id": "A19preprint",
+      "doi": "10.1103/PhysRevApplied.11.034062",
+      "url": "https://arxiv.org/pdf/1805.00130",
+      "type": "primary_author_preprint",
+      "locators": [
+        "PDF9 equation31",
+        "PDF10 scattering times"
+      ],
+      "version_warning": "This preprint hotbelt80nm differs from later K20/A20 hotbelt40nm; do not silently transfer geometry."
+    },
+    {
+      "id": "S20",
+      "doi": "10.1103/PhysRevB.102.054501",
+      "url": "https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevB.102.054501/fulltext",
+      "type": "primary_research_article",
+      "locators": [
+        "PDF4 tableII and equation1",
+        "PDF5 equation3/Einstein",
+        "PDF7 tableIII",
+        "PDF12 escape estimates"
+      ],
+      "convention": "N(0) total for BOTH spins",
+      "sample_warning": "Other NbN films, not the Korzh80nm device"
+    },
+    {
+      "id": "BG19",
+      "doi": "10.1103/PhysRevB.99.104508",
+      "url": "https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevB.99.104508/fulltext",
+      "type": "primary_ab_initio_study",
+      "locators": [
+        "figures5-6",
+        "PDF9 tableIII"
+      ],
+      "sample_warning": "Crystal polytypes, not a measurement of the Korzh film"
+    },
+    {
+      "id": "SI25",
+      "url": "https://arxiv.org/html/2501.13791v3",
+      "type": "primary_author_preprint_v3",
+      "locators": [
+        "appendixVII.3 gap rescaling",
+        "appendixVII.4 bulkDFPT",
+        "appendixVII.5 table1"
+      ],
+      "sample_warning": "Reference NbN5nm,Tc10K differs from K20"
+    },
+    {
+      "id": "QNNdata",
+      "url": "https://github.com/qnngroup/proj-KE-solver/blob/5b6bd747f80016da5ccd51db73c110a8ecc6abf6/nbn-a2f-ph.dat",
+      "type": "primary_code_and_data_repository_previously_audited",
+      "source_sha256": "e94f11273e6c42b7c8fad978b78d119166e241bec1614ee77e4176906fa8f5df",
+      "access_this_turn": "Web retrieval failed; frozen local audit inspected",
+      "absolute_SI_admission": false
+    }
+  ],
+  "local_evidence": [
+    {
+      "path": "docs/modelo_v0_4/A_microscopia_y_funcional_v0_4.md",
+      "sha256": "043d14c9d9c2e52a06d909a033a6230d021120b696272023ed0558e6e8c228a5"
+    },
+    {
+      "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+      "sha256": "db67d19adff15c1aa797e73349f3f22aca85d426e54c1cfe0827d1b7ad13dd87"
+    },
+    {
+      "path": "pysnspd/experimental/cell_closures.py",
+      "sha256": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d"
+    },
+    {
+      "path": "pysnspd/config.py",
+      "sha256": "0208fd1c04961276f971feb699c48bc0cc344220467e8ff987ebe7d6f190fd3a"
+    },
+    {
+      "path": "configs/geminga_local_v3.yaml",
+      "sha256": "cdb274d1b8c257ee58de06f872a8fcdb9a9e8a263455823c88ee485183366ab9"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_findings.md",
+      "sha256": "508b4b636239cd09a2f3e8660084e1f92b962c38bde79fcc8a4312977ba613ae"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_nbn_shape_v1.manifest.json",
+      "sha256": "e8cba8c8eb00e475c556e1118bd6d0100857fb57c8bd41d96409499991b1ae8c"
+    },
+    {
+      "path": "docs/implementation/stage1_closure/material_nbn_shape_v1.csv",
+      "sha256": "7bffe65c19505d203e3b4705e4000d093c487f2ed02d79e0519c754f28d3c537"
+    },
+    {
+      "path": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf",
+      "sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96"
+    }
+  ],
+  "inferences": {
+    "RRR": {
+      "conditional_formula": "RRR=R300/R_normal",
+      "K20_RRR": 0.8,
+      "R_room_ohm": 340,
+      "derived_R_normal_ohm": 425,
+      "normal_temperature_K": null,
+      "conclusion": "608 does not follow;20K convention inS20 not silently assigned toK20"
+    },
+    "Einstein": {
+      "single_spin": "sigma=2e^2 N0 D",
+      "total_spin": "sigma=e^2 N_total D",
+      "relation": "N_total=2N0",
+      "source": [
+        "A20p16",
+        "S20tablesII/III and sectionIII.A"
+      ]
+    },
+    "D": {
+      "historical_model_cm2_s": 0.5,
+      "inherited_cm2_s": 1.581,
+      "ratio": 3.162,
+      "same_specimen_D_measurement_identified": false
+    },
+    "legacy_conductivity": {
+      "sigma_S_m": 420000.0,
+      "inferred_from_340ohm_7nm_S_m": 420168.06722689077,
+      "meaning": "Numerical agreement0.04%, not proof of low-T conductivity"
+    },
+    "tau_ep": {
+      "formula": "16ps*(10K/8.65K)^3",
+      "value_ps": 24.72132022665587,
+      "classification": "model_extrapolation_not_same_sample_measurement"
+    },
+    "tau0_definitions": {
+      "A20_kinetic_ns": 1.87,
+      "A20_kinetic_definition": "tau_ep(Tc)*720*zeta(5)/pi^2",
+      "D11_GL_definition": "pi*hbar/(8*kB*Tc)",
+      "D11_GL_ps": 0.3467661178053203,
+      "same_quantity": false
+    },
+    "mobility": {
+      "current_Tc_times_ps": [
+        0.5,
+        2.47
+      ],
+      "config_defaults_A20_times_ps": [
+        5,
+        24.7
+      ],
+      "K20_times_ps": [
+        6,
+        24.7
+      ],
+      "current_over_A20_tau_effective": 0.1,
+      "conclusion": "Different coefficients, not unit conversion; radial and phase responses prevent global time-axis reinterpretation",
+      "temperature_examples": [
+        {
+          "T_K": 0.9,
+          "selected_tau_ps": 4.795047586708814,
+          "A20_tau_ps": 47.95047586708815
+        },
+        {
+          "T_K": 4,
+          "selected_tau_ps": 1.0363875481477187,
+          "A20_tau_ps": 10.363875481477189
+        },
+        {
+          "T_K": 8.65,
+          "selected_tau_ps": 0.4158249158249159,
+          "A20_tau_ps": 4.158249158249158
+        }
+      ]
+    }
+  },
+  "algebraic_material_comparisons": [
+    {
+      "id": "room_T_R_with_inherited_D_conditional",
+      "R_sheet_ohm": 340,
+      "D_m2_s": 0.0001581,
+      "d_m": 7e-09,
+      "sigma_derived_S_m": 420168.06722689077,
+      "N0_derived_single_spin_J_inv_m_inv3": 5.176549722090589e+46,
+      "N0_derived_single_spin_eV_inv_cm_inv3": 8.293747009472734e+21,
+      "L_square_BCS_zero_T_weak_current_pH": 54.17981533398663,
+      "uncertainty": "Not estimated; algebra from rounded inputs, not new measurement"
+    },
+    {
+      "id": "RRR_conditional_with_inherited_D",
+      "R_sheet_ohm": 425,
+      "D_m2_s": 0.0001581,
+      "d_m": 7e-09,
+      "sigma_derived_S_m": 336134.4537815126,
+      "N0_derived_single_spin_J_inv_m_inv3": 4.1412397776724716e+46,
+      "N0_derived_single_spin_eV_inv_cm_inv3": 6.634997607578188e+21,
+      "L_square_BCS_zero_T_weak_current_pH": 67.72476916748329,
+      "uncertainty": "Not estimated; algebra from rounded inputs, not new measurement"
+    },
+    {
+      "id": "K20_historical_model",
+      "R_sheet_ohm": 608,
+      "D_m2_s": 5e-05,
+      "d_m": 7e-09,
+      "sigma_derived_S_m": 234962.40601503762,
+      "N0_derived_single_spin_J_inv_m_inv3": 9.153297821093998e+46,
+      "N0_derived_single_spin_eV_inv_cm_inv3": 1.4665199892999916e+22,
+      "L_square_BCS_zero_T_weak_current_pH": 96.88625800901137,
+      "uncertainty": "Not estimated; algebra from rounded inputs, not new measurement"
+    },
+    {
+      "id": "A20_historical_model",
+      "R_sheet_ohm": 600,
+      "D_m2_s": 5e-05,
+      "d_m": 7e-09,
+      "sigma_derived_S_m": 238095.2380952381,
+      "N0_derived_single_spin_J_inv_m_inv3": 9.275341792041917e+46,
+      "N0_derived_single_spin_eV_inv_cm_inv3": 1.4860735891573247e+22,
+      "L_square_BCS_zero_T_weak_current_pH": 95.61143882468228,
+      "uncertainty": "Not estimated; algebra from rounded inputs, not new measurement"
+    }
+  ],
+  "published_other_sample_series": {
+    "source": "S20 tableIII",
+    "rows": [
+      {
+        "sample": "M-2259",
+        "d_nm": 5,
+        "Tc_K": 10.74,
+        "R_sheet_normal_ohm": 529.5,
+        "D_cm2_s": 0.474,
+        "DOS_total_eV_inv_m_inv3": 4.98e+28,
+        "tau_eph_particle_extrapolated_10K_ps": 11.9,
+        "fitted_rate_exponent": 3.53,
+        "tau_EP_energy_at_own_Tc_ps": 1.4,
+        "tau_escape_AMM_ps": 25.9
+      },
+      {
+        "sample": "M-A853",
+        "d_nm": 6.4,
+        "Tc_K": 8.35,
+        "R_sheet_normal_ohm": 954,
+        "D_cm2_s": 0.339,
+        "DOS_total_eV_inv_m_inv3": 3.02e+28,
+        "tau_eph_particle_extrapolated_10K_ps": 12.4,
+        "fitted_rate_exponent": 3.21,
+        "tau_EP_energy_at_own_Tc_ps": 4.2,
+        "tau_escape_AMM_ps": 39
+      },
+      {
+        "sample": "M-A854",
+        "d_nm": 7.5,
+        "Tc_K": 10.84,
+        "R_sheet_normal_ohm": 387.9,
+        "D_cm2_s": 0.453,
+        "DOS_total_eV_inv_m_inv3": 4.74e+28,
+        "tau_eph_particle_extrapolated_10K_ps": 15.9,
+        "fitted_rate_exponent": 3.75,
+        "tau_EP_energy_at_own_Tc_ps": 1.5,
+        "tau_escape_AMM_ps": 39
+      },
+      {
+        "sample": "M-A855",
+        "d_nm": 9.5,
+        "Tc_K": 10.94,
+        "R_sheet_normal_ohm": 330.6,
+        "D_cm2_s": 0.418,
+        "DOS_total_eV_inv_m_inv3": 4.75e+28,
+        "tau_eph_particle_extrapolated_10K_ps": 17.5,
+        "fitted_rate_exponent": 3.77,
+        "tau_EP_energy_at_own_Tc_ps": 1.6,
+        "tau_escape_AMM_ps": 51.3
+      }
+    ],
+    "fit_temperature_K": [
+      14,
+      30
+    ],
+    "tau_eph_at10K_is_extrapolated": true,
+    "energy_time_is_thermal_average_equation1": true,
+    "escape_is_AMM_estimate": true,
+    "K20_confidence_interval": false,
+    "uncertainty": "Do not interpret unreported errors as zero"
+  },
+  "historical_model_choices": {
+    "A20_tau_ee_Tc_ps": [
+      0,
+      5,
+      10
+    ],
+    "zero_meaning": "standardTDGL limit, not measured zero",
+    "escape_ps": [
+      9.4,
+      20,
+      80
+    ],
+    "escape_provenance": [
+      "A20 AMM",
+      "K20hotbelt",
+      "A20later2Dfit"
+    ],
+    "continuous_confidence_range_adopted": false
+  },
+  "gap": {
+    "Tc_K": 8.65,
+    "weak_ratio": 1.7638769888620456,
+    "gap_weak_meV": 1.314792720718218,
+    "alternative_reference_ratio": 2.1,
+    "same_Tc_hypothetical_meV": 1.565338587068672,
+    "same_film_measured_gap": null,
+    "alternative_adopted": false,
+    "restriction": "Do not rescale gap alone without rebuilding common energy and derivatives"
+  },
+  "phonon_spectrum": {
+    "g_ph": "modes/(J m3) after explicit density and atom/cell normalization",
+    "alpha2F": "dimensionless energy convention",
+    "lambda": "2integral alpha2F/Omega dOmega",
+    "one_THz_meV": 4.135667696,
+    "frequency_rule": "E=h nu for ordinary frequency; E=hbar omega for angular frequency",
+    "DOS_jacobian": "g_E dE=g_nu dnu",
+    "lambda_identifies_DOS_units": false,
+    "BG19_delta_NbN_lambda": 0.98,
+    "BG19_is_crystal_calculation_not_K20_measurement": true,
+    "SI25_bulk_DFPT_not7nm_film_calibration": true,
+    "material_shape_admission": "conditional_only",
+    "new_normalization_adopted": false,
+    "support": {
+      "source_csv": "docs/implementation/stage1_closure/material_nbn_shape_v1.csv",
+      "certified_frequency_unit": null,
+      "conditional_interpretation": "ordinary THz",
+      "stored_axis_max": 20.0,
+      "positive_common_support_last_node_original_axis": 16.3901,
+      "positive_common_support_last_node_conditional_meV": 67.78400710420959,
+      "xmax_electronic_bar": 12,
+      "BCS_zero_current_amplitude1_Emax_meV": 15.832200898036067,
+      "synthetic_phonon_max_bar": 4,
+      "synthetic_phonon_max_meV": 5.259170882872872,
+      "restriction": "No transfer of synthetic1025node4Delta0 grid to full NbN spectrum; pair sum and scattering absorption have different support needs."
+    }
+  },
+  "BGK": {
+    "tau_synthetic_ps": 0.7,
+    "target_same_energy": true,
+    "conserves_QP_number_by_definition": false,
+    "equal_to_KWT_tau_ee": false,
+    "measured_K20_range": null
+  },
+  "unresolved": [
+    "same-specimen normalR/D and their covariance",
+    "film-specific gap/strong-coupling correction",
+    "table-specific phonon units/normalization and rate prefactor",
+    "mobility identification independent of kinetic redistribution",
+    "escape law for actual film/interface/spectrum"
+  ],
+  "user_questions": [
+    {
+      "topic": "K20reference_vs_memory",
+      "status": "ANSWERED_K20_REFERENCE_FITS_NOT_MEASUREMENTS",
+      "ask_again": false
+    }
+  ],
+  "next_documentary_action": "Keep coherent provisionalK20 set and frozen memory comparison; no independent fitting of D,sigma,N0,London depth, gap and rates. Register future sensitivity before running."
+}

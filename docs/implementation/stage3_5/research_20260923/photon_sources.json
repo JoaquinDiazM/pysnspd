@@ -1,0 +1,571 @@
+{
+  "schema": "pysnspd.stage3_5.photon_preparation_research.v2",
+  "date": "2026-09-23",
+  "status": "RESEARCH_ONLY_NO_NEW_PHYSICAL_DOMAIN_ADMITTED",
+  "scope": {
+    "target": "NbN 80 nm, Korzh 2020, relative latency 1550 minus 775 nm and hotbelt formation",
+    "user_decision": "Study first from the handoff to the resolved model, keeping the unknown optical-to-handoff delay explicit.",
+    "material_scenario_decision": "Korzh fitted reference D=0.5 cm^2/s and sheet resistance=608 ohm/square; not independent measurements and not automatic adoption of photon-fit parameters.",
+    "physical_runs": 0,
+    "model_changes": false,
+    "Fano_enabled": false,
+    "new_retention_value_adopted": false,
+    "new_width_value_adopted": false,
+    "physical_cascade_duration_adopted": false,
+    "optical_latency_calibrated": false,
+    "user_rejected_unsubstantiated_ranges": {
+      "retention_fraction": [
+        0.3333333333333333,
+        1.0
+      ],
+      "gaussian_width_nm": [
+        5,
+        20
+      ],
+      "status": "NOT_ACCEPTED_NOT_ADOPTED"
+    },
+    "gaussian_shape_origin": "User-selected modeling choice; width remains to be researched independently.",
+    "retention_reference_proposed": 0.667,
+    "retention_reference_proposal_status": "PROPOSED_KORZH_SCENARIO_NOT_UNIVERSAL_NOT_YET_ADOPTED"
+  },
+  "sources": [
+    {
+      "id": "K20",
+      "kind": "primary_article_with_supplement",
+      "citation": "Korzh et al., Nature Photonics 14, 250–255 (2020)",
+      "doi": "10.1038/s41566-020-0589-x",
+      "url": "https://doi.org/10.1038/s41566-020-0589-x",
+      "consulted_version": "accepted manuscript and supplementary material, 37-page Binder1.pdf",
+      "consulted_url": "https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf",
+      "repository_record": "https://eprints.lancs.ac.uk/id/eprint/140252/",
+      "locators": [
+        "PDF 31–33, Supplementary Note 3 and Table 1",
+        "PDF 3–5, 12, 25–26, timing observable and calibration",
+        "PDF 14, chi as retained fraction after down-conversion",
+        "PDF 34–35, Supplementary Figures 3–4, PCR and IRF comparisons"
+      ],
+      "access": "web text inspected; remote table screenshot failed; no claim of visual table verification"
+    },
+    {
+      "id": "A20",
+      "kind": "primary_doctoral_thesis",
+      "citation": "J. P. Allmaras, Modeling and Development of Superconducting Nanowire Single-Photon Detectors, Caltech (2020)",
+      "doi": "10.7907/wgak-vs11",
+      "url": "https://thesis.caltech.edu/13748/",
+      "pdf_url": "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf",
+      "consulted_local_copy": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf",
+      "sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96",
+      "pages": 259,
+      "locators": [
+        "Sections 2.3.1–2.3.4, printed 19–26 / PDF 31–38",
+        "Section 2.4.4, printed 44–46 / PDF 56–58",
+        "Section 2.4.6, printed 50–53 / PDF 62–65",
+        "Printed 101–109 / PDF 113–121",
+        "Printed 95–97 / PDF 107–109, 40 nm hotbelt and revised chi fits"
+      ],
+      "visual_checks": [
+        "printed 26 / PDF 38: phonon plateau",
+        "printed 102 / PDF 114: Eq. 3.25, modified phonon-bubble source"
+      ],
+      "access": "institutional record checked online; official PDF remote open failed; existing local PDF and extracted text inspected"
+    },
+    {
+      "id": "V17",
+      "kind": "primary_article_preprint",
+      "citation": "D. Y. Vodolazov, Physical Review Applied 7, 034014 (2017)",
+      "doi": "10.1103/PhysRevApplied.7.034014",
+      "url": "https://doi.org/10.1103/PhysRevApplied.7.034014",
+      "consulted_url": "https://arxiv.org/pdf/1611.06060",
+      "locators": [
+        "Section III, Eqs. 16–22, PDF 4–6"
+      ],
+      "access": "primary preprint text inspected"
+    },
+    {
+      "id": "S25",
+      "kind": "primary_article_preprint_v3",
+      "citation": "A. Simon et al., Physical Review B 112, 174512 (2025)",
+      "doi": "10.1103/3m2k-mzr6",
+      "url": "https://doi.org/10.1103/3m2k-mzr6",
+      "consulted_url": "https://arxiv.org/html/2501.13791v3",
+      "locators": [
+        "Section III, optical initial volume",
+        "Section VII.1, Eq. 8 and following paragraphs, n0 proportional to alpha^2"
+      ],
+      "access": "version-specific primary HTML inspected"
+    },
+    {
+      "id": "K17_FANO",
+      "kind": "primary_article_published_pdf",
+      "citation": "Kozorezov et al., Physical Review B 96, 054507 (2017)",
+      "doi": "10.1103/PhysRevB.96.054507",
+      "url": "https://doi.org/10.1103/PhysRevB.96.054507",
+      "consulted_url": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=920691",
+      "locators": [
+        "Section II, printed 054507-4–5, Eqs. 11–12",
+        "PDF 8, efficiency and cascade losses"
+      ],
+      "access": "primary published PDF text inspected"
+    },
+    {
+      "id": "A19V2",
+      "kind": "primary_author_preprint",
+      "citation": "J. P. Allmaras, A. G. Kozorezov, B. A. Korzh, K. K. Berggren, M. D. Shaw, Intrinsic Timing Jitter and Latency in Superconducting Nanowire Single-photon Detectors, Physical Review Applied 11, 034062 (2019)",
+      "doi": "10.1103/PhysRevApplied.11.034062",
+      "url": "https://doi.org/10.1103/PhysRevApplied.11.034062",
+      "consulted_url": "https://arxiv.org/pdf/1805.00130v2",
+      "version": "arXiv v2, 2018-08-02, 17 pages",
+      "published_date": "2019-03-26",
+      "locators": [
+        "PDF 4, Eq. 5, energy sum",
+        "PDF 7, Section II.D, chi=0.43",
+        "PDF 10–11, Section III.A–C, dynamic preparation and fitted chi",
+        "PDF 12–13, Section IV, cascade and latency distinction"
+      ],
+      "access": "Primary preprint text inspected; remote screenshots failed. Published PDF returned HTTP401, so values are explicitly attributed to preprint and not assumed identical to published revision."
+    },
+    {
+      "id": "V19V1",
+      "kind": "primary_author_preprint",
+      "citation": "D. Yu. Vodolazov, Minimal Timing Jitter in Superconducting Nanowire Single-Photon Detectors, Physical Review Applied 11, 014016 (2019)",
+      "doi": "10.1103/PhysRevApplied.11.014016",
+      "url": "https://doi.org/10.1103/PhysRevApplied.11.014016",
+      "consulted_url": "https://arxiv.org/pdf/1807.07709v1",
+      "version": "arXiv v1, 2018-07-20, 8 pages",
+      "published_date": "2019-01-09",
+      "locators": [
+        "PDF 2, Section II, simultaneous thermal preparation",
+        "PDF 4–5, Section IV, Eq. 1 and retained-energy examples",
+        "PDF 6, Section VI, limitations of quantitative comparison"
+      ],
+      "access": "Primary preprint text inspected; publication identity checked on APS; no claim of full published-text access."
+    }
+  ],
+  "local_sources": [
+    {
+      "id": "B04",
+      "path": "docs/modelo_v0_4/B_cinetica_energia_y_temperaturas_v0_4.md",
+      "sha256": "559434e30bf71c84718fcc364456b2513eca8dce245b81f25baedf5bff79c47a",
+      "locators": [
+        "B.38–B.39",
+        "B.8 initial conditions and Fano distinction"
+      ]
+    },
+    {
+      "id": "D04",
+      "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+      "sha256": "db67d19adff15c1aa797e73349f3f22aca85d426e54c1cfe0827d1b7ad13dd87",
+      "locators": [
+        "D.30",
+        "D.31–D.33"
+      ]
+    },
+    {
+      "id": "LEGACY_PHOTON",
+      "path": "pysnspd/excitation/photon.py",
+      "sha256": "12805534f5d72365a558d53538c13c6d7b6261e152d4222ec89652c52ae5dc1c",
+      "locators": [
+        "PhotonBubbleParams",
+        "inject_phonon_bubble"
+      ],
+      "interpretation": "Legacy two-temperature injector, not the new mixed kinetic injector."
+    },
+    {
+      "id": "CATALOGUE_CLOSURE",
+      "path": "docs/implementation/stage1_closure/material_findings.md",
+      "sha256": "508b4b636239cd09a2f3e8660084e1f92b962c38bde79fcc8a4312977ba613ae"
+    },
+    {
+      "id": "EXPERIMENT_REGISTER",
+      "path": "docs/implementation/stage3_5/reference_experiment.md",
+      "sha256": "c7be50157d35fe256323c6b3456a4aa13d203ed7a2b91c2d26d07385051ec580"
+    }
+  ],
+  "preparation_parameters": [
+    {
+      "name": "photon_energy",
+      "symbol": "E_gamma",
+      "unit": "eV",
+      "role": "physical optical input, conditional on absorption",
+      "formula": "h*c/lambda",
+      "nominal_wavelength_nm": [
+        775,
+        1550
+      ],
+      "derived_energy_eV_rounded": [
+        1.599796,
+        0.799898
+      ],
+      "derivation_constants": {
+        "h_J_s": 6.62607015e-34,
+        "c_m_s": 299792458,
+        "elementary_charge_C": 1.602176634e-19
+      },
+      "uncertainty": "No laser spectral uncertainty supplied; these are nominal conversions.",
+      "sources": [
+        "B04"
+      ]
+    },
+    {
+      "name": "retained_energy",
+      "symbol": "E_in",
+      "unit": "J or eV with explicit conversion",
+      "role": "effective total excess energy handed to resolved sectors",
+      "formula": "E_gamma - energy_lost_before_t0",
+      "bounds": "0 <= E_in <= E_gamma, conditional on no other impulsive source",
+      "adopted_numeric_value": null,
+      "constraints": [
+        "Post-handoff phonon escape is not included again in prior loss.",
+        "No additional simultaneous electronic photon-energy jump when all excess is assigned to B.39 phonons."
+      ],
+      "sources": [
+        "B04",
+        "D04"
+      ]
+    },
+    {
+      "name": "retention_fraction",
+      "symbol": "chi",
+      "unit": "1",
+      "role": "effective preparation closure, not absorption efficiency",
+      "adopted_numeric_value": null,
+      "common_between_colors": "recommended controlled hypothesis, not a measurement",
+      "published_scenarios": [
+        {
+          "source": "K20",
+          "value": 0.667,
+          "status": "fit in historical 1D model; not adopted for D.30"
+        },
+        {
+          "source": "A20",
+          "value": 0.92,
+          "status": "thermal 2D preparation fit, printed 103; not adopted"
+        },
+        {
+          "source": "A20",
+          "value": 0.61,
+          "status": "phonon-bubble 2D preparation fit, printed 103; not adopted"
+        },
+        {
+          "source": "A19V2",
+          "value": 0.43,
+          "status": "simplified hotbelt fit; effective justification includes cooling during latency and electronic partition; not a pure prior-to-handoff loss",
+          "locator": "PDF 7, Section II.D, Fig. 3"
+        },
+        {
+          "source": "A19V2",
+          "values": [
+            0.16,
+            0.39,
+            0.52
+          ],
+          "tau_ee_ps": [
+            0,
+            5,
+            10
+          ],
+          "hotbelt_length_nm": 80,
+          "bath_K": 2,
+          "status": "dynamic 1D PCR1550 fits, not adopted",
+          "locator": "PDF 10–11, Section III.B–C"
+        },
+        {
+          "source": "A20",
+          "values": [
+            0.37,
+            0.65,
+            0.79
+          ],
+          "tau_ee_ps": [
+            0,
+            5,
+            10
+          ],
+          "hotbelt_length_nm": 40,
+          "bath_K": 2,
+          "status": "thesis revised 1D fits, not adopted",
+          "locator": "printed 95–97 / PDF 107–109"
+        }
+      ],
+      "not_a_range": "These different fits do not define an admissible interval or confidence interval.",
+      "proposed_scenario_reference": 0.667,
+      "proposal_status": "NOT_YET_ADOPTED",
+      "proposal_reason": "Matches selected K20 device/model reference; baseline for a controlled new-model scenario, not a universal conversion efficiency.",
+      "unverified_value_0_49": "Not confirmed in consulted A19v2, V19v1, K20 or inspected A20 passages; do not attribute to the inaccessible published A19 revision.",
+      "scenario_retained_energy_eV_rounded": {
+        "775_nm": 1.067064,
+        "1550_nm": 0.533532
+      },
+      "convention_notes": [
+        "A19 Eq.5 defines deposited E as electronic plus phononic excess.",
+        "K20 methods define chi after down-conversion; simplified electronic illustrations are not instructions to duplicate deposition.",
+        "D.30 would assign proposed retained total once to its phonon preparation; validity of that changed partition is not calibrated by a historical fit."
+      ]
+    },
+    {
+      "name": "spatial_width",
+      "symbol": "s_gamma",
+      "unit": "m",
+      "role": "effective spatial closure",
+      "definition": "Untruncated Gaussian standard deviation per coordinate; normalization is over deposition domain.",
+      "legacy_nominal_m": 1e-08,
+      "legacy_status": "implementation convention, not measured",
+      "new_adopted_numeric_value": null,
+      "supported_physical_range": null,
+      "constraints": [
+        "Hotbelt length is not a 2D Gaussian width.",
+        "A radial energy-containment radius is not a Gaussian standard deviation.",
+        "No 5–20 nm physical interval is established here.",
+        "Boundary normalization conserves prescribed energy but does not model previous escape."
+      ],
+      "sources": [
+        "B04",
+        "D04",
+        "LEGACY_PHOTON",
+        "A20",
+        "K20"
+      ],
+      "rejected_proposal_nm": [
+        5,
+        20
+      ],
+      "gaussian_shape": "User modeling choice, not claimed as a measured spatial distribution."
+    },
+    {
+      "name": "handoff_time",
+      "symbol": "t0 - t_abs",
+      "unit": "s",
+      "role": "physical delay of omitted cascade",
+      "adopted_numeric_value": null,
+      "time_origin": "Simulation may set t0=0 without setting the physical optical delay to zero.",
+      "relative_latency_identity": "Delta t_registered = Delta(t0-t_abs) + Delta tau_resolved + Delta t_readout_or_path; Delta means 1550 minus 775 nm.",
+      "limits": [
+        "A common offset cancels conditionally; color-dependent offsets do not.",
+        "Modes of distributions are not generally additive.",
+        "tau_DC in A20 is not a measured handoff delay.",
+        "A19 separates initial equilibration from detector response; it does not identify the D.30 handoff instant.",
+        "V19 begins with an already heated electron-plus-phonon state; t=0 there is not a computed optical cascade duration."
+      ],
+      "sources": [
+        "B04",
+        "D04",
+        "A20",
+        "K20",
+        "A19V2",
+        "V19V1"
+      ]
+    },
+    {
+      "name": "initial_phonon_excess",
+      "symbol": "delta_n(Omega,r)",
+      "unit": "occupation per mode",
+      "role": "adopted effective spectral closure in model 0.4",
+      "formula": "u_gamma(r)*alpha2F(Omega)/(g_ph(Omega)*M1)",
+      "M1": "integral Omega*alpha2F(Omega) dOmega",
+      "constraints": [
+        "Omega is energy, not angular frequency without hbar conversion.",
+        "Common nonnegative support and finite positive M1 required.",
+        "Use same support/quadrature for normalization and ledger.",
+        "Unchanged condensate and circuit states; initial electrons at bath Fermi-Dirac."
+      ],
+      "sources": [
+        "B04",
+        "D04",
+        "S25",
+        "CATALOGUE_CLOSURE"
+      ]
+    },
+    {
+      "name": "deposition_position",
+      "symbol": "r0",
+      "unit": "m",
+      "role": "event location versus ensemble optical weighting",
+      "adopted_numeric_value": null,
+      "recommendation": "Interior deterministic event for controlled mechanism study; do not call it the experimental ensemble average.",
+      "unresolved": [
+        "optical weighting",
+        "polarization",
+        "taper events",
+        "cascade deformation near edges"
+      ],
+      "sources": [
+        "B04",
+        "D04",
+        "EXPERIMENT_REGISTER"
+      ]
+    },
+    {
+      "name": "Fano_extension",
+      "symbol": "F_N or F_eff with specified convention",
+      "unit": "1",
+      "role": "optional future stochastic closure",
+      "enabled": false,
+      "adopted_numeric_value": null,
+      "constraints": [
+        "Quasiparticle-number variance does not automatically equal retained-total-energy variance.",
+        "Specify sectors, energy scale and loss mechanism before assigning variance.",
+        "Require physical energy support and correlations.",
+        "A deterministic latency does not predict jitter FWHM."
+      ],
+      "sources": [
+        "B04",
+        "K17_FANO"
+      ]
+    }
+  ],
+  "source_specific_scales_not_adopted": [
+    {
+      "source": "K20",
+      "name": "hotbelt_initial_length",
+      "value": 40,
+      "unit": "nm",
+      "restriction": "longitudinal 1D region, not Gaussian sigma or optical focus"
+    },
+    {
+      "source": "K20",
+      "name": "energy_spread_Fano_1550",
+      "value": 92,
+      "unit": "meV",
+      "restriction": "historical fit, not total retained-energy variance in new kinetic model"
+    },
+    {
+      "source": "K20",
+      "name": "energy_spread_nonuniform_1550",
+      "value": 40,
+      "unit": "meV",
+      "restriction": "historical fit, not activated"
+    },
+    {
+      "source": "A20",
+      "name": "tau_DC_reduced_thermal_source",
+      "value_approx": 1.4,
+      "unit": "ps",
+      "restriction": "Eq. 3.25 transfer-source scale; not t0"
+    },
+    {
+      "source": "A20",
+      "name": "empirical_slowdown_of_reduced_source",
+      "value_approx": 4,
+      "unit": "1",
+      "restriction": "not transferable as an extra factor over resolved electron-phonon kinetics"
+    },
+    {
+      "source": "V17",
+      "name": "initial_volume",
+      "formula": "pi*xi^2*d",
+      "restriction": "conditional model volume; not a measured K20 Gaussian width"
+    },
+    {
+      "source": "V19V1",
+      "name": "mean_deposited_energy_examples",
+      "values": [
+        1.5,
+        2.5
+      ],
+      "unit": "eV",
+      "restriction": "Electron plus phonon retained energies; no corresponding incident photon energies given to define a universal chi."
+    },
+    {
+      "source": "V19V1",
+      "name": "energy_standard_deviation_example",
+      "formula": "sigma=0.1*mean_deposited_energy",
+      "restriction": "illustrative Fano scenario, not a measured retention fraction or activated stochastic model"
+    }
+  ],
+  "decisions_and_open_items": [
+    {
+      "id": "handoff_scope",
+      "status": "ACCEPTED_BY_USER",
+      "decision": "Study resolved dynamics from handoff while keeping the unknown optical delay explicit.",
+      "does_not_imply": [
+        "known t0-t_abs",
+        "calibrated optical relative latency",
+        "Fano/jitter model"
+      ]
+    },
+    {
+      "id": "controlled_pair",
+      "status": "RECOMMENDED_PROTOCOL_NOT_NUMERIC_ADOPTION",
+      "proposal": "Common spectral shape, position and spatial convention between colors; common retention as a stated hypothesis.",
+      "expected_interpretation": "Deterministic response to differing retained energies, conditional on preparation."
+    },
+    {
+      "id": "hotbelt_question",
+      "status": "ANSWERED_BY_USER",
+      "question_es": "¿Se quiere comprobar la formación del hotbelt desde un depósito localizado, o imponerlo para estudiar la respuesta posterior?",
+      "recommendation": "Localized 2D preparation if formation is the target.",
+      "consequence": "A prescribed belt cannot validate its own formation or transverse homogenization.",
+      "answer": "Sí: primero latencia relativa y formación del hotbelt",
+      "ask_again": false
+    },
+    {
+      "id": "numeric_preparation",
+      "status": "UNRESOLVED_BEFORE_FIRST_PHYSICAL_RUN",
+      "needed": [
+        "explicit E_in or chi scenario",
+        "width and position convention",
+        "initial spectral support and normalization",
+        "written interpretation of handoff clock"
+      ],
+      "do_not_do": "Ask user to invent measured chi, width or cascade duration; infer a confidence interval from mismatched model fits."
+    },
+    {
+      "id": "prior_to_optical_calibration",
+      "status": "FUTURE_RESEARCH",
+      "needed": [
+        "color-dependent cascade delay and losses",
+        "spatial preparation or justified reduction",
+        "matching readout and experimental timing statistic"
+      ]
+    },
+    {
+      "id": "retention_standard_scenario",
+      "status": "PROPOSED_NOT_ADOPTED",
+      "proposal": "chi_ref=0.667 for both colors in the selected Korzh reference scenario",
+      "justification_sources": [
+        "K20",
+        "A19V2",
+        "A20",
+        "V19V1"
+      ],
+      "limits": [
+        "Do not call universal or measured.",
+        "No averaging of historical closure-dependent fits.",
+        "No prior range accepted.",
+        "Do not refit silently after observing one new-model latency curve."
+      ]
+    },
+    {
+      "id": "gaussian_width_after_source_review",
+      "status": "USER_DEFERRED_PENDING_CASCADE",
+      "answer": "Caracterizar primero la cascada; dejar el ancho abierto",
+      "width_nm": null
+    }
+  ],
+  "validation_scope": {
+    "performed": [
+      "primary-source reading",
+      "two A20 equation pages visually checked",
+      "local source hashes recorded",
+      "analytic photon-energy conversion",
+      "Version-specific primary reading of A19v2 and V19v1",
+      "K20 retained-energy definition and fit rechecked",
+      "A20 revised 1D fit passages read from local PDF"
+    ],
+    "not_performed": [
+      "new cascade simulation",
+      "transient",
+      "parameter sweep",
+      "optical data fitting",
+      "physical-domain admission"
+    ],
+    "required_before_dynamic_claim": [
+      "kinetic interface and coupled transient",
+      "quadrature photon-energy identity",
+      "state continuity where no impulse acts",
+      "population support",
+      "temporal/spatial/spectral convergence",
+      "conditional preparation-sensitivity plan"
+    ]
+  }
+}

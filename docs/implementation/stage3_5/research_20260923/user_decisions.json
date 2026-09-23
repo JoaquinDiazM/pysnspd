@@ -1,0 +1,79 @@
+{
+  "schema": "pysnspd.stage3_5.user_research_decisions.v1",
+  "date": "2026-09-23",
+  "priority": {
+    "accepted": true,
+    "answer": "Sí: primero latencia relativa y formación del hotbelt",
+    "case": "Korzh2020 NbN80nm,775/1550nm; deterministic mechanism before jitter ensemble"
+  },
+  "time_origin": {
+    "accepted": true,
+    "answer": "Sí: estudiar primero desde la transferencia y mantener explícito el retardo desconocido",
+    "optical_cascade_delay_identified": false
+  },
+  "material_reference": {
+    "accepted": true,
+    "answer": "Sí: referencia de Korzh, sin tratar sus ajustes como mediciones",
+    "D_m2_s": 5e-05,
+    "sheet_resistance_ohm": 608,
+    "meaning": "Provisional adjusted material reference; preserve correlated alternatives, no code change or calibrated physical interval."
+  },
+  "controlled_transfer_family": {
+    "accepted": false,
+    "status": "USER_REQUESTED_FURTHER_PRIMARY_SOURCE_RESEARCH",
+    "replaced_proposal": {
+      "nominal_retention": 0.6666666666666666,
+      "nominal_sigma_nm": 10,
+      "exploratory_retention": [
+        0.3333333333333333,
+        1
+      ],
+      "exploratory_sigma_nm": [
+        5,
+        20
+      ]
+    },
+    "proposed_values": null,
+    "request": "Investigate2019–2020Allmaras/Korzh/Vodolazov minimum-jitter/latency papers for a standard photon fraction; investigate why Zotova–Vodolazov2012 used its initial shape and derive a more realistic Gaussian width range.",
+    "gaussian_shape": "User confirms Gaussian profile is an intentional model choice, motivated by dissatisfaction with a sharp circular uniform profile.",
+    "interpretation": "The old1/3–1 and5–20nm family was not approved. Source-dependent proposals must replace it, preserving preparation sector and transfer time."
+  },
+  "source_based_transfer_proposal": {
+    "retention": {
+      "value": 0.667,
+      "status": "SOURCE_REFERENCE_PROPOSED",
+      "source": "Korzh2020 supplemental model fit; not a universal measured retention"
+    },
+    "Ein_eV": {
+      "775": 1.0670640045799278,
+      "1550": 0.5335320022899639
+    },
+    "gaussian_sigma_nm": {
+      "range": null,
+      "status": "USER_DEFERRED_PENDING_CASCADE",
+      "historical_R90_equivalent_nm": [
+        1.4,
+        1.9
+      ],
+      "meaning": "Historical A20 total-energy R90 equivalence only. User requires cascade characterization before selecting width."
+    },
+    "user_choice": {
+      "accepted": false,
+      "status": "CHARACTERIZE_CASCADE_FIRST",
+      "answer": "Caracterizar primero la cascada; dejar el ancho abierto",
+      "meaning": "Explicit decision to leave physical width open, not acceptance of the compact scenario."
+    },
+    "position": {
+      "reference": "central",
+      "status": "CONTROLLED_REFERENCE_PROPOSED"
+    },
+    "historical_thermal_controls_sigma_nm": [
+      4.5,
+      9
+    ],
+    "historical_controls_are_not_width_interval": true,
+    "physical_width_range_identified": false
+  },
+  "no_automatic_physics_activation": true,
+  "long_computations_authorized_for_agent": false
+}

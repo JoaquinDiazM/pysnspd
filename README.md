@@ -43,6 +43,7 @@ in 15 families, with Korzh/Allmaras source distinctions. The example
 L2D/W = 1.5–6 is not an adopted validity range; a 1D continuation remains
 conditional on the relevant transverse dynamics. No long calculation is pending,
 and the completed batch should not be repeated. Production is unchanged.
+The [current stage 3.5 review](docs/implementation/stage3_5/CURRENT.md) covers all127 inventory entries and the selected80nm Korzh reference. It distinguishes fitted material inputs, photon retention, geometry and numerical planning from measured validity ranges. The user chose to characterize the cascade before selecting the Gaussian width; no new transients or production parameters are introduced.
 The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 

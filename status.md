@@ -10,6 +10,10 @@ transient and kinetic 2D–1D interface remain requirements before stages 4–5.
 Release 1.0.0 still preserves the thesis implementation and model 0.4 documentation,
 including notebook E-r02. No production promotion has occurred.
 
+## Stage 3.5: source research and cascade decision
+
+The [current review](docs/implementation/stage3_5/CURRENT.md) documents127 parameters in15 families. Priorities are80nm Korzh hotbelt formation and775/1550nm relative latency from model handoff. The adjusted material reference uses D=0.5cm²/s and608Ω/square with correlated derived quantities. The user explicitly chose cascade characterization before Gaussian width selection. Published retention0.667 is a fitted reference, not a universal measurement. No new transients or solver-parameter changes were made; physical ranges and the weak coupled transient remain open.
+
 ## Release 1.0.0 and next-stage boundary
 
 The implementation baseline is `f3c26b95ff4e4a93504371e78b46ad3a20e06273`, including

@@ -2,51 +2,77 @@
 
 Actualizado el 23 de septiembre de 2026. Cuenta `jdiaz`, sin administrador.
 
-## Estado actual: sin cálculo largo pendiente
+## Estado actual: investigación 3.5; sin cálculo largo pendiente
 
-El usuario autorizó el cierre de desarrollo de la etapa 3 y la apertura de
-investigación 3.5. El lote de seis instantáneas mixtas con carga de reservorio
-ya terminó en **355,651 s**. **No repetir ese lote ni los lotes históricos.**
-La regresión focalizada aprobó 243 pruebas y 46 subpruebas en 10,29 s.
+La [revisión vigente](implementation/stage3_5/CURRENT.md) investiga las127
+variables del inventario. El usuario eligió formación del hotbelt y latencia
+relativa775/1550nm en el hilo80nm de Korzh; tiempo desde transferencia; referencia
+material ajustada D=0,5cm²/s y608Ω por cuadrado. Después de revisar Allmaras y
+Zotova–Vodolazov, eligió **caracterizar primero la cascada y dejar el ancho
+gaussiano abierto**. No se adoptan5–20nm ni la equivalencia histórica1,4–1,9nm.
 
-La [guía de cierre](implementation/stage3/closure_20260923/README.md) y el
-[informe final](implementation/stage3/closure_20260923/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.md)
-([PDF](../output/pdf/implementation/Informe_cierre_desarrollo_etapa_3_y_apertura_3_5.pdf))
-registran el alcance: energía y balances instantáneos, con sensibilidad de malla.
-No se ha completado el contrato temporal original, toda D.27, la interfaz
-cinética ni una admisión de producción. Los datos originales no se reclasifican.
-
-La [secuencia vigente](implementation/SECUENCIA_VIGENTE.md) mantiene el transiente
-débil y la interfaz cinética como requisitos antes de etapas 4–5. La
-[etapa 3.5](implementation/stage3_5/README.md) investiga parámetros, fuentes
-Korzh/Allmaras y límites de aplicación; no ejecuta barridos ni adopta rangos.
-El inventario tiene 127 entradas en 15 familias. L2D/W = 1,5–6 es sólo un
-ejemplo, y la reducción transversal 1D sigue siendo condicional.
+El [informe de investigación](implementation/stage3_5/research_20260923/Informe_investigacion_etapa_3_5_r1.md)
+contiene resultados documentales y figuras analíticas. El
+[plan de cascada](implementation/stage3_5/research_20260923/cascade_characterization.md)
+identifica los datos de transferencia que faltan. No se ejecutaron transientes
+nuevos, no se modificaron parámetros físicos y no hay un lote largo por lanzar.
+No repetir las corridas de etapas2–3. El desarrollo3 permanece cerrado dentro
+del alcance acordado, con requisitos dinámicos aún pendientes antes de4–5.
 
 ## Verificación ligera reproducible
-
-Desde la copia sincronizada de `main`:
 
 ```bash
 cd /home/jdiaz/pysnspd
 env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   /home/jdiaz/.conda/envs/snspd/bin/python \
-  sandbox/stage3_spatial/closure_20260923/verify_delivery.py
+  sandbox/stage3_5/research_20260923/verify_delivery.py
 ```
 
-Propósito: verificar la integridad y coherencia de la entrega y sus referencias.
-Lee los resultados guardados; no construye espectros, no evalúa una trayectoria
-y no repite el lote físico. Recursos previstos: un proceso, un hilo, memoria
-pequeña frente a una simulación; duración de segundos, condicionada a la lectura
-de archivos. La salida de terminal informa el dictamen y las discrepancias.
+Comprueba integridad,127 entradas, decisiones recibidas y entregas históricas.
+Lee archivos, sin resolver espectros ni trayectorias. Duración prevista:
+segundos;1proceso/1hilo; memoria pequeña frente a una simulación. La salida es
+JSON en terminal, con dictamen y conteos. El verificador anterior aislado usa
+su libreta histórica; el actual aplica esa copia preservada al revisar la cadena.
 
-La auditoría aritmética de las seis instantáneas ya está conservada en
-`docs/implementation/stage3/closure_20260923/full_reservoir_review.json`
-y su explicación en `full_reservoir_review.md`. Su fuente es
-`sandbox/stage3_spatial/closure_20260923/audit_full_reservoir.py`.
-Ese script histórico escribe con exclusión de archivos existentes: **no es un
-comando de repetición sobre esta entrega**. Para la revisión cotidiana se usa
-el verificador anterior, sin sobrescribir la auditoría.
+Para regenerar las figuras analíticas y el registro, desde la raíz del repo:
+
+```bash
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/geometry_scales.py
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/profile_comparison.py
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/build_range_ledger.py
+```
+
+Cada comando tarda segundos, usa1proceso y genera los JSON/PNG documentados en
+`docs/implementation/stage3_5/research_20260923/`. Son fórmulas y contabilidad;
+no caracterizan por sí solos una cascada. Regenerar PNG con otra versión de
+Matplotlib puede cambiar sus bytes: conservar la entrega publicada y generar
+una revisión antes de actualizar su manifiesto. Estos comandos son opcionales,
+no una ejecución requerida al usuario.
+
+La libreta que acompañó el cierre de etapa3 se conserva exactamente en
+[research_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md](implementation/stage3_5/research_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md),
+incluidos los resultados y comandos originales. La cadena sigue verificable.
+
+## Lectura reproducible de la cascada histórica de Allmaras
+
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPATH=/home/jdiaz/pysnspd/tmp/stage3_5_document_deps \
+  /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/digitize_a20_radial.py
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/research_20260923/plot_cascade_shape.py
+```
+
+Entrada: PDF de Allmaras2020 en `tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf`,
+con SHA verificado por el script. Extrae4 radios visibles de la figura2.7(a),
+registra el margen de lectura y genera `cascade_digitization.json` y
+`figures/04_cascade_shape.png` en la revisión. No usa zonas tapadas por la leyenda.
+La dependencia pdfplumber0.11.8 está instalada sólo en
+`tmp/stage3_5_document_deps`; el comando la activa sin modificar el entorno
+físico. Su instalación aislada tardó unos3s. La extracción reproducida en
+Geminga coincidió exactamente con el JSON local.
+Tiempo previsto: segundos,1 proceso; sin simulación de cascada. Son comandos
+opcionales. Regenerar figuras puede cambiar bytes según bibliotecas; revisar
+el manifiesto antes de publicar otra versión.
 
 ## Historial preservado
 

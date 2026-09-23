@@ -1,0 +1,24 @@
+{
+  "status": "ANALYTICAL_PROFILE_IDENTITY",
+  "new_physical_transients": 0,
+  "disk": {
+    "energy_normalization": "E/(pi R^2)",
+    "mean_squared_radius": "R^2/2"
+  },
+  "gaussian": {
+    "energy_normalization": "E/(2 pi s^2)",
+    "mean_squared_radius": "2s^2",
+    "enclosed_fraction": "1-exp(-r^2/(2s^2))",
+    "R90_over_s": 2.145966026289347
+  },
+  "same_energy_and_second_moment": {
+    "s_over_R": 0.5,
+    "peak_over_disk": 2
+  },
+  "same_energy_and_peak": {
+    "s_over_R": 0.7071067811865475,
+    "second_moment_over_disk": 2
+  },
+  "meaning": "Conversion conventions, not empirical calibration or proof of identical forces.",
+  "script_sha256": "f0daed922495ef547366277020584c25b4a32c0701cec2bfcb3599d8693c1911"
+}

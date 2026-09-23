@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "scope": "Documentary research, algebraic diagnostics and historical image extraction; no new transient",
+  "pdf": {
+    "path": "output/pdf/implementation/Informe_investigacion_etapa_3_5_r1.pdf",
+    "sha256": "2175b376fcc49d7f9c4774dd7224963707d3dfb398b9424dfcb03d13a100eeb5",
+    "pages": 6,
+    "visual_review": "All six final Poppler renders inspected; legible figures, tables, fonts, links and margins."
+  },
+  "figures": [
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/figures/01_length_window.png",
+      "sha256": "65412af91e4bb09eaebdf9ebf200f9cb16a198096548bc409aac897b7f5495bb",
+      "visual_review": "PASS"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/figures/02_boundary_pedagogy.png",
+      "sha256": "9aaa37583507bd377349742697d8698b4189afa91969923c35a7d4ce28b21556",
+      "visual_review": "PASS"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/figures/03_disk_gaussian.png",
+      "sha256": "2afac26dae3900884101c5a46a39ecb60ef53210a6f78743ba07e7d34acd6331",
+      "visual_review": "PASS"
+    },
+    {
+      "path": "docs/implementation/stage3_5/research_20260923/figures/04_cascade_shape.png",
+      "sha256": "3850e15070fb30a7d919646596a09f0798effa5f6638d7581d90bb2a4d8399df",
+      "visual_review": "PASS"
+    }
+  ],
+  "parameter_inventory": {
+    "entries": 127,
+    "families": 15,
+    "specific_entries": 127,
+    "unassigned_entries": 0,
+    "physical_confidence_box_admitted": false
+  },
+  "local_links_checked": true,
+  "python_syntax_checked": true,
+  "json_parsed": true,
+  "historical_sources": "Primary references and local hashes recorded by topic; A19 values use specified preprint version.",
+  "digitization": "Two visible A20 time points. No hidden-curve extrapolation; reading envelope and RGB sensitivity recorded.",
+  "user_decision": "Characterize cascade before width selection; width remains null.",
+  "new_physical_transients": 0,
+  "code_parameters_changed": false,
+  "protected_unrelated_files_unchanged": 86,
+  "geminga_reproduction": {
+    "status": "PASS_EXACT_JSON_VALUES",
+    "script": "digitize_a20_radial.py",
+    "dependency_issue_resolved": "pdfplumber absent in snspd; installed0.11.8 to tmp/stage3_5_document_deps only",
+    "output": "tmp/stage3_5_research_20260923/reproduced_digitization.json",
+    "published_files_overwritten": false,
+    "new_simulation": false
+  }
+}

@@ -1,0 +1,3231 @@
+{
+  "schema": "pysnspd.stage3_5.range_ledger.r1",
+  "status": "RESEARCH_WITH_PROVISIONAL_SCENARIOS_AND_EXPLICIT_UNKNOWN_RANGES",
+  "base_inventory_sha256": "5639d2691fc24a18e1689029ad24de1636ba9586c09dd0b158902914c41533da",
+  "user_decisions": "user_decisions.json",
+  "parameters": [
+    {
+      "id": "Tc",
+      "family": "material",
+      "symbol": "T_c",
+      "physical_name": "Temperatura crítica",
+      "units": "K",
+      "status": "REFERENCE_SCENARIO",
+      "value_or_proposal": {
+        "value": 8.65,
+        "units": "K"
+      },
+      "rationale": "K20 reference film; no measurement uncertainty supplied.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "family": "material",
+      "symbol": "D",
+      "physical_name": "Difusividad electrónica normal",
+      "units": "m^2/s",
+      "status": "USER_SELECTED_ADJUSTED_REFERENCE",
+      "value_or_proposal": {
+        "value": 5e-05,
+        "units": "m2/s",
+        "legacy_comparison": 0.0001581
+      },
+      "rationale": "Transport spread parameter. K20 model input, not independently measured on the selected nanowire.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "sigma_n",
+      "family": "material",
+      "symbol": "sigma_n",
+      "physical_name": "Conductividad normal",
+      "units": "S/m",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": {
+        "value": 234962.40601503762,
+        "units": "S/m"
+      },
+      "rationale": "1/(Rsheet*thickness); do not tune independently of D and N0.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "N0",
+      "family": "material",
+      "symbol": "N_0",
+      "physical_name": "DOS normal por espín",
+      "units": "J^-1 m^-3",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": {
+        "value": 9.153297821093998e+46,
+        "units": "J^-1 m^-3 per spin"
+      },
+      "rationale": "sigma/(2 e^2 D); total-spin literature values are twice this convention.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        }
+      ]
+    },
+    {
+      "id": "gap_ratio",
+      "family": "material",
+      "symbol": "r_BCS=Delta0/(kB Tc)",
+      "physical_name": "Razón de gap débil",
+      "units": "1",
+      "status": "PRESERVED_MODEL_ASSUMPTION",
+      "value_or_proposal": {
+        "value": 1.7638769888620456,
+        "units": "Delta0/(kB Tc)"
+      },
+      "rationale": "Weak-coupling functional. Strong-coupling gap changes require consistent energy/current/frequency physics.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        }
+      ]
+    },
+    {
+      "id": "delta0",
+      "family": "material",
+      "symbol": "Delta_0",
+      "physical_name": "Escala de energía del gap",
+      "units": "J",
+      "status": "DERIVED_MODEL_VALUE",
+      "value_or_proposal": {
+        "value": 2.1065301756880164e-22,
+        "units": "J"
+      },
+      "rationale": "Not a measured gap for the selected film.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "lambda_L",
+      "family": "material",
+      "symbol": "lambda_L",
+      "physical_name": "Penetración London histórica",
+      "units": "m",
+      "status": "DERIVED_OR_UNIDENTIFIED",
+      "value_or_proposal": null,
+      "rationale": "Do not inherit540nm independently of selected sigma/gap/current response. Recompute model response;64pH/square is a different experimental inductance estimate.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        }
+      ]
+    },
+    {
+      "id": "n_atom",
+      "family": "material",
+      "symbol": "n_at",
+      "physical_name": "Densidad atómica/fonónica",
+      "units": "m^-3",
+      "status": "ABSOLUTE_RATE_IDENTIFICATION_OPEN",
+      "value_or_proposal": null,
+      "rationale": "Conditional NbN shape retained; exact mode basis, unit conversion, normalization and finite support still need evidence. No guessed renormalization.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "bath",
+      "family": "bath",
+      "symbol": "T_b; theta_b=kB T_b/Delta0",
+      "physical_name": "Temperatura del baño",
+      "units": "K; 1",
+      "status": "REFERENCE_SCENARIO",
+      "value_or_proposal": {
+        "value": 0.9,
+        "units": "K"
+      },
+      "rationale": "Bath of selected K20 comparison. Pilot theta=.12 is a different temperature.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "width",
+      "family": "geometry",
+      "symbol": "W",
+      "physical_name": "Ancho de región y continuaciones",
+      "units": "m",
+      "status": "USER_SELECTED_REFERENCE",
+      "value_or_proposal": {
+        "value": 80,
+        "units": "nm",
+        "other_samples": [
+          60,
+          100,
+          120
+        ]
+      },
+      "rationale": "Start from80nm; other widths identify different samples, not error bars.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "thickness",
+      "family": "geometry",
+      "symbol": "d_f",
+      "physical_name": "Espesor",
+      "units": "m",
+      "status": "REFERENCE_NOMINAL",
+      "value_or_proposal": {
+        "value": 7,
+        "units": "nm"
+      },
+      "rationale": "Nominal film thickness, not a spatial third dimension or zero-uncertainty measurement.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "length_2D",
+      "family": "geometry",
+      "symbol": "L_2D",
+      "physical_name": "Longitud de región2D",
+      "units": "m",
+      "status": "PROPOSED_DOMAIN_DESIGN",
+      "value_or_proposal": {
+        "initial_candidates_L_over_W": [
+          4,
+          6,
+          8
+        ],
+        "longer_window_candidates_L_over_W": [
+          8,
+          12
+        ]
+      },
+      "rationale": "Conditional planning spans; full2D first until a1D interface is justified. Original1.5–6W was illustrative, not a hard cap.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "aspect_ratio",
+      "family": "geometry",
+      "symbol": "L_2D/W",
+      "physical_name": "Razón de aspecto de región2D",
+      "units": "1",
+      "status": "PROPOSED_DOMAIN_DESIGN",
+      "value_or_proposal": {
+        "initial_candidates_L_over_W": [
+          4,
+          6,
+          8
+        ],
+        "longer_window_candidates_L_over_W": [
+          8,
+          12
+        ]
+      },
+      "rationale": "Conditional planning spans; full2D first until a1D interface is justified. Original1.5–6W was illustrative, not a hard cap.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "lead_left",
+      "family": "geometry",
+      "symbol": "L_left",
+      "physical_name": "Longitud de continuación izquierda",
+      "units": "m",
+      "status": "CONDITIONAL_DOMAIN_OR_INTERFACE",
+      "value_or_proposal": null,
+      "rationale": "No independent lead-length interval before transverse dynamics and kinetic interface are verified. Record distances from deposition center separately from any threshold-defined region.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "lead_right",
+      "family": "geometry",
+      "symbol": "L_right",
+      "physical_name": "Longitud de continuación derecha",
+      "units": "m",
+      "status": "CONDITIONAL_DOMAIN_OR_INTERFACE",
+      "value_or_proposal": null,
+      "rationale": "No independent lead-length interval before transverse dynamics and kinetic interface are verified. Record distances from deposition center separately from any threshold-defined region.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "section_leads",
+      "family": "geometry",
+      "symbol": "S_c=W*d_f",
+      "physical_name": "Sección de continuaciones",
+      "units": "m^2",
+      "status": "DERIVED_GEOMETRY",
+      "value_or_proposal": {
+        "value": 5.6e-16,
+        "units": "m2"
+      },
+      "rationale": "Same width and thickness if a uniform continuation is later justified.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25"
+        }
+      ]
+    },
+    {
+      "id": "resolved_length",
+      "family": "geometry",
+      "symbol": "L_res",
+      "physical_name": "Longitud entre puertos de dominio energético",
+      "units": "m",
+      "status": "PROPOSED_DOMAIN_DESIGN",
+      "value_or_proposal": {
+        "initial_candidates_L_over_W": [
+          4,
+          6,
+          8
+        ],
+        "longer_window_candidates_L_over_W": [
+          8,
+          12
+        ]
+      },
+      "rationale": "Conditional planning spans; full2D first until a1D interface is justified. Original1.5–6W was illustrative, not a hard cap.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.6"
+        }
+      ]
+    },
+    {
+      "id": "interface_R",
+      "family": "geometry",
+      "symbol": "R; quadrature_to_dof",
+      "physical_name": "Identificación de traza2D–1D",
+      "units": "matriz sin unidades",
+      "status": "CONDITIONAL_DOMAIN_OR_INTERFACE",
+      "value_or_proposal": null,
+      "rationale": "No independent lead-length interval before transverse dynamics and kinetic interface are verified. Record distances from deposition center separately from any threshold-defined region.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25"
+        }
+      ]
+    },
+    {
+      "id": "observation_time",
+      "family": "geometry",
+      "symbol": "t_obs",
+      "physical_name": "Ventana temporal de interés",
+      "units": "s",
+      "status": "PROPOSED_OBSERVATION_WINDOW",
+      "value_or_proposal": {
+        "initial_ps": 50,
+        "extended_ps": [
+          100,
+          200
+        ]
+      },
+      "rationale": "No event by window end means censored/undetermined, not proved nondetection. Domain must be reassessed when window extends.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.1.1"
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "boundary_tolerance",
+      "family": "geometry",
+      "symbol": "epsilon_border(O,t_obs)",
+      "physical_name": "Presupuesto de contaminación por borde",
+      "units": "unidades deobservable orelativo",
+      "status": "ANALYTICAL_PREFILTER_NOT_ERROR_BOUND",
+      "value_or_proposal": {
+        "illustrative_exterior_mass_fractions": [
+          0.01,
+          0.001
+        ]
+      },
+      "rationale": "Free Gaussian instantaneous exterior mass. Actual admission is insensitivity of observables to artificial terminal placement.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25-D.27"
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "diffusion_scales",
+      "family": "geometry",
+      "symbol": "sqrt(D_eff t), W²/(pi²D_eff)",
+      "physical_name": "Escalas difusivas y relajación transversal",
+      "units": "m; s",
+      "status": "DERIVED_PLANNING_SCALES",
+      "value_or_proposal": {
+        "ell0_nm": 4.6984908958,
+        "xi_c_nm": 6.6446695476,
+        "transverse_mode_ps": 12.9691115062
+      },
+      "rationale": "Normal linear reference only; not guaranteed hotbelt or homogenization times.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17-D.20"
+        }
+      ]
+    },
+    {
+      "id": "geometry_extensions",
+      "family": "geometry",
+      "symbol": "curvatura, rugosidad, estrechamientos",
+      "physical_name": "Geometría no rectangular",
+      "units": "m; 1",
+      "status": "CONDITIONAL_DOMAIN_OR_INTERFACE",
+      "value_or_proposal": null,
+      "rationale": "No independent lead-length interval before transverse dynamics and kinetic interface are verified. Record distances from deposition center separately from any threshold-defined region.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Egamma",
+      "family": "photon",
+      "symbol": "E_gamma=hc/lambda",
+      "physical_name": "Energía incidente",
+      "units": "J; eV",
+      "status": "DERIVED_FROM_SELECTED_WAVELENGTHS",
+      "value_or_proposal": {
+        "wavelength_nm": [
+          775,
+          1550
+        ],
+        "energy_eV": [
+          1.599796108815484,
+          0.799898054407742
+        ]
+      },
+      "rationale": "Nominal photon energy hc/lambda, not retained energy or detection efficiency.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ]
+    },
+    {
+      "id": "Ein",
+      "family": "photon",
+      "symbol": "E_in",
+      "physical_name": "Energía retenida a t0",
+      "units": "J",
+      "status": "SOURCE_REFERENCE_PROPOSED",
+      "value_or_proposal": {
+        "775": 1.0670640045799278,
+        "1550": 0.5335320022899639
+      },
+      "rationale": "Conditional retained energies in eV using hc/lambda and the K20 fraction0.667; not optical absorption/detection efficiency.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ]
+    },
+    {
+      "id": "retention",
+      "family": "photon",
+      "symbol": "eta_ret=Ein/Egamma",
+      "physical_name": "Fracción retenida temprana",
+      "units": "1",
+      "status": "SOURCE_REFERENCE_PROPOSED",
+      "value_or_proposal": {
+        "value": 0.667,
+        "status": "SOURCE_REFERENCE_PROPOSED",
+        "source": "Korzh2020 supplemental model fit; not a universal measured retention"
+      },
+      "rationale": "K20 fitted reference fraction, not a standard universal measurement. Translation to D.30 must not include a second subtraction of post-transfer losses.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ]
+    },
+    {
+      "id": "photon_position",
+      "family": "photon",
+      "symbol": "r0=(x0,y0)",
+      "physical_name": "Posición del impacto",
+      "units": "m",
+      "status": "CONTROLLED_REFERENCE_PROPOSED",
+      "value_or_proposal": {
+        "reference": "central",
+        "status": "CONTROLLED_REFERENCE_PROPOSED"
+      },
+      "rationale": "Central controlled deposition tests formation, not an imposed hotbelt or experimental absorption-position ensemble.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "pysnspd/excitation/photon.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "photon_sigma",
+      "family": "photon",
+      "symbol": "s_gamma",
+      "physical_name": "Desviación estándar espacial de depósito",
+      "units": "m",
+      "status": "USER_DEFERRED_PENDING_CASCADE",
+      "value_or_proposal": {
+        "range": null,
+        "status": "USER_DEFERRED_PENDING_CASCADE",
+        "historical_R90_equivalent_nm": [
+          1.4,
+          1.9
+        ],
+        "meaning": "Historical A20 total-energy R90 equivalence only. User requires cascade characterization before selecting width."
+      },
+      "rationale": "Gaussian standard deviation per coordinate. A20 total-energy R90 bridge, not a measured Korzh phonon width or validated interval. Depth averaging and electron residual remain explicit.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "pysnspd/excitation/photon.py",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "handoff_time",
+      "family": "photon",
+      "symbol": "t0",
+      "physical_name": "Tiempo de transferencia desde cascada omitida",
+      "units": "s",
+      "status": "USER_SELECTED_TIME_ORIGIN",
+      "value_or_proposal": {
+        "simulation_origin": "t0=0",
+        "optical_delay_difference": null
+      },
+      "rationale": "Time from transfer; wavelength-dependent omitted cascade delay remains unknown and separate.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ]
+    },
+    {
+      "id": "spectral_injection",
+      "family": "photon",
+      "symbol": "alpha²F/g_ph; normalization_M1",
+      "physical_name": "Forma espectral de inyección",
+      "units": "ocupaciónporenergía",
+      "status": "PRESERVED_MODEL_CLOSURE",
+      "value_or_proposal": {
+        "rule": "D.30 phonon occupation proportional to alpha2F/gphonon; normalized to Ein"
+      },
+      "rationale": "No simultaneous thermal-photon or delayed electronic source; spectral units and support must be admitted first.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "fano",
+      "family": "photon",
+      "symbol": "F; distribución de Ein",
+      "physical_name": "Fluctuaciones Fano opcionales",
+      "units": "1; J",
+      "status": "DEFERRED_NOT_ACTIVATED",
+      "value_or_proposal": null,
+      "rationale": "First task is deterministic hotbelt formation and relative crossing latency. Published ensemble fits do not define new stochastic inputs.",
+      "review": "photon_preparation.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ]
+    },
+    {
+      "id": "Delta_state",
+      "family": "electronic_state",
+      "symbol": "Delta(r,t)",
+      "physical_name": "Campo complejo del condensado",
+      "units": "J oDelta0",
+      "status": "DYNAMIC_STATE_CONSTRAINT",
+      "value_or_proposal": {
+        "electron_occupancy": [
+          0,
+          1
+        ],
+        "phonon_min": 0
+      },
+      "rationale": "Fields and populations evolve together; initial equilibrium must be recalculated for the new scenario, not copied from the pilot.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.1"
+        }
+      ]
+    },
+    {
+      "id": "p_state",
+      "family": "electronic_state",
+      "symbol": "p(x,r,t)",
+      "physical_name": "Ocupaciones electrónicas",
+      "units": "1",
+      "status": "DYNAMIC_STATE_CONSTRAINT",
+      "value_or_proposal": {
+        "electron_occupancy": [
+          0,
+          1
+        ],
+        "phonon_min": 0
+      },
+      "rationale": "Fields and populations evolve together; initial equilibrium must be recalculated for the new scenario, not copied from the pilot.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "n_state",
+      "family": "electronic_state",
+      "symbol": "n(Omega,r,t)",
+      "physical_name": "Ocupaciones fonónicas",
+      "units": "1",
+      "status": "DYNAMIC_STATE_CONSTRAINT",
+      "value_or_proposal": {
+        "electron_occupancy": [
+          0,
+          1
+        ],
+        "phonon_min": 0
+      },
+      "rationale": "Fields and populations evolve together; initial equilibrium must be recalculated for the new scenario, not copied from the pilot.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "TE",
+      "family": "electronic_state",
+      "symbol": "T_E",
+      "physical_name": "Temperatura electrónica equivalente por energía",
+      "units": "K o kBT/Delta0",
+      "status": "DERIVED_DIAGNOSTIC",
+      "value_or_proposal": null,
+      "rationale": "Equivalent temperature summarizes an energy moment and does not replace the distribution or uniquely determine forces.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Tph_equiv",
+      "family": "electronic_state",
+      "symbol": "T_ph,eq",
+      "physical_name": "Temperatura fonónica equivalente diagnóstica",
+      "units": "K",
+      "status": "DERIVED_DIAGNOSTIC",
+      "value_or_proposal": null,
+      "rationale": "Equivalent temperature summarizes an energy moment and does not replace the distribution or uniquely determine forces.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "delta_reg",
+      "family": "condensate",
+      "symbol": "delta/Delta0",
+      "physical_name": "Regularizador físico efectivo del núcleo",
+      "units": "1",
+      "status": "PRESERVED_EFFECTIVE_PARAMETER_UNCALIBRATED",
+      "value_or_proposal": {
+        "value": 0.1,
+        "units": "Delta0",
+        "historical_sensitivity": [
+          0.05,
+          0.1,
+          0.2
+        ]
+      },
+      "rationale": "Finite core completion, not mesh epsilon. Historical alternatives are sensitivity cases, not an admitted interval.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "qbare",
+      "family": "condensate",
+      "symbol": "q_bare; theta",
+      "physical_name": "Gradiente fase y fase",
+      "units": "m^-1; rad",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": null,
+      "rationale": "Compute from the selected functional, fields, populations and geometry; do not scan this as an independent material input.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/superconducting_reservoir.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Gamma",
+      "family": "condensate",
+      "symbol": "Gamma=hbarD|q_delta|²/2",
+      "physical_name": "Depareamiento por flujo",
+      "units": "J oDelta0",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": null,
+      "rationale": "Compute from the selected functional, fields, populations and geometry; do not scan this as an independent material input.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "K0",
+      "family": "condensate",
+      "symbol": "K0; kappa=pi/4",
+      "physical_name": "Rigidez de gradiente",
+      "units": "según D.8; kappa sinunidades",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": null,
+      "rationale": "Compute from the selected functional, fields, populations and geometry; do not scan this as an independent material input.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "D36",
+      "family": "condensate",
+      "symbol": "lambda_min(M), incertidumbre",
+      "physical_name": "Admisibilidad del símbolo principal",
+      "units": "unidades normalizadas de rigidez",
+      "status": "MANDATORY_CONTINUOUS_ADMISSIBILITY",
+      "value_or_proposal": {
+        "condition": "minimum principal eigenvalue positive with sign resolved against numerical uncertainty"
+      },
+      "rationale": "An indefinite principal symbol is a physical/mathematical failure, not fixed by smaller dt or clipping.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.36"
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "kwt_times",
+      "family": "condensate",
+      "symbol": "tau_ee(Tc),tau_ep(Tc)",
+      "physical_name": "Tiempos efectivos movilidad KWT",
+      "units": "ps",
+      "status": "UNIDENTIFIED_EFFECTIVE_MOBILITY_WITH_REFERENCES",
+      "value_or_proposal": {
+        "pair_definition": "tau_ee(Tc), tau_ep(Tc)",
+        "inherited_ps": [
+          0.5,
+          2.47
+        ],
+        "Allmaras_reference_ps": [
+          5,
+          24.7
+        ],
+        "K20_reference_ps": [
+          6,
+          24.7
+        ]
+      },
+      "rationale": "Distinct mobility scenarios; no KWT pair newly adopted. Factor10 is not a unit conversion. Do not relabel scattering times as energy-relaxation or BGK time.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/config.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "mobility_floor",
+      "family": "condensate",
+      "symbol": "T_mob=max(T_E,T_b)",
+      "physical_name": "Piso de temperatura para movilidad",
+      "units": "K",
+      "status": "PRESERVED_CLOSURE",
+      "value_or_proposal": {
+        "value": 0.9,
+        "units": "K"
+      },
+      "rationale": "Floor Tmob=max(TE,Tbath) uses the selected bath; not a second bath.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "time_scale",
+      "family": "condensate",
+      "symbol": "t_ref; tau0",
+      "physical_name": "Escala de nondimensionalización y escala GL",
+      "units": "ps; s",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": null,
+      "rationale": "Compute from the selected functional, fields, populations and geometry; do not scan this as an independent material input.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.11"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "vector_potential",
+      "family": "condensate",
+      "symbol": "A; link_phases",
+      "physical_name": "Potencial vector y enlaces de calibre",
+      "units": "Wb/m; rad",
+      "status": "PRESERVED_APPROXIMATION",
+      "value_or_proposal": {
+        "A": 0
+      },
+      "rationale": "No applied magnetic field or resolved self-field; restricted model assumption.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.2"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Qdelta",
+      "family": "condensate",
+      "symbol": "Q_Delta",
+      "physical_name": "Disipación condensado",
+      "units": "W/m^3",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": null,
+      "rationale": "Compute from the selected functional, fields, populations and geometry; do not scan this as an independent material input.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.13"
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "taukin",
+      "family": "kinetic",
+      "symbol": "tau_kin",
+      "physical_name": "Tiempo de relajación BGK conservativa",
+      "units": "ps",
+      "status": "NOT_IDENTIFIED",
+      "value_or_proposal": {
+        "synthetic_ps": 0.7,
+        "physical_range": null
+      },
+      "rationale": "Energy-conserving redistribution closure. No reviewed measurement identifies its constant value; comparison to a microscopic ee operator remains necessary.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17"
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "tauescape",
+      "family": "kinetic",
+      "symbol": "tau_esc",
+      "physical_name": "Escape fonónico al sustrato",
+      "units": "ps",
+      "status": "REFERENCE_SCENARIOS_NOT_CONFIDENCE_INTERVAL",
+      "value_or_proposal": {
+        "K20_reference_ps": 20,
+        "inherited_ps": 15,
+        "Allmaras_acoustic_ps": 9.4,
+        "Allmaras_other_fit_ps": 80
+      },
+      "rationale": "Phonon escape to substrate depends on film/interface. Do not interpret9.4–80ps as sample uncertainty.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "alpha2F",
+      "family": "kinetic",
+      "symbol": "alpha²F(Omega)",
+      "physical_name": "Función de Eliashberg energética",
+      "units": "1 en convención D",
+      "status": "ABSOLUTE_RATE_IDENTIFICATION_OPEN",
+      "value_or_proposal": null,
+      "rationale": "Conditional NbN shape retained; exact mode basis, unit conversion, normalization and finite support still need evidence. No guessed renormalization.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.14-D.19"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "gphonon",
+      "family": "kinetic",
+      "symbol": "g_ph(Omega)",
+      "physical_name": "DOS fonónica absoluta",
+      "units": "J^-1 m^-3",
+      "status": "ABSOLUTE_RATE_IDENTIFICATION_OPEN",
+      "value_or_proposal": null,
+      "rationale": "Conditional NbN shape retained; exact mode basis, unit conversion, normalization and finite support still need evidence. No guessed renormalization.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.34"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "lambdaeph",
+      "family": "kinetic",
+      "symbol": "lambda=2 integral alpha²F/Omega",
+      "physical_name": "Acoplamiento integrado",
+      "units": "1",
+      "status": "SOURCE_SPECIFIC_NOT_UNIVERSAL_RANGE",
+      "value_or_proposal": null,
+      "rationale": "Synthetic lambda=.1, derived-file integral and DFT values describe different inputs; no universal NbN confidence bounds.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "OmegaD",
+      "family": "kinetic",
+      "symbol": "Omega_D",
+      "physical_name": "Corte Debye sintético",
+      "units": "Delta0",
+      "status": "REQUIRES_MATERIAL_SUPPORT_REDESIGN",
+      "value_or_proposal": {
+        "electronic_candidate_nodes": 630,
+        "phonon_candidate_nodes": 1025,
+        "conditional_NbN_positive_support_max_meV": 67.784,
+        "sampled_electronic_max_meV": 15.832,
+        "synthetic_phonon_max_meV": 5.259
+      },
+      "rationale": "See material_kinetics.md section7. xmax=12 is a count coordinate, not exactly Emax/Delta0. Synthetic support and resolution are not NbN rates; redesign extent, native energy, tails and event support before setting counts.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "rate_prefactor",
+      "family": "kinetic",
+      "symbol": "8*pi*N0/hbar y factores de representación",
+      "physical_name": "Prefactor de colisiones",
+      "units": "según unidades de estado/tiempo",
+      "status": "ABSOLUTE_RATE_IDENTIFICATION_OPEN",
+      "value_or_proposal": null,
+      "rationale": "Conditional NbN shape retained; exact mode basis, unit conversion, normalization and finite support still need evidence. No guessed renormalization.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.15"
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "DL",
+      "family": "kinetic",
+      "symbol": "D_L=N1²-R2²",
+      "physical_name": "Difusión espectral",
+      "units": "1",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": null,
+      "rationale": "Compute from the selected functional, fields, populations and geometry; do not scan this as an independent material input.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17"
+        },
+        {
+          "path": "pysnspd/experimental/cell_transport.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "face_rate",
+      "family": "kinetic",
+      "symbol": "D*t_ref/l_face²",
+      "physical_name": "Escala de transporte de dos celdas",
+      "units": "1",
+      "status": "LEGACY_OR_SYNTHETIC_NOT_TRANSFERABLE",
+      "value_or_proposal": null,
+      "rationale": "Historical controls are not parameters of the new material/spatial kinetic discretization.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_transport.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "heating_closure",
+      "family": "kinetic",
+      "symbol": "H[p,E,Tstar]; Tstar=max(TE,Tb)",
+      "physical_name": "Distribución espectral del calor",
+      "units": "s^-1",
+      "status": "PRESERVED_ENERGY_ACCOUNTING_REQUIRES_SPATIAL_CHECK",
+      "value_or_proposal": null,
+      "rationale": "Deposit normal Joule heat and QDelta once; preserve signed superconducting/reservoir work, not additional positive heat.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.18"
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "external_heating",
+      "family": "kinetic",
+      "symbol": "P_ext",
+      "physical_name": "Calentamiento externo de prueba",
+      "units": "N0Delta0²/t_ref",
+      "status": "INACTIVE_IN_PHOTON_SCENARIO",
+      "value_or_proposal": {
+        "value": 0
+      },
+      "rationale": "Do not import synthetic stage2 heating into photon deposition.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "extra_phonon_physics",
+      "family": "kinetic",
+      "symbol": "transporte lateral; colisiones ph-ph",
+      "physical_name": "Mecanismos fonónicos excluidos",
+      "units": "según modelo futuro",
+      "status": "OMITTED_PHYSICS_LIMIT",
+      "value_or_proposal": null,
+      "rationale": "No lateral phonon transport or new phonon-phonon operator activated. Missing effects constrain interpretation, not just numerical precision.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.1.1"
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.19"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "insulating_sides",
+      "family": "boundaries",
+      "symbol": "n·Z=0; n·Phi_f=0; n·grad(phi)=0",
+      "physical_name": "Paredes laterales aislantes",
+      "units": "flujo apropiado",
+      "status": "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED",
+      "value_or_proposal": null,
+      "rationale": "Use stationary branch consistent with circuit current and shared-energy kinetic populations; complete dynamic reservoir work and external normal trace before physical transients.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.24"
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "reservoir_branch",
+      "family": "boundaries",
+      "symbol": "a_b(Is),q_b(Is)",
+      "physical_name": "Rama estable del reservorio",
+      "units": "Delta0; ell0^-1",
+      "status": "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED",
+      "value_or_proposal": null,
+      "rationale": "Use stationary branch consistent with circuit current and shared-energy kinetic populations; complete dynamic reservoir work and external normal trace before physical transients.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/experimental/superconducting_reservoir.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.26"
+        }
+      ]
+    },
+    {
+      "id": "reservoir_population",
+      "family": "boundaries",
+      "symbol": "f_b=FD(E,Tb); n_b=BE",
+      "physical_name": "Población de reservorio",
+      "units": "1",
+      "status": "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED",
+      "value_or_proposal": null,
+      "rationale": "Use stationary branch consistent with circuit current and shared-energy kinetic populations; complete dynamic reservoir work and external normal trace before physical transients.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        },
+        {
+          "path": "pysnspd/experimental/reservoir_transport.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "reservoir_load",
+      "family": "boundaries",
+      "symbol": "Ltheta=−Iin/Iscale; reacción radial",
+      "physical_name": "Carga de fase y radio terminal",
+      "units": "gradiente de energía normalizado",
+      "status": "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED",
+      "value_or_proposal": null,
+      "rationale": "Use stationary branch consistent with circuit current and shared-energy kinetic populations; complete dynamic reservoir work and external normal trace before physical transients.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        }
+      ]
+    },
+    {
+      "id": "normal_trace",
+      "family": "boundaries",
+      "symbol": "n·j_n exterior",
+      "physical_name": "Flujo normal de borde",
+      "units": "A/m²; A integrado",
+      "status": "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED",
+      "value_or_proposal": null,
+      "rationale": "Use stationary branch consistent with circuit current and shared-energy kinetic populations; complete dynamic reservoir work and external normal trace before physical transients.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "potential_reference",
+      "family": "boundaries",
+      "symbol": "phi_R=0",
+      "physical_name": "Referencia de potencial",
+      "units": "V",
+      "status": "GAUGE_CHOICE",
+      "value_or_proposal": {
+        "right_terminal_V": 0
+      },
+      "rationale": "Fixes the arbitrary potential reference, not an additional physical voltage source.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.27"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "interface_kinetic",
+      "family": "boundaries",
+      "symbol": "f_2D(E)=f_1D(E)",
+      "physical_name": "Interfaz cinética transparente",
+      "units": "1; flujos",
+      "status": "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED",
+      "value_or_proposal": null,
+      "rationale": "Use stationary branch consistent with circuit current and shared-energy kinetic populations; complete dynamic reservoir work and external normal trace before physical transients.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/reservoir_transport.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "reservoir_work",
+      "family": "boundaries",
+      "symbol": "W_res; Q_e,out",
+      "physical_name": "Trabajo y calor intercambiados con exterior",
+      "units": "W",
+      "status": "REQUIRED_BOUNDARY_PHYSICS_NOT_YET_DYNAMICALLY_ADMITTED",
+      "value_or_proposal": null,
+      "rationale": "Use stationary branch consistent with circuit current and shared-energy kinetic populations; complete dynamic reservoir work and external normal trace before physical transients.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.9"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Ib",
+      "family": "circuit",
+      "symbol": "I_b",
+      "physical_name": "Corriente de polarización (estado)",
+      "units": "A",
+      "status": "PROPOSED_REFERENCE_BIAS_POINTS",
+      "value_or_proposal": {
+        "initial_current_A": [
+          1.55e-05,
+          2.15e-05
+        ],
+        "bias_voltage_V": [
+          0.155,
+          0.215
+        ]
+      },
+      "rationale": "Published80nm comparison points; Vbias=Rbias Iinitial. Ib and Is subsequently evolve by CM and are not clamped. Require a stable stationary branch; not a certified continuous current interval.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.1-CM.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Is",
+      "family": "circuit",
+      "symbol": "I_s",
+      "physical_name": "Corriente total del detector (estado)",
+      "units": "A",
+      "status": "PROPOSED_REFERENCE_BIAS_POINTS",
+      "value_or_proposal": {
+        "initial_current_A": [
+          1.55e-05,
+          2.15e-05
+        ],
+        "bias_voltage_V": [
+          0.155,
+          0.215
+        ]
+      },
+      "rationale": "Published80nm comparison points; Vbias=Rbias Iinitial. Ib and Is subsequently evolve by CM and are not clamped. Require a stable stationary branch; not a certified continuous current interval.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.1-CM.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "vc",
+      "family": "circuit",
+      "symbol": "v_c=V_d−V_out",
+      "physical_name": "Voltaje del condensador (estado)",
+      "units": "V",
+      "status": "INITIAL_EQUILIBRIUM_CONDITION",
+      "value_or_proposal": {
+        "initial_V": 0
+      },
+      "rationale": "Stationary superconducting DC state; capacitor voltage evolves after the event.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.1-CM.4"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Rbias",
+      "family": "circuit",
+      "symbol": "R_bias",
+      "physical_name": "Resistencia de polarización",
+      "units": "ohm",
+      "status": "PRESERVED_MEMORY_CIRCUIT_SCENARIO",
+      "value_or_proposal": {
+        "value": 10000.0,
+        "units": "ohm"
+      },
+      "rationale": "Polarization resistance; no measured K20 tolerance found.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Lbias",
+      "family": "circuit",
+      "symbol": "L_bias",
+      "physical_name": "Inductancia de polarización",
+      "units": "H",
+      "status": "PRESERVED_MEMORY_CIRCUIT_SCENARIO",
+      "value_or_proposal": {
+        "value": 1e-06,
+        "units": "H"
+      },
+      "rationale": "Bias-branch inductance; not detector kinetic inductance.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Rload",
+      "family": "circuit",
+      "symbol": "R_load",
+      "physical_name": "Carga de lectura",
+      "units": "ohm",
+      "status": "PRESERVED_MEMORY_CIRCUIT_SCENARIO",
+      "value_or_proposal": {
+        "value": 50,
+        "units": "ohm"
+      },
+      "rationale": "Load resistance at the defined readout port.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Ccouple",
+      "family": "circuit",
+      "symbol": "C_couple",
+      "physical_name": "Capacitancia serie de lectura",
+      "units": "F",
+      "status": "PRESERVED_MEMORY_CIRCUIT_SCENARIO",
+      "value_or_proposal": {
+        "value": 1e-10,
+        "units": "F"
+      },
+      "rationale": "100pF from memory CM; historical1pF key does not override the selected circuit.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Vbias",
+      "family": "circuit",
+      "symbol": "V_bias",
+      "physical_name": "Fuente de tensión",
+      "units": "V",
+      "status": "PROPOSED_REFERENCE_BIAS_POINTS",
+      "value_or_proposal": {
+        "initial_current_A": [
+          1.55e-05,
+          2.15e-05
+        ],
+        "bias_voltage_V": [
+          0.155,
+          0.215
+        ]
+      },
+      "rationale": "Published80nm comparison points; Vbias=Rbias Iinitial. Ib and Is subsequently evolve by CM and are not clamped. Require a stable stationary branch; not a certified continuous current interval.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Ltotal",
+      "family": "circuit",
+      "symbol": "L_k,total",
+      "physical_name": "Referencia histórica total",
+      "units": "H",
+      "status": "PRESERVED_MEMORY_CIRCUIT_SCENARIO",
+      "value_or_proposal": {
+        "value": 1e-08,
+        "units": "H",
+        "K20_additional_inductor_reference_H": 9.6e-08
+      },
+      "rationale": "10nH total memory reference and96nH added experimental inductor are different definitions. No silent substitution.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§1-§3"
+        }
+      ]
+    },
+    {
+      "id": "Lext",
+      "family": "circuit",
+      "symbol": "L_k,ext",
+      "physical_name": "Inductancia exterior constante",
+      "units": "H",
+      "status": "DERIVED_ENERGY_PARTITION",
+      "value_or_proposal": null,
+      "rationale": "Recompute total-minus-resolved inductance at a declared reference state when material/domain changes; do not reuse9.666757nH or subtract instantaneous hotspot inductance.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.6"
+        },
+        {
+          "path": "pysnspd/experimental/superconducting_reservoir.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Vdev",
+      "family": "circuit",
+      "symbol": "V_dev=phi_L−phi_R",
+      "physical_name": "Voltaje pasivo de región resuelta",
+      "units": "V",
+      "status": "SEPARATE_OBSERVABLE_DEFINITIONS",
+      "value_or_proposal": null,
+      "rationale": "Device power-port voltage, load voltage and condensate events are distinct. Relative deterministic crossing latency is not an IRF peak difference.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.3"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Vout",
+      "family": "circuit",
+      "symbol": "V_out; I_RF; V_d",
+      "physical_name": "Señal de carga antes de amplificador",
+      "units": "V; A",
+      "status": "SEPARATE_OBSERVABLE_DEFINITIONS",
+      "value_or_proposal": null,
+      "rationale": "Device power-port voltage, load voltage and condensate events are distinct. Relative deterministic crossing latency is not an IRF peak difference.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "CM.2"
+        },
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "Gface",
+      "family": "circuit",
+      "symbol": "G_face=sigma*S/l",
+      "physical_name": "Conductancia del grafo normal",
+      "units": "S",
+      "status": "DERIVED_JOINT_CONSTRAINT",
+      "value_or_proposal": null,
+      "rationale": "Compute from the selected functional, fields, populations and geometry; do not scan this as an independent material input.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/experimental/electrical_ports.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "amplitude_box",
+      "family": "catalogue",
+      "symbol": "absDelta/Delta0 box",
+      "physical_name": "Dominio positivo de amplitud del catálogo",
+      "units": "1",
+      "status": "AVAILABLE_TABLE_COVERAGE_ONLY",
+      "value_or_proposal": {
+        "positive_amplitude_Delta0": [
+          0.08,
+          1.5
+        ],
+        "Gamma_Delta0": [
+          0,
+          1.2
+        ]
+      },
+      "rationale": "Not a Cartesian physical confidence domain. The separate exact normal point does not validate the0-to-.08 gap.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "gamma_box",
+      "family": "catalogue",
+      "symbol": "Gamma/Delta0; Gamma/absDelta",
+      "physical_name": "Caja de depareamiento y coordenada de tabla",
+      "units": "1",
+      "status": "AVAILABLE_TABLE_COVERAGE_ONLY",
+      "value_or_proposal": {
+        "positive_amplitude_Delta0": [
+          0.08,
+          1.5
+        ],
+        "Gamma_Delta0": [
+          0,
+          1.2
+        ]
+      },
+      "rationale": "Not a Cartesian physical confidence domain. The separate exact normal point does not validate the0-to-.08 gap.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "eta",
+      "family": "catalogue",
+      "symbol": "eta/Delta0",
+      "physical_name": "Regulador causal numérico",
+      "units": "1",
+      "status": "RETAINED_VERIFIED_NUMERICAL_CONTROL",
+      "value_or_proposal": {
+        "value": 1e-08,
+        "units": "Delta0"
+      },
+      "rationale": "Causal regulator, not material broadening; scope of convergence must follow the used state.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.3"
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "xmax",
+      "family": "catalogue",
+      "symbol": "x_max/Delta0",
+      "physical_name": "Corte de conteo electrónico",
+      "units": "1",
+      "status": "REQUIRES_MATERIAL_SUPPORT_REDESIGN",
+      "value_or_proposal": {
+        "electronic_candidate_nodes": 630,
+        "phonon_candidate_nodes": 1025,
+        "conditional_NbN_positive_support_max_meV": 67.784,
+        "sampled_electronic_max_meV": 15.832,
+        "synthetic_phonon_max_meV": 5.259
+      },
+      "rationale": "See material_kinetics.md section7. xmax=12 is a count coordinate, not exactly Emax/Delta0. Synthetic support and resolution are not NbN rates; redesign extent, native energy, tails and event support before setting counts.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/refined_cells.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "electron_nodes",
+      "family": "catalogue",
+      "symbol": "N_e; refinamiento",
+      "physical_name": "Nodos de ocupaciones electrónicas",
+      "units": "conteo",
+      "status": "REQUIRES_MATERIAL_SUPPORT_REDESIGN",
+      "value_or_proposal": {
+        "electronic_candidate_nodes": 630,
+        "phonon_candidate_nodes": 1025,
+        "conditional_NbN_positive_support_max_meV": 67.784,
+        "sampled_electronic_max_meV": 15.832,
+        "synthetic_phonon_max_meV": 5.259
+      },
+      "rationale": "See material_kinetics.md section7. xmax=12 is a count coordinate, not exactly Emax/Delta0. Synthetic support and resolution are not NbN rates; redesign extent, native energy, tails and event support before setting counts.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/refined_cells.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "count_partition",
+      "family": "catalogue",
+      "symbol": "breaks; bulk_spacing; order; edge_order",
+      "physical_name": "Regla de cuadratura de estados",
+      "units": "Delta0; enteros",
+      "status": "REQUIRES_MATERIAL_SUPPORT_REDESIGN",
+      "value_or_proposal": {
+        "electronic_candidate_nodes": 630,
+        "phonon_candidate_nodes": 1025,
+        "conditional_NbN_positive_support_max_meV": 67.784,
+        "sampled_electronic_max_meV": 15.832,
+        "synthetic_phonon_max_meV": 5.259
+      },
+      "rationale": "See material_kinetics.md section7. xmax=12 is a count coordinate, not exactly Emax/Delta0. Synthetic support and resolution are not NbN rates; redesign extent, native energy, tails and event support before setting counts.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/experimental/refined_cells.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "phonon_grid",
+      "family": "catalogue",
+      "symbol": "N_ph; Omega_min; Omega_max",
+      "physical_name": "Representación fonónica y corteIR",
+      "units": "nodos;Delta0",
+      "status": "REQUIRES_MATERIAL_SUPPORT_REDESIGN",
+      "value_or_proposal": {
+        "electronic_candidate_nodes": 630,
+        "phonon_candidate_nodes": 1025,
+        "conditional_NbN_positive_support_max_meV": 67.784,
+        "sampled_electronic_max_meV": 15.832,
+        "synthetic_phonon_max_meV": 5.259
+      },
+      "rationale": "See material_kinetics.md section7. xmax=12 is a count coordinate, not exactly Emax/Delta0. Synthetic support and resolution are not NbN rates; redesign extent, native energy, tails and event support before setting counts.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_closures.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "reaction_quadrature",
+      "family": "catalogue",
+      "symbol": "orders; panel widths; layout",
+      "physical_name": "Cuadratura interna de colisiones",
+      "units": "enteros;Delta0",
+      "status": "REQUIRES_MATERIAL_SUPPORT_REDESIGN",
+      "value_or_proposal": {
+        "electronic_candidate_nodes": 630,
+        "phonon_candidate_nodes": 1025,
+        "conditional_NbN_positive_support_max_meV": 67.784,
+        "sampled_electronic_max_meV": 15.832,
+        "synthetic_phonon_max_meV": 5.259
+      },
+      "rationale": "See material_kinetics.md section7. xmax=12 is a count coordinate, not exactly Emax/Delta0. Synthetic support and resolution are not NbN rates; redesign extent, native energy, tails and event support before setting counts.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/kinetic_events.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "face_quadrature",
+      "family": "catalogue",
+      "symbol": "face_order",
+      "physical_name": "Cuadratura de transporte a energía común",
+      "units": "entero",
+      "status": "REQUIRES_MATERIAL_SUPPORT_REDESIGN",
+      "value_or_proposal": {
+        "electronic_candidate_nodes": 630,
+        "phonon_candidate_nodes": 1025,
+        "conditional_NbN_positive_support_max_meV": 67.784,
+        "sampled_electronic_max_meV": 15.832,
+        "synthetic_phonon_max_meV": 5.259
+      },
+      "rationale": "See material_kinetics.md section7. xmax=12 is a count coordinate, not exactly Emax/Delta0. Synthetic support and resolution are not NbN rates; redesign extent, native energy, tails and event support before setting counts.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/cell_transport.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "matsubara",
+      "family": "catalogue",
+      "symbol": "N_M; T_a; tail",
+      "physical_name": "Matsubara, temperatura auxiliar y cola",
+      "units": "entero;K",
+      "status": "ALGORITHMIC_CONTROL_NOT_PHYSICAL_RANGE",
+      "value_or_proposal": null,
+      "rationale": "Retain causal solve and energy accuracy; no arbitrary relaxation of root tolerance to match experimental uncertainty.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.5-D.7"
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "newton",
+      "family": "catalogue",
+      "symbol": "tol_causal; brackets; branch",
+      "physical_name": "Resolución causal e inversión de conteo",
+      "units": "relativo/absolutonormalizado",
+      "status": "ALGORITHMIC_CONTROL_NOT_PHYSICAL_RANGE",
+      "value_or_proposal": null,
+      "rationale": "Retain causal solve and energy accuracy; no arbitrary relaxation of root tolerance to match experimental uncertainty.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/experimental/energy_catalog.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/seeded_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "predictor",
+      "family": "catalogue",
+      "symbol": "Chebyshev_degree; seed_box",
+      "physical_name": "Predictor del Newton causal exacto",
+      "units": "entero;1",
+      "status": "LOCAL_ACCELERATOR_ONLY",
+      "value_or_proposal": {
+        "amplitude_Delta0": [
+          0.985,
+          1.005
+        ],
+        "Gamma_Delta0": [
+          0.003,
+          0.009
+        ]
+      },
+      "rationale": "Existing seed box does not cover hotbelt. Design direct evaluation or explicitly extend/reverify; no silent extrapolation.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/seeded_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "material_preprocess",
+      "family": "catalogue",
+      "symbol": "dedup; negative_tail; common_support; unit_factors",
+      "physical_name": "Tratamiento de datos fonónicos",
+      "units": "operaciones yfactoresSI",
+      "status": "ABSOLUTE_RATE_IDENTIFICATION_OPEN",
+      "value_or_proposal": null,
+      "rationale": "Conditional NbN shape retained; exact mode basis, unit conversion, normalization and finite support still need evidence. No guessed renormalization.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/material_admission.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "sem_degree",
+      "family": "spatial_numerics",
+      "symbol": "p_SEM",
+      "physical_name": "Grado GLL de elementos espectrales",
+      "units": "entero",
+      "status": "PROPOSED_NUMERICAL_START",
+      "value_or_proposal": {
+        "value": 4
+      },
+      "rationale": "Maintain spatial representation used in stage3; degree does not by itself resolve a core.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/mixed_spatial.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "spatial_mesh",
+      "family": "spatial_numerics",
+      "symbol": "N_x,N_y,N_L,N_R; h",
+      "physical_name": "Elementos y espaciado mixto",
+      "units": "enteros;m",
+      "status": "PROPOSED_RESOLUTION",
+      "value_or_proposal": {
+        "smooth_element_nm": [
+          10,
+          20
+        ],
+        "core_comparison_element_nm": [
+          5,
+          10
+        ],
+        "conditional_compact_deposition_local_element_nm": [
+          2.1,
+          2.9
+        ]
+      },
+      "rationale": "Element length, not nodal separation. Largest degree4GLL gap=.3273h. Compact s1.4–1.9nm requires local refinement; h<=s/(2*.3273) is only a starting resolution heuristic, not an accuracy certificate. Graded2D mesh should avoid uniform cost.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "legacy_mesh",
+      "family": "spatial_numerics",
+      "symbol": "target_spacing; seed; smoothing",
+      "physical_name": "Malla Delaunay histórica",
+      "units": "m;entero",
+      "status": "LEGACY_OR_SYNTHETIC_NOT_TRANSFERABLE",
+      "value_or_proposal": null,
+      "rationale": "Historical controls are not parameters of the new material/spatial kinetic discretization.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "fd_controls",
+      "family": "spatial_numerics",
+      "symbol": "h_FD; D5; curvature steps",
+      "physical_name": "Pasos de diferencias independientes",
+      "units": "normalizado",
+      "status": "DIAGNOSTIC_SPECIFIC_NOT_PHYSICAL_MARGIN",
+      "value_or_proposal": null,
+      "rationale": "Historical derivative increments and minimizer tolerances keep their original scope; stationary force/current must be controlled for the new initialization.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "static_solver",
+      "family": "spatial_numerics",
+      "symbol": "L-BFGS-B; gradient/function tolerances",
+      "physical_name": "Preparación estacionaria abierta",
+      "units": "normalizado",
+      "status": "DIAGNOSTIC_SPECIFIC_NOT_PHYSICAL_MARGIN",
+      "value_or_proposal": null,
+      "rationale": "Historical derivative increments and minimizer tolerances keep their original scope; stationary force/current must be controlled for the new initialization.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/ports_20260923/open_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "joule_allocation",
+      "family": "spatial_numerics",
+      "symbol": "half-face then quadrature-mass",
+      "physical_name": "Asignación local de calor normal",
+      "units": "regla",
+      "status": "PRESERVED_ENERGY_ACCOUNTING_REQUIRES_SPATIAL_CHECK",
+      "value_or_proposal": null,
+      "rationale": "Deposit normal Joule heat and QDelta once; preserve signed superconducting/reservoir work, not additional positive heat.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/experimental/spatial_dynamics.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "time_method",
+      "family": "time_numerics",
+      "symbol": "SSPRK3+common_flux+subnormal_guard",
+      "physical_name": "Integrador de poblaciones acotadas",
+      "units": "método",
+      "status": "UNADMITTED_SPATIAL_INTEGRATOR_DESIGN",
+      "value_or_proposal": {
+        "proposed_initial_step_fs": [
+          1,
+          10
+        ]
+      },
+      "rationale": "Not a stable-step guarantee; coupled spectrum, mesh and collision rates determine admissible steps. No physical method chosen merely by literature.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage2/closure_20260922/closure_decision.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "dt",
+      "family": "time_numerics",
+      "symbol": "dt; N_steps; rtol,atol",
+      "physical_name": "Paso temporal y control de error",
+      "units": "s;entero;unidadesporvariable",
+      "status": "UNADMITTED_SPATIAL_INTEGRATOR_DESIGN",
+      "value_or_proposal": {
+        "proposed_initial_step_fs": [
+          1,
+          10
+        ]
+      },
+      "rationale": "Not a stable-step guarantee; coupled spectrum, mesh and collision rates determine admissible steps. No physical method chosen merely by literature.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/run_coupled.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "checkpoint",
+      "family": "time_numerics",
+      "symbol": "checkpoint_times; sampling_dt",
+      "physical_name": "Muestreo guardado de resultados",
+      "units": "s",
+      "status": "PROPOSED_OUTPUT_CADENCE",
+      "value_or_proposal": {
+        "early_field_spacing_ps": [
+          0.05,
+          0.1
+        ]
+      },
+      "rationale": "Saved field cadence is distinct from solver time step and event location accuracy.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "numerical_budgets",
+      "family": "time_numerics",
+      "symbol": "epsilon_t,epsilon_x,epsilon_E,epsilon_ref",
+      "physical_name": "Presupuestos de precisión",
+      "units": "unidades deobservable;relativo",
+      "status": "PROPOSED_OBSERVABLE_BUDGET",
+      "value_or_proposal": {
+        "relative_crossing_latency_difference_ps": 0.1,
+        "exploratory_ps": 0.2
+      },
+      "rationale": "Absolute numerical sensitivity target for the difference, not experimental CI or dt. Do not replace positivity/support/balance with this target.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage2/acceptance_criteria.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage2/closure_20260922/closure_decision.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/nodal_20260923/registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "stopping",
+      "family": "time_numerics",
+      "symbol": "admissibility checks; maxcost; retry policy",
+      "physical_name": "Paradas y límites de cálculo",
+      "units": "conteos;s",
+      "status": "STRUCTURAL_STOPS_PRESERVED",
+      "value_or_proposal": null,
+      "rationale": "Stop and report unsupported populations, lost causality, nonpositive D36 or invalid branch; never clip to force acceptance.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.36"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "threshold",
+      "family": "observation",
+      "symbol": "V_thr; polarity",
+      "physical_name": "Discriminador de detección",
+      "units": "V;categoría",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "readout_windows",
+      "family": "observation",
+      "symbol": "baseline,confirmation,hysteresis,peak",
+      "physical_name": "Ventanas del detector lógico",
+      "units": "s;1",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "recovery",
+      "family": "observation",
+      "symbol": "hold; current fraction; residuals",
+      "physical_name": "Definición de recuperación",
+      "units": "s;A;V;K;1",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "latency",
+      "family": "observation",
+      "symbol": "t_latency=t_cross−t_event",
+      "physical_name": "Latencia determinista",
+      "units": "s",
+      "status": "SEPARATE_OBSERVABLE_DEFINITIONS",
+      "value_or_proposal": null,
+      "rationale": "Device power-port voltage, load voltage and condensate events are distinct. Relative deterministic crossing latency is not an IRF peak difference.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        }
+      ]
+    },
+    {
+      "id": "jitter",
+      "family": "observation",
+      "symbol": "sigma_t; FWHM_t; distribution",
+      "physical_name": "Dispersión temporal/jitter experimental",
+      "units": "s",
+      "status": "DEFERRED_NOT_ACTIVATED",
+      "value_or_proposal": null,
+      "rationale": "First task is deterministic hotbelt formation and relative crossing latency. Published ensemble fits do not define new stochastic inputs.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        },
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "electronics_transfer",
+      "family": "observation",
+      "symbol": "H_readout(omega); gain; bandwidth; cable_delay",
+      "physical_name": "Cadena de lectura y amplificación",
+      "units": "transferencia;Hz;s",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": "§2"
+        }
+      ]
+    },
+    {
+      "id": "noise",
+      "family": "observation",
+      "symbol": "S_V,S_I; trigger_noise; timing_reference",
+      "physical_name": "Ruido de lectura y referencia temporal",
+      "units": "V²/Hz;A²/Hz;s",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "event_ensemble",
+      "family": "observation",
+      "symbol": "position/energy/bias distributions; repetitions",
+      "physical_name": "Distribución de condiciones de evento",
+      "units": "distribuciones",
+      "status": "DEFERRED_NOT_ACTIVATED",
+      "value_or_proposal": null,
+      "rationale": "First task is deterministic hotbelt formation and relative crossing latency. Published ensemble fits do not define new stochastic inputs.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.30"
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "observables",
+      "family": "observation",
+      "symbol": "Q,energy,force,current,voltages,latency,switching",
+      "physical_name": "Lista de observables con escala propia",
+      "units": "varias",
+      "status": "SEPARATE_OBSERVABLE_DEFINITIONS",
+      "value_or_proposal": null,
+      "rationale": "Device power-port voltage, load voltage and condensate events are distinct. Relative deterministic crossing latency is not an IRF peak difference.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/analysis/timing.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "boundary_distances",
+      "family": "geometry",
+      "symbol": "d_center,L; d_center,R; d_region,L; d_region,R",
+      "physical_name": "Distancias desde el centro de deposición y desde una región perturbada definida por separado",
+      "units": "m",
+      "status": "CONDITIONAL_DOMAIN_OR_INTERFACE",
+      "value_or_proposal": null,
+      "rationale": "No independent lead-length interval before transverse dynamics and kinetic interface are verified. Record distances from deposition center separately from any threshold-defined region.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.25-D.30"
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "linear_diffusion_filter",
+      "family": "geometry",
+      "symbol": "tau=t-t0; sigma²(tau); epsilon_exterior(tau)",
+      "physical_name": "Filtro analítico de influencia lejana, condicional",
+      "units": "s;m²;1",
+      "status": "ANALYTICAL_PREFILTER_NOT_ERROR_BOUND",
+      "value_or_proposal": {
+        "illustrative_exterior_mass_fractions": [
+          0.01,
+          0.001
+        ]
+      },
+      "rationale": "Free Gaussian instantaneous exterior mass. Actual admission is insensitivity of observables to artificial terminal placement.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+          "locator": "D.17-D.20"
+        }
+      ]
+    },
+    {
+      "id": "Ic_calibration",
+      "family": "material",
+      "symbol": "I_c,target; gamma_max_fraction; D_warn",
+      "physical_name": "Calibración histórica de corriente crítica",
+      "units": "A;1;m²/s",
+      "status": "NO_TARGET_REFIT_BY_DEFAULT",
+      "value_or_proposal": null,
+      "rationale": "Do not retune D to an inherited critical current while claiming independent experimental diffusion; test selected points against actual branch.",
+      "review": "material_kinetics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/config.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "legacy_thermal_catalog",
+      "family": "catalogue",
+      "symbol": "N_Te,N_Tph,N_delta,N_q,N_energy,N_omega",
+      "physical_name": "Tablas térmicas de producción históricas",
+      "units": "enteros",
+      "status": "LEGACY_OR_SYNTHETIC_NOT_TRANSFERABLE",
+      "value_or_proposal": null,
+      "rationale": "Historical controls are not parameters of the new material/spatial kinetic discretization.",
+      "review": "geometry_numerics.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        },
+        {
+          "path": "pysnspd/config.py",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "material_provenance",
+      "family": "provenance",
+      "symbol": "data_SHA,units,normalization,source_revision",
+      "physical_name": "Identidad de datos y convenciones",
+      "units": "metadatos",
+      "status": "TRACEABILITY_AND_COST_RULE",
+      "value_or_proposal": {
+        "agent_expected_max_seconds": 300,
+        "uncertain_timeout_seconds": 240
+      },
+      "rationale": "Immutable evidence and fresh directories. Long commands only in Geminga notebook plus chat; no heavy run executed in this research.",
+      "review": "README.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage1_closure/material_findings.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "run_identity",
+      "family": "provenance",
+      "symbol": "source_SHA,initial_SHA,registration,versions",
+      "physical_name": "Identidad reproducible del cálculo",
+      "units": "metadatos",
+      "status": "TRACEABILITY_AND_COST_RULE",
+      "value_or_proposal": {
+        "agent_expected_max_seconds": 300,
+        "uncertain_timeout_seconds": 240
+      },
+      "rationale": "Immutable evidence and fresh directories. Long commands only in Geminga notebook plus chat; no heavy run executed in this research.",
+      "review": "README.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/seeded_registration.json",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/reservoir_postprocess_registration.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "execution_resources",
+      "family": "provenance",
+      "symbol": "threads, RAM, runtime, progress",
+      "physical_name": "Recursos y política de ejecución",
+      "units": "conteos;GiB;s",
+      "status": "TRACEABILITY_AND_COST_RULE",
+      "value_or_proposal": {
+        "agent_expected_max_seconds": 300,
+        "uncertain_timeout_seconds": 240
+      },
+      "rationale": "Immutable evidence and fresh directories. Long commands only in Geminga notebook plus chat; no heavy run executed in this research.",
+      "review": "README.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3/coupled_20260923/mixed_registration.json",
+          "locator": null
+        },
+        {
+          "path": "configs/geminga_local_v3.yaml",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "sample_identity",
+      "family": "experiment_reference",
+      "symbol": "sample_id; fabrication; width; Tb; bias",
+      "physical_name": "Identidad de muestra y adquisición",
+      "units": "metadatos;SI",
+      "status": "SOURCE_SPECIFIC_REFERENCE",
+      "value_or_proposal": null,
+      "rationale": "Selected80nm K20 NbN/SiO2/Si case; legacy phonon heat-capacity gamma is not Usadel pair-breaking Gamma or an admitted full-spectrum kernel.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "sheet_resistance",
+      "family": "experiment_reference",
+      "symbol": "R_square; RRR",
+      "physical_name": "Resistencia de hoja y razón residual",
+      "units": "ohm/cuadro;1",
+      "status": "USER_SELECTED_ADJUSTED_REFERENCE",
+      "value_or_proposal": {
+        "value": 608,
+        "units": "ohm/square",
+        "other_scenarios": [
+          340,
+          425
+        ]
+      },
+      "rationale": "608 is model reference;340 room-temperature measurement;425 conditional RRR conversion, not an uncertainty interval.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "substrate",
+      "family": "experiment_reference",
+      "symbol": "substrate; oxide; wafer_thickness",
+      "physical_name": "Sustrato y capas ópticas/térmicas",
+      "units": "material;m",
+      "status": "SOURCE_SPECIFIC_REFERENCE",
+      "value_or_proposal": null,
+      "rationale": "Selected80nm K20 NbN/SiO2/Si case; legacy phonon heat-capacity gamma is not Usadel pair-breaking Gamma or an admitted full-spectrum kernel.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "phonon_gamma_legacy",
+      "family": "experiment_reference",
+      "symbol": "gamma_ph",
+      "physical_name": "Parámetro fonónico del modelo térmico de referencia",
+      "units": "1",
+      "status": "SOURCE_SPECIFIC_REFERENCE",
+      "value_or_proposal": null,
+      "rationale": "Selected80nm K20 NbN/SiO2/Si case; legacy phonon heat-capacity gamma is not Usadel pair-breaking Gamma or an admitted full-spectrum kernel.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "fit_energy_variances",
+      "family": "experiment_reference",
+      "symbol": "sigma_F; sigma_nonuniform; retention",
+      "physical_name": "Dispersión energética ajustada en referencia",
+      "units": "meV;1",
+      "status": "DEFERRED_NOT_ACTIVATED",
+      "value_or_proposal": null,
+      "rationale": "First task is deterministic hotbelt formation and relative crossing latency. Published ensemble fits do not define new stochastic inputs.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "optical_chain",
+      "family": "experiment_reference",
+      "symbol": "lambda; polarization; focus; optical_path",
+      "physical_name": "Configuración óptica por adquisición",
+      "units": "m;polarización;s",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "tapers",
+      "family": "experiment_reference",
+      "symbol": "taper_geometry; illuminated_region",
+      "physical_name": "Transiciones geométricas y región iluminada",
+      "units": "m;metadatos",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "observation_uncertainty",
+      "family": "experiment_reference",
+      "symbol": "CI95%; covariance; fitted_IRF_peak",
+      "physical_name": "Convenciones de incertidumbre y ajuste",
+      "units": "según observable",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    },
+    {
+      "id": "experimental_readout",
+      "family": "experiment_reference",
+      "symbol": "L_add,H_readout,sampling",
+      "physical_name": "Montaje de lectura de referencia",
+      "units": "H;Hz;ganancia",
+      "status": "EXPERIMENTAL_MAPPING_INCOMPLETE",
+      "value_or_proposal": null,
+      "rationale": "Memory observable conventions remain identifiable, but no complete calibrated K20 transfer/threshold/noise/position mapping is supplied. Do not invent a physical range from software defaults.",
+      "review": "circuit_observables.md",
+      "physical_confidence_interval": null,
+      "original_source_refs": [
+        {
+          "path": "docs/implementation/stage3_5/reference_experiment.md",
+          "locator": null
+        },
+        {
+          "path": "docs/implementation/stage3_5/source_register.json",
+          "locator": null
+        }
+      ]
+    }
+  ],
+  "count": 127,
+  "families": 15,
+  "independent_physical_confidence_box_admitted": false,
+  "code_parameters_changed": false,
+  "new_physical_transients": 0,
+  "unresolved_family_default_ids": []
+}

@@ -1,0 +1,255 @@
+{
+  "schema": "pysnspd.stage3_5.gaussian_initial_condition_research.v1",
+  "date": "2026-09-23",
+  "status": "DOCUMENTARY_RESEARCH_CONDITIONAL_SCENARIO_NOT_ADOPTED",
+  "new_simulations": 0,
+  "user_constraints": {
+    "gaussian_is_user_design_choice": true,
+    "previous_s_5_to_20_nm_accepted": false,
+    "previous_retention_range_accepted": false,
+    "reference_orientation": "Korzh80nm relative775/1550nm latency; hotbelt before jitter",
+    "model_changes": false
+  },
+  "gaussian_convention": {
+    "dimension": 2,
+    "thickness_uniform": true,
+    "energy_density": "E_in/(2*pi*d*s^2)*exp(-r^2/(2*s^2))",
+    "s": "one Cartesian-coordinate standard deviation, not radial RMS or hotspot radius",
+    "t0": "transfer instant from omitted cascade, distinct from optical absorption",
+    "subsystem": "must explicitly identify electronic, phononic, or total excess energy"
+  },
+  "sources": [
+    {
+      "id": "ZV12",
+      "authors": "A. N. Zotova; D. Y. Vodolazov",
+      "title": "Photon detection by current-carrying superconducting film: A time-dependent Ginzburg-Landau approach",
+      "doi": "10.1103/PhysRevB.85.024509",
+      "url": "https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevB.85.024509/fulltext",
+      "preprint": "https://arxiv.org/abs/1112.3790",
+      "fulltext_read": true,
+      "locators": {
+        "initial_condition": "Section II, PDFpp2-3, Eq1-2",
+        "gaussian": "PDFp5 Eq13",
+        "effective_suppression_disk": "PDFpp4-6 London approximation",
+        "limitations": "PDFp7 SectionIV"
+      },
+      "published_model_values": {
+        "D_cm2_s": 0.45,
+        "tau_ee_ps": 7,
+        "Rinit_test_nm": [
+          9,
+          18
+        ],
+        "Rinit_used_nm": 9,
+        "xi_GL_quoted_nm": 7.5,
+        "thickness_nm": 4,
+        "Tc_K": 10,
+        "Tb_K": 5,
+        "tau_ep_ps": 17
+      },
+      "classification": "thermal-electron uniform disk after omitted thermalization, then evolved; no initial imposed Delta=0; Eq13 is separate point-source Gaussian estimate",
+      "measurement_of_gaussian_width": false
+    },
+    {
+      "id": "S01",
+      "authors": "A. D. Semenov; G. N. Goltsman; A. A. Korneev",
+      "title": "Quantum detection by current carrying superconducting film",
+      "doi": "10.1016/S0921-4534(00)01637-3",
+      "url": "https://elib.dlr.de/18281/",
+      "fulltext_read": false,
+      "scope": "institutional bibliographic record only; no equations or numerical radius inferred from inaccessible fulltext"
+    },
+    {
+      "id": "S05pre",
+      "authors": "A. Semenov; A. Engel; H.-W. Hubers; K. Ilin; M. Siegel",
+      "title": "Probability of the resistive state formation caused by absorption of a single-photon in current-carrying superconducting nano-strips",
+      "url": "https://arxiv.org/pdf/cond-mat/0410633",
+      "version": "v1 2004-10-25",
+      "journal_relation": "antecedent of Spectral cut-off..., EPJB47 495-501(2005), DOI10.1140/epjb/e2005-00351-8; publication PDF unavailable this turn",
+      "fulltext_read": true,
+      "locators": [
+        "SectionIII,PDFpp4-5",
+        "Eq2: Gaussian electron concentration",
+        "discussion below Eq5: effective normal-cylinder diameter"
+      ],
+      "classification": "nonequilibrium electron concentration; M(t) multiplication; normal contour distinct from Gaussian extent",
+      "measurement_of_gaussian_width": false
+    },
+    {
+      "id": "A20",
+      "authors": "J. P. Allmaras",
+      "title": "Modeling and Development of Superconducting Nanowire Single-Photon Detectors",
+      "doi": "10.7907/wgak-vs11",
+      "url": "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf",
+      "local_pdf": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf",
+      "local_sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96",
+      "fulltext_read": true,
+      "locators": [
+        "pp15-16/PDF27-28 material and bath",
+        "pp20-24/PDF32-36 radial cascade",
+        "Figs2.6-2.8 PDF34-35 visually inspected",
+        "pp106-107/PDF118-119 spatial kinetic versus two-temperature"
+      ],
+      "radial_case": {
+        "photon_eV": 1,
+        "initial_electron_pairs": 2,
+        "initial_radius_nm": 1,
+        "D_cm2_s": 0.5,
+        "Tc_K": 8.65,
+        "Tbath_K": 4.325,
+        "thickness_material_nm": 7,
+        "tau0_kinetic_ps": 1870,
+        "normal_electronic_spectrum": true,
+        "geometries": [
+          "cylindrical2D",
+          "spherical3D"
+        ],
+        "neglected": [
+          "electron-electron collisions",
+          "phonon diffusion",
+          "phonon escape in initial radial comparison"
+        ],
+        "R90_total_cylindrical_reported_nm": [
+          3,
+          4
+        ],
+        "formation_time_tau0": 3E-05,
+        "figure2_7_end_time_tau0": 0.0001,
+        "figure2_8_end_time_tau0": 0.0002
+      },
+      "classification": "numerical historical model, not a measured Gaussian; quoted R90 uses total photon energy, not independently normalized phonon distribution"
+    },
+    {
+      "id": "SI25",
+      "authors": "Simon et al.",
+      "title": "Ab initio modeling of nonequilibrium dynamics in superconducting detectors and qubits",
+      "url": "https://arxiv.org/html/2501.13791v3",
+      "version": "v3",
+      "fulltext_read": true,
+      "locators": [
+        "SectionII kinetic diffusion neglected",
+        "SectionIII uniform Vinit=pi*xi_c^2*d",
+        "AppendixVII.1 phonon bubble",
+        "Appendix TDGL equations8-9 spatial radius sqrt(Dt)"
+      ],
+      "classification": "spectral phonon bubble plus prescribed spatial approximation; not a radial cascade determining Gaussian width"
+    },
+    {
+      "id": "K07",
+      "authors": "A. G. Kozorezov et al.",
+      "title": "Electron energy down-conversion in thin superconducting films",
+      "doi": "10.1103/PhysRevB.75.094513",
+      "url": "https://journals.aps.org/prb/abstract/10.1103/PhysRevB.75.094513",
+      "fulltext_read": false,
+      "abstract_read": true,
+      "scope": "interface loss/vertical absorption position only; no Gaussian width inferred"
+    }
+  ],
+  "own_algebra": {
+    "gaussian_moments": {
+      "mean_r2_over_s2": 2,
+      "R50_over_s": 1.1774100225154747,
+      "R90_over_s": 2.145966026289347,
+      "R95_over_s": 2.4477468306808166,
+      "line_FWHM_over_s": 2.3548200450309493
+    },
+    "uniform_disk": {
+      "mean_r2": "R^2/2",
+      "matching_energy_and_second_moment": "s=R/2",
+      "gaussian_peak_over_disk_peak_for_moment_match": 2,
+      "matching_energy_and_peak": "s=R/sqrt(2)",
+      "warning": "cannot preserve energy, peak, and second moment simultaneously"
+    },
+    "sphere_projection": {
+      "uniform_ball_cartesian_variance": "R^2/5",
+      "equivalent_projected_gaussian_s": "R/sqrt(5)",
+      "warning": "do not apply 2D R90 conversion directly to 3D spherical percentile"
+    },
+    "free_diffusion": {
+      "formula": "s(t)^2=s(t0)^2+2*D*(t-t0)",
+      "assumptions": [
+        "constant D",
+        "conserved freely diffusing density",
+        "infinite plane/no boundaries"
+      ],
+      "D_nm2_ps": 50,
+      "point_source_examples": [
+        {
+          "time_ps": 0.1,
+          "s_nm": 3.1622776601683795
+        },
+        {
+          "time_ps": 1,
+          "s_nm": 10
+        },
+        {
+          "time_ps": 4,
+          "s_nm": 20
+        }
+      ],
+      "not_cascade_predictions": true
+    },
+    "two_subsystem_moment": {
+      "formula": "d<r^2>total/dt=4*D*E_e/E_total; ds_mom^2/dt=2*D*E_e/E_total",
+      "assumptions": [
+        "electron energy obeys constant-D diffusion",
+        "local energy-conserving reactions",
+        "immobile phonons",
+        "no escape/no Joule/no source",
+        "no boundary terms"
+      ],
+      "model_replacement": false
+    },
+    "ZV_disk_sigma_moment_nm": [
+      4.5,
+      9
+    ],
+    "A20_time_ps": {
+      "formation_scale": 0.0561,
+      "figure2_7_end": 0.187,
+      "figure2_8_end": 0.374
+    },
+    "A20_R90_equivalent_s_nm": [
+      1.3979718053539683,
+      1.8639624071386243
+    ]
+  },
+  "recommendation": {
+    "adopted_physical_range": false,
+    "unconditional_Korzh_s_nm": null,
+    "conditional_bridge_s_nm": [
+      1.4,
+      1.9
+    ],
+    "matching_definition": "2D Gaussian carrying same total energy and same reported R90 as cylindrical A20 cascade; not a second-moment fit",
+    "reference_transfer_window_ps": [
+      0.06,
+      0.19
+    ],
+    "reference_window_status": "approximate historical formation/figure window, not optical delay measurement",
+    "applicability": [
+      "A20 model/conditions identified above",
+      "predominantly phonon-localized energy must be checked at chosen t0",
+      "exclude interpreting Gaussian as imposed Delta suppression",
+      "must resolve or justify subcoherence continuum source"
+    ],
+    "missing_for_Korzh": [
+      "radial retained-energy profile at transfer t0 for0.9K and775/1550nm",
+      "electron/phonon partition at t0",
+      "residual electron tail and phonon spatial spread",
+      "boundary/interface losses before t0",
+      "Gaussian approximation adequacy across at least two moments/percentiles",
+      "validity of depth-averaged2D deposition when R90<film thickness7nm"
+    ],
+    "rejected_inference": "5-20nm as evidence-backed physical interval; uniform-disk radius equals Gaussian sigma; electronic D directly broadens phonon bubble",
+    "new_question_required": false,
+    "user_answer": "Caracterizar primero la cascada; dejar el ancho abierto",
+    "chosen_width_nm": null,
+    "historical_equivalent_is_not_adopted_scenario": true,
+    "next_required_work": "Characterize the omitted cascade before assigning D30 width; see cascade_characterization.md"
+  },
+  "file_scope": [
+    "gaussian_initial_condition.md",
+    "gaussian_sources.json"
+  ]
+}

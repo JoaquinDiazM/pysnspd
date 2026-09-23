@@ -1,0 +1,229 @@
+{
+  "schema": "pysnspd.stage3_5.A20_radial_figure_digitization.v1",
+  "status": "HISTORICAL_CURVE_EXTRACTION_NOT_KORZH_DATA",
+  "new_physics_simulations": 0,
+  "source": {
+    "path": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf",
+    "sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96",
+    "url": "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf",
+    "PDF_page_1based": 35,
+    "printed_page": 23,
+    "figure": "2.7(a)",
+    "subsystem": "total photon energy",
+    "geometry": "cylindrical",
+    "embedded_image": "Im13",
+    "image_size_px": [
+      1750,
+      1315
+    ],
+    "decoded_RGB_sha256": "25bb23334fbf912c2ee7c69c3b4146bc482126cc111d2f159d89b36b2ee14d11",
+    "vector_objects": {
+      "curves": 0,
+      "lines": 0
+    }
+  },
+  "script_sha256": "6b0f34ceef404730d925c32740ccb7c52efbc825a982d009f61416bbd6b7f074",
+  "axes": {
+    "left_x": 228.0,
+    "right_x": 1582.0,
+    "top_y": 125.0,
+    "bottom_y": 1072.0,
+    "radius_min_nm": 0.0,
+    "radius_max_nm": 6.0,
+    "time_axis_factor_tau0": 0.0001,
+    "tau0_ps": 1870.0
+  },
+  "extraction": {
+    "method": "RGB embedded-image curve pixels plus local linear interpolation",
+    "nominal_RGB_Linf_tolerance": 12,
+    "crosscheck_tolerances": [
+      4,
+      20
+    ],
+    "maximum_threshold_change_nm": 0.0,
+    "axis_coordinate_uncertainty_px": 2,
+    "envelope_kind": "conservative reading budget, not statistical or physical interval",
+    "no_curve_hidden_by_legend_used": true,
+    "no_raster_resizing_or_smoothing": true
+  },
+  "two_dimensional_gaussian_R90_over_R50": 1.822615728804995,
+  "rows": [
+    {
+      "time_axis_fraction": 0.3,
+      "time_over_tau0": 3e-05,
+      "time_ps": 0.056100000000000004,
+      "R50": {
+        "radius_nm": 1.6029567053854277,
+        "extraction_envelope_nm": [
+          1.5681098204857444,
+          1.637803590285111
+        ],
+        "target_x_px": 634.2,
+        "fitted_y_px": 819.0,
+        "local_slope_px_per_px": 0.0,
+        "sampled_centers_px": [
+          [
+            632,
+            819
+          ],
+          [
+            633,
+            819
+          ],
+          [
+            634,
+            819
+          ],
+          [
+            635,
+            819
+          ],
+          [
+            636,
+            819
+          ]
+        ],
+        "stroke_pixels_count": 15,
+        "endpoint_extrapolation_px": 0.0
+      },
+      "R90": {
+        "radius_nm": 3.5558394931362196,
+        "extraction_envelope_nm": [
+          3.5159239704329464,
+          3.5967053854276667
+        ],
+        "target_x_px": 634.2,
+        "fitted_y_px": 510.77,
+        "local_slope_px_per_px": -0.15,
+        "sampled_centers_px": [
+          [
+            632,
+            511
+          ],
+          [
+            633,
+            511
+          ],
+          [
+            634,
+            511
+          ],
+          [
+            635,
+            510.5
+          ],
+          [
+            636,
+            510.5
+          ]
+        ],
+        "stroke_pixels_count": 17,
+        "endpoint_extrapolation_px": 0.0
+      },
+      "R90_over_R50": 2.218300395256917,
+      "ratio_extraction_envelope": [
+        2.1467311411992265,
+        2.293656565656566
+      ],
+      "gaussian_s_from_R50_nm": 1.3614260748017033,
+      "gaussian_s_from_R90_nm": 1.6569877852561934,
+      "single_2d_gaussian_ratio_outside_extraction_envelope": true
+    },
+    {
+      "time_axis_fraction": 0.5,
+      "time_over_tau0": 5e-05,
+      "time_ps": 0.0935,
+      "R50": {
+        "radius_nm": 1.634635691657867,
+        "extraction_envelope_nm": [
+          1.5997888067581838,
+          1.66948257655755
+        ],
+        "target_x_px": 905.0,
+        "fitted_y_px": 814.0,
+        "local_slope_px_per_px": 0.0,
+        "sampled_centers_px": [
+          [
+            903,
+            814
+          ],
+          [
+            904,
+            814
+          ],
+          [
+            905,
+            814
+          ],
+          [
+            906,
+            814
+          ],
+          [
+            907,
+            814
+          ]
+        ],
+        "stroke_pixels_count": 15,
+        "endpoint_extrapolation_px": 0.0
+      },
+      "R90": {
+        "radius_nm": 3.7336853220696935,
+        "extraction_envelope_nm": [
+          3.693136219640971,
+          3.7748680042238645
+        ],
+        "target_x_px": 905.0,
+        "fitted_y_px": 482.70000000000005,
+        "local_slope_px_per_px": -0.15,
+        "sampled_centers_px": [
+          [
+            903,
+            483
+          ],
+          [
+            904,
+            483
+          ],
+          [
+            905,
+            482.5
+          ],
+          [
+            906,
+            482.5
+          ],
+          [
+            907,
+            482.5
+          ]
+        ],
+        "stroke_pixels_count": 18,
+        "endpoint_extrapolation_px": 0.0
+      },
+      "R90_over_R50": 2.2841085271317825,
+      "ratio_extraction_envelope": [
+        2.212144212523719,
+        2.3596039603960395
+      ],
+      "gaussian_s_from_R50_nm": 1.388331728453911,
+      "gaussian_s_from_R90_nm": 1.739862270105794,
+      "single_2d_gaussian_ratio_outside_extraction_envelope": true
+    }
+  ],
+  "not_extracted": [
+    {
+      "time_over_tau0": 0.0001,
+      "R50_nm": null,
+      "R90_over_R50": null,
+      "reason": "Legend obscures R50 over most late times; tiny visible edge segment not used or extrapolated."
+    }
+  ],
+  "interpretation": "A single 2D Gaussian cannot match both displayed total-energy percentiles within the stated extraction budget; this neither determines a phonon profile nor rejects a future controlled Gaussian reduction.",
+  "not_identified": [
+    "phonon-only percentiles",
+    "total second moment",
+    "central energy density",
+    "Korzh775/1550nm0.9K profiles"
+  ]
+}

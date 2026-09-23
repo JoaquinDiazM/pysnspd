@@ -1,0 +1,273 @@
+{
+  "schema": "pysnspd.stage3_5.cascade_characterization_plan.v1",
+  "date": "2026-09-23",
+  "status": "CHARACTERIZE_CASCADE_FIRST_WIDTH_OPEN",
+  "user_decision": "Caracterizar primero la cascada; dejar el ancho abierto",
+  "supersedes_choice_in": "gaussian_initial_condition.md section6; historical sources/conversions preserved",
+  "new_physics_simulations": 0,
+  "documentary_digitization_executed": true,
+  "model_changes": false,
+  "orientation": {
+    "reference": "Korzh80nm",
+    "bath_K": 0.9,
+    "photon_wavelengths_nm": [
+      775,
+      1550
+    ],
+    "priorities": [
+      "relative latency between colors",
+      "formation of hotbelt"
+    ],
+    "material_anchor": "K20 coherent model scenario; fit inputs are not measurements"
+  },
+  "not_adopted": {
+    "s_gamma_nm": null,
+    "transfer_time_ps": null,
+    "retained_fraction": null,
+    "gaussian_required_by_data": false,
+    "old_s_5_to_20_range": false,
+    "A20_equivalent_s_as_Korzh_input": false
+  },
+  "scope": {
+    "goal": "Effective transfer state sufficient for downstream mesoscopic model",
+    "not_required_by_default": [
+      "complete microscopic optical absorption calculation",
+      "full3D geometry",
+      "global parameter confidence box",
+      "new cascade implementation before documentary diagnosis"
+    ],
+    "gaussian_role": "candidate reduced profile evaluated after characterization"
+  },
+  "clock": {
+    "tau": "t minus optical absorption time",
+    "tau_tr": "transfer instant after absorption",
+    "downstream_time": "tau minus tau_tr",
+    "keep_color_difference": true,
+    "A20_tau0_kinetic_ps": 1870,
+    "not_GL_time": true
+  },
+  "definitions": {
+    "energies": "excess relative to identical bath baseline; physical volume and SI units",
+    "energy_profile": "U_alpha(r,tau)=integral u_alpha(r,z,tau) dz, in J/m2",
+    "percentile": "F_alpha(R)=integral_radius_le_R U_alpha / E_alpha; common declared center",
+    "covariance": "energy-normalized2D covariance matrix; s_moment^2=trace(Sigma)/2 for isotropic interpretation",
+    "peak": "maximum profile density plus discretization/resolution",
+    "invalid_percentiles": "report signed profile/denominator when excess is not nonnegative or subsystem energy negligible; no clipping",
+    "mixture": "F_total=f_e F_e +(1-f_e) F_ph",
+    "phonon_cdf_bounds": "max(0,(F_total-f_e)/(1-f_e)) <= F_ph <= min(1,F_total/(1-f_e)) for f_e<1",
+    "mixture_does_not_determine_phonon_R90": true
+  },
+  "minimum_products_per_color": [
+    {
+      "name": "energies",
+      "fields": [
+        "E_gamma",
+        "E_e(tau)",
+        "E_ph(tau)",
+        "E_escape_substrate(tau)",
+        "other_external_energy(tau)"
+      ],
+      "units": "J"
+    },
+    {
+      "name": "profiles",
+      "fields": [
+        "electron lateral energy",
+        "phonon lateral energy",
+        "total lateral energy",
+        "depth-resolved or explicitly depth-averaged representation"
+      ],
+      "units": "J/m2 or J/m3"
+    },
+    {
+      "name": "shape",
+      "fields": [
+        "R50_e",
+        "R90_e",
+        "R50_ph",
+        "R90_ph",
+        "R50_total",
+        "R90_total",
+        "energy centroid",
+        "covariance",
+        "peak",
+        "tail bounds"
+      ],
+      "units": "m,m2,J/m2"
+    },
+    {
+      "name": "spectra",
+      "fields": [
+        "p(E,r,tau)",
+        "delta_n(Omega,r,tau)",
+        "spectral-spatial separability error"
+      ]
+    },
+    {
+      "name": "provenance",
+      "fields": [
+        "absorption depth/scenario",
+        "surface conditions",
+        "source hashes",
+        "units",
+        "support",
+        "clock",
+        "balance",
+        "uncertainties"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "id": "C0",
+      "status": "PARTIAL_DOCUMENTARY_RESULT_AVAILABLE",
+      "action": "Recover A20 historical radial reference from original figures; do not rescale to Korzh",
+      "sources": [
+        "A20 printedpp15-16,20-24/PDF27-28,32-36"
+      ],
+      "steps": [
+        "extract vector curves if present, otherwise original embedded pixels",
+        "calibrate axes/line width and record obscuration",
+        "separate electron/phonon/total normalization",
+        "crosscheck overlappingfigures",
+        "mark unrecoverable tails/moments/spectra"
+      ],
+      "executed_subset": {
+        "script": "sandbox/stage3_5/research_20260923/digitize_a20_radial.py",
+        "output": "cascade_digitization.json",
+        "source": "A20 Fig2.7a PDF35",
+        "times_ps": [
+          0.0561,
+          0.0935
+        ],
+        "measured": "total-energy R50/R90",
+        "not_measured": [
+          "phonon-only profiles",
+          "p/E/n spectra",
+          "density peak",
+          "second moment",
+          "late obscured R50"
+        ]
+      },
+      "proposed_additional_outputs": [
+        "a20_radial_digitization.csv",
+        "a20_radial_digitization.json",
+        "a20_transfer_diagnostic.md"
+      ],
+      "no_new_trajectory": true
+    },
+    {
+      "id": "C1",
+      "status": "PLANNED_DATA_ADMISSION",
+      "action": "Identify material rates/source/interface and energy supports required by actual transfer question",
+      "requirements": [
+        "phonon table axis/unit/cell normalization and absolute rates",
+        "early ee/eph kernels or effective transfer data",
+        "phonon transport/escape/interface parameters when relevant",
+        "depth/source uncertainty for775/1550",
+        "spectral support extends to retained processes with tail control"
+      ],
+      "failed_shortcuts": [
+        "BGK equals high-energy ee cascade",
+        "KWT times identify redistribution kernels",
+        "more nodes repair a too-low energy cutoff",
+        "A20 R90total is R90phonon"
+      ]
+    },
+    {
+      "id": "C2",
+      "status": "CONDITIONAL_NOT_IMPLEMENTED",
+      "action": "Only if documentary data insufficient, design smallest radial kinetic effective transfer calculation",
+      "features": [
+        "two-color energy-normalized sources",
+        "electron-phonon collisions",
+        "ee sensitivity where needed",
+        "electron transport",
+        "phonon propagation and surfaces if they affect transfer",
+        "fixed-field/normal approximation confined to justified early-energy regime"
+      ],
+      "alternatives": [
+        "cylindrical with explicit depth averaging and its check",
+        "radial-depth if surfaces affect targets",
+        "depth scenarios with physically supported weights"
+      ],
+      "no_arbitrary_initial_radius": true,
+      "no_runnable_long_command_exists": true,
+      "runtime_policy": "pilot and estimate before execution; jobs expected>5min to user; no command fabrication"
+    },
+    {
+      "id": "C3",
+      "status": "PLANNED_TRANSFER_ASSESSMENT",
+      "action": "Choose transfer clock/window and evaluate D30 pure-phonon/separable/Gaussian reductions against characterized state",
+      "retain": [
+        "retained energy",
+        "prior escape",
+        "electron residual",
+        "phonon profile/spectrum",
+        "clock difference between colors"
+      ],
+      "outcome_options": [
+        "D30 source supported within declared useful budget",
+        "explicitly revised effective transfer required",
+        "unresolved data identified; width remains open"
+      ],
+      "automatic_model_edit": false
+    }
+  ],
+  "proposed_gates": [
+    {
+      "id": "energy_ledger",
+      "criterion": "Residual below the energy partition/loss distinction being investigated; include condensate/ports if dynamical",
+      "binding_tolerance": null
+    },
+    {
+      "id": "support",
+      "criterion": "Excluded spectral/spatial/depth sectors estimated, not silently zeroed",
+      "binding_tolerance": null
+    },
+    {
+      "id": "refinement",
+      "criterion": "Changes in partition/radii/moment/peak do not alter transfer decision and are subordinate to source uncertainty",
+      "binding_tolerance": null
+    },
+    {
+      "id": "clock",
+      "criterion": "Shift transfer within candidate window and compare downstream observables with omitted time accounted; thermal equality not imposed",
+      "binding_tolerance": null
+    },
+    {
+      "id": "D30",
+      "criterion": "Quantify electron residual and spectral-spatial separability; no hiding missing energy in s or chi",
+      "binding_tolerance": null
+    },
+    {
+      "id": "gaussian",
+      "criterion": "Fit one declared shape criterion and test R50/R90, moment, peak/tails independently against useful latency/hotbelt budget",
+      "binding_tolerance": null
+    }
+  ],
+  "implementation_limits": {
+    "common_energy_and_local_events_available": true,
+    "full_high_energy_ee_cascade_admitted": false,
+    "phonon_propagation_solver_admitted": false,
+    "radial_depth_cascade_admitted": false,
+    "electronic_count_max_bar": 12,
+    "electronic_Emax_zero_current_meV_approx": 15.8,
+    "synthetic_phonon_Emax_meV_approx": 5.26,
+    "conditional_NbN_positive_support_meV_approx": 67.8,
+    "optical_initial_scale": "eV; not admitted by present low-energy support",
+    "existing_evidence_does_not_transfer_synthetic_rates_to_material": true
+  },
+  "source_registers": [
+    "gaussian_sources.json",
+    "material_kinetics_sources.json"
+  ],
+  "external_messages_sent": false,
+  "long_compute_commands_created": [],
+  "allowed_file_scope": [
+    "cascade_characterization.md",
+    "cascade_plan.json",
+    "cascade_digitization.json",
+    "sandbox/stage3_5/research_20260923/digitize_a20_radial.py"
+  ]
+}

@@ -1,0 +1,326 @@
+{
+  "title": "Etapa 3.5 · Preparar una comparación física trazable",
+  "subtitle": "pySNSPD · Investigación de parámetros, preparación fotónica y observables · 23 de septiembre de 2026. Fuentes primarias y cálculos analíticos; sin nuevos transientes ni cambios de coeficientes.",
+  "pages": [
+    {
+      "title": "Qué permite decidir esta investigación",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "La revisión de <b>127 entradas en 15 familias</b> permite preparar un escenario identificable y detectar mezclas de parámetros que falsearían la comparación. El objetivo elegido es el nanohilo NbN de <b>80 nm de Korzh</b>, con fotones de 775 y 1550 nm: primero formación del hotbelt y latencia relativa; después, si corresponde, jitter estadístico. Un hotbelt es una región excitada que abarca el ancho del hilo."
+        },
+        {
+          "type": "subheading",
+          "text": "Decisiones recibidas"
+        },
+        {
+          "type": "table",
+          "widths": [
+            0.28,
+            0.72
+          ],
+          "rows": [
+            [
+              "Decisión",
+              "Consecuencia para el siguiente desarrollo"
+            ],
+            [
+              "Priorizar latencia y hotbelt",
+              "Estudiar el mecanismo determinista antes de construir una distribución de eventos para jitter."
+            ],
+            [
+              "Medir desde la transferencia",
+              "Mantener explícito el retardo óptico de la cascada omitida; no declararlo cero."
+            ],
+            [
+              "Referencia material Korzh",
+              "Vincular D=0.5 cm²/s y R□=608 Ω/□ con conductividad y DOS. Son referencias ajustadas, no nuevas mediciones."
+            ],
+            [
+              "Caracterizar primero la cascada",
+              "Dejar abierto el ancho gaussiano. Determinar qué estado entrega la etapa omitida antes de elegir una fuente compacta."
+            ]
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "Resultados que cambian la preparación del ensayo"
+        },
+        {
+          "type": "body",
+          "text": "La retención tiene un antecedente específico: <b>χ=0.667 se propone como referencia del escenario Korzh</b>, sin fijar por ello la energía de la cascada nueva. La equivalencia compacta de Allmaras queda como comparación histórica; <b>no se seleccionó ningún ancho</b>. Los antiguos intervalos χ=1/3–1 y s=5–20 nm no fueron aceptados y no se adoptan."
+        },
+        {
+          "type": "body",
+          "text": "También quedaron identificadas tres restricciones prácticas: las tasas y soportes espectrales del NbN no están certificados por las mallas sintéticas; la movilidad heredada difiere diez veces de referencias históricas; el circuito de la memoria se conserva y todavía no equivale a toda la cadena de medida experimental."
+        },
+        {
+          "type": "small",
+          "text": "Alcance: el cierre anterior fue de desarrollo espacial. Siguen pendientes el transiente acoplado y la interfaz cinética 2D–1D antes de avanzar a las etapas 4–5. No se declara validación de producción ni un dominio físico admitido. Un dominio de confianza físico no es un intervalo estadístico de confianza."
+        },
+        {
+          "type": "small",
+          "text": "Trazabilidad: range_ledger.json conserva las 127 entradas; user_decisions.json distingue decisiones recibidas y propuestas. Fuentes centrales: <link href=\"https://doi.org/10.1038/s41566-020-0589-x\" color=\"#007c83\">Korzh 2020</link>, <link href=\"https://thesis.caltech.edu/13748/\" color=\"#007c83\">Allmaras 2020</link> y <link href=\"https://doi.org/10.1103/PhysRevApplied.7.034014\" color=\"#007c83\">Vodolazov 2017</link>. Las fichas de investigación contienen los localizadores completos."
+        }
+      ]
+    },
+    {
+      "title": "Energía de entrada: una referencia con procedencia",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "El modelo recibe <b>E_in = χE_γ</b>, la energía que permanece en los sectores resueltos al terminar la etapa omitida. No es la probabilidad de absorción. En la preparación 0.4, ese exceso entra una sola vez en fonones; los electrones comienzan en el baño y el condensado y los estados circuitales permanecen continuos. Las pérdidas posteriores se calculan en la evolución."
+        },
+        {
+          "type": "table",
+          "widths": [
+            0.28,
+            0.29,
+            0.43
+          ],
+          "rows": [
+            [
+              "Fuente / cierre",
+              "Fracción empleada",
+              "Qué demuestra"
+            ],
+            [
+              "Allmaras, preprint v2 de A19",
+              "0.43 simplificado; 0.16 / 0.39 / 0.52 con TDGL",
+              "Cambia con el cierre y τee. El 0.43 incluye enfriamiento durante la latencia."
+            ],
+            [
+              "Allmaras, tesis A20",
+              "0.37 / 0.65 / 0.79 en la revisión 1D",
+              "Nuevos ajustes y hotbelt de 40 nm; no forman un rango de incertidumbre."
+            ],
+            [
+              "Korzh K20, caso elegido",
+              "0.667",
+              "Referencia ajustada específica; propuesta para el próximo escenario."
+            ],
+            [
+              "Vodolazov V19",
+              "No fija una fracción óptica estándar",
+              "Distingue energía del fotón y energía depositada en electrones más fonones."
+            ]
+          ]
+        },
+        {
+          "type": "body",
+          "text": "Con <b>χ_ref=0.667</b>, la propuesta daría <b>0.533532 eV a 1550 nm</b> y <b>1.067064 eV a 775 nm</b>. Se recomienda porque corresponde a la referencia experimental elegida; no es un promedio entre artículos ni una eficiencia universal. Su traslado al nuevo reparto fonónico es un supuesto explícito y <b>todavía no está adoptado</b>."
+        },
+        {
+          "type": "subheading",
+          "text": "El reloj y la energía deben describir el mismo instante"
+        },
+        {
+          "type": "body",
+          "text": "Se acepta poner el cero de simulación en la transferencia. La diferencia óptica contendrá, además del retardo resuelto, la posible diferencia de duración de cascada entre colores. Una demora común se cancela; una demora dependiente del color no. Los 1.4 ps de la fuente térmica modificada de Allmaras no son una medición de ese instante ni un factor adicional que deba superponerse a la cinética nueva."
+        },
+        {
+          "type": "small",
+          "text": "Fano sigue desactivado. Una fluctuación del número de quasipartículas no implica automáticamente fluctuación de la energía total retenida. Dos transientes deterministas no proporcionan un jitter medido por ancho a media altura (FWHM). No se añadirá una dispersión energética para forzar el ajuste de una única curva."
+        },
+        {
+          "type": "small",
+          "text": "Fuentes: <link href=\"https://arxiv.org/pdf/1805.00130v2\" color=\"#007c83\">A19v2</link>, PDF 4, 7 y 10–11; <link href=\"https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf\" color=\"#007c83\">A20</link>, pp. 95–97; <link href=\"https://arxiv.org/pdf/1807.07709v1\" color=\"#007c83\">V19v1</link>, §§II y IV; <link href=\"https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf\" color=\"#007c83\">K20, suplemento</link>, PDF 32–35. Los valores A19 citados pertenecen al preprint v2; la edición publicada no estuvo accesible."
+        }
+      ]
+    },
+    {
+      "title": "Del disco histórico a una gaussiana definida",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "Zotova–Vodolazov 2012 comienza con un disco de <b>temperatura electrónica elevada</b>, después de omitir la termalización inicial; no impone un agujero con condensado nulo. Estudia radios de 9 y 18 nm. El mismo artículo usa una gaussiana al aproximar difusión desde una fuente puntual. La forma elegida es una simplificación, no una imagen medida de la deposición."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage3_5/research_20260923/figures/03_disk_gaussian.png",
+          "width_fraction": 1.0,
+          "caption": "Comparación analítica de perfiles a energía fija. Igualar extensión o igualar pico son criterios diferentes: no existe una traducción única del radio del disco a la desviación gaussiana. Esta figura no simula una cascada."
+        },
+        {
+          "type": "body",
+          "text": "En D.30, <b>s es la desviación por coordenada</b> de la densidad de energía. Para la gaussiana 2D, R90=2.146s encierra el 90% de la energía. Igualar el segundo momento de un disco uniforme de radio R da s=R/2; los 9/18 nm históricos se convierten en 4.5/9 nm sólo bajo esa regla y para aquel estado térmico."
+        },
+        {
+          "type": "subheading",
+          "text": "Referencia compacta histórica: no seleccionada"
+        },
+        {
+          "type": "body",
+          "text": "La cascada radial cilíndrica de Allmaras sitúa aproximadamente el 90% de la <b>energía total</b> dentro de 3–4 nm en sus condiciones. Igualar únicamente ese radio da <b>s≈1.4–1.9 nm</b>. Es una equivalencia R90, no un ajuste gaussiano publicado ni un intervalo de confianza. El 10% exterior tampoco queda caracterizado por ese radio."
+        },
+        {
+          "type": "small",
+          "text": "<b>Primer diagnóstico documental de la cascada:</b> al digitalizar la figura 2.7(a), R90/R50≈2.22 a 0.0561 ps y ≈2.28 a 0.0935 ps; una gaussiana 2D exige 1.823. La diferencia supera el margen de lectura. Un único s no reproduce ambos percentiles de aquella energía total; esto no identifica todavía el perfil fonónico ni rechaza una aproximación gaussiana controlada para Korzh. Datos y extracción reproducible: cascade_digitization.json."
+        },
+        {
+          "type": "small",
+          "text": "Limitaciones decisivas: A20 parte de 1 eV en 1 nm; omite ee, escape y difusión fonónica en ese contraste y usa baño de 4.325 K. La transferencia temprana ocurre aproximadamente a 0.06–0.19 ps en aquel cálculo. Aplicarla a D.30 exigiría comprobar reparto electrónico/fonónico y promedio en profundidad: R90 es menor que el espesor de 7 nm. Se decidió caracterizar primero la cascada; este intervalo no será la entrada provisional."
+        },
+        {
+          "type": "small",
+          "text": "Fuentes: <link href=\"https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevB.85.024509/fulltext\" color=\"#007c83\">Zotova–Vodolazov 2012</link>, §II y (13); <link href=\"https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf\" color=\"#007c83\">Allmaras 2020</link>, figuras 2.6–2.8. La gaussiana es una elección del proyecto; su justificación completa está en gaussian_initial_condition.md."
+        }
+      ]
+    },
+    {
+      "title": "La longitud depende de qué tiempo queremos observar",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "L2D es la región bidimensional elegida; la distancia hasta los planos exteriores incluye continuaciones. Ninguna es automáticamente la longitud física de 5 μm del dispositivo. El filtro siguiente usa difusión libre, D=50 nm²/ps y <b>s=20 nm sólo ilustrativo, no adoptado</b>."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage3_5/research_20260923/figures/01_length_window.png",
+          "width_fraction": 0.9,
+          "caption": "Con el filtro ilustrativo de 1% de masa exterior: 50 ps requieren 379 nm entre planos; 100 ps, 525 nm. Esto no mide energía escapada acumulada ni garantiza un error pequeño de latencia en la PDE acoplada."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage3_5/research_20260923/figures/02_boundary_pedagogy.png",
+          "width_fraction": 0.9,
+          "caption": "Los márgenes se cuentan desde el impacto hasta el plano exterior real. La difusión no tiene un frente de velocidad finita. Una interfaz 2D–1D necesita evidencia de homogeneización transversal; alejar el terminal no demuestra esa condición."
+        },
+        {
+          "type": "small",
+          "text": "Conclusión práctica: 1.5–6W no es un intervalo universal. Tras resolver la preparación se propone registrar una ventana inicial de 50 ps y contrastes 4W/6W/8W, sin declararlos admitidos. Si la respuesta requiere 100–200 ps se revisará el dominio. Son candidatos de planificación, no un barrido iniciado. El criterio final será la sensibilidad del observable al corte."
+        },
+        {
+          "type": "small",
+          "text": "Fuente de D: <link href=\"https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf\" color=\"#007c83\">K20, tabla suplementaria 1</link>. Fórmulas, cifras y límites del filtro en geometry_scales.json. Estos gráficos analíticos no amplían una nube fonónica inmóvil con el coeficiente electrónico."
+        }
+      ]
+    },
+    {
+      "title": "Material y resolución: conservar conjuntos coherentes",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "La referencia elegida usa <b>D=0.5 cm²/s, R□=608 Ω/□ y d=7 nm</b>. Einstein vincula difusión, conductividad y DOS: σ=1/(R□d)=2e²N0D. Por tanto se derivan conjuntamente <b>σ≈2.34962×10⁵ S/m</b> y <b>N0≈1.46652×10²² eV⁻¹ cm⁻³ por espín</b>. No son tres parámetros independientes ni nuevas mediciones."
+        },
+        {
+          "type": "table",
+          "widths": [
+            0.25,
+            0.4,
+            0.35
+          ],
+          "rows": [
+            [
+              "Punto revisado",
+              "Resultado",
+              "Implicación"
+            ],
+            [
+              "Resistencia y temperatura",
+              "340 Ω/□ a ambiente y RRR=0.8 no producen 608 Ω/□.",
+              "Mantener separadas medición y tabla ajustada."
+            ],
+            [
+              "Movilidad del condensado",
+              "0.50/2.47 ps heredados frente a 5/24.7 o 6/24.7 ps históricos.",
+              "La diferencia de diez veces no es una unidad mal convertida."
+            ],
+            [
+              "Gap y espectros",
+              "El funcional sigue usando el cierre BCS débil; las unidades absolutas del espectro NbN necesitan admisión.",
+              "Una forma espectral mejor no calibra automáticamente energía y tasas."
+            ],
+            [
+              "Malla espacial previa",
+              "La separación nodal máxima del piloto fino era 14.7 nm.",
+              "Su resultado suave no resuelve por sí mismo una fuente de 1.4–1.9 nm."
+            ]
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "El número de nodos no certifica el soporte energético"
+        },
+        {
+          "type": "body",
+          "text": "Bajo la conversión condicionada del archivo NbN, el soporte común llega a unos <b>67.78 meV</b>. El catálogo electrónico candidato alcanza aproximadamente <b>15.83 meV</b> en el estado de referencia; la rejilla fonónica sintética hasta 4Δ0 alcanza <b>5.26 meV</b>. No bastará trasladar sin cambios las mallas de 630/1025 nodos: absorción de fonones y preparación pueden requerir energías ausentes."
+        },
+        {
+          "type": "body",
+          "text": "También debe cubrirse la trayectoria de amplitud y ruptura de pares. La semilla rápida sólo se probó cerca del estado superconductivo de referencia; no está admitida para un hotbelt. Ampliar cajas, colas y mallas exige comprobar conservación, causalidad, soporte de poblaciones y estabilidad D.36, además del error del observable. Afinar el paso temporal no corrige una pérdida estructural de estabilidad."
+        },
+        {
+          "type": "body",
+          "text": "<b>El refinamiento debe concentrarse donde hace falta.</b> En un rectángulo de 640 × 80 nm, grado 4 y elementos uniformes de 10 nm, un par de arreglos de poblaciones ocupa unos 107 MiB. Reducir uniformemente los elementos a 2 nm eleva sólo ese almacenamiento a 2.54 GiB, antes de etapas temporales y espectros. La propuesta es preparar refinamiento local 2D cuando se conozca la fuente; no ensancharla para abaratar la malla."
+        },
+        {
+          "type": "small",
+          "text": "Fuentes: <link href=\"https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf\" color=\"#007c83\">K20</link>, métodos y tabla suplementaria 1; <link href=\"https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf\" color=\"#007c83\">A20</link>, pp. 15–16 y 94–97; <link href=\"https://arxiv.org/html/2501.13791v3\" color=\"#007c83\">Simon et al.</link>, apéndices. material_kinetics.md y geometry_numerics.md separan resultados algebraicos, hipótesis y verificaciones pendientes. No se cambió el solver."
+        }
+      ]
+    },
+    {
+      "title": "Lectura y siguiente secuencia: primero la cascada",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "Se conserva el <b>circuito CM de la memoria</b>, con tres variables de estado: corrientes Ib e Is y tensión vc. La señal de carga es Vout=RL(Ib−Is); no es directamente el voltaje interno del nanohilo. Sus 10 nH totales se reparten entre energía espacial ya resuelta e inductancia exterior positiva. Los 96 nH añadidos en K20 pertenecen a otro montaje y no se suman silenciosamente."
+        },
+        {
+          "type": "body",
+          "text": "El primer observable será un cruce de Vout con puerto, umbral, polaridad y confirmación declarados. La diferencia entre dos cruces deterministas no equivale al desplazamiento entre máximos de la distribución medida de tiempos (IRF) ni a su ancho a media altura (FWHM). Para reproducir esos datos hacen falta distribución de eventos y lectura. El objetivo numérico propuesto de 0.1 ps para la diferencia de cruces no es una barra de error física ni un paso de integración ya admitido."
+        },
+        {
+          "type": "subheading",
+          "text": "Decisión recibida: «Caracterizar primero la cascada; dejar el ancho abierto»"
+        },
+        {
+          "type": "table",
+          "widths": [
+            0.3,
+            0.7
+          ],
+          "rows": [
+            [
+              "Dato por caracterizar",
+              "Entrega que necesita el modelo"
+            ],
+            [
+              "Energía y reparto",
+              "Energía total retenida, fracciones electrónica y fonónica, y energía ya escapada."
+            ],
+            [
+              "Perfil y reloj",
+              "Distribución espacial, cola o segundo momento, y el instante físico al que corresponden."
+            ],
+            [
+              "Profundidad",
+              "Comprobar cuándo es defendible promediar una película de 7 nm y cómo intervienen sus superficies."
+            ]
+          ]
+        },
+        {
+          "type": "small",
+          "text": "Ningún ancho fue seleccionado. La equivalencia s≈1.4–1.9 nm y χ_ref=0.667 sirven como comparaciones con fuentes identificadas, no como sustitutos de esa caracterización. La ficha cascade_characterization.md especifica el protocolo previo; no se lanzará una cascada larga como parte de esta entrega."
+        },
+        {
+          "type": "subheading",
+          "text": "Próximos pasos, en orden"
+        },
+        {
+          "type": "body",
+          "text": "<b>1.</b> Registrar la caracterización de cascada y la transferencia que debe entregar.<br/><b>2.</b> Preparar el conjunto material y admitir soporte, unidades y tasas necesarias.<br/><b>3.</b> Completar el transiente acoplado débil y la interfaz cinética 2D–1D con sus balances; son requisitos pendientes antes de etapas 4–5.<br/><b>4.</b> Registrar un piloto acotado que mida coste, resolución y observables; después definir la comparación 775/1550 y los contrastes de dominio. No se promete tiempo de ejecución antes de ese piloto."
+        },
+        {
+          "type": "small",
+          "text": "No hay cálculo largo pendiente en esta entrega. Cualquier futuro trabajo estimado en más de cinco minutos se entregará como comando manual en GEMINGA_COMMANDS.md y en el chat, con propósito, salidas, recursos, progreso y ETA. La investigación actual no autoriza lanzar un barrido."
+        },
+        {
+          "type": "small",
+          "text": "Lectura experimental: <link href=\"https://doi.org/10.1038/s41566-020-0589-x\" color=\"#007c83\">Korzh 2020</link>, métodos. La correspondencia y los conflictos heredados se documentan en circuit_observables.md; la secuencia conserva el circuito de la memoria y distingue el instrumento real del banco de desarrollo."
+        }
+      ]
+    }
+  ]
+}
