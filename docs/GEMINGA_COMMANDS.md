@@ -1,60 +1,73 @@
 # Geminga: comandos vigentes
 
-Actualizado el 23 de septiembre de 2026. Cuenta `jdiaz`, sin administrador.
+Actualizado el23 de septiembre de2026. Cuenta jdiaz, sin administrador.
 
-## Estado: investigación 3.5 cerrada; etapa 4 preparada sin fotón
+## Etapa4 iniciada: dos lotes manuales sin fotón
 
-La decisión recibida fue **«Cerrar investigación 3.5 y preparar etapa 4 sin fotón»**.
-El [informe final](implementation/stage3_5/assessment_r2_20260923/Informe_cierre_investigacion_etapa_3_5.md)
-y el [contrato de etapa 4](implementation/stage4/README.md) son la entrada vigente.
-El ancho, reparto y reloj de transferencia de Korzh siguen abiertos. La etapa 4
-comenzará con controles del núcleo, estabilidad y disipación sin fotón.
+La [preparación](implementation/stage4/start_20260923/README.md) incluye177 pruebas
+y79 subpruebas aprobadas en Geminga, y un piloto local de145 s. Las etapas2–3
+y la investigación3.5 permanecen cerradas dentro de sus alcances; no repetirlas.
+Se investigan núcleo, estabilidad y disipación estática/instantánea, todavía
+sin trayectorias, fotón, reservorio ni circuito en este lote.
 
-**No hay cálculo largo pendiente.** No repetir lotes de etapas 2–3. Las tareas
-de implementación de etapa 4 están definidas pero aún no tienen un corredor
-físico preparado. Por eso no se ofrece un comando de simulación ficticio.
+### 1. Controles locales:40 casos
 
-## Verificación ligera de la entrega actual
+Propósito: variarδ, amplitud, gradiente y población; comparar D.36, fuerza,
+corriente conjugada y tres movilidades reutilizando las mismas consultas.
+Estimación:5–20 minutos;1proceso/1hilo; reservar1 GB RAM y <100 MB de salida.
 
 ```bash
 cd /home/jdiaz/pysnspd
 env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  /home/jdiaz/.conda/envs/snspd/bin/python \
-  sandbox/stage3_5/assessment_r2_20260923/verify_delivery.py
+  /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/run_campaign.py \
+  --plan docs/implementation/stage4/start_20260923/campaign_plan.json \
+  --phase local --output-root tmp/stage4A_local_20260923 --execute
 ```
 
-Duración prevista: segundos; 1 proceso, sin RHS ni transientes. Comprueba hashes,
-127 entradas, decisión recibida, preparación sin fotón y cadena histórica.
-La salida es JSON en la terminal. Es opcional; la entrega ya incluye su ejecución.
+### 2. Estados espaciales2D:6 casos
 
-## Reproducción opcional de las figuras y cuentas
+Propósito: perfiles impuestos suave/suprimido en dos mallas, tresδ y tres
+movilidades; obtener mapas y balances instantáneos. Los seis estados no son
+seis transientes. Estimación45 minutos–3 horas;1proceso/1hilo; reservar1 GB RAM
+y <100 MB de salida. La estimación usa el piloto local, no una corrida larga
+en Geminga. No se requiere1D ni una transferencia fotónica.
 
 ```bash
 cd /home/jdiaz/pysnspd
-env PYTHONPATH=/home/jdiaz/pysnspd/tmp/stage3_5_document_deps \
-  /home/jdiaz/.conda/envs/snspd/bin/python \
-  sandbox/stage3_5/assessment_r2_20260923/cascade_extract_partition.py
-/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/assessment_r2_20260923/cascade_plot_summary.py
-/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage3_5/assessment_r2_20260923/planning_scales.py
+env OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/run_campaign.py \
+  --plan docs/implementation/stage4/start_20260923/campaign_plan.json \
+  --phase spatial --output-root tmp/stage4A_spatial_20260923 --execute
 ```
 
-Extrae las figuras originales 2.6(a)/2.8(a) de Allmaras desde el PDF preservado
-en `tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf`, comprueba su hash y
-genera las cotas y PNG bajo `docs/implementation/stage3_5/assessment_r2_20260923/`.
-El último comando evalúa 36 estados algebraicos de movilidad y 16 combinaciones
-auxiliares de longitud/ventana; no predice trayectorias. Duración: segundos por
-comando; un proceso, memoria dominada por el PDF (~100 MB) y su extracción.
-Las dependencias documentales están aisladas de las bibliotecas del solver.
-Regenerar PNG con otras versiones puede cambiar bytes: conservar la entrega
-publicada y revisar el manifiesto antes de sustituirla.
+Los lotes son independientes. Pueden ejecutarse en orden o en terminales
+separadas. No requieren activar un entorno: se usa el Python explícito.
+Los dos muestran barras, tiempo transcurrido y ETA por sección; el promedio
+de tareas es orientativo porque sus costes difieren.
+
+Salidas: identidad y hashes, progresoJSONL, un resultado por caso, resumen;
+el lote2D además guarda `fields.npz`. Un símbolo negativo queda como resultado,
+sin intentar evolucionarlo. Una excepción conserva la evidencia y detiene
+el lote sin reintentar. Los directorios existentes se rechazan: no se sobrescribe.
+Al terminar basta avisar; los datos se recuperan de estas carpetas sin pegar logs.
+
+## Comprobación ligera opcional
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage4_core/verify_delivery.py
+```
+
+Sólo lee archivos y verifica la entrega y su historial. Tarda segundos y
+no ejecuta espectros ni transientes. Añadir `--execute` al corredor anterior
+es la acción deliberada que inicia física; sin él sólo describe el plan.
 
 ## Historial preservado
 
-La libreta que acompañó r1 se conserva íntegra en
-[assessment_r2_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md](implementation/stage3_5/assessment_r2_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md).
-Incluye la reproducción anterior y los enlaces a todas las entradas previas.
-Los estados de abierto o pendiente en ese historial no son una cola vigente.
-La producción y `v1.0.0` se conservan.
+La libreta de cierre3.5 se conserva íntegra en
+[start_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md](implementation/stage4/start_20260923/previous_delivery_exact/docs/GEMINGA_COMMANDS.md).
+Desde ella se accede a todas las entradas previas. Sus estados de no-pendiente
+o de etapas abiertas son históricos; los dos comandos anteriores son la cola actual.
 
 ## Política para futuros cálculos
 

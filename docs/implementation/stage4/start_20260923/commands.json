@@ -1,0 +1,4 @@
+{
+  "local": "cd /home/jdiaz/pysnspd\nenv OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \\\n  /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/run_campaign.py \\\n  --plan docs/implementation/stage4/start_20260923/campaign_plan.json \\\n  --phase local --output-root tmp/stage4A_local_20260923 --execute",
+  "spatial": "cd /home/jdiaz/pysnspd\nenv OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \\\n  /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/run_campaign.py \\\n  --plan docs/implementation/stage4/start_20260923/campaign_plan.json \\\n  --phase spatial --output-root tmp/stage4A_spatial_20260923 --execute"
+}

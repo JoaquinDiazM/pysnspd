@@ -4,13 +4,14 @@ Last updated: 2026-09-23
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: stage 3 development and stage 3.5 parameter research are closed
-within explicitly authorized scopes. Stage 4 is prepared, not started, for
-controlled non-photon core, stability and dissipation diagnostics. Release 1.0.0
-preserves the thesis implementation and model 0.4 documentation. No production
-promotion has occurred.
+Current phase: experimental stage4A has started without photons. Explicit KWT/core
+parameters and a complete2D static geometry are implemented. The changed paths pass
+177 tests and79 subtests on Geminga; a bounded local pilot completed in145.2s.
+Two manual campaigns (40local controls,6spatial states) are prepared with progress
+and ETA. No time trajectories, physical core admission or production promotion.
+See [current stage4](docs/implementation/stage4/README.md) and the command notebook.
 
-## Stage 3.5 closed; stage 4 prepared without photons
+## Historical stage 3.5 closure and stage4 preparation
 
 The user selected “Cerrar investigación 3.5 y preparar etapa 4 sin fotón”. The
 [current delivery](docs/implementation/stage3_5/CURRENT.md) covers 127 variables in

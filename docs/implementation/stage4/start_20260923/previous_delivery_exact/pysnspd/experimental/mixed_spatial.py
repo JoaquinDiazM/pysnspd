@@ -86,14 +86,12 @@ class MixedSpatialFunctional(PeriodicSpatialFunctional):
 
     def __init__(self, catalog, rectangle_length_m, width_m, thickness_m,
                  left_length_m, right_length_m, *, elements_x, elements_y,
-                 left_elements, right_elements, degree=4, Tc_K=None,
-                 delta_regularizer_bar=.1):
+                 left_elements, right_elements, degree=4, Tc_K=None):
         for value in (rectangle_length_m, width_m, thickness_m, left_length_m, right_length_m):
             if not np.isfinite(value) or value <= 0:
                 raise ValueError("all geometric lengths must be finite and positive")
         super().__init__(catalog, rectangle_length_m+left_length_m+right_length_m,
-                         width_m*thickness_m, 3, Tc_K=Tc_K,
-                         delta_regularizer_bar=delta_regularizer_bar)
+                         width_m*thickness_m, 3, Tc_K=Tc_K)
         self.width_m = float(width_m)
         self.thickness_m = float(thickness_m)
         self.rectangle_length_m = float(rectangle_length_m)
@@ -333,7 +331,7 @@ class MixedSpatialFunctional(PeriodicSpatialFunctional):
         mass = self.quadrature_mass_bar
         rho = abs(zq)**2
         q = fields.q_delta_quadrature_bar
-        v = (2*q*electronic[:, 2, None]/self.gap_ratio-2*self.kappa*rho[:, None]*q)/(rho[:, None]+self.delta_regularizer_bar**2)
+        v = (2*q*electronic[:, 2, None]/self.gap_ratio-2*self.kappa*rho[:, None]*q)/(rho[:, None]+.01)
         radial = np.zeros_like(zq)
         np.divide(electronic[:, 1]*zq, abs(zq), out=radial, where=abs(zq) != 0)
         directional = []
@@ -357,18 +355,14 @@ class MixedSpatialFunctional(PeriodicSpatialFunctional):
         remainder = float(self.kappa*(stiffness_energy-np.dot(mass, rho*np.sum(q*q, axis=1))))
         energy = float(np.dot(mass, electronic[:, 0])+remainder)
         free_energy = None if theta is None else float(np.dot(mass, free)+remainder)
-        reactions = self._interface_reactions(raw_gradient)
+        left = self.sector_slices["left"]
+        right = self.sector_slices["right"]
+        reactions = dict(
+            left_lead=raw_gradient[left.stop-1], left_rectangle=np.sum(raw_gradient[self.rectangle_quadrature[0]]),
+            right_rectangle=np.sum(raw_gradient[self.rectangle_quadrature[-1]]), right_lead=raw_gradient[right.start],
+            interpretation="Restricted integrated force contributions, including endpoint quadrature local terms; not isolated pointwise continuum tractions. Their sums are the shared DOF forces.")
         return MixedSpatialEvaluation(energy, self.energy_scale_J*energy, free_energy,
             np.column_stack((gradient.real, gradient.imag)), np.column_stack((raw_gradient.real, raw_gradient.imag)),
             current, (2*E_CHARGE_C/HBAR_J_S)*self.energy_scale_J*current, fields, electronic, p,
             tuple(symbols) if symbols is not None else None, remainder, np.asarray(noether),
             float(np.sum(phase_gradient)), np.asarray(line_residuals), reactions)
-
-    def _interface_reactions(self, raw_gradient):
-        """Reaction bookkeeping; full-rectangle subclasses have no interfaces."""
-        left = self.sector_slices["left"]
-        right = self.sector_slices["right"]
-        return dict(
-            left_lead=raw_gradient[left.stop-1], left_rectangle=np.sum(raw_gradient[self.rectangle_quadrature[0]]),
-            right_rectangle=np.sum(raw_gradient[self.rectangle_quadrature[-1]]), right_lead=raw_gradient[right.start],
-            interpretation="Restricted integrated force contributions, including endpoint quadrature local terms; not isolated pointwise continuum tractions. Their sums are the shared DOF forces.")

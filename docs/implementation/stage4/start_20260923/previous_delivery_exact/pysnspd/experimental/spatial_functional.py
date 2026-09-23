@@ -101,25 +101,13 @@ class PeriodicSpatialFunctional:
     and explicit negative controls. It never disables catalogue-domain checks.
     """
 
+    delta_regularizer_bar = .1
     kappa = np.pi/4
 
     def __init__(self, catalog, length_m: float, cross_section_m2: float,
-                 cells: int, Tc_K: float | None = None, *,
-                 delta_regularizer_bar: float = .1):
-        """Set the common finite-core completion, in units of Delta0.
-
-        ``delta_regularizer_bar`` is the positive delta in
-        q_delta=Im(conj(z)*D_X z)/(|z|**2+delta**2). It changes the common
-        energy and all its derivatives, including the D.36 symbol. It is a
-        closure parameter, not a mesh length or a numerical error tolerance.
-        """
+                 cells: int, Tc_K: float | None = None):
         if type(cells) is not int or cells < 3:
             raise ValueError("cells must be an integer at least three")
-        raw_delta = np.asarray(delta_regularizer_bar)
-        if (raw_delta.ndim != 0 or np.iscomplexobj(raw_delta)
-                or raw_delta.dtype.kind not in "fiu" or not np.isfinite(raw_delta)
-                or raw_delta <= 0):
-            raise ValueError("delta_regularizer_bar must be finite, real and positive")
         for value, name in ((length_m, "length_m"),
                             (cross_section_m2, "cross_section_m2")):
             if not np.isfinite(value) or value <= 0:
@@ -136,7 +124,6 @@ class PeriodicSpatialFunctional:
         self.length_m = float(length_m)
         self.cross_section_m2 = float(cross_section_m2)
         self.cells = cells
-        self.delta_regularizer_bar = float(raw_delta)
         self.Tc_K = float(Tc_K)
         self.gap_ratio = float(ratio)
         self.ell0_m = float(np.sqrt(HBAR_J_S*vacuum.D_m2_s/(2*K_B_J_K*Tc_K)))

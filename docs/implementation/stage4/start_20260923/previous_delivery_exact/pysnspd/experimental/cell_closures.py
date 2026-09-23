@@ -94,31 +94,7 @@ class KWTResponse:
 
 @dataclass(frozen=True)
 class KWTMobility:
-    """Effective D.11--13 closure with relaxation times specified at Tc.
-
-    Times are physical picoseconds, independent of ``scales.t_ref_ps`` and
-    of the kinetic BGK relaxation time. The inherited defaults remain the
-    memory scenario; selecting other times does not calibrate a material.
-    """
     scales: CellScales
-    tau_ee_Tc_ps: float = .50
-    tau_ep_Tc_ps: float = 2.47
-
-    def __post_init__(self):
-        for name in ("tau_ee_Tc_ps", "tau_ep_Tc_ps"):
-            object.__setattr__(self, name, _number(getattr(self, name), name))
-
-    def metadata(self):
-        """Record the values used by this instance, not a scenario label."""
-        return {
-            "closure": "effective KWT D.11--13",
-            "tau_ee_Tc_ps": self.tau_ee_Tc_ps,
-            "tau_ep_Tc_ps": self.tau_ep_Tc_ps,
-            "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
-            "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
-            "time_unit": "physical ps; independent of BGK tau_kin",
-            "scales": self.scales.metadata(),
-        }
 
     def coefficients(self, amplitude, temperature_bar):
         amplitude = _number(amplitude, "amplitude", zero=True)
@@ -126,7 +102,7 @@ class KWTMobility:
         tmob = max(temperature_K, self.scales.Tb_K)
         ratio = tmob / self.scales.Tc_K
         try:
-            taupsi_ps = 1.0 / (ratio/self.tau_ee_Tc_ps + ratio**3/self.tau_ep_Tc_ps)
+            taupsi_ps = 1.0 / (ratio/.50 + ratio**3/2.47)
             tau0_ps = np.pi*HBAR_J_S/(8*K_B_J_K*self.scales.Tc_K)*1e12
             abar = np.sqrt((1+ratio)/2)
             c = 4*(self.scales.delta0_J*taupsi_ps*1e-12/HBAR_J_S)**2

@@ -1,0 +1,598 @@
+{
+  "schema": "pysnspd.stage4A.controls.v1",
+  "date": "2026-09-23",
+  "photon": false,
+  "purpose": "Core closure, common energy and instantaneous dissipation; no trajectory or detector prediction",
+  "material": {
+    "Tc_K": 8.65,
+    "Tb_K": 0.9,
+    "D_m2_s": 5e-05,
+    "R_sheet_ohm": 608,
+    "thickness_m": 7e-09,
+    "width_m": 8e-08
+  },
+  "geometry": {
+    "length_m": 1.6e-07,
+    "meaning": "2W prescribed static rectangle, not an accepted propagation domain"
+  },
+  "spectral_resolutions": {
+    "reference": {
+      "eta": 1e-08,
+      "refinement": 1
+    },
+    "count_refined": {
+      "eta": 1e-08,
+      "refinement": 2
+    },
+    "eta_halved": {
+      "eta": 5e-09,
+      "refinement": 1
+    }
+  },
+  "positive_amplitude_support": [
+    0.0001,
+    1.2
+  ],
+  "gamma_support": [
+    0,
+    2
+  ],
+  "support_policy": "New analytic vacuum and direct causal roots; no archived interpolant extrapolation, no seed acceleration outside its box",
+  "mobility_pairs_ps": {
+    "memory_effective": [
+      0.5,
+      2.47
+    ],
+    "Allmaras_reference": [
+      5,
+      24.7
+    ],
+    "Korzh_reference": [
+      6,
+      24.7
+    ]
+  },
+  "local_controls": {
+    "weak": {
+      "z": [
+        0.995,
+        0
+      ],
+      "derivatives": [
+        [
+          0,
+          0.0995
+        ],
+        [
+          0,
+          0.02
+        ]
+      ],
+      "meaning": "Near-uniform reference, not self-consistency imposed"
+    },
+    "current": {
+      "z": [
+        0.6,
+        0
+      ],
+      "derivatives": [
+        [
+          0,
+          0.39
+        ],
+        [
+          0,
+          0.03
+        ]
+      ],
+      "meaning": "Current-bearing suppressed field"
+    },
+    "small": {
+      "z": [
+        0.04,
+        0
+      ],
+      "derivatives": [
+        [
+          0.02,
+          0.08
+        ],
+        [
+          0.015,
+          0.025
+        ]
+      ],
+      "meaning": "Below previous catalogue support; raw Cartesian gradients fixed"
+    },
+    "near_normal": {
+      "z": [
+        0.001,
+        0
+      ],
+      "derivatives": [
+        [
+          0.02,
+          0.08
+        ],
+        [
+          0.015,
+          0.025
+        ]
+      ],
+      "meaning": "Direct near-zero support probe"
+    },
+    "normal": {
+      "z": [
+        0,
+        0
+      ],
+      "derivatives": [
+        [
+          0.02,
+          0.08
+        ],
+        [
+          0.015,
+          0.025
+        ]
+      ],
+      "meaning": "Exact normal point, no amplitude finite difference"
+    },
+    "high_gradient": {
+      "z": [
+        0.6,
+        0
+      ],
+      "derivatives": [
+        [
+          0,
+          0.6
+        ],
+        [
+          0,
+          0.12
+        ]
+      ],
+      "meaning": "Potential negative-symbol control; sign is a result, not time evolution"
+    }
+  },
+  "cases": [
+    {
+      "id": "local_weak_vacuum_d0.05",
+      "phase": "local",
+      "control": "weak",
+      "population": "vacuum",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_weak_vacuum_d0.1",
+      "phase": "local",
+      "control": "weak",
+      "population": "vacuum",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_weak_vacuum_d0.2",
+      "phase": "local",
+      "control": "weak",
+      "population": "vacuum",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_weak_synthetic_fixed_count_d0.05",
+      "phase": "local",
+      "control": "weak",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_weak_synthetic_fixed_count_d0.1",
+      "phase": "local",
+      "control": "weak",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_weak_synthetic_fixed_count_d0.2",
+      "phase": "local",
+      "control": "weak",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_current_vacuum_d0.05",
+      "phase": "local",
+      "control": "current",
+      "population": "vacuum",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_current_vacuum_d0.1",
+      "phase": "local",
+      "control": "current",
+      "population": "vacuum",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_current_vacuum_d0.2",
+      "phase": "local",
+      "control": "current",
+      "population": "vacuum",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_current_synthetic_fixed_count_d0.05",
+      "phase": "local",
+      "control": "current",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_current_synthetic_fixed_count_d0.1",
+      "phase": "local",
+      "control": "current",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_current_synthetic_fixed_count_d0.2",
+      "phase": "local",
+      "control": "current",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_small_vacuum_d0.05",
+      "phase": "local",
+      "control": "small",
+      "population": "vacuum",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_small_vacuum_d0.1",
+      "phase": "local",
+      "control": "small",
+      "population": "vacuum",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_small_vacuum_d0.2",
+      "phase": "local",
+      "control": "small",
+      "population": "vacuum",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_small_synthetic_fixed_count_d0.05",
+      "phase": "local",
+      "control": "small",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_small_synthetic_fixed_count_d0.1",
+      "phase": "local",
+      "control": "small",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_small_synthetic_fixed_count_d0.2",
+      "phase": "local",
+      "control": "small",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_near_normal_vacuum_d0.05",
+      "phase": "local",
+      "control": "near_normal",
+      "population": "vacuum",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_near_normal_vacuum_d0.1",
+      "phase": "local",
+      "control": "near_normal",
+      "population": "vacuum",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_near_normal_vacuum_d0.2",
+      "phase": "local",
+      "control": "near_normal",
+      "population": "vacuum",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_near_normal_synthetic_fixed_count_d0.05",
+      "phase": "local",
+      "control": "near_normal",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_near_normal_synthetic_fixed_count_d0.1",
+      "phase": "local",
+      "control": "near_normal",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_near_normal_synthetic_fixed_count_d0.2",
+      "phase": "local",
+      "control": "near_normal",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_normal_vacuum_d0.05",
+      "phase": "local",
+      "control": "normal",
+      "population": "vacuum",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_normal_vacuum_d0.1",
+      "phase": "local",
+      "control": "normal",
+      "population": "vacuum",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_normal_vacuum_d0.2",
+      "phase": "local",
+      "control": "normal",
+      "population": "vacuum",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_normal_synthetic_fixed_count_d0.05",
+      "phase": "local",
+      "control": "normal",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_normal_synthetic_fixed_count_d0.1",
+      "phase": "local",
+      "control": "normal",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_normal_synthetic_fixed_count_d0.2",
+      "phase": "local",
+      "control": "normal",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_high_gradient_vacuum_d0.05",
+      "phase": "local",
+      "control": "high_gradient",
+      "population": "vacuum",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_high_gradient_vacuum_d0.1",
+      "phase": "local",
+      "control": "high_gradient",
+      "population": "vacuum",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_high_gradient_vacuum_d0.2",
+      "phase": "local",
+      "control": "high_gradient",
+      "population": "vacuum",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_high_gradient_synthetic_fixed_count_d0.05",
+      "phase": "local",
+      "control": "high_gradient",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.05,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_high_gradient_synthetic_fixed_count_d0.1",
+      "phase": "local",
+      "control": "high_gradient",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "local_high_gradient_synthetic_fixed_count_d0.2",
+      "phase": "local",
+      "control": "high_gradient",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.2,
+      "resolution": "reference"
+    },
+    {
+      "id": "anchor_current_count_refined",
+      "phase": "local",
+      "control": "current",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "count_refined"
+    },
+    {
+      "id": "anchor_current_eta_halved",
+      "phase": "local",
+      "control": "current",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "eta_halved"
+    },
+    {
+      "id": "anchor_small_count_refined",
+      "phase": "local",
+      "control": "small",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "count_refined"
+    },
+    {
+      "id": "anchor_small_eta_halved",
+      "phase": "local",
+      "control": "small",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "eta_halved"
+    },
+    {
+      "id": "2d_smooth_d0.1_4x2",
+      "phase": "spatial",
+      "profile": "smooth",
+      "delta_reg": 0.1,
+      "elements_x": 4,
+      "elements_y": 2,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": true
+    },
+    {
+      "id": "2d_suppressed_d0.05_4x2",
+      "phase": "spatial",
+      "profile": "suppressed",
+      "delta_reg": 0.05,
+      "elements_x": 4,
+      "elements_y": 2,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": false
+    },
+    {
+      "id": "2d_suppressed_d0.1_4x2",
+      "phase": "spatial",
+      "profile": "suppressed",
+      "delta_reg": 0.1,
+      "elements_x": 4,
+      "elements_y": 2,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": true
+    },
+    {
+      "id": "2d_suppressed_d0.2_4x2",
+      "phase": "spatial",
+      "profile": "suppressed",
+      "delta_reg": 0.2,
+      "elements_x": 4,
+      "elements_y": 2,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": false
+    },
+    {
+      "id": "2d_smooth_d0.1_8x4",
+      "phase": "spatial",
+      "profile": "smooth",
+      "delta_reg": 0.1,
+      "elements_x": 8,
+      "elements_y": 4,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": false
+    },
+    {
+      "id": "2d_suppressed_d0.1_8x4",
+      "phase": "spatial",
+      "profile": "suppressed",
+      "delta_reg": 0.1,
+      "elements_x": 8,
+      "elements_y": 4,
+      "degree": 4,
+      "population": "synthetic_fixed_count",
+      "resolution": "reference",
+      "finite_differences": false
+    }
+  ],
+  "pilot_cases": [
+    {
+      "id": "pilot_near_normal",
+      "phase": "local",
+      "control": "near_normal",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "resolution": "reference"
+    },
+    {
+      "id": "pilot_2d_cost",
+      "phase": "spatial",
+      "profile": "suppressed",
+      "population": "synthetic_fixed_count",
+      "delta_reg": 0.1,
+      "elements_x": 2,
+      "elements_y": 1,
+      "degree": 2,
+      "resolution": "reference"
+    }
+  ],
+  "comparisons": {
+    "local": "36 control combinations plus four spectral sensitivity anchors",
+    "spatial": "Three core completions on identical coarse states; two field profiles on two meshes",
+    "force": "Two central-difference steps at fixed count populations; report absolute defects",
+    "symbol": "Record all 4 eigenvalues and numerical differentiation uncertainty; a negative sign is informative",
+    "mobility": "Reuse each expensive force for all3 time pairs; no duplicate spectra for mobility",
+    "physical_admission": "No completed stage4 or resolved physical core claimed by runner completion",
+    "spatial_fd_cost_policy": "Two-step full force/current finite differences at the two coarse delta=.1 anchors; other cases compare fields, all symbols and mobility without8 repeated energy evaluations."
+  },
+  "exclusions": [
+    "photon transfer",
+    "time integration",
+    "1D reduction",
+    "reservoir",
+    "circuit coupling",
+    "absolute phonon rates",
+    "optical latency"
+  ],
+  "execution": {
+    "manual_for_expected_over_5minutes": true,
+    "no_retry_or_overwrite": true,
+    "progress_seconds": 5,
+    "eta": "within section plus prior task average"
+  }
+}

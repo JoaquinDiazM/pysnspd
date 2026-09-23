@@ -44,12 +44,14 @@ controlled core, stability and dissipation diagnostics. Its
 ([PDF](output/pdf/implementation/Informe_cierre_investigacion_etapa_3_5.pdf))
 separates source-supported values, planning margins and open inputs. The Gaussian
 photon width and Korzh transfer remain unselected; absolute NbN rates still need
-a consistent volumetric phonon DOS. Stage 4 is prepared, not started. The weak
-coupled transient and equal-energy kinetic interface remain prerequisites for
-the dynamic capabilities that use them, rather than for static non-photon controls.
-The original [stage 3 sequence](docs/implementation/SECUENCIA_VIGENTE.md) is preserved
-as historical evidence. No new physical trajectories or long pending jobs were
-introduced, and production is unchanged.
+a consistent volumetric phonon DOS. Stage 4 has now started with [explicit core/KWT parameters and full2D diagnostics](docs/implementation/stage4/README.md).
+The new paths pass177 tests and79 subtests on Geminga. A bounded145-second local
+pilot prepares40 constitutive controls and six static2D states for manual execution;
+commands with progress and ETA are in the notebook. These are not time trajectories
+or physical core admission. The weak coupled transient and equal-energy kinetic
+interface remain prerequisites for dynamic capabilities that use them. Production
+and v1.0.0 are unchanged. The original stage3 sequence and stage3.5 preparation
+remain historical evidence; the stage4 guide gives the current work queue.
 The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 
