@@ -1,0 +1,330 @@
+{
+  "schema": "pysnspd.stage2.development-closure.v1",
+  "date": "2026-09-22",
+  "status": "DEVELOPMENT_STAGE_CLOSED_WITH_SCOPE_LIMITS",
+  "development_stage_closed": true,
+  "accepted_for_stage3_development": true,
+  "numerical_admission": false,
+  "production_promotion": false,
+  "material_admission": false,
+  "decision": "Se cierra la etapa2 como entrega de desarrollo con los resultados disponibles, por petición explícita del usuario, y se acepta avanzar secuencialmente hacia el ensayo espacial con bordes y circuito sujeto a sus controles propios.",
+  "authorization": {
+    "source": "Petición explícita del usuario en el turno actual: cerrar la etapa2 con lo obtenido, publicar el trabajo y preparar la etapa3 con bordes y circuito.",
+    "closes_development_deliverable": true,
+    "authorizes_stage3_sequence": true,
+    "authorizes_publication": true,
+    "does_not_approve_new_tolerances": true,
+    "does_not_reclassify_failed_measurements": true
+  },
+  "terminology": {
+    "development_stage_closed": "Cierre de la entrega de desarrollo y decisión de continuar con el alcance declarado.",
+    "numerical_admission": "Certificado estricto del protocolo congelado de etapa2; permanece falso porque faltan comparaciones y existe un diagnóstico suplementario fallido.",
+    "accepted_for_stage3_development": "Permiso para preparar e implementar la secuencia espacial, bordes y circuito, sin dar por aprobados sus resultados ni heredar una precisión no medida."
+  },
+  "strict_certificate": {
+    "status": "INCOMPLETE_NOT_REISSUED",
+    "criteria": {
+      "path": "docs/implementation/stage2/acceptance_criteria.json",
+      "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+    },
+    "tolerances_changed": false,
+    "failed_results_reclassified": false,
+    "completion_required_as_blanket_stage3_entry_gate": false,
+    "interpretation": "Las lagunas conservan su importancia para los ensayos que dependan de ellas. No bloquean automáticamente todo desarrollo posterior ni se consideran resueltas por cambiar de etapa."
+  },
+  "evidence_summary": {
+    "source": "saved_results_audit.json",
+    "completed_tasks": 21,
+    "registered_tasks": 35,
+    "completed_trajectories": 13,
+    "all_recorded_trajectory_invariants_pass": true,
+    "manifest_sources_verified": 34,
+    "new_guarded_temporal_assessments": {
+      "one_guarded_time_assessment": {
+        "status": "PASS",
+        "cases": [
+          {
+            "steps": 160,
+            "recorded_max_relative_percent": 0.005415702718006263
+          },
+          {
+            "steps": 320,
+            "recorded_max_relative_percent": 0.0015699838897606808
+          },
+          {
+            "steps": 640,
+            "recorded_max_relative_percent": 0.00037418095755529395
+          }
+        ],
+        "recorded_common_checkpoint_count": 161,
+        "note": "Reproduced at recorded common checkpoints; supplementary CSV also scans each coarse-run output."
+      },
+      "two_guarded_time_assessment": {
+        "status": "PASS",
+        "cases": [
+          {
+            "steps": 160,
+            "recorded_max_relative_percent": 0.004063429109681014
+          },
+          {
+            "steps": 320,
+            "recorded_max_relative_percent": 0.001125508337222199
+          },
+          {
+            "steps": 640,
+            "recorded_max_relative_percent": 0.0002818816341470566
+          }
+        ],
+        "recorded_common_checkpoint_count": 161,
+        "note": "Reproduced at recorded common checkpoints; supplementary CSV also scans each coarse-run output."
+      }
+    },
+    "special_field_and_support_assessments": {
+      "guarded_equilibrium_support": {
+        "status": "PASS",
+        "sha256": "aeff27254cd7cd0948b13ed6fc1af828d996bed6d4e6d0fded44f58169b7bc6f"
+      },
+      "guarded_boundary_support": {
+        "status": "PASS",
+        "sha256": "3d4d8900e1aeceb31a6f31732e660a1880fb8ff5c0e94d42f558342f0d19ff5e"
+      },
+      "guarded_equilibrium_fields": {
+        "status": "PASS",
+        "sha256": "c5a96008fa65378834726d9c9f7e8d29e879e7c7843436663f745aa6cc869155"
+      },
+      "guarded_boundary_fields": {
+        "status": "PASS",
+        "sha256": "06ed52e4dc71c19cfe411031b54ae95863102ae9de71f580af443cf1b7bb6b5a"
+      },
+      "guarded_special_assessment": {
+        "status": "PASS",
+        "sha256": "2330523db908b4e4553a2b00c4f835e9141259c697b5d64695d18aeb15145464"
+      }
+    },
+    "invariant_measurement_scope": "Recorded initial/11-checkpoint RHS residuals inspected, not recomputed. Stored population support and snapshot/NPZ consistency checked at every saved time.",
+    "recorded_maximum_energy_ledger_scaled": 5.4376563585201154e-08,
+    "auxiliary_failure": {
+      "id": "guarded_ph2049_supplementary_pair",
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/two_guarded_ph2049_pair_320_640.json",
+      "sha256": "8928844b8aeaedf486b3f805fc79db96145ab0abf87e9edac5a8c80fcfaafb33",
+      "maximum_difference": 4.565195781058689e-05,
+      "original_auxiliary_budget": 2.5e-05,
+      "status": "FAIL_PAIR_DIAGNOSTIC"
+    },
+    "failed_pair_details": {
+      "comparison": "two_guarded_ph2049_pair_320_640",
+      "family": "phonon_population",
+      "cell": "all",
+      "time": 0.76875,
+      "absolute": 2.6518320738176176e-06,
+      "reference_norm": 0.058088025158094005,
+      "relative_percent": 0.004565195781058689,
+      "original_norm_score": 4.565195781058689e-05,
+      "comparison_defined": true,
+      "roundoff_limited": false,
+      "undefined_checkpoints": 0,
+      "final_relative_percent": 0.0034692718354559526,
+      "initial_relative_percent": 0.0
+    },
+    "scope_note": "Extraído de evidencia guardada; este cierre no integra trayectorias ni recalcula el RHS."
+  },
+  "stage3_transition": {
+    "status": "SEQUENTIAL_DEVELOPMENT_ACCEPTED_OWN_CONTROLS_REQUIRED",
+    "entry_contract": "docs/implementation/stage3/entry_contract.json",
+    "stage3_implementation_performed_in_this_decision": false,
+    "stage3_calculations_performed_in_this_decision": false,
+    "not_limited_to_static_3A": true,
+    "requires_complete_old_mesh_certificate_as_automatic_entry_condition": false,
+    "sequence": [
+      {
+        "id": "3A",
+        "name": "Funcional espacial estático",
+        "allowed_development": true,
+        "verified_by_this_closure": false,
+        "required_controls": [
+          "Registrar geometría, campos y poblaciones; comprobar soporte y unidades.",
+          "Derivar fuerzas y corriente de una misma energía discreta.",
+          "Comparar derivadas independientes y evaluar D.36; conservar los estados rechazados."
+        ]
+      },
+      {
+        "id": "3B",
+        "name": "Bordes, interfaces y reservorios",
+        "allowed_development": true,
+        "verified_by_this_closure": false,
+        "required_controls": [
+          "Definir medidas de celda/cara y condiciones de borde antes de resultados.",
+          "Verificar transferencias, trabajo y balance con los reservorios.",
+          "Medir sensibilidad a los extremos y a la resolución pertinente del ensayo."
+        ]
+      },
+      {
+        "id": "3C",
+        "name": "Conservación de carga y potencial",
+        "allowed_development": true,
+        "verified_by_this_closure": false,
+        "required_controls": [
+          "Resolver D.22 con la corriente superconductora de la misma energía, corriente normal, referencia de potencial y signos pasivos de terminales.",
+          "Comprobar continuidad y trabajo eléctrico volumétrico frente al trabajo de puerto.",
+          "Verificar trabajo espectral con Gamma(q_delta) variable en un recorrido controlado; el balance previo a Gamma fija no lo acredita."
+        ]
+      },
+      {
+        "id": "3D",
+        "name": "Circuito de la memoria de tres estados",
+        "allowed_development": true,
+        "verified_by_this_closure": false,
+        "required_controls": [
+          "Conservar la topología circuital documentada de la memoria y declarar parámetros y variables.",
+          "Comprobar carga, energía almacenada, disipación y trabajo eléctrico sin doble conteo.",
+          "Ensayar primero equilibrio y respuesta pequeña sin fotón."
+        ]
+      },
+      {
+        "id": "3E",
+        "name": "Dinámica débil y depósito local",
+        "allowed_development": true,
+        "verified_by_this_closure": false,
+        "required_controls": [
+          "Registrar observables, escalas de error y controles adecuados al régimen antes de nuevas mediciones.",
+          "Comprobar las dependencias del ensayo: poblaciones, soporte, D.36 y balance conjunto.",
+          "Separar sensibilidad temporal, espacial y espectral; conservar los resultados que no cumplan su contrato."
+        ]
+      }
+    ],
+    "halt_affected_test_if": [
+      "Unidades o fuentes incompatibles, datos no finitos o violación del dominio físico de las poblaciones.",
+      "Salida del soporte declarado o pérdida de D.36 en una trayectoria que lo requiere.",
+      "Inconsistencia estructural de fuerzas, corriente, transferencias o balance de trabajo/energía."
+    ],
+    "accuracy_policy": "Registrar controles y precisión según el observable y régimen del nuevo ensayo; conservar fallos y escalas absolutas/relativas. No escoger tolerancias después de resultados para aprobarlos ni transferir automáticamente un PASS entre métodos o mallas."
+  },
+  "scope_limits": [
+    "El certificado numérico estricto de todas las mallas de etapa2 permanece incompleto; no se emite PASS global.",
+    "El par2049/320-640 conserva FAIL_PAIR_DIAGNOSTIC y su presupuesto original2.5e-5; no se sustituye por una nueva cifra.",
+    "Las comparaciones dinámicas electrónicas1260/2520 y fonónicas4097 no se completaron en el lote guarded; no se infiere su convergencia.",
+    "Los controles finales de campos y soporte superior de las trayectorias guarded activas no se alcanzaron; los especiales aprobados tienen su alcance propio.",
+    "La preparación e implementación futura de etapa3 se autorizan por secuencia y alcance; ningún resultado espacial, de borde o circuital queda validado por este cierre.",
+    "Las entradas siguen siendo sintéticas. No hay admisión de tasas absolutas NbN, calibración del dispositivo, latencias o umbrales.",
+    "No se promueve el solver experimental a producción ni se modifica el alcance histórico del tagv1.0.0."
+  ],
+  "evidence": [
+    {
+      "path": "docs/implementation/stage2/acceptance_criteria.json",
+      "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/saved_results_audit.json",
+      "sha256": "21716b120b1a764eaf0603fed06d2ea90db545a57925f2f363b42600241ee610"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/validation_scope_review.md",
+      "sha256": "eee8ea1098d3127951529b117df488cbeb3e577d9c8dd8fc4676113b88802580"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/batch_manifest.json",
+      "sha256": "951d6e7703772476f263a7f453529e0b2e023df25d7806bfa9dd0d967ad10a1e"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/batch_events.jsonl",
+      "sha256": "3bfc13c9c6d37ab37fb2966730d51f52ccc4e850e7b33df0136042e0838fd453"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/one_guarded_time_assessment.json",
+      "sha256": "b41eae39582153c28f4cf7c39423ae6e1351b156748246a36a4f03d6842d9c44"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/two_guarded_time_assessment.json",
+      "sha256": "5a3a99154eeb84666ef64af4f386090fa8fbb5a066f95531b5b375c8ba6f30b7"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/two_guarded_ph2049_pair_320_640.json",
+      "sha256": "8928844b8aeaedf486b3f805fc79db96145ab0abf87e9edac5a8c80fcfaafb33"
+    },
+    {
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/guarded_special_assessment.json",
+      "sha256": "2330523db908b4e4553a2b00c4f835e9141259c697b5d64695d18aeb15145464"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_inventory.json",
+      "sha256": "78618b26db8ae1449f5a59c2b14b293bb2622ace9fae4a12ff39c9d859b7a973"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_results.json",
+      "sha256": "b88e44067e8ba6879db105c61d9c831482e11a64f02654b6d2072f576f201f07"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_results.json",
+      "sha256": "0ce7a27d077cd1c4e23417ac600a134417779efeab96f450f02498947d359d79"
+    }
+  ],
+  "previous_workflow_state": {
+    "record_sha256": "e492b8eea8ff2a15c53f94cef2343ad528f666a1adc109c0d655559c507ae6d7",
+    "status": "GUARDED_TIME_VALIDATED_AUXILIARY_PAIR_FAILED_STATIC_WORK_SEPARATELY_ALLOWED",
+    "stage2_status": "STRICT_DYNAMIC_MESH_CERTIFICATE_INCOMPLETE",
+    "recommendation": "Do not repeat the35-task batch automatically. Preserve its21 completed tasks and failed auxiliary pair. Prepare/implement the separately registered static stage3A scope; register useful dynamic observable accuracy before further costly certification.",
+    "candidate_scope": "Synthetic one/two-cell configuration; historical limited-SSP time and special-case passes are scoped evidence, not global admission or validation of the proposed guarded arithmetic map.",
+    "computation_handoff": {
+      "mode": "NO_NEW_LONG_RUN_REQUIRED_NOW",
+      "previous_batch": "tmp/stage2_guarded_acceptance_20260922",
+      "status": "PARTIALLY_COMPLETED_SUPERSEDED_AS_UNIVERSAL_WORKFLOW_GATE",
+      "executed_by": "user",
+      "agent_launched_long_run": false,
+      "preserve_original_plan": true,
+      "active_execute_command": null,
+      "reason": "The stopped assessment is supplementary precision separation; it is not a prerequisite of frozen-population static spatial work."
+    },
+    "stage3_preparation": {
+      "status": "PREPARADA_NO_INICIADA",
+      "entry_contract": "docs/implementation/stage3/entry_contract.json",
+      "blocked_by": "Global stage2 numerical admission remains false; historical SSP passes do not admit the guarded method."
+    },
+    "publication": {
+      "status": "CLOSURE_PUSH_WITHHELD",
+      "reason": "The user conditioned publication on global stage2 closure; guarded QA and mandatory validation remain pending. No production or stage3 promotion."
+    },
+    "workflow_gates": [
+      {
+        "id": "final_report_and_spatial_transition",
+        "status": "FULL_DYNAMIC_ADMISSION_PENDING_STATIC_PREPARATION_SEPARATE",
+        "reason": "Full dynamic mesh certification is incomplete. A frozen-population static3A experiment uses its own relevant prerequisites; see scope_amendment.json."
+      },
+      {
+        "id": "static_stage3a_scope",
+        "status": "SEPARATE_PREPARATION_ALLOWED_NOT_IMPLEMENTED",
+        "scope": {
+          "allowed_scope": "Small static spatial energy, Cartesian derivatives and current at fixed thermal/nonthermal populations.",
+          "prerequisites": [
+            "Own preregistration",
+            "R2 energy/force domain checks",
+            "D.36 evaluated on tested states",
+            "Independent static derivative/current checks"
+          ],
+          "requires_complete_dynamic_stage2_mesh_certificate": false,
+          "implementation_started": false,
+          "excludes": [
+            "kinetic time integration",
+            "photon",
+            "circuit transient",
+            "detector pulse",
+            "production"
+          ]
+        }
+      }
+    ],
+    "role": "Estado operativo anterior, preservado como historial y sustituido por la autorización explícita actual. Los veredictos numéricos históricos no se modifican."
+  },
+  "performed_work": {
+    "new_RHS_evaluations": 0,
+    "new_trajectories": 0,
+    "physical_kernel_edits": 0,
+    "criteria_edits": 0,
+    "scope": "Actualización documental de dos JSON; no implementación ni ejecución espacial."
+  },
+  "publication": {
+    "status": "AUTHORIZED_FOR_MAIN",
+    "scope": "Final stage2 development closure, saved evidence, report and prepared stage3 sequence; actual Git publication is identified by the containing commit and remote branch.",
+    "production_release": false,
+    "tag_v1_0_0_unchanged": true
+  }
+}

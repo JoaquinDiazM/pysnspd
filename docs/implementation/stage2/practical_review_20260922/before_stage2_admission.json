@@ -1,0 +1,1437 @@
+{
+  "schema": "pysnspd.stage2.admission_checkpoint.v2",
+  "status": "HISTORICAL_TIME_PASS_GUARDED_PROTOTYPE_PASS_GLOBAL_STAGE2_PENDING",
+  "stage2_status": "NOT_CLOSED",
+  "numerical_admission": false,
+  "production_promotion": false,
+  "recommendation": "Run the source-frozen guarded validation plan manually. All method-specific long temporal and mesh gates remain pending; historical passes do not admit the new map. Stage3 is prepared, not started.",
+  "date": "2026-09-22",
+  "criteria": {
+    "path": "docs/implementation/stage2/acceptance_criteria.json",
+    "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+  },
+  "amendment": {
+    "path": "docs/implementation/stage2/review/complementary_grid_amendment.json",
+    "sha256": "6270ca41d5d26e2fb30c9b02052d929a28db3fc5c7c2876a9e51c8ed1467b86c"
+  },
+  "immutable_inputs": [
+    {
+      "path": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+      "sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+      "matches_frozen_input": true
+    },
+    {
+      "path": "pysnspd/experimental/energy_catalog.py",
+      "sha256": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+      "matches_frozen_input": true
+    },
+    {
+      "path": "docs/implementation/stage1_closure/closure_admission.json",
+      "sha256": "afe1968fe5abcff79737b1d39390b1afb56d86ddd888fe419a4cb0c940b7e2b9",
+      "matches_frozen_input": true
+    },
+    {
+      "path": "docs/implementation/stage1_closure/acceptance_criteria.json",
+      "sha256": "5d93166021fd996ca87e770a41f51df7279a602ce2d7f57f76190d59e6107951",
+      "matches_frozen_input": true
+    }
+  ],
+  "audited_source_sha256": {
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c"
+  },
+  "candidate": {
+    "electron_states": 630,
+    "phonon_nodes": 1025,
+    "infrared": 0.005,
+    "phonon_cutoff": 4.0,
+    "electron_mesh": "Complementary causal fixed-count quadrature; R2 vacuum and parent catalog unchanged",
+    "eta": 1e-08,
+    "reaction_layout": "resolved_panels",
+    "reaction_inner_order": 2,
+    "reaction_outer_order": 2,
+    "face_order": 2,
+    "scope": "Synthetic one/two-cell configuration; historical limited-SSP time and special-case passes are scoped evidence, not global admission or validation of the proposed guarded arithmetic map.",
+    "historical_integration_method": "ssprk3_common_flux_limited",
+    "proposed_integration_method": "ssprk3_common_flux_guarded",
+    "proposed_method_status": "QA_PENDING_NOT_ADMITTED"
+  },
+  "gates": [
+    {
+      "id": "retained_static_evidence",
+      "status": "RETAINED_SCOPED_PASSES",
+      "detail": "Prior static gates remain valid only in their declared scenarios; see previous_scoped_gates."
+    },
+    {
+      "id": "RK4_candidate_time_one",
+      "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
+      "finest_error": 6.143596723348075e-05,
+      "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
+    },
+    {
+      "id": "RK4_candidate_time_two",
+      "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
+      "finest_error": 4.7399839355602646e-05,
+      "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
+    },
+    {
+      "id": "RK4_candidate_activity",
+      "status": "PASS",
+      "detail": {
+        "preregistered_initial_excitation_energy": 0.387227852778307,
+        "initial_phonon_energy": 0.15378725161532888,
+        "scale": 0.5410151043936359,
+        "maximum_amplitude_change": 0.1990601306198202,
+        "eph_fraction": 0.0477977068670953,
+        "face_fraction": 0.11079467483925405,
+        "scope": "Measured from the time-converged candidate RK4 trajectory; dynamic mesh admission remains open.",
+        "passes": true
+      }
+    },
+    {
+      "id": "electronic_dynamic_mesh",
+      "status": "FAILED_REFINEMENT_INCOMPLETE_GATE",
+      "reason": "2520-state RK4 trajectory failed; no complete three-mesh comparison."
+    },
+    {
+      "id": "phonon_dynamic_mesh",
+      "status": "NOT_REACHED",
+      "reason": "2049/4097-node trajectories and three-grid assessment were not reached."
+    },
+    {
+      "id": "SSP_one_cell_temporal_admission",
+      "status": "PASS_ONE_CELL_SCOPE",
+      "admitted_measured_steps": [
+        160,
+        320,
+        640
+      ],
+      "reference_steps": 1280,
+      "maximum_error_by_steps": {
+        "160": 5.415702718006263e-05,
+        "320": 1.5699838897606807e-05,
+        "640": 3.7418095755529397e-06
+      },
+      "scope": "Historical ssprk3_common_flux_limited:630 electrons,1025 phonons,duration2,registered driven one-cell scenario. No fine-grid or guarded-method inference.",
+      "all_event_limiters_inactive": true,
+      "evidence": "docs/implementation/stage2/time_pass_20260922/one_cell_audit.json",
+      "checks_passed": 85,
+      "checks_total": 85
+    },
+    {
+      "id": "SSP_two_cell_temporal_admission",
+      "status": "PASS_TWO_CELL_SCOPE",
+      "method": "ssprk3_common_flux_limited",
+      "checks_passed": 98,
+      "checks_total": 98,
+      "admitted_measured_steps": [
+        160,
+        320,
+        640
+      ],
+      "reference_steps": 1280,
+      "maximum_error_by_steps": {
+        "160": 4.063429109681014e-05,
+        "320": 1.1255083372221992e-05,
+        "640": 2.818816341470566e-06
+      },
+      "error_reductions": [
+        3.6103056506091495,
+        3.9928402594509778
+      ],
+      "shared_checkpoint_count": 161,
+      "all_event_limiters_inactive": true,
+      "supplemental_pair_budget": 2.5e-05,
+      "supplemental_pairs": {
+        "160_vs_320": {
+          "status": "FAIL_PAIR_DIAGNOSTIC",
+          "error": 4.7761492108961646e-05
+        },
+        "320_vs_640": {
+          "status": "PASS_PAIR_DIAGNOSTIC",
+          "error": 1.2416798035088047e-05
+        }
+      },
+      "scope": "Historical limited SSP only; duration2,630 electrons,1025 phonons,registered driven TWO scenario. The stricter supplementary pair check is distinct from the passed registered temporal gate. No fine-grid or guarded-method inference.",
+      "evidence": "docs/implementation/stage2/closure_prep_20260922/two_cell_audit.json"
+    },
+    {
+      "id": "SSP_fine_mesh_paired_diagnostic",
+      "status": "NOT_REACHED",
+      "reason": "No fine SSP trajectory or paired temporal diagnostic exists in this batch."
+    },
+    {
+      "id": "equilibrium_and_population_boundary_trajectories",
+      "status": "PASS_REGISTERED_HISTORICAL_SSP_CASES",
+      "cases": [
+        "TWO equilibrium: duration0.1,10 steps,Gamma0 and0.1",
+        "ONE phonon vacuum: duration0.2,40 steps",
+        "ONE sparse electrons including initial Pauli faces: duration0.2,40 steps"
+      ],
+      "equilibrium_checkpoints_per_cell": 11,
+      "stationarity": {
+        "drift_budget": 1.0222044604925031e-12,
+        "cells": [
+          {
+            "cell": 0,
+            "gamma": 0.0,
+            "amplitude": 0.9997939058327783,
+            "force_absolute": 6.494371013188172e-17,
+            "amplitude_rhs_absolute": 1.2793608835417861e-17,
+            "electronic_rhs_scaled_L1": 1.985123373211923e-20,
+            "phonon_rhs_scaled_L1": 2.3545635672838044e-20,
+            "amplitude_drift_max": 0.0,
+            "electronic_drift_scaled_L1": 2.8407361864788906e-20,
+            "phonon_drift_scaled_L1": 2.9346336211656227e-18,
+            "electron_scale": 1.0,
+            "phonon_scale": 1.0
+          },
+          {
+            "cell": 1,
+            "gamma": 0.1,
+            "amplitude": 0.9167094491431231,
+            "force_absolute": 7.37257477290143e-17,
+            "amplitude_rhs_absolute": 1.582301170475666e-17,
+            "electronic_rhs_scaled_L1": 1.7937718236729358e-20,
+            "phonon_rhs_scaled_L1": 2.3694003061763045e-20,
+            "amplitude_drift_max": 0.0,
+            "electronic_drift_scaled_L1": 1.6240137174512254e-19,
+            "phonon_drift_scaled_L1": 2.9346336211656227e-18,
+            "electron_scale": 1.0,
+            "phonon_scale": 1.0
+          }
+        ],
+        "all_checkpoint_count": 11,
+        "ledger_absolute_max": 3.533291819050219e-21
+      },
+      "scope": "Actual short historical limited-SSP trajectories, not a time-refinement series or validation of the guarded map. The initial postprocessing dependency failure is preserved and was recovered without reintegration.",
+      "evidence": [
+        "docs/implementation/stage2/closure_prep_20260922/special_summary.json",
+        "docs/implementation/stage2/closure_prep_20260922/special_postprocessed/special_postprocess.json"
+      ]
+    },
+    {
+      "id": "actual_final_trajectory_fields_and_support",
+      "status": "PASS_REGISTERED_HISTORICAL_TRAJECTORIES_PENDING_GUARDED_AND_MESH",
+      "reason": "Registered historical ONE/TWO and special-case checkpoints pass. New guarded trajectories and fine meshes require their own checks; no global admission.",
+      "one_cell_fields": {
+        "energy_relative_error": 1.25677413370158e-15,
+        "force_relative_error": 0.0,
+        "derivative_identity_scaled": 5.069684949621234e-11
+      },
+      "one_cell_support_bound": 9.280260789812186e-10,
+      "two_cell_fields": {
+        "energy_relative_error": 9.488450439170207e-16,
+        "force_relative_error": 0.0,
+        "derivative_identity_scaled": 5.388761659119723e-11
+      },
+      "two_cell_support_bound": 6.663121670762645e-10,
+      "special_fields_and_boundary_support": {
+        "equilibrium_fields": {
+          "status": "PASS",
+          "scope": "Actual equilibrium fields only; all native-node moment comparisons against independent real-angle eta0 reference. Finite-eta spectral kernels additionally sampled with60-digit implicit reference; ideal comparison includes regulator bias.",
+          "sampling": {
+            "distinct_times_per_cell": 11,
+            "cells": 2,
+            "unique_fields": 2
+          },
+          "maxima": {
+            "moment_scaled_max": 5.353608151792282e-09,
+            "derivative_identity_scaled_max": 3.608217457456986e-11,
+            "finite_eta_kernel_scaled_max": 4.3674151920577306e-16
+          },
+          "runtime_seconds": 5.363563429098576
+        },
+        "boundary_fields": {
+          "status": "PASS",
+          "maxima": {
+            "energy_relative_error": 2.7477882027611257e-16,
+            "force_relative_error": 0.0,
+            "derivative_identity_scaled": 4.9567794313531977e-11
+          },
+          "runtime_seconds": 0.0743659371510148
+        },
+        "boundary_support": {
+          "status": "PASS",
+          "worst_relative_upper_bound": 8.886148255415732e-10,
+          "runtime_seconds": 2.7112618442624807
+        }
+      },
+      "equilibrium_support": {
+        "status": "PASS",
+        "relative_upper_bound": 1.4390136299994193e-19,
+        "relative_limit": 0.001,
+        "distinct_times_per_cell": 11,
+        "finite_eta_included": true,
+        "method": "Analytic causal spectral envelope and exact polynomial primitives; independent of the failed16/32 quadrature convergence attempt.",
+        "scope": "Absorption to unresolved high-energy electronic states; no arbitrary incoming external population is assumed or bounded.",
+        "evidence": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_result.json"
+      }
+    },
+    {
+      "id": "final_report_and_spatial_transition",
+      "status": "NOT_ADMITTED",
+      "reason": "Isolated historical transport failed; guarded QA, fresh method-specific temporal/special checks and dynamic mesh convergence remain incomplete."
+    },
+    {
+      "id": "isolated_operators_historical_SSP",
+      "status": "PARTIAL_PASS_TRANSPORT_REJECTED_SUBNORMAL",
+      "passed_channels": [
+        "emission",
+        "absorption",
+        "recombination",
+        "pair creation",
+        "smooth escape order"
+      ],
+      "failed_channel": "isolated transport",
+      "diagnosis": "At stage time0.017, rounded subnormal particle inventories produced p=-2.5e-323 from p=3.46e-322. The physical-support guard rejected the stage; no population clipping or hidden repair. This diagnoses arithmetic in the historical limited SSP, not a changed collision model.",
+      "evidence": [
+        "docs/implementation/stage2/closure_prep_20260922/isolated_recovery/isolated_results.json",
+        "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_diagnosis.json",
+        "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_order.json"
+      ]
+    },
+    {
+      "id": "guarded_arithmetic_prototype",
+      "status": "PASS_PROTOTYPE_SCOPE_ONLY",
+      "scope": "Fourteen checks and supplementary absorption/creation microcases pass; ordinary5step equivalence and complete isolated transport/escape are measured. No long moving-condensate or mesh admission.",
+      "evidence": [
+        "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_results.json",
+        "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_results.json"
+      ]
+    },
+    {
+      "id": "guarded_complete_validation_plan",
+      "status": "READY_PENDING_USER_LONG_RUN",
+      "plan": "docs/implementation/stage2/closure_prep_20260922/guarded_acceptance_plan.json",
+      "plan_status_at_update": "READY_FOR_USER_FOREGROUND_RUN",
+      "sources_frozen": true,
+      "scope": "Fresh full validation prepared, not executed.19 new trajectories; no historical pass is transferred."
+    }
+  ],
+  "historical_completed_trajectories": [
+    {
+      "name": "one_40",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 40,
+      "duration": 2.0,
+      "ledger_scaled_max": 6.030703653125968e-08,
+      "trajectory_sha256": "7c63f6eda1569cb89b1247701ace286203f5918ec40544a2d51aab1e1d9db565",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    },
+    {
+      "name": "one_80",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 80,
+      "duration": 2.0,
+      "ledger_scaled_max": 3.633290696081204e-09,
+      "trajectory_sha256": "49d2706b43dab014a3f95fabf60fb0ea2e7b6eb03693766b9a518a8eea50ca18",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    },
+    {
+      "name": "two_40",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 40,
+      "duration": 2.0,
+      "ledger_scaled_max": 1.117883874357517e-08,
+      "trajectory_sha256": "7f8ce99f81d357940104cc198131788420c72827ecce44db4dab2aa79dd05903",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    },
+    {
+      "name": "vacuum",
+      "status": "HISTORICAL_COMPLETED_NOT_ADMITTED",
+      "phonon_nodes": 513,
+      "electron_states": 630,
+      "method": "rk4",
+      "steps": 40,
+      "duration": 0.2,
+      "ledger_scaled_max": 3.3663488663293606e-12,
+      "trajectory_sha256": "143e58abb721b3e8a12ad27bd089000c13ded3458486e8174150deab5f207946",
+      "reason": "513-node phonon representation does not meet the selected static population gate; no complete time-reference or three-grid dynamic assessment."
+    }
+  ],
+  "computation_handoff": {
+    "mode": "USER_FOREGROUND_COMMAND",
+    "plan": "docs/implementation/stage2/closure_prep_20260922/guarded_acceptance_plan.json",
+    "plan_sha256": "0c5c953de3dc974dedf5ae963f0517d86dc568aedd74a0140998eb0b4e58a3b9",
+    "plan_status_at_update": "READY_FOR_USER_FOREGROUND_RUN",
+    "sources_frozen": true,
+    "output_root": "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922",
+    "expected_hours": [
+      9,
+      15
+    ],
+    "threads": 1,
+    "memory_reservation_GiB": 12,
+    "memory_peak_measured": false,
+    "agent_executed": false,
+    "new_trajectories_pending": 19,
+    "scope": "Fresh guarded special, ONE/TWO time and true energy-mesh trajectories with all listed field/support checks; independent global review remains necessary."
+  },
+  "material": {
+    "status": "SYNTHETIC_ONLY_NBN_ABSOLUTE_NOT_ADMITTED",
+    "detail": "Debye inputs are declared synthetic. The traceable NbN shape is conditional; unresolved absolute units/basis/density and material preprocessing defects are not inferred away."
+  },
+  "model_scope": {
+    "status": "EXPERIMENTAL_CELL_ALGORITHM_ONLY",
+    "excludes": [
+      "absolute material rates or latency",
+      "spatial condensate amplitude/phase gradients",
+      "principal-symbol/core stability",
+      "reservoir boundary problem",
+      "Poisson/current/circuit coupling",
+      "full SNSPD transient",
+      "production replacement"
+    ]
+  },
+  "historical_failures_preserved": true,
+  "tolerances_relaxed": false,
+  "evidence": [
+    {
+      "path": "docs/implementation/stage2/acceptance_criteria.json",
+      "sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_grid_amendment.json",
+      "sha256": "6270ca41d5d26e2fb30c9b02052d929a28db3fc5c7c2876a9e51c8ed1467b86c"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_energy_reference.json",
+      "sha256": "04306dd602e0e02af5389186b5fdcc2842864364b6f3bdcdbadff86326b2d8f5"
+    },
+    {
+      "path": "docs/implementation/stage2/review/complementary_moment_quadrature.json",
+      "sha256": "05a81c33ab563f2a9b84b8abca89fdacea25dcf196d8a6e57d7788c15112ca78"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_reactions.json",
+      "sha256": "988f4303329cba7646a60a9add77439c94a9e4be110d77b28aa39fd60faeb6c6"
+    },
+    {
+      "path": "docs/implementation/stage2/review/continuous_projection_check.json",
+      "sha256": "6e3471833845b52aeab7cba7761c118eadad494d11b6779f76018c34a2e1e13f"
+    },
+    {
+      "path": "docs/implementation/stage2/review/infrared_reaction_reference.json",
+      "sha256": "a98a6f23ee8588c1643ef72d248dcc69cddf5e9c21d16860aeee91c17cfc7770"
+    },
+    {
+      "path": "docs/implementation/stage2/review/upper_support_reference.json",
+      "sha256": "fa652e53343a373bd09563516ff949e76fb2e9b7104593afdaee737bc3f85c43"
+    },
+    {
+      "path": "docs/implementation/stage2/review/negative_controls.json",
+      "sha256": "0318cc9c121b42bcf49bba65f4dd1de164b5455bc7812dc9dcc5279bad173dd2"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_1.json",
+      "sha256": "771782465028f69880be1366b7aa0f20cc441a5ae1b0dd2dba297403cf200a63"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_2.json",
+      "sha256": "c651fd105016b0ef5f921c9321b36e9d7737341a74d6207d8f6035c641bf5337"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_final_all_4.json",
+      "sha256": "ac444604036368623479910d89c39228469fd7e848cab3a9f14664e517c4702a"
+    },
+    {
+      "path": "docs/implementation/stage2/review/weak_population_reference_finite_eta_bcs_1.json",
+      "sha256": "50619b1ba621904f9567bf76880c1beec7aecfa51fedd303bda75a3dc33d39ca"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_results.json",
+      "sha256": "c508feba97193288a81b3103720d636b840a59ecae3309bbce6ee4e0ccc4bd19"
+    },
+    {
+      "path": "docs/implementation/stage2/transport_results.json",
+      "sha256": "ee0e717932bd8ad09fc1375a64e3f247c284d69fcd7dd6556882e6754d8cb435"
+    },
+    {
+      "path": "docs/implementation/stage2/event_summary.json",
+      "sha256": "e8d27c9cab8f2f74b97a72bc7f12b9cd973546bb92edf6a0699958c0afadc438"
+    },
+    {
+      "path": "docs/implementation/stage2/complementary_event_final.json",
+      "sha256": "20a200bd81b50aac86d55b3fc39c2fbc48fe1edd95b67e9bf99fcfd6664957f1"
+    },
+    {
+      "path": "docs/implementation/stage2/projected_phonon_convergence.json",
+      "sha256": "456b3490ecc3d3e8e11346392d4d893df8269704a7d54654201f51e89e7f92d0"
+    },
+    {
+      "path": "docs/implementation/stage2/projected_phonon_1025.json",
+      "sha256": "1c77a22257ac2c0eaf262b9cc76372e2b9ca5a1b4d9fdd9daba21cf678447dd7"
+    },
+    {
+      "path": "docs/implementation/stage2/selected_event_measurements.json",
+      "sha256": "8f358d077a48193b6f725c40827e48f16315916198aaca1fffe72cac407e08b1"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_1.json",
+      "sha256": "c6c413ac714e448313c00f97970f29d7e257f0db0908de5efbf8412f7fea68f4"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_2.json",
+      "sha256": "d05107633d4988f71277d4ea346d9caebea337c7b14032e5d98002be41efa786"
+    },
+    {
+      "path": "docs/implementation/stage2/weak_reference_final_comparison_4.json",
+      "sha256": "ea8e4632f8c102ac7be4d7d4a04177fd32da686b06db061844bf8cf7a0c22313"
+    },
+    {
+      "path": "docs/implementation/stage2/time_suboperator_order.json",
+      "sha256": "fa5fa66da51e1e150d8cb7550a6b5e3ce21e6d18ae438e1abfe67ed462c65fe2"
+    },
+    {
+      "path": "docs/implementation/stage2/review/initial_phonon_projection_fine.json",
+      "sha256": "89e622c849ed2aa3cedcc090aa5a94fc67bbcc7c653cbe078017239a1a78bb6a"
+    },
+    {
+      "path": "docs/implementation/stage2/review/time_assessment_selfcheck.json",
+      "sha256": "bce3a68d592274cb4042380ad4bdcf7793c013003d6ad7e2ec80b681a7fd7521"
+    },
+    {
+      "path": "docs/implementation/stage2/review/grid_assessment_selftest.json",
+      "sha256": "1fdd0fdf953073ba8526b877a56af7f36900a92701a06d4361fdacc2a82f2a0b"
+    },
+    {
+      "path": "docs/implementation/stage2/reference_handoff.json",
+      "sha256": "f83fad24c65da5043ece4714759c85b8a1eaed9cb86b9b167ad181fb5caf70dc"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_reference_probe.json",
+      "sha256": "d37d612f83b7fcee8536676a135a13046323eb62f61f0bc52dc4a1ceb036c6da"
+    },
+    {
+      "path": "docs/implementation/stage2/regression_result.json",
+      "sha256": "2ac14b69964a7bb21e24bccaabb8d73ca203d5e5222808287d4934d70fd44ff4"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_40.json",
+      "sha256": "3116b415c977ffc6d866a14fbf506f9fb55eb0a13a003ba1a7b1827bec6da5b2"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/one_80.json",
+      "sha256": "f00b04081bf1ee7a1d529becfe87b28d30f5f9ad96d0b75b356378e7a5cf60e5"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/two_40.json",
+      "sha256": "20a7ef1896f58a52b7872762450c076f479ad0101f8cae2bef2468eae504b3b4"
+    },
+    {
+      "path": "docs/implementation/stage2/trajectories/vacuum.json",
+      "sha256": "be1662d358f79143af5f8fde48e62e615e127cdd5660d2031eb94b2163119934"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/manual_reference_import.json",
+      "sha256": "34a3b63eadbd0d2549eb228b511d80ca30d167454bb7dc88d6bb69b2abe56be4"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/manual_reference/one_reference_probe.json",
+      "sha256": "0ce0ebee3aeecda1e9a71ff89306dead04658b0d368f03900f00741c4ae9e28e"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/short_time_assessment.json",
+      "sha256": "04741fa466a74915c2349a355ecc2a05753f9279203eab11c738fc817ec3a5de"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/selected_continuum.json",
+      "sha256": "ad3b116803d2a3b4f73fe2ab87e57c74b4d8345b88a5b2eba14c5cca81110fed"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/electronic_three_grid_decomposition.json",
+      "sha256": "a0d02b415d1c336b21b13a6e4e64caab185a758592e727e2bfd412e9e5a5a67a"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/rhs_smoothness.json",
+      "sha256": "a56dbca38d678301f51c461d3cfb5739b8e19e7b4b7d2ec21eb5d94513f057c3"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/two_active_40.json",
+      "sha256": "f778f1f90ad4b6b43317eaa00139ccccb5eeea926da8aff031d8e507d231a80e"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/two_active_fields.json",
+      "sha256": "70b49d44922e8b1e3a30f740ae774ec317cb5063c49ebe5d9627649a4124f8f2"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/two_active_support.json",
+      "sha256": "ee63686c9038774d38f975fd075102f2a449751523df3311e0eb19d3aa238360"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/assessment_guard_selfcheck.json",
+      "sha256": "92ca75f1ebb982e64699031081beb28197fb43ba00608746f977eeb71f1d2cc9"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/batch_guard_packaged_selftest.json",
+      "sha256": "3cca8e97ac6a9a995d17c2c17d147f6268e4a2c814c906b27d446e8680806b48"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/regression_result.json",
+      "sha256": "590cd355da10684ca007911ba80f1b175568e9a5e9cc629a687496ace30ccaab"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/manual_validation_plan.json",
+      "sha256": "e32ba6ee884fa86ab4800b3c86e248105c62357f15d276911a7b5c955e9c76a7"
+    },
+    {
+      "path": "docs/implementation/stage2/resume_20260921/command_notebook_update.json",
+      "sha256": "34818d854e477c2aced672648f94fe1492da74a6f49be0c3d63e1996f172a78f"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_short_time_assessment.json",
+      "sha256": "df87e3f9dbdaf85e0f42a58fbfe440db3f670983d1c32f7dc96840455689eb07"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval.json",
+      "sha256": "0d505c22cb5d4f7e27a791f0394ec48ae684dcd8af84a3940b702c259e7254a6"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval.npz",
+      "sha256": "8dc9cbe4cfe1f450475c211c6217648149e64dd861f0d4d8bae1ebea5c872e82"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_continuous_first_interval_initial.npz",
+      "sha256": "7d01e5cf23444ea9e4420109a3762482bb9d053dcd7abe52f4d418db80d2fcea"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/regression_result.json",
+      "sha256": "b6074dd3c7aa102fa6dee915b91ab889163d48da07a79bc30ea60341c38bea03"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_guard_tests.json",
+      "sha256": "3fd6c50d5d9a52bbbb4c34061736476fecbd57b77b337473705ce47889610c37"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/completed_batch_audit.json",
+      "sha256": "a7ed1861d6a62a3ec8bfa11a8e19bbdf98165c835f6440e8115d935dd1d58041"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_acceptance_plan.json",
+      "sha256": "2a4ab648648d407bdd9d066ca412168bb348c5208a1657cf0c0cf7cfafcae098"
+    },
+    {
+      "path": "docs/implementation/stage2/recovery_20260921/command_notebook_update.json",
+      "sha256": "c205d975565e6eef6ebfe984ca9e493341d2dbf51a8e36a8e4465a575cf611da"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/import_inventory.json",
+      "sha256": "a665ad55c8f92c4f4e81811e0a5a453d9de433890342e362f6f07f1cf41219a5"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/independent_audit.json",
+      "sha256": "12a22514e231e091708889c7d52372af34fb2a5a55b8291f68b4dc09b0fac496"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/diagnosed_ssp.json",
+      "sha256": "11569215f1f06d8a6fae56e9aea4bcdd1b843f72f91c00a7d993181df691fbea"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/manual_time_plan.json",
+      "sha256": "df121161d089f70d8d13a9fe988d28aacde470b9f7dbfad949e52f7f49a37637"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/manual_time_offline_tests.json",
+      "sha256": "4832747007c27209468473889695232b472e1f4610549cedb685c1a1cdabf8de"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/command_notebook_cleanup.json",
+      "sha256": "822d540cd40616c000561e901562c2ab4a4c1c66ba00198f03d3a50a310c0b94"
+    },
+    {
+      "path": "docs/implementation/stage2/review_20260922/QA_report.json",
+      "sha256": "89fc6c7218c3800042c793e072b02a91a0fbae2f087c74f416bbfe7c267c9b29"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_cell_audit.json",
+      "sha256": "373b64a37c66041b966922dfe5757a5d5d0443e916038baf0f664d20a574aacd"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_fields_20260922.json",
+      "sha256": "dd7c817586314b155c62f5c3f88c0110e1ed059e4b7b78b010b2a6fb16061133"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_support_20260922.json",
+      "sha256": "04a8eec24d491122e416da5a2597049140c5b7e8051de71237ac4963703436ec"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_summary.json",
+      "sha256": "411d873efb4da0999626c94722ba13cbf2eed60136fc1730da6cf9b024c067ea"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_raw/special_assessment.json",
+      "sha256": "8e1c52ab0fe787de5267a7c121f77f2903c37f8e4a5001da608b3f8d3c332f13"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_postprocessed/special_postprocess.json",
+      "sha256": "918958c8f5925c9352fe1823b183ce2641af645927a43e153d5d5cc61e8aba74"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_support_result.json",
+      "sha256": "4aacc098d0c78a426d462e94868dc5688446e3019acf78e08903d6ab10b51952"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_registration.json",
+      "sha256": "c32132e456d08c67a1249031faff5ce9c4e26703c4aca90c3882726aeab00736"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_result.json",
+      "sha256": "fc3b8930f532921e1c39604b0453036ee23cc7e40c67d9b3e15f0063d57f15b6"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/EQUILIBRIUM_SUPPORT_ENVELOPE.md",
+      "sha256": "bc573a47c770195a84368a2d4c278ec1fad276884bb47b5532f08a13c6b0c8a6"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_recovery/isolated_results.json",
+      "sha256": "f70bbdd8277e0acc448adc14034bf4d0bbe07df5fbba31f0d93531473e0c9a24"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_diagnosis.json",
+      "sha256": "a93ad12d2fc1ad72c59935f91c80c41d3be38d62fa03a8b368402962a52a39a1"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_order.json",
+      "sha256": "6316562ba12a7e5a72927a838e1a8b23456f19d6ed8b091877eef3b2821b08ec"
+    }
+  ],
+  "generator_sha256": "372a6702141f144f7a5515b85c3ce64965b90fa308f56d3108db74b428f75bd1",
+  "preceding_checkpoint": {
+    "path": "docs/implementation/stage2/review_20260922/admission_before_review.json",
+    "sha256": "b255f8560b02b60aed6c2cbc762173769f54092de37ed283451bb254e2e3e468"
+  },
+  "resumed_reference": {
+    "schema": "pysnspd.stage2.user_run_import.v1",
+    "status": "VERIFIED_COMPLETED_REFERENCE",
+    "stage2_closed": false,
+    "source": "User-run foreground command in detached screen3040582.code_000",
+    "remote_directory": "/home/jdiaz/pysnspd/tmp/stage2_user_20260921_193252",
+    "retrieval": "screen -S3040582.code_000 -Xhardcopy -h; existing files copied without changes",
+    "runtime_seconds": 1164.5544752022251,
+    "rhs_calls": 6843,
+    "energy_ledger_scaled_max": 2.7755575615628914e-16,
+    "instantaneous_residual_max": 1.6028844918025698e-15,
+    "saved_times": [
+      0.0,
+      0.05,
+      0.1
+    ],
+    "source_mismatches": [],
+    "amplitude_change": 0.025509551181889134,
+    "eph_energy_fraction": 0.008019753606364043,
+    "scope": "Local t=0.1 reference with only3 output points; not full activity, field/support or grid acceptance",
+    "artifacts": [
+      {
+        "path": "docs/implementation/stage2/resume_20260921/manual_reference/one_reference_probe.json",
+        "sha256": "0ce0ebee3aeecda1e9a71ff89306dead04658b0d368f03900f00741c4ae9e28e",
+        "bytes": 8371
+      },
+      {
+        "path": "docs/implementation/stage2/resume_20260921/manual_reference/one_reference_probe.npz",
+        "sha256": "5a9be3c73b060b1de93929e62fa12514a4fa21408a76195cff60a08e22974783",
+        "bytes": 56618
+      },
+      {
+        "path": "docs/implementation/stage2/resume_20260921/manual_reference/one_reference_probe.progress.jsonl",
+        "sha256": "668b24de64b33e2ac1bf4181c56949c12fda54997e48f333c25b910e217f4c10",
+        "bytes": 18987
+      },
+      {
+        "path": "docs/implementation/stage2/resume_20260921/manual_reference/one_reference_probe_initial.npz",
+        "sha256": "942ba53a24377c369dd9342cefd330f1a95219006f7a6f03bd1473dc997f9cf6",
+        "bytes": 31706
+      },
+      {
+        "path": "docs/implementation/stage2/resume_20260921/manual_reference/screen_capture_resume_1.txt",
+        "sha256": "e2d974a868394df31a67c56be4cea7f6d8b66ff368fa03698a1f67b54e7003e8",
+        "bytes": 20648
+      }
+    ],
+    "script_sha256": "96a431b9e1c41bb4cfb8e9f66fa99734a6069b59e9c62dbba2e4c3a842452612"
+  },
+  "manual_batch": {
+    "path": "docs/implementation/stage2/resume_20260921/manual_validation_plan.json",
+    "sha256": "e32ba6ee884fa86ab4800b3c86e248105c62357f15d276911a7b5c955e9c76a7",
+    "agent_executed": false,
+    "final_adjudication_required": true,
+    "status": "SUPERSEDED_DO_NOT_RESTART"
+  },
+  "kernel_changes": false,
+  "recovery": {
+    "plan": {
+      "path": "docs/implementation/stage2/recovery_20260921/limited_acceptance_plan.json",
+      "sha256": "2a4ab648648d407bdd9d066ca412168bb348c5208a1657cf0c0cf7cfafcae098"
+    },
+    "status": "FAILED_SSP40_ENERGY_LEDGER",
+    "physical_kernel_changes": false,
+    "temporal_integrator_changed": true,
+    "population_clipping": false,
+    "posthoc_energy_repair": false,
+    "old_RK4_time_tests": "PASS on candidate mesh; not sufficient for new SSP integrator or fine mesh.",
+    "RK4_failure": "First internal stage on electronic refinement4 leaves the physical population domain.",
+    "bisection_diagnostic": "24 RHS calls, no accepted steps; archived, not selected for the relaunch.",
+    "short_SSP_time_error": 1.5797518953075244e-06,
+    "fine_first_interval_ledger_error": 6.757813753033304e-10,
+    "final_admission": false,
+    "inherited_gates_scope": "Retained prior checkpoint gates; every full SSP time/grid gate remains pending.",
+    "record_role": "Historical SSP40 failure and recovery probes; subsequent scoped time passes and the current guarded QA state are recorded in gates."
+  },
+  "previous_scoped_gates": [
+    {
+      "id": "immutable_parent",
+      "status": "PASS",
+      "detail": "Exact hashes of R2 source/catalog and stage1 contract/certificate preserved."
+    },
+    {
+      "id": "complementary_energy_and_forces",
+      "status": "PASS_SAMPLED_STATIC_DOMAIN",
+      "independent_maxima": {
+        "energy": 3.4675004456278185e-15,
+        "amplitude_derivative": 9.492406860545088e-15,
+        "gamma_derivative": 1.611537020968681e-10,
+        "spectral": 1.1368683772161603e-13
+      },
+      "moment_errors_by_refinement": {
+        "1": [
+          2.7358169008007138e-08,
+          1.953907646790043e-08,
+          4.732054381673123e-06
+        ],
+        "2": [
+          1.8212081842605699e-09,
+          1.3006843380125588e-09,
+          1.6883945030965464e-07
+        ],
+        "4": [
+          1.1550699285933774e-10,
+          8.249345651023532e-11,
+          1.0956225870994984e-07
+        ]
+      },
+      "detail": "630/1260/2520 fixed count states; high-precision implicit spectral reference and independently refined moment quadrature. This is not uniform validation of arbitrary distributions."
+    },
+    {
+      "id": "KWT_and_synthetic_Debye",
+      "status": "PASS",
+      "maxima": {
+        "KWT_velocity_SI_scaled": 3.680992056889131e-15,
+        "KWT_heat_SI_scaled": 7.192252722286001e-15,
+        "KWT_energy_identity_scaled": 1.765952166885242e-16,
+        "KWT_minimum_mobility_eigenvalue": 0.13171770641533342,
+        "R2_Q_plus_force_times_velocity_absolute": 2.7755575615628914e-17,
+        "Debye_mode_relative": 4.736952163853022e-16,
+        "Debye_lambda_relative": 4.163362363359108e-16,
+        "Debye_129_nodes_thermal_relative": 1.042838511124921e-15
+      },
+      "detail": "Inherited mobility algebra and synthetic SI conversions; no microscopic mobility calibration or NbN admission."
+    },
+    {
+      "id": "event_equilibrium_faces_entropy",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "maximum_relative_equilibrium_event_imbalance": 4.2632564145606005e-14,
+      "maximum_weighted_equilibrium_RHS": 1.488601832731206e-19,
+      "all_faces_inward": true,
+      "minimum_isolated_entropy_production": 0.2940413673479258,
+      "detail": "Four static fields and three temperatures on the selected 1025-node phonon grid. Boundary trajectories are a separate gate."
+    },
+    {
+      "id": "transport_continuum",
+      "status": "PASS",
+      "mesh_summary": [
+        {
+          "electron_factor": 1,
+          "electron_nodes": [
+            630,
+            630
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 3.9462775850113324e-05,
+          "maximum_power_relative_error": 2.003174391530846e-05,
+          "precision_status": "PASS"
+        },
+        {
+          "electron_factor": 2,
+          "electron_nodes": [
+            1260,
+            1260
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 9.90866909291049e-06,
+          "maximum_power_relative_error": 5.017388097191844e-06,
+          "precision_status": "PASS"
+        },
+        {
+          "electron_factor": 4,
+          "electron_nodes": [
+            2520,
+            2520
+          ],
+          "state_mesh": "complementary_causal_count",
+          "maximum_RHS_relative_error": 2.4825285115234453e-06,
+          "maximum_power_relative_error": 1.255556308267725e-06,
+          "precision_status": "PASS"
+        }
+      ],
+      "reference_budget": 7.048293004533085e-16,
+      "detail": "Independent continuous-energy response and power on normal/gapped/gapless thermal and nonthermal profiles; not full coupled trajectories."
+    },
+    {
+      "id": "reaction_continuum_IR_001",
+      "status": "PASS_SEPARATED_ELECTRONIC_REFINEMENT",
+      "maximum_full_RHS_relative_errors": [
+        0.0002993707921886643,
+        0.00028280972923528974,
+        0.0002915110763925293
+      ],
+      "detail": "The archived combined errors remain nonmonotone. Independent matched-eta references and point-Bose comparisons separate fixed phonon interpolation, Pauli reconstruction, quadrature and regulator bias: all18 electronic series decrease over630/1260/2520. This historical check uses IR=.01; selected IR=.005 is separately verified at630.",
+      "separated_maximum_errors": [
+        0.000291333,
+        7.28419e-05,
+        2.18741e-05
+      ]
+    },
+    {
+      "id": "selected_phonon_interpolation",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "phonon_nodes": 1025,
+      "maxima": {
+        "power_relative_error": {
+          "field": "gapless",
+          "profile": "nonthermal",
+          "channel": "scattering",
+          "power_relative_error": 0.00024264039759069026
+        },
+        "gross_power_relative_error": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "gross_power_relative_error": 5.021333560485369e-05
+        },
+        "electronic_rhs_relative_L1": {
+          "field": "gapless",
+          "profile": "phonon_bubble",
+          "channel": "scattering",
+          "electronic_rhs_relative_L1": 5.0309504446311324e-05
+        },
+        "phonon_17_hats_relative_L1": {
+          "field": "depaired",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_17_hats_relative_L1": 0.00010211710014837729
+        },
+        "phonon_33_hats_relative_L1": {
+          "field": "gapped",
+          "profile": "phonon_bubble",
+          "channel": "recombination",
+          "phonon_33_hats_relative_L1": 0.00038832880884626504
+        }
+      },
+      "detail": "Same electronic representation, analytic populations evaluated at exact transition energy as the interpolation reference; not a full continuous-reaction or time check."
+    },
+    {
+      "id": "selected_collision_quadrature",
+      "status": "PASS_INTERNAL_REFINEMENT",
+      "maximum_electronic_RHS_relative_L1": 8.006813886207539e-07,
+      "detail": "630 electrons, 1025 phonons, IR=.005; inner orders2/3/4. Self-convergence does not replace an independent continuous reference."
+    },
+    {
+      "id": "selected_IR_0005_independent_reactions",
+      "status": "PASS_DECLARED_STATIC_CASES",
+      "detail": "Independent continuous reference at actual IR=.005 and630/1025 for all three registered fields/profiles; full static responses meet1e-3. No dynamic admission follows.",
+      "maximum_weak_electron_error": 0.00029703,
+      "maximum_power_error": 0.00073653,
+      "maximum_phonon_hat_error": 0.00038811
+    },
+    {
+      "id": "infrared_and_upper_support_static",
+      "status": "PASS_DECLARED_ANALYTIC_PROFILES_ONLY",
+      "detail": "Independent positive-cut omission and upper absorption bounds exist for nine analytic profiles. Actual selected coupled trajectories, external populations and arbitrary narrow distributions remain outside this result."
+    },
+    {
+      "id": "negative_controls",
+      "status": "PASS",
+      "detail": "Tests detect double condensate heat, omitted spectral work and a common incorrect collision factor."
+    },
+    {
+      "id": "smooth_RK4_suboperators",
+      "status": "PASS",
+      "detail": "BGK and escape exact exponential problems show fourth order; this cannot certify the full nonsmooth event system."
+    },
+    {
+      "id": "simultaneous_trajectories_and_time_convergence",
+      "status": "PARTIAL_SHORT_REFERENCE_PASS_FULL_DURATION_PENDING",
+      "detail": "User-run DOP853 complete on[0,.1]. RK4 10/20/40 matches at3 common times, max1.574710e-6 and reductions3.70/4.15. Full-duration one/two-cell time refinement remains pending."
+    },
+    {
+      "id": "dynamic_electron_phonon_resolution",
+      "status": "PENDING_COMPUTE",
+      "detail": "Three-grid full-trajectory electron and phonon population convergence remains unmeasured. Initial-state projection and static kernel refinement are insufficient."
+    },
+    {
+      "id": "selected_boundary_equilibrium_and_activity",
+      "status": "PENDING_COMPUTE",
+      "detail": "Repeat complete equilibrium, empty/sparse boundary, escape/heating, resolved-amplitude and channel-transfer checks on the selected 1025-phonon candidate with accepted time accuracy."
+    },
+    {
+      "id": "actual_trajectory_fields_and_support",
+      "status": "PASS_TWO_CELL_PILOT_FINAL_TRAJECTORIES_PENDING",
+      "detail": "Actual630/1025 TWO40 trajectory:22 field samples PASS; omitted absorption bound6.67e-10. Accepted time/grid trajectories still need their own checks."
+    },
+    {
+      "id": "final_regression_suite",
+      "status": "PASS",
+      "exit_code": 0,
+      "runtime_seconds": 47.09345739101991,
+      "source_hashes_unchanged": true,
+      "detail": "Fresh independent repository suite:509passed; source hashes unchanged.",
+      "evidence": "docs/implementation/stage2/resume_20260921/regression_result.json"
+    }
+  ],
+  "latest_review": {
+    "directory": "docs/implementation/stage2/closure_prep_20260922",
+    "status": "GUARDED_PROTOTYPE_TESTED_FULL_VALIDATION_PENDING",
+    "audit": {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_cell_audit.json",
+      "sha256": "373b64a37c66041b966922dfe5757a5d5d0443e916038baf0f664d20a574aacd",
+      "checks_passed": 98,
+      "checks_total": 98,
+      "scope": "Historical TWO temporal audit; not a complete stage2 or guarded-method audit.",
+      "new_postprocessing_checks": [
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_fields_20260922.json",
+          "sha256": "dd7c817586314b155c62f5c3f88c0110e1ed059e4b7b78b010b2a6fb16061133"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_support_20260922.json",
+          "sha256": "04a8eec24d491122e416da5a2597049140c5b7e8051de71237ac4963703436ec"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/special_summary.json",
+          "sha256": "411d873efb4da0999626c94722ba13cbf2eed60136fc1730da6cf9b024c067ea"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/special_raw/special_assessment.json",
+          "sha256": "8e1c52ab0fe787de5267a7c121f77f2903c37f8e4a5001da608b3f8d3c332f13"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/special_postprocessed/special_postprocess.json",
+          "sha256": "918958c8f5925c9352fe1823b183ce2641af645927a43e153d5d5cc61e8aba74"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_support_result.json",
+          "sha256": "4aacc098d0c78a426d462e94868dc5688446e3019acf78e08903d6ab10b51952"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_registration.json",
+          "sha256": "c32132e456d08c67a1249031faff5ce9c4e26703c4aca90c3882726aeab00736"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_result.json",
+          "sha256": "fc3b8930f532921e1c39604b0453036ee23cc7e40c67d9b3e15f0063d57f15b6"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/EQUILIBRIUM_SUPPORT_ENVELOPE.md",
+          "sha256": "bc573a47c770195a84368a2d4c278ec1fad276884bb47b5532f08a13c6b0c8a6"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/isolated_recovery/isolated_results.json",
+          "sha256": "f70bbdd8277e0acc448adc14034bf4d0bbe07df5fbba31f0d93531473e0c9a24"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_diagnosis.json",
+          "sha256": "a93ad12d2fc1ad72c59935f91c80c41d3be38d62fa03a8b368402962a52a39a1"
+        },
+        {
+          "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_order.json",
+          "sha256": "6316562ba12a7e5a72927a838e1a8b23456f19d6ed8b091877eef3b2821b08ec"
+        }
+      ]
+    },
+    "report_status": "VISUALLY_VERIFIED_FOUR_PAGES",
+    "global_stage2_closed": false,
+    "guarded_QA_status": "PASS_PROTOTYPE_ONLY",
+    "guarded_plan_status": "READY_FOR_USER_FOREGROUND_RUN",
+    "report": "output/pdf/implementation/Informe_validacion_dos_celdas_etapa_2_20260922.pdf"
+  },
+  "latest_evidence": [
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_cell_audit.json",
+      "sha256": "373b64a37c66041b966922dfe5757a5d5d0443e916038baf0f664d20a574aacd"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_fields_20260922.json",
+      "sha256": "dd7c817586314b155c62f5c3f88c0110e1ed059e4b7b78b010b2a6fb16061133"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_support_20260922.json",
+      "sha256": "04a8eec24d491122e416da5a2597049140c5b7e8051de71237ac4963703436ec"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_summary.json",
+      "sha256": "411d873efb4da0999626c94722ba13cbf2eed60136fc1730da6cf9b024c067ea"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_raw/special_assessment.json",
+      "sha256": "8e1c52ab0fe787de5267a7c121f77f2903c37f8e4a5001da608b3f8d3c332f13"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_postprocessed/special_postprocess.json",
+      "sha256": "918958c8f5925c9352fe1823b183ce2641af645927a43e153d5d5cc61e8aba74"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_support_result.json",
+      "sha256": "4aacc098d0c78a426d462e94868dc5688446e3019acf78e08903d6ab10b51952"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_registration.json",
+      "sha256": "c32132e456d08c67a1249031faff5ce9c4e26703c4aca90c3882726aeab00736"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_result.json",
+      "sha256": "fc3b8930f532921e1c39604b0453036ee23cc7e40c67d9b3e15f0063d57f15b6"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/EQUILIBRIUM_SUPPORT_ENVELOPE.md",
+      "sha256": "bc573a47c770195a84368a2d4c278ec1fad276884bb47b5532f08a13c6b0c8a6"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_recovery/isolated_results.json",
+      "sha256": "f70bbdd8277e0acc448adc14034bf4d0bbe07df5fbba31f0d93531473e0c9a24"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_diagnosis.json",
+      "sha256": "a93ad12d2fc1ad72c59935f91c80c41d3be38d62fa03a8b368402962a52a39a1"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_order.json",
+      "sha256": "6316562ba12a7e5a72927a838e1a8b23456f19d6ed8b091877eef3b2821b08ec"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/closure_status.json",
+      "sha256": "12cf7639cae5b3959604398e2cbf04582ede0f3289a25b3445fcd3353e444686"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/guarded_acceptance_plan.json",
+      "sha256": "0c5c953de3dc974dedf5ae963f0517d86dc568aedd74a0140998eb0b4e58a3b9"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_results.json",
+      "sha256": "b88e44067e8ba6879db105c61d9c831482e11a64f02654b6d2072f576f201f07"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_results.json",
+      "sha256": "0ce7a27d077cd1c4e23417ac600a134417779efeab96f450f02498947d359d79"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/guarded_independent_review.json",
+      "sha256": "1cea6f769b2eb410e46f2c413a8e89a9741e523bcbfb32bef8d455f6467029c4"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_inventory.json",
+      "sha256": "78618b26db8ae1449f5a59c2b14b293bb2622ace9fae4a12ff39c9d859b7a973"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/entrypoint_smoke/smoke_result.json",
+      "sha256": "21862d1eb5e4765778d03970c6b3a1477601f5e7e52d80482d041833b019aee1"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/report_visual_QA.json",
+      "sha256": "5307a8acf068ebbe19dcb006cde2b210deed379d23dcb50610be97884f4ca17b"
+    }
+  ],
+  "previous_checkpoint": {
+    "path": "docs/implementation/stage2/time_pass_20260922/admission_before_time_pass.json",
+    "sha256": "f23e064d07425360fe916415dfd872848a6c68f40282dbefc9f247f40b62d5fb"
+  },
+  "latest_audit": {
+    "path": "docs/implementation/stage2/closure_prep_20260922/two_cell_audit.json",
+    "sha256": "373b64a37c66041b966922dfe5757a5d5d0443e916038baf0f664d20a574aacd",
+    "checks_passed": 98,
+    "checks_total": 98,
+    "scope": "Historical TWO temporal audit; not a complete stage2 or guarded-method audit.",
+    "new_postprocessing_checks": [
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_fields_20260922.json",
+        "sha256": "dd7c817586314b155c62f5c3f88c0110e1ed059e4b7b78b010b2a6fb16061133"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_support_20260922.json",
+        "sha256": "04a8eec24d491122e416da5a2597049140c5b7e8051de71237ac4963703436ec"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/special_summary.json",
+        "sha256": "411d873efb4da0999626c94722ba13cbf2eed60136fc1730da6cf9b024c067ea"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/special_raw/special_assessment.json",
+        "sha256": "8e1c52ab0fe787de5267a7c121f77f2903c37f8e4a5001da608b3f8d3c332f13"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/special_postprocessed/special_postprocess.json",
+        "sha256": "918958c8f5925c9352fe1823b183ce2641af645927a43e153d5d5cc61e8aba74"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_support_result.json",
+        "sha256": "4aacc098d0c78a426d462e94868dc5688446e3019acf78e08903d6ab10b51952"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_registration.json",
+        "sha256": "c32132e456d08c67a1249031faff5ce9c4e26703c4aca90c3882726aeab00736"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_result.json",
+        "sha256": "fc3b8930f532921e1c39604b0453036ee23cc7e40c67d9b3e15f0063d57f15b6"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/EQUILIBRIUM_SUPPORT_ENVELOPE.md",
+        "sha256": "bc573a47c770195a84368a2d4c278ec1fad276884bb47b5532f08a13c6b0c8a6"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/isolated_recovery/isolated_results.json",
+        "sha256": "f70bbdd8277e0acc448adc14034bf4d0bbe07df5fbba31f0d93531473e0c9a24"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_diagnosis.json",
+        "sha256": "a93ad12d2fc1ad72c59935f91c80c41d3be38d62fa03a8b368402962a52a39a1"
+      },
+      {
+        "path": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_order.json",
+        "sha256": "6316562ba12a7e5a72927a838e1a8b23456f19d6ed8b091877eef3b2821b08ec"
+      }
+    ]
+  },
+  "historical_review_records": [
+    {
+      "audit": "docs/implementation/stage2/review_20260922/independent_audit.json",
+      "audit_sha256": "12a22514e231e091708889c7d52372af34fb2a5a55b8291f68b4dc09b0fac496",
+      "report": "output/pdf/implementation/Informe_revision_etapa_2_20260922.pdf",
+      "report_sha256": "97fa33e21a3c2ca12fabf07852d4fc0db37d73648a4837d178b27e47469f84fb",
+      "current_plan_sha256": "df121161d089f70d8d13a9fe988d28aacde470b9f7dbfad949e52f7f49a37637",
+      "physical_model_changed": false,
+      "thresholds_changed": false,
+      "final_report_eligible": false,
+      "report_scope": "Results review; no closure certificate."
+    },
+    {
+      "directory": "docs/implementation/stage2/time_pass_20260922",
+      "status": "ONE_CELL_TIME_ADMITTED_GLOBAL_STAGE2_PENDING",
+      "report": "output/pdf/implementation/Informe_resultados_temporales_etapa_2_20260922.pdf",
+      "audit": {
+        "path": "docs/implementation/stage2/time_pass_20260922/one_cell_audit.json",
+        "sha256": "e844117ea9894c1b57aec8bae1b9826c9386bb11c1d8e3fe649bfc244f21bba6",
+        "checks_passed": 85,
+        "checks_total": 85,
+        "new_postprocessing_checks": [
+          {
+            "path": "docs/implementation/stage2/time_pass_20260922/one_ssp_admitted_fields_20260922.json",
+            "sha256": "c30fca189c2440243af67d42a099d69669f8d76160396c09e2c66234e7a6da84"
+          },
+          {
+            "path": "docs/implementation/stage2/time_pass_20260922/one_ssp_admitted_support_20260922.json",
+            "sha256": "74220dc63f3e02f9d44a8e51211f3682798327a3c75ca424599e33fb76b73fde"
+          }
+        ]
+      },
+      "global_stage2_closed": false
+    }
+  ],
+  "stage3_preparation": {
+    "status": "PREPARADA_NO_INICIADA",
+    "entry_contract": "docs/implementation/stage3/entry_contract.json",
+    "blocked_by": "Global stage2 numerical admission remains false; historical SSP passes do not admit the guarded method."
+  },
+  "publication": {
+    "status": "CLOSURE_PUSH_WITHHELD",
+    "reason": "The user conditioned publication on global stage2 closure; guarded QA and mandatory validation remain pending. No production or stage3 promotion."
+  },
+  "checkpoint_history": [
+    {
+      "date": "2026-09-22",
+      "source_sha256": "14e258202b2d69c9c3c5190e31986cdd6037ba0f90e7a9477c1ebc4b3287bc2f",
+      "record_role": "Historical checkpoint before the completed TWO audit, special cases and subnormal-transport diagnosis. Its pending instructions are superseded.",
+      "snapshot": {
+        "status": "ONE_CELL_TIME_ADMITTED_GLOBAL_STAGE2_PENDING",
+        "recommendation": "Retain the admitted one-cell SSP trajectories. Run the registered two-cell temporal block manually before selecting full energy-mesh calculations. Stage3 is prepared, not started.",
+        "candidate": {
+          "electron_states": 630,
+          "phonon_nodes": 1025,
+          "infrared": 0.005,
+          "phonon_cutoff": 4.0,
+          "electron_mesh": "Complementary causal fixed-count quadrature; R2 vacuum and parent catalog unchanged",
+          "eta": 1e-08,
+          "reaction_layout": "resolved_panels",
+          "reaction_inner_order": 2,
+          "reaction_outer_order": 2,
+          "face_order": 2,
+          "scope": "Synthetic one/two cells; proposed configuration, not yet admitted"
+        },
+        "gates": [
+          {
+            "id": "retained_static_evidence",
+            "status": "RETAINED_SCOPED_PASSES",
+            "detail": "Prior static gates remain valid only in their declared scenarios; see previous_scoped_gates."
+          },
+          {
+            "id": "RK4_candidate_time_one",
+            "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
+            "finest_error": 6.143596723348075e-05,
+            "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
+          },
+          {
+            "id": "RK4_candidate_time_two",
+            "status": "PASS_CANDIDATE_RK4_TIME_ONLY",
+            "finest_error": 4.7399839355602646e-05,
+            "scope": "Fixed 630-electron/1025-phonon mesh, registered duration2 scenario only; no finer-grid or SSP inference."
+          },
+          {
+            "id": "RK4_candidate_activity",
+            "status": "PASS",
+            "detail": {
+              "preregistered_initial_excitation_energy": 0.387227852778307,
+              "initial_phonon_energy": 0.15378725161532888,
+              "scale": 0.5410151043936359,
+              "maximum_amplitude_change": 0.1990601306198202,
+              "eph_fraction": 0.0477977068670953,
+              "face_fraction": 0.11079467483925405,
+              "scope": "Measured from the time-converged candidate RK4 trajectory; dynamic mesh admission remains open.",
+              "passes": true
+            }
+          },
+          {
+            "id": "electronic_dynamic_mesh",
+            "status": "FAILED_REFINEMENT_INCOMPLETE_GATE",
+            "reason": "2520-state RK4 trajectory failed; no complete three-mesh comparison."
+          },
+          {
+            "id": "phonon_dynamic_mesh",
+            "status": "NOT_REACHED",
+            "reason": "2049/4097-node trajectories and three-grid assessment were not reached."
+          },
+          {
+            "id": "SSP_one_cell_temporal_admission",
+            "status": "PASS_ONE_CELL_SCOPE",
+            "admitted_measured_steps": [
+              160,
+              320,
+              640
+            ],
+            "reference_steps": 1280,
+            "maximum_error_by_steps": {
+              "160": 5.415702718006263e-05,
+              "320": 1.5699838897606807e-05,
+              "640": 3.7418095755529397e-06
+            },
+            "scope": "630 electrons,1025 phonons,duration2,isolated driven one-cell scenario; no fine-grid or two-cell inference.",
+            "all_event_limiters_inactive": true,
+            "evidence": "docs/implementation/stage2/time_pass_20260922/one_cell_audit.json"
+          },
+          {
+            "id": "SSP_two_cell_temporal_admission",
+            "status": "PENDING_USER_LONG_RUN",
+            "plan": "docs/implementation/stage2/time_pass_20260922/two_cell_time_plan.json"
+          },
+          {
+            "id": "SSP_fine_mesh_paired_diagnostic",
+            "status": "NOT_REACHED",
+            "reason": "No fine SSP trajectory or paired temporal diagnostic exists in this batch."
+          },
+          {
+            "id": "equilibrium_and_population_boundary_trajectories",
+            "status": "NOT_REACHED",
+            "reason": "Registered final equilibrium/vacuum/sparse trajectories were not reached; static inward-RHS tests are distinct."
+          },
+          {
+            "id": "actual_final_trajectory_fields_and_support",
+            "status": "PASS_ONE_CELL_PENDING_OTHER_TRAJECTORIES",
+            "reason": "SSP160 one cell checked at11 actual times; two-cell/fine-grid/equilibrium field and support gates remain pending.",
+            "one_cell_fields": {
+              "energy_relative_error": 1.25677413370158e-15,
+              "force_relative_error": 0.0,
+              "derivative_identity_scaled": 5.069684949621234e-11
+            },
+            "one_cell_support_bound": 9.280260789812186e-10
+          },
+          {
+            "id": "final_report_and_spatial_transition",
+            "status": "NOT_ADMITTED",
+            "reason": "The required numerical gates remain failed or missing."
+          }
+        ],
+        "computation_handoff": {
+          "mode": "USER_FOREGROUND_COMMAND",
+          "plan": "docs/implementation/stage2/time_pass_20260922/two_cell_time_plan.json",
+          "plan_sha256": "002ddc4d6e10f8993d71809912e6a53614b0104feed36359ae7cf4a86618b866",
+          "output_root": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922",
+          "expected_minutes": [
+            45,
+            65
+          ],
+          "threads": 1,
+          "memory_reservation_GiB": 2,
+          "memory_peak_measured": false,
+          "agent_executed": false,
+          "new_trajectories_this_review": 0,
+          "scope": "Two-cell temporal block only. Full remaining gate design is not yet an executable complete closure batch."
+        },
+        "latest_review": {
+          "directory": "docs/implementation/stage2/time_pass_20260922",
+          "status": "ONE_CELL_TIME_ADMITTED_GLOBAL_STAGE2_PENDING",
+          "report": "output/pdf/implementation/Informe_resultados_temporales_etapa_2_20260922.pdf",
+          "audit": {
+            "path": "docs/implementation/stage2/time_pass_20260922/one_cell_audit.json",
+            "sha256": "e844117ea9894c1b57aec8bae1b9826c9386bb11c1d8e3fe649bfc244f21bba6",
+            "checks_passed": 85,
+            "checks_total": 85,
+            "new_postprocessing_checks": [
+              {
+                "path": "docs/implementation/stage2/time_pass_20260922/one_ssp_admitted_fields_20260922.json",
+                "sha256": "c30fca189c2440243af67d42a099d69669f8d76160396c09e2c66234e7a6da84"
+              },
+              {
+                "path": "docs/implementation/stage2/time_pass_20260922/one_ssp_admitted_support_20260922.json",
+                "sha256": "74220dc63f3e02f9d44a8e51211f3682798327a3c75ca424599e33fb76b73fde"
+              }
+            ]
+          },
+          "global_stage2_closed": false
+        },
+        "latest_evidence": "docs/implementation/stage2/time_pass_20260922/one_cell_audit.json",
+        "latest_audit": {
+          "path": "docs/implementation/stage2/time_pass_20260922/one_cell_audit.json",
+          "sha256": "e844117ea9894c1b57aec8bae1b9826c9386bb11c1d8e3fe649bfc244f21bba6",
+          "checks_passed": 85,
+          "checks_total": 85,
+          "new_postprocessing_checks": [
+            {
+              "path": "docs/implementation/stage2/time_pass_20260922/one_ssp_admitted_fields_20260922.json",
+              "sha256": "c30fca189c2440243af67d42a099d69669f8d76160396c09e2c66234e7a6da84"
+            },
+            {
+              "path": "docs/implementation/stage2/time_pass_20260922/one_ssp_admitted_support_20260922.json",
+              "sha256": "74220dc63f3e02f9d44a8e51211f3682798327a3c75ca424599e33fb76b73fde"
+            }
+          ]
+        },
+        "publication": {
+          "status": "CLOSURE_PUSH_WITHHELD",
+          "reason": "User conditioned the closure push on all stage2 gates being in order; mandatory gates are still missing. Working evidence synchronized to Geminga."
+        }
+      }
+    }
+  ]
+}

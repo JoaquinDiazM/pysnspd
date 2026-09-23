@@ -1,0 +1,160 @@
+{
+  "schema": "pysnspd.stage3.entry_contract.draft.v1",
+  "date": "2026-09-22",
+  "status": "PREPARADA_NO_INICIADA",
+  "execution_status": "BLOCKED_BY_STAGE2_GLOBAL_ADMISSION",
+  "criteria_status": "BORRADOR_NO_CONGELADO",
+  "implementation_started": false,
+  "calculations_executed": false,
+  "numerical_admission": false,
+  "production_promotion": false,
+  "purpose": "Prepare D.4.3: a spatial experiment within the admitted domain, including boundaries and circuit, after global cell-stage acceptance.",
+  "continuous_contract": {
+    "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+    "sequence_item": "D.4.3",
+    "equations": [
+      "D.2",
+      "D.8-D.13",
+      "D.14-D.21",
+      "D.22-D.29",
+      "D.30-D.33",
+      "D.36"
+    ],
+    "effective_core_delta_over_Delta0": 0.1,
+    "document_modified_by_preparation": false
+  },
+  "current_stage2_snapshot": {
+    "historical_method": "ssprk3_common_flux_limited",
+    "one_cell_SSP_160_320_640_vs_1280": "PASS_TEMPORAL_SCOPE_ONLY_85_OF_85",
+    "two_cell_SSP_160_320_640_vs_1280": "PASS_TEMPORAL_SCOPE_ONLY_98_OF_98",
+    "temporal_evidence_paths": [
+      "docs/implementation/stage2/time_pass_20260922/one_cell_audit.json",
+      "docs/implementation/stage2/closure_prep_20260922/two_cell_audit.json"
+    ],
+    "special_cases": "PASS_REGISTERED_HISTORICAL_EQUILIBRIUM_VACUUM_SPARSE",
+    "fields_and_support": "PASS_REGISTERED_HISTORICAL_TRAJECTORY_CHECKPOINTS",
+    "equilibrium_absorption_support_relative_bound": 1.4390136299994193e-19,
+    "special_evidence_paths": [
+      "docs/implementation/stage2/closure_prep_20260922/special_summary.json",
+      "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_result.json"
+    ],
+    "isolated_transport": "HISTORICAL_SSP_REJECTED_SUBNORMAL_STAGE_NO_CLIPPING",
+    "isolated_transport_evidence": "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_diagnosis.json",
+    "proposed_guarded_method": "PASS_PROTOTYPE_SCOPE_ONLY_LONG_VALIDATION_PENDING",
+    "guarded_plan": "docs/implementation/stage2/closure_prep_20260922/guarded_acceptance_plan.json",
+    "guarded_plan_status": "READY_FOR_USER_FOREGROUND_RUN",
+    "global_admission_path": "docs/implementation/stage2/stage2_admission.json",
+    "global_numerical_admission": false,
+    "remaining": [
+      "Fresh registered ONE/TWO temporal and special-case validation of the selected guarded method",
+      "Dynamic electronic and phonon mesh convergence with paired temporal error control",
+      "Catalogue forces, field range and support checked on the final accepted method-specific trajectories",
+      "Updated global verdict linking all required gates and the accepted configuration"
+    ],
+    "scope_rule": "The live global verdict is authoritative. Historical method-specific passes are preserved and are not transferred automatically to the guarded map, a finer mesh or the spatial stage."
+  },
+  "entry_requirements": [
+    {
+      "id": "stage2_global_admission",
+      "mandatory": true,
+      "requires": "stage2_admission.json numerical_admission is true, declares closure of the required numerical cell scope, and has no missing, failed or incomplete mandatory gate.",
+      "status": "BLOCKED"
+    },
+    {
+      "id": "configuration_and_provenance",
+      "mandatory": true,
+      "requires": "Record the admitted integrator, count/phonon quadratures, supports and cutoffs, source and input hashes, material conventions, relaxation and escape parameters, references and scope exclusions.",
+      "status": "PENDING_STAGE2"
+    },
+    {
+      "id": "inherited_numerical_contract",
+      "mandatory": true,
+      "requires": "Retain cell-stage physical bounds, energy bookkeeping, conservative event geometry and independent consistency checks. Changed numerical representations require their own repeated relevant checks.",
+      "criteria_path": "docs/implementation/stage2/acceptance_criteria.json",
+      "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+      "status": "PENDING_STAGE2"
+    },
+    {
+      "id": "spatial_preregistration",
+      "mandatory": true,
+      "requires": "Review and freeze geometry, cell/boundary measures, scenarios, independent references, error scales, tolerances, support and stability policy, and runtime estimates before any spatial results.",
+      "status": "DRAFT_NOT_FROZEN"
+    }
+  ],
+  "preserved_inputs": {
+    "R2_catalogue": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "R2_catalogue_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "tag": "v1.0.0",
+    "material_scope": "Traceable synthetic Debye inputs may be used for numerical tests; NbN absolute rates and detector latency require separate material admission.",
+    "history": "Preserve failed methods and meshes. No clipping, hidden extrapolation, energy repair or removal of failed evidence."
+  },
+  "first_bounded_work": {
+    "status": "PROPOSED_BLOCKED_NOT_RUN",
+    "name": "Static discrete spatial energy, derivatives and admissibility",
+    "geometry": "Small synthetic one-dimensional strip; a one-dimensional pilot cannot certify every direction of a later two-dimensional geometry.",
+    "proposed_cell_counts": [
+      8,
+      16,
+      32
+    ],
+    "populations": "Frozen thermal and nonthermal occupations on the eventually admitted spectral representation",
+    "scenarios": [
+      "Uniform state",
+      "Weak amplitude gradient",
+      "Weak phase gradient",
+      "Nonthermal fixed occupations"
+    ],
+    "field_policy": "Choose fields in the intersection of catalogue support and certified positive principal-symbol domain; register them before evaluation.",
+    "discrete_definition": "Define cell/boundary measures and one discrete D.8 energy before deriving Cartesian forces and current. Check phase and vector-potential variations without adding a second GL current-depairing term.",
+    "reference": "Independent variation/linearization of the same selected continuous equations; comparison with a different microscopic spatial model is a separate physical-model test.",
+    "excludes": [
+      "Time trajectories",
+      "Collision integration",
+      "Photon injection",
+      "Circuit integration",
+      "Full detector simulation"
+    ],
+    "expected_outputs": [
+      "Frozen scenario registration",
+      "Per-case derivative errors",
+      "Principal-symbol margins and rejection cases",
+      "Three-grid errors",
+      "Source/input hashes and measured runtime"
+    ]
+  },
+  "draft_spatial_acceptance": {
+    "binding": false,
+    "must_freeze_before_results": true,
+    "error_scales": "Declare physical/dimensionless scales before the run; scaled error uses max(1, absolute reference) in those declared units. Also report relative errors when references do not vanish.",
+    "energy_derivative_and_cross_derivative_scaled_max": 1e-07,
+    "global_phase_invariance_scaled_max": 1e-10,
+    "spatial_operator_reference_relative_or_declared_scaled_max": 0.001,
+    "minimum_spatial_grid_levels": 3,
+    "refinement": "The last two errors decrease unless below a preregistered roundoff/reference floor; document independent reference uncertainty.",
+    "principal_symbol": "Certify lambda_min(M)>0 for directions in the declared geometry with numerical uncertainty smaller than the positive margin. Nonpositive or uncertifiable values reject the state; never clip rigidity.",
+    "mandatory_negative_control": {
+      "source": "D.3.2 / D.36",
+      "amplitude_over_Delta0": 0.6,
+      "q_times_ell0": 1.0,
+      "effective_delta_over_Delta0": 0.1,
+      "expected": "Reject the documented unstable state before time integration"
+    },
+    "later_stage3_gates_to_register": [
+      "Boundary/interface flux and reservoir work balances D.24-D.27",
+      "Charge conservation and electric work D.22",
+      "Circuit storage and global energy balance D.28-D.33",
+      "Independent spatial, temporal, spectral and catalogue-error convergence",
+      "Central-region independence under longer one-dimensional continuations",
+      "Principal-symbol and catalogue-support validity at all required trajectory checkpoints"
+    ]
+  },
+  "execution_policy": {
+    "account": "jdiaz non-administrator",
+    "uncertain_light_timeout_seconds": 240,
+    "never_launch_expected_runtime_over_seconds": 300,
+    "long_command_notebook": "/home/jdiaz/GEMINGA_COMMANDS.md",
+    "long_work": "Record purpose, exact command, fresh output path, estimated runtime and resources; wait for user execution. Do not retry or split a timed-out calculation to evade handoff.",
+    "prepared_spatial_launch_commands": []
+  },
+  "conclusion_limit": "Only preparation is complete. Stage3 implementation remains blocked; nucleus/distribution-closure validation belongs to D.4.4, full detector transients and any production decision to D.4.5."
+}

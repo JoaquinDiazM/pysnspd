@@ -34,6 +34,14 @@ def payload():
         'tests/test_experimental_refined_cells.py',
         'output/pdf/implementation/Informe_etapa_2_celdas_acopladas.pdf',
         'output/pdf/implementation/Informe_revision_etapa_2_20260922.pdf',
+        'output/pdf/implementation/Informe_resultados_temporales_etapa_2_20260922.pdf',
+        'output/pdf/implementation/Informe_validacion_dos_celdas_etapa_2_20260922.pdf',
+        'output/pdf/implementation/Informe_revision_criterios_y_circuito_20260922.pdf',
+        'output/pdf/implementation/Informe_cierre_etapa_2.pdf',
+        'docs/implementation/MODELO_VIGENTE.md',
+        'docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md',
+        'docs/implementation/stage3/README.md',
+        'docs/implementation/stage3/entry_contract.json',
     ) if (ROOT/p).is_file())
     return sorted(set(paths))
 

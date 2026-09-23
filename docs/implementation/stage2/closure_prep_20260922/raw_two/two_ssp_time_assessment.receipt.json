@@ -1,0 +1,40 @@
+{
+  "contract": {
+    "task": {
+      "id": "two_ssp_time_assessment",
+      "phase": "two_cell_time_diagnostic",
+      "kind": "limited_time",
+      "runs": [
+        "two_ssp_160",
+        "two_ssp_320",
+        "two_ssp_640"
+      ],
+      "reference": "two_ssp_1280",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/recovery_20260921/assess_limited_time.py",
+      "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_160.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_320.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_640.json",
+      "--reference",
+      "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_1280.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_time_assessment.json"
+    ],
+    "batch_manifest_sha256": "ae45b10d7bd9900212148d382b919e1601da9921a041fdd7d3469cf6057fc3d3",
+    "dependency_hashes": {
+      "two_ssp_160": "c49a7b787bc6d0f76f8d30ce2b5bc54af1cc4fafb27963a51b5d71a0271e970f",
+      "two_ssp_320": "1f6802787cba46876503522e77d9496a610ef29e832a297062239ed232bf7599",
+      "two_ssp_640": "5dc5821a86d314c76359a571c7cb33fa93021553a2022aeddd54661558043e0c",
+      "two_ssp_1280": "7c9be83e9c9ed0c75f252f095994cfdaa12b9241bf2e96798f0fb809383f2225"
+    }
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_time_assessment.json": "767aab6bb0e2106fb8291dd20ef3caa48e7bf47ce3a3b2faca1955435be8442c"
+  }
+}

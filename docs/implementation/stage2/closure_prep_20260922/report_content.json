@@ -1,0 +1,233 @@
+{
+  "title": "Etapa 2 - Validación de dos celdas y pruebas de cierre",
+  "subtitle": "Resultados y decisión de continuación | 22 de septiembre de 2026",
+  "pages": [
+    {
+      "title": "Dos celdas: tiempo validado",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "<b>El lote completó sus seis tareas y pasa 98 de 98 controles de auditoría.</b> Las resoluciones de 160, 320 y 640 pasos cumplen su propio criterio temporal frente a 1280. Los balances incluyen escape al baño y calentamiento externo una sola vez."
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              "Pasos",
+              "Error máximo",
+              "Defecto energético",
+              "Tiempo (min)"
+            ],
+            [
+              "160",
+              "4.063e-05",
+              "1.638e-08",
+              "3.26"
+            ],
+            [
+              "320",
+              "1.126e-05",
+              "2.033e-09",
+              "6.46"
+            ],
+            [
+              "640",
+              "2.819e-06",
+              "2.531e-10",
+              "12.92"
+            ],
+            [
+              "1280",
+              "Referencia",
+              "3.153e-11",
+              "25.87"
+            ]
+          ],
+          "widths": [
+            0.13,
+            0.28,
+            0.32,
+            0.27
+          ]
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage2/closure_prep_20260922/figures/two_time_convergence.png",
+          "caption": "Las curvas representan errores medidos, no resultados experimentales. Cada familia se compara con su propia referencia de 1280 pasos. La energía usa el criterio registrado de 1e-7."
+        },
+        {
+          "type": "body",
+          "text": "<b>Se eligen 320 pasos como base para comparar mallas.</b> La pareja 160/320 tiene un error de 4,78e-5 y excede el presupuesto suplementario de 2,5e-5. La pareja 320/640 queda en 1,24e-5 y sí pasa. Esto conserva la tolerancia general de 1e-4 y reserva precisión para distinguir el error de malla."
+        },
+        {
+          "type": "small",
+          "text": "Lote observado: 48,54 min, un hilo, 630 estados electrónicos y 1025 nodos fonónicos por celda. Intervalo t/t_ref = 0 a 2; escape 15 y fuente externa 0,01 en las unidades declaradas. El catálogo, las leyes físicas y el integrador que produjeron estos datos se preservan por hash."
+        }
+      ]
+    },
+    {
+      "title": "Intercambio entre celdas resuelto",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "Las dos amplitudes evolucionan desde estados distintos y el transporte redistribuye energía. El cambio de amplitud máximo es <b>0,199</b>, por encima del mínimo de 0,02. El intercambio electrónico-fonónico y el transporte también superan sus umbrales de actividad."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage2/closure_prep_20260922/figures/two_cell_dynamics.png",
+          "caption": "Líneas: referencia SSP1280; círculos superiores: SSP320. El panel de diferencias muestra la separación que oculta la superposición. El transporte es interno al sistema; la fuente y el escape intervienen en su balance externo."
+        },
+        {
+          "type": "body",
+          "text": "En SSP320, las transferencias equivalen al <b>4,78% y 11,08%</b> de la excitación inicial. Las ocupaciones son físicas, sin recortes ni reparación energética. Los controles de campos y soporte pasan en 22 muestras: identidad derivativa 5,39e-11 y cota de absorción fuera del soporte 6,66e-10."
+        },
+        {
+          "type": "small",
+          "text": "<b>El limitador no actuó en estas cuatro corridas.</b> Por ello, la validación temporal de la malla candidata no acredita todavía la trayectoria fina de 2520 estados, donde podría activarse. Los resultados corresponden a entradas Debye sintéticas; no predicen aún tasas absolutas de NbN ni un pulso de detector."
+        }
+      ]
+    },
+    {
+      "title": "Un fallo de redondeo, una corrección verificable",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "<b>El ensayo de transporte aislado rechazó correctamente una ocupación negativa.</b> Ocurrió al multiplicar y dividir números próximos al mínimo positivo de float64: el inventario se redondeó antes de calcular cuánto podía salir de un estado electrónico. El margen de seguridad dejó de protegerlo."
+        },
+        {
+          "type": "image",
+          "path": "docs/implementation/stage2/closure_prep_20260922/figures/guarded_rounding_and_escape.png",
+          "caption": "Izquierda: valores medidos en el electrón que provocó el rechazo. La corrección evalúa de nuevo esa misma etapa. Derecha: error del escape frente a la solución exponencial exacta; el mapa protegido reproduce bit a bit las tres trayectorias anteriores."
+        },
+        {
+          "type": "body",
+          "text": "La versión protegida conserva el mapa anterior en pasos ordinarios y usa <b>aritmética extendida en los inventarios, límites y actualizaciones</b> cuando se aproxima el subdesbordamiento. Mantiene un flujo común por evento. No cambia los kernels físicos, recorta poblaciones ni repara energía después del paso."
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              "Verificación de la corrección",
+              "Resultado medido"
+            ],
+            [
+              "Trayectoria ordinaria de 5 pasos, 630/1025",
+              "Idéntica bit a bit; 15 etapas delegadas"
+            ],
+            [
+              "Etapa antes rechazada",
+              "Pasa de -5q a +7q; sin clipping"
+            ],
+            [
+              "Transporte aislado completo, 20 pasos",
+              "Energía: 2,02e-15; conteo: 1,25e-15"
+            ],
+            [
+              "Activación de aritmética extendida",
+              "27 de 60 etapas de transporte"
+            ],
+            [
+              "Escape, 10/20/40 pasos",
+              "Reducciones de error 8,09 y 8,05"
+            ]
+          ],
+          "widths": [
+            0.57,
+            0.43
+          ]
+        },
+        {
+          "type": "small",
+          "text": "El redondeo final a float64 puede representar como cero un valor positivo menor que su rango; se registra expresamente y no se usa como reparación. La protección requiere que longdouble tenga rango y precisión superiores a float64: se verificó en Geminga y se rechazó explícitamente en este Windows."
+        },
+        {
+          "type": "small",
+          "text": "<b>Estos ensayos acreditan la corrección localizada, no su convergencia global.</b> Los PASS temporales de las páginas anteriores pertenecen al mapa histórico; no se transfieren automáticamente al nuevo."
+        }
+      ]
+    },
+    {
+      "title": "Comprobaciones adicionales y dictamen",
+      "blocks": [
+        {
+          "type": "body",
+          "text": "<b>La etapa 2 todavía no se puede cerrar.</b> Pasan las pruebas temporales recibidas y los controles especiales registrados. El fallo numérico adicional está localizado y corregido en un prototipo; falta acreditar sus trayectorias largas y mallas con una validación propia."
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              "Comprobación",
+              "Resultado",
+              "Alcance"
+            ],
+            [
+              "SSP histórico: tiempo",
+              "PASS ONE/TWO",
+              "85/85 y 98/98 controles"
+            ],
+            [
+              "Equilibrio y fronteras",
+              "PASS histórico",
+              "3 trayectorias; energía < 2e-9"
+            ],
+            [
+              "Campos y soporte",
+              "PASS en muestras",
+              "Cota equilibrio: 1,44e-19"
+            ],
+            [
+              "Transporte aislado histórico",
+              "FAIL preservado",
+              "Redondeo subnormal; no se acepta"
+            ],
+            [
+              "Corrección aritmética",
+              "PASS prototipo",
+              "14 controles y reacciones inversas"
+            ],
+            [
+              "Nueva convergencia y mallas",
+              "PENDIENTE",
+              "19 trayectorias nuevas; 35 tareas"
+            ],
+            [
+              "Entrada a etapa 3",
+              "BLOQUEADA",
+              "Preparación documental disponible"
+            ]
+          ],
+          "widths": [
+            0.27,
+            0.23,
+            0.5
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "Decisión para continuar"
+        },
+        {
+          "type": "body",
+          "text": "Ejecutar el nuevo lote completo con el integrador protegido. Repite equilibrio, fronteras y referencias temporales; después compara tres mallas fonónicas y tres electrónicas, con control temporal por pareja. Todas las tolerancias se conservan. El plan anterior de sólo mallas queda bloqueado para evitar validar una versión ya rechazada."
+        },
+        {
+          "type": "body",
+          "text": "Estimación del lote manual: <b>9 a 15 horas, un hilo y reserva de 12 GiB</b>. El coste de la rama extendida en la malla más fina y el pico de memoria no están medidos; puede tardar más. La orden única queda en /home/jdiaz/GEMINGA_COMMANDS.md. No se lanzó ese cálculo."
+        },
+        {
+          "type": "subheading",
+          "text": "Estado de entrega"
+        },
+        {
+          "type": "small",
+          "text": "La etapa 2 permanece sin admisión global mientras falte una prueba obligatoria. El push de cierre sigue condicionado a esa admisión; la etapa 3 está preparada y no implementada. Los datos, diagnósticos y comandos se sincronizan con Geminga."
+        },
+        {
+          "type": "small",
+          "text": "Trazabilidad: closure_prep_20260922/two_cell_audit.json, closure_status.json y sus evidencias; criterio fijo stage2/acceptance_criteria.json; estado global stage2/stage2_admission.json. Los archivos fallidos y los informes anteriores se conservan."
+        }
+      ]
+    }
+  ]
+}

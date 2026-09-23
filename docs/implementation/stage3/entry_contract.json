@@ -1,0 +1,327 @@
+{
+  "schema": "pysnspd.stage3.entry_contract.draft.v3",
+  "date": "2026-09-22",
+  "status": "PREPARADA_NO_INICIADA",
+  "execution_status": "PREPARED_FOR_LATER_IMPLEMENTATION_WITH_SCOPE_SPECIFIC_REGISTRATION",
+  "criteria_status": "PROPOSALS_TO_REGISTER_BEFORE_EACH_NEW_EXPERIMENT",
+  "implementation_started": false,
+  "calculations_executed": false,
+  "numerical_admission": false,
+  "production_promotion": false,
+  "purpose": "Prepare D.4.3 after user-authorized development closure of stage2: static spatial energy, physical boundaries/reservoirs, charge conservation/potential, the thesis three-state circuit, then weak dynamics and localized synthetic deposition. No stage3 implementation or calculation in this delivery.",
+  "continuous_contract": {
+    "path": "docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md",
+    "sequence_item": "D.4.3",
+    "equations": [
+      "D.2",
+      "D.8-D.13",
+      "D.14-D.21",
+      "D.22-D.29",
+      "D.30-D.33",
+      "D.36"
+    ],
+    "effective_core_delta_over_Delta0": 0.1,
+    "document_modified_by_preparation": false,
+    "circuit_override": {
+      "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+      "equations": [
+        "CM.1-CM.11"
+      ],
+      "supersedes": [
+        "C.32-C.34",
+        "D.28-D.29",
+        "D.33",
+        "circuit initialization in D.30",
+        "I becomes Is in D.26-D.27"
+      ],
+      "implementation_started": false,
+      "topology": "Thesis4.16 voltage bias, Rbias/Lbias, detector branch, coupling capacitor and readout load.",
+      "state": [
+        "Ib",
+        "Is",
+        "vc"
+      ],
+      "sha256": "abd65bad241de5873b497baad90195b7cafa936c01468675cabe31c3f38ed3e5",
+      "passive_convention": "For left-to-right total detector current Is, Vdev=phi_L-phi_R; Is*Vdev enters the resolved-domain energy. Transform historical current and voltage signs together per CM.5.",
+      "inductance_partition": "The series Lk,ext represents only unresolved exterior storage. Historical10nH is a total reference; identify a positive exterior partition before a coupled run and do not subtract a time-varying hotspot inductance.",
+      "full_balance": "CM.9, including source Vbias*Ib, bias/load resistor losses, capacitor and both exterior inductive stores, escape and reservoir flux/work."
+    }
+  },
+  "current_stage2_snapshot": {
+    "global_record_path": "docs/implementation/stage2/stage2_admission.json",
+    "development_closure": "USER_AUTHORIZED_WITH_CURRENT_EVIDENCE",
+    "strict_dynamic_mesh_certificate": "INCOMPLETE",
+    "strict_numerical_admission": false,
+    "candidate": "630 complementary electronic states,1025 phonon nodes,guarded SSP method in its recorded scenarios",
+    "completed_guarded_tasks": 21,
+    "completed_guarded_trajectories": 13,
+    "guarded_ONE_TWO_time": "PASS_REGISTERED_CANDIDATE_GRID_ONLY",
+    "guarded_special_cases": "PASS_REGISTERED_SPECIAL_CASES",
+    "audit_path": "docs/implementation/stage2/practical_review_20260922/saved_results_audit.json",
+    "time_evidence_paths": [
+      "docs/implementation/stage2/practical_review_20260922/raw/one_guarded_time_assessment.json",
+      "docs/implementation/stage2/practical_review_20260922/raw/two_guarded_time_assessment.json"
+    ],
+    "failed_pair": {
+      "path": "docs/implementation/stage2/practical_review_20260922/raw/two_guarded_ph2049_pair_320_640.json",
+      "status": "FAIL_PAIR_DIAGNOSTIC",
+      "difference": 4.565195781058689e-05,
+      "original_auxiliary_budget": 2.5e-05,
+      "old_tolerance_changed": false
+    },
+    "unresolved": "Three-mesh dynamic certification and all final configuration-specific checks not reached by the interrupted batch remain incomplete. No automatic full-batch restart.",
+    "scope_rule": "Development closure enables the next registered work, not a universal numerical certificate. Scoped passes, failures and uncertainty are retained; stage3 must assess the quantities it actually uses.",
+    "field_scope": {
+      "driven_gamma": "Fixed Gamma=0",
+      "two_cell_equilibrium_gamma": [
+        0.0,
+        0.1
+      ],
+      "equilibrium_gamma_evolves": false,
+      "absent_sectors": [
+        "Phase dynamics",
+        "Scalar-potential solve",
+        "Spatial functional",
+        "Circuit"
+      ],
+      "limitation": "Amplitude-motion energy bookkeeping does not certify spectral work from varying Gamma(q) or electrical port work."
+    }
+  },
+  "entry_requirements": [
+    {
+      "id": "development_scope",
+      "mandatory": true,
+      "requires": "Use the user-authorized development closure and preserve the incomplete stage2 numerical certificate as an explicit limitation. Do not require its boolean numerical_admission as a global workflow gate.",
+      "status": "SATISFIED_FOR_PREPARATION_IMPLEMENTATION_LATER"
+    },
+    {
+      "id": "configuration_and_provenance",
+      "mandatory": true,
+      "requires": "Before each experiment, record geometry, field/population representation, units, support, source/input hashes, parameters, initial and boundary conditions, references and exclusions.",
+      "status": "TO_REGISTER_PER_EXPERIMENT"
+    },
+    {
+      "id": "physical_consistency",
+      "mandatory": true,
+      "requires": "Same energy for forces/current; passive electrical ports; physical occupations and finite states; conservative exchange without clipping, extrapolation or energy repair; admit spatial evolution only where D.36 is certified.",
+      "status": "APPLICABLE_CONTROLS_BEFORE_CLAIMS",
+      "prior_criteria_path": "docs/implementation/stage2/acceptance_criteria.json",
+      "prior_criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+      "prior_criteria_scope": "Preserve previous verdicts under their original thresholds. Their complete numerical campaign is not a universal prerequisite for every new static or exploratory experiment."
+    },
+    {
+      "id": "observable_accuracy_registration",
+      "mandatory": true,
+      "requires": "Define the physical difference to distinguish, observable scales/norms, reference uncertainty and applicable spatial/temporal/spectral error budgets before results. Quantitative acceptance is scoped to those observables.",
+      "status": "PROPOSAL_NOT_FROZEN"
+    },
+    {
+      "id": "cost_and_scope",
+      "mandatory": true,
+      "requires": "Estimate pilot cost before launch; no expected computation over5minutes by the agent. This delivery prepares only, with no stage3 implementation or launch.",
+      "status": "PREPARATION_ONLY"
+    }
+  ],
+  "preserved_inputs": {
+    "R2_catalogue": "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz",
+    "R2_catalogue_sha256": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "tag": "v1.0.0",
+    "material_scope": "Traceable synthetic Debye inputs may be used for numerical tests; NbN absolute rates and detector latency require separate material admission.",
+    "history": "Preserve failed methods and meshes. No clipping, hidden extrapolation, energy repair or removal of failed evidence."
+  },
+  "first_bounded_work": {
+    "status": "PREPARED_NOT_IMPLEMENTED_NOT_RUN",
+    "name": "Static discrete spatial energy, Cartesian derivatives, current and spatial admissibility",
+    "geometry": {
+      "type": "One-dimensional longitudinal diagnostic strip with uniform cross-section",
+      "length_m": 3.6e-07,
+      "width_m": 1.2e-07,
+      "thickness_m": 7e-09,
+      "provenance": "Dimensions of the resolved thesis reference segment; the1D diagnostic reduction and periodic closure are new proposals, not a reproduction of physical device boundaries.",
+      "proposed_cell_counts": [
+        8,
+        16,
+        32
+      ],
+      "registration_status": "PROPOSED_TO_FREEZE_BEFORE_RUN"
+    },
+    "boundary_conditions": {
+      "diagnostic": "Periodic amplitude and populations with prescribed phase twist Delta(L)=exp(i*q0*L)*Delta(0); begin q0=0, then registered weak q0 within certified support.",
+      "physical_device_boundaries": false,
+      "replacement": "Step3B replaces this diagnostic closure with open terminals/reservoirs, continuations, insulating walls and2D-1D interfaces."
+    },
+    "populations": "Prepare thermal and nonthermal bounded populations, then hold fixed state occupations in variations of the internal energy. Any fixed-temperature free-energy check is a separately identified derivative.",
+    "scenarios": [
+      "Uniform reference state",
+      "Smooth amplitude modulation at fixed physical wavelength",
+      "Smooth phase modulation at fixed physical wavelength",
+      "Registered bounded nonthermal population",
+      "Admitted phase-flow variations that explicitly change Gamma=hbar*D*|q_delta|^2/2"
+    ],
+    "to_fix_before_run": [
+      "Background amplitude",
+      "Amplitude and phase modulation sizes",
+      "q0 values",
+      "Preparation temperature and population profiles",
+      "Spectral representation and support",
+      "Independent references and their uncertainty",
+      "Observable error scales and numerical budgets",
+      "Runtime estimate"
+    ],
+    "observables": [
+      "Discrete total energy",
+      "Cartesian forces",
+      "Face current",
+      "Independent variation errors",
+      "Global-phase/gauge convention checks",
+      "Minimum principal-symbol eigenvalue and uncertainty",
+      "Current conjugate to phase/field variations of the complete spatial energy, including gradient terms and spectral Gamma dependence"
+    ],
+    "reference": "Uniform R2 limit plus independent variation/linearization of the same continuous functional; distinguish spectral/table error from spatial error. A1D result cannot certify every direction of2D.",
+    "excludes": [
+      "Time integration",
+      "Collision integration",
+      "Photon deposition",
+      "Circuit dynamics",
+      "Detector pulse/threshold/latency inference"
+    ],
+    "expected_outputs": [
+      "Frozen experiment registration",
+      "Per-case and per-mesh errors",
+      "Admitted sampled domain and retained rejection cases",
+      "Plots of the registered responses",
+      "Source/input hashes and measured runtime",
+      "Decision on proceeding to physical-boundary step3B"
+    ]
+  },
+  "draft_spatial_acceptance": {
+    "binding": false,
+    "numeric_thresholds_frozen": false,
+    "must_register_before_results": true,
+    "policy": "Choose precision prospectively from the physical difference and observable to resolve, with reference uncertainty and relevant spatial/time/spectral/table contributions. Do not choose a new threshold merely to pass prior failed data.",
+    "budget_values": {
+      "static_energy_force_current": null,
+      "boundary_flux_and_work": null,
+      "electrical_continuity_and_port_power": null,
+      "circuit_time_exchange": null,
+      "dynamic_observables": null
+    },
+    "error_scales": "Record units, absolute scales near zero, relative errors where meaningful and the denominator before evaluation. Avoid hiding exchange errors behind a large background energy.",
+    "algebraic_checks": "Use independent algebra/derivatives and differentiation-step checks at precision sufficient to detect sign/factor/duplicate-energy errors; do not equate numerical identities with device accuracy.",
+    "proposed_initial_spatial_grid_levels": 3,
+    "refinement": "Compare the same physical profile on the proposed grids. Explain observed error changes using discretization and reference uncertainty; extend only if needed to resolve the registered decision.",
+    "principal_symbol": "Require a certified positive minimum eigenvalue for evolution in the declared geometry, with uncertainty smaller than its margin. Nonpositive or uncertifiable values reject that state; no rigidity clipping.",
+    "mandatory_negative_control": {
+      "source": "D.3.2 / D.36",
+      "amplitude_over_Delta0": 0.6,
+      "q_times_ell0": 1.0,
+      "effective_delta_over_Delta0": 0.1,
+      "expected": "Identify the documented spatially unstable state and reject it for evolution; retain its diagnostic result."
+    },
+    "failed_precision_policy": "Preserve the failure and quantify its effect on the intended conclusion; do not automatically stop work independent of that observable. Structural physical/domain failures stop the affected calculation.",
+    "stage2_benchmark_warning": "320steps over normalized time0-2 describes the stage2 benchmark only; it does not fix the spatial PDE timestep or circuit coupling interval.",
+    "varying_flow_requirement": "Register an admitted varying-Gamma(q_delta) test with fixed occupations, full-energy forces/current and spectral work. The prior fixed-Gamma amplitude test does not satisfy this check."
+  },
+  "execution_policy": {
+    "account": "jdiaz non-administrator",
+    "uncertain_light_timeout_seconds": 240,
+    "never_launch_expected_runtime_over_seconds": 300,
+    "long_command_notebook": "/home/jdiaz/GEMINGA_COMMANDS.md",
+    "long_work": "Record purpose, exact command, fresh output path, estimated runtime and resources; wait for user execution. Do not retry or split a timed-out calculation to evade handoff.",
+    "prepared_spatial_launch_commands": []
+  },
+  "conclusion_limit": "Development handoff is prepared after scoped stage2 closure. No stage3 code or calculation in this delivery; no unmeasured mesh PASS, absolute NbN prediction, detector threshold/latency or production admission. Effective-core validation belongs to D.4.4; complete detector transients and production decisions to D.4.5.",
+  "static_stage3a_scope": {
+    "allowed_scope": "Small static spatial energy, Cartesian derivatives and current at fixed physical populations.",
+    "requires_complete_dynamic_stage2_mesh_certificate": false,
+    "prerequisites": [
+      "Own experiment registration",
+      "Applicable energy/force/current support checks",
+      "D.36 on tested states",
+      "Independent derivative/current comparison"
+    ],
+    "implementation_started": false,
+    "physical_terminals_in_first_diagnostic": false,
+    "physical_terminals_required_in_final_stage3_experiment": true
+  },
+  "development_entry": {
+    "status": "AUTHORIZED_BY_USER_SCOPE_DECISION",
+    "stage2_development_closed": true,
+    "stage2_strict_dynamic_mesh_certificate": "INCOMPLETE_NOT_PASS",
+    "requires_stage2_numerical_admission_true_as_global_gate": false,
+    "does_not_infer": [
+      "Unmeasured mesh convergence",
+      "PASS for the historical failed supplementary pair",
+      "Physical fidelity of the effective core",
+      "Absolute NbN material rates or latency",
+      "Production admission"
+    ],
+    "continuation_rule": "Implement later in the sequence below, with prospective experiment-specific registration and relevant checks. A structural defect stops the affected calculation; insufficient precision keeps its verdict and limits the claim without automatically blocking unrelated work.",
+    "authorizing_decision": "docs/implementation/stage2/closure_20260922/closure_decision.json"
+  },
+  "implementation_sequence": [
+    {
+      "id": "3A",
+      "name": "Funcional espacial estático",
+      "work": "Derive Cartesian forces and current from the same discrete energy on the small fixed-population strip. Check uniform and weak-gradient limits, support and D.36.",
+      "acceptance_scope": "Static sampled configurations only; compare registered observables with independent references.",
+      "status": "PREPARED_NOT_STARTED"
+    },
+    {
+      "id": "3B",
+      "name": "Bordes, interfaces y reservorios",
+      "depends_on": [
+        "3A"
+      ],
+      "work": "Use insulating walls,2D-1D matching and remote reservoirs from D.24-D.27. Begin at zero current and then weak admitted current; explicitly account for face measures, electronic flux and reservoir work.",
+      "observables": [
+        "Interface flux mismatch",
+        "Boundary work balance",
+        "Change in central observables as continuations grow"
+      ],
+      "status": "PREPARED_NOT_STARTED"
+    },
+    {
+      "id": "3C",
+      "name": "Conservación de carga y potencial",
+      "depends_on": [
+        "3B"
+      ],
+      "work": "Solve D.22 with the same superconducting current and normal current, declared passive terminal signs and one potential reference. No extra charge-accumulation dynamics. Check a controlled varying-flow path at fixed occupations: spectral-level work from Gamma(q_delta) and full-functional forces/current must reproduce its energy change; this is a new spatial/electrical check, not a repeated stage2 run.",
+      "observables": [
+        "Current continuity",
+        "Uniform/normal limits",
+        "Volume versus port electrical work",
+        "Energy change versus spectral and full-functional work on a controlled varying-Gamma path"
+      ],
+      "status": "PREPARED_NOT_STARTED"
+    },
+    {
+      "id": "3D",
+      "name": "Circuito de la memoria de tres estados",
+      "depends_on": [
+        "3C"
+      ],
+      "work": "Couple CM.4 for Ib,Is,vc after identifying the positive exterior inductance and passive Vdev. Check CM.10 fixed point, prescribed-input reference, CM.8-CM.9 and temporal resolution of the field/circuit exchange.",
+      "reuse_reference": "docs/implementation/stage2/practical_review_20260922/circuit_diagnostic.json",
+      "reference_scope": "Synthetic prescribed-resistance circuit diagnostic; not a resolved detector transient or identification of the thesis total10nH partition.",
+      "status": "PREPARED_NOT_STARTED"
+    },
+    {
+      "id": "3E",
+      "name": "Dinámica débil y depósito local",
+      "depends_on": [
+        "3D"
+      ],
+      "work": "Begin with a small perturbation without photon, then register a localized D.30/CM.11 deposition within supported and spatially admissible states. Assess observable-specific spatial/time/spectral uncertainty and all energy exchanges.",
+      "observables": [
+        "Condensate amplitude response",
+        "Energy transfer",
+        "Detector current",
+        "Device/node/capacitor/load voltages at common physical times"
+      ],
+      "scope": "Exploratory trajectories and their registered numerical accuracy; no automatic material, detection or production admission.",
+      "status": "PREPARED_NOT_STARTED"
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "schema": "pysnspd.stage2.guarded-prototype-results.v1",
+  "status": "PASS_GUARDED_PROTOTYPE_ONLY_NOT_GLOBALLY_ADMITTED",
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_checks.py": "3dcc1060bda63382eaca9152a8abe48dc4d51618809229ec9b667f046333cc74",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_guarded_validation.py": "19ba14d048a2e899394ae7c2ae3be78a722868c7ae9dfbdc43d1dadd7bdda068",
+    "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4",
+    "sandbox/stage2_cells/recovery_20260921/test_limited_ssp.py": "adddfe53a466a206d834d254f6a87e37b32ed4f02c71c747ae571061bd61cec8"
+  },
+  "registration_sha256": "0100a0b8c73a219f5553bdaa360f0c36d8f8c6d8970a6dbf696ccc67a8f85074",
+  "capability": {
+    "extended": true,
+    "longdouble_bits": 128,
+    "longdouble_mantissa_bits": 63,
+    "longdouble_min_exponent": -16382,
+    "trigger_inventory": "2.2784756311113742163e-305"
+  },
+  "checks": {
+    "normal_full_trajectory_bytewise": true,
+    "normal_branch_delegates_all_stages": true,
+    "subnormal_inventory_not_rounded_before_budget": true,
+    "zero_inventory_blocks_outflow": true,
+    "subnormal_phonon_inventory_selects_fallback": true,
+    "competing_reaction_face_support": true,
+    "competing_reaction_face_energy": true,
+    "competing_reaction_face_common_limiter_active": true,
+    "previous_rejected_stage_physical": true,
+    "previous_rejected_stage_uses_extended": true,
+    "transport_complete_registered_case": true,
+    "transport_extended_branch_exercised": true,
+    "escape_all_stored_states_bytewise": true,
+    "escape_third_order": true
+  },
+  "evidence": {
+    "normal": {
+      "runtime_seconds": 6.027444161940366,
+      "stats": {
+        "method": "experimental conservative-event-limited SSPRK3 with subnormal arithmetic guard",
+        "safety": 0.9,
+        "status": "COMPLETED_REQUIRES_CONVERGENCE_ASSESSMENT",
+        "notes": [
+          "Physical kernels unchanged; common event extents preserve frozen-field invariants.",
+          "Formal SSPRK3 order holds only where limiter is inactive and the RHS is sufficiently smooth.",
+          "Moving-condensate ledger and temporal convergence require independent measurement.",
+          "Event/flux defects are numerical modifications, not hidden energy corrections."
+        ],
+        "guarded_delegated_steps": 15,
+        "forward_euler_stages": 15,
+        "integrated_external_input": 0.0,
+        "integrated_condensate_heat": 0.0009451794660251947,
+        "event_evaluations": 14735572,
+        "limited_event_evaluations": 0,
+        "reaction_limited_evaluations": 0,
+        "minimum_event_factor": 1.0,
+        "integrated_absolute_extent_defect": 0.0,
+        "integrated_energy_weighted_flux_defect": 0.0,
+        "integrated_absolute_raw_extent": 0.00026965950538906415,
+        "completed_steps": 5,
+        "guarded_extended_steps": 0,
+        "guarded_positive_values_rounded_to_zero": 0,
+        "guarded_extent_defect_longdouble": "0",
+        "guarded_energy_flux_defect_longdouble": "0",
+        "guarded_minimum_event_factor_longdouble": "1",
+        "guarded_prototype": true,
+        "guarded_capability": {
+          "extended": true,
+          "longdouble_bits": 128,
+          "longdouble_mantissa_bits": 63,
+          "longdouble_min_exponent": -16382,
+          "trigger_inventory": "2.2784756311113742163e-305"
+        },
+        "guarded_scope": "Subnormal-inventory correction prototype; requires renewed time/mesh validation unless trajectory equivalence is measured."
+      },
+      "max_state_difference": 0.0
+    },
+    "subnormal_scalar": {
+      "initial": "3.4584595208887258092e-322",
+      "exact_inventory": "1.3833838083554903525e-323",
+      "common_factor": "2.0150651634837121735e-10",
+      "updated": "3.4584595208887250413e-323",
+      "cast": 3.5e-323
+    },
+    "competing_channels": {
+      "stats": {
+        "forward_euler_stages": 1,
+        "integrated_external_input": 0.0,
+        "integrated_condensate_heat": 0.0,
+        "event_evaluations": 522,
+        "limited_event_evaluations": 254,
+        "reaction_limited_evaluations": 248,
+        "minimum_event_factor": 6.4370215e-316,
+        "integrated_absolute_extent_defect": 180.49906119556465,
+        "integrated_energy_weighted_flux_defect": 111.26612460730986,
+        "integrated_absolute_raw_extent": 181.17966188075144,
+        "guarded_extent_defect_longdouble": "180.49906119556464032",
+        "guarded_energy_flux_defect_longdouble": "111.26612460730985964",
+        "guarded_minimum_event_factor_longdouble": "6.4370215038314383353e-316",
+        "transport_limited_evaluations": 6,
+        "guarded_extended_steps": 1,
+        "guarded_positive_values_rounded_to_zero": 1
+      },
+      "energy_difference": 0.0
+    },
+    "previous_rejected_stage": {
+      "stats": {
+        "forward_euler_stages": 1,
+        "integrated_external_input": 0.0,
+        "integrated_condensate_heat": 0.0,
+        "event_evaluations": 2514,
+        "limited_event_evaluations": 175,
+        "reaction_limited_evaluations": 0,
+        "minimum_event_factor": 1.3768154582051947e-25,
+        "integrated_absolute_extent_defect": 1.7430388441688222e-07,
+        "integrated_energy_weighted_flux_defect": 2.3598314563544353e-07,
+        "integrated_absolute_raw_extent": 0.0002905678785403403,
+        "guarded_extent_defect_longdouble": "1.7430388441688221812e-07",
+        "guarded_energy_flux_defect_longdouble": "2.3598314563544353135e-07",
+        "transport_limited_evaluations": 175,
+        "guarded_minimum_event_factor_longdouble": "1.3768154582051947047e-25",
+        "guarded_extended_steps": 1,
+        "guarded_positive_values_rounded_to_zero": 3
+      },
+      "witness_old_value": -2.5e-323,
+      "witness_guarded_value": 3.5e-323,
+      "energy_change": 4.440892098500626e-16
+    },
+    "transport": {
+      "energy_error": 2.016820747591559e-15,
+      "count_error": 1.2490009027033007e-15,
+      "stats": {
+        "method": "experimental conservative-event-limited SSPRK3 with subnormal arithmetic guard",
+        "safety": 0.9,
+        "status": "COMPLETED_REQUIRES_CONVERGENCE_ASSESSMENT",
+        "notes": [
+          "Physical kernels unchanged; common event extents preserve frozen-field invariants.",
+          "Formal SSPRK3 order holds only where limiter is inactive and the RHS is sufficiently smooth.",
+          "Moving-condensate ledger and temporal convergence require independent measurement.",
+          "Event/flux defects are numerical modifications, not hidden energy corrections."
+        ],
+        "guarded_delegated_steps": 33,
+        "forward_euler_stages": 60,
+        "integrated_external_input": 0.0,
+        "integrated_condensate_heat": 0.0,
+        "event_evaluations": 150840,
+        "limited_event_evaluations": 7276,
+        "reaction_limited_evaluations": 0,
+        "minimum_event_factor": 9.470896669966512e-27,
+        "integrated_absolute_extent_defect": 3.857734437538034e-06,
+        "integrated_energy_weighted_flux_defect": 5.189930364983805e-06,
+        "integrated_absolute_raw_extent": 0.005824791407347236,
+        "transport_limited_evaluations": 7276,
+        "completed_steps": 20,
+        "guarded_extent_defect_longdouble": "1.7388907839821362766e-06",
+        "guarded_energy_flux_defect_longdouble": "2.374361695191005982e-06",
+        "guarded_minimum_event_factor_longdouble": "9.470896669966511532e-27",
+        "guarded_extended_steps": 27,
+        "guarded_positive_values_rounded_to_zero": 77,
+        "guarded_prototype": true,
+        "guarded_capability": {
+          "extended": true,
+          "longdouble_bits": 128,
+          "longdouble_mantissa_bits": 63,
+          "longdouble_min_exponent": -16382,
+          "trigger_inventory": "2.2784756311113742163e-305"
+        },
+        "guarded_scope": "Subnormal-inventory correction prototype; requires renewed time/mesh validation unless trajectory equivalence is measured."
+      },
+      "runtime_seconds": 0.12025623861700296
+    },
+    "escape": {
+      "errors_capacity_L1": [
+        9.14918571816782e-09,
+        1.1306432676199816e-09,
+        1.405248724648418e-10
+      ],
+      "reductions": [
+        8.092018039807527,
+        8.045858699518547
+      ],
+      "bytewise_by_steps": [
+        true,
+        true,
+        true
+      ]
+    }
+  },
+  "runtime_seconds": 6.654577289242297
+}

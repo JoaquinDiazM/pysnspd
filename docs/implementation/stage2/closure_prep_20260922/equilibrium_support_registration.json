@@ -1,0 +1,44 @@
+{
+  "schema": "pysnspd.stage2.equilibrium-support-registration.v1",
+  "trajectory_sha256": "9d50dc26eb1d5b9be247ea053fa31d999b3bc960b4bdbfd9377ca0f94754ccb7",
+  "archive_sha256": "ce35cdde1153f239a6198f83e5317bef09265c598f48a6a8b9af7d7332834173",
+  "source_hashes": {
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": "a291cc5999b2a2060bd96b2539987cd19f4b584bfa7c644fb7030edd54312364",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/closure_prep_20260922/equilibrium_support.py": "3fbce7a1cf6357cebd5d0b1d46364b91da825a278d55d97cf8c40ed872053f5a",
+    "docs/implementation/stage2/review/continuous_reactions.py": "fb333f72889d163571f4889c9970d0b0b9760ea96383a9ead4c737986e75a5ac",
+    "docs/implementation/stage1_r2/review/causal_reference.py": "8e0324a87b5278df3ac2b976480fcbdf2f696bfb63a9b66c8dfa17f7e71516b1",
+    "docs/implementation/stage1_r2/review/gamma_zero_reference.py": "8e2ed0759f854c774770d80ec22d033495c37d3e4dc3796d8565969e4bd6965d",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf"
+  },
+  "quadrature_orders": [
+    16,
+    32
+  ],
+  "minimum_times_per_cell": 10,
+  "upper_activity_relative_limit": 0.001,
+  "reference_refinement_relative_limit": 0.0002,
+  "causal_residual_scaled_limit": 1e-11,
+  "finite_eta_coherence_relative_budget": 1e-07,
+  "scope": "Absorption into unresolved high-energy states; external hole bounded by1. No bound on arbitrary incoming unrepresented populations.",
+  "reference": "Ideal real-angle Usadel solution in E>max(2Delta,4). Original equation checked at all quadrature nodes. Finite-eta difference separately measured.",
+  "execution": {
+    "expected_seconds": [
+      5,
+      30
+    ],
+    "timeout_seconds": 240,
+    "new_trajectories": 0
+  }
+}

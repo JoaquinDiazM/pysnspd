@@ -1,0 +1,26 @@
+{
+  "schema": "pysnspd.stage2.remaining-mesh-offline-selftest.v1",
+  "status": "PASS",
+  "checks": {
+    "entry_argument_rk4_but_registered_method_remains_explicit_SSP": true,
+    "unreviewed_unfrozen_plan_cannot_execute": true,
+    "three_level_assessment_cannot_accept_only_a_pair_diagnostic": true,
+    "one_cell_case_cannot_enter_two_cell_plan": true,
+    "supplementary_pair_does_not_accept_global_PASS_status": true,
+    "all_four_archived_SSP_references_are_registered": true,
+    "archived_reference_cannot_silently_switch_integrator": true,
+    "grid_cannot_mix320_and640steps": true,
+    "real_completed_SSP_reference_integration_contract_verified": true,
+    "failed_SSP_integration_stats_cannot_be_reused": true,
+    "dry_run_has_no_child_output_directory_or_integrator_import": true,
+    "reference_reuse_verified_twice_without_reexecution_or_overwrite": true,
+    "invalid_reference_stops_before_any_child": true,
+    "failed_child_stops_without_retry_or_next_task": true,
+    "FAIL_even_with_zero_child_exit_stops_before_next_task": true,
+    "successful_offline_batch_does_not_issue_stage_admission": true,
+    "supplementary_pair_remains_distinct_and_never_issues_stage_admission": true
+  },
+  "scope": "Synthetic orchestration guards and read-only archived SSP metadata; no subprocess, physical RHS or time integration.",
+  "runner_sha256": "f3701dc57bd429fc98f27679bf0038b87ea65a5854ead4c7333ee3f533bd233c",
+  "elapsed_seconds": 1.1197134000249207
+}

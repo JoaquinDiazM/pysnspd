@@ -1,0 +1,38 @@
+{
+  "schema": "pysnspd.stage2.guarded-code-review.v1",
+  "date": "2026-09-22",
+  "status": "REVIEWED_SCOPED_FINDINGS_RESOLVED_LONG_VALIDATION_PENDING",
+  "reviewed_source": "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py",
+  "reviewed_source_sha256": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4",
+  "reviewer": "independent stage2_gate_audit agent",
+  "scope": [
+    "shared donor demands",
+    "common event factor",
+    "conservative population/ledger update",
+    "SSP composition",
+    "validation coverage"
+  ],
+  "findings": [
+    {
+      "id": "reverse_reaction_coverage",
+      "detail": "The original competing-channel toy starts with zero phonons and does not exercise absorption/creation or negative event rates with the extended branch.",
+      "required_resolution": "Separately preregistered supplemental absorption/creation microcases with the extended branch active, checking population support, energy, stoichiometry and phonon consumption."
+    },
+    {
+      "id": "isolated_result_provenance",
+      "detail": "Original isolated result lacks explicit dependency versions and two NPZ hashes.",
+      "required_resolution": "External inventory of all retained files and the actual remote environment, without changing or rerunning frozen successful evidence."
+    }
+  ],
+  "not_certified": [
+    "universal positivity for arbitrary sources",
+    "moving condensate with extended branch active",
+    "long temporal convergence",
+    "refined energy meshes",
+    "global stage2 admission"
+  ],
+  "resolutions": {
+    "reverse_reaction_coverage": "isolated_guarded_negative_v2/isolated_results.json",
+    "isolated_result_provenance": "isolated_guarded_inventory.json"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "contract": {
+    "task": {
+      "id": "guarded_equilibrium_fields",
+      "phase": "new_special_validation",
+      "kind": "equilibrium_fields",
+      "runs": [
+        "guarded_special_equilibrium_two"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/check_guarded_equilibrium_fields.py",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_equilibrium_two.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_equilibrium_fields.json"
+    ],
+    "batch_manifest_sha256": "951d6e7703772476f263a7f453529e0b2e023df25d7806bfa9dd0d967ad10a1e",
+    "dependency_hashes": {
+      "guarded_special_equilibrium_two": "789fa19ae0e7dc34f4c0932f1c3c397e84b5e40e56b1106428f8b672321c8151"
+    }
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_equilibrium_fields.json": "c5a96008fa65378834726d9c9f7e8d29e879e7c7843436663f745aa6cc869155"
+  }
+}

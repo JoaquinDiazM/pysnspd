@@ -26,31 +26,34 @@ Computations expected to exceed five minutes are prepared in
 only the current continuation and lightweight checks. The original notebook
 is archived separately; no session-management instructions remain active.
 
-## Experimental stage 2 — numerical closure not admitted
+## Experimental stage 2 — development closed; stage 3 prepared
 
-The [stage 2 checkpoint](docs/implementation/stage2/README.md) implements
-conservative electron-phonon events, fixed-energy transport, KWT, BGK, heating
-and escape in one/two cells. Static validation selected 630 electronic and 1025
-phonon states. Earlier numerical failures and their corrections remain archived.
+The user-authorized [development closure](docs/implementation/stage2/closure_20260922/closure_decision.json)
+accepts the implemented conservative events, fixed-energy transport, KWT, BGK,
+heating and escape as the basis for subsequent development. The
+[final report](docs/implementation/stage2/closure_20260922/Informe_cierre_etapa_2.md)
+([PDF](output/pdf/implementation/Informe_cierre_etapa_2.pdf)) consolidates the
+results and remaining numerical limits.
 
-The completed DOP853 reference and short RK4 comparison remain archived in the
-[resumed results](docs/implementation/stage2/resume_20260921/README.md). The later
-full-duration one/two-cell temporal checks passed on the candidate mesh, with
-their records and reuse contracts independently verified. The 2520-state
-electronic refinement then failed an internal RK4 population guard. A bounded
-bisection probe exhausted 24 RHS evaluations without advancing.
+The latest guarded SSP batch completed 21 tasks, including 13 trajectories.
+All retain physical stored populations and valid balances. The largest scaled
+energy defect is 5.43766e-8; the largest recorded instantaneous residual is
+1.63498e-14. ONE/TWO temporal comparisons at 630 electronic and 1025 phonon
+states pass against separately refined references. The 2049-phonon pair differs
+by 0.004565%, exceeding its auxiliary 0.0025% budget. Its original FAIL remains;
+the [strict numerical admission record](docs/implementation/stage2/stage2_admission.json)
+does not become a complete dynamic mesh certificate.
 
-The [22 September review](docs/implementation/stage2/review_20260922/README.md)
-archives 73 new output files and 118 passing provenance/result checks. The repeated
-RK4 batch reproduces the fine-grid failure. The SSP40 trajectory remains positive
-but its energy error is 3.65224e-6 against 1e-7, with no event limiting activated.
-The [admission record](docs/implementation/stage2/stage2_admission.json) therefore
-keeps stage 2 open. The results report is a review, not a closure certificate.
+The [stage 3 sequence](docs/implementation/stage3/README.md) is prepared and has
+not started: spatial energy and stability, boundaries/reservoirs, charge
+conservation, the thesis three-state circuit, then weak dynamics and localized
+synthetic deposition. Each experiment will register its own scope and checks.
+No further long run is requested now; production solvers and `v1.0.0` are unchanged.
 
-A new manual plan tests one cell at 160/320/640 steps against a separate 1280-step
-SSP reference, with an estimated 26-minute cost. It has not been executed.
-Two-cell/multigrid work follows only after temporal admission. Physical kernels,
-criteria and production solvers are unchanged.
+The earlier [RK4/SSP review](docs/implementation/stage2/review_20260922/README.md)
+and [scope review](docs/implementation/stage2/practical_review_20260922/validation_scope_review.md)
+are historical checkpoints. Their failures, incomplete attempts and then-pending
+manual plans are preserved rather than presented as the current work queue.
 
 ## Experimental stage 1 closure — retained result
 

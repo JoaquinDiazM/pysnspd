@@ -1,0 +1,156 @@
+{
+  "schema": "pysnspd.stage2.guarded-external-inventory.v1",
+  "recorded_at_utc": "2026-09-22T19:50:25.370900+00:00",
+  "purpose": "Append environment provenance and every artifact hash without rewriting frozen QA results.",
+  "environment_observed_after_QA": {
+    "host": "geminga",
+    "account": "jdiaz",
+    "python": "3.10.20",
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "executable": "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "platform": "Linux-6.8.0-137-generic-x86_64-with-glibc2.39",
+    "longdouble_bits": 128,
+    "longdouble_mantissa_bits": 63,
+    "longdouble_min_exponent": -16382
+  },
+  "roots": [
+    "isolated_guarded",
+    "isolated_guarded_negative",
+    "isolated_guarded_negative_v2"
+  ],
+  "artifact_count": 24,
+  "artifacts": [
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_escape_10.json",
+      "sha256": "5c9db5bad5dd77002caac2a37867f077e1b538a03030debd1b35688ae80b42e0",
+      "bytes": 7810
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_escape_10.npz",
+      "sha256": "b722c486e6e3a1160862085f0077ab4dff248e20c1711c1f5250791e4ab06b8e",
+      "bytes": 112996
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_escape_20.json",
+      "sha256": "0cd10e3551ba5aee97a830119475e4b95a228eb391f15a83ede98ef5dbb92f90",
+      "bytes": 11830
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_escape_20.npz",
+      "sha256": "44d874c45730b1a40f72cdc7ab48810781f30d694d3bbdfb2c3cb681fa80ec06",
+      "bytes": 191472
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_escape_40.json",
+      "sha256": "fc1f2acb0b19dd5062b3b56db5e53c2db06dcc628c57e840b58ea1e77b2072c4",
+      "bytes": 19926
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_escape_40.npz",
+      "sha256": "d866ef1046fa82abba35a4ddb91c1981488eb16e39de221d1cd1c767c136fc03",
+      "bytes": 348388
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_local_capability.json",
+      "sha256": "f0c481f67b6e8118572dc49b70b4d543c6a14daad63b05f712c7ab990ab01b97",
+      "bytes": 540
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_normal_equivalence.npz",
+      "sha256": "db621997845042cd3d9c463484131eafcc283cffae4b5bc1fc0fe0d8882d0e51",
+      "bytes": 142978
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_registration.json",
+      "sha256": "0100a0b8c73a219f5553bdaa360f0c36d8f8c6d8970a6dbf696ccc67a8f85074",
+      "bytes": 5260
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_results.json",
+      "sha256": "b88e44067e8ba6879db105c61d9c831482e11a64f02654b6d2072f576f201f07",
+      "bytes": 10106
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_run.log",
+      "sha256": "1699492ee8d90cd85b2d25643372f000b93b6bffaf03f49949472d6c59fb3a21",
+      "bytes": 1365
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_stage_correction.npz",
+      "sha256": "ce890e3965563e81ba8f030253bab6a8e625e6b7fadb7b01c462648213ae7abb",
+      "bytes": 5235
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_transport.json",
+      "sha256": "5be4a2a4b704605152125379e3140b3fc4962be74d6fae3884084ba7e55d0ef7",
+      "bytes": 11557
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_transport.npz",
+      "sha256": "e17f890c0309f7c044ba74c5fdc0193ea15648cfeaebaa572ae90b5e0fc3e0f4",
+      "bytes": 46244
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative/isolated_registration.json",
+      "sha256": "f4f83f7d23c9a2a2a666dc35bf7c683c7522bf37869aa9d8c9a7e8f0e7a698a0",
+      "bytes": 3838
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative/isolated_results.json",
+      "sha256": "ed7e198061562660a41f9724294b6966d0c67cadb90d1dc12da58d8ec6fda65e",
+      "bytes": 2715
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative/isolated_run.log",
+      "sha256": "3188e7536d6e6cbf96bf84472759c28c651e1847702cd53941bab8057631c4bd",
+      "bytes": 3082
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_absorption.json",
+      "sha256": "fd77dfcd000dbc69fa55a701da79cc815e1ec09b9ed6761a4768acf8b30d90c0",
+      "bytes": 12031
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_absorption.npz",
+      "sha256": "91bac3e3a1eb0e0916bef9a4926b90513b498cbd8c1c7df38e9cf27d513c5dbf",
+      "bytes": 2882
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_creation.json",
+      "sha256": "9e8583915d6c62ca27438f7b1369ad71cb98ee2b1543e145868af2eb9f944cb1",
+      "bytes": 11988
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_creation.npz",
+      "sha256": "e6de6650f7cb1c0747848f39ade07b4ac5b86c34ccf80a0b8f1e1bc0d56f3c11",
+      "bytes": 2773
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_registration.json",
+      "sha256": "707a27a680fb6a5683d05994b8268b59f205306e455fe5b3fcc4a6ddb58cd9c6",
+      "bytes": 3979
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_results.json",
+      "sha256": "0ce7a27d077cd1c4e23417ac600a134417779efeab96f450f02498947d359d79",
+      "bytes": 4325
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_run.log",
+      "sha256": "f7cd8dfb6a872ee9873a444efd59326a1a0be9ff6dee7eba520326a418b1f28e",
+      "bytes": 4219
+    }
+  ],
+  "numerical_sources_sha256": {
+    "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_guarded_validation.py": "19ba14d048a2e899394ae7c2ae3be78a722868c7ae9dfbdc43d1dadd7bdda068",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_guarded_negative.py": "19c6eb7e98ae184b75ae53e4793118d47456028c55cb27b78e521e52881e2b03",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_guarded_negative_v2.py": "4d37e567d9810021a87a3e02d7b9ce9eac18dade17c7f2a9e52ea3b265192687"
+  },
+  "inventory_script_sha256": "9fa1c6bf683f83273096814489d2fc9a6264cba9e3dc2d031f1bbad3473a04fc",
+  "new_RHS_calls": 0,
+  "new_integrations": 0,
+  "limitation": "This separate environment observation does not retroactively alter the original QA record. Original result and archive bytes remain unchanged."
+}

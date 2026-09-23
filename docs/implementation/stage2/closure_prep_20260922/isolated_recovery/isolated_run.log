@@ -1,0 +1,24 @@
+{"case": "emission_reused", "status": "PASS_SAVED_STATE_INVARIANTS_ONLY", "energy_error": 1.3796928015534592e-15, "count_error": 1.2490009027033007e-15}
+{"case": "absorption", "status": "PASS", "runtime_seconds": 3.385232366155833, "energy_error": 1.3810348932907975e-15, "count_error": 1.2490009027033007e-15}
+{"case": "recombination", "status": "PASS", "runtime_seconds": 1.7911917329765856, "energy_error": 1.3796928015534592e-15, "count_error": 1.2490009027033007e-15}
+{"case": "creation", "status": "PASS", "runtime_seconds": 1.7639318718574941, "energy_error": 1.4796937903152952e-15, "count_error": 1.4802973690580828e-15}
+/home/jdiaz/pysnspd/sandbox/stage2_cells/recovery_20260921/limited_ssp.py:27: RuntimeWarning: overflow encountered in divide
+  raw = np.divide(available, h*demand, out=np.ones_like(available), where=active)
+/home/jdiaz/pysnspd/sandbox/stage2_cells/recovery_20260921/limited_ssp.py:27: RuntimeWarning: divide by zero encountered in divide
+  raw = np.divide(available, h*demand, out=np.ones_like(available), where=active)
+Traceback (most recent call last):
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/isolated_recovery.py", line 138, in <module>
+    main()
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/isolated_recovery.py", line 134, in main
+    legacy.run()
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/isolated_checks.py", line 258, in run
+    record, _ = save_case(name, system, initial, .02, 20)
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/isolated_checks.py", line 163, in save_case
+    times, states, stats = integrate(system, initial, duration, steps)
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/recovery_20260921/limited_ssp.py", line 219, in integrate
+    second = .75*z+.25*step(system, t+h, first, h, stats)
+  File "/home/jdiaz/pysnspd/sandbox/stage2_cells/recovery_20260921/limited_ssp.py", line 192, in step
+    system.unpack(result)
+  File "/home/jdiaz/pysnspd/pysnspd/experimental/coupled_cells.py", line 96, in unpack
+    raise ValueError("time stage outside Pauli/phonon support; no clipping applied")
+ValueError: time stage outside Pauli/phonon support; no clipping applied

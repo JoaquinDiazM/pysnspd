@@ -1,0 +1,40 @@
+{
+  "contract": {
+    "task": {
+      "id": "two_guarded_time_assessment",
+      "phase": "new_two_temporal_assessment",
+      "kind": "limited_time",
+      "runs": [
+        "two_guarded_160",
+        "two_guarded_320",
+        "two_guarded_640"
+      ],
+      "reference": "two_guarded_1280",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/assess_guarded_time.py",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/two_guarded_160.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/two_guarded_320.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/two_guarded_640.json",
+      "--reference",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/two_guarded_1280.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/two_guarded_time_assessment.json"
+    ],
+    "batch_manifest_sha256": "951d6e7703772476f263a7f453529e0b2e023df25d7806bfa9dd0d967ad10a1e",
+    "dependency_hashes": {
+      "two_guarded_160": "fcf896fcec3cced38c03457ef0a86725eeae8018c7a939c6db47f8d46195fc81",
+      "two_guarded_320": "58d5f9fae3739d65985a1897fa2d667e3b3585fc35de30755298016fe383f6b1",
+      "two_guarded_640": "25a32d90e5c4f75746f4306972a2d1fa0eb6ff867a128ca9a47d08b24b5c4b7c",
+      "two_guarded_1280": "cf9404a9a48414972a995121593edc2c0a0aea56607963ad5664a0f9a2be8960"
+    }
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/two_guarded_time_assessment.json": "5a3a99154eeb84666ef64af4f386090fa8fbb5a066f95531b5b375c8ba6f30b7"
+  }
+}

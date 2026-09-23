@@ -1,63 +1,82 @@
-# Primero completar la etapa 2
+# Continuación tras el cierre de desarrollo de la etapa 2
 
-La etapa 2 permanece pendiente. La referencia manual corta ya terminó y RK4
-pasó contra ella. Ejecutar el lote de `resume_20260921/command_addendum.md`.
-Faltan el control temporal independiente, los refinamientos dinámicos sobre la
-configuración de 630/1025 estados y los límites de soporte en esas trayectorias.
-La comparación estática continua al corte 0,005 ya pasó. Conservar
-el sondeo incompleto; no convertirlo en aprobado ni reintentarlo por fragmentos.
+**22 de septiembre de 2026. Etapa 3: PREPARADA_NO_INICIADA.**
 
-El informe final y el avance espacial dependen de esas puertas. El plan que
-sigue queda preparado para cuando `stage2_admission.json` permita continuar.
+La etapa 2 se cierra en su **alcance de desarrollo**, con la evidencia disponible
+y según la [decisión de cierre](closure_20260922/closure_decision.json).
+Su certificado estricto de convergencia dinámica
+entre mallas sigue incompleto: el cierre no cambia los resultados originales a
+PASS ni equivale a admisión material o de producción.
 
-## Plan espacial condicionado al cierre
+La [revisión de resultados guardados](practical_review_20260922/saved_results_audit.json)
+recoge 21 tareas completadas y 13 trayectorias del método protegido. Sus
+comparaciones temporales propias de una y dos celdas, balances y poblaciones
+pasaron en los casos registrados. El
+[par fonónico de 2049 nodos](practical_review_20260922/raw/two_guarded_ph2049_pair_320_640.json)
+conserva `FAIL_PAIR_DIAGNOSTIC`: diferencia `4.565195781e-5` frente al presupuesto
+auxiliar `2.5e-5`. No se infiere convergencia de las mallas pendientes y no se
+ordena relanzar automáticamente el lote anterior.
 
-El dictamen de esta entrega se encuentra en `stage2_admission.json`. Ningún
-resultado de una o dos celdas acredita por sí solo un transiente completo de
-SNSPD. La siguiente etapa requiere una nueva inscripción de casos y tolerancias.
+El [dictamen de etapa 2](stage2_admission.json) distingue ese alcance del
+certificado numérico incompleto. `numerical_admission = false` **ya no funciona
+como bloqueo global de la siguiente etapa**. Cada ensayo futuro deberá fijar
+sus observables y controles pertinentes antes de correr; las incertidumbres
+heredadas limitan sus conclusiones y no se ocultan.
 
-## Entradas que deben conservarse
+La dinámica excitada anterior mantuvo `Gamma = 0`, y el equilibrio de dos
+celdas, `Gamma = (0, 0.1)` fijo. No verificó fase, potencial, energía espacial
+ni circuito. La etapa 3 deberá comprobar por sí misma el trabajo espectral
+con `Gamma(q_delta)` variable y el trabajo eléctrico de puerto usando fuerzas
+y corriente de la misma energía; no se transfiere el balance de amplitud sola.
 
-- El catálogo R2, sus unidades, el potencial de vacío y su evidencia histórica.
-- La malla ocupacional complementaria explícita que admita esta entrega. Los
-  180 estados anteriores no se consideran suficientes para toda distribución
-  cinética sólo porque sus momentos energéticos sean precisos.
-- Un único potencial para energía, fuerzas y trabajo espectral. Los operadores
-  de colisión y transporte comparten sus cambios de energía; no hay corrección
-  posterior del balance ni recorte de ocupaciones.
-- Las ocupaciones electrónicas y fonónicas son variables dinámicas. La
-  temperatura equivalente se calcula a partir de la energía; no reemplaza las
-  distribuciones por un estado térmico.
-- La movilidad KWT y el tiempo de relajación cinética son parámetros distintos.
-  El calor de disipación del condensado entra una sola vez en D.18.
+## Siguiente implementación, todavía no iniciada
 
-## Orden de incorporación
+El [plan de etapa 3](../stage3/README.md) y su
+[contrato preparado](../stage3/entry_contract.json) desarrollan D.4.3:
+**resolver el ensayo espacial admitido con bordes y circuito**. El orden es:
 
-1. Construir un funcional espacial discreto cuya variación produzca todas las
-   fuerzas del condensado y la corriente. Comprobar D.36, la rigidez espacial,
-   y la cancelación del trabajo entre condensado y campo electromagnético antes
-   de integrar. El acoplamiento de esta entrega transporta cuasipartículas;
-   todavía no representa gradientes de amplitud o fase entre las dos celdas.
-2. Añadir las condiciones de borde, interfaces 2D/1D y reservorios de D.1. Fijar
-   explícitamente qué energía y partículas intercambia cada borde. Ensayar un
-   estado uniforme, un gradiente débil y una interfaz con espectros distintos.
-3. Incorporar Poisson, corriente normal y las ecuaciones circuitales D.28-D.33
-   usando un registro conjunto de trabajo eléctrico, calor y energía inductiva.
-   Repetir primero equilibrio y respuesta pequeña sin fotón.
-4. Ensayar un depósito de energía localizado con entradas Debye sintéticas.
-   Separar convergencia espacial, temporal y espectral antes de comparar formas
-   de pulso. La admisión material de NbN sigue siendo un requisito independiente
-   para atribuir tasas o latencias absolutas al dispositivo.
+1. **Funcional estático:** energía discreta, fuerzas cartesianas y corriente de
+   la misma energía; soporte y estabilidad D.36. Primer piloto 1D con poblaciones
+   congeladas y cierre periódico de diagnóstico.
+2. **Bordes y reservorios:** sustituir ese cierre por paredes aislantes,
+   interfaces 2D–1D, continuaciones y reservorios; comprobar flujos y su trabajo.
+3. **Carga y potencial:** resolver conservación de corriente y potencial con
+   signos de terminales explícitos, sin introducir una acumulación de carga que
+   el modelo continuo no contiene.
+4. **Circuito de la memoria:** acoplar las tres ODE de `(Ib, Is, vc)` de la
+   [adenda vigente](../../modelo_v0_4/actualizaciones/circuito_memoria_20260922.md),
+   con capacitor de lectura, convención pasiva y sólo la inductancia exterior
+   no representada ya por los campos. El balance completo es CM.9, que sustituye
+   al bloque circuital y balance D.28–D.29/D.33 históricos.
+5. **Dinámica débil y depósito local:** primero sin fotón, luego con una entrada
+   sintética localizada dentro del dominio admitido. Medir la precisión en los
+   observables elegidos y distinguir los errores espacial, temporal y espectral.
 
-## Condiciones para avanzar
+El ensayo final tendrá terminales, reservorios y circuito. La periodicidad de
+3A sólo aísla el funcional; no representa los bordes del detector. Se conserva
+el control negativo D.36 (`|Delta|/Delta0=0.60`, `q*ell0=1`, `delta/Delta0=0.10`)
+y se rechaza ese estado para evolución, sin recortar su rigidez.
 
-No promover a producción antes de comprobar convergencia espacial, conservación
-con bordes/circuito y estabilidad de la formulación espacial. Un cambio del
-número de estados, las cuadraturas o el soporte requiere repetir los controles
-cinéticos pertinentes. Los casos fallidos de esta entrega se conservan como
-regresiones y ejemplos de resolución insuficiente.
+## Entradas y criterios de la continuación
 
-Medir coste de un paso antes de lanzar una trayectoria mayor. Registrar en
-`/home/jdiaz/GEMINGA_COMMANDS.md` todo cálculo previsto por encima de cinco
-minutos y esperar la ejecución del usuario. El tiempo de los ensayos reducidos
-no estima por sí solo el coste del sistema espacial completo.
+Se mantienen catálogo R2, procedencia, energía común y representación
+ocupacional explícita. Las interfaces transportan a energía física común y
+contabilizan el trabajo espectral; KWT y relajación cinética siguen siendo
+cierres distintos, y `Q_Delta` entra una sola vez. Para corriente positiva de
+izquierda a derecha, `Vdev=phi_L-phi_R` e `Is*Vdev` es trabajo que entra en el
+dominio resuelto. No se añaden los 10 nH **totales** de la memoria sobre la
+energía de superflujo ya resuelta.
+
+Geometría, campos, condiciones, normas de error, referencias y presupuestos
+se fijarán antes de cada ensayo. Los criterios nuevos serán proporcionales a
+lo que se quiera distinguir; no se imponen ahora tolerancias universales ni se
+reclasifica retrospectivamente el fallo fonónico. Los problemas estructurales
+invalidan el cálculo afectado; la precisión insuficiente se informa y delimita
+la conclusión. Una etapa exploratoria no certifica umbrales, latencias ni NbN.
+
+El benchmark de etapa 2 con 320 pasos en tiempo normalizado `0–2` no prescribe
+el paso de la futura PDE. Primero se mide el coste y se estima la resolución
+necesaria. Todo cálculo previsto de más de cinco minutos queda registrado en
+`/home/jdiaz/GEMINGA_COMMANDS.md` y espera ejecución del usuario. No se implementa
+ni ejecuta etapa 3 en esta entrega; núcleo, transitorios completos y producción
+conservan los alcances posteriores D.4.4–D.4.5.

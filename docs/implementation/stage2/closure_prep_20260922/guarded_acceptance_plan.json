@@ -1,0 +1,824 @@
+{
+  "schema": "pysnspd.stage2.guarded-acceptance-plan.v1",
+  "status": "READY_FOR_USER_FOREGROUND_RUN",
+  "registered_date": "2026-09-22",
+  "purpose": "Fresh independent temporal, boundary/equilibrium and true population-mesh validation of the guarded SSP arithmetic map. No historical trajectory serves as admission evidence for this new map.",
+  "tasks": [
+    {
+      "id": "guarded_special_equilibrium_two",
+      "phase": "new_special_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 10,
+        "duration": 0.1,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "equilibrium",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "guarded_special_phonon_vacuum_one",
+      "phase": "new_special_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 0.2,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "phonon_vacuum",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "guarded_special_sparse_electrons_one",
+      "phase": "new_special_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 0.2,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "sparse_electrons",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "guarded_special_assessment",
+      "phase": "new_special_validation",
+      "kind": "specials",
+      "runs": [
+        "guarded_special_equilibrium_two",
+        "guarded_special_phonon_vacuum_one",
+        "guarded_special_sparse_electrons_one"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "guarded_equilibrium_fields",
+      "phase": "new_special_validation",
+      "kind": "equilibrium_fields",
+      "runs": [
+        "guarded_special_equilibrium_two"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "guarded_equilibrium_support",
+      "phase": "new_special_validation",
+      "kind": "equilibrium_support",
+      "runs": [
+        "guarded_special_equilibrium_two"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "guarded_boundary_fields",
+      "phase": "new_special_validation",
+      "kind": "fields",
+      "runs": [
+        "guarded_special_phonon_vacuum_one",
+        "guarded_special_sparse_electrons_one"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "guarded_boundary_support",
+      "phase": "new_special_validation",
+      "kind": "support",
+      "runs": [
+        "guarded_special_phonon_vacuum_one",
+        "guarded_special_sparse_electrons_one"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "one_guarded_160",
+      "phase": "new_one_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_guarded_320",
+      "phase": "new_one_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_guarded_640",
+      "phase": "new_one_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 640,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_guarded_1280",
+      "phase": "new_one_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "one",
+        "steps": 1280,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "one_guarded_time_assessment",
+      "phase": "new_one_temporal_assessment",
+      "kind": "limited_time",
+      "runs": [
+        "one_guarded_160",
+        "one_guarded_320",
+        "one_guarded_640"
+      ],
+      "reference": "one_guarded_1280",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "two_guarded_160",
+      "phase": "new_two_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 160,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_320",
+      "phase": "new_two_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_640",
+      "phase": "new_two_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 640,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_1280",
+      "phase": "new_two_temporal_trajectories",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 1280,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_time_assessment",
+      "phase": "new_two_temporal_assessment",
+      "kind": "limited_time",
+      "runs": [
+        "two_guarded_160",
+        "two_guarded_320",
+        "two_guarded_640"
+      ],
+      "reference": "two_guarded_1280",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "two_guarded_pair_320_640",
+      "phase": "new_two_temporal_assessment",
+      "kind": "limited_pair",
+      "runs": [
+        "two_guarded_320",
+        "two_guarded_640"
+      ],
+      "accepted_statuses": [
+        "PASS_PAIR_DIAGNOSTIC"
+      ]
+    },
+    {
+      "id": "two_guarded_ph2049_320",
+      "phase": "new_phonon_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 2049,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_ph2049_640",
+      "phase": "new_phonon_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 640,
+        "duration": 2.0,
+        "phonon_nodes": 2049,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_ph2049_pair_320_640",
+      "phase": "new_phonon_meshes",
+      "kind": "limited_pair",
+      "runs": [
+        "two_guarded_ph2049_320",
+        "two_guarded_ph2049_640"
+      ],
+      "accepted_statuses": [
+        "PASS_PAIR_DIAGNOSTIC"
+      ]
+    },
+    {
+      "id": "two_guarded_ph4097_320",
+      "phase": "new_phonon_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 4097,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_ph4097_640",
+      "phase": "new_phonon_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 640,
+        "duration": 2.0,
+        "phonon_nodes": 4097,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_ph4097_pair_320_640",
+      "phase": "new_phonon_meshes",
+      "kind": "limited_pair",
+      "runs": [
+        "two_guarded_ph4097_320",
+        "two_guarded_ph4097_640"
+      ],
+      "accepted_statuses": [
+        "PASS_PAIR_DIAGNOSTIC"
+      ]
+    },
+    {
+      "id": "guarded_ph_grid_assessment",
+      "phase": "new_phonon_meshes",
+      "kind": "grid",
+      "runs": [
+        "two_guarded_320",
+        "two_guarded_ph2049_320"
+      ],
+      "reference": "two_guarded_ph4097_320",
+      "parameter": "phonon_nodes",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "two_guarded_e2_320",
+      "phase": "new_electron_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 2,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_e2_640",
+      "phase": "new_electron_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 640,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 2,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_e2_pair_320_640",
+      "phase": "new_electron_meshes",
+      "kind": "limited_pair",
+      "runs": [
+        "two_guarded_e2_320",
+        "two_guarded_e2_640"
+      ],
+      "accepted_statuses": [
+        "PASS_PAIR_DIAGNOSTIC"
+      ]
+    },
+    {
+      "id": "two_guarded_e4_320",
+      "phase": "new_electron_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 320,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 4,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_e4_640",
+      "phase": "new_electron_meshes",
+      "kind": "trajectory",
+      "parameters": {
+        "case": "two",
+        "steps": 640,
+        "duration": 2.0,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 4,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.01,
+        "method": "ssprk3_common_flux_guarded",
+        "scenario": "driven",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "two_guarded_e4_pair_320_640",
+      "phase": "new_electron_meshes",
+      "kind": "limited_pair",
+      "runs": [
+        "two_guarded_e4_320",
+        "two_guarded_e4_640"
+      ],
+      "accepted_statuses": [
+        "PASS_PAIR_DIAGNOSTIC"
+      ]
+    },
+    {
+      "id": "guarded_e_grid_assessment",
+      "phase": "new_electron_meshes",
+      "kind": "grid",
+      "runs": [
+        "two_guarded_320",
+        "two_guarded_e2_320"
+      ],
+      "reference": "two_guarded_e4_320",
+      "parameter": "electron_refinement",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "guarded_all_mesh_fields",
+      "phase": "actual_new_trajectory_verification",
+      "kind": "fields",
+      "runs": [
+        "one_guarded_160",
+        "two_guarded_320",
+        "two_guarded_ph2049_320",
+        "two_guarded_ph2049_640",
+        "two_guarded_ph4097_320",
+        "two_guarded_ph4097_640",
+        "two_guarded_e2_320",
+        "two_guarded_e2_640",
+        "two_guarded_e4_320",
+        "two_guarded_e4_640"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    {
+      "id": "guarded_all_mesh_support",
+      "phase": "actual_new_trajectory_verification",
+      "kind": "support",
+      "runs": [
+        "one_guarded_160",
+        "two_guarded_320",
+        "two_guarded_ph2049_320",
+        "two_guarded_ph2049_640",
+        "two_guarded_ph4097_320",
+        "two_guarded_ph4097_640",
+        "two_guarded_e2_320",
+        "two_guarded_e2_640",
+        "two_guarded_e4_320",
+        "two_guarded_e4_640"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    }
+  ],
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage1_r2/review/causal_reference.py": "8e0324a87b5278df3ac2b976480fcbdf2f696bfb63a9b66c8dfa17f7e71516b1",
+    "docs/implementation/stage1_r2/review/gamma_zero_reference.py": "8e2ed0759f854c774770d80ec22d033495c37d3e4dc3796d8565969e4bd6965d",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "docs/implementation/stage2/closure_prep_20260922/EQUILIBRIUM_SUPPORT_ENVELOPE.md": "bc573a47c770195a84368a2d4c278ec1fad276884bb47b5532f08a13c6b0c8a6",
+    "docs/implementation/stage2/review/complementary_energy_reference.py": "a03d48f6f3be8afcd665a8eda30b285697338e57c9970b96d614d83fc3045a67",
+    "docs/implementation/stage2/review/continuous_reactions.py": "fb333f72889d163571f4889c9970d0b0b9760ea96383a9ead4c737986e75a5ac",
+    "docs/implementation/stage2/review/upper_support_reference.py": "c1b3067b2c691b5812e84406cf2a72fd241168b86bdb2ddff35349e4fbfff4b5",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/assess_grid_refinement.py": "b91f8dc8b641f4f8ddbf4745df96d4c5723c0d59056508f14990ea465f86e552",
+    "sandbox/stage2_cells/assess_time_refinement.py": "fe4bb29229687653475104fe0207340cb62cb26faf7f07d50d36aa691534a9ad",
+    "sandbox/stage2_cells/check_trajectory_fields.py": "df671e573d5d7dcea6f3a8dc344d36844ceb688b8f3cfefacb941594f4efa262",
+    "sandbox/stage2_cells/check_trajectory_support.py": "8d5c758ba3f53baab0cdebb43ea62aa753812f24002ac314e61de61c880e4108",
+    "sandbox/stage2_cells/closure_prep_20260922/assess_guarded_pair.py": "b0c918ecc951b292367a9caf69bcb4cba21840653d7c983db3bdb35fef90b496",
+    "sandbox/stage2_cells/closure_prep_20260922/assess_guarded_specials.py": "9d98cc7c716f5fabc475470008d7e30b96bdf1d0982af70a1ec37b0edb60d185",
+    "sandbox/stage2_cells/closure_prep_20260922/assess_guarded_time.py": "3d109381056184d3970535ef52138441480635cc6ea2d60b4653a7dca1d77c56",
+    "sandbox/stage2_cells/closure_prep_20260922/check_equilibrium_envelope.py": "21354dbf8f907861c5763e4fd3a1844e17018889578e3215ec99c15b527a1288",
+    "sandbox/stage2_cells/closure_prep_20260922/check_guarded_equilibrium_fields.py": "36d968a3a825bf82b26cb35046c6a8576bf48ecc9d4320f47002f452af3fdbb5",
+    "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4",
+    "sandbox/stage2_cells/closure_prep_20260922/run_guarded_acceptance_batch.py": "38fb95f204936dc6999457f56406d9e930bf916bff3b254ba9209f4cdca7dc86",
+    "sandbox/stage2_cells/closure_prep_20260922/run_guarded_coupled.py": "9f56ed50a464248f0714db12697b25b7170f37c2ed5cb5b641723824af114a03",
+    "sandbox/stage2_cells/closure_prep_20260922/special_cases.py": "36658b90e65e86218f27a4d961c323dd2c0e36a5c2cf687a4c101baa5bda63b1",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py": "d2fd882891eb5f43cb61aa34b054a6b0568bab37e1100fef40505041b9be680d",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9"
+  },
+  "execution": {
+    "agent_executes_during_preparation": false,
+    "user_foreground_only": true,
+    "threads": 1,
+    "expected_hours_approximate": [
+      9,
+      15
+    ],
+    "runtime_basis": "Estimate for19 new trajectories including all one/two temporal resolutions and eight population-mesh trajectories. Previous limited-SSP timing informs planning only; guarded runtime and refined-grid cost remain unmeasured.",
+    "suggested_memory_GiB": 12,
+    "memory_scope": "Reservation estimate for the2520-electron two-cell event network; peak RSS for this proposed batch has not been measured.",
+    "output_directory": "tmp/stage2_guarded_acceptance_20260922",
+    "no_screen_or_background_launch": true,
+    "no_retry_or_overwrite": true,
+    "stop_policy": "Stop at the first changed contract, failed trajectory or failed assessment. Validate three short special scenarios first, then ONE temporal, TWO temporal, phonon meshes, electron meshes and final fields/support. Preserve evidence; no tuning, fallback integrator, restart or promotion.",
+    "reviewer_dependency_path": "tmp/stage1_r2_review/deps",
+    "required_mpmath": true,
+    "platform_requirement": "NumPy longdouble must have both wider exponent and mantissa than float64; guarded source enforces this at integration entry."
+  },
+  "pending_review": {
+    "status": "REVIEWED_PROTOTYPE_SCOPE_ONLY",
+    "items": [],
+    "evidence": [
+      "isolated_guarded/isolated_results.json",
+      "isolated_guarded_negative_v2/isolated_results.json",
+      "guarded_independent_review.json"
+    ],
+    "missing_long_evidence": "All19 new trajectories and their acceptance assessments remain unexecuted."
+  },
+  "integration_contract": {
+    "actual_method": "ssprk3_common_flux_guarded",
+    "physical_kernels_changed": false,
+    "criteria_unchanged": true,
+    "population_clipping": false,
+    "posthoc_energy_repair": false,
+    "ordinary_branch": "Delegates to the frozen limited SSP map.",
+    "extended_branch": "Uses wider arithmetic only when particle/hole inventories approach float64 underflow; records counters and extended flux diagnostics.",
+    "legacy_evidence_scope": "Historical reference for diagnosis and planning only; all19 dynamic trajectories in this plan are new.",
+    "fresh_temporal_reference": "Each case uses separate guarded1280steps as the halved-step reference to640, permitted by unchanged temporal criteria. No independent-integrator claim."
+  },
+  "supplementary_pair": {
+    "steps": [
+      320,
+      640
+    ],
+    "relative_observable_budget": 2.5e-05,
+    "status_scope": "PASS_PAIR_DIAGNOSTIC; no three-level or global admission.",
+    "applies_to": "New TWO candidate and each of the four new population meshes."
+  },
+  "mesh_contract": {
+    "electron_states": [
+      630,
+      1260,
+      2520
+    ],
+    "electron_refinements": [
+      1,
+      2,
+      4
+    ],
+    "phonon_nodes": [
+      1025,
+      2049,
+      4097
+    ],
+    "steps_for_all_grid_comparisons": 320,
+    "pair_steps_for_each_new_mesh": [
+      320,
+      640
+    ],
+    "separate_axes": true,
+    "order": "Phonon pairs and grid first; electron pairs and grid second.",
+    "minimum_distinct_physical_times_per_cell": 10
+  },
+  "final_review": {
+    "stage2_admission": false,
+    "required_after_batch": [
+      "Audit newly generated receipts, source hashes, populations, balance, time and mesh errors, activity and actual fields/support together.",
+      "Combine with the independently reviewed isolated-channel/transport evidence for the same frozen guarded source.",
+      "A completed batch records successful listed checks only; stage3 implementation still requires explicit global stage2 adjudication."
+    ]
+  },
+  "scope_limits": [
+    "Experimental synthetic one/two-cell problem only; no absolute NbN, spatial, circuit or production claim.",
+    "No previous SSP time or special-case PASS is silently transferred to guarded SSP.",
+    "Every planned mesh comparison uses320steps and changes only the declared mesh parameter.",
+    "Three fresh special trajectories include their own stationarity/boundary tests and independent actual field/support checks, including finite-Gamma equilibrium.",
+    "Historical runners, physical kernels, criteria, plans and evidence remain unchanged."
+  ],
+  "pending_source_freeze_paths": []
+}

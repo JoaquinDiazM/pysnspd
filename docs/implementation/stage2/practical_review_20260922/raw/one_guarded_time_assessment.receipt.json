@@ -1,0 +1,40 @@
+{
+  "contract": {
+    "task": {
+      "id": "one_guarded_time_assessment",
+      "phase": "new_one_temporal_assessment",
+      "kind": "limited_time",
+      "runs": [
+        "one_guarded_160",
+        "one_guarded_320",
+        "one_guarded_640"
+      ],
+      "reference": "one_guarded_1280",
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/assess_guarded_time.py",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/one_guarded_160.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/one_guarded_320.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/one_guarded_640.json",
+      "--reference",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/one_guarded_1280.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/one_guarded_time_assessment.json"
+    ],
+    "batch_manifest_sha256": "951d6e7703772476f263a7f453529e0b2e023df25d7806bfa9dd0d967ad10a1e",
+    "dependency_hashes": {
+      "one_guarded_160": "4e2a016ed6bacbb05dd3a5fcd801ad664b70d6bdb9662cd42964f13eece22a76",
+      "one_guarded_320": "38998a07e8839506ba402dfcee65b801507a0488d42122d25207b162d1921cc0",
+      "one_guarded_640": "f9319d85860c4e35cd3330374c6712bb6cc6da5660a29835333cfb34626ee780",
+      "one_guarded_1280": "553d8a829cb1f90a38e3015f85dbf9e77a66c00477036c9bcbb4e30e70658cef"
+    }
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/one_guarded_time_assessment.json": "b41eae39582153c28f4cf7c39423ae6e1351b156748246a36a4f03d6842d9c44"
+  }
+}

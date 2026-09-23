@@ -1,0 +1,144 @@
+{
+  "schema": "pysnspd.stage2.special-cases.scoped-summary.v1",
+  "status": "PASS_REGISTERED_SPECIAL_TRAJECTORIES_AND_AVAILABLE_POSTPROCESSING",
+  "stage2_admission": false,
+  "new_physical_model": false,
+  "criteria_changed": false,
+  "rows": [
+    {
+      "case": "special_equilibrium_two",
+      "status": "PASS",
+      "duration": 0.1,
+      "steps": 10,
+      "electron_states": 630,
+      "phonon_nodes": 1025,
+      "limited_event_evaluations": 0,
+      "energy_ledger_scaled_max": 0.0,
+      "instantaneous_residual_max": 4.388207647638995e-20,
+      "minimum_electron": 3.4229638806098747e-44,
+      "maximum_electron": 0.4662757844824898,
+      "minimum_phonon": 3.338237795365009e-15,
+      "runtime_seconds": 46.35049419477582
+    },
+    {
+      "case": "special_phonon_vacuum_one",
+      "status": "PASS",
+      "duration": 0.2,
+      "steps": 40,
+      "electron_states": 630,
+      "phonon_nodes": 1025,
+      "limited_event_evaluations": 0,
+      "energy_ledger_scaled_max": 1.905070698415834e-09,
+      "instantaneous_residual_max": 2.779027008514845e-15,
+      "minimum_electron": 4.274417143756049e-44,
+      "maximum_electron": 0.47958133655133006,
+      "minimum_phonon": 0.0,
+      "runtime_seconds": 25.06974430102855
+    },
+    {
+      "case": "special_sparse_electrons_one",
+      "status": "PASS",
+      "duration": 0.2,
+      "steps": 40,
+      "electron_states": 630,
+      "phonon_nodes": 1025,
+      "limited_event_evaluations": 0,
+      "energy_ledger_scaled_max": 2.815587762938776e-10,
+      "instantaneous_residual_max": 3.903127820947816e-16,
+      "minimum_electron": 0.0,
+      "maximum_electron": 1.0,
+      "minimum_phonon": 0.0014658075876113705,
+      "runtime_seconds": 26.20238425116986
+    }
+  ],
+  "stationarity": {
+    "drift_budget": 1.0222044604925031e-12,
+    "cells": [
+      {
+        "cell": 0,
+        "gamma": 0.0,
+        "amplitude": 0.9997939058327783,
+        "force_absolute": 6.494371013188172e-17,
+        "amplitude_rhs_absolute": 1.2793608835417861e-17,
+        "electronic_rhs_scaled_L1": 1.985123373211923e-20,
+        "phonon_rhs_scaled_L1": 2.3545635672838044e-20,
+        "amplitude_drift_max": 0.0,
+        "electronic_drift_scaled_L1": 2.8407361864788906e-20,
+        "phonon_drift_scaled_L1": 2.9346336211656227e-18,
+        "electron_scale": 1.0,
+        "phonon_scale": 1.0
+      },
+      {
+        "cell": 1,
+        "gamma": 0.1,
+        "amplitude": 0.9167094491431231,
+        "force_absolute": 7.37257477290143e-17,
+        "amplitude_rhs_absolute": 1.582301170475666e-17,
+        "electronic_rhs_scaled_L1": 1.7937718236729358e-20,
+        "phonon_rhs_scaled_L1": 2.3694003061763045e-20,
+        "amplitude_drift_max": 0.0,
+        "electronic_drift_scaled_L1": 1.6240137174512254e-19,
+        "phonon_drift_scaled_L1": 2.9346336211656227e-18,
+        "electron_scale": 1.0,
+        "phonon_scale": 1.0
+      }
+    ],
+    "all_checkpoint_count": 11,
+    "ledger_absolute_max": 3.533291819050219e-21
+  },
+  "postprocessing": {
+    "equilibrium_fields": {
+      "status": "PASS",
+      "scope": "Actual equilibrium fields only; all native-node moment comparisons against independent real-angle eta0 reference. Finite-eta spectral kernels additionally sampled with60-digit implicit reference; ideal comparison includes regulator bias.",
+      "sampling": {
+        "distinct_times_per_cell": 11,
+        "cells": 2,
+        "unique_fields": 2
+      },
+      "maxima": {
+        "moment_scaled_max": 5.353608151792282e-09,
+        "derivative_identity_scaled_max": 3.608217457456986e-11,
+        "finite_eta_kernel_scaled_max": 4.3674151920577306e-16
+      },
+      "runtime_seconds": 5.363563429098576
+    },
+    "boundary_fields": {
+      "status": "PASS",
+      "maxima": {
+        "energy_relative_error": 2.7477882027611257e-16,
+        "force_relative_error": 0.0,
+        "derivative_identity_scaled": 4.9567794313531977e-11
+      },
+      "runtime_seconds": 0.0743659371510148
+    },
+    "boundary_support": {
+      "status": "PASS",
+      "worst_relative_upper_bound": 8.886148255415732e-10,
+      "runtime_seconds": 2.7112618442624807
+    }
+  },
+  "remaining": [
+    "Equilibrium finite-Gamma upper support is handled by the separate root-owned diagnostic; this summary does not infer that result.",
+    "No independent time-refinement sequence for these short special cases; no global stage2 closure."
+  ],
+  "execution": {
+    "initial_block_runtime_seconds": 104.31958235381171,
+    "initial_block_import_failure_preserved": true,
+    "postprocess_only_runtime_seconds": 8.55993262398988,
+    "new_trajectories_on_recovery": 0
+  },
+  "evidence": {
+    "original_assessment": {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_raw/special_assessment.json",
+      "sha256": "8e1c52ab0fe787de5267a7c121f77f2903c37f8e4a5001da608b3f8d3c332f13"
+    },
+    "postprocessing": {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_postprocessed/special_postprocess.json",
+      "sha256": "918958c8f5925c9352fe1823b183ce2641af645927a43e153d5d5cc61e8aba74"
+    },
+    "registration": {
+      "path": "docs/implementation/stage2/closure_prep_20260922/special_plan.json",
+      "sha256": "8447c081ae5cc898348563fe013483c486982e181b65c4b172f4bbc3ca318312"
+    }
+  }
+}

@@ -1,19 +1,34 @@
 # Etapa 2: celdas con cinética acoplada
 
-**Estado al 22 de septiembre: cierre numérico no admitido; etapa abierta.**
+**Estado al 22 de septiembre: desarrollo cerrado; certificado numérico estricto
+de mallas incompleto. Etapa 3 preparada, no iniciada.**
 
-La [revisión actual con plots](review_20260922/README.md) recopila los resultados
-ejecutados en Geminga. RK4 repitió el fallo de la malla electrónica fina. La
-primera trayectoria SSP completó el intervalo, pero excedió 36,5 veces el límite
-energético. Su limitador no se activó. No procede todavía emitir un informe
-final de cierre ni avanzar a la etapa espacial.
+La [decisión de cierre](closure_20260922/closure_decision.json), autorizada por
+el usuario, acepta la evidencia disponible para continuar la implementación.
+El [informe final](closure_20260922/Informe_cierre_etapa_2.md)
+([PDF](../../../output/pdf/implementation/Informe_cierre_etapa_2.pdf)) reúne los
+resultados, los plots y los límites que se trasladan a la siguiente etapa.
+
+El último lote protegido completó 21 tareas, incluidas 13 trayectorias físicas.
+Los controles temporales propios de una/dos celdas pasan en la malla candidata.
+El máximo defecto energético escalado es 5,43766 × 10⁻⁸ y el máximo residuo
+instantáneo registrado es 1,63498 × 10⁻¹⁴. El par de 2049 nodos fonónicos tiene
+una diferencia de 0,004565 %, frente al presupuesto auxiliar de 0,0025 %;
+conserva su FAIL original. Los
+[datos auditados](practical_review_20260922/saved_results_audit.json) y el
+[dictamen numérico](stage2_admission.json) no se reinterpretan como convergencia
+completa de mallas ni como admisión de producción.
 
 La implementación experimental incorpora eventos electrón-fonón conservativos,
 transporte a energía fija entre espectros distintos, movilidad KWT, BGK, calor y
 escape fonónico. La malla candidata tiene 630 estados electrónicos y 1025
 fonónicos por celda. El catálogo R2 y el tag v1.0.0 permanecen intactos.
 
-Resultados estáticos y ensayos realizados:
+## Resultados estáticos y antecedentes
+
+Los siguientes ensayos documentan la evolución de la implementación. Sus
+informes y README conservan los estados y pendientes de cada fecha; la decisión
+de cierre enlazada arriba define el estado de desarrollo actual.
 
 - Transporte: error máximo de respuesta de 0,00395 % con 630 estados; disminuye
   al refinar a 1260/2520. La versión de 180 estados fallaba el límite de 0,1 %.
@@ -42,19 +57,22 @@ Resultados estáticos y ensayos realizados:
   presupuesto sin avanzar. Ambos resultados se conservan; no se recortaron
   poblaciones ni se reinterpretó el fallo como una aprobación.
 
-## Continuación necesaria
+## Siguiente etapa preparada
 
-El único [plan manual vigente](review_20260922/manual_time_plan.json) compara
-una celda SSP con 160/320/640 pasos frente a 1280. Su coste estimado es de 26 minutos,
-un hilo y una reserva de 2 GiB. No se ha ejecutado en esta revisión. El comando
-directo está en `/home/jdiaz/GEMINGA_COMMANDS.md`, sin instrucciones de gestión
-de sesiones. Los lotes anteriores se conservan como evidencia y no deben repetirse.
+**No se recomienda otro lote largo ahora.** La [etapa 3](../stage3/README.md)
+queda preparada para implementar energía espacial y estabilidad, bordes y
+reservorios, conservación de carga y el circuito de tres variables de la
+[memoria](../../modelo_v0_4/actualizaciones/circuito_memoria_20260922.md), antes
+de pasar a dinámica débil y deposición localizada sintética. La secuencia no
+se ha iniciado. Cada ensayo debe registrar sus entradas, observables y controles
+propios; antes de una predicción dinámica se fija la precisión que necesita.
 
-Faltan el dictamen temporal del nuevo integrador, los refinamientos dinámicos,
-los controles sobre esas trayectorias y el informe final. El dictamen de puertas
-actualizado está en
-[stage2_admission.json](stage2_admission.json). No avanzar a la etapa espacial
-mientras siga pendiente.
+El certificado completo de mallas sigue pendiente. Los controles estructurales
+de energía, unidades, signos y dominio se mantienen; el fallo auxiliar no se
+usa como bloqueo general de trabajos con otras dependencias. La
+[revisión anterior](practical_review_20260922/validation_scope_review.md) explica
+esa distinción y permanece histórica. La [libreta vigente](../../GEMINGA_COMMANDS.md)
+ofrece un resumen verificable del cierre y conserva los comandos anteriores.
 
 ## Evidencia y reproducción
 
@@ -66,10 +84,12 @@ mientras siga pendiente.
   evidencia cinética, transporte y cierres con hashes de fuentes.
 - `review/`: referencias independientes, controles negativos y validación de
   los evaluadores de convergencia.
-- `regression_result.json`: pruebas del repositorio, independientes del cálculo
-  temporal que falta completar.
-- `NEXT_STAGE.md`: contrato preparado para la etapa espacial; su ejecución
-  depende del cierre de esta etapa.
+- `regression_result.json`: regresiones del checkpoint correspondiente;
+  no sustituyen los resultados y alcances del informe final.
+- `closure_20260922/closure_decision.json`: decisión vigente de cierre de
+  desarrollo y límites del certificado numérico.
+- `../stage3/entry_contract.json`: contrato de la siguiente secuencia preparada;
+  `NEXT_STAGE.md` conserva la referencia de transición de etapa 2.
 
 Los scripts en `sandbox/stage2_cells/` son diagnósticos optativos. Los operadores
 están en `pysnspd.experimental`; el solver de producción no los importa. Las

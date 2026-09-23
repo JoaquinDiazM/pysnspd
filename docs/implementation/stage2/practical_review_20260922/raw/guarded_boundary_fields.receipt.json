@@ -1,0 +1,33 @@
+{
+  "contract": {
+    "task": {
+      "id": "guarded_boundary_fields",
+      "phase": "new_special_validation",
+      "kind": "fields",
+      "runs": [
+        "guarded_special_phonon_vacuum_one",
+        "guarded_special_sparse_electrons_one"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/check_trajectory_fields.py",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_phonon_vacuum_one.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_sparse_electrons_one.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_boundary_fields.json"
+    ],
+    "batch_manifest_sha256": "951d6e7703772476f263a7f453529e0b2e023df25d7806bfa9dd0d967ad10a1e",
+    "dependency_hashes": {
+      "guarded_special_phonon_vacuum_one": "c65634e27a682acec0d025ccf6d0b5e1edfbfa3bc9451e8b1431f6e989bf5d89",
+      "guarded_special_sparse_electrons_one": "d91ee62fa8d92e674e39f84d7114f559949f52b213ce2882520493aa8564b731"
+    }
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_boundary_fields.json": "06ed52e4dc71c19cfe411031b54ae95863102ae9de71f580af443cf1b7bb6b5a"
+  }
+}

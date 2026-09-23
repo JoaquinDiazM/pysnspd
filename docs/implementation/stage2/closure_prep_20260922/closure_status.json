@@ -1,0 +1,139 @@
+{
+  "schema": "pysnspd.stage2.closure-preparation.v1",
+  "date": "2026-09-22",
+  "status": "GUARDED_PROTOTYPE_TESTED_FULL_VALIDATION_PENDING",
+  "stage2_closed": false,
+  "numerical_admission": false,
+  "production_promotion": false,
+  "push_performed": false,
+  "summary": "<b>La etapa 2 todavía no se puede cerrar.</b> Pasan las pruebas temporales recibidas y los controles especiales registrados. El fallo numérico adicional está localizado y corregido en un prototipo; falta acreditar sus trayectorias largas y mallas con una validación propia.",
+  "report_gate_rows": [
+    [
+      "SSP histórico: tiempo",
+      "PASS ONE/TWO",
+      "85/85 y 98/98 controles"
+    ],
+    [
+      "Equilibrio y fronteras",
+      "PASS histórico",
+      "3 trayectorias; energía < 2e-9"
+    ],
+    [
+      "Campos y soporte",
+      "PASS en muestras",
+      "Cota equilibrio: 1,44e-19"
+    ],
+    [
+      "Transporte aislado histórico",
+      "FAIL preservado",
+      "Redondeo subnormal; no se acepta"
+    ],
+    [
+      "Corrección aritmética",
+      "PASS prototipo",
+      "14 controles y reacciones inversas"
+    ],
+    [
+      "Nueva convergencia y mallas",
+      "PENDIENTE",
+      "19 trayectorias nuevas; 35 tareas"
+    ],
+    [
+      "Entrada a etapa 3",
+      "BLOQUEADA",
+      "Preparación documental disponible"
+    ]
+  ],
+  "next_action": "Ejecutar el nuevo lote completo con el integrador protegido. Repite equilibrio, fronteras y referencias temporales; después compara tres mallas fonónicas y tres electrónicas, con control temporal por pareja. Todas las tolerancias se conservan. El plan anterior de sólo mallas queda bloqueado para evitar validar una versión ya rechazada.",
+  "remaining_runtime_note": "Estimación del lote manual: <b>9 a 15 horas, un hilo y reserva de 12 GiB</b>. El coste de la rama extendida en la malla más fina y el pico de memoria no están medidos; puede tardar más. La orden única queda en /home/jdiaz/GEMINGA_COMMANDS.md. No se lanzó ese cálculo.",
+  "legacy_two_audit": {
+    "checks": 98,
+    "passed": 98,
+    "scope": "Frozen historical limited SSP only"
+  },
+  "guard_sha256": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4",
+  "guard_checks": {
+    "normal_full_trajectory_bytewise": true,
+    "normal_branch_delegates_all_stages": true,
+    "subnormal_inventory_not_rounded_before_budget": true,
+    "zero_inventory_blocks_outflow": true,
+    "subnormal_phonon_inventory_selects_fallback": true,
+    "competing_reaction_face_support": true,
+    "competing_reaction_face_energy": true,
+    "competing_reaction_face_common_limiter_active": true,
+    "previous_rejected_stage_physical": true,
+    "previous_rejected_stage_uses_extended": true,
+    "transport_complete_registered_case": true,
+    "transport_extended_branch_exercised": true,
+    "escape_all_stored_states_bytewise": true,
+    "escape_third_order": true
+  },
+  "supplement_status": "PASS_GUARDED_REVERSE_CHANNEL_MICROTESTS_ONLY",
+  "manual_plan": {
+    "path": "docs/implementation/stage2/closure_prep_20260922/guarded_acceptance_plan.json",
+    "sha256": "0c5c953de3dc974dedf5ae963f0517d86dc568aedd74a0140998eb0b4e58a3b9",
+    "tasks": 35,
+    "new_trajectories": 19,
+    "status": "READY_FOR_USER_FOREGROUND_RUN",
+    "executed": false
+  },
+  "exclusions": [
+    "absolute NbN calibration",
+    "spatial dynamics",
+    "circuit",
+    "full SNSPD transient",
+    "production"
+  ],
+  "failed_evidence_preserved": [
+    "isolated serialization failure",
+    "isolated transport support failure",
+    "equilibrium quadrature self-convergence failure",
+    "initial reverse-reaction fixture precheck failure"
+  ],
+  "criteria_changed": false,
+  "physical_kernels_changed": false,
+  "population_clipping": false,
+  "posthoc_energy_repair": false,
+  "readiness_checks": {
+    "guarded_microtests": "PASS",
+    "reverse_reaction_microtests": "PASS",
+    "external_inventory_files_verified": 24,
+    "frozen_orchestrator_guards": 22,
+    "real_entrypoint_smoke": "PASS_ENTRYPOINT_CONTRACT_ONLY",
+    "pdf_visual_QA": "PASS"
+  },
+  "evidence": [
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_cell_audit.json",
+      "sha256": "373b64a37c66041b966922dfe5757a5d5d0443e916038baf0f664d20a574aacd"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded/isolated_results.json",
+      "sha256": "b88e44067e8ba6879db105c61d9c831482e11a64f02654b6d2072f576f201f07"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_negative_v2/isolated_results.json",
+      "sha256": "0ce7a27d077cd1c4e23417ac600a134417779efeab96f450f02498947d359d79"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/isolated_guarded_inventory.json",
+      "sha256": "78618b26db8ae1449f5a59c2b14b293bb2622ace9fae4a12ff39c9d859b7a973"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/entrypoint_smoke/smoke_result.json",
+      "sha256": "21862d1eb5e4765778d03970c6b3a1477601f5e7e52d80482d041833b019aee1"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/guarded_frozen_offline_tests.json",
+      "sha256": "f0230fe62ee980b416e766ec067a886578df06a41be6f046c6cb2114412c409b"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/equilibrium_envelope_entrypoint_check.json",
+      "sha256": "f64bf17e3d610a2fe87870e23e51048c5f2b1f57e1a21d0caac06232b8d592cf"
+    },
+    {
+      "path": "docs/implementation/stage2/closure_prep_20260922/report_visual_QA.json",
+      "sha256": "5307a8acf068ebbe19dcb006cde2b210deed379d23dcb50610be97884f4ca17b"
+    }
+  ]
+}

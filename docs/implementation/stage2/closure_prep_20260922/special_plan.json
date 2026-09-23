@@ -1,0 +1,142 @@
+{
+  "schema": "pysnspd.stage2.special-short-cases.registration.v1",
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "tasks": [
+    {
+      "id": "special_equilibrium_two",
+      "parameters": {
+        "case": "two",
+        "steps": 10,
+        "duration": 0.1,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": 15.0,
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "equilibrium",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "special_phonon_vacuum_one",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 0.2,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "phonon_vacuum",
+        "rtol": 1e-09
+      }
+    },
+    {
+      "id": "special_sparse_electrons_one",
+      "parameters": {
+        "case": "one",
+        "steps": 40,
+        "duration": 0.2,
+        "phonon_nodes": 1025,
+        "infrared": 0.005,
+        "face_order": 2,
+        "reaction_order": 2,
+        "reaction_layout": "resolved_panels",
+        "reaction_max_energy_panel": 0.125,
+        "reaction_outer_order": 2,
+        "reaction_max_panel": 0.5,
+        "electron_refinement": 1,
+        "reaction_method": "projected",
+        "escape": "inf",
+        "heating": 0.0,
+        "method": "rk4",
+        "scenario": "sparse_electrons",
+        "rtol": 1e-09
+      }
+    }
+  ],
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/assess_grid_refinement.py": "b91f8dc8b641f4f8ddbf4745df96d4c5723c0d59056508f14990ea465f86e552",
+    "sandbox/stage2_cells/assess_time_refinement.py": "fe4bb29229687653475104fe0207340cb62cb26faf7f07d50d36aa691534a9ad",
+    "sandbox/stage2_cells/check_trajectory_fields.py": "df671e573d5d7dcea6f3a8dc344d36844ceb688b8f3cfefacb941594f4efa262",
+    "sandbox/stage2_cells/check_trajectory_support.py": "8d5c758ba3f53baab0cdebb43ea62aa753812f24002ac314e61de61c880e4108",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_pair.py": "2b6feb29bdfb7046035d47e762e1c4221aa46cf137e8a6a764f2d1318a466f0e",
+    "sandbox/stage2_cells/recovery_20260921/assess_limited_time.py": "ab7088308d1ab192a01357f832302d08e408b8609efe00fc648d2c3dbcf4cdfc",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": "a291cc5999b2a2060bd96b2539987cd19f4b584bfa7c644fb7030edd54312364",
+    "sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py": "d2fd882891eb5f43cb61aa34b054a6b0568bab37e1100fef40505041b9be680d",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "sandbox/stage2_cells/time_pass_20260922/run_two_cell_time_batch.py": "3f43c87294afb41485ca52b0124b61dcf04bd643d527308debce826b710aba8f",
+    "sandbox/stage2_cells/closure_prep_20260922/special_cases.py": "36658b90e65e86218f27a4d961c323dd2c0e36a5c2cf687a4c101baa5bda63b1",
+    "docs/implementation/stage1_r2/review/causal_reference.py": "8e0324a87b5278df3ac2b976480fcbdf2f696bfb63a9b66c8dfa17f7e71516b1",
+    "docs/implementation/stage2/review/complementary_energy_reference.py": "a03d48f6f3be8afcd665a8eda30b285697338e57c9970b96d614d83fc3045a67"
+  },
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "physical_kernels_changed": false,
+  "thresholds_changed": false,
+  "inherited_gates": {
+    "ledger_scaled_max": 1e-07,
+    "instantaneous_scaled_max": 1e-10,
+    "pauli_roundoff_max": 1e-13,
+    "phonon_negative_roundoff_max": 1e-13,
+    "equilibrium_weighted_rhs_scaled_max": 1e-11,
+    "field_moment_scaled_or_relative_max": 0.001,
+    "derivative_identity_scaled_max": 1e-07
+  },
+  "stationarity": {
+    "norm": "Per-cell electron L1 with4wx; phonon L1 with phonon capacities; amplitude absolute. Population scales=max(1,initial weighted count).",
+    "drift_budget": "duration*1e-11 +100*machine_epsilon, after the declared normalization",
+    "amplitude_force_absolute_max": 1e-11,
+    "note": "A stationary implemented force is distinct from an independently referenced physical force. Near-zero physical force uses scale max(1,sum(abs(vacuum and occupation contributions)))."
+  },
+  "field_reference": {
+    "method": "Independent eta=0 real-angle reference at all native count nodes, same populations and weights; separate60-digit w-plane finite-eta checks at9 count nodes per actual finite-Gamma field.",
+    "samples": "All11 distinct equilibrium times in both cells; zero-Gamma boundary fields use the existing analytic BCS assessor.",
+    "scope": "The ideal reference comparison includes finite-eta bias. A sampled finite-eta spectral check alone is not a full moment or upper-support certificate."
+  },
+  "limitations": [
+    "No time-refinement certificate for these short special trajectories.",
+    "Finite-Gamma equilibrium upper support is assessed separately by the root reviewer; no certificate is inferred here.",
+    "No global stage2 or production admission follows from this block."
+  ],
+  "execution": {
+    "expected_seconds": [
+      90,
+      150
+    ],
+    "bounded_timeout_seconds": 240,
+    "threads": 1,
+    "account": "jdiaz",
+    "no_retry_or_splitting": true,
+    "stop_on_first_failure": true
+  }
+}

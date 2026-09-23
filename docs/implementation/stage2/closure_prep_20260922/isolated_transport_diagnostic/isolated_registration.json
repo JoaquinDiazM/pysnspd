@@ -1,0 +1,70 @@
+{
+  "schema": "pysnspd.stage2.isolated-observational-diagnosis.v1",
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_checks.py": "3dcc1060bda63382eaca9152a8abe48dc4d51618809229ec9b667f046333cc74",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_transport_diagnosis.py": "9ba28e38b422478f5a4e3a5ed3544ae19f2f2acab72bccfb97db1fcf84159b60"
+  },
+  "failed_result_sha256": "f70bbdd8277e0acc448adc14034bf4d0bbe07df5fbba31f0d93531473e0c9a24",
+  "transport": {
+    "amplitudes": [
+      0.5,
+      1.0
+    ],
+    "gammas": [
+      0.0,
+      0.0
+    ],
+    "electron_states": 630,
+    "phonon_nodes": 1025,
+    "duration": 0.02,
+    "steps": 20,
+    "filled_count_band": [
+      1.1,
+      1.5
+    ],
+    "populations": "left band exactly1, left exterior0; right electrons0; all phonons0",
+    "BGK": false,
+    "condensate_motion": false,
+    "heating": false,
+    "reactions": false,
+    "escape": false,
+    "diffusion_over_length_squared": 0.2,
+    "face_order": 2
+  },
+  "purpose": "Capture the first rejected state and donor inventories; no bypass, repair or acceptance.",
+  "escape": {
+    "duration": 0.2,
+    "tau": 0.7,
+    "steps": [
+      10,
+      20,
+      40
+    ],
+    "reference": "exact affine exponential",
+    "expected_order": 3,
+    "minimum_error_reduction": 6.0
+  },
+  "execution": {
+    "wall_timeout_seconds": 240,
+    "expected_seconds": "under30",
+    "threads": 1,
+    "max_attempts": 1
+  },
+  "reuses": "No approved reaction trajectory is repeated. Only the known failing transport is observed, as explicitly authorized.",
+  "no_map_or_kernel_changes": true
+}

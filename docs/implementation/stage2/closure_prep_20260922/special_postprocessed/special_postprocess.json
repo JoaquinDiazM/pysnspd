@@ -1,0 +1,57 @@
+{
+  "schema": "pysnspd.stage2.special-postprocessing.v1",
+  "status": "PASS_POSTPROCESSING_FINITE_GAMMA_SUPPORT_SEPARATE",
+  "new_trajectories": 0,
+  "physical_sources_changed": false,
+  "stage2_admission": false,
+  "original_failed_record_sha256": "8e1c52ab0fe787de5267a7c121f77f2903c37f8e4a5001da608b3f8d3c332f13",
+  "plan_sha256": "8447c081ae5cc898348563fe013483c486982e181b65c4b172f4bbc3ca318312",
+  "source_sha256": "8fa06069e3ab694ad34d9501a2ca870d9b44c267561ae43acfd42146da2c6bcc",
+  "inputs": {
+    "tmp/stage2_special_20260922/special_equilibrium_two.json": "9d50dc26eb1d5b9be247ea053fa31d999b3bc960b4bdbfd9377ca0f94754ccb7",
+    "tmp/stage2_special_20260922/special_equilibrium_two.npz": "ce35cdde1153f239a6198f83e5317bef09265c598f48a6a8b9af7d7332834173",
+    "tmp/stage2_special_20260922/special_equilibrium_two_initial.npz": "d5e1d9135506649ecab05a1d102eadace14039076e195823f7dfd1edbe60cbe1",
+    "tmp/stage2_special_20260922/special_phonon_vacuum_one.json": "c39d618218d519c64b8d1ed70b6bcba3ea03cc0523292bbeb92211a86eadb7c8",
+    "tmp/stage2_special_20260922/special_phonon_vacuum_one.npz": "35cbfe53c5584ad67fd0707e73a9ba0bacc0173ab91968fe9cee2dee95155508",
+    "tmp/stage2_special_20260922/special_phonon_vacuum_one_initial.npz": "fa18e172a08e4239d58217088aba9b9910d6f3c6c31ff06a1140725e983df0b3",
+    "tmp/stage2_special_20260922/special_sparse_electrons_one.json": "5381664f672bd53985f9f3731ec3877df65e446ae61ba31a28fcb41823e54202",
+    "tmp/stage2_special_20260922/special_sparse_electrons_one.npz": "5080f6365edd3b15f07947e47e172e69377ec49a044da8fc7ed2fcc71a74d696",
+    "tmp/stage2_special_20260922/special_sparse_electrons_one_initial.npz": "11a7993a4b69da136492c4686abd7041e0826ddd26b24bfc6e153645cf718515"
+  },
+  "postprocessing": {
+    "equilibrium_fields": {
+      "status": "PASS",
+      "scope": "Actual equilibrium fields only; all native-node moment comparisons against independent real-angle eta0 reference. Finite-eta spectral kernels additionally sampled with60-digit implicit reference; ideal comparison includes regulator bias.",
+      "sampling": {
+        "distinct_times_per_cell": 11,
+        "cells": 2,
+        "unique_fields": 2
+      },
+      "maxima": {
+        "moment_scaled_max": 5.353608151792282e-09,
+        "derivative_identity_scaled_max": 3.608217457456986e-11,
+        "finite_eta_kernel_scaled_max": 4.3674151920577306e-16
+      },
+      "runtime_seconds": 5.363563429098576
+    },
+    "boundary_fields": {
+      "status": "PASS",
+      "maxima": {
+        "energy_relative_error": 2.7477882027611257e-16,
+        "force_relative_error": 0.0,
+        "derivative_identity_scaled": 4.9567794313531977e-11
+      },
+      "runtime_seconds": 0.0743659371510148
+    },
+    "boundary_support": {
+      "status": "PASS",
+      "worst_relative_upper_bound": 8.886148255415732e-10,
+      "runtime_seconds": 2.7112618442624807
+    }
+  },
+  "remaining": [
+    "Equilibrium finite-Gamma support is evaluated by a separate root-owned diagnostic.",
+    "No temporal-refinement or global stage2 admission is inferred."
+  ],
+  "runtime_seconds": 8.55993262398988
+}

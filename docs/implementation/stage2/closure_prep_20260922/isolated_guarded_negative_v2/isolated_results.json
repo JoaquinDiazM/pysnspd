@@ -1,0 +1,77 @@
+{
+  "schema": "pysnspd.stage2.guarded-negative-channel-results.v2",
+  "status": "PASS_GUARDED_REVERSE_CHANNEL_MICROTESTS_ONLY",
+  "registration_sha256": "707a27a680fb6a5683d05994b8268b59f205306e455fe5b3fcc4a6ddb58cd9c6",
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_checks.py": "3dcc1060bda63382eaca9152a8abe48dc4d51618809229ec9b667f046333cc74",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_guarded_negative_v2.py": "4d37e567d9810021a87a3e02d7b9ce9eac18dade17c7f2a9e52ea3b265192687",
+    "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4",
+    "sandbox/stage2_cells/recovery_20260921/test_limited_ssp.py": "adddfe53a466a206d834d254f6a87e37b32ed4f02c71c747ae571061bd61cec8"
+  },
+  "cases": [
+    {
+      "case": "absorption",
+      "checks": {
+        "initial_guard_active": true,
+        "negative_rates": true,
+        "no_positive_rates": true,
+        "raw_phonon_consumption": true,
+        "subnormal_phonon_has_raw_consumption": true,
+        "fallback_executed": true,
+        "net_phonon_consumption": true,
+        "subnormal_phonon_consumed": true,
+        "invariant_checks": true,
+        "stage_accounting": true
+      },
+      "energy_error": 2.7755575615628914e-16,
+      "count_error": 3.885780586188048e-16,
+      "phonon_count_change": -0.001003377056515431,
+      "electron_count_change": -3.885780586188048e-16,
+      "guarded_steps": 25,
+      "subnormal_phonon_index": 2,
+      "subnormal_phonon_energy": 0.7,
+      "subnormal_phonon_initial": 1e-320,
+      "subnormal_phonon_final": 0.0
+    },
+    {
+      "case": "creation",
+      "checks": {
+        "initial_guard_active": true,
+        "negative_rates": true,
+        "no_positive_rates": true,
+        "raw_phonon_consumption": true,
+        "subnormal_phonon_has_raw_consumption": true,
+        "fallback_executed": true,
+        "net_phonon_consumption": true,
+        "subnormal_phonon_consumed": true,
+        "invariant_checks": true,
+        "stage_accounting": true
+      },
+      "energy_error": 1.942890293094024e-16,
+      "count_error": 1.6653345369377348e-16,
+      "phonon_count_change": -0.033909379119388156,
+      "electron_count_change": 0.06781875823877614,
+      "guarded_steps": 25,
+      "subnormal_phonon_index": 2,
+      "subnormal_phonon_energy": 0.7,
+      "subnormal_phonon_initial": 1e-320,
+      "subnormal_phonon_final": 0.0
+    }
+  ],
+  "scope": "Four-state normal spectral oracle and six phonon nodes; same projected event law and guarded SSP map. Not selected-mesh or global time admission.",
+  "runtime_seconds": 0.05915079265832901
+}

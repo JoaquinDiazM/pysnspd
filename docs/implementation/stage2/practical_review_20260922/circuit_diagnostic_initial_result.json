@@ -1,0 +1,21 @@
+{
+  "status": "PASS_PRESCRIBED_CIRCUIT_IDENTITY_ONLY",
+  "runtime_seconds": 0.05049589998088777,
+  "parameters": {
+    "I0_A": 2e-05,
+    "Rload_ohm": 50.0,
+    "Rbias_ohm": 10000.0,
+    "Lbias_H": 1e-06,
+    "Lseries_external_H": 1e-08,
+    "C_F": 1e-10,
+    "Vbias_V": 0.2
+  },
+  "peak_full_V": 0.0007379653034798657,
+  "peak_simple_V": 0.0007499999999999998,
+  "minimum_full_V": -0.00038034943090530936,
+  "final_full_V": -3.902235999723403e-05,
+  "max_instantaneous_power_residual_scaled": 3.1893860049460634e-16,
+  "source_sha256": "715469dc4d05b26c2f8debf1bca9a43f9b681506a6313339dfa9e9a79e5808ae",
+  "method": "Exact affine matrix-exponential propagation on each constant prescribed-resistance interval.",
+  "scope": "Topology diagnostic with identical reference current and series inductance. Synthetic voltage-bias value; Lseries10nH is an external test element, not an identified partition of the thesis total. No film, photon, detection latency, readout fit or production change."
+}

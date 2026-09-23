@@ -12,21 +12,27 @@ historical deliveries are included in the repository. Start with
 [model 0.4](docs/modelo_v0_4/README.md),
 [the continuous system and implementation sequence](docs/modelo_v0_4/D_sintesis_plan_y_verificaciones_v0_4.md),
 [release notes](docs/releases/v1.0.0.md) and [status](status.md).
+The [current planned model](docs/implementation/MODELO_VIGENTE.md) incorporates
+the thesis three-state bias/readout circuit and the revised validation scope.
+It supersedes the simplified circuit in the historical C/D documents.
 The [command notebook](docs/GEMINGA_COMMANDS.md) mirrors the user-maintained file
 `/home/jdiaz/GEMINGA_COMMANDS.md` on Geminga. Calculations expected to exceed five
-minutes are left there for the user to execute. The active notebook contains
-one current continuation; superseded commands are retained in a separate archive.
+minutes are left there for the user to execute. Superseded commands are retained
+in a separate archive; the active notebook identifies whether any long run is needed.
 
-The [stage 2 checkpoint](docs/implementation/stage2/README.md) adds conservative
-electron-phonon events and simultaneous one/two-cell dynamics. Its static checks
-selected complementary electronic and phonon meshes. Full-duration RK4 temporal
-checks passed on the candidate grid, but the finest electronic grid failed a
-population guard in an internal RK stage. The SSP recovery completed its first
-trajectory but exceeded the energy-ledger tolerance by a factor of 36.5.
-The [22 September results review](docs/implementation/stage2/review_20260922/README.md)
-archives the new outputs, plots and independent audit. Stage 2 remains open.
-A single-cell temporal refinement is prepared for manual execution before
-further mesh work; no production promotion is made.
+The [stage 2 development closure](docs/implementation/stage2/closure_20260922/closure_decision.json)
+accepts the completed conservative electron-phonon and one/two-cell work as the
+basis for the next implementation stage. The [final report](docs/implementation/stage2/closure_20260922/Informe_cierre_etapa_2.md)
+([PDF](output/pdf/implementation/Informe_cierre_etapa_2.pdf)) records 13 valid
+trajectories, 21 completed tasks and passing candidate-grid ONE/TWO temporal tests.
+The 2049-node phonon pair missed its supplementary temporal budget (0.004565%
+versus 0.0025%); that failure and the incomplete dynamic mesh certificate remain
+explicit. The [prepared stage 3 sequence](docs/implementation/stage3/README.md)
+starts with spatial energy, then boundaries, charge conservation and the thesis
+three-state circuit, followed by weak dynamics. Stage 3 implementation has not
+started; neither this development closure nor the retained tests promote the
+updated model to production. The [stage 2 guide](docs/implementation/stage2/README.md)
+keeps the earlier reviews and their original verdicts as historical evidence.
 
 Commits after the tag contain the opt-in
 [stage 1 implementation](sandbox/stage1_catalog/README.md): explicit material

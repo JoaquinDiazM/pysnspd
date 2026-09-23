@@ -1,0 +1,49 @@
+{
+  "schema": "pysnspd.validation.scope-amendment.v1",
+  "date": "2026-09-22",
+  "basis": "User requests proportional verification and restoration of the thesis readout circuit.",
+  "old_numerical_tolerances_changed": false,
+  "old_failures_reclassified": false,
+  "decision": "The auxiliary pair budget is retained as a failed diagnostic, but does not block unrelated static spatial implementation/preparation.",
+  "essential_controls": [
+    "source/unit provenance",
+    "consistent physical signs and energy bookkeeping",
+    "valid state/population domain",
+    "applicable stationary/invariant checks"
+  ],
+  "static_stage3a": {
+    "allowed_scope": "Small static spatial energy, Cartesian derivatives and current at fixed thermal/nonthermal populations.",
+    "prerequisites": [
+      "Own preregistration",
+      "R2 energy/force domain checks",
+      "D.36 evaluated on tested states",
+      "Independent static derivative/current checks"
+    ],
+    "requires_complete_dynamic_stage2_mesh_certificate": false,
+    "implementation_started": false,
+    "excludes": [
+      "kinetic time integration",
+      "photon",
+      "circuit transient",
+      "detector pulse",
+      "production"
+    ]
+  },
+  "future_dynamic_accuracy": {
+    "status": "OBSERVABLE_BUDGET_TO_REGISTER_BEFORE_NEW_RESULTS",
+    "rule": "Choose the physical difference to resolve and numerical uncertainty in those observables. Do not choose a new number merely to pass the existing pair.",
+    "old_certificate": "Full original stage2 certificate remains incomplete; no full-dynamic admission is inferred."
+  },
+  "computation_policy": {
+    "new_long_batch_required_now": false,
+    "old_guarded_batch": "STOPPED_AFTER21_COMPLETE_TASKS_AT_SUPPLEMENTARY_PAIR",
+    "reuse": "Reevaluate compatible saved trajectories. Repeat dynamics only when a model/numerical change or unresolved decision requires it."
+  },
+  "failed_pair": {
+    "path": "docs/implementation/stage2/practical_review_20260922/raw/two_guarded_ph2049_pair_320_640.json",
+    "sha256": "8928844b8aeaedf486b3f805fc79db96145ab0abf87e9edac5a8c80fcfaafb33",
+    "maximum_difference": 4.565195781058689e-05,
+    "original_auxiliary_budget": 2.5e-05,
+    "status": "FAIL_PAIR_DIAGNOSTIC"
+  }
+}

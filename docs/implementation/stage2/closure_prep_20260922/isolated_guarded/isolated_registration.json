@@ -1,0 +1,91 @@
+{
+  "schema": "pysnspd.stage2.guarded-prototype-registration.v1",
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "source_hashes": {
+    "docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": "86dd59209220dbe907b9da3608818d5cd462d9df4f97ef39ee6ef681b68ce970",
+    "docs/implementation/stage2/acceptance_criteria.json": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_checks.py": "3dcc1060bda63382eaca9152a8abe48dc4d51618809229ec9b667f046333cc74",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "sandbox/stage2_cells/closure_prep_20260922/isolated_guarded_validation.py": "19ba14d048a2e899394ae7c2ae3be78a722868c7ae9dfbdc43d1dadd7bdda068",
+    "sandbox/stage2_cells/closure_prep_20260922/limited_ssp_guarded.py": "9b77b91ff7b4e68786ea07a7e915f119d330f1c957ca22d2dd7b07028b00fad4",
+    "sandbox/stage2_cells/recovery_20260921/test_limited_ssp.py": "adddfe53a466a206d834d254f6a87e37b32ed4f02c71c747ae571061bd61cec8"
+  },
+  "capability_requirement": "longdouble wider exponent AND precision than float64",
+  "guard_trigger": "positive electron, hole or phonon capacity-weighted inventory <1024*float64.tiny",
+  "tasks": [
+    {
+      "id": "normal_bytewise",
+      "case": "one selected630/1025 moving condensate",
+      "duration": 0.01,
+      "steps": 5,
+      "reference": "frozen original SSP, same initial state; compare every macro-output bitwise"
+    },
+    {
+      "id": "subnormal_budget_oracles",
+      "scope": "longdouble scalar budgets, zero faces, and detection of phonon inventory"
+    },
+    {
+      "id": "competing_channels_toy",
+      "scope": "same physical event law, 4-state normal oracle with reaction+face; tiny populated tail"
+    },
+    {
+      "id": "previous_rejected_stage",
+      "scope": "guarded map only, identical saved FE input and h=.001"
+    },
+    {
+      "id": "transport_fixed_fields",
+      "duration": 0.02,
+      "steps": 20,
+      "amplitudes": [
+        0.5,
+        1.0
+      ],
+      "initial": "same registered exact p=0/1 band and phonon vacuum as failed original case"
+    },
+    {
+      "id": "escape",
+      "duration": 0.2,
+      "tau": 0.7,
+      "steps": [
+        10,
+        20,
+        40
+      ],
+      "reference": "exact exponential and bytewise comparison against every saved original escape state"
+    }
+  ],
+  "reference_hashes": {
+    "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_rejected_state.npz": "74e1216200b7ab90e094bdb9edec35747ab129580b2205747e4f498e3e990bf4",
+    "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_transport_diagnosis.json": "a93ad12d2fc1ad72c59935f91c80c41d3be38d62fa03a8b368402962a52a39a1",
+    "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_10.npz": "b722c486e6e3a1160862085f0077ab4dff248e20c1711c1f5250791e4ab06b8e",
+    "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_20.npz": "44d874c45730b1a40f72cdc7ab48810781f30d694d3bbdfb2c3cb681fa80ec06",
+    "docs/implementation/stage2/closure_prep_20260922/isolated_transport_diagnostic/isolated_escape_40.npz": "d866ef1046fa82abba35a4ddb91c1981488eb16e39de221d1cd1c767c136fc03"
+  },
+  "gates": {
+    "strict_populations": true,
+    "energy_scaled_max": 1e-07,
+    "count_scaled_max": 1e-12,
+    "smooth_error_reduction_min": 6.0,
+    "normal_branch_bytewise": true,
+    "clipping": false,
+    "energy_repair": false
+  },
+  "execution": {
+    "threads": 1,
+    "wall_timeout_seconds": 240,
+    "expected_seconds": "under60",
+    "max_attempts": 1
+  },
+  "scope": "Prototype only. No global stage2 or production admission; new temporal and mesh validation remain required unless full-trajectory equivalence is measured."
+}

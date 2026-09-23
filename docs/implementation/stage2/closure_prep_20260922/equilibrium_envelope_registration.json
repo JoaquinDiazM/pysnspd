@@ -1,0 +1,28 @@
+{
+  "schema": "pysnspd.stage2.equilibrium-envelope-registration.v1",
+  "source_sha256": "be2d66e9f811be2f306fc2149c0deb7a2a3e26e6d66c8d7271262589fcbb677c",
+  "trajectory_sha256": "9d50dc26eb1d5b9be247ea053fa31d999b3bc960b4bdbfd9377ca0f94754ccb7",
+  "archive_sha256": "ce35cdde1153f239a6198f83e5317bef09265c598f48a6a8b9af7d7332834173",
+  "quadrature_record_sha256": "4aacc098d0c78a426d462e94868dc5688446e3019acf78e08903d6ab10b51952",
+  "physical_sources": {
+    "pysnspd/experimental/__init__.py": "c166698e3ac13bfda58a5e0b7777ca116597dee91ad6fc6124688b8d20a20f54",
+    "pysnspd/experimental/cell_closures.py": "6f852cede1bcf1689b4889f186464ac5f6293787d5075b61b4e39ab6bcc6d10d",
+    "pysnspd/experimental/cell_transport.py": "265d98cb440b07e1fb8b518c85989c2844448d758a89de3955885a557a1adf75",
+    "pysnspd/experimental/cell_validation.py": "c2ef8f2a72aa9d0f2a5f9cdd9491dd3172c534a57f33435c893b36ad1eede88b",
+    "pysnspd/experimental/coupled_cells.py": "7b238b90da329bc94a718826b5a1abc9200763865f5d54abc6128e471d6de0df",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/material_admission.py": "b5a7310f3f168d5c5273c595493d4ae5ea587af9fe5b1a78b4d627c4e584284f",
+    "pysnspd/experimental/material_preprocessing.py": "d1d91fd521aa2750dcd1e0845e9bc072047740e622edf3053226983d6beed250",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "sandbox/stage2_cells/run_coupled.py": "79a22e339818f4e08fe2144912fb28372b9f593426a0367867f2aeafb0a532d9",
+    "sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": "a291cc5999b2a2060bd96b2539987cd19f4b584bfa7c644fb7030edd54312364",
+    "sandbox/stage2_cells/recovery_20260921/limited_ssp.py": "1629668cbeb71735f0ff152a96d00423ff77922bdb73f872870a6dc8725fde60"
+  },
+  "relative_omission_limit": 0.001,
+  "method": "Analytic causal spectral envelope, maxima of actual interpolation populations, exact Debye polynomial integral.",
+  "reason": "The prior16/32quadrature bound was tiny but did not converge relative to itself; it is retained as FAIL. This broader exact envelope has no quadrature error and does not change tolerances.",
+  "reference_note": "Uses the same gross in-support activity measured in the preserved quadrature record only as the normalization denominator.",
+  "no_new_RHS": true,
+  "no_new_trajectories": true
+}

@@ -1,0 +1,36 @@
+{
+  "contract": {
+    "task": {
+      "id": "guarded_special_assessment",
+      "phase": "new_special_validation",
+      "kind": "specials",
+      "runs": [
+        "guarded_special_equilibrium_two",
+        "guarded_special_phonon_vacuum_one",
+        "guarded_special_sparse_electrons_one"
+      ],
+      "accepted_statuses": [
+        "PASS"
+      ]
+    },
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-u",
+      "/home/jdiaz/pysnspd/sandbox/stage2_cells/closure_prep_20260922/assess_guarded_specials.py",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_equilibrium_two.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_phonon_vacuum_one.json",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_sparse_electrons_one.json",
+      "--output",
+      "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_assessment.json"
+    ],
+    "batch_manifest_sha256": "951d6e7703772476f263a7f453529e0b2e023df25d7806bfa9dd0d967ad10a1e",
+    "dependency_hashes": {
+      "guarded_special_equilibrium_two": "789fa19ae0e7dc34f4c0932f1c3c397e84b5e40e56b1106428f8b672321c8151",
+      "guarded_special_phonon_vacuum_one": "c65634e27a682acec0d025ccf6d0b5e1edfbfa3bc9451e8b1431f6e989bf5d89",
+      "guarded_special_sparse_electrons_one": "d91ee62fa8d92e674e39f84d7114f559949f52b213ce2882520493aa8564b731"
+    }
+  },
+  "output_hashes": {
+    "/home/jdiaz/pysnspd/tmp/stage2_guarded_acceptance_20260922/guarded_special_assessment.json": "2330523db908b4e4553a2b00c4f835e9141259c697b5d64695d18aeb15145464"
+  }
+}

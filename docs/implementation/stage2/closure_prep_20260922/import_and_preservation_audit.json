@@ -1,0 +1,593 @@
+{
+  "status": "PASS",
+  "imported_files": 34,
+  "imported_bytes": 68123415,
+  "remote_imports": [
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/batch_events.jsonl",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/batch_events.jsonl",
+      "sha256": "0c2a159ff24fcbf1fd7a2290c75ea29248681a628e56747fdbd42620d381552d",
+      "verified": true,
+      "bytes": 6756
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/batch_manifest.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/batch_manifest.json",
+      "sha256": "ae45b10d7bd9900212148d382b919e1601da9921a041fdd7d3469cf6057fc3d3",
+      "verified": true,
+      "bytes": 3061
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_1280.console.log",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.console.log",
+      "sha256": "31175314b084af8862ebb549b53000ad886ef0906fee64254ac902bd2003e0ae",
+      "verified": true,
+      "bytes": 36653
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_1280.integration.jsonl",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.integration.jsonl",
+      "sha256": "8d5e7d65c5f08535e28697cfc790661339a1e5594600b66f17da50f9a8b874a8",
+      "verified": true,
+      "bytes": 35361
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_1280.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.json",
+      "sha256": "7c9be83e9c9ed0c75f252f095994cfdaa12b9241bf2e96798f0fb809383f2225",
+      "verified": true,
+      "bytes": 1522912
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_1280.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.npz",
+      "sha256": "d4e4da1bd658f25c2b598841544f6b4726aecc1b45f24b75273137d96ce4258b",
+      "verified": true,
+      "bytes": 32419636
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_1280.receipt.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.receipt.json",
+      "sha256": "a2b783b82f7c4215baac0fd85b9370ba7665ebd248f028be1888135db1911b2d",
+      "verified": true,
+      "bytes": 2284
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_1280_initial.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280_initial.npz",
+      "sha256": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+      "verified": true,
+      "bytes": 44460
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_160.console.log",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.console.log",
+      "sha256": "1b542623ae38e191ff9342fc3e27128978f2f74275d7bd475159a23e7aa53de5",
+      "verified": true,
+      "bytes": 6063
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_160.integration.jsonl",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.integration.jsonl",
+      "sha256": "62c7fe760d2ab9521fa4864d07758a1b1327274bb990d1889b375d41734514fe",
+      "verified": true,
+      "bytes": 4762
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_160.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.json",
+      "sha256": "c49a7b787bc6d0f76f8d30ce2b5bc54af1cc4fafb27963a51b5d71a0271e970f",
+      "verified": true,
+      "bytes": 197625
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_160.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.npz",
+      "sha256": "881918a219fbc7f660e3752f5e236e55dd1c6b2f857b373ad2ff94158971bc52",
+      "verified": true,
+      "bytes": 4100223
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_160.receipt.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.receipt.json",
+      "sha256": "7b7a0a1f411b2a8cda63a6c08a9b5c6bc06bd392a8a47919c33f60f30338c593",
+      "verified": true,
+      "bytes": 2277
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_160_initial.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160_initial.npz",
+      "sha256": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+      "verified": true,
+      "bytes": 44460
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_320.console.log",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.console.log",
+      "sha256": "3584ffa7a39326be8d8a5e17e373799a6a1e69cc67701c9b776b0801bdcae801",
+      "verified": true,
+      "bytes": 10392
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_320.integration.jsonl",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.integration.jsonl",
+      "sha256": "4467e561131c2de9bd7897eb4d952d7dd2bbb053c337d2242158defde66fbe17",
+      "verified": true,
+      "bytes": 9091
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_320.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.json",
+      "sha256": "1f6802787cba46876503522e77d9496a610ef29e832a297062239ed232bf7599",
+      "verified": true,
+      "bytes": 386887
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_320.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.npz",
+      "sha256": "fb645d167745ee93ab8394e91561f57ab1fa0c2aab89898ea2f93806ec7d1a6f",
+      "verified": true,
+      "bytes": 8150568
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_320.receipt.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.receipt.json",
+      "sha256": "335fe3e6f4c88717f1e442950f3dd23264c1df2dee4a9d36bdb8f41ae0e8fadb",
+      "verified": true,
+      "bytes": 2277
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_320_initial.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320_initial.npz",
+      "sha256": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+      "verified": true,
+      "bytes": 44460
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_640.console.log",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.console.log",
+      "sha256": "ade636b31dc04b750396e00bd4aa88ea51ab3a6bda9aab22b7eecc3ccbab177e",
+      "verified": true,
+      "bytes": 19060
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_640.integration.jsonl",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.integration.jsonl",
+      "sha256": "63acafd82d9be70d54bcc5a1290b93ebec0be95094c6b0de7b8580017864afce",
+      "verified": true,
+      "bytes": 17766
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_640.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.json",
+      "sha256": "5dc5821a86d314c76359a571c7cb33fa93021553a2022aeddd54661558043e0c",
+      "verified": true,
+      "bytes": 765495
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_640.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.npz",
+      "sha256": "7f913106856edce02f1ce0ee93f1a79754653b41e1f4642618f2ad1c2f467f18",
+      "verified": true,
+      "bytes": 16245945
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_640.receipt.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.receipt.json",
+      "sha256": "d2071f281d927603b619060c4dbe133286890a85bc2c2ef6511a870701a07f39",
+      "verified": true,
+      "bytes": 2277
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_640_initial.npz",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640_initial.npz",
+      "sha256": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+      "verified": true,
+      "bytes": 44460
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_pair_320_640.console.log",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_pair_320_640.console.log",
+      "sha256": "fc7b74aa81e91da3ab0d8f9dce84669b1e1e475166a87108aa6353dada61bb2e",
+      "verified": true,
+      "bytes": 98
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_pair_320_640.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_pair_320_640.json",
+      "sha256": "e73dcbbfbfca5559bcddf31523b39301bf7e204c5d8e74b3671c5010dce32a71",
+      "verified": true,
+      "bytes": 1474382
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_pair_320_640.receipt.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_pair_320_640.receipt.json",
+      "sha256": "ca42fdf4b2338b6ded98f0cc1b221c10edb19a43c49d4a12ab01fea94a1fcf62",
+      "verified": true,
+      "bytes": 1231
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_time_assessment.console.log",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_time_assessment.console.log",
+      "sha256": "19d85c29e86ac0b8a6e322dc72265ddf4e774fba4d313386fe21d0fdb8c65570",
+      "verified": true,
+      "bytes": 158
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_time_assessment.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_time_assessment.json",
+      "sha256": "767aab6bb0e2106fb8291dd20ef3caa48e7bf47ce3a3b2faca1955435be8442c",
+      "verified": true,
+      "bytes": 2472812
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_ssp_two_time_20260922/two_ssp_time_assessment.receipt.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_time_assessment.receipt.json",
+      "sha256": "c01bd44f8191bbdd87fd8cd35399808cf03e4650cd0d56d132d7f2221f7450c7",
+      "verified": true,
+      "bytes": 1628
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_cells/two_ssp_admitted_fields_20260922.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_fields_20260922.json",
+      "sha256": "dd7c817586314b155c62f5c3f88c0110e1ed059e4b7b78b010b2a6fb16061133",
+      "verified": true,
+      "bytes": 10834
+    },
+    {
+      "remote": "/home/jdiaz/pysnspd/tmp/stage2_cells/two_ssp_admitted_support_20260922.json",
+      "path": "docs/implementation/stage2/closure_prep_20260922/two_ssp_admitted_support_20260922.json",
+      "sha256": "04a8eec24d491122e416da5a2597049140c5b7e8051de71237ac4963703436ec",
+      "verified": true,
+      "bytes": 37061
+    }
+  ],
+  "unrelated_preexisting_files": [
+    {
+      "path": "docs/modelo_v0_4/E_VERSIONADO.md",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/E_cuaderno_de_aprendizaje_v0_4.md",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/E_registro_de_revisiones.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/README.md",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/E_cuaderno_de_aprendizaje_v0_4.tex",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/header_learning.tex",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/latex/sources.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_estructura.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/QA_visual_E.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/compilacion/E_cuaderno_de_aprendizaje_v0_4.log",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/manifiesto_v0_4.json",
+      "verified": true
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/E_cuaderno_de_aprendizaje_v0_4.pdf",
+      "verified": true
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/pysnspd_documentos_v0_4.zip",
+      "verified": true
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/verificacion_entrega.json",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_revision/build_learning.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/package_results.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/verify_artifacts.py",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E00_sistemas_campos_r03.pdf",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E00_sistemas_campos_r03.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E01_modelo_estandar_r03.pdf",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E01_modelo_estandar_r03.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_circuitos_micro_r03.pdf",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_circuitos_micro_r03.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_interfaces_r03.pdf",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E04_interfaces_r03.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E06_bloch_2d_r03.pdf",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E06_bloch_2d_r03.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E06_fock_estados_r03.pdf",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/figuras/E06_fock_estados_r03.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/E_VERSIONADO.md",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/E_cuaderno_de_aprendizaje_v0_4.md",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/E_cuaderno_de_aprendizaje_v0_4.pdf",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/E_registro_de_revisiones.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/entrega-5fdc42cfa141/manifiesto_v0_4.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E01_sistemas_campos.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E03_curva_variacion.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E04_circuitos_micro.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E04_interfaces.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E05_modos_conteo.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E06_ocupacion_operadores.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E07_columna_nambu.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E09_dft_dos.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/figuras/E10_dfpt_a2f.png",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/latex/E_cuaderno_de_aprendizaje_v0_4.tex",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/latex/header_learning.tex",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/snapshot.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/verificaciones/QA_visual_E.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/historial/E-r02/verificaciones/manifiesto_E_r02.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/E_r03_calculo_y_unidades.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/E_r03_preservacion.json",
+      "verified": true
+    },
+    {
+      "path": "docs/modelo_v0_4/verificaciones/manifiesto_E_r03.json",
+      "verified": true
+    },
+    {
+      "path": "output/pdf/Guion_reunion_Virtanen_modelo_pySNSPD.pdf",
+      "verified": true
+    },
+    {
+      "path": "output/pdf/Virtanen_Free_Energy_Figure_Guide.pdf",
+      "verified": true
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/historial/E-r02/entrega-5fdc42cfa141/pysnspd_documentos_v0_4.zip",
+      "verified": true
+    },
+    {
+      "path": "output/pdf/modelo_v0_4/historial/E-r02/verificacion_entrega_2026-09-11.json",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E00.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E01.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E03.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E04.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E05.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E06.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E07.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E09.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/E10.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/assemble_learning.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/assembly_source.json",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/checks_bloch_fock_r03.json",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/checks_r03.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/figuras_bloch_fock.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/figures_e04_r03.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/figures_standard_model_r03.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/prepare_revision.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/model_v0_4/learning_r03/record_delivery.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/README.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/brief_content.json",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/build_guide.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/eq20.png",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/fig1.png",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/fig2.png",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/history/r01/Guion_reunion_Virtanen_modelo_pySNSPD.pdf",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/history/r01/README.md",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/history/r01/brief_content.json",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/history/r01/build_brief.py",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/history/r01/qa_text.json",
+      "verified": true
+    },
+    {
+      "path": "sandbox/virtanen_meeting/qa_text.json",
+      "verified": true
+    }
+  ],
+  "release_commit": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+  "physics_recomputed": false
+}

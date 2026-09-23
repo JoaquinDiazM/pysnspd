@@ -1,0 +1,546 @@
+{
+  "schema": "pysnspd.stage2.two-cell-time-offline-audit.v1",
+  "date": "2026-09-22",
+  "status": "AUDITED_TWO_CELL_TIME_PASS",
+  "stage2_closure": false,
+  "production_admission": false,
+  "new_RHS_evaluations": 0,
+  "new_trajectories": 0,
+  "criteria_sha256": "48a56a76b64b58b81b176325a6a34cc2e6c690bfde3b4eb739a8cd2723c702cf",
+  "plan_sha256": "002ddc4d6e10f8993d71809912e6a53614b0104feed36359ae7cf4a86618b866",
+  "checks": {
+    "acceptance_criteria_unchanged": true,
+    "batch_uses_registered_plan": true,
+    "batch_source_contract_equals_plan": true,
+    "source:docs/implementation/stage1_r2/catalogs/occupation_catalog.npz": true,
+    "source:docs/implementation/stage2/acceptance_criteria.json": true,
+    "source:pysnspd/experimental/__init__.py": true,
+    "source:pysnspd/experimental/cell_closures.py": true,
+    "source:pysnspd/experimental/cell_transport.py": true,
+    "source:pysnspd/experimental/cell_validation.py": true,
+    "source:pysnspd/experimental/coupled_cells.py": true,
+    "source:pysnspd/experimental/energy_catalog.py": true,
+    "source:pysnspd/experimental/kinetic_events.py": true,
+    "source:pysnspd/experimental/material_admission.py": true,
+    "source:pysnspd/experimental/material_preprocessing.py": true,
+    "source:pysnspd/experimental/refined_cells.py": true,
+    "source:sandbox/stage2_cells/assess_grid_refinement.py": true,
+    "source:sandbox/stage2_cells/assess_time_refinement.py": true,
+    "source:sandbox/stage2_cells/check_trajectory_fields.py": true,
+    "source:sandbox/stage2_cells/check_trajectory_support.py": true,
+    "source:sandbox/stage2_cells/recovery_20260921/assess_limited_pair.py": true,
+    "source:sandbox/stage2_cells/recovery_20260921/assess_limited_time.py": true,
+    "source:sandbox/stage2_cells/recovery_20260921/limited_ssp.py": true,
+    "source:sandbox/stage2_cells/recovery_20260921/run_limited_coupled.py": true,
+    "source:sandbox/stage2_cells/resume_20260921/run_acceptance_batch.py": true,
+    "source:sandbox/stage2_cells/run_coupled.py": true,
+    "source:sandbox/stage2_cells/time_pass_20260922/run_two_cell_time_batch.py": true,
+    "all_six_tasks_completed_in_order": true,
+    "batch_complete_does_not_claim_stage2_admission": true,
+    "two_ssp_160:receipt_registered_task": true,
+    "two_ssp_160:receipt_manifest": true,
+    "two_ssp_160:output:two_ssp_160.json": true,
+    "two_ssp_160:output:two_ssp_160.npz": true,
+    "two_ssp_160:output:two_ssp_160_initial.npz": true,
+    "two_ssp_160:parameter_contract": true,
+    "two_ssp_160:versions_match_manifest": true,
+    "two_ssp_160:ledger_recomputed": true,
+    "two_ssp_160:population_extrema_recomputed": true,
+    "two_ssp_320:receipt_registered_task": true,
+    "two_ssp_320:receipt_manifest": true,
+    "two_ssp_320:output:two_ssp_320.json": true,
+    "two_ssp_320:output:two_ssp_320.npz": true,
+    "two_ssp_320:output:two_ssp_320_initial.npz": true,
+    "two_ssp_320:parameter_contract": true,
+    "two_ssp_320:versions_match_manifest": true,
+    "two_ssp_320:ledger_recomputed": true,
+    "two_ssp_320:population_extrema_recomputed": true,
+    "two_ssp_640:receipt_registered_task": true,
+    "two_ssp_640:receipt_manifest": true,
+    "two_ssp_640:output:two_ssp_640.json": true,
+    "two_ssp_640:output:two_ssp_640.npz": true,
+    "two_ssp_640:output:two_ssp_640_initial.npz": true,
+    "two_ssp_640:parameter_contract": true,
+    "two_ssp_640:versions_match_manifest": true,
+    "two_ssp_640:ledger_recomputed": true,
+    "two_ssp_640:population_extrema_recomputed": true,
+    "two_ssp_1280:receipt_registered_task": true,
+    "two_ssp_1280:receipt_manifest": true,
+    "two_ssp_1280:output:two_ssp_1280.json": true,
+    "two_ssp_1280:output:two_ssp_1280.npz": true,
+    "two_ssp_1280:output:two_ssp_1280_initial.npz": true,
+    "two_ssp_1280:parameter_contract": true,
+    "two_ssp_1280:versions_match_manifest": true,
+    "two_ssp_1280:ledger_recomputed": true,
+    "two_ssp_1280:population_extrema_recomputed": true,
+    "two_ssp_time_assessment:receipt_registered_task": true,
+    "two_ssp_time_assessment:receipt_manifest": true,
+    "two_ssp_time_assessment:output:two_ssp_time_assessment.json": true,
+    "two_ssp_time_assessment:dependency:two_ssp_160": true,
+    "two_ssp_time_assessment:dependency:two_ssp_320": true,
+    "two_ssp_time_assessment:dependency:two_ssp_640": true,
+    "two_ssp_time_assessment:dependency:two_ssp_1280": true,
+    "two_ssp_pair_320_640:receipt_registered_task": true,
+    "two_ssp_pair_320_640:receipt_manifest": true,
+    "two_ssp_pair_320_640:output:two_ssp_pair_320_640.json": true,
+    "two_ssp_pair_320_640:dependency:two_ssp_320": true,
+    "two_ssp_pair_320_640:dependency:two_ssp_640": true,
+    "assessment_reference_hash": true,
+    "assessment_criteria": true,
+    "base_assessor_source": true,
+    "limited_assessor_source": true,
+    "assessment_case_hash:160": true,
+    "error_recomputed:160": true,
+    "assessment_case_hash:320": true,
+    "error_recomputed:320": true,
+    "assessment_case_hash:640": true,
+    "error_recomputed:640": true,
+    "reported_PASS_equals_recomputed_series": true,
+    "reported_reductions_equal_recomputed": true,
+    "reported_shared_times_equal_recomputed": true,
+    "reported_finest_error_equal_recomputed": true,
+    "stored_pair_status_recomputed": true,
+    "stored_pair_error_recomputed": true,
+    "stored_pair_tolerance_recomputed": true,
+    "stored_pair_assessor_source": true,
+    "stored_pair_contract_source": true,
+    "stored_pair_cannot_claim_global_admission": true,
+    "stored_pair_input:two_ssp_320.json": true,
+    "stored_pair_input:two_ssp_640.json": true
+  },
+  "checks_passed": 98,
+  "checks_total": 98,
+  "batch_elapsed_seconds": 2912.5217433352955,
+  "series_time_gate_pass": true,
+  "registered_scope": {
+    "case": "two",
+    "scenario": "driven",
+    "duration": 2.0,
+    "electron_states": 630,
+    "phonon_states": 1025,
+    "gamma": [
+      0.0,
+      0.0
+    ],
+    "escape": 15.0,
+    "heating": 0.01,
+    "method": "ssprk3_common_flux_limited"
+  },
+  "reference": {
+    "steps": 1280,
+    "rule": "Separately computed half-step reference to640; allowed by frozen criteria, not an independent integration method."
+  },
+  "shared_checkpoint_count": 161,
+  "rows": [
+    {
+      "steps": 160,
+      "dt": 0.0125,
+      "worst": {
+        "observable": "phonon_population",
+        "time": 0.48750000000000004,
+        "error": 4.063429109681014e-05
+      },
+      "maximum_errors_by_observable": {
+        "amplitudes": 9.74396641672405e-09,
+        "excitation_energy": 8.573708191962883e-08,
+        "electron_energy": 8.321068623649418e-08,
+        "phonon_energy": 2.2102899874171724e-07,
+        "escape": 1.4560227758740783e-07,
+        "input": 0.0,
+        "electron_to_phonon": 2.1091977537254315e-06,
+        "condensate_heat": 6.635881612066982e-07,
+        "transport": 3.99857898558432e-07,
+        "electronic_population": 8.032504118577323e-08,
+        "phonon_population": 4.063429109681014e-05
+      },
+      "relative_error_limit": 0.0001,
+      "own_precision_pass": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "own_time_resolution_admissible": true,
+      "supplementary_budget": 2.5e-05,
+      "passes_supplementary_budget_against1280": false,
+      "comparison_scope": "Registered two-cell duration2, 630 electronic/1025 phonon states, reference SSP1280."
+    },
+    {
+      "steps": 320,
+      "dt": 0.00625,
+      "worst": {
+        "observable": "phonon_population",
+        "time": 0.5125000000000001,
+        "error": 1.1255083372221992e-05
+      },
+      "maximum_errors_by_observable": {
+        "amplitudes": 2.5779703326129316e-09,
+        "excitation_energy": 2.8842685940644843e-08,
+        "electron_energy": 2.7169886593737132e-08,
+        "phonon_energy": 9.269939829695218e-08,
+        "escape": 7.029661132463746e-08,
+        "input": 0.0,
+        "electron_to_phonon": 7.87600784508346e-07,
+        "condensate_heat": 8.096378424363465e-08,
+        "transport": 5.0304450664515746e-08,
+        "electronic_population": 2.2132345870505044e-08,
+        "phonon_population": 1.1255083372221992e-05
+      },
+      "relative_error_limit": 0.0001,
+      "own_precision_pass": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "own_time_resolution_admissible": true,
+      "supplementary_budget": 2.5e-05,
+      "passes_supplementary_budget_against1280": true,
+      "comparison_scope": "Registered two-cell duration2, 630 electronic/1025 phonon states, reference SSP1280."
+    },
+    {
+      "steps": 640,
+      "dt": 0.003125,
+      "worst": {
+        "observable": "phonon_population",
+        "time": 0.7000000000000001,
+        "error": 2.818816341470566e-06
+      },
+      "maximum_errors_by_observable": {
+        "amplitudes": 2.3895449547077336e-10,
+        "excitation_energy": 3.88661571498288e-09,
+        "electron_energy": 3.4175363886741312e-09,
+        "phonon_energy": 1.1674978806416086e-08,
+        "escape": 8.195965252267541e-09,
+        "input": 0.0,
+        "electron_to_phonon": 1.442879661756941e-07,
+        "condensate_heat": 8.94134098250727e-09,
+        "transport": 6.3739200699024485e-09,
+        "electronic_population": 3.219967953847278e-09,
+        "phonon_population": 2.818816341470566e-06
+      },
+      "relative_error_limit": 0.0001,
+      "own_precision_pass": true,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "own_time_resolution_admissible": true,
+      "supplementary_budget": 2.5e-05,
+      "passes_supplementary_budget_against1280": true,
+      "comparison_scope": "Registered two-cell duration2, 630 electronic/1025 phonon states, reference SSP1280."
+    }
+  ],
+  "error_reductions": [
+    3.6103056506091495,
+    3.9928402594509778
+  ],
+  "trajectories": [
+    {
+      "id": "two_ssp_160",
+      "steps": 160,
+      "runtime_seconds": 195.58344936929643,
+      "ledger": 1.6378739919886698e-08,
+      "ledger_limit": 1e-07,
+      "instantaneous_balance": 1.6129892560501347e-14,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "minimum_electron": 3.540243468083482e-44,
+      "maximum_electron": 0.49223277300868234,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "limiter": {
+        "limited_event_evaluations": 0,
+        "event_evaluations": 926239917,
+        "minimum_event_factor": 1.0,
+        "integrated_energy_weighted_flux_defect": 0.0
+      },
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.749060125880048,
+        0.9763435178217971
+      ],
+      "activity": {
+        "status": "PASS_REGISTERED_ACTIVITY",
+        "initial_electron_excitation": 0.387227852778307,
+        "initial_phonon_energy": 0.15378725161532888,
+        "denominator": 0.5410151043936359,
+        "denominator_policy": "Initial electron excitation plus initial phonon energy; both saved before the first RHS evaluation. Vacuum condensation energy is excluded.",
+        "maximum_amplitude_change": 0.19906012588004796,
+        "minimum_required_amplitude_change": 0.02,
+        "electron_to_phonon_signed": -0.02441431922002321,
+        "electron_to_phonon_absolute_cell_sum": 0.02585930214109561,
+        "electron_to_phonon_fraction": 0.047797745259032,
+        "absolute_global_net_electron_to_phonon_fraction": 0.04512687173010913,
+        "face_energy": 0.059941598912615995,
+        "face_energy_fraction": 0.11079468655463495,
+        "external_input": 0.01999999999999997,
+        "minimum_required_transfer_fraction": 0.01,
+        "conservative_check_including_external_input": {
+          "denominator": 0.5610151043936359,
+          "absolute_global_net_eph_fraction": 0.043518113913191395,
+          "face_fraction": 0.10684489320016241
+        }
+      },
+      "physical_archive_verified": true
+    },
+    {
+      "id": "two_ssp_320",
+      "steps": 320,
+      "runtime_seconds": 387.53787809377536,
+      "ledger": 2.0325197080950375e-09,
+      "ledger_limit": 1e-07,
+      "instantaneous_balance": 1.6327217355893708e-14,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "minimum_electron": 3.540243468083482e-44,
+      "maximum_electron": 0.49223277285853423,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "limiter": {
+        "limited_event_evaluations": 0,
+        "event_evaluations": 1852479971,
+        "minimum_event_factor": 1.0,
+        "integrated_energy_weighted_flux_defect": 0.0
+      },
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.7490601277632054,
+        0.9763435167999681
+      ],
+      "activity": {
+        "status": "PASS_REGISTERED_ACTIVITY",
+        "initial_electron_excitation": 0.387227852778307,
+        "initial_phonon_energy": 0.15378725161532888,
+        "denominator": 0.5410151043936359,
+        "denominator_policy": "Initial electron excitation plus initial phonon energy; both saved before the first RHS evaluation. Vacuum condensation energy is excluded.",
+        "maximum_amplitude_change": 0.19906012776320536,
+        "minimum_required_amplitude_change": 0.02,
+        "electron_to_phonon_signed": -0.024414306216765085,
+        "electron_to_phonon_absolute_cell_sum": 0.02585928893218512,
+        "electron_to_phonon_fraction": 0.047797720843982615,
+        "absolute_global_net_electron_to_phonon_fraction": 0.0451268476951829,
+        "face_energy": 0.059941594637336885,
+        "face_energy_fraction": 0.1107946786523064,
+        "external_input": 0.019999999999999886,
+        "minimum_required_transfer_fraction": 0.01,
+        "conservative_check_including_external_input": {
+          "denominator": 0.5610151043936358,
+          "absolute_global_net_eph_fraction": 0.04351809073510222,
+          "face_fraction": 0.10684488557954924
+        }
+      },
+      "physical_archive_verified": true
+    },
+    {
+      "id": "two_ssp_640",
+      "steps": 640,
+      "runtime_seconds": 774.9399691452272,
+      "ledger": 2.5312030249580175e-10,
+      "ledger_limit": 1e-07,
+      "instantaneous_balance": 1.6349768761081407e-14,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "minimum_electron": 3.540243468083482e-44,
+      "maximum_electron": 0.4922327727144462,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "limiter": {
+        "limited_event_evaluations": 0,
+        "event_evaluations": 3704962247,
+        "minimum_event_factor": 1.0,
+        "integrated_energy_weighted_flux_defect": 0.0
+      },
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.7490601300475743,
+        0.9763435167933744
+      ],
+      "activity": {
+        "status": "PASS_REGISTERED_ACTIVITY",
+        "initial_electron_excitation": 0.387227852778307,
+        "initial_phonon_energy": 0.15378725161532888,
+        "denominator": 0.5410151043936359,
+        "denominator_policy": "Initial electron excitation plus initial phonon energy; both saved before the first RHS evaluation. Vacuum condensation energy is excluded.",
+        "maximum_amplitude_change": 0.19906013004757428,
+        "minimum_required_amplitude_change": 0.02,
+        "electron_to_phonon_signed": -0.02441429758353542,
+        "electron_to_phonon_absolute_cell_sum": 0.025859280106900005,
+        "electron_to_phonon_fraction": 0.04779770453152656,
+        "absolute_global_net_electron_to_phonon_fraction": 0.04512683173771777,
+        "face_energy": 0.05994159283152198,
+        "face_energy_fraction": 0.11079467531447924,
+        "external_input": 0.01999999999999903,
+        "minimum_required_transfer_fraction": 0.01,
+        "conservative_check_including_external_input": {
+          "denominator": 0.5610151043936349,
+          "absolute_global_net_eph_fraction": 0.043518075346515424,
+          "face_fraction": 0.10684488236071467
+        }
+      },
+      "physical_archive_verified": true
+    },
+    {
+      "id": "two_ssp_1280",
+      "steps": 1280,
+      "runtime_seconds": 1552.1534128701314,
+      "ledger": 3.152733629718796e-11,
+      "ledger_limit": 1e-07,
+      "instantaneous_balance": 1.625912945946162e-14,
+      "invariant_checks": {
+        "ledger": true,
+        "instantaneous_balance": true,
+        "populations": true
+      },
+      "minimum_electron": 3.540243468083482e-44,
+      "maximum_electron": 0.4922327742325158,
+      "minimum_phonon": 3.3382377953650095e-15,
+      "limiter": {
+        "limited_event_evaluations": 0,
+        "event_evaluations": 7409924349,
+        "minimum_event_factor": 1.0,
+        "integrated_energy_weighted_flux_defect": 0.0
+      },
+      "initial_amplitudes": [
+        0.55,
+        0.95
+      ],
+      "final_amplitudes": [
+        0.74906013028019,
+        0.9763435167910288
+      ],
+      "activity": {
+        "status": "PASS_REGISTERED_ACTIVITY",
+        "initial_electron_excitation": 0.387227852778307,
+        "initial_phonon_energy": 0.15378725161532888,
+        "denominator": 0.5410151043936359,
+        "denominator_policy": "Initial electron excitation plus initial phonon energy; both saved before the first RHS evaluation. Vacuum condensation energy is excluded.",
+        "maximum_amplitude_change": 0.19906013028018998,
+        "minimum_required_amplitude_change": 0.02,
+        "electron_to_phonon_signed": -0.02441429733676554,
+        "electron_to_phonon_absolute_cell_sum": 0.025859279838523735,
+        "electron_to_phonon_fraction": 0.047797704035465974,
+        "absolute_global_net_electron_to_phonon_fraction": 0.04512683128159394,
+        "face_energy": 0.05994159265372324,
+        "face_energy_fraction": 0.1107946749858401,
+        "external_input": 0.01999999999999841,
+        "minimum_required_transfer_fraction": 0.01,
+        "conservative_check_including_external_input": {
+          "denominator": 0.5610151043936343,
+          "absolute_global_net_eph_fraction": 0.043518074906652306,
+          "face_fraction": 0.1068448820437915
+        }
+      },
+      "physical_archive_verified": true
+    }
+  ],
+  "admissible_measured_time_resolutions": [
+    160,
+    320,
+    640
+  ],
+  "minimum_admissible_measured_steps": 160,
+  "supplemental_pairs": [
+    {
+      "status": "FAIL_PAIR_DIAGNOSTIC",
+      "steps": [
+        160,
+        320
+      ],
+      "worst": {
+        "observable": "phonon_population",
+        "time": 0.48750000000000004,
+        "error": 4.7761492108961646e-05
+      },
+      "maximum_error": 4.7761492108961646e-05,
+      "tolerance": 2.5e-05,
+      "common_checkpoint_count": 161,
+      "three_level_time_admission": false,
+      "stage2_admission": false,
+      "scope": "Supplemental temporal-budget diagnostic on the registered candidate TWO grid only."
+    },
+    {
+      "status": "PASS_PAIR_DIAGNOSTIC",
+      "steps": [
+        320,
+        640
+      ],
+      "worst": {
+        "observable": "phonon_population",
+        "time": 0.5,
+        "error": 1.2416798035088047e-05
+      },
+      "maximum_error": 1.2416798035088047e-05,
+      "tolerance": 2.5e-05,
+      "common_checkpoint_count": 321,
+      "three_level_time_admission": false,
+      "stage2_admission": false,
+      "scope": "Supplemental temporal-budget diagnostic on the registered candidate TWO grid only."
+    }
+  ],
+  "measured_resolutions_passing_supplementary_budget_against1280": [
+    320,
+    640
+  ],
+  "all_measured_limiters_inactive": true,
+  "conclusions": [
+    "A PASS of the temporal sequence applies to its finest measured comparison and does not automatically admit every coarser timestep.",
+    "The explicit per-resolution verdicts above apply only to this two-cell physical initial-value problem and candidate population grid.",
+    "If limiter activity is zero throughout, this series does not validate the active-limiter fine-grid case that previously motivated the recovery.",
+    "Passing the global temporal tolerance1e-4 does not imply satisfying the stricter2.5e-5 supplementary budget for planning mesh studies.",
+    "Active-limiter finest-mesh checks, full electronic/phonon mesh convergence, final boundaries/equilibrium and actual-trajectory field/support checks remain separate gates.",
+    "Do not issue a global stage2 closure or proceed to stage3 implementation from this two-cell result alone."
+  ],
+  "artifact_sha256": {
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/batch_events.jsonl": "0c2a159ff24fcbf1fd7a2290c75ea29248681a628e56747fdbd42620d381552d",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/batch_manifest.json": "ae45b10d7bd9900212148d382b919e1601da9921a041fdd7d3469cf6057fc3d3",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.console.log": "31175314b084af8862ebb549b53000ad886ef0906fee64254ac902bd2003e0ae",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.integration.jsonl": "8d5e7d65c5f08535e28697cfc790661339a1e5594600b66f17da50f9a8b874a8",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.json": "7c9be83e9c9ed0c75f252f095994cfdaa12b9241bf2e96798f0fb809383f2225",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.npz": "d4e4da1bd658f25c2b598841544f6b4726aecc1b45f24b75273137d96ce4258b",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280.receipt.json": "a2b783b82f7c4215baac0fd85b9370ba7665ebd248f028be1888135db1911b2d",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_1280_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.console.log": "1b542623ae38e191ff9342fc3e27128978f2f74275d7bd475159a23e7aa53de5",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.integration.jsonl": "62c7fe760d2ab9521fa4864d07758a1b1327274bb990d1889b375d41734514fe",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.json": "c49a7b787bc6d0f76f8d30ce2b5bc54af1cc4fafb27963a51b5d71a0271e970f",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.npz": "881918a219fbc7f660e3752f5e236e55dd1c6b2f857b373ad2ff94158971bc52",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160.receipt.json": "7b7a0a1f411b2a8cda63a6c08a9b5c6bc06bd392a8a47919c33f60f30338c593",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_160_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.console.log": "3584ffa7a39326be8d8a5e17e373799a6a1e69cc67701c9b776b0801bdcae801",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.integration.jsonl": "4467e561131c2de9bd7897eb4d952d7dd2bbb053c337d2242158defde66fbe17",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.json": "1f6802787cba46876503522e77d9496a610ef29e832a297062239ed232bf7599",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.npz": "fb645d167745ee93ab8394e91561f57ab1fa0c2aab89898ea2f93806ec7d1a6f",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320.receipt.json": "335fe3e6f4c88717f1e442950f3dd23264c1df2dee4a9d36bdb8f41ae0e8fadb",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_320_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.console.log": "ade636b31dc04b750396e00bd4aa88ea51ab3a6bda9aab22b7eecc3ccbab177e",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.integration.jsonl": "63acafd82d9be70d54bcc5a1290b93ebec0be95094c6b0de7b8580017864afce",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.json": "5dc5821a86d314c76359a571c7cb33fa93021553a2022aeddd54661558043e0c",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.npz": "7f913106856edce02f1ce0ee93f1a79754653b41e1f4642618f2ad1c2f467f18",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640.receipt.json": "d2071f281d927603b619060c4dbe133286890a85bc2c2ef6511a870701a07f39",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_640_initial.npz": "9f1ec9df1b66b134eb510b517c6a04d4ee0c2c7768b48aec67e0647e9d34b619",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_pair_320_640.console.log": "fc7b74aa81e91da3ab0d8f9dce84669b1e1e475166a87108aa6353dada61bb2e",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_pair_320_640.json": "e73dcbbfbfca5559bcddf31523b39301bf7e204c5d8e74b3671c5010dce32a71",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_pair_320_640.receipt.json": "ca42fdf4b2338b6ded98f0cc1b221c10edb19a43c49d4a12ab01fea94a1fcf62",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_time_assessment.console.log": "19d85c29e86ac0b8a6e322dc72265ddf4e774fba4d313386fe21d0fdb8c65570",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_time_assessment.json": "767aab6bb0e2106fb8291dd20ef3caa48e7bf47ce3a3b2faca1955435be8442c",
+    "docs/implementation/stage2/closure_prep_20260922/raw_two/two_ssp_time_assessment.receipt.json": "c01bd44f8191bbdd87fd8cd35399808cf03e4650cd0d56d132d7f2221f7450c7"
+  },
+  "auditor_sha256": "25908490072f61c602f8819591312a829f9ecfe5678aa7e6fcc14abc4aea55e8",
+  "runtime_seconds": 5.1477583999803755
+}
