@@ -17,7 +17,7 @@ de latencia. La variación numérica suma cambios observados de cuadratura,
 contorno y malla; no es una cota rigurosa. No se descarta la dinámica completa
 de fase y potencial de la memoria a partir de este ensayo con gap fijo.
 
-El [informe ilustrado](../../../../output/pdf/implementation/Informe_etapa_4_respuesta_de_carga.pdf)
+El [informe ilustrado](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_respuesta_de_carga.pdf)
 presenta los resultados. La [decisión física](physics_decision.md) desarrolla
 la reducción de Schur, el alcance del almacenamiento adiabático y el siguiente
 control térmico con condensado móvil. La [secuencia vigente](../../SECUENCIA_VIGENTE.md)

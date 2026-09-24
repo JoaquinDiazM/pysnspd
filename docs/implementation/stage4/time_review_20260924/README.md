@@ -21,7 +21,7 @@ el residuo instantáneo del balance no lineal de potencia no supera 1,8×10⁻¹
 en unidades internas. Son evaluaciones constitutivas en campos guardados,
 no una trayectoria no lineal integrada ni un balance de energía interna.
 
-- [Informe ilustrado](../../../../output/pdf/implementation/Informe_etapa_4_evolucion_termica.pdf).
+- [Informe ilustrado](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_evolucion_termica.pdf).
 - [Análisis reproducido de la trayectoria](analysis.md) y [datos](analysis.json).
 - [Newton estable y contraste no lineal](nonlinear_snapshots/README.md).
 - [Siguiente trayectoria térmica no lineal](nonlinear_time/README.md).

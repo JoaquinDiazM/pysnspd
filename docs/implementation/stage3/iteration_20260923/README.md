@@ -20,7 +20,7 @@ eléctrico, circuito ni dinámica espacial.
   y se rechaza para evolución.
 
 El [informe con figuras](Informe_inicio_etapa_3_20260923.md)
-([PDF](../../../../output/pdf/implementation/Informe_inicio_etapa_3_20260923.pdf))
+([PDF](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_inicio_etapa_3_20260923.pdf))
 distingue estos resultados de las verificaciones pendientes. La corriente del
 perfil prescrito no tiene por qué ser constante: no es todavía una solución
 estacionaria con conservación de corriente total.

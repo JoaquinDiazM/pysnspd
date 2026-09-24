@@ -8,7 +8,7 @@ No se solicita otra relajación térmica ni se endurece retrospectivamente su
 tolerancia. La etapa 4 sigue abierta; todavía no corresponde un transiente
 con fotón ni declarar implementado el modelo completo.
 
-El [informe ilustrado](../../../../output/pdf/implementation/Informe_etapa_4_nucleo_autoconsistente.pdf)
+El [informe ilustrado](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_nucleo_autoconsistente.pdf)
 resume la decisión y los resultados. El [análisis reproducible](analysis.md)
 identifica medidas, normas e integridad; la [revisión física](physics_review.md)
 deduce la continuación del mismo problema espectral y sus límites.

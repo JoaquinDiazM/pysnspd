@@ -1,8 +1,34 @@
-# Geminga: unión dinámica polarizada pendiente
+# Geminga: etapa 4 cerrada como desarrollo; sin corrida larga pendiente
 
-## 2026-09-24 — Unión dinámica polarizada: ejecución pendiente
+## Entrega actual: cierre físico y preparación de etapa 5
 
-Este es el comando nuevo. No repetir Euler dual ni las campañas anteriores.
+Dos referencias y cinco respuestas completadas en 48,57 min. El informe final
+admite desarrollo térmico y respuesta reactiva condicionada; disipación absoluta
+y continuidad interior siguen pendientes antes de un fotón. No hay otro comando
+largo requerido ahora. Informe: docs/implementation/stage4/closure_20260924/README.md.
+
+Posprocesamiento opcional, segundos, sin simulaciones nuevas:
+
+```bash
+cd /home/jdiaz/pysnspd
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage4_core/analyze_final_closure.py
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage4_core/plot_final_closure.py
+```
+
+Los datos completos siguen en /home/jdiaz/scratch/stage4_final_coupling_20260924.
+El informe PDF vigente es output/pdf/implementation/Informe_cierre_etapa_4.pdf.
+Los PDF intermedios y 15 copias NPZ exactas se retiraron del repo; véase
+docs/implementation/ARCHIVOS_ARCHIVADOS.md. Recuperación opcional segura:
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/maintenance/restore_archived_artifacts.py --list
+```
+
+
+## Historial: unión dinámica polarizada completada el 24 de septiembre
+
+Comando histórico ya completado; no repetir para este cierre. No repetir Euler dual ni las campañas anteriores.
 Construye dos referencias con corriente y luego cinco respuestas acopladas de
 amplitud, fase, poblaciones y potencial sobre la malla dual, con el circuito
 completo de la memoria. La comparación incluye un refinamiento independiente.
@@ -166,7 +192,7 @@ tail -n 2 /home/jdiaz/scratch/stage4_nonlinear_time_20260924/progress.jsonl
 /home/jdiaz/.conda/envs/snspd/bin/python -m json.tool docs/implementation/stage4/practical_time_review_20260924/decision.json
 ```
 
-El [informe vigente](../output/pdf/implementation/Informe_etapa_4_revision_practica.pdf)
+El [informe vigente](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_revision_practica.pdf)
 declara qué campo, norma, unidad, sonda y referencia se representan. Las
 [fuentes consultadas](implementation/stage4/practical_time_review_20260924/published_methods.md)
 explican qué código publicado y heredado se reutiliza. No hay otro cálculo
@@ -277,7 +303,7 @@ reproduce bien las anclas lentas: 0,0258 % de diferencia de corriente en
 ν=0,001. Las frecuencias altas son exploratorias, no una validación de la
 respuesta de pocos picosegundos. Véanse la
 [revisión actual](implementation/stage4/moment_review_20260924/README.md)
-y el [informe](../output/pdf/implementation/Informe_etapa_4_respuesta_de_carga.pdf).
+y el [informe](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_respuesta_de_carga.pdf).
 
 ## Siguiente ejecución: trayectoria térmica débil con condensado móvil
 

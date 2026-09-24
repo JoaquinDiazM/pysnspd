@@ -38,7 +38,7 @@ quedan preservadas.
   continuo. Esto no certifica aún los perfiles no uniformes ni su convergencia.
 
 El [informe con figuras](../review_20260923/Informe_revision_espacial_etapa_3_20260923.md)
-([PDF](../../../../output/pdf/implementation/Informe_revision_espacial_etapa_3_20260923.pdf))
+([PDF](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_revision_espacial_etapa_3_20260923.pdf))
 separa el lote anterior, el piloto nuevo y lo pendiente.
 
 El bloque activo de `/home/jdiaz/GEMINGA_COMMANDS.md` ejecuta los seis casos

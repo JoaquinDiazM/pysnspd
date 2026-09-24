@@ -4,23 +4,18 @@ Last updated: 2026-09-24 UTC
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: the inherited KWT Euler trajectory on the actual dual mesh
-completed1ps in153.81s and passed the practical2percent criteria. The weak
-nonthermal longitudinal mode control also passed. The
-[current result](docs/implementation/stage4/final_kwt_20260924/README.md)
-accepts the previous small thermal discrepancy under the revised policy.
-These completed controls need no repetition. A
-[coupled biased campaign](docs/implementation/stage4/coupled_closure_20260924/README.md)
-is now prepared for manual execution, with two stationary references and five
-responses using the full thesis circuit. The exact workflow passed a small
-integration pilot; 720 uniform queries including semi-infinite energy tails
-passed their numerical comparisons. The requested physical scale assessment
-supports effective diffusive Usadel but does not justify instantaneous branch
-imbalance. The recommended route retains distribution dynamics and treats
-instantaneous spectra as a separate adiabatic approximation, checking the
-amplitude and local rate of change. Stage 4 remains open for compatible
-moving-spectrum work, phase, potential and heat coupling. Production, v1.0.0
-and stage 5 remain unchanged.
+Current phase: stage4 development is closed within the non-photon scope.
+The [final report](docs/implementation/stage4/closure_20260924/README.md) admits
+the thermal dual Euler controls and a conditional weak reactive/circuit response.
+The coupled campaign completed two biased references and five responses. It does
+not certify absolute heating or the general nonthermal energy balance; interior
+current closure also remains incomplete. The [stage5 entry contract](docs/implementation/stage5/README.md)
+puts those interfaces before a photon run. No additional long run is requested
+for this delivery. Production and v1.0.0 are unchanged; stage5 is prepared, not run.
+
+Superseded reports and byte-identical duplicate trajectories have been removed
+from the current tree with [exact restoration](docs/implementation/ARCHIVOS_ARCHIVADOS.md).
+Uncommitted notebook work, canonical inputs and unique scientific results remain.
 
 ## Historical stage 3.5 closure and stage 4 preparation
 

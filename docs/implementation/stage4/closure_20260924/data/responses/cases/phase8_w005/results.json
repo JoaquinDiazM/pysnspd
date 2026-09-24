@@ -1,0 +1,59 @@
+{
+  "status": "COMPUTED_REQUIRES_COMPARISON",
+  "scope": "Weak full-node spectral/kinetic response about a self-consistent biased 2D strip, with a declared Galerkin gap/potential basis and exact three-state thesis circuit. Measures conditional radial KWT overlap, charge, currents and terminal response. No photon or nonlinear heat acceptance.",
+  "omega": 0.05,
+  "angular_frequency_per_ps": 0.05662304667242274,
+  "mode_count": 6,
+  "minimum_static_projected_stiffness": 0.014160812648941852,
+  "minimum_residual_mobility_eigenvalue": 21.83938703464518,
+  "resolved_mobility_norm_over_kwt": 3.23061677247753e-05,
+  "full_field_residuals": {
+    "radial_force_rms": 0.20944062973384378,
+    "angular_force_rms": 0.03545038644021345,
+    "neutral_rms": 5.502335955927498e-05,
+    "voltage_rms": 0.2851507863904675,
+    "neutral_relative_to_voltage": 0.0001929623279520943,
+    "current_divergence_rms": 0.06107132149486353,
+    "current_divergence_over_link_current": 0.012879646501808345,
+    "projected_equation_max": 3.83075341106755e-15
+  },
+  "admittance_S": {
+    "real": 0.0004469481278309209,
+    "imag": 0.08516491492150224
+  },
+  "impedance_ohm": {
+    "real": 0.06162028853417497,
+    "imag": -11.741601102391666
+  },
+  "resolved_inductance_H": 2.0770094821645752e-10,
+  "external_inductance_H": 9.792299051783543e-09,
+  "bias_voltage_peak_V": 1e-06,
+  "circuit_state_peak": {
+    "real": [
+      3.038311074676819e-12,
+      -1.4784055552703227e-12,
+      -2.9539797785592416e-12
+    ],
+    "imag": [
+      1.71201315430743e-11,
+      3.937980559990085e-13,
+      7.976816676921995e-13
+    ]
+  },
+  "readout_peak_V": {
+    "real": 2.2583583149735707e-10,
+    "imag": 8.363166743537645e-10
+  },
+  "circuit_power_residual_W": 5.567141245494354e-35,
+  "reference_dc_current_A": 1.3002223805191582e-05,
+  "reference_dc_supply_voltage_V": 0.13002223805191582,
+  "film_port_power_per_voltage_squared_W": 0.00022347406391546044,
+  "candidate_radial_heat_per_voltage_squared_W": 0.0005154940257721338,
+  "port_power_minus_radial_heat_per_voltage_squared_W": -0.0002920199618566733,
+  "energy_scope": "AC port power and positive radial KWT heat are separate observables. Their difference is not an independently computed reservoir heat flux; this is not a nonlinear energy certificate.",
+  "circuit_time_convention": "exp(-iwt)",
+  "acceptance": "Compare independent refinements with the declared 2% observable margin; no automatic nonlinear closure from this result.",
+  "elapsed_seconds": 587.0280450750142,
+  "energy_nodes": 1112,
+  "maximum_thermal_tangent_residual": 1.8318679906315083e-15
+}

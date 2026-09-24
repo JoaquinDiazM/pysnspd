@@ -43,7 +43,7 @@ completo, con máximo **3,96×10⁻⁸**, sin correcciones Newton adicionales.
 
 El [análisis reproducible](thermal/analysis.md) define las normas y enlaza
 las tres figuras: evolución y refinamiento, balance integrado y mapas.
-El [informe PDF](../../../../output/pdf/implementation/Informe_etapa_4_Euler_y_acoplamiento.pdf)
+El [informe PDF](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_Euler_y_acoplamiento.pdf)
 reúne los resultados con magnitudes y denominadores explícitos.
 
 ![Evolución de la perturbación y diferencias entre pasos](thermal/figures/01_evolucion_y_refinamiento.png)

@@ -5,7 +5,7 @@ temporal registrado y el contraste posterior de sus estados con la respuesta
 espectral no lineal. Esto permite continuar con la integración térmica no lineal;
 la etapa 4 permanece abierta y todavía no se acredita el dispositivo con fotón.
 
-El [informe ilustrado en PDF](../../../../output/pdf/implementation/Informe_etapa_4_evolucion_termica.pdf)
+El [informe ilustrado en PDF](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_evolucion_termica.pdf)
 presenta cuatro páginas con las curvas, mapas, diferencias y límites de precisión.
 
 ## Qué evolucionó

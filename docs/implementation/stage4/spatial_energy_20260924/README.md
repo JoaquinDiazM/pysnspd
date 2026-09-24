@@ -5,7 +5,7 @@ local anterior no reproducía. El siguiente cálculo busca el núcleo
 autoconsistente mediante la **misma energía**, sin asignar tiempo físico a las
 iteraciones. La etapa 4 permanece abierta; no se ha cambiado producción.
 
-El [informe con plots](../../../../output/pdf/implementation/Informe_etapa_4_energia_espacial.pdf)
+El [informe con plots](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_energia_espacial.pdf)
 presenta resultados y siguiente ensayo. El [análisis reproducible](analysis.md)
 incluye limitaciones, corte espectral, mapas e identidades.
 

@@ -1,0 +1,11 @@
+{
+  "date": "2026-09-24",
+  "host": "geminga",
+  "python": "/home/jdiaz/.conda/envs/snspd/bin/python",
+  "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 timeout 120 python -m unittest tests.test_adiabatic_matrix_usadel tests.test_adiabatic_energy_observer tests.test_harmonic_usadel tests.test_harmonic_kinetic_usadel tests.test_thermal_contact_tangent tests.test_biased_strip_reference tests.test_biased_harmonic_query tests.test_final_coupling_workflow tests.test_coupled_campaign tests.test_thesis_circuit_harmonic tests.test_harmonic_uniform_reference -q",
+  "tests": 43,
+  "runtime_seconds": 1.588,
+  "status": "PASS",
+  "expected_failure_log": "deliberate-worker-failure is the tested worker cancellation case, not a campaign failure",
+  "production_changed": false
+}

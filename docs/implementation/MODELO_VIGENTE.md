@@ -27,7 +27,7 @@ a las mallas dinámicas pendientes.
 
 La etapa 3 se cerró como desarrollo con pendientes dinámicos explícitos, y la
 investigación 3.5 se cerró dentro de su alcance autorizado. La
-[etapa 4 sin fotón](stage4/README.md) está en ejecución: los controles de campo
+[etapa 4 sin fotón](stage4/closure_20260924/README.md) se cerró como desarrollo: los controles de campo
 prescrito permiten separar sensibilidad de malla y de cierre constitutivo.
 El cierre local regularizado falló el contraste radial y se conserva como
 antecedente rechazado para esa dinámica. La nueva representación espacial
@@ -130,8 +130,24 @@ local del cambio, no sólo de la duración total del ensayo. Esta investigación
 no modifica todavía las ecuaciones ejecutadas ni sustituye el cierre pendiente
 de trabajo espectral y calor. Posteriormente se preparó el
 [lote polarizado de unión dinámica](stage4/coupled_closure_20260924/README.md),
-que queda pendiente de ejecución manual. Conserva la evolución de ambas
+que terminó con dos referencias y cinco respuestas. Conserva la evolución de ambas
 distribuciones y usa los desplazamientos energéticos exactos de la respuesta
 armónica. Mide el posible solapamiento con la relajación KWT antes de adoptar
 un cierre radial. El calor no lineal y la preparación fotónica siguen fuera
 de la aceptación de este control débil.
+
+## Cierre de desarrollo de etapa 4 y puerta de entrada a etapa 5
+
+La [decisión vigente](stage4/closure_20260924/closure_decision.json) admite
+el control reactivo condicionado, no la disipación absoluta ni el contrato
+dinámico general. El refinamiento cambia 1,589 % la admitancia compleja, pero
+45,66 % su parte real respecto al refinado. El calor radial candidato supera
+la potencia de puerto en 31,37 %; falta el balance independiente con trabajo
+DC y reservorios. La continuidad de corriente también exige revisar cortes
+interiores, no sólo terminales y residuos proyectados.
+
+No se modifican ecuaciones físicas para forzar esta aceptación. La
+[entrada a etapa 5](stage5/README.md) concreta las interfaces aún necesarias
+antes de simular el fotón. La transferencia, ancho gaussiano y tasas NbN siguen
+sin admitirse. La evidencia débil actual usa movilidad KWT heredada, no una
+calibración completa del experimento Korzh.

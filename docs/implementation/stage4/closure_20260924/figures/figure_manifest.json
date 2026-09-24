@@ -1,0 +1,169 @@
+{
+  "schema": "pysnspd.stage4.physical_figures.v1",
+  "source_inputs_sha256": {
+    "docs/implementation/stage4/closure_20260924/data/references/cases/phase2/reference.npz": "727cfdf262145f3809a932b4dcab54b0b9c56f0a0fe2db32af000a93335fc14c",
+    "docs/implementation/stage4/closure_20260924/data/references/cases/phase8/reference.npz": "5b347e2f54446a7205d5c5575fe25700e44dde83c28d467e3d67f125d8bd4da8",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase2_w020/coupled_fields.npz": "a278ea9a9edb334c6bce949b57daa76d66bdf9d1874a9a3a27be6e25c934ab63",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase2_w020/results.json": "3052aed0fdce4d68887ae11b3efe9d6208ec34a0a083472002a412e757b354d0",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_w005/coupled_fields.npz": "d8181698a71df868d993ba17b378962e5972d6859af364d432c84b63ab674950",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_w005/results.json": "c71182411279fb86270f59c37e392d919f36b7e1fb1b7a8acdea617d423ee333",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_w020/coupled_fields.npz": "2f1ba9698996755e243773a9832f187e7809492d56aae159aea609fca6676255",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_w020/results.json": "0a1048b4aabdd7c4027a6acde6eab49205e78b26925008595d7929387aed02fe",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_w080/coupled_fields.npz": "4b0f97c26bdd8e1788f49b267d5f6039e137de571af411f6c821117986670be0",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_w080/results.json": "377d6b84725448a9dd3f29f9fd126e7d31f1f696338de48c302de4de72fc3afe",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_refined/coupled_fields.npz": "73cee3f2ee380e8bf0fffdb33dbcf13ea50d9730002e9f9bb91e9d93fe8e43da",
+    "docs/implementation/stage4/closure_20260924/data/responses/cases/phase8_refined/results.json": "c6c4f723f5da3b08e76d72ad11566366c211d4518b1487e2eff98749eec6b50a",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/observation_000.npz": "87f24fa7a80d789aba3b8688fca6bbdea732de075853eba75a2140a18a41dde8",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/observation_001.npz": "9c8d3d6226364509f9cbd14a6059a3dd8a925ca74f95078cee84e49cd21b62e6",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/observation_002.npz": "3fbae4f9f71c60bfb3270ba87c7e4b64405e373eb41d22d0af7fb297453116b7",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/observation_003.npz": "d712c13e67cf550e0fb6aacd7e68838d9c4c36f96fe3591129d358d6366cb6ce",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/observation_004.npz": "95d64dff2d64005e6461aef3db0d62559fc6ea88d1b7088d0f260673028b253f",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/observation_005.npz": "b19394f18281dde426e44ea21f0845d2e146cab134516a06634a58806d941b93",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/step_history.json": "e28823edb519ec5a82bb53e49662edb9bbd4ab495d20d5831d8cad4cac22e97d",
+    "docs/implementation/stage4/final_kwt_20260924/thermal/observation_000.json": "be90d0347fd067167fb8e6f8372f45dd8072ae9eb29fbab53b6bcb49f8ca517d",
+    "C:/Users/joaqu/OneDrive/Documentos/pysnspd/sandbox/stage4_core/plot_final_closure.py": "5f6371bf1e52791017281a687303920fea776f3b2b2466af0a4717fe56afc034"
+  },
+  "physical_parameters": {
+    "T_K": 0.9,
+    "Tc_K": 8.65,
+    "D_cm2_per_s": 0.5,
+    "sheet_resistance_ohm": 608.0,
+    "tau_ee_at_Tc_ps": 0.5,
+    "tau_ep_at_Tc_ps": 2.47,
+    "mobility_origin": "Inherited phenomenological KWT parameters; not a fully calibrated Korzh-2020 device or photon preparation."
+  },
+  "spatial_interpolation": "Piecewise-linear interpolation over a display triangulation of saved mesh vertices. No new physical solve.",
+  "harmonic_conversion": "Vdev_peak=Zdev*Is_peak; delta_Delta_eV=radial_response*Vdev_peak; delta_phi_V=potential_response*Vdev_peak; delta_theta=angular_response*Vdev_peak/(V0*abs(gap_reference)).",
+  "metrics": {
+    "scales": {
+      "length_nm": 4.698490895830415,
+      "voltage_V": 0.0007453993271755579,
+      "current_A": 6.129928677430575e-07,
+      "gap0_over_kBTc": 1.7639259275771804
+    },
+    "case_metrics": {
+      "phase2": {
+        "current_uA": 3.368121019131279,
+        "minimum_gap_over_gap0": 0.9984926106562414,
+        "centerline_mean_q_per_nm": 0.012499943976424057,
+        "phase_advance_rad": 2.0
+      },
+      "phase8": {
+        "current_uA": 13.002223805191582,
+        "minimum_gap_over_gap0": 0.9747140140662611,
+        "centerline_mean_q_per_nm": 0.04999526380356451,
+        "phase_advance_rad": 8.0
+      },
+      "phase8_w005": {
+        "device_voltage_peak_pV": 17.964359457937807,
+        "maximum_gap_amplitude_peV": 8.949939003952197,
+        "maximum_potential_amplitude_pV": 8.982179728968903,
+        "maximum_phase_amplitude_urad": 0.4820063234027257,
+        "maximum_crosscut_current_difference_from_left_percent": 7.464666268303125,
+        "radial_KWT_over_port_power": 2.3067286500286834,
+        "port_power_per_voltage_squared_uW_per_V2": 223.47406391546045,
+        "radial_heat_per_voltage_squared_uW_per_V2": 515.4940257721338
+      },
+      "phase8_w020": {
+        "device_voltage_peak_pV": 4.533013830506075,
+        "maximum_gap_amplitude_peV": 0.3934094780848231,
+        "maximum_potential_amplitude_pV": 2.2665069152530375,
+        "maximum_phase_amplitude_urad": 0.030406613376499938,
+        "maximum_crosscut_current_difference_from_left_percent": 5.781631532985938,
+        "radial_KWT_over_port_power": 2.403267838183081,
+        "port_power_per_voltage_squared_uW_per_V2": 103.32652318966592,
+        "radial_heat_per_voltage_squared_uW_per_V2": 248.32131001300243
+      },
+      "phase8_w080": {
+        "device_voltage_peak_pV": 1.142423611992767,
+        "maximum_gap_amplitude_peV": 0.008272163579502731,
+        "maximum_potential_amplitude_pV": 0.5712118059963835,
+        "maximum_phase_amplitude_urad": 0.0019157912583608037,
+        "maximum_crosscut_current_difference_from_left_percent": 3.9981582641654003,
+        "radial_KWT_over_port_power": 2.4614737881173485,
+        "port_power_per_voltage_squared_uW_per_V2": 11.170533015605157,
+        "radial_heat_per_voltage_squared_uW_per_V2": 27.495974217211533
+      },
+      "phase8_refined": {
+        "maximum_crosscut_current_difference_from_left_percent": 4.045429185531866,
+        "radial_KWT_over_port_power": 1.313735738993648,
+        "port_power_per_voltage_squared_uW_per_V2": 190.1585681719711,
+        "radial_heat_per_voltage_squared_uW_per_V2": 249.8181070833784
+      },
+      "phase2_w020": {
+        "radial_KWT_over_port_power": 2.494604337375562,
+        "port_power_per_voltage_squared_uW_per_V2": 6.055567305624959,
+        "radial_heat_per_voltage_squared_uW_per_V2": 15.106244465881668
+      }
+    },
+    "thermal_metrics": {
+      "Amplitud": {
+        "final_norm_over_initial": 0.8129311455923725,
+        "final_free_energy_over_initial": 0.660629671383618
+      },
+      "Fase": {
+        "final_norm_over_initial": 0.0008977493941760293,
+        "final_free_energy_over_initial": 1.286122608237284e-07
+      }
+    }
+  },
+  "captions": [
+    {
+      "file": "01_condensado_polarizado.png",
+      "title": "Condensado estacionario bajo corriente",
+      "quantities": "Mapas y corte de |Delta|/Delta0, sin sustracción; q_x=d(arg Delta)/dx para A=0, en nm^-1. Corriente DC de contacto en microamperios.",
+      "case": "Referencias phase2 y phase8; 160 x 80 nm, 0.9 K, sin fotón.",
+      "interpretation": "Cuadruplicar la fase casi cuadruplica I, pero aumenta más la depresión del gap: el transporte ya modifica la rigidez del condensado. No es una curva de corriente crítica."
+    },
+    {
+      "file": "02_relajacion_real.png",
+      "title": "Relajación temporal real de perturbaciones suaves",
+      "quantities": "Cortes y=0: exceso relativo de amplitud en ppm y fase relativa en mrad. RMS ponderada por áreas y exceso de energía libre, ambos divididos por su propio valor inicial.",
+      "case": "Dos excitaciones distintas sobre equilibrio uniforme a 0.9 K, sin corriente ni fotón. Pasos aceptados de Euler KWT; curvas de energía del historial completo; normas de seis observaciones.",
+      "interpretation": "La redistribución de fase casi termina en 1 ps, mientras la amplitud conserva una fracción importante. F es energía libre a temperatura fija, no energía interna de poblaciones acopladas."
+    },
+    {
+      "file": "03_respuesta_espacial.png",
+      "title": "Respuesta espacial armónica del condensado y potencial",
+      "quantities": "Módulo del fasor de la variación radial de Delta en peV y del potencial escalar en pV; referencias DC sustraídas. Amplitudes pico de la misma fuente alterna de 1 microvoltio, transferida mediante el circuito completo.",
+      "case": "Dos mapas a Omega=0.2 sobre phase2/phase8; perfiles y=0 sobre phase8 a Omega=0.05, 0.2, 0.8. Respuesta candidata en 6 modos; sin fotón.",
+      "interpretation": "La corriente facilita la perturbación de la amplitud; la respuesta de la fuente cae con frecuencia. Esa caída mezcla la física intrínseca con el filtrado circuital y no se interpreta como una relajación propia del material."
+    },
+    {
+      "file": "04_circuito_completo.png",
+      "title": "Transferencia del circuito completo de la memoria",
+      "quantities": "Variaciones temporales periódicas de fuente (microvoltios), lectura Vout y caída Vdev (picovoltios), con el sesgo DC restado; exp(-i omega t), fasores pico. Amplitudes frente a frecuencia física en GHz.",
+      "case": "Referencia phase8, fuente pico de 1 microvoltio. Rb=10 kiloohmios, Lb=1 microhenrio, Rload=50 ohmios, C=100 picofaradios, inductancia total=10 nanohenrios; Lexterna descuenta una sola vez la porción espacial resuelta.",
+      "interpretation": "La concordancia de Vout base/refinado está favorecida por el fuerte filtrado externo. Esta salida no certifica por sí sola la dissipación interna y no representa una señal de detección."
+    },
+    {
+      "file": "05_potencia_interna.png",
+      "title": "Desajuste físico del cierre disipativo candidato",
+      "quantities": "Izquierda: desviación de corriente compleja integrada sobre cada corte transversal frente al contacto izquierdo, módulo relativo en porcentaje. Cortes exhaustivos en los puntos medios entre todas las coordenadas x nodales distintas; suma orientada exacta de aristas que cruzan el corte, sin interpolación. Derecha: potencia AC media de puerto Re(Y)/2 y calor radial KWT candidato, ambos por el cuadrado de la amplitud pico de Vdev; unidades microvatios/voltio^2. No se usa normalización por la fuente externa.",
+      "case": "Cinco respuestas armónicas guardadas; todos los casos del candidato y su refinamiento.",
+      "interpretation": "El calor radial candidato supera la potencia de puerto en todos los casos. La diferencia no es un calor de reservorio evaluado y estos datos no establecen balance energético total; no puede ocultarse mediante una tolerancia de Vout."
+    }
+  ],
+  "files": [
+    {
+      "file": "01_condensado_polarizado.png",
+      "sha256": "620e7da12d63399f475b1496d5a7267144144e53a04531a6d314fd938dcc2504"
+    },
+    {
+      "file": "02_relajacion_real.png",
+      "sha256": "3b76caec0270a34ad8a6ae8f7b1866a1a3ab5b0208c48deb016b28fa19bc0b0b"
+    },
+    {
+      "file": "03_respuesta_espacial.png",
+      "sha256": "36aac5bae1280874ad42066f4d7cb9fd671b1a615971fa3ff7b4bcb78d45ff98"
+    },
+    {
+      "file": "04_circuito_completo.png",
+      "sha256": "f2c99b533820483dc7e0bd3a1a9505d3b00afbde582c07c444c0e99fbf5ce0b7"
+    },
+    {
+      "file": "05_potencia_interna.png",
+      "sha256": "b08fb00bb23cb774fb9afa78c1ab50158c15d25e2b854745a296d97657633bc3"
+    }
+  ]
+}

@@ -106,7 +106,7 @@ Los generadores sin opciones escriben junto a su código. Sus resultados incluye
 
 El [certificado de admisión](../../docs/implementation/stage1_r2/catalog_admission.json) es externo y referencia los hashes del NPZ, los criterios y la evidencia de cierre. El catálogo conserva sus metadatos de construcción; no se reescribe después de medirlo sólo para cambiar una etiqueta de estado. La admisión se limita al dominio, poblaciones y tolerancias comprobados, y es independiente de la admisión material de NbN.
 
-Los destinos de entrega son [catálogo de ocupaciones](../../docs/implementation/stage1_r2/catalogs/occupation_catalog.npz), [vacío](../../docs/implementation/stage1_r2/catalogs/vacuum_catalog.npz), [evaluación final](../../docs/implementation/stage1_r2/review/final_assessment.json) y [PDF](../../output/pdf/implementation/Informe_etapa_1_r2.pdf). Para generar los gráficos del dictamen y el documento:
+Los destinos de entrega son [catálogo de ocupaciones](../../docs/implementation/stage1_r2/catalogs/occupation_catalog.npz), [vacío](../../docs/implementation/stage1_r2/catalogs/vacuum_catalog.npz), [evaluación final](../../docs/implementation/stage1_r2/review/final_assessment.json) y [PDF](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_1_r2.pdf). Para generar los gráficos del dictamen y el documento:
 
 ```bash
 "$PY_R2" sandbox/stage1_catalog_r2/plot_acceptance.py \

@@ -1,0 +1,402 @@
+{
+  "schema": "pysnspd.stage4.final_physics_review.v1",
+  "scope": "Postprocessing of the weak harmonic campaign; no nonlinear energy or photon acceptance",
+  "definitions": {
+    "response": "Peak complex phasors, exp(-i omega t), per v_dev=e V_dev/(kB Tc)",
+    "field_rms": "Area-weighted RMS over non-contact nodes",
+    "field_comparison": "Area-weighted L2 over all nodes; ordinary Euclidean L2 for edge-current coefficients; denominator is refined field norm",
+    "scalar_comparison": "Absolute complex or real change divided by the magnitude of the refined observable",
+    "crosssection": "Cuts halfway between every consecutive distinct nodal x coordinate; sum oriented edge currents crossing each cut",
+    "crosssection_max": "Maximum complex departure from the summed left contact current divided by its magnitude",
+    "crosssection_rms": "Interval-width-weighted RMS complex departure from the interval-width-weighted mean over all cuts, divided by magnitude of that mean",
+    "radial_heat": "Omega^2 sum_i m_i gamma_i |radial_i|^2/(16 R_sheet), W per V_dev_peak^2; 1/2 from peak-to-cycle-average",
+    "terminal_power": "(Re Y_left + Re Y_right)/4 for antisymmetric terminal voltages +/- V_dev/2"
+  },
+  "references": {
+    "phase2": {
+      "gap_mass_rms_relative": 9.300887653134026e-06,
+      "minimum_gap_relative": 0.9984926106562415,
+      "phase_advance_rad": 2.0000000000000004,
+      "phase_branch_integer": 0,
+      "maximum_phase_jump_on_path_rad": 0.05379129218464573,
+      "phase_path_minimum_gap_relative": 0.9985158523668299,
+      "maximum_free_current_divergence": 2.9343540833046133e-05,
+      "maximum_absolute_link_current_bar": 0.2674384338302034,
+      "maximum_noether_residual": 3.375786947379256e-15,
+      "sweep": 17,
+      "gap_bar_min": 1.761267004430771,
+      "gap_bar_max": 1.7639259275771804,
+      "gap_mass_mean": 1.76147065123231,
+      "gap_central_mean": 1.761340977628041,
+      "central_region_definition": "Arithmetic node mean in |x-x_center|/ell0 < 1",
+      "node_count": 1712,
+      "coordinate_range_bar": [
+        34.05348728928877,
+        17.026743644644384
+      ]
+    },
+    "phase8": {
+      "gap_mass_rms_relative": 9.972265481885104e-06,
+      "minimum_gap_relative": 0.9747140140662612,
+      "phase_advance_rad": 7.999999999999999,
+      "phase_branch_integer": 1,
+      "maximum_phase_jump_on_path_rad": 0.21586560644844155,
+      "phase_path_minimum_gap_relative": 0.9751148051717152,
+      "maximum_free_current_divergence": 0.0002648112326818601,
+      "maximum_absolute_link_current_bar": 1.0326202148536971,
+      "maximum_noether_residual": 3.720653187833598e-15,
+      "sweep": 134,
+      "gap_bar_min": 1.7193233213843064,
+      "gap_bar_max": 1.76392592757718,
+      "gap_mass_mean": 1.7228516463772428,
+      "gap_central_mean": 1.7206200298270382,
+      "central_region_definition": "Arithmetic node mean in |x-x_center|/ell0 < 1",
+      "node_count": 1712,
+      "coordinate_range_bar": [
+        34.05348728928877,
+        17.026743644644384
+      ]
+    }
+  },
+  "responses": {
+    "phase2_w020": {
+      "omega": 0.2,
+      "mode_count": 6,
+      "reference_dc_current_A": 3.368121019131279e-06,
+      "resolved_inductance_H": 1.9517440963109066e-10,
+      "external_inductance_H": 9.80482559036891e-09,
+      "admittance_S": {
+        "real": 1.2111134611249918e-05,
+        "imag": 0.022619549933501553
+      },
+      "impedance_ohm": {
+        "real": 0.023671009943301385,
+        "imag": -44.20953185439487
+      },
+      "readout_peak_V": {
+        "real": 1.46332593419456e-11,
+        "imag": 2.2000454147433237e-10
+      },
+      "full_field_residuals": {
+        "radial_force_rms": 0.013595538755772763,
+        "angular_force_rms": 0.0004183603433739919,
+        "neutral_rms": 3.2656446504264254e-05,
+        "voltage_rms": 0.28326964495436213,
+        "neutral_relative_to_voltage": 0.00011528396030406141,
+        "current_divergence_rms": 0.0010651667135435192,
+        "current_divergence_over_link_current": 0.0007979276185684129,
+        "projected_equation_max": 3.2631097260024666e-17
+      },
+      "resolved_mobility_norm_over_kwt": 6.247995970265042e-06,
+      "minimum_residual_mobility_eigenvalue": 22.35519821262868,
+      "film_port_power_per_voltage_squared_W": 6.055567305624959e-06,
+      "candidate_radial_heat_per_voltage_squared_W": 1.5106244465881668e-05,
+      "minimum_static_projected_stiffness": 0.015059034883805535,
+      "right_terminal_admittance_S": {
+        "real": 1.2111059980719001e-05,
+        "imag": 0.022619199960105717
+      },
+      "terminal_current_mismatch_relative": 1.5472162561017338e-05,
+      "power_both_terminals_per_V2": 6.0555486479922295e-06,
+      "frequency_GHz": 36.0473510833567,
+      "period_ps": 27.741289441423245,
+      "reactive_inductance_nH": 0.1951923044257805,
+      "device_voltage_peak_V": {
+        "real": 2.795828885010518e-13,
+        "imag": 4.294711860631153e-12
+      },
+      "device_voltage_magnitude_V": 4.303802569517855e-12,
+      "readout_magnitude_V": 2.2049065864181154e-10,
+      "radial_rms_per_vbar": 0.016987189140101246,
+      "radial_max_per_vbar": 0.021229904813425435,
+      "phase_rms_per_vbar": 2.832563091834277,
+      "potential_rms_per_vbar": 0.28326964495436213,
+      "relative_radial_response_rms_per_vbar": 0.009644409472092547,
+      "source_drive_peak_V": 1e-06,
+      "radial_rms_at_declared_source_drive": 9.80809957893008e-11,
+      "crosssection_current_max_deviation_from_left_relative": 0.00863071410214619,
+      "crosssection_cut_count": 1477,
+      "crosssection_current_rms_deviation_from_mean_relative": 0.002504069996125994,
+      "current_crosssection_min_abs_uA_per_vbar": 16.715267287423725,
+      "current_crosssection_max_abs_uA_per_vbar": 16.86059971826803,
+      "resolved_relative_mobility_eigenvalue_min": 5.372679021969139e-06,
+      "resolved_relative_mobility_eigenvalue_max": 6.248006424224282e-06,
+      "radial_heat_over_port_power": 2.494604337375562
+    },
+    "phase8_refined": {
+      "omega": 0.2,
+      "mode_count": 10,
+      "reference_dc_current_A": 1.3002223805191582e-05,
+      "resolved_inductance_H": 2.1241553155897197e-10,
+      "external_inductance_H": 9.787584468441028e-09,
+      "admittance_S": {
+        "real": 0.0003803171363439422,
+        "imag": 0.02119086365727425
+      },
+      "impedance_ohm": {
+        "real": 0.8466593618755868,
+        "imag": -47.17495318284823
+      },
+      "readout_peak_V": {
+        "real": 1.4635115158747493e-11,
+        "imag": 2.200026014609747e-10
+      },
+      "full_field_residuals": {
+        "radial_force_rms": 0.0514092606831962,
+        "angular_force_rms": 0.006401486962421863,
+        "neutral_rms": 5.337257785171907e-05,
+        "voltage_rms": 0.28484666959195404,
+        "neutral_relative_to_voltage": 0.00018737300993610306,
+        "current_divergence_rms": 0.01107042848888677,
+        "current_divergence_over_link_current": 0.009177946268134783,
+        "projected_equation_max": 1.1403793615759969e-15
+      },
+      "resolved_mobility_norm_over_kwt": 2.8151893250594764e-06,
+      "minimum_residual_mobility_eigenvalue": 21.839243745997628,
+      "film_port_power_per_voltage_squared_W": 0.0001901585681719711,
+      "candidate_radial_heat_per_voltage_squared_W": 0.0002498181070833784,
+      "minimum_static_projected_stiffness": 0.014089702961381281,
+      "right_terminal_admittance_S": {
+        "real": 0.0003802580569384356,
+        "imag": 0.021185408252349346
+      },
+      "terminal_current_mismatch_relative": 0.0002574150098186511,
+      "power_both_terminals_per_V2": 0.00019014379832059443,
+      "frequency_GHz": 36.0473510833567,
+      "period_ps": 27.741289441423245,
+      "reactive_inductance_nH": 0.2082851239697773,
+      "device_voltage_peak_V": {
+        "real": 2.2034320828207503e-13,
+        "imag": 4.589807684368413e-12
+      },
+      "device_voltage_magnitude_V": 4.595093656164515e-12,
+      "readout_magnitude_V": 2.2048884607912996e-10,
+      "radial_rms_per_vbar": 0.06988910590686695,
+      "radial_max_per_vbar": 0.08724976047557728,
+      "phase_rms_per_vbar": 2.8485661764907255,
+      "potential_rms_per_vbar": 0.28484666959195404,
+      "relative_radial_response_rms_per_vbar": 0.04061632751856462,
+      "source_drive_peak_V": 1e-06,
+      "radial_rms_at_declared_source_drive": 4.3083884768790123e-10,
+      "crosssection_current_max_deviation_from_left_relative": 0.04045429185531852,
+      "crosssection_cut_count": 1477,
+      "crosssection_current_rms_deviation_from_mean_relative": 0.008114337127258286,
+      "current_crosssection_min_abs_uA_per_vbar": 15.175488644681007,
+      "current_crosssection_max_abs_uA_per_vbar": 15.798199219866133,
+      "resolved_relative_mobility_eigenvalue_min": 1.7284145217612716e-06,
+      "resolved_relative_mobility_eigenvalue_max": 2.8156983661924097e-06,
+      "radial_heat_over_port_power": 1.313735738993648
+    },
+    "phase8_w005": {
+      "omega": 0.05,
+      "mode_count": 6,
+      "reference_dc_current_A": 1.3002223805191582e-05,
+      "resolved_inductance_H": 2.0770094821645752e-10,
+      "external_inductance_H": 9.792299051783543e-09,
+      "admittance_S": {
+        "real": 0.0004469481278309209,
+        "imag": 0.08516491492150224
+      },
+      "impedance_ohm": {
+        "real": 0.06162028853417497,
+        "imag": -11.741601102391666
+      },
+      "readout_peak_V": {
+        "real": 2.2583583149735707e-10,
+        "imag": 8.363166743537645e-10
+      },
+      "full_field_residuals": {
+        "radial_force_rms": 0.20944062973384378,
+        "angular_force_rms": 0.03545038644021345,
+        "neutral_rms": 5.502335955927498e-05,
+        "voltage_rms": 0.2851507863904675,
+        "neutral_relative_to_voltage": 0.0001929623279520943,
+        "current_divergence_rms": 0.06107132149486353,
+        "current_divergence_over_link_current": 0.012879646501808345,
+        "projected_equation_max": 3.83075341106755e-15
+      },
+      "resolved_mobility_norm_over_kwt": 3.23061677247753e-05,
+      "minimum_residual_mobility_eigenvalue": 21.83938703464518,
+      "film_port_power_per_voltage_squared_W": 0.00022347406391546044,
+      "candidate_radial_heat_per_voltage_squared_W": 0.0005154940257721338,
+      "minimum_static_projected_stiffness": 0.014160812648941852,
+      "right_terminal_admittance_S": {
+        "real": 0.00044686148660882664,
+        "imag": 0.08514281415625667
+      },
+      "terminal_current_mismatch_relative": 0.00025950393716062635,
+      "power_both_terminals_per_V2": 0.00022345240360993688,
+      "frequency_GHz": 9.011837770839175,
+      "period_ps": 110.96515776569298,
+      "reactive_inductance_nH": 0.20736434707089343,
+      "device_voltage_peak_V": {
+        "real": 4.532719911551369e-12,
+        "imag": 1.738311424737884e-11
+      },
+      "device_voltage_magnitude_V": 1.7964359457937806e-11,
+      "readout_magnitude_V": 8.662721296395511e-10,
+      "radial_rms_per_vbar": 0.4015779125910401,
+      "radial_max_per_vbar": 0.498205295040316,
+      "phase_rms_per_vbar": 11.405675371577507,
+      "potential_rms_per_vbar": 0.2851507863904675,
+      "relative_radial_response_rms_per_vbar": 0.23337909011479963,
+      "source_drive_peak_V": 1e-06,
+      "radial_rms_at_declared_source_drive": 9.67815466038742e-09,
+      "crosssection_current_max_deviation_from_left_relative": 0.07464666268303138,
+      "crosssection_cut_count": 1477,
+      "crosssection_current_rms_deviation_from_mean_relative": 0.018721148995883997,
+      "current_crosssection_min_abs_uA_per_vbar": 58.798292785704795,
+      "current_crosssection_max_abs_uA_per_vbar": 63.48274447890769,
+      "resolved_relative_mobility_eigenvalue_min": 9.281000016325369e-06,
+      "resolved_relative_mobility_eigenvalue_max": 3.2306949766546136e-05,
+      "radial_heat_over_port_power": 2.3067286500286834
+    },
+    "phase8_w020": {
+      "omega": 0.2,
+      "mode_count": 6,
+      "reference_dc_current_A": 1.3002223805191582e-05,
+      "resolved_inductance_H": 2.0770094821645742e-10,
+      "external_inductance_H": 9.792299051783543e-09,
+      "admittance_S": {
+        "real": 0.00020665304637933185,
+        "imag": 0.021479405332334302
+      },
+      "impedance_ohm": {
+        "real": 0.44787529460178477,
+        "imag": -46.551914717152286
+      },
+      "readout_peak_V": {
+        "real": 1.4634238365379987e-11,
+        "imag": 2.200035398890751e-10
+      },
+      "full_field_residuals": {
+        "radial_force_rms": 0.05283607404994403,
+        "angular_force_rms": 0.007409161344672395,
+        "neutral_rms": 7.513212910911878e-05,
+        "voltage_rms": 0.28453691666502284,
+        "neutral_relative_to_voltage": 0.00026405054918609975,
+        "current_divergence_rms": 0.012748198071362531,
+        "current_divergence_over_link_current": 0.010516066776981792,
+        "projected_equation_max": 8.954849776399934e-16
+      },
+      "resolved_mobility_norm_over_kwt": 8.521069138125023e-06,
+      "minimum_residual_mobility_eigenvalue": 21.839657199782604,
+      "film_port_power_per_voltage_squared_W": 0.00010332652318966593,
+      "candidate_radial_heat_per_voltage_squared_W": 0.00024832131001300243,
+      "minimum_static_projected_stiffness": 0.014160812648941375,
+      "right_terminal_admittance_S": {
+        "real": 0.00020661542471918745,
+        "imag": 0.021473837084770398
+      },
+      "terminal_current_mismatch_relative": 0.0002592304989423597,
+      "power_both_terminals_per_V2": 0.00010331711777462982,
+      "frequency_GHz": 36.0473510833567,
+      "period_ps": 27.741289441423245,
+      "reactive_inductance_nH": 0.20553430737516543,
+      "device_voltage_peak_V": {
+        "real": 2.542339409778068e-13,
+        "imag": 4.525878863912981e-12
+      },
+      "device_voltage_magnitude_V": 4.533013830506075e-12,
+      "readout_magnitude_V": 2.2048972424187622e-10,
+      "radial_rms_per_vbar": 0.06967944733139267,
+      "radial_max_per_vbar": 0.08678761918555675,
+      "phase_rms_per_vbar": 2.8453808427634466,
+      "potential_rms_per_vbar": 0.28453691666502284,
+      "relative_radial_response_rms_per_vbar": 0.04049451593623312,
+      "source_drive_peak_V": 1e-06,
+      "radial_rms_at_declared_source_drive": 4.237432030587696e-10,
+      "crosssection_current_max_deviation_from_left_relative": 0.05781631532985914,
+      "crosssection_cut_count": 1477,
+      "crosssection_current_rms_deviation_from_mean_relative": 0.013946144436605709,
+      "current_crosssection_min_abs_uA_per_vbar": 15.152390571165558,
+      "current_crosssection_max_abs_uA_per_vbar": 16.011475269396758,
+      "resolved_relative_mobility_eigenvalue_min": 6.6621444204137586e-06,
+      "resolved_relative_mobility_eigenvalue_max": 8.521449535787404e-06,
+      "radial_heat_over_port_power": 2.403267838183081
+    },
+    "phase8_w080": {
+      "omega": 0.8,
+      "mode_count": 6,
+      "reference_dc_current_A": 1.3002223805191582e-05,
+      "resolved_inductance_H": 2.0770094821645763e-10,
+      "external_inductance_H": 9.792299051783543e-09,
+      "admittance_S": {
+        "real": 2.2341066031210314e-05,
+        "imag": 0.005332242892591858
+      },
+      "impedance_ohm": {
+        "real": 0.7857355815586625,
+        "imag": -187.53505156690736
+      },
+      "readout_peak_V": {
+        "real": 9.166925488982484e-13,
+        "imag": 5.51777163117999e-11
+      },
+      "full_field_residuals": {
+        "radial_force_rms": 0.013443050570935077,
+        "angular_force_rms": 0.0014900611115115545,
+        "neutral_rms": 6.052937182446665e-05,
+        "voltage_rms": 0.284128467177062,
+        "neutral_relative_to_voltage": 0.00021303522461459733,
+        "current_divergence_rms": 0.0025447612466861355,
+        "current_divergence_over_link_current": 0.00837288890052068,
+        "projected_equation_max": 1.669108656273185e-16
+      },
+      "resolved_mobility_norm_over_kwt": 9.545344420358974e-06,
+      "minimum_residual_mobility_eigenvalue": 21.839637096443095,
+      "film_port_power_per_voltage_squared_W": 1.1170533015605157e-05,
+      "candidate_radial_heat_per_voltage_squared_W": 2.749597421721153e-05,
+      "minimum_static_projected_stiffness": 0.014160812648941838,
+      "right_terminal_admittance_S": {
+        "real": 2.233747526768971e-05,
+        "imag": 0.0053308354929128285
+      },
+      "terminal_current_mismatch_relative": 0.0002639399470446986,
+      "power_both_terminals_per_V2": 1.1169635324725005e-05,
+      "frequency_GHz": 144.1894043334268,
+      "period_ps": 6.935322360355811,
+      "reactive_inductance_nH": 0.20699947127077123,
+      "device_voltage_peak_V": {
+        "real": 1.403788769274358e-14,
+        "imag": 1.1423373612675575e-12
+      },
+      "device_voltage_magnitude_V": 1.142423611992767e-12,
+      "readout_magnitude_V": 5.5185330501997307e-11,
+      "radial_rms_per_vbar": 0.0057965827387540525,
+      "radial_max_per_vbar": 0.007240889887660257,
+      "phase_rms_per_vbar": 0.7103261281082406,
+      "potential_rms_per_vbar": 0.284128467177062,
+      "relative_radial_response_rms_per_vbar": 0.0033687059295392095,
+      "source_drive_peak_V": 1e-06,
+      "radial_rms_at_declared_source_drive": 8.884034031416113e-12,
+      "crosssection_current_max_deviation_from_left_relative": 0.039981582641653884,
+      "crosssection_cut_count": 1477,
+      "crosssection_current_rms_deviation_from_mean_relative": 0.008563931016521434,
+      "current_crosssection_min_abs_uA_per_vbar": 3.819462704707025,
+      "current_crosssection_max_abs_uA_per_vbar": 3.974685150778153,
+      "resolved_relative_mobility_eigenvalue_min": 7.934813855065748e-06,
+      "resolved_relative_mobility_eigenvalue_max": 9.54663897497986e-06,
+      "radial_heat_over_port_power": 2.461473788117348
+    }
+  },
+  "comparison": {
+    "admittance_S_complex_relative_change": 0.015889771198750405,
+    "impedance_ohm_complex_relative_change": 0.015678116271756123,
+    "readout_peak_V_complex_relative_change": 5.824762226331995e-06,
+    "resolved_inductance_H_relative_change": 0.02219509707182432,
+    "candidate_radial_heat_per_voltage_squared_W_relative_change": 0.005991547561748269,
+    "film_port_power_per_voltage_squared_W_relative_change": 0.45662967394547305,
+    "radial_response_weighted_L2_relative_change": 0.00643928536711003,
+    "radial_response_max_error_over_refined_max": 0.008477911316239178,
+    "angular_response_weighted_L2_relative_change": 0.0031990983069811576,
+    "angular_response_max_error_over_refined_max": 0.002613526325340315,
+    "potential_response_weighted_L2_relative_change": 0.003128707868649034,
+    "potential_response_max_error_over_refined_max": 0.0026153540314620503,
+    "current_response_weighted_L2_relative_change": 0.011302961159744936,
+    "current_response_max_error_over_refined_max": 0.014998529623806415,
+    "ReY_relative_change": 0.45662967394547305,
+    "ReY_change_over_total_refined_Y": 0.008193914636257701,
+    "gamma_resolved_over_kwt_max_all_cases": 3.23061677247753e-05
+  }
+}

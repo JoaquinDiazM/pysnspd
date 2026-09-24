@@ -1,7 +1,7 @@
 # Etapa 4A: resultados y continuación enfocada
 
 23 de septiembre de 2026. **46 controles completados; etapa 4 aún abierta.**
-[PDF ilustrado](../../../../output/pdf/implementation/Informe_avance_etapa_4A.pdf).
+[PDF ilustrado](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_avance_etapa_4A.pdf).
 
 Los 40 controles locales demoraron 27,23 s y los seis estados 2D, 31,30 min.
 Se verificaron el plan, las 11 fuentes de cada lote y los 52 archivos de

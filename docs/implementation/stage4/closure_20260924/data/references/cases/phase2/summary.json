@@ -1,0 +1,50 @@
+{
+  "status": "FINITE_SUM_STATIONARY",
+  "criterion_met": true,
+  "completed_sweeps": 17,
+  "gap_reference_bar": 1.7639259275771801,
+  "elapsed_seconds": 91.63403345132247,
+  "metrics": {
+    "gap_mass_rms_relative": 9.300887653134026e-06,
+    "gap_max_relative": 9.84905210196479e-06,
+    "gap_residual_definition": "|delta_bar-next_delta_bar|/uniform_gap_bar; mass-weighted RMS over free nodes",
+    "force_density_mass_rms": 0.00017212495506266652,
+    "energy": -875.8630728191354,
+    "energy_after_exact_gap_block": -875.8630736232398,
+    "exact_gap_block": {
+      "coefficient": 5.245768269680552,
+      "predicted_energy_change": -8.041044392942183e-07,
+      "observed_energy_change": -8.041043965413775e-07,
+      "identity_absolute_error": 4.275284081241287e-14
+    },
+    "maximum_spectral_residual": 2.804716373834166e-11,
+    "minimum_gap_relative": 0.9984926106562415,
+    "minimum_matsubara_g": 0.18220672858451206,
+    "maximum_free_current_divergence": 2.9343540833046133e-05,
+    "maximum_noether_residual": 3.375786947379256e-15,
+    "maximum_absolute_link_current_bar": 0.2674384338302034,
+    "contact_reactions": {
+      "left": {
+        "outgoing_link_current_bar": 5.494551725425725,
+        "gap_phase_reaction_bar": 7.183562047047377e-15,
+        "spectral_phase_reaction_bar": -5.494551725425724,
+        "total_phase_reaction_bar": -5.494551725425717
+      },
+      "right": {
+        "outgoing_link_current_bar": -5.494561336743034,
+        "gap_phase_reaction_bar": -6.080845515348382e-15,
+        "spectral_phase_reaction_bar": 5.494561336743037,
+        "total_phase_reaction_bar": 5.494561336743031
+      }
+    },
+    "phase_advance_rad": 2.0000000000000004,
+    "phase_branch_integer": 0,
+    "maximum_phase_jump_on_path_rad": 0.05379129218464573,
+    "phase_path_minimum_gap_relative": 0.9985158523668299,
+    "phase_branch_definition": "Sum of principal link phase differences along the saved left-to-right shortest geometric path, alpha=0; diagnostic, not an imposed constraint",
+    "spectral_block_energy_change": -9.940719110090868e-07,
+    "criterion_met": true,
+    "sweep": 17,
+    "physical_time_steps": 0
+  }
+}

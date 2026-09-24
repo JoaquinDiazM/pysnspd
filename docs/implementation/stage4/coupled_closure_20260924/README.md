@@ -1,7 +1,8 @@
 # Etapa 4: ensayo de unión dinámica con corriente y circuito
 
-Se preparó un único comando para obtener los datos que faltan antes de decidir
-el cierre. **El lote largo todavía no se ha ejecutado.** Primero construye dos
+La campaña ya terminó. El [cierre vigente](../closure_20260924/README.md)
+contiene los resultados y sus límites físicos. Esta página conserva la preparación
+histórica y los criterios previos; no es una instrucción de volver a ejecutar. Primero construye dos
 referencias estacionarias con corriente en la malla dual admitida; después
 resuelve cinco casos de respuesta débil con espectro, poblaciones, fase,
 potencial y circuito. No repite las campañas temporales ya aprobadas.

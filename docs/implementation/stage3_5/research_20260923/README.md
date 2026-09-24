@@ -67,6 +67,6 @@ cascada antes de escoger el ancho. El plan está en [cascade_plan.json](cascade_
 Las fuentes y decisiones iniciales de 3.5 permanecen intactas para conservar
 el manifiesto de cierre de etapa3; esta carpeta es la revisión vigente.
 
-El [informe de investigación](Informe_investigacion_etapa_3_5_r1.md) resume los resultados y las figuras; [versión PDF](../../../../output/pdf/implementation/Informe_investigacion_etapa_3_5_r1.pdf).
+El [informe de investigación](Informe_investigacion_etapa_3_5_r1.md) resume los resultados y las figuras; [versión PDF](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_investigacion_etapa_3_5_r1.pdf).
 
 La primera extracción de la referencia de cascada está en [cascade_digitization.json](cascade_digitization.json). Los radios que contienen50% y90% no corresponden a un único ancho gaussiano en aquellos dos instantes; [figura de diagnóstico](figures/04_cascade_shape.png). Es lectura del resultado histórico, no un transiente nuevo ni una medición de Korzh.

@@ -20,7 +20,7 @@ integrador para cuantificar la cola extinguida. La etapa 4 completa sigue
 abierta para el acoplamiento no térmico y los controles espaciales/puertos
 que lo requieran. No se acredita el detector ni se inicia la etapa 5.
 
-- [Informe ilustrado](../../../../output/pdf/implementation/Informe_etapa_4_revision_practica.pdf).
+- [Informe ilustrado](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_etapa_4_revision_practica.pdf).
 - [Análisis reproducido](analysis.md) y [datos y definiciones](analysis.json).
 - [Fuentes publicadas y reutilización del solver](published_methods.md).
 - [Ruta física siguiente](physical_route.md).

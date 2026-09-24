@@ -5,7 +5,7 @@ malla candidata y el fallo de positividad en la malla electrónica fina. La
 recuperación SSP40 completó su trayectoria, pero su error energético fue
 3,65224e-6 frente al límite 1e-7. El limitador no actuó en ese ensayo.
 
-El [informe de revisión](../../../../output/pdf/implementation/Informe_revision_etapa_2_20260922.pdf)
+El [informe de revisión](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_revision_etapa_2_20260922.pdf)
 presenta cuatro páginas de resultados y plots, sin emitir un certificado de
 cierre. La [versión editable](Informe_revision_etapa_2_20260922.md) conserva
 el mismo contenido.

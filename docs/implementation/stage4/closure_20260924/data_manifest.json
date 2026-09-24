@@ -1,0 +1,343 @@
+{
+  "schema": "pysnspd.stage4.compact_evidence.v1",
+  "source_commit": "c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa",
+  "raw_root": "/home/jdiaz/scratch/stage4_final_coupling_20260924",
+  "physics_solves_performed": 0,
+  "note": "Compact NPZ references support plotting, not solver restart. Full stationary Matsubara fields, integrated response moments and original outputs remain in scratch on Geminga; individual real-energy perturbation fields were not saved.",
+  "files": [
+    {
+      "path": "dependencies.json",
+      "source_sha256": "bf0af4e4e4de7e4ab6ce585681ba8c6a6f69794f53b9a1e4abea41622d3a98fb",
+      "source_bytes": 89,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/dependencies.json",
+      "storage": "exact_copy",
+      "review_sha256": "bf0af4e4e4de7e4ab6ce585681ba8c6a6f69794f53b9a1e4abea41622d3a98fb",
+      "review_bytes": 89
+    },
+    {
+      "path": "references/campaign.json",
+      "source_sha256": "5e7caecab79239ab638eb5ff08491af8c8e3bdba29b755cfe686bd99f2e742d6",
+      "source_bytes": 8956,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/campaign.json",
+      "storage": "exact_copy",
+      "review_sha256": "5e7caecab79239ab638eb5ff08491af8c8e3bdba29b755cfe686bd99f2e742d6",
+      "review_bytes": 8956
+    },
+    {
+      "path": "references/cases/phase2/manifest.json",
+      "source_sha256": "f421aa21236469a09a52a02034bd0324be533b9b58234564a282b4580299231f",
+      "source_bytes": 113453,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase2/manifest.json",
+      "storage": "exact_copy",
+      "review_sha256": "f421aa21236469a09a52a02034bd0324be533b9b58234564a282b4580299231f",
+      "review_bytes": 113453
+    },
+    {
+      "path": "references/cases/phase2/reference.npz",
+      "source_sha256": "754472a10ea81fa2cedec1c5a812dcb59e11204d65612c500ba1be36c3e5417f",
+      "source_bytes": 14978637,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase2/reference.npz",
+      "storage": "review_subset_not_solver_restart",
+      "retained_arrays": [
+        "delta_bar",
+        "coordinates_bar",
+        "edges",
+        "conductance",
+        "area_weights",
+        "boundary_nodes",
+        "phase_path_nodes",
+        "current_bar"
+      ],
+      "review_sha256": "727cfdf262145f3809a932b4dcab54b0b9c56f0a0fe2db32af000a93335fc14c",
+      "review_bytes": 142788
+    },
+    {
+      "path": "references/cases/phase2/summary.json",
+      "source_sha256": "c5a89e77a2f15044755c5450793735f476b9b94bcb8640c214f13e821e2fe224",
+      "source_bytes": 206367,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase2/summary.json",
+      "storage": "compact_summary",
+      "review_sha256": "482746a2e73925a09a06e5a41629f4c9de2e89ba88c7c4acfb055173d8189de4",
+      "review_bytes": 2210
+    },
+    {
+      "path": "references/cases/phase8/manifest.json",
+      "source_sha256": "b6fab29d4dbf706f1a9908bc1b120fa4516399d40b4e389b226733cbb655972b",
+      "source_bytes": 113007,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase8/manifest.json",
+      "storage": "exact_copy",
+      "review_sha256": "b6fab29d4dbf706f1a9908bc1b120fa4516399d40b4e389b226733cbb655972b",
+      "review_bytes": 113007
+    },
+    {
+      "path": "references/cases/phase8/reference.npz",
+      "source_sha256": "513ce3b890408ed9ed107405cf8f0e8bf6d15edfda0611b9e2ed2a6a5e0801ee",
+      "source_bytes": 15321377,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase8/reference.npz",
+      "storage": "review_subset_not_solver_restart",
+      "retained_arrays": [
+        "delta_bar",
+        "coordinates_bar",
+        "edges",
+        "conductance",
+        "area_weights",
+        "boundary_nodes",
+        "phase_path_nodes",
+        "current_bar"
+      ],
+      "review_sha256": "5b347e2f54446a7205d5c5575fe25700e44dde83c28d467e3d67f125d8bd4da8",
+      "review_bytes": 143350
+    },
+    {
+      "path": "references/cases/phase8/summary.json",
+      "source_sha256": "75197c95c5573adc1fb4927ac58de531f8a81f37eb4ac2b7f4717978610d02b2",
+      "source_bytes": 205589,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase8/summary.json",
+      "storage": "compact_summary",
+      "review_sha256": "2cb5db42db147d8f7629cbae82675cf534bd1744e07232d515900b7f35db51cc",
+      "review_bytes": 2220
+    },
+    {
+      "path": "responses/campaign.json",
+      "source_sha256": "6c802ad9d9f9351a0cc0552386217d9109a88f01cdc35df9090a6202c5ab47ec",
+      "source_bytes": 16523,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/campaign.json",
+      "storage": "exact_copy",
+      "review_sha256": "6c802ad9d9f9351a0cc0552386217d9109a88f01cdc35df9090a6202c5ab47ec",
+      "review_bytes": 16523
+    },
+    {
+      "path": "responses/cases/phase2_w020/coupled_fields.npz",
+      "source_sha256": "a278ea9a9edb334c6bce949b57daa76d66bdf9d1874a9a3a27be6e25c934ab63",
+      "source_bytes": 401003,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase2_w020/coupled_fields.npz",
+      "storage": "exact_copy",
+      "review_sha256": "a278ea9a9edb334c6bce949b57daa76d66bdf9d1874a9a3a27be6e25c934ab63",
+      "review_bytes": 401003
+    },
+    {
+      "path": "responses/cases/phase2_w020/integrated_moments.npz",
+      "source_sha256": "442e9c907b0f8a3873f37145d6d73884bcfbd3b52eb4244c683a7ed522abbdc7",
+      "source_bytes": 2901838,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase2_w020/integrated_moments.npz",
+      "storage": "raw_only_on_geminga"
+    },
+    {
+      "path": "responses/cases/phase2_w020/manifest.json",
+      "source_sha256": "148093e77bad7402808b97c3f2da5d4114ae405917f074dd842c2723c2f9bc4a",
+      "source_bytes": 5289,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase2_w020/manifest.json",
+      "storage": "exact_copy",
+      "review_sha256": "148093e77bad7402808b97c3f2da5d4114ae405917f074dd842c2723c2f9bc4a",
+      "review_bytes": 5289
+    },
+    {
+      "path": "responses/cases/phase2_w020/modes.npz",
+      "source_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "source_bytes": 87243,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase2_w020/modes.npz",
+      "storage": "exact_copy",
+      "review_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "review_bytes": 87243
+    },
+    {
+      "path": "responses/cases/phase2_w020/results.json",
+      "source_sha256": "3052aed0fdce4d68887ae11b3efe9d6208ec34a0a083472002a412e757b354d0",
+      "source_bytes": 2612,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase2_w020/results.json",
+      "storage": "exact_copy",
+      "review_sha256": "3052aed0fdce4d68887ae11b3efe9d6208ec34a0a083472002a412e757b354d0",
+      "review_bytes": 2612
+    },
+    {
+      "path": "responses/cases/phase8_refined/coupled_fields.npz",
+      "source_sha256": "73cee3f2ee380e8bf0fffdb33dbcf13ea50d9730002e9f9bb91e9d93fe8e43da",
+      "source_bytes": 472338,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_refined/coupled_fields.npz",
+      "storage": "exact_copy",
+      "review_sha256": "73cee3f2ee380e8bf0fffdb33dbcf13ea50d9730002e9f9bb91e9d93fe8e43da",
+      "review_bytes": 472338
+    },
+    {
+      "path": "responses/cases/phase8_refined/integrated_moments.npz",
+      "source_sha256": "051ec87c1a60df70faa033977e540b55531a8b3e9f2f87e77a0dd2d3014d44bc",
+      "source_bytes": 4728207,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_refined/integrated_moments.npz",
+      "storage": "raw_only_on_geminga"
+    },
+    {
+      "path": "responses/cases/phase8_refined/manifest.json",
+      "source_sha256": "3b1ce08662f4c16164f9c04e046ff1fd78d8c6693e506f397391542520ca0ae1",
+      "source_bytes": 5295,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_refined/manifest.json",
+      "storage": "exact_copy",
+      "review_sha256": "3b1ce08662f4c16164f9c04e046ff1fd78d8c6693e506f397391542520ca0ae1",
+      "review_bytes": 5295
+    },
+    {
+      "path": "responses/cases/phase8_refined/modes.npz",
+      "source_sha256": "8e187069492ceb68055acb1fa446a2f08fc854cbac71914d213dcf46e2c244e2",
+      "source_bytes": 137746,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_refined/modes.npz",
+      "storage": "exact_copy",
+      "review_sha256": "8e187069492ceb68055acb1fa446a2f08fc854cbac71914d213dcf46e2c244e2",
+      "review_bytes": 137746
+    },
+    {
+      "path": "responses/cases/phase8_refined/results.json",
+      "source_sha256": "c6c4f723f5da3b08e76d72ad11566366c211d4518b1487e2eff98749eec6b50a",
+      "source_bytes": 2607,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_refined/results.json",
+      "storage": "exact_copy",
+      "review_sha256": "c6c4f723f5da3b08e76d72ad11566366c211d4518b1487e2eff98749eec6b50a",
+      "review_bytes": 2607
+    },
+    {
+      "path": "responses/cases/phase8_w005/coupled_fields.npz",
+      "source_sha256": "d8181698a71df868d993ba17b378962e5972d6859af364d432c84b63ab674950",
+      "source_bytes": 401811,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w005/coupled_fields.npz",
+      "storage": "exact_copy",
+      "review_sha256": "d8181698a71df868d993ba17b378962e5972d6859af364d432c84b63ab674950",
+      "review_bytes": 401811
+    },
+    {
+      "path": "responses/cases/phase8_w005/integrated_moments.npz",
+      "source_sha256": "82db5ce4d7179a1698cfdb4f95e0b46cf4860c480a380ec0f0c5d3ec8ab455d7",
+      "source_bytes": 2891789,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w005/integrated_moments.npz",
+      "storage": "raw_only_on_geminga"
+    },
+    {
+      "path": "responses/cases/phase8_w005/manifest.json",
+      "source_sha256": "101858a942bf61cd12b71b81555181a660f9558bfbced572abef77486c117147",
+      "source_bytes": 5291,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w005/manifest.json",
+      "storage": "exact_copy",
+      "review_sha256": "101858a942bf61cd12b71b81555181a660f9558bfbced572abef77486c117147",
+      "review_bytes": 5291
+    },
+    {
+      "path": "responses/cases/phase8_w005/modes.npz",
+      "source_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "source_bytes": 87243,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w005/modes.npz",
+      "storage": "exact_copy",
+      "review_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "review_bytes": 87243
+    },
+    {
+      "path": "responses/cases/phase8_w005/results.json",
+      "source_sha256": "c71182411279fb86270f59c37e392d919f36b7e1fb1b7a8acdea617d423ee333",
+      "source_bytes": 2600,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w005/results.json",
+      "storage": "exact_copy",
+      "review_sha256": "c71182411279fb86270f59c37e392d919f36b7e1fb1b7a8acdea617d423ee333",
+      "review_bytes": 2600
+    },
+    {
+      "path": "responses/cases/phase8_w020/coupled_fields.npz",
+      "source_sha256": "2f1ba9698996755e243773a9832f187e7809492d56aae159aea609fca6676255",
+      "source_bytes": 401418,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w020/coupled_fields.npz",
+      "storage": "exact_copy",
+      "review_sha256": "2f1ba9698996755e243773a9832f187e7809492d56aae159aea609fca6676255",
+      "review_bytes": 401418
+    },
+    {
+      "path": "responses/cases/phase8_w020/integrated_moments.npz",
+      "source_sha256": "7e352666544c31a37c1f17539dce3b6c4219ba6d712796c432585e437be1e652",
+      "source_bytes": 2897689,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w020/integrated_moments.npz",
+      "storage": "raw_only_on_geminga"
+    },
+    {
+      "path": "responses/cases/phase8_w020/manifest.json",
+      "source_sha256": "f5b9da123bedd164b5a67c6685d793fa4427a50e70eb8ce512f61bd59cf1e93c",
+      "source_bytes": 5270,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w020/manifest.json",
+      "storage": "exact_copy",
+      "review_sha256": "f5b9da123bedd164b5a67c6685d793fa4427a50e70eb8ce512f61bd59cf1e93c",
+      "review_bytes": 5270
+    },
+    {
+      "path": "responses/cases/phase8_w020/modes.npz",
+      "source_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "source_bytes": 87243,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w020/modes.npz",
+      "storage": "exact_copy",
+      "review_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "review_bytes": 87243
+    },
+    {
+      "path": "responses/cases/phase8_w020/results.json",
+      "source_sha256": "0a1048b4aabdd7c4027a6acde6eab49205e78b26925008595d7929387aed02fe",
+      "source_bytes": 2611,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w020/results.json",
+      "storage": "exact_copy",
+      "review_sha256": "0a1048b4aabdd7c4027a6acde6eab49205e78b26925008595d7929387aed02fe",
+      "review_bytes": 2611
+    },
+    {
+      "path": "responses/cases/phase8_w080/coupled_fields.npz",
+      "source_sha256": "4b0f97c26bdd8e1788f49b267d5f6039e137de571af411f6c821117986670be0",
+      "source_bytes": 401593,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w080/coupled_fields.npz",
+      "storage": "exact_copy",
+      "review_sha256": "4b0f97c26bdd8e1788f49b267d5f6039e137de571af411f6c821117986670be0",
+      "review_bytes": 401593
+    },
+    {
+      "path": "responses/cases/phase8_w080/integrated_moments.npz",
+      "source_sha256": "bc9382c74db7c78ccc476bf8a48117045f385848c0a3e2e84704d4d7792c0a4a",
+      "source_bytes": 2900726,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w080/integrated_moments.npz",
+      "storage": "raw_only_on_geminga"
+    },
+    {
+      "path": "responses/cases/phase8_w080/manifest.json",
+      "source_sha256": "03fe12bc7f5a80258ee5dbec0ddd7049109b0998856da4c4b28a2c15d3e4b49b",
+      "source_bytes": 5270,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w080/manifest.json",
+      "storage": "exact_copy",
+      "review_sha256": "03fe12bc7f5a80258ee5dbec0ddd7049109b0998856da4c4b28a2c15d3e4b49b",
+      "review_bytes": 5270
+    },
+    {
+      "path": "responses/cases/phase8_w080/modes.npz",
+      "source_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "source_bytes": 87243,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w080/modes.npz",
+      "storage": "exact_copy",
+      "review_sha256": "962ad18eb21e0fb6c1acff45efd0d335e500a10a05562c075e06a524acac49b9",
+      "review_bytes": 87243
+    },
+    {
+      "path": "responses/cases/phase8_w080/results.json",
+      "source_sha256": "377d6b84725448a9dd3f29f9fd126e7d31f1f696338de48c302de4de72fc3afe",
+      "source_bytes": 2610,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/responses/cases/phase8_w080/results.json",
+      "storage": "exact_copy",
+      "review_sha256": "377d6b84725448a9dd3f29f9fd126e7d31f1f696338de48c302de4de72fc3afe",
+      "review_bytes": 2610
+    },
+    {
+      "path": "workflow_plan.json",
+      "source_sha256": "433545fee8aec5dbbb722bba5b9003f898fdbb8ed61786c5bfb4f6d1f7ff50bf",
+      "source_bytes": 4724,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/workflow_plan.json",
+      "storage": "exact_copy",
+      "review_sha256": "433545fee8aec5dbbb722bba5b9003f898fdbb8ed61786c5bfb4f6d1f7ff50bf",
+      "review_bytes": 4724
+    },
+    {
+      "path": "workflow_result.json",
+      "source_sha256": "c3848d59fddace523706b9fa2bbe222c0db472b053ab2efe8f7a84b2059103d5",
+      "source_bytes": 226,
+      "raw_path": "/home/jdiaz/scratch/stage4_final_coupling_20260924/workflow_result.json",
+      "storage": "exact_copy",
+      "review_sha256": "c3848d59fddace523706b9fa2bbe222c0db472b053ab2efe8f7a84b2059103d5",
+      "review_bytes": 226
+    }
+  ]
+}

@@ -44,45 +44,21 @@ controlled core, stability and dissipation diagnostics. Its
 ([PDF](output/pdf/implementation/Informe_cierre_investigacion_etapa_3_5.pdf))
 separates source-supported values, planning margins and open inputs. The Gaussian
 photon width and Korzh transfer remain unselected; absolute NbN rates still need
-a consistent volumetric phonon DOS. Stage 4 has now started with [explicit core/KWT parameters and full 2D diagnostics](docs/implementation/stage4/README.md).
-The [self-consistent thermal core review](docs/implementation/stage4/self_consistent_review_20260924/README.md)
-accepts all four static cases after an 8.08-minute continuation. Core RMS residuals
-are 0.084-0.098%; current-density differences are 0.0798% under mesh refinement and
-0.6151% when doubling the frequency cutoff. These are observed sensitivities,
-not experimental uncertainties. No further thermal relaxation is requested.
-The [resolved charge-moment review](docs/implementation/stage4/moment_review_20260924/README.md)
-records 181 spectra, 362 kinetic probe responses and seven integrated comparisons.
-The thermal-weight quadrature defect falls from 18.02% to 0.424%, while a single
-potential still differs from the full spectral response by 20.55% in current.
-A 24-case harmonic diagnostic took 21.19 s: the full instantaneous elimination
-differs by only 0.0258% in current at the selected slow frequency. This supports
-an economical spectral reduction in that diagnostic, not ultrafast device admission.
-The full-node moving-gap thermal operator also passed in 32.94 s against 2304
-spectral roots, retaining KWT, normal potential and the baseline residual.
-The [completed weak thermal trajectory](docs/implementation/stage4/time_review_20260924/README.md)
-reached 1 ps in 71.10 s and passed its planned refinement. A subsequent nonlinear
-contrast passed 2048 roots in 22.74 s after correcting energy-cancellation in
-Newton without changing the tolerance or equations. The [completed nonlinear ETD2 trajectory](docs/implementation/stage4/practical_time_review_20260924/README.md)
-reached1ps in both resolutions. Its original failed certificate is preserved;
-the user-authorized practical2percent criterion now accepts that comparison.
-The [coupled-response campaign](docs/implementation/stage4/coupled_closure_20260924/README.md)
-is prepared for manual execution: self-consistent biased references, dynamic
-spectral/kinetic coupling, charge and the full thesis circuit. Its lightweight
-pilots passed; it does not yet close nonlinear energy evolution or photon dynamics.
-
-The [dual-mesh inherited Euler result](docs/implementation/stage4/final_kwt_20260924/README.md)
-also completed1ps in153.81s, with both probes and temporal resolutions admitted.
-Verified spectral predictions reuse existing factorizations while retaining
-the nonlinear equations and tolerance. The weak longitudinal control passes.
-These completed controls need no repetition. The requested
-[scale assessment](docs/implementation/stage4/final_kwt_20260924/quasiclassical_assessment.md)
-supports effective diffusive Usadel, while retaining distribution dynamics.
-Instantaneous spectra require a separate adiabatic approximation; the general
-charge/work coupling remains incomplete. Stage 4 is not declared fully closed,
-and stage 5 has not started.
+a consistent volumetric phonon DOS. Stage 4 is now [closed as development with explicit physical limits](docs/implementation/stage4/closure_20260924/README.md).
+The [final physical report](docs/implementation/stage4/closure_20260924/Informe_cierre_etapa_4.md)
+([PDF](output/pdf/implementation/Informe_cierre_etapa_4.pdf)) shows current-induced
+gap suppression, real thermal relaxation, spatial response and the full thesis
+circuit. Two biased references and five coupled responses completed in 48.57 minutes.
+Complex admittance changes 1.589 percent under refinement; Vout changes 0.0005825 percent.
+Absolute dissipation and local current continuity are not certified by this weak
+reactive result. The [stage 5 entry](docs/implementation/stage5/README.md) identifies
+the remaining energy/current interfaces before photon transients; production remains
+unchanged. The completed dual-mesh inherited Euler and longitudinal controls need
+no repetition. The [archive index](docs/implementation/ARCHIVOS_ARCHIVADOS.md)
+retains exact recovery of superseded PDFs and duplicate data removed from main.
 Production retains Delaunay-Voronoi, adaptive first-order Euler and the thesis
 circuit. The future Vout-trigger-plus-margin horizon changes only observation
-length. Parallel work shares at most 90% of available resources.
+length. Parallel work shares at most 90 percent of available resources.
 The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 

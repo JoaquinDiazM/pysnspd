@@ -1,7 +1,7 @@
 # Etapa 3: cierre estático nodal y entrada de bordes/circuito
 
 Resultado vigente del 23 de septiembre de 2026. [Informe con plots](Informe_avance_bordes_etapa_3_20260923.md)
-([PDF](../../../../output/pdf/implementation/Informe_avance_bordes_etapa_3_20260923.pdf)).
+([PDF](https://github.com/JoaquinDiazM/pysnspd/blob/c80c0f8612d8fd5a2b390938ca5ed4b9d58d3caa/output/pdf/implementation/Informe_avance_bordes_etapa_3_20260923.pdf)).
 
 - 3A: cerrado para desarrollo en los estados estáticos registrados. Campaña 18/18,
   diez estimaciones relativas aceptadas, una sin certificado relativo, ningún fallo.
