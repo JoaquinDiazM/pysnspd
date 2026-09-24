@@ -1,3 +1,66 @@
+# Geminga: Euler dual completado; no hay otra ejecución pendiente
+
+Actualizado el 24 de septiembre de 2026. Cuenta jdiaz, sin administrador.
+
+La campaña optimizada completó 1 ps en 153,81 s dentro del intento acotado de 240 s.
+Sondas de amplitud/fase, dos pasos y balance integrado cumplen el margen del 2 %.
+No repetir: los resultados están en
+`/home/jdiaz/scratch/stage4_dual_kwt_time_20260924`.
+La campaña usó 27 trabajadores + coordinador, 28 CPU lógicas y dejó dos núcleos
+físicos libres; BLAS/OpenMP a un hilo. No hubo correcciones Newton adicionales.
+
+El control longitudinal también terminó, en 0,078 s, en
+`/home/jdiaz/scratch/stage4_dual_longitudinal_20260924`.
+La investigación cuasiclásica está en
+`docs/implementation/stage4/final_kwt_20260924/quasiclassical_assessment.md`.
+Recomienda conservar las distribuciones dinámicas y revisar por separado la
+aproximación espectral adiabática. Sigue pendiente su unión compatible con
+trabajo espectral, fase y potencial. No se solicita otro barrido numérico.
+
+Diagnóstico algebraico opcional (segundos, un CPU; no simula transientes):
+
+```bash
+cd /home/jdiaz/pysnspd
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage4_core/quasiclassical_scales.py
+```
+
+Salida: `docs/implementation/stage4/final_kwt_20260924/scales/scales.json` y
+`scale_hierarchy.png`. Recalcula escalas declaradas; no ajusta constantes.
+Los artefactos ya están guardados; no es una ejecución requerida.
+
+## Consultas ligeras y reproducción opcional
+
+Lectura de resultados completados, sin nueva simulación:
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python -m json.tool docs/implementation/stage4/final_kwt_20260924/thermal/summary.json
+```
+
+Comando completo conservado sólo para reproducir el ensayo voluntariamente.
+Coste observado 2,56 min, variable con carga del equipo; máximo 90 % CPU/RAM
+detectados, progreso/ETA y fuentes registradas. No modificar constantes
+físicas para reducir su duración. Salidas: observaciones, historia temporal,
+balance, refinamiento y checkpoints, dentro de una carpeta nueva.
+
+```bash
+cd /home/jdiaz/pysnspd
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/dual_kwt_predicted.py \
+  --plan docs/implementation/stage4/final_kwt_20260924/dual_kwt_predicted_plan.json \
+  --mesh docs/implementation/stage4/practical_time_review_20260924/dual_mesh/resampled/mesh.npz \
+  --output-root /home/jdiaz/scratch/stage4_dual_kwt_manual_repeat \
+  --execute
+```
+
+No usar nuevamente la carpeta de una ejecución existente. Los pilotos sin
+predictor y con predictor permanecen conservados; no son tareas pendientes.
+
+## Historial anterior preservado
+
+Las peticiones de ejecución contenidas más abajo son históricas.
+
 # Geminga: no hay otra corrida larga solicitada
 
 Actualizado el 24 de septiembre de 2026. Cuenta jdiaz, sin administrador.

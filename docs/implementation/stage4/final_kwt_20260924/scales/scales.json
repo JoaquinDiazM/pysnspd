@@ -1,0 +1,142 @@
+{
+  "schema": "pysnspd.stage4.algebraic_scale_assessment.v1",
+  "physical_transients": 0,
+  "production_parameters_changed": false,
+  "scope": "Scale hierarchy only; no prediction of latency, jitter or charge-imbalance relaxation.",
+  "sources": {
+    "Korzh2020_SI_table1": "https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf",
+    "Lomakin2023_tableI_appendixC": "https://arxiv.org/pdf/2207.05012",
+    "Belzig1999_sections2_2_2_4": "https://arxiv.org/abs/cond-mat/9812297"
+  },
+  "Korzh_reference": {
+    "Tc_K": 8.65,
+    "Tb_K": 0.9,
+    "D_m2_s": 5e-05,
+    "tau_ee_at_Tc_ps": 6.0,
+    "tau_ep_at_Tc_ps": 24.7,
+    "status": "Model-reference inputs; fitted times are not branch-imbalance time at Tb."
+  },
+  "BCS_scale": {
+    "gap_ratio_assumed": 1.764,
+    "Delta0_meV": 1.3148844131376842,
+    "hbar_over_Delta0_ps": 0.5005854129643439,
+    "hbar_over_kBTb_ps": 8.486925091397486,
+    "sqrt_hbar_D_over_Delta0_nm": 5.00292620855207,
+    "meaning": "Reference weak-coupling gap scale, not a measured gap or a relaxation time."
+  },
+  "comparison_NbN_films": {
+    "elastic_time_range_fs": [
+      0.15,
+      0.7
+    ],
+    "Fermi_energy_range_eV": [
+      5.0,
+      6.9
+    ],
+    "hbar_over_EF_range_fs": [
+      0.09539303723926183,
+      0.13164239139018133
+    ],
+    "kF_ell_range": [
+      1.6,
+      6.3
+    ],
+    "vF_fit_m_s": 530000.0,
+    "conditional_tau_el_fs_using_Korzh_D": 0.533997864008544,
+    "conditional_ell_nm_using_Korzh_D": 0.2830188679245283,
+    "scope": "Different 2.5-nm NbN films; illustrative compatibility, not sample-specific calibration."
+  },
+  "adiabatic_indicators": [
+    {
+      "variation_time_ps": 1.0,
+      "gap_fraction": 1.0,
+      "hbar_over_gap_time": 0.5005854129643439
+    },
+    {
+      "variation_time_ps": 3.0,
+      "gap_fraction": 1.0,
+      "hbar_over_gap_time": 0.16686180432144795
+    },
+    {
+      "variation_time_ps": 10.0,
+      "gap_fraction": 1.0,
+      "hbar_over_gap_time": 0.05005854129643439
+    },
+    {
+      "variation_time_ps": 20.0,
+      "gap_fraction": 1.0,
+      "hbar_over_gap_time": 0.025029270648217194
+    },
+    {
+      "variation_time_ps": 1.0,
+      "gap_fraction": 0.5,
+      "hbar_over_gap_time": 1.0011708259286878
+    },
+    {
+      "variation_time_ps": 3.0,
+      "gap_fraction": 0.5,
+      "hbar_over_gap_time": 0.3337236086428959
+    },
+    {
+      "variation_time_ps": 10.0,
+      "gap_fraction": 0.5,
+      "hbar_over_gap_time": 0.10011708259286878
+    },
+    {
+      "variation_time_ps": 20.0,
+      "gap_fraction": 0.5,
+      "hbar_over_gap_time": 0.05005854129643439
+    },
+    {
+      "variation_time_ps": 1.0,
+      "gap_fraction": 0.1,
+      "hbar_over_gap_time": 5.0058541296434385
+    },
+    {
+      "variation_time_ps": 3.0,
+      "gap_fraction": 0.1,
+      "hbar_over_gap_time": 1.6686180432144795
+    },
+    {
+      "variation_time_ps": 10.0,
+      "gap_fraction": 0.1,
+      "hbar_over_gap_time": 0.5005854129643439
+    },
+    {
+      "variation_time_ps": 20.0,
+      "gap_fraction": 0.1,
+      "hbar_over_gap_time": 0.25029270648217194
+    }
+  ],
+  "weak_amplitude_example": {
+    "relative_gap_change": 0.01,
+    "duration_ps": 1.0,
+    "hbar_abs_dDelta_dt_over_Delta_squared": 0.005005854129643439,
+    "meaning": "A weak 1% change over 1 ps is not an order-one change over 1 ps."
+  },
+  "diffusion_scales": [
+    {
+      "length_nm": 5.0,
+      "L_squared_over_D_ps": 0.5
+    },
+    {
+      "length_nm": 10.0,
+      "L_squared_over_D_ps": 2.0
+    },
+    {
+      "length_nm": 40.0,
+      "L_squared_over_D_ps": 32.0
+    },
+    {
+      "length_nm": 80.0,
+      "L_squared_over_D_ps": 128.0
+    }
+  ],
+  "definitions": {
+    "variation_time": "Hypothetical relative-amplitude time |Delta|/|dDelta/dt|; not jitter, oscillation period, latency, timestep or final horizon. For an order-one change only, comparable to event duration.",
+    "indicator": "hbar/(gap*t) is an order-of-magnitude spectral indicator, NOT an error bound. Broadenings, gradients, energy edges and moving phase also matter.",
+    "diffusion": "L^2/D convention; neither mean first-passage time nor lowest-mode decay L^2/(pi^2 D).",
+    "tau_Q": "Undetermined for the selected wire; never identified with tau_el, hbar/Delta, tau_ee or tau_ep."
+  },
+  "source_sha256": "460f8f24846314f1ad0b1cd634cf70127da4e47cf99ce5298e00fc3edbe034ba"
+}

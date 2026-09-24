@@ -1,0 +1,46 @@
+{
+  "schema": "pysnspd.stage4.practical_acceptance.v2",
+  "date": "2026-09-24",
+  "authorization": "Explicit user instruction: prefer practical relaxation of tolerances over postponing a small discrepancy, unless the failure is large or catastrophic.",
+  "status": "ACCEPTED_PRACTICAL_THERMAL_TIME_CONTRAST",
+  "scope": "Existing completed thermal benchmark; this decision does not close the full nonthermal coupled stage4 contract.",
+  "analysis_path": "docs/implementation/stage4/practical_time_review_20260924/analysis.json",
+  "analysis_sha256": "d5977a9fdd0f378419023d7d2b0aefed0e9550b28369dc1c60b0b24f9daa6c0e",
+  "original_certificate": {
+    "status": "TEMPORAL_REFINEMENT_NOT_MET",
+    "changed": false,
+    "relative_limit": 0.005,
+    "absolute_norm": 1E-08,
+    "passed_comparisons": 95,
+    "independent_passed_comparisons": 23
+  },
+  "revised_policy": {
+    "name": "2_percent_of_initial_signal",
+    "relative_limit": 0.02,
+    "absolute_addition": 0.0,
+    "formula": "error_L2 <= 0.02 * initial_norm",
+    "no_remaining_tail_denominator": true,
+    "same_channel_scale": true,
+    "posterior_policy_revision_declared": true
+  },
+  "passed_comparisons": 96,
+  "comparisons_total": 96,
+  "passed_independent_comparisons": 24,
+  "independent_comparisons_total": 24,
+  "maximum_error_over_initial": 0.015000169717020525,
+  "previous_failed_comparison": {
+    "time_ps": 1.0,
+    "probe": "amplitude",
+    "observable": "phase_torque_density",
+    "error_L2": 8.304652802060312E-08,
+    "initial_norm": 5.536372560263179E-06,
+    "revised_absolute_limit": 1.1072745120526358E-07,
+    "error_over_initial": 0.015000169717020525,
+    "admitted_v2": true
+  },
+  "tail_rerun_pending": false,
+  "precise_tail_relaxation_time_claimed": false,
+  "stage4_complete": false,
+  "production_changed": false,
+  "physics_solves_performed": 0
+}

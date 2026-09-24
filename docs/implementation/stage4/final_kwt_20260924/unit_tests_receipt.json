@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "tests": 6,
+  "runs": [
+    {
+      "host": "Geminga, jdiaz",
+      "tests": 3,
+      "status": "PASS",
+      "runtime_seconds": 0.013,
+      "command": "python -m unittest discover -s tests -p test_dual_kwt_time.py -v",
+      "source_sha256": {
+        "tests/test_dual_kwt_time.py": "0522ebcd47376957d8f9039c1d33b87b2d03374c252d3df7c33cb913ec73d425",
+        "sandbox/stage4_core/dual_kwt_time.py": "5f16f2d9fff60f945662d320c84672b8265edc501790e30ddeff8f1b2fe7219f"
+      }
+    },
+    {
+      "host": "Local Windows; Codex dependency Python runtime",
+      "tests": 2,
+      "status": "PASS",
+      "runtime_seconds": 0.143,
+      "command": "python -m unittest discover -s tests -p test_dual_longitudinal_mode.py -v",
+      "source_sha256": {
+        "tests/test_dual_longitudinal_mode.py": "5cb12a63b2b68cc5779dee454caf86b604195594e5a27ae1f56ffcc9176cc663",
+        "sandbox/stage4_core/dual_longitudinal_mode.py": "b5ac38b589051c554fcbba388cb7db715e6c27543b8a155e9980df562f9d7780"
+      }
+    },
+    {
+      "host": "Geminga, jdiaz",
+      "tests": 1,
+      "status": "PASS",
+      "runtime_seconds": 0.006,
+      "command": "python -m unittest discover -s tests -p test_dual_kwt_predicted.py -v",
+      "source_sha256": {
+        "tests/test_dual_kwt_predicted.py": "5821d47f44ae764cc71ca95ce1748be11f61ab07b39a1837ef7a9161e6d15736",
+        "sandbox/stage4_core/dual_kwt_predicted.py": "f35e925af78dc9012e983e7b90a3ee03ef41c3410ff353489460ead9675e2d83"
+      }
+    }
+  ],
+  "scope": "Focused new runner checks; no repeated solver certification or long trajectory"
+}

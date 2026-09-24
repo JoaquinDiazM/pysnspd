@@ -107,3 +107,25 @@ permite cerrar ese ensayo como desarrollo con el límite explícito del torque
 secundario tardío; se conserva su certificado temporal incompleto. No se pide
 otra repetición cartesiana ni otro integrador para resolver esa cola. Falta unir trabajo y transporte no térmicos antes de evaluar
 un fotón; el circuito completo y el horizonte acordado siguen vigentes.
+
+## Decisión posterior al ensayo Euler dual
+
+El [resultado actual](stage4/final_kwt_20260924/README.md) admite el paso KWT
+heredado sobre la malla dual: 1 ps en 153,81 s, sondas de amplitud/fase y medio
+paso dentro del margen práctico del 2 %. La pequeña discrepancia del ensayo
+anterior también se acepta al margen revisado y deja de ser trabajo pendiente.
+
+Queda explícita una distinción que no resuelve la elección del integrador:
+el sistema 0.4 usaba un espectro local adiabático, mientras la referencia
+actual incluye respuesta espectral espacial. Sus sectores térmico y
+longitudinal débil están comprobados, pero la unión no térmica general no se
+obtiene sumando sin más sus fuerzas y balances. La
+[investigación solicitada](stage4/final_kwt_20260924/quasiclassical_assessment.md)
+separa aproximación cuasiclásica, límite difusivo, espectro adiabático y
+relajación de las poblaciones. Recomienda mantener Usadel difusivo y la
+evolución de las distribuciones, sin atribuir a la neutralidad eléctrica
+un ajuste instantáneo del desequilibrio electrón–hueco. El espectro adiabático
+sigue siendo una aproximación independiente: depende de la amplitud y rapidez
+local del cambio, no sólo de la duración total del ensayo. Esta investigación
+no modifica todavía las ecuaciones ejecutadas ni sustituye el cierre pendiente
+de trabajo espectral y calor. No hay otro cálculo largo pendiente.

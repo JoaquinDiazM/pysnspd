@@ -1,0 +1,246 @@
+{
+  "plan_sha256": "bc9d00116ab155fc37c741125f9151c901b0369a5078874c6815f970ddefdca2",
+  "mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4",
+  "resources": {
+    "logical_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "physical_core_groups": [
+      [
+        0,
+        16
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        2,
+        18
+      ],
+      [
+        3,
+        19
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        5,
+        21
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        7,
+        23
+      ],
+      [
+        8,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        11,
+        27
+      ],
+      [
+        12,
+        28
+      ],
+      [
+        13,
+        29
+      ],
+      [
+        14,
+        30
+      ],
+      [
+        15,
+        31
+      ]
+    ],
+    "available_memory_bytes": 125590839296,
+    "host_available_memory_bytes": 125590839296,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60200.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60200.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "budget": {
+    "cpu_fraction": 0.9,
+    "memory_fraction": 0.9,
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29
+    ],
+    "coordinator_cpu": 29,
+    "worker_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13
+    ],
+    "workers": 27,
+    "threads_per_process": 1,
+    "total_processes": 28,
+    "logical_budget": 28,
+    "effective_cpu_quota_units": 32,
+    "physical_cores_used": 14,
+    "physical_cores_reserved": 2,
+    "memory_limit_bytes": 113031755366,
+    "coordinator_reserve_bytes": 3221225472,
+    "worker_reserve_bytes": 1073741824,
+    "estimated_memory_reservation_bytes": 32212254720,
+    "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+  },
+  "step_bound": {
+    "gershgorin_lambda_max": 51.32401177673462,
+    "phase_material_rate_bound_per_ps": 282.814898553086,
+    "radial_material_rate_bound_per_ps": 0.7784838775453216,
+    "normal_rate_bound_per_ps": 6.233466639377719,
+    "maximum_rate_bound_per_ps": 289.0483651924637,
+    "primary_step_ps": 0.0017298143155629806,
+    "euler_safety": 0.5,
+    "scope": "Uniform linearization with fixed contacts; nonlinear acceptance uses temporal refinement and integrated dissipation"
+  },
+  "uniform_gap_kBTc": 1.7639259275771801,
+  "maximum_uniform_force": 0.0,
+  "baseline_spatial_newton_solves": 0,
+  "time_order": 1,
+  "method": "Actual TDGLSolver.solve_for_psi_squared through inherited_kwt_step",
+  "boundary_conditions": "Fixed equilibrium gap and zero normal potential on end contacts only; natural insulating side walls; alpha=0",
+  "pilot_steps": null,
+  "units": "d=Delta/(kB Tc), epsilon=omega/(kB Tc), X=x/ell0, physical time ps"
+}

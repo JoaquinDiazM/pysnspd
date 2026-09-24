@@ -4,15 +4,18 @@ Last updated: 2026-09-24 UTC
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: the nonlinear thermal benchmark completed both1ps trajectories.
-The [current practical review](docs/implementation/stage4/practical_time_review_20260924/README.md)
-preserves its failed post-run gate:95/96 comparisons pass, including23/24 with
-independent time stepping. The sole miss is a nearly extinguished secondary
-phase torque. Its precision remains limited; the benchmark is closed for
-development without another full rerun or a replacement integrator. Next work
-connects the existing action to the inherited dual mesh and KWT implementation.
-Stage4 stays open for nonthermal coupling and relevant port controls. No long
-calculation is currently requested. Production,v1.0.0 and stage5 are unchanged.
+Current phase: the inherited KWT Euler trajectory on the actual dual mesh
+completed1ps in153.81s and passed the practical2percent criteria. The weak
+nonthermal longitudinal mode control also passed. The
+[current result](docs/implementation/stage4/final_kwt_20260924/README.md)
+accepts the previous small thermal discrepancy under the revised policy.
+No numerical rerun is pending. The requested physical scale assessment
+supports effective diffusive Usadel but does not justify instantaneous branch
+imbalance. The recommended route retains distribution dynamics and treats
+instantaneous spectra as a separate adiabatic approximation, checking the
+amplitude and local rate of change. Stage 4 remains open for compatible
+moving-spectrum work, phase, potential and heat coupling. Production, v1.0.0
+and stage 5 remain unchanged.
 
 ## Historical stage 3.5 closure and stage 4 preparation
 

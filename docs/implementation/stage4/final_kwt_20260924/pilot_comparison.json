@@ -1,0 +1,381 @@
+{
+  "schema": "pysnspd.stage4.dual_kwt_pilot_comparison.v1",
+  "status": "PILOT_COMPARISON_COMPLETE",
+  "physical_time_ps": 0.001,
+  "stage4_complete": false,
+  "full_horizon_complete": false,
+  "fields": [
+    {
+      "trajectory": "primary_amplitude",
+      "time_ps": 0.001,
+      "initial_perturbation_area_L2": 0.015928632597598368,
+      "difference_area_L2": 1.6359179401167632e-10,
+      "difference_relative_to_initial_perturbation": 1.0270297403704433e-08,
+      "difference_percent_of_initial_perturbation": 1.0270297403704433e-06,
+      "maximum_node_difference_kBTc": 2.4717117241834785e-11
+    },
+    {
+      "trajectory": "primary_angular_phase",
+      "time_ps": 0.001,
+      "initial_perturbation_area_L2": 0.01592863224455254,
+      "difference_area_L2": 1.3600881166108116e-11,
+      "difference_relative_to_initial_perturbation": 8.538637189492214e-10,
+      "difference_percent_of_initial_perturbation": 8.538637189492214e-08,
+      "maximum_node_difference_kBTc": 1.243391051877661e-11
+    },
+    {
+      "trajectory": "refined_amplitude",
+      "time_ps": 0.001,
+      "initial_perturbation_area_L2": 0.015928632597598368,
+      "difference_area_L2": 2.3593850571362663e-10,
+      "difference_relative_to_initial_perturbation": 1.4812225987885498e-08,
+      "difference_percent_of_initial_perturbation": 1.4812225987885497e-06,
+      "maximum_node_difference_kBTc": 3.118461044948617e-11
+    },
+    {
+      "trajectory": "refined_angular_phase",
+      "time_ps": 0.001,
+      "initial_perturbation_area_L2": 0.01592863224455254,
+      "difference_area_L2": 6.652569978212833e-11,
+      "difference_relative_to_initial_perturbation": 4.176485385609902e-09,
+      "difference_percent_of_initial_perturbation": 4.176485385609902e-07,
+      "maximum_node_difference_kBTc": 2.486731292265181e-11
+    }
+  ],
+  "initial_observables": [
+    {
+      "trajectory": "primary_amplitude",
+      "observable": "gap_difference",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.015928632597598368,
+      "relative_error": 0.0
+    },
+    {
+      "trajectory": "primary_amplitude",
+      "observable": "current",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.0,
+      "relative_error": null
+    },
+    {
+      "trajectory": "primary_amplitude",
+      "observable": "force_density",
+      "time_ps": 0.0,
+      "error_norm": 1.9072270874131218e-07,
+      "reference_initial_norm": 0.03264478285911569,
+      "relative_error": 5.84236414021835e-06
+    },
+    {
+      "trajectory": "primary_amplitude",
+      "observable": "phase_torque_density",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.0,
+      "relative_error": null
+    },
+    {
+      "trajectory": "primary_angular_phase",
+      "observable": "gap_difference",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.01592863224455254,
+      "relative_error": 0.0
+    },
+    {
+      "trajectory": "primary_angular_phase",
+      "observable": "current",
+      "time_ps": 0.0,
+      "error_norm": 7.461172333175724e-12,
+      "reference_initial_norm": 0.011284181929855065,
+      "relative_error": 6.612063133646726e-10
+    },
+    {
+      "trajectory": "primary_angular_phase",
+      "observable": "force_density",
+      "time_ps": 0.0,
+      "error_norm": 1.4208697914396896e-11,
+      "reference_initial_norm": 0.0023183107066831314,
+      "relative_error": 6.128901477026631e-09
+    },
+    {
+      "trajectory": "primary_angular_phase",
+      "observable": "phase_torque_density",
+      "time_ps": 0.0,
+      "error_norm": 2.506307918408208e-11,
+      "reference_initial_norm": 0.004089328299281834,
+      "relative_error": 6.128898770119202e-09
+    },
+    {
+      "trajectory": "refined_amplitude",
+      "observable": "gap_difference",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.015928632597598368,
+      "relative_error": 0.0
+    },
+    {
+      "trajectory": "refined_amplitude",
+      "observable": "current",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.0,
+      "relative_error": null
+    },
+    {
+      "trajectory": "refined_amplitude",
+      "observable": "force_density",
+      "time_ps": 0.0,
+      "error_norm": 1.9072270874151218e-07,
+      "reference_initial_norm": 0.03264478285911569,
+      "relative_error": 5.8423641402244765e-06
+    },
+    {
+      "trajectory": "refined_amplitude",
+      "observable": "phase_torque_density",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.0,
+      "relative_error": null
+    },
+    {
+      "trajectory": "refined_angular_phase",
+      "observable": "gap_difference",
+      "time_ps": 0.0,
+      "error_norm": 0.0,
+      "reference_initial_norm": 0.01592863224455254,
+      "relative_error": 0.0
+    },
+    {
+      "trajectory": "refined_angular_phase",
+      "observable": "current",
+      "time_ps": 0.0,
+      "error_norm": 7.46117231720694e-12,
+      "reference_initial_norm": 0.011284181929855065,
+      "relative_error": 6.61206311949525e-10
+    },
+    {
+      "trajectory": "refined_angular_phase",
+      "observable": "force_density",
+      "time_ps": 0.0,
+      "error_norm": 1.4208697954377013e-11,
+      "reference_initial_norm": 0.0023183107066831314,
+      "relative_error": 6.128901494271997e-09
+    },
+    {
+      "trajectory": "refined_angular_phase",
+      "observable": "phase_torque_density",
+      "time_ps": 0.0,
+      "error_norm": 2.506307921909105e-11,
+      "reference_initial_norm": 0.004089328299281834,
+      "relative_error": 6.1288987786802575e-09
+    }
+  ],
+  "history_differences": [
+    {
+      "trajectory": "primary_amplitude",
+      "time_ps": 0.001,
+      "energy_excess_difference": -5.168473071401336e-14,
+      "integrated_loss_difference": 2.3533033562860742e-14,
+      "balance_residual_difference": -4.734299717599266e-14
+    },
+    {
+      "trajectory": "primary_angular_phase",
+      "time_ps": 0.001,
+      "energy_excess_difference": 9.635762104670195e-16,
+      "integrated_loss_difference": -1.8316697849218508e-15,
+      "balance_residual_difference": -8.680834100594642e-16
+    },
+    {
+      "trajectory": "refined_amplitude",
+      "time_ps": 0.0005,
+      "energy_excess_difference": 2.838256973197728e-14,
+      "integrated_loss_difference": 1.1776637336224957e-14,
+      "balance_residual_difference": 2.0796332049566366e-14
+    },
+    {
+      "trajectory": "refined_angular_phase",
+      "time_ps": 0.0005,
+      "energy_excess_difference": 4.86025811068623e-16,
+      "integrated_loss_difference": -9.331477694467705e-16,
+      "balance_residual_difference": -4.471117939827804e-16
+    },
+    {
+      "trajectory": "refined_amplitude",
+      "time_ps": 0.001,
+      "energy_excess_difference": -2.2369367642938176e-14,
+      "integrated_loss_difference": 2.3222480301520292e-14,
+      "balance_residual_difference": -1.8509762360053756e-14
+    },
+    {
+      "trajectory": "refined_angular_phase",
+      "time_ps": 0.001,
+      "energy_excess_difference": 9.229220171306021e-16,
+      "integrated_loss_difference": -1.8039360204046137e-15,
+      "balance_residual_difference": -8.810038388786445e-16
+    }
+  ],
+  "integrated_balance": {
+    "initial": {
+      "primary_amplitude": {
+        "initial_excess_free_energy": 0.00025986922542690205,
+        "maximum_absolute_balance_residual": 1.1141843003606078e-11,
+        "maximum_balance_percent_of_initial_excess": 4.28748074547986e-06,
+        "maximum_single_step_energy_increase": 0.0
+      },
+      "primary_angular_phase": {
+        "initial_excess_free_energy": 1.2111878916125711e-05,
+        "maximum_absolute_balance_residual": 2.515694542616343e-09,
+        "maximum_balance_percent_of_initial_excess": 0.020770473021051724,
+        "maximum_single_step_energy_increase": 0.0
+      },
+      "refined_amplitude": {
+        "initial_excess_free_energy": 0.0002598692254267305,
+        "maximum_absolute_balance_residual": 5.621732758920189e-12,
+        "maximum_balance_percent_of_initial_excess": 2.163292998502904e-06,
+        "maximum_single_step_energy_increase": 0.0
+      },
+      "refined_angular_phase": {
+        "initial_excess_free_energy": 1.2111878916125711e-05,
+        "maximum_absolute_balance_residual": 1.2580349143167063e-09,
+        "maximum_balance_percent_of_initial_excess": 0.010386785758250631,
+        "maximum_single_step_energy_increase": 0.0
+      }
+    },
+    "predicted": {
+      "primary_amplitude": {
+        "initial_excess_free_energy": 0.00025986922544609335,
+        "maximum_absolute_balance_residual": 1.1189186000782071e-11,
+        "maximum_balance_percent_of_initial_excess": 4.3056987535075135e-06,
+        "maximum_single_step_energy_increase": 0.0
+      },
+      "primary_angular_phase": {
+        "initial_excess_free_energy": 1.21118789161257e-05,
+        "maximum_absolute_balance_residual": 2.515695410699753e-09,
+        "maximum_balance_percent_of_initial_excess": 0.02077048018825855,
+        "maximum_single_step_energy_increase": 0.0
+      },
+      "refined_amplitude": {
+        "initial_excess_free_energy": 0.00025986922544609335,
+        "maximum_absolute_balance_residual": 5.640242521280243e-12,
+        "maximum_balance_percent_of_initial_excess": 2.1704157202909125e-06,
+        "maximum_single_step_energy_increase": 0.0
+      },
+      "refined_angular_phase": {
+        "initial_excess_free_energy": 1.21118789161257e-05,
+        "maximum_absolute_balance_residual": 1.2580357953205452e-09,
+        "maximum_balance_percent_of_initial_excess": 0.010386793032133124,
+        "maximum_single_step_energy_increase": 0.0
+      }
+    }
+  },
+  "timing": {
+    "initial": {
+      "total_wall_seconds": 29.57102469075471,
+      "accepted_advance_and_recording_seconds": 15.833823476918042,
+      "preparation_and_initial_evaluation_seconds": 13.73720121383667,
+      "projected_horizon_seconds": 15833.823476918042,
+      "newton_solves": 2560,
+      "verified_prediction_acceptances": 0,
+      "maximum_spectral_residual": 3.2285040312264466e-10
+    },
+    "predicted": {
+      "total_wall_seconds": 4.661353550385684,
+      "accepted_advance_and_recording_seconds": 0.25754912523552775,
+      "preparation_and_initial_evaluation_seconds": 4.403804425150156,
+      "projected_horizon_seconds": 257.54912523552775,
+      "newton_solves": 0,
+      "verified_prediction_acceptances": 2560,
+      "maximum_spectral_residual": 3.9606759530852996e-08
+    }
+  },
+  "resources": {
+    "initial": {
+      "worker_count": 27,
+      "coordinator_count": 1,
+      "threads_per_process": 1,
+      "assigned_logical_cpus": 28,
+      "available_logical_cpus": 32,
+      "entirely_reserved_physical_cores": 2,
+      "reserved_core_cpu_sets": [
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "memory_scheduling_reservation_GiB": 30.0,
+      "memory_available_GiB": 117.14556503295898,
+      "cpu_below_90_percent": true,
+      "memory_reservation_below_90_percent": true,
+      "scope": "Resource reservation and affinity from executed inventory; not measured peak RSS"
+    },
+    "predicted": {
+      "worker_count": 27,
+      "coordinator_count": 1,
+      "threads_per_process": 1,
+      "assigned_logical_cpus": 28,
+      "available_logical_cpus": 32,
+      "entirely_reserved_physical_cores": 2,
+      "reserved_core_cpu_sets": [
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "memory_scheduling_reservation_GiB": 30.0,
+      "memory_available_GiB": 117.07452774047852,
+      "cpu_below_90_percent": true,
+      "memory_reservation_below_90_percent": true,
+      "scope": "Resource reservation and affinity from executed inventory; not measured peak RSS"
+    }
+  },
+  "source_verification": {
+    "dual_kwt_time.py": {
+      "current_sha256": "5f16f2d9fff60f945662d320c84672b8265edc501790e30ddeff8f1b2fe7219f",
+      "executed_archive_sha256": "5f16f2d9fff60f945662d320c84672b8265edc501790e30ddeff8f1b2fe7219f",
+      "registered_sha256": "5f16f2d9fff60f945662d320c84672b8265edc501790e30ddeff8f1b2fe7219f",
+      "identical": true
+    },
+    "test_dual_kwt_time.py": {
+      "current_sha256": "0522ebcd47376957d8f9039c1d33b87b2d03374c252d3df7c33cb913ec73d425",
+      "executed_archive_sha256": "0522ebcd47376957d8f9039c1d33b87b2d03374c252d3df7c33cb913ec73d425",
+      "registered_sha256": "0522ebcd47376957d8f9039c1d33b87b2d03374c252d3df7c33cb913ec73d425",
+      "identical": true
+    }
+  },
+  "speedup_total": 6.343870803000554,
+  "speedup_accepted_advance": 61.47884782151004,
+  "inputs_sha256": {
+    "pilot_initial/console.log": "4a21b449c6d6a42758fe66cb788e9e68102889c04f02a121166456e6badcf579",
+    "pilot_initial/executed_plan.json": "5ce042aeba5292a1c3e005487f0738b373b5e4ef2aeb653ca4ea591d62b2b040",
+    "pilot_initial/identity.json": "6ac7fb3fe51cde7a10306aff1fc05ce01f28f178b978d93d7312a8ebeb326816",
+    "pilot_initial/observation_000.json": "12bbef773de9d0eba6eee5cd350e3dc9d91be215363db2a606b54577069eb0d4",
+    "pilot_initial/observation_000.npz": "f27267db91a373a9c0b5d437967892ff6fe8b5e868d7271393f6cf02a059661f",
+    "pilot_initial/pilot_last_states.npz": "44ddc3c53c5757bac44d4a430282ac5edb601980ffbb87937b2cc46cd6675425",
+    "pilot_initial/progress.jsonl": "6a35222046c8aca87228beb13499c96cadc786dcc9c5c1151d270d4731ac4a71",
+    "pilot_initial/step_history.json": "a727eb4eb6d29ac359613bd10d2bc064619d6030cc404ad134298dadec20f783",
+    "pilot_initial/summary.json": "1ce05f822b2488eaca55d0be0fe4c91331b4a28a66dcc4fae6aebac0ce110013",
+    "pilot_predicted/console.log": "a0b536d3e661207247c255e2a8ed23865b0fcc7dbaa749e02515a93eccc7a4ac",
+    "pilot_predicted/executed_plan.json": "bc9d00116ab155fc37c741125f9151c901b0369a5078874c6815f970ddefdca2",
+    "pilot_predicted/identity.json": "7cf3bd841d20efa975e6009efbe228dcf0654c41df299d04e38313d8eeca2a8f",
+    "pilot_predicted/observation_000.json": "be90d0347fd067167fb8e6f8372f45dd8072ae9eb29fbab53b6bcb49f8ca517d",
+    "pilot_predicted/observation_000.npz": "87f24fa7a80d789aba3b8688fca6bbdea732de075853eba75a2140a18a41dde8",
+    "pilot_predicted/pilot_last_states.npz": "45a10db6d2bf77a82c4efbb9f08138e4e3ff929ab15cc7e9a576f17600009f10",
+    "pilot_predicted/progress.jsonl": "46b0f72fb34a035c7616b906b2a537e368f69ffedc434e56a9d720d1de763875",
+    "pilot_predicted/step_history.json": "c1bcef6875b8d6332a1fb6660866a2a9d33a938c577d213d72d1233c9c0c34d1",
+    "pilot_predicted/summary.json": "8d7b5d78c719d4b660565007724bd0247691dae4ed05112b782f4234b2ceaf6f"
+  },
+  "normalization": "d=Delta/(kB Tc); area norm sqrt(sum_i m_i|x_i|^2), m_i=dual_area/ell0^2. Endpoint field differences divided by the same trajectory initial perturbation norm. Edge current norm sqrt(sum |I|^2/c).",
+  "energy_scope": "Dimensionless fixed-temperature free energy; integral of (KWT loss + normal Joule loss) dt_ps/tD_ps. Not conserved population internal energy.",
+  "projection_scope": "Extrapolation of two accepted substeps only. A later exact-residual check can require Newton; projected duration is not a guaranteed runtime.",
+  "physics_solves_executed_by_analysis": 0
+}

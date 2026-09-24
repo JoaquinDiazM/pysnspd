@@ -33,6 +33,22 @@
 - The tag `v1.0.0` freezes the thesis implementation with model 0.4 documentation.
   Later experimental implementation belongs in subsequent commits, not in that tag.
 
+## Practical numerical acceptance
+
+- Prefer revising an unnecessarily strict tolerance to postponing a small
+  discrepancy. Tie the revised margin to the observable, its signal scale and
+  the purpose of the calculation; record both the original result and the new
+  acceptance decision. A tiny residual signal need not block development.
+- Do not use tolerance changes to conceal a large physical error, nonfinite
+  states, instability, missing coupling terms or material conservation defects.
+  Explain such failures and repair the cause before promoting that capability.
+- Reuse published and inherited algorithms before adding a new solver. Prefer
+  the thesis/pyTDGL KWT local Euler update for the next temporal comparison.
+  Its quadratic amplitude solve does not make it second-order in time; establish
+  accuracy by step refinement of the relevant observables.
+- Reports must label each plotted quantity, units, reference subtraction, norm,
+  normalization and physical case explicitly.
+
 ## Initial photon-transient observation window
 
 - The first target is relative detection latency for the 80 nm Korzh (2020)

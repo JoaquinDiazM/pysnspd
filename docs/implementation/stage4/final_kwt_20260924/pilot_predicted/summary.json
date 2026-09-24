@@ -1,0 +1,48 @@
+{
+  "status": "BOUNDED_STEP_PILOT_COMPLETE",
+  "stage4_complete": false,
+  "covered_ps": 0.001,
+  "pilot_spectral_batches": 3,
+  "accepted_steps": {
+    "primary_amplitude": 1,
+    "primary_angular_phase": 1,
+    "refined_amplitude": 2,
+    "refined_angular_phase": 2
+  },
+  "runtime_seconds": 4.661353550385684,
+  "projected_full_seconds": 257.54912523552775,
+  "initial_energy_excess": {
+    "primary_amplitude": 0.00025986922544609335,
+    "primary_angular_phase": 1.21118789161257e-05,
+    "refined_amplitude": 0.00025986922544609335,
+    "refined_angular_phase": 1.21118789161257e-05
+  },
+  "step_bound": {
+    "gershgorin_lambda_max": 51.32401177673462,
+    "phase_material_rate_bound_per_ps": 282.814898553086,
+    "radial_material_rate_bound_per_ps": 0.7784838775453216,
+    "normal_rate_bound_per_ps": 6.233466639377719,
+    "maximum_rate_bound_per_ps": 289.0483651924637,
+    "primary_step_ps": 0.0017298143155629806,
+    "euler_safety": 0.5,
+    "scope": "Uniform linearization with fixed contacts; nonlinear acceptance uses temporal refinement and integrated dissipation"
+  },
+  "maximum_balance_residual": {
+    "primary_amplitude": 1.1189186000782071e-11,
+    "primary_angular_phase": 2.515695410699753e-09,
+    "refined_amplitude": 5.640242521280243e-12,
+    "refined_angular_phase": 1.2580357953205452e-09
+  },
+  "maximum_single_step_energy_increase": {
+    "primary_amplitude": 0.0,
+    "primary_angular_phase": 0.0,
+    "refined_amplitude": 0.0,
+    "refined_angular_phase": 0.0
+  },
+  "reason": "Pilot stopped after registered count; not a completed horizon or accuracy certificate",
+  "newton_solves": 0,
+  "stationary_reuses": 2560,
+  "maximum_spectral_residual": 3.9606759530852996e-08,
+  "worker_count": 27,
+  "spectral_batches": 3
+}

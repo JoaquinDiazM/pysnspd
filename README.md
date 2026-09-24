@@ -63,12 +63,18 @@ The [completed weak thermal trajectory](docs/implementation/stage4/time_review_2
 reached 1 ps in 71.10 s and passed its planned refinement. A subsequent nonlinear
 contrast passed 2048 roots in 22.74 s after correcting energy-cancellation in
 Newton without changing the tolerance or equations. The [completed nonlinear ETD2 trajectory](docs/implementation/stage4/practical_time_review_20260924/README.md)
-reached1ps in both resolutions. Only the late secondary phase torque missed
-the comparison gate; that failure is preserved. The thermal benchmark is
-closed for development with this limit, without another full rerun. The next
-work reuses the inherited dual mesh and KWT update with explicit unit conversions.
-Stage 4 remains open for coupled dynamics and the nonthermal spectral-work balance.
-Stage 5 has not started.
+reached1ps in both resolutions. Its original failed certificate is preserved;
+the user-authorized practical2percent criterion now accepts that comparison.
+The [dual-mesh inherited Euler result](docs/implementation/stage4/final_kwt_20260924/README.md)
+also completed1ps in153.81s, with both probes and temporal resolutions admitted.
+Verified spectral predictions reuse existing factorizations while retaining
+the nonlinear equations and tolerance. The weak longitudinal control passes.
+No further numerical rerun is pending. The requested
+[scale assessment](docs/implementation/stage4/final_kwt_20260924/quasiclassical_assessment.md)
+supports effective diffusive Usadel, while retaining distribution dynamics.
+Instantaneous spectra require a separate adiabatic approximation; the general
+charge/work coupling remains incomplete. Stage 4 is not declared fully closed,
+and stage 5 has not started.
 Production retains Delaunay-Voronoi, adaptive first-order Euler and the thesis
 circuit. The future Vout-trigger-plus-margin horizon changes only observation
 length. Parallel work shares at most 90% of available resources.

@@ -21,14 +21,32 @@ se verifican al conectar los bloques, sin reconstruir sus demostraciones.
 Separar un fallo de ejecución de un criterio comparativo no satisfecho. Si ambas
 trayectorias terminan, conservarlas y examinar qué señal incumple el criterio.
 No convertir retrospectivamente el certificado fallido en pase ni pedir otra
-campaña por defecto. Se puede aceptar desarrollo con una limitación cuantificada,
-sin atribuir precisión a esa componente. Antes de la próxima corrida declarar
+campaña por defecto. Por indicación del usuario del 24 de septiembre, preferir
+revisar una tolerancia innecesariamente exigente y cerrar la discrepancia con
+una nueva decisión de aceptación práctica, en lugar de aparcarla. Conservar
+intacto el resultado bajo el criterio anterior y explicar la escala y finalidad
+que justifican el margen nuevo. Esto no acredita más precisión que la medida.
+Antes de la próxima corrida declarar
 qué observables deciden la aceptación y cuáles son diagnósticos secundarios.
 
 Una comparación temporal sólo aporta refinamiento independiente en los tiempos
 donde las secuencias de pasos difieren. Un porcentaje referido a una señal casi
 nula se acompaña de su diferencia absoluta y de una escala física pertinente
 del mismo observable. Ese contexto no reemplaza el resultado original.
+
+La revisión no requiere esperar a una discrepancia catastrófica para reparar
+un error real: unidades incorrectas, estados no finitos, crecimiento inestable,
+violaciones materiales de conservación o términos físicos ausentes no se
+corrigen aumentando un umbral. Si el desacuerdo es pequeño frente al objetivo,
+registrar su aceptación al margen revisado y continuar sin otra campaña por
+defecto. El 2 % adoptado para los controles débiles de esta iteración es un
+presupuesto de desarrollo; no es una precisión universal de latencia ni un
+error experimental del material.
+
+Se prioriza probar el paso KWT heredado. Su ecuación local cuadrática determina
+la amplitud del paso nuevo, pero el avance sigue siendo Euler de primer orden.
+Comparar los observables relevantes a paso y medio paso permite decidir su
+utilidad, sin rediseñar el integrador por anticipado.
 
 ## Qué debe decir cada figura
 
