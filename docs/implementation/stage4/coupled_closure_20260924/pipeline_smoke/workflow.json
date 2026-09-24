@@ -1,0 +1,29 @@
+{
+  "schema": "pysnspd.stage4.final_coupling.v1",
+  "references": [
+    {
+      "id": "reference",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/pipeline_smoke/reference.json",
+      "sha256": "92a39126337c0c508cb763db86c2c4752d2a107be08c753f74b13e2163dac763",
+      "estimated_seconds": 15.0
+    }
+  ],
+  "responses": [
+    {
+      "id": "response",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/pipeline_smoke/response.json",
+      "sha256": "b0538dcacc86f606978565f3dcc22956e2009931917064a948da4cc1746c8284",
+      "estimated_seconds": 40.0,
+      "reference": "reference"
+    }
+  ],
+  "source_sha256": {
+    "sandbox/stage4_core/run_final_coupling.py": "021bbc757e254087bd80919a24b5fb7a6c4e7ade9210c4ad4126d39b4c317c59",
+    "sandbox/stage4_core/biased_strip_reference.py": "15b2ce3c75a6f218d3235a142487d8a63d780789f4ecbc044539addf2cfe5905",
+    "sandbox/stage4_core/biased_coupled_response.py": "390f145b667df0c53f476da23871e826ad9d069a85bac33beb85746eed7ded61",
+    "sandbox/stage4_core/coupled_campaign.py": "a8952969eedbc672e5670ecdaa6a638309e1243273c068e062aa06d9311fd9e6",
+    "sandbox/stage4_core/coupled_response.py": "19aa8c148ffe0c2e53200e1977874c9e77b13a7e0136a9fc890077ab02ae154e",
+    "sandbox/stage4_core/biased_harmonic_query.py": "e8a430735f7e3db8e7ba3f9e1486f648806ae2384fdd961003a07b49d4577f00"
+  },
+  "scope": "Bounded foreground full pipeline smoke on 15 nodes; taskset admits 4 total processes, including two numerical workers"
+}

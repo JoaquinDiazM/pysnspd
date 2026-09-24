@@ -1,0 +1,507 @@
+{
+  "schema": "pysnspd.stage4.coupled_campaign.v1",
+  "status": "SUCCEEDED",
+  "plan_sha256": "82b7718515cab8ec853b07d146854461d2fb092ad25a9d19e9341a63a37c3b07",
+  "resources": {
+    "logical_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "physical_core_groups": [
+      [
+        0,
+        16
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        2,
+        18
+      ],
+      [
+        3,
+        19
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        5,
+        21
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        7,
+        23
+      ],
+      [
+        8,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        11,
+        27
+      ],
+      [
+        12,
+        28
+      ],
+      [
+        13,
+        29
+      ],
+      [
+        14,
+        30
+      ],
+      [
+        15,
+        31
+      ]
+    ],
+    "available_memory_bytes": 125279547392,
+    "host_available_memory_bytes": 125279547392,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60722.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60722.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "allocation": {
+    "shared_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13
+      ],
+      "workers": 27,
+      "threads_per_process": 1,
+      "total_processes": 28,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 112751592652,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 32212254720,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "parallel_cases": 2,
+    "slots": [
+      {
+        "slot": 0,
+        "cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22
+        ],
+        "workers": 13,
+        "case_coordinator_cpu": 22,
+        "numerical_worker_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6
+        ]
+      },
+      {
+        "slot": 1,
+        "cpus": [
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13
+        ],
+        "workers": 12,
+        "case_coordinator_cpu": 13,
+        "numerical_worker_cpus": [
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28
+        ]
+      }
+    ],
+    "numerical_worker_ceiling": 25,
+    "total_process_cpu_ceiling": 28,
+    "case_coordinator_reserve_bytes": 3221225472,
+    "estimated_memory_reservation_bytes": 36507222016,
+    "accounting": "Each case slot includes its subprocess coordinator plus workers; BLAS/OpenMP=1. CPU sets are disjoint."
+  },
+  "cases": [
+    {
+      "id": "uniform_eta010",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "estimated_seconds": 30,
+      "argv": [
+        "/home/jdiaz/.conda/envs/snspd/bin/python",
+        "-u",
+        "sandbox/stage4_core/coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/uniform_eta010.json",
+        "--output",
+        "/home/jdiaz/pysnspd/tmp/stage4_coupled_uniform_tails_20260924/cases/uniform_eta010",
+        "--workers",
+        "13"
+      ],
+      "workers": 13,
+      "affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22
+      ],
+      "output": "/home/jdiaz/pysnspd/tmp/stage4_coupled_uniform_tails_20260924/cases/uniform_eta010",
+      "console_log": "logs/uniform_eta010.console.log",
+      "start_elapsed_seconds": 0.007636033929884434,
+      "pid": 4003999,
+      "progress": {
+        "last_event": "COMPLETE",
+        "read_elapsed_seconds": 3.1487224088050425,
+        "fraction": 1.0,
+        "eta_seconds": 0.0
+      },
+      "returncode": 0,
+      "end_elapsed_seconds": 3.150151354726404,
+      "duration_seconds": 3.1425153207965195,
+      "console_sha256": "173d8157125e54ad13d54fc51b156ec9bdaf40e9b9f9f4cd6db2c09eac4c764b",
+      "outputs": [
+        {
+          "path": "manifest.json",
+          "status": "PRESENT",
+          "sha256": "49560e529684f40d634061e1190ce1a110f75d30c214ba24af9b5d89144234f8"
+        },
+        {
+          "path": "results.json",
+          "status": "PRESENT",
+          "sha256": "46bd1f98be42c446075fa25ce4af777c0b238e7b694d10270e899ad217578b01"
+        },
+        {
+          "path": "spatial_modes.npz",
+          "status": "PRESENT",
+          "sha256": "ae21ac4e6cd86435a277bfe919c30e09ae6b3979c5c6ced6bf483a0cd4120832"
+        }
+      ]
+    },
+    {
+      "id": "uniform_eta005",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "estimated_seconds": 30,
+      "argv": [
+        "/home/jdiaz/.conda/envs/snspd/bin/python",
+        "-u",
+        "sandbox/stage4_core/coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/uniform_eta005.json",
+        "--output",
+        "/home/jdiaz/pysnspd/tmp/stage4_coupled_uniform_tails_20260924/cases/uniform_eta005",
+        "--workers",
+        "12"
+      ],
+      "workers": 12,
+      "affinity_cpus": [
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13
+      ],
+      "output": "/home/jdiaz/pysnspd/tmp/stage4_coupled_uniform_tails_20260924/cases/uniform_eta005",
+      "console_log": "logs/uniform_eta005.console.log",
+      "start_elapsed_seconds": 0.022242646664381027,
+      "pid": 4004000,
+      "progress": {
+        "last_event": "COMPLETE",
+        "read_elapsed_seconds": 2.8001533849164844,
+        "fraction": 1.0,
+        "eta_seconds": 0.0
+      },
+      "returncode": 0,
+      "end_elapsed_seconds": 2.8515847818925977,
+      "duration_seconds": 2.8293421352282166,
+      "console_sha256": "eb5b9984d9863a01e3d67f6afdd684b8f249f370571a0fe858301e7552f8fd65",
+      "outputs": [
+        {
+          "path": "manifest.json",
+          "status": "PRESENT",
+          "sha256": "769d7621a841cf884b7ae92d6e5aada230be63fda374062c9953fddd28ef64b0"
+        },
+        {
+          "path": "results.json",
+          "status": "PRESENT",
+          "sha256": "9178b6e175ec8f4d54070092ac6a52dd95c9b6812cff26cc7662cdc627484ee7"
+        },
+        {
+          "path": "spatial_modes.npz",
+          "status": "PRESENT",
+          "sha256": "ae21ac4e6cd86435a277bfe919c30e09ae6b3979c5c6ced6bf483a0cd4120832"
+        }
+      ]
+    },
+    {
+      "id": "uniform_eta002",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "estimated_seconds": 30,
+      "argv": [
+        "/home/jdiaz/.conda/envs/snspd/bin/python",
+        "-u",
+        "sandbox/stage4_core/coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/uniform_eta002.json",
+        "--output",
+        "/home/jdiaz/pysnspd/tmp/stage4_coupled_uniform_tails_20260924/cases/uniform_eta002",
+        "--workers",
+        "12"
+      ],
+      "workers": 12,
+      "affinity_cpus": [
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13
+      ],
+      "output": "/home/jdiaz/pysnspd/tmp/stage4_coupled_uniform_tails_20260924/cases/uniform_eta002",
+      "console_log": "logs/uniform_eta002.console.log",
+      "start_elapsed_seconds": 2.923352618701756,
+      "pid": 4004032,
+      "progress": {
+        "last_event": "COMPLETE",
+        "read_elapsed_seconds": 5.582543252967298,
+        "fraction": 1.0,
+        "eta_seconds": 0.0
+      },
+      "returncode": 0,
+      "end_elapsed_seconds": 5.5834753308445215,
+      "duration_seconds": 2.6601227121427655,
+      "console_sha256": "3f85399aac0c9ee869abb95a3ce627723b1cc5e0c8afd52074c68e8600b22e70",
+      "outputs": [
+        {
+          "path": "manifest.json",
+          "status": "PRESENT",
+          "sha256": "27938e1b83cbb174652098ca5365878056f3c05309183f4738afc62ec0cdc6af"
+        },
+        {
+          "path": "results.json",
+          "status": "PRESENT",
+          "sha256": "48b001585590b9ade6001d38efb47f9193fb4386e4f8797122bbcf45a87a6b01"
+        },
+        {
+          "path": "spatial_modes.npz",
+          "status": "PRESENT",
+          "sha256": "ae21ac4e6cd86435a277bfe919c30e09ae6b3979c5c6ced6bf483a0cd4120832"
+        }
+      ]
+    }
+  ],
+  "numerical_physics": "None: this runner only schedules declared argv lists",
+  "retry_policy": "One attempt per case; independent siblings continue after failure",
+  "elapsed_seconds": 5.59868928976357
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "pysnspd.stage4.biased_coupled_response.v1",
+  "mesh": "docs/implementation/stage4/practical_time_review_20260924/dual_mesh/resampled/mesh.npz",
+  "mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "tau_ee_Tc_ps": 0.5,
+  "tau_ep_Tc_ps": 2.47,
+  "sheet_resistance_ohm": 608,
+  "total_inductance_H": 1e-08,
+  "bias_voltage_peak_V": 1e-06,
+  "mode_count": 6,
+  "omega": 0.2,
+  "eta_over_gap": 0.01,
+  "quadrature_order": 12,
+  "energy_cutoff": 32,
+  "maximum_energy_panel": 0.125,
+  "spectral_tolerance": 1e-07,
+  "continuation_steps": 12,
+  "observable_relative_margin": 0.02,
+  "scope": "Weak full-node spectral/kinetic response about a self-consistent biased 2D strip, with a declared Galerkin gap/potential basis and exact three-state thesis circuit. Measures conditional radial KWT overlap, charge, currents and terminal response. No photon or nonlinear heat acceptance.",
+  "energy_tail_order": 16
+}

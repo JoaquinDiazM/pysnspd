@@ -1,0 +1,239 @@
+{
+  "schema": "pysnspd.stage4.biased_api_pilot.v1",
+  "status": "PILOT_COMPLETE",
+  "scope": "Uniform reference; full-mesh API/performance pilot, NOT biased physical acceptance",
+  "mesh": "/home/jdiaz/pysnspd/docs/implementation/stage4/practical_time_review_20260924/dual_mesh/resampled/mesh.npz",
+  "mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4",
+  "nodes": 1712,
+  "modes": 4,
+  "matsubara_count": 256,
+  "graph_conductance": 0.49999999999999967,
+  "eigen_residual": 3.677613769070831e-16,
+  "maximum_uniform_force": 0.0,
+  "runtime": {
+    "resources": {
+      "logical_cpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "physical_core_groups": [
+        [
+          0,
+          16
+        ],
+        [
+          1,
+          17
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          10,
+          26
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "available_memory_bytes": 125271789568,
+      "host_available_memory_bytes": 125271789568,
+      "total_memory_bytes": 132537782272,
+      "cpu_quota_units": null,
+      "cgroup_limits": {
+        "cpu_quota_units": null,
+        "memory_headroom_bytes": null,
+        "cpu_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60633.scope/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          }
+        ],
+        "memory_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60633.scope/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          }
+        ],
+        "unavailable": []
+      }
+    },
+    "budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0
+      ],
+      "workers": 1,
+      "threads_per_process": 1,
+      "total_processes": 2,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 112744610611,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 4294967296,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "actual_affinity": [
+      29
+    ],
+    "numerical_workers": 1,
+    "numerical_library_threads": 1
+  },
+  "source_sha256": {
+    "sandbox/stage4_core/pilot_biased_coupling.py": "7835012d815fb214ab8cb1a00fdf68299c4a3570760a81661010360ba49d8e31",
+    "sandbox/stage4_core/biased_harmonic_query.py": "e8a430735f7e3db8e7ba3f9e1486f648806ae2384fdd961003a07b49d4577f00",
+    "sandbox/stage4_core/biased_coupled_response.py": "d829584e4ef4e9d9cc51214c8e0c1456e21382bc39975c58069ab60cd9e4ba15",
+    "pysnspd/experimental/harmonic_usadel.py": "d877a28c94603c51c572a25b768ea82a4834a13612af72c47cea69e4796434c5",
+    "pysnspd/experimental/harmonic_kinetic_usadel.py": "f94fc5a33cf93511091d3b5cc956539bc60d6f4fe88b108077b85b6cfd53a494",
+    "pysnspd/experimental/thermal_contact_tangent.py": "57119d2af49b3df1c391847b3b8f3f880a6049a6b6de9f651b8bb51c7e726618",
+    "pysnspd/experimental/retarded_spatial_usadel.py": "b3bd991d93db49e4e474290b8b5991e69bf1803fd72d4c267bdd2e7f44b15635"
+  },
+  "payload": {
+    "reference_npz": "/home/jdiaz/pysnspd/tmp/stage4_coupled_fullmesh_pilot_20260924/uniform_reference.npz",
+    "modes_npz": "/home/jdiaz/pysnspd/tmp/stage4_coupled_fullmesh_pilot_20260924/modes.npz",
+    "reference_sha256": "5f17e2d67fc2a5b2147bb07c0780fc4aaf5c5ac1d5531cfbafd0ed7fa7266e86",
+    "energy": 0.5,
+    "omega": 0.2,
+    "eta": 0.017639259275771802,
+    "t": 0.10404624277456648,
+    "spectral_tolerance": 1e-08,
+    "continuation_steps": 6
+  },
+  "elapsed_seconds": 2.211377521045506
+}

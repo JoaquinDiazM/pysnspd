@@ -128,4 +128,10 @@ un ajuste instantáneo del desequilibrio electrón–hueco. El espectro adiabát
 sigue siendo una aproximación independiente: depende de la amplitud y rapidez
 local del cambio, no sólo de la duración total del ensayo. Esta investigación
 no modifica todavía las ecuaciones ejecutadas ni sustituye el cierre pendiente
-de trabajo espectral y calor. No hay otro cálculo largo pendiente.
+de trabajo espectral y calor. Posteriormente se preparó el
+[lote polarizado de unión dinámica](stage4/coupled_closure_20260924/README.md),
+que queda pendiente de ejecución manual. Conserva la evolución de ambas
+distribuciones y usa los desplazamientos energéticos exactos de la respuesta
+armónica. Mide el posible solapamiento con la relajación KWT antes de adoptar
+un cierre radial. El calor no lineal y la preparación fotónica siguen fuera
+de la aceptación de este control débil.

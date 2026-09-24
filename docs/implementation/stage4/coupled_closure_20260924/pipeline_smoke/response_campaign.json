@@ -1,0 +1,193 @@
+{
+  "schema": "pysnspd.stage4.coupled_campaign.v1",
+  "status": "SUCCEEDED",
+  "plan_sha256": "9da303483cdd6c6af6413142a9c3d303f8fbd8b15ae2ca4e97bb55a37544e5da",
+  "resources": {
+    "logical_cpus": [
+      0,
+      1,
+      2,
+      16,
+      17,
+      18
+    ],
+    "physical_core_groups": [
+      [
+        0,
+        16
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        2,
+        18
+      ]
+    ],
+    "available_memory_bytes": 125230223360,
+    "host_available_memory_bytes": 125230223360,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60758.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60758.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "allocation": {
+    "shared_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17
+      ],
+      "coordinator_cpu": 17,
+      "worker_affinity_cpus": [
+        0,
+        16,
+        1
+      ],
+      "workers": 3,
+      "threads_per_process": 1,
+      "total_processes": 4,
+      "logical_budget": 5,
+      "effective_cpu_quota_units": 6,
+      "physical_cores_used": 2,
+      "physical_cores_reserved": 1,
+      "memory_limit_bytes": 112707201024,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 6442450944,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "parallel_cases": 1,
+    "slots": [
+      {
+        "slot": 0,
+        "cpus": [
+          0,
+          16,
+          1
+        ],
+        "workers": 2,
+        "case_coordinator_cpu": 1,
+        "numerical_worker_cpus": [
+          0,
+          16
+        ]
+      }
+    ],
+    "numerical_worker_ceiling": 2,
+    "total_process_cpu_ceiling": 4,
+    "case_coordinator_reserve_bytes": 3221225472,
+    "estimated_memory_reservation_bytes": 8589934592,
+    "accounting": "Each case slot includes its subprocess coordinator plus workers; BLAS/OpenMP=1. CPU sets are disjoint."
+  },
+  "cases": [
+    {
+      "id": "response",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "estimated_seconds": 40.0,
+      "argv": [
+        "/home/jdiaz/.conda/envs/snspd/bin/python",
+        "-u",
+        "sandbox/stage4_core/biased_coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/pipeline_smoke/response.json",
+        "--reference",
+        "/home/jdiaz/pysnspd/tmp/stage4_coupling_pipeline_smoke_20260924/references/cases/reference/reference.npz",
+        "--output",
+        "/home/jdiaz/pysnspd/tmp/stage4_coupling_pipeline_smoke_20260924/responses/cases/response",
+        "--workers",
+        "2"
+      ],
+      "workers": 2,
+      "affinity_cpus": [
+        0,
+        16,
+        1
+      ],
+      "output": "/home/jdiaz/pysnspd/tmp/stage4_coupling_pipeline_smoke_20260924/responses/cases/response",
+      "console_log": "logs/response.console.log",
+      "start_elapsed_seconds": 0.004125114995986223,
+      "pid": 4006492,
+      "progress": {
+        "last_event": "COMPLETE",
+        "fraction": 1.0,
+        "read_elapsed_seconds": 29.628737387247384,
+        "eta_seconds": 0.0
+      },
+      "returncode": 0,
+      "end_elapsed_seconds": 29.629574635066092,
+      "duration_seconds": 29.625449520070106,
+      "console_sha256": "ded6e8ed9d095f068f7cd4a7666275a193162d4972fc90ed702b43d252325f59",
+      "outputs": [
+        {
+          "path": "results.json",
+          "status": "PRESENT",
+          "sha256": "0b3c49ae14274d00cc4bbe95d1ed16933b531da91e121fd6bddc14d18fa03510"
+        },
+        {
+          "path": "coupled_fields.npz",
+          "status": "PRESENT",
+          "sha256": "305a8ff931e5046bddaa5adff08573bc030c4fe2353862710225cdd7c4c1c749"
+        },
+        {
+          "path": "integrated_moments.npz",
+          "status": "PRESENT",
+          "sha256": "e193afa87baf741b77c3c9eb28cd8bf8e53e6087134d942fac8b1987bf361538"
+        },
+        {
+          "path": "manifest.json",
+          "status": "PRESENT",
+          "sha256": "924cd2ec1b77f66129b7431604d1523b02b67ebef32526a99bed40cad706e555"
+        }
+      ]
+    }
+  ],
+  "numerical_physics": "None: this runner only schedules declared argv lists",
+  "retry_policy": "One attempt per case; independent siblings continue after failure",
+  "elapsed_seconds": 29.637894057203084
+}

@@ -10,7 +10,7 @@ etapa 4 continúa sin fotón. Los contratos y resultados previos se preservan.
 | 2. Cinética de una y dos celdas | Desarrollo cerrado con límites | Acoplamientos conservativos y trayectorias registradas; certificado dinámico de malla incompleto. |
 | 3. Infraestructura espacial, bordes y circuito | Desarrollo cerrado con pendientes explícitos | Energía y corriente comunes, empalme de campo 2D–1D, potencial, cargas de reservorio y circuito de la memoria; evidencia estática e instantánea. |
 | **3.5. Dominio de confianza físico y numérico** | **Investigación cerrada con límites explícitos** | Establecer qué parámetros, estados, geometrías y ventanas de observación tienen fundamento físico, y qué márgenes numéricos necesitamos para estudiarlos. |
-| 4. Núcleo y disipación | Euler dual y control longitudinal completados; escalas investigadas, unión dinámica pendiente | Cerrar el acoplamiento dinámico de trabajo espectral, poblaciones, carga, calor y puertos. |
+| 4. Núcleo y disipación | Euler dual y control longitudinal completados; lote de unión polarizada preparado | Resolver y contrastar el acoplamiento débil de espectro, poblaciones, fase, potencial y circuito; conservar explícito el balance no lineal pendiente. |
 | 5. Transientes completos y comparación experimental | No iniciada | Comparar el dispositivo y sus observables con el experimento, incluyendo incertidumbre y cadena de lectura. |
 
 La [decisión de cierre de etapa 3](stage3/closure_20260923/closure_decision.json)
@@ -72,5 +72,8 @@ físicos y 32 hilos; el límite es 28 hilos, reservando dos núcleos completos.
 Se limita la anidación BLAS/OpenMP y la memoria disponible. El paralelismo no
 exime de entregar manualmente cálculos previstos de más de cinco minutos.
 
-La [revisión actual de etapa 4](stage4/final_kwt_20260924/README.md) contiene los
-resultados, el contraste físico siguiente y el estado real de implementación.
+La [preparación actual de etapa 4](stage4/coupled_closure_20260924/README.md)
+contiene el comando del lote polarizado y sus pilotos. La respuesta uniforme
+ya permitió identificar una sensibilidad a truncar las integrales de energía;
+el lote incorpora las colas semiinfinitas. La respuesta a frecuencia finita
+no reemplaza Euler ni acredita por sí sola un transiente no lineal con calor.

@@ -1,0 +1,62 @@
+{
+  "status": "INTEGRATION_PASS_NOT_PHYSICAL_ADMISSION",
+  "host": "geminga",
+  "runtime_ceiling_seconds": 120,
+  "timeout_reached": false,
+  "total_campaign_seconds": 31.92436170624569,
+  "reference_seconds": 2.0653825290501118,
+  "response_seconds": 29.44710109755397,
+  "reference": {
+    "status": "FINITE_SUM_STATIONARY",
+    "sweeps": 8,
+    "gap_mass_rms_relative": 9.109757672922045e-06,
+    "phase_advance_rad": 0.1,
+    "minimum_gap_relative": 0.9995338639647595
+  },
+  "response": {
+    "status": "COMPUTED_REQUIRES_COMPARISON",
+    "energy_nodes": 1112,
+    "readout_peak_V": {
+      "real": 1.4633202278717224e-11,
+      "imag": 2.20004578515449e-10
+    },
+    "neutral_relative_to_voltage": 1.6512074998353697e-14,
+    "projected_equation_max": 2.5924290383665116e-17,
+    "radial_force_rms": 0.04006151006446132,
+    "circuit_power_residual_W": -2.7365508487142853e-35
+  },
+  "resource_limits": {
+    "numerical_workers": 2,
+    "total_processes": 4,
+    "external_affinity": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18
+    ],
+    "reserved_whole_physical_cores": 1
+  },
+  "exact_command": "timeout --signal=INT --kill-after=10s 120s taskset -c 0,16,1,17,2,18 /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/run_final_coupling.py --plan docs/implementation/stage4/coupled_closure_20260924/pipeline_smoke/workflow.json --output-root tmp/stage4_coupling_pipeline_smoke_20260924 --execute",
+  "checks": [
+    "Actual reference builder ran and reached its declared gap criterion",
+    "Reference manifest/hash guard accepted the resulting final NPZ without a bypass",
+    "Actual thermal tangent, full-node spectral/kinetic response, energy integration and thesis circuit executed",
+    "Both case coordinators inherited the shared budget and used two pinned numerical workers",
+    "Expected manifests and result artifacts exist; no retry or overwrite"
+  ],
+  "limitation": "This 15-node smoke validates execution and file interfaces. It does not admit the 1712-node physical branch or the two-mode Galerkin approximation.",
+  "evidence": {
+    "reference.json": "92a39126337c0c508cb763db86c2c4752d2a107be08c753f74b13e2163dac763",
+    "reference_campaign.json": "511360786d4df9c711edadef2c12bb7d018026e4a6a2e65b3f5fd23a4f48efea",
+    "reference_manifest.json": "66eefd796a37e46935fb126688ba64dfc298a12e55c1ee72fd641b3bc4dbf96f",
+    "reference_summary.json": "2dd2f529039c68b17b7268a5a88f1142baf50e1af6f7c8f490c27263261ddb1e",
+    "response.json": "b0538dcacc86f606978565f3dcc22956e2009931917064a948da4cc1746c8284",
+    "response_campaign.json": "35c7e3189f24ae37eaef62dc950ca2349518b3746ddece9e4f7f7eaf583ddfd7",
+    "response_manifest.json": "924cd2ec1b77f66129b7431604d1523b02b67ebef32526a99bed40cad706e555",
+    "response_results.json": "0b3c49ae14274d00cc4bbe95d1ed16933b531da91e121fd6bddc14d18fa03510",
+    "workflow.json": "71b7ec290d2638cf3fa4f5d025126508d7eeda0c7584f829f7917efada9dba1d",
+    "workflow_result.json": "c3848d59fddace523706b9fa2bbe222c0db472b053ab2efe8f7a84b2059103d5"
+  }
+}

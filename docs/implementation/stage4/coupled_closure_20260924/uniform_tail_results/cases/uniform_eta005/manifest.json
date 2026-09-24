@@ -1,0 +1,313 @@
+{
+  "status": "COMPLETED",
+  "plan": {
+    "schema": "pysnspd.stage4.coupled_response.v1",
+    "mesh": "docs/implementation/stage4/practical_time_review_20260924/dual_mesh/resampled/mesh.npz",
+    "mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4",
+    "T_K": 0.9,
+    "Tc_K": 8.65,
+    "matsubara_count": 256,
+    "tau_ee_Tc_ps": 0.5,
+    "tau_ep_Tc_ps": 2.47,
+    "sheet_resistance_ohm": 608,
+    "total_inductance_H": 1e-08,
+    "mode_count": 16,
+    "mode_indices": [
+      0,
+      1,
+      3,
+      7,
+      15
+    ],
+    "omegas": [
+      0.02,
+      0.05,
+      0.1,
+      0.2,
+      0.5,
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "eta_over_gap": [
+      0.005
+    ],
+    "orders": [
+      16,
+      24
+    ],
+    "cutoffs": [
+      32,
+      64
+    ],
+    "scope": "Weak finite-frequency response about uniform zero-current equilibrium on the actual 2D dual mesh. Fully dynamic hL/hT, anomalous and neutral moments; exact three-state circuit. Residual KWT candidate measured, not adopted as nonlinear closure. No photon, calibrated phonon collision or biased-detector acceptance.",
+    "acceptance_relative_margin": 0.02,
+    "tail_order": 24,
+    "energy_tail": "Both |E|>cutoff integrated with x=cutoff/|E|; same integrand, no fitted counterterm."
+  },
+  "plan_sha256": "37ba4002d54beba066c777959f931e024675a0b4d024659f10160405f72828d3",
+  "sources": {
+    "sandbox/stage4_core/coupled_response.py": "19aa8c148ffe0c2e53200e1977874c9e77b13a7e0136a9fc890077ab02ae154e",
+    "sandbox/stage4_core/coupled_campaign.py": "a8952969eedbc672e5670ecdaa6a638309e1243273c068e062aa06d9311fd9e6",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "sandbox/stage4_core/dual_kwt_time.py": "5f16f2d9fff60f945662d320c84672b8265edc501790e30ddeff8f1b2fe7219f",
+    "pysnspd/experimental/thesis_circuit_harmonic.py": "a50c3b3cad82307d4624e640e46c3b42ce167a45fc53eebd6dd4cf32edf6c1a4",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8"
+  },
+  "resources": {
+    "logical_cpus": [
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ],
+    "physical_core_groups": [
+      [
+        7,
+        23
+      ],
+      [
+        8,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        11,
+        27
+      ],
+      [
+        12,
+        28
+      ]
+    ],
+    "available_memory_bytes": 125180964864,
+    "host_available_memory_bytes": 125180964864,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60722.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60722.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "budget": {
+    "source": "inherited_shared_campaign_admission",
+    "parent_allocation": {
+      "parent_pid": 4003998,
+      "case_id": "uniform_eta005",
+      "cpus": [
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13
+      ],
+      "workers": 12,
+      "shared_budget": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13,
+          29
+        ],
+        "coordinator_cpu": 29,
+        "worker_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13
+        ],
+        "workers": 27,
+        "threads_per_process": 1,
+        "total_processes": 28,
+        "logical_budget": 28,
+        "effective_cpu_quota_units": 32,
+        "physical_cores_used": 14,
+        "physical_cores_reserved": 2,
+        "memory_limit_bytes": 112751592652,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 1073741824,
+        "estimated_memory_reservation_bytes": 32212254720,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      },
+      "total_process_cpu_ceiling": 28
+    },
+    "workers": 12,
+    "coordinator_cpu": 13,
+    "worker_affinity_cpus": [
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28
+    ],
+    "selected_affinity_cpus": [
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13
+    ],
+    "threads_per_process": 1,
+    "total_processes": 13,
+    "estimated_memory_reservation_bytes": 16106127360
+  },
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "retry_policy": "No automatic retries; independent energy queries continue after a failed query",
+  "d": 1.7639259275771801,
+  "graph_conductance": 0.49999999999999967,
+  "eigen_residual": 5.048045315092509e-16,
+  "tasks": 240,
+  "workers": 12,
+  "completed_queries": 240,
+  "failed_queries": 0,
+  "elapsed_seconds": 2.6383391809649765,
+  "coordinator": {
+    "pid": 4004000,
+    "affinity_cpus": [
+      13
+    ],
+    "peak_rss_bytes": 87314432,
+    "user_cpu_seconds": 0.19589299999999998,
+    "system_cpu_seconds": 0.028273
+  },
+  "outputs": {
+    "spatial_modes.npz": "ae21ac4e6cd86435a277bfe919c30e09ae6b3979c5c6ced6bf483a0cd4120832",
+    "results.json": "9178b6e175ec8f4d54070092ac6a52dd95c9b6812cff26cc7662cdc627484ee7"
+  }
+}

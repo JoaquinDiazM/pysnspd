@@ -1,0 +1,23 @@
+{
+  "schema": "pysnspd.stage4.biased_coupled_response.v1",
+  "mesh": "tmp/stage4_coupled_tiny_end_to_end_20260924/reference/tiny_mesh.npz",
+  "mesh_sha256": "74294c7ed51f3d72e23917ef37691386fc8657e5b031957d9cd9eed2663819e8",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "tau_ee_Tc_ps": 0.5,
+  "tau_ep_Tc_ps": 2.47,
+  "sheet_resistance_ohm": 608,
+  "total_inductance_H": 1e-08,
+  "bias_voltage_peak_V": 1e-06,
+  "mode_count": 2,
+  "omega": 0.2,
+  "eta_over_gap": 0.01,
+  "quadrature_order": 12,
+  "energy_cutoff": 32,
+  "maximum_energy_panel": 0.125,
+  "spectral_tolerance": 1e-07,
+  "continuation_steps": 4,
+  "observable_relative_margin": 0.02,
+  "scope": "15-node bounded complete workflow smoke; no device admission",
+  "energy_tail_order": 16
+}

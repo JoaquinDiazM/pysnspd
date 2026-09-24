@@ -1,0 +1,68 @@
+{
+  "schema": "pysnspd.stage4.coupled_campaign.v1",
+  "maximum_parallel_cases": 2,
+  "maximum_workers_per_case": 13,
+  "heartbeat_seconds": 5,
+  "cases": [
+    {
+      "id": "uniform_eta010",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/uniform_eta010.json",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "manifest.json",
+        "results.json",
+        "spatial_modes.npz"
+      ],
+      "estimated_seconds": 30
+    },
+    {
+      "id": "uniform_eta005",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/uniform_eta005.json",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "manifest.json",
+        "results.json",
+        "spatial_modes.npz"
+      ],
+      "estimated_seconds": 30
+    },
+    {
+      "id": "uniform_eta002",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/uniform_eta002.json",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "manifest.json",
+        "results.json",
+        "spatial_modes.npz"
+      ],
+      "estimated_seconds": 30
+    }
+  ]
+}

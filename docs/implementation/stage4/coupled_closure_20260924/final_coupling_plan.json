@@ -1,0 +1,79 @@
+{
+  "schema": "pysnspd.stage4.final_coupling.v1",
+  "scope": "Manual coupled weak-response admission; does not declare the nonlinear stage closed",
+  "source_sha256": {
+    "sandbox/stage4_core/run_final_coupling.py": "021bbc757e254087bd80919a24b5fb7a6c4e7ade9210c4ad4126d39b4c317c59",
+    "sandbox/stage4_core/biased_strip_reference.py": "15b2ce3c75a6f218d3235a142487d8a63d780789f4ecbc044539addf2cfe5905",
+    "sandbox/stage4_core/biased_coupled_response.py": "390f145b667df0c53f476da23871e826ad9d069a85bac33beb85746eed7ded61",
+    "sandbox/stage4_core/biased_harmonic_query.py": "e8a430735f7e3db8e7ba3f9e1486f648806ae2384fdd961003a07b49d4577f00",
+    "sandbox/stage4_core/coupled_campaign.py": "a8952969eedbc672e5670ecdaa6a638309e1243273c068e062aa06d9311fd9e6",
+    "sandbox/stage4_core/coupled_response.py": "19aa8c148ffe0c2e53200e1977874c9e77b13a7e0136a9fc890077ab02ae154e",
+    "sandbox/stage4_core/harmonic_uniform_reference.py": "59da4d5fe59baca66451ce2c7742aa872be439e337625641d384556cff954c30",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "sandbox/stage4_core/dual_kwt_time.py": "5f16f2d9fff60f945662d320c84672b8265edc501790e30ddeff8f1b2fe7219f",
+    "sandbox/stage4_core/run_self_consistent_core.py": "e00cbe90cde9af35548382d6adff5fc803b82f3ddf246bda019bd231dc671f66",
+    "sandbox/stage4_core/run_spatial_energy.py": "7c5f2356a3decb34889d354666d0ee50fd90e7fd004189406328d7736a3a05e1",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/thermal_stable_newton.py": "7e0faa9c643afde845b3f57f57146a99d34ba9777ecc6bc2a9b61d233c6c06ae",
+    "pysnspd/experimental/thermal_snapshot.py": "59ac461ebed9c9a5e665ea7720af3c519b41427ccbb7bc7ca404f006aab120b2",
+    "pysnspd/experimental/thermal_weak_response.py": "42bcc1fe9436287a838cfad43ae7ee9d5b202a773ff3faa3127508dc34d7cfda",
+    "pysnspd/experimental/thermal_contact_tangent.py": "57119d2af49b3df1c391847b3b8f3f880a6049a6b6de9f651b8bb51c7e726618",
+    "pysnspd/experimental/retarded_spatial_usadel.py": "b3bd991d93db49e4e474290b8b5991e69bf1803fd72d4c267bdd2e7f44b15635",
+    "pysnspd/experimental/harmonic_usadel.py": "d877a28c94603c51c572a25b768ea82a4834a13612af72c47cea69e4796434c5",
+    "pysnspd/experimental/harmonic_kinetic_usadel.py": "f94fc5a33cf93511091d3b5cc956539bc60d6f4fe88b108077b85b6cfd53a494",
+    "pysnspd/experimental/thesis_circuit_harmonic.py": "a50c3b3cad82307d4624e640e46c3b42ce167a45fc53eebd6dd4cf32edf6c1a4",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+  },
+  "references": [
+    {
+      "id": "phase2",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/reference_phase2.json",
+      "sha256": "7db98e2ea8a573218026e2491547ff66d2aa524248ef5814bb6a8cbe80ad9e5a",
+      "estimated_seconds": 600
+    },
+    {
+      "id": "phase8",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/reference_phase8.json",
+      "sha256": "af9d8a98ff5f5c6183099e9fe678f5672685663e748a24b30719807f70f96c64",
+      "estimated_seconds": 600
+    }
+  ],
+  "responses": [
+    {
+      "id": "phase2_w020",
+      "reference": "phase2",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/response_phase2_w020.json",
+      "sha256": "2bf2c63829ee16c4274554f5695f2dc2d5774a23a66039837abf8ff8666872fd",
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_w020",
+      "reference": "phase8",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/response_phase8_w020.json",
+      "sha256": "2bf2c63829ee16c4274554f5695f2dc2d5774a23a66039837abf8ff8666872fd",
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_w005",
+      "reference": "phase8",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/response_phase8_w005.json",
+      "sha256": "3f70c8783569062f11e3efcc4583881dfce099f895e2f74ee341850d77d95ee6",
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_w080",
+      "reference": "phase8",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/response_phase8_w080.json",
+      "sha256": "7394278f639a39d7035b6b6c7f63a019a3107ef1ce1b8612530face9384a1ccf",
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_refined",
+      "reference": "phase8",
+      "plan": "docs/implementation/stage4/coupled_closure_20260924/response_phase8_refined.json",
+      "sha256": "636c7af25a064aec76292029a9a7a4b23383d787a449ff5241f374cb0923a4ac",
+      "estimated_seconds": 3600
+    }
+  ]
+}

@@ -65,11 +65,16 @@ contrast passed 2048 roots in 22.74 s after correcting energy-cancellation in
 Newton without changing the tolerance or equations. The [completed nonlinear ETD2 trajectory](docs/implementation/stage4/practical_time_review_20260924/README.md)
 reached1ps in both resolutions. Its original failed certificate is preserved;
 the user-authorized practical2percent criterion now accepts that comparison.
+The [coupled-response campaign](docs/implementation/stage4/coupled_closure_20260924/README.md)
+is prepared for manual execution: self-consistent biased references, dynamic
+spectral/kinetic coupling, charge and the full thesis circuit. Its lightweight
+pilots passed; it does not yet close nonlinear energy evolution or photon dynamics.
+
 The [dual-mesh inherited Euler result](docs/implementation/stage4/final_kwt_20260924/README.md)
 also completed1ps in153.81s, with both probes and temporal resolutions admitted.
 Verified spectral predictions reuse existing factorizations while retaining
 the nonlinear equations and tolerance. The weak longitudinal control passes.
-No further numerical rerun is pending. The requested
+These completed controls need no repetition. The requested
 [scale assessment](docs/implementation/stage4/final_kwt_20260924/quasiclassical_assessment.md)
 supports effective diffusive Usadel, while retaining distribution dynamics.
 Instantaneous spectra require a separate adiabatic approximation; the general

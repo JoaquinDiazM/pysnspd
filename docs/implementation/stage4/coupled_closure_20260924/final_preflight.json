@@ -1,0 +1,326 @@
+{
+  "status": "DRY_RUN",
+  "output_exists": false,
+  "references": {
+    "schema": "pysnspd.stage4.coupled_campaign.v1",
+    "maximum_parallel_cases": 2,
+    "maximum_workers_per_case": 13,
+    "heartbeat_seconds": 5.0,
+    "cases": [
+      {
+        "id": "phase2",
+        "argv": [
+          "{python}",
+          "-u",
+          "sandbox/stage4_core/biased_strip_reference.py",
+          "--plan",
+          "docs/implementation/stage4/coupled_closure_20260924/reference_phase2.json",
+          "--output",
+          "{output}",
+          "--workers",
+          "{workers}",
+          "--execute"
+        ],
+        "expected_outputs": [
+          "reference.npz",
+          "manifest.json"
+        ],
+        "estimated_seconds": 600
+      },
+      {
+        "id": "phase8",
+        "argv": [
+          "{python}",
+          "-u",
+          "sandbox/stage4_core/biased_strip_reference.py",
+          "--plan",
+          "docs/implementation/stage4/coupled_closure_20260924/reference_phase8.json",
+          "--output",
+          "{output}",
+          "--workers",
+          "{workers}",
+          "--execute"
+        ],
+        "expected_outputs": [
+          "reference.npz",
+          "manifest.json"
+        ],
+        "estimated_seconds": 600
+      }
+    ]
+  },
+  "responses": [
+    {
+      "id": "phase2_w020",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/biased_coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/response_phase2_w020.json",
+        "--reference",
+        "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase2/reference.npz",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "results.json",
+        "coupled_fields.npz",
+        "integrated_moments.npz",
+        "manifest.json"
+      ],
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_w020",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/biased_coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/response_phase8_w020.json",
+        "--reference",
+        "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase8/reference.npz",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "results.json",
+        "coupled_fields.npz",
+        "integrated_moments.npz",
+        "manifest.json"
+      ],
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_w005",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/biased_coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/response_phase8_w005.json",
+        "--reference",
+        "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase8/reference.npz",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "results.json",
+        "coupled_fields.npz",
+        "integrated_moments.npz",
+        "manifest.json"
+      ],
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_w080",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/biased_coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/response_phase8_w080.json",
+        "--reference",
+        "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase8/reference.npz",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "results.json",
+        "coupled_fields.npz",
+        "integrated_moments.npz",
+        "manifest.json"
+      ],
+      "estimated_seconds": 1800
+    },
+    {
+      "id": "phase8_refined",
+      "argv": [
+        "{python}",
+        "-u",
+        "sandbox/stage4_core/biased_coupled_response.py",
+        "--plan",
+        "docs/implementation/stage4/coupled_closure_20260924/response_phase8_refined.json",
+        "--reference",
+        "/home/jdiaz/scratch/stage4_final_coupling_20260924/references/cases/phase8/reference.npz",
+        "--output",
+        "{output}",
+        "--workers",
+        "{workers}"
+      ],
+      "expected_outputs": [
+        "results.json",
+        "coupled_fields.npz",
+        "integrated_moments.npz",
+        "manifest.json"
+      ],
+      "estimated_seconds": 3600
+    }
+  ],
+  "allocation": {
+    "shared_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13
+      ],
+      "workers": 27,
+      "threads_per_process": 1,
+      "total_processes": 28,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 112790819635,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 32212254720,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "parallel_cases": 2,
+    "slots": [
+      {
+        "slot": 0,
+        "cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22
+        ],
+        "workers": 13,
+        "case_coordinator_cpu": 22,
+        "numerical_worker_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6
+        ]
+      },
+      {
+        "slot": 1,
+        "cpus": [
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13
+        ],
+        "workers": 12,
+        "case_coordinator_cpu": 13,
+        "numerical_worker_cpus": [
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28
+        ]
+      }
+    ],
+    "numerical_worker_ceiling": 25,
+    "total_process_cpu_ceiling": 28,
+    "case_coordinator_reserve_bytes": 3221225472,
+    "estimated_memory_reservation_bytes": 36507222016,
+    "accounting": "Each case slot includes its subprocess coordinator plus workers; BLAS/OpenMP=1. CPU sets are disjoint."
+  },
+  "note": "No scientific calculation executed"
+}

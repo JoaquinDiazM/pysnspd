@@ -1,0 +1,15 @@
+{
+  "schema": "pysnspd.stage4.biased_strip_reference.v1",
+  "mesh": "tmp/stage4_coupled_tiny_end_to_end_20260924/reference/tiny_mesh.npz",
+  "mesh_sha256": "74294c7ed51f3d72e23917ef37691386fc8657e5b031957d9cd9eed2663819e8",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "matsubara_count": 256,
+  "phase_bias": 0.1,
+  "max_outer_iterations": 80,
+  "gap_rms_relative_tolerance": 1e-05,
+  "spectral_tolerance": 1e-07,
+  "max_newton_iterations": 60,
+  "checkpoint_cadence": 10,
+  "scope": "15-node bounded pipeline integration smoke; no production physical acceptance"
+}

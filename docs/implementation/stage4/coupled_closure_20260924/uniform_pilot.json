@@ -1,0 +1,33 @@
+{
+  "schema": "pysnspd.stage4.coupled_response.v1",
+  "mesh": "docs/implementation/stage4/practical_time_review_20260924/dual_mesh/resampled/mesh.npz",
+  "mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "matsubara_count": 256,
+  "tau_ee_Tc_ps": 0.5,
+  "tau_ep_Tc_ps": 2.47,
+  "sheet_resistance_ohm": 608,
+  "total_inductance_H": 1e-08,
+  "mode_count": 4,
+  "mode_indices": [
+    0,
+    3
+  ],
+  "omegas": [
+    0.2
+  ],
+  "eta_over_gap": [
+    0.005
+  ],
+  "orders": [
+    16
+  ],
+  "cutoffs": [
+    32
+  ],
+  "scope": "Weak finite-frequency response about uniform zero-current equilibrium on the actual 2D dual mesh. Fully dynamic hL/hT, anomalous and neutral moments; exact three-state circuit. Residual KWT candidate measured, not adopted as nonlinear closure. No photon, calibrated phonon collision or biased-detector acceptance.",
+  "acceptance_relative_margin": 0.02,
+  "tail_order": 24,
+  "energy_tail": "Both |E|>cutoff integrated with x=cutoff/|E|; same integrand, no fitted counterterm."
+}

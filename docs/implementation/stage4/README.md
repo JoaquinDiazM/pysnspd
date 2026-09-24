@@ -1,4 +1,13 @@
-# Etapa 4: Euler dual completado y alcance cuasiclásico investigado
+# Etapa 4: preparada la unión dinámica polarizada
+
+La [entrega vigente](coupled_closure_20260924/README.md) contiene el nuevo
+comando: dos referencias estacionarias con corriente y cinco respuestas
+acopladas de espectro, poblaciones, fase, potencial y circuito completo.
+Se ejecutaron los pilotos ligeros; el lote largo queda para ejecución manual.
+Mantiene el margen práctico del 2 % y el presupuesto global de 28 hilos.
+La etapa todavía no se declara cerrada.
+
+## Resultados anteriores conservados
 
 El [ensayo actual](final_kwt_20260924/README.md) completó **1 ps en 153,81 s**
 con el paso KWT real de la memoria, la malla dual de 1712 nodos y 256 frecuencias.
@@ -22,7 +31,7 @@ La [revisión de tolerancias](final_kwt_20260924/acceptance_policy.json) acepta
 el ensayo anterior al 2 % sin recalcularlo. Su desacuerdo máximo del 1,500017 %
 queda cerrado bajo ese criterio; se conserva íntegro el certificado original.
 
-**No hay otra corrida pendiente.** A petición del usuario se investigó la
+Antes de preparar el lote actual, a petición del usuario se investigó la
 [separación de escalas](final_kwt_20260924/quasiclassical_assessment.md). Usadel
 difusivo sigue siendo el marco efectivo apropiado; no implica que las
 poblaciones ni el desequilibrio electrón–hueco sean instantáneos. La ruta

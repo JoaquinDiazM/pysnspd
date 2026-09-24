@@ -1,0 +1,59 @@
+{
+  "status": "COMPUTED_REQUIRES_COMPARISON",
+  "scope": "15-node bounded complete workflow smoke; no device admission",
+  "omega": 0.2,
+  "angular_frequency_per_ps": 0.22649218668969096,
+  "mode_count": 2,
+  "minimum_static_projected_stiffness": 2.371458981329727,
+  "minimum_residual_mobility_eigenvalue": 22.378659989155,
+  "resolved_mobility_norm_over_kwt": 4.55670614380588e-06,
+  "full_field_residuals": {
+    "radial_force_rms": 0.04006151006446132,
+    "angular_force_rms": 3.657480754376333e-15,
+    "neutral_rms": 3.3728598760091935e-15,
+    "voltage_rms": 0.20426626431538603,
+    "neutral_relative_to_voltage": 1.6512074998353697e-14,
+    "current_divergence_rms": 0.00023729747227426858,
+    "current_divergence_over_link_current": 1.7286218654817465e-05,
+    "projected_equation_max": 2.5924290383665116e-17
+  },
+  "admittance_S": {
+    "real": 4.499928419880525e-06,
+    "imag": 0.022578210725546114
+  },
+  "impedance_ohm": {
+    "real": 0.008827272715592286,
+    "imag": -44.29048751619874
+  },
+  "resolved_inductance_H": 1.9540835397554094e-10,
+  "external_inductance_H": 9.80459164602446e-09,
+  "bias_voltage_peak_V": 1e-06,
+  "circuit_state_peak": {
+    "real": [
+      1.9552412369747267e-13,
+      -9.71399218768718e-14,
+      -1.9427123004191717e-13
+    ],
+    "imag": [
+      4.4064668826715114e-12,
+      6.37531236253165e-15,
+      1.2921595656423828e-14
+    ]
+  },
+  "readout_peak_V": {
+    "real": 1.4633202278717224e-11,
+    "imag": 2.20004578515449e-10
+  },
+  "circuit_power_residual_W": -2.7365508487142853e-35,
+  "reference_dc_current_A": 1.6861309035353208e-07,
+  "reference_dc_supply_voltage_V": 0.0016861309035353209,
+  "film_port_power_per_voltage_squared_W": 2.2499642099402626e-06,
+  "candidate_radial_heat_per_voltage_squared_W": 2.205427887366529e-06,
+  "port_power_minus_radial_heat_per_voltage_squared_W": 4.453632257373353e-08,
+  "energy_scope": "AC port power and positive radial KWT heat are separate observables. Their difference is not an independently computed reservoir heat flux; this is not a nonlinear energy certificate.",
+  "circuit_time_convention": "exp(-iwt)",
+  "acceptance": "Compare independent refinements with the declared 2% observable margin; no automatic nonlinear closure from this result.",
+  "elapsed_seconds": 29.44710109755397,
+  "energy_nodes": 1112,
+  "maximum_thermal_tangent_residual": 3.053116397837435e-16
+}

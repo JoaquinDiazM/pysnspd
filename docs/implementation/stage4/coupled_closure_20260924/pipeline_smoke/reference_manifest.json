@@ -1,0 +1,4049 @@
+{
+  "schema": "pysnspd.stage4.biased_strip_reference.v1",
+  "status": "FINITE_SUM_STATIONARY",
+  "plan": {
+    "schema": "pysnspd.stage4.biased_strip_reference.v1",
+    "mesh": "tmp/stage4_coupled_tiny_end_to_end_20260924/reference/tiny_mesh.npz",
+    "mesh_sha256": "74294c7ed51f3d72e23917ef37691386fc8657e5b031957d9cd9eed2663819e8",
+    "T_K": 0.9,
+    "Tc_K": 8.65,
+    "matsubara_count": 256,
+    "phase_bias": 0.1,
+    "max_outer_iterations": 80,
+    "gap_rms_relative_tolerance": 1e-05,
+    "spectral_tolerance": 1e-07,
+    "max_newton_iterations": 60,
+    "checkpoint_cadence": 10,
+    "scope": "15-node bounded pipeline integration smoke; no production physical acceptance"
+  },
+  "plan_sha256": "92a39126337c0c508cb763db86c2c4752d2a107be08c753f74b13e2163dac763",
+  "sources": {
+    "sandbox/stage4_core/biased_strip_reference.py": "15b2ce3c75a6f218d3235a142487d8a63d780789f4ecbc044539addf2cfe5905",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "sandbox/stage4_core/coupled_response.py": "19aa8c148ffe0c2e53200e1977874c9e77b13a7e0136a9fc890077ab02ae154e",
+    "sandbox/stage4_core/coupled_campaign.py": "a8952969eedbc672e5670ecdaa6a638309e1243273c068e062aa06d9311fd9e6",
+    "sandbox/stage4_core/dual_kwt_time.py": "5f16f2d9fff60f945662d320c84672b8265edc501790e30ddeff8f1b2fe7219f",
+    "sandbox/stage4_core/run_self_consistent_core.py": "e00cbe90cde9af35548382d6adff5fc803b82f3ddf246bda019bd231dc671f66",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/thermal_stable_newton.py": "7e0faa9c643afde845b3f57f57146a99d34ba9777ecc6bc2a9b61d233c6c06ae",
+    "pysnspd/experimental/thermal_snapshot.py": "59ac461ebed9c9a5e665ea7720af3c519b41427ccbb7bc7ca404f006aab120b2"
+  },
+  "resources": {
+    "logical_cpus": [
+      0,
+      1,
+      16
+    ],
+    "physical_core_groups": [
+      [
+        0,
+        16
+      ]
+    ],
+    "available_memory_bytes": 125275009024,
+    "host_available_memory_bytes": 125275009024,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60758.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-60758.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "budget": {
+    "source": "inherited_shared_campaign_admission",
+    "parent_allocation": {
+      "parent_pid": 4006485,
+      "case_id": "reference",
+      "cpus": [
+        0,
+        16,
+        1
+      ],
+      "workers": 2,
+      "shared_budget": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17
+        ],
+        "coordinator_cpu": 17,
+        "worker_affinity_cpus": [
+          0,
+          16,
+          1
+        ],
+        "workers": 3,
+        "threads_per_process": 1,
+        "total_processes": 4,
+        "logical_budget": 5,
+        "effective_cpu_quota_units": 6,
+        "physical_cores_used": 2,
+        "physical_cores_reserved": 1,
+        "memory_limit_bytes": 112778610278,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 1073741824,
+        "estimated_memory_reservation_bytes": 6442450944,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      },
+      "total_process_cpu_ceiling": 4
+    },
+    "workers": 2,
+    "coordinator_cpu": 1,
+    "worker_affinity_cpus": [
+      0,
+      16
+    ],
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1
+    ],
+    "threads_per_process": 1,
+    "total_processes": 3,
+    "estimated_memory_reservation_bytes": 5368709120
+  },
+  "nodes": 15,
+  "edges": 22,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  },
+  "elapsed_seconds": 2.0653825290501118,
+  "summary_sha256": "2dd2f529039c68b17b7268a5a88f1142baf50e1af6f7c8f490c27263261ddb1e",
+  "latest_checkpoint": {
+    "sweep": 8,
+    "path": "reference.npz",
+    "sha256": "d29beb3646fa75bfe8a79a2c7cf09cde489fd211490ce403070ec6dc37df4fb6",
+    "metrics": {
+      "gap_mass_rms_relative": 9.109757672922045e-06,
+      "gap_max_relative": 1.109941966688755e-05,
+      "gap_residual_definition": "|delta_bar-next_delta_bar|/uniform_gap_bar; mass-weighted RMS over free nodes",
+      "force_density_mass_rms": 0.00016858784759026462,
+      "energy": -3.0263617822398667,
+      "energy_after_exact_gap_block": -3.026361784271645,
+      "exact_gap_block": {
+        "coefficient": 5.245768269680552,
+        "predicted_energy_change": -2.0317707216122e-09,
+        "observed_energy_change": -2.0317783011591928e-09,
+        "identity_absolute_error": 7.5795469927352e-15
+      },
+      "maximum_spectral_residual": 4.5044067266004e-11,
+      "minimum_gap_relative": 0.9995338639647595,
+      "minimum_matsubara_g": 0.18220672858451206,
+      "maximum_free_current_divergence": 1.7355976944260496e-06,
+      "maximum_noether_residual": 2.8074460991064085e-16,
+      "maximum_absolute_link_current_bar": 0.1375326689968994,
+      "contact_reactions": {
+        "left": {
+          "outgoing_link_current_bar": 0.2750653379937988,
+          "gap_phase_reaction_bar": 2.7402347561586502e-17,
+          "spectral_phase_reaction_bar": -0.27506533799379873,
+          "total_phase_reaction_bar": -0.27506533799379873
+        },
+        "right": {
+          "outgoing_link_current_bar": -0.2750653379937988,
+          "gap_phase_reaction_bar": -2.7402347561586502e-17,
+          "spectral_phase_reaction_bar": 0.2750653379937988,
+          "total_phase_reaction_bar": 0.2750653379937988
+        }
+      },
+      "phase_advance_rad": 0.1,
+      "phase_branch_integer": 0,
+      "maximum_phase_jump_on_path_rad": 0.02500494658022056,
+      "phase_path_minimum_gap_relative": 0.9995338639647596,
+      "phase_branch_definition": "Sum of principal link phase differences along the saved left-to-right shortest geometric path, alpha=0; diagnostic, not an imposed constraint",
+      "spectral_block_energy_change": -2.995669490246655e-09,
+      "criterion_met": true,
+      "sweep": 8,
+      "modes": [
+        {
+          "elapsed_seconds": 0.0019274833612143993,
+          "newton_iterations": 1,
+          "residual": 4.5044067266004e-11,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.490947,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0019212514162063599,
+          "newton_iterations": 1,
+          "residual": 3.600059523013468e-11,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.477781,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014209379442036152,
+          "newton_iterations": 1,
+          "residual": 2.5467005642904973e-11,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.4792779999999999,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.001451235730201006,
+          "newton_iterations": 1,
+          "residual": 1.7436088129763697e-11,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.492487,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001445022877305746,
+          "newton_iterations": 1,
+          "residual": 1.204990257898897e-11,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.480799,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014295950531959534,
+          "newton_iterations": 1,
+          "residual": 8.529638397467979e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.493993,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014645098708570004,
+          "newton_iterations": 1,
+          "residual": 6.200259236713728e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.482341,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014512459747493267,
+          "newton_iterations": 1,
+          "residual": 4.622487711739653e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.49552,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014682067558169365,
+          "newton_iterations": 1,
+          "residual": 3.5268130416177973e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.483889,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014459849335253239,
+          "newton_iterations": 1,
+          "residual": 2.7459874146350725e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.497043,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014720242470502853,
+          "newton_iterations": 1,
+          "residual": 2.1762365861718118e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.485441,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014421879313886166,
+          "newton_iterations": 1,
+          "residual": 1.7520719552559488e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.498561,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014679469168186188,
+          "newton_iterations": 1,
+          "residual": 1.4306740520203825e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.486987,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.001443610992282629,
+          "newton_iterations": 1,
+          "residual": 1.1823211267928714e-12,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.500079,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014634178951382637,
+          "newton_iterations": 1,
+          "residual": 9.88374116220242e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.48853,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.001443029846996069,
+          "newton_iterations": 1,
+          "residual": 8.337202662327729e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.501595,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014681071043014526,
+          "newton_iterations": 1,
+          "residual": 7.102994413200028e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.490074,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.001448879949748516,
+          "newton_iterations": 1,
+          "residual": 6.095477475205318e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.503126,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014610541984438896,
+          "newton_iterations": 1,
+          "residual": 5.269313585962267e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.504664,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001461865846067667,
+          "newton_iterations": 1,
+          "residual": 4.584202068098024e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.491619,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014442633837461472,
+          "newton_iterations": 1,
+          "residual": 4.014954998099515e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.506186,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014294539578258991,
+          "newton_iterations": 1,
+          "residual": 3.5414220372231604e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.493122,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.001451496034860611,
+          "newton_iterations": 1,
+          "residual": 3.1283400926305146e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.494651,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014422377571463585,
+          "newton_iterations": 1,
+          "residual": 2.7832655413480503e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.507708,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001445273868739605,
+          "newton_iterations": 1,
+          "residual": 2.4835292522921846e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.496173,
+          "system_cpu_seconds": 0.028031999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014357059262692928,
+          "newton_iterations": 1,
+          "residual": 2.2266124330747583e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.509223,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014370791614055634,
+          "newton_iterations": 1,
+          "residual": 2.0049587067056472e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.496711,
+          "system_cpu_seconds": 0.029012999999999997
+        },
+        {
+          "elapsed_seconds": 0.0014302763156592846,
+          "newton_iterations": 1,
+          "residual": 1.8135304884765433e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5107309999999998,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014734268188476562,
+          "newton_iterations": 1,
+          "residual": 1.6422526090107665e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.4982609999999998,
+          "system_cpu_seconds": 0.029012999999999997
+        },
+        {
+          "elapsed_seconds": 0.0014537898823618889,
+          "newton_iterations": 1,
+          "residual": 1.49364386065216e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.512268,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014355462044477463,
+          "newton_iterations": 1,
+          "residual": 1.36518545105019e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.499773,
+          "system_cpu_seconds": 0.029013999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014288942329585552,
+          "newton_iterations": 1,
+          "residual": 1.2468022108276225e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.513774,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014430303126573563,
+          "newton_iterations": 1,
+          "residual": 1.1359753476824979e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.501293,
+          "system_cpu_seconds": 0.029013999999999998
+        },
+        {
+          "elapsed_seconds": 0.001435695681720972,
+          "newton_iterations": 1,
+          "residual": 1.0452988232199922e-13,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.515288,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014350148849189281,
+          "newton_iterations": 1,
+          "residual": 9.646974682027322e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.502804,
+          "system_cpu_seconds": 0.029015
+        },
+        {
+          "elapsed_seconds": 0.0014275307767093182,
+          "newton_iterations": 1,
+          "residual": 8.891336978277266e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5167929999999998,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014483500272035599,
+          "newton_iterations": 1,
+          "residual": 8.261638892040124e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.50433,
+          "system_cpu_seconds": 0.029015
+        },
+        {
+          "elapsed_seconds": 0.0014413571916520596,
+          "newton_iterations": 1,
+          "residual": 7.63194080570829e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5183119999999999,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001465402077883482,
+          "newton_iterations": 1,
+          "residual": 7.128182336672992e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.519854,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014545619487762451,
+          "newton_iterations": 1,
+          "residual": 6.599235944234002e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.505866,
+          "system_cpu_seconds": 0.029016
+        },
+        {
+          "elapsed_seconds": 0.001442509237676859,
+          "newton_iterations": 1,
+          "residual": 6.17104124556516e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.521374,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014352151192724705,
+          "newton_iterations": 1,
+          "residual": 5.717658623410619e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.507378,
+          "system_cpu_seconds": 0.029016
+        },
+        {
+          "elapsed_seconds": 0.0014422675594687462,
+          "newton_iterations": 1,
+          "residual": 5.339839771790865e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.508897,
+          "system_cpu_seconds": 0.029016999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014348742552101612,
+          "newton_iterations": 1,
+          "residual": 5.0627726136688965e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5228869999999999,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001449792180210352,
+          "newton_iterations": 1,
+          "residual": 4.735329608802402e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.510424,
+          "system_cpu_seconds": 0.029016999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014420081861317158,
+          "newton_iterations": 1,
+          "residual": 4.43307452740392e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.524408,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014413660392165184,
+          "newton_iterations": 1,
+          "residual": 4.1308194461911356e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.511942,
+          "system_cpu_seconds": 0.029018
+        },
+        {
+          "elapsed_seconds": 0.0014341231435537338,
+          "newton_iterations": 1,
+          "residual": 3.904128134947e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.52592,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014457753859460354,
+          "newton_iterations": 1,
+          "residual": 3.677436823878222e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.513464,
+          "system_cpu_seconds": 0.029018
+        },
+        {
+          "elapsed_seconds": 0.0014380812644958496,
+          "newton_iterations": 1,
+          "residual": 3.5263092831853785e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.527436,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014377213083207607,
+          "newton_iterations": 1,
+          "residual": 3.249242125190631e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5149789999999999,
+          "system_cpu_seconds": 0.029018
+        },
+        {
+          "elapsed_seconds": 0.0014309980906546116,
+          "newton_iterations": 1,
+          "residual": 3.123302507982772e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.528945,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014541302807629108,
+          "newton_iterations": 1,
+          "residual": 2.972174967225481e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.51651,
+          "system_cpu_seconds": 0.029018
+        },
+        {
+          "elapsed_seconds": 0.0014469870366156101,
+          "newton_iterations": 1,
+          "residual": 2.795859503165169e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.53047,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014423388056457043,
+          "newton_iterations": 1,
+          "residual": 2.594356115585331e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.51803,
+          "system_cpu_seconds": 0.029019
+        },
+        {
+          "elapsed_seconds": 0.0014356458559632301,
+          "newton_iterations": 1,
+          "residual": 2.5187923454125832e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.531984,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014454140327870846,
+          "newton_iterations": 1,
+          "residual": 2.3676648044324934e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.519553,
+          "system_cpu_seconds": 0.029019
+        },
+        {
+          "elapsed_seconds": 0.0014389515854418278,
+          "newton_iterations": 1,
+          "residual": 2.2669131109394325e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5335,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014365469105541706,
+          "newton_iterations": 1,
+          "residual": 2.191349340280557e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.521066,
+          "system_cpu_seconds": 0.029019999999999997
+        },
+        {
+          "elapsed_seconds": 0.0014292439445853233,
+          "newton_iterations": 1,
+          "residual": 2.1157855702834257e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.535007,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.0014420975930988789,
+          "newton_iterations": 1,
+          "residual": 1.9646580293379577e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5225849999999999,
+          "system_cpu_seconds": 0.029019999999999997
+        },
+        {
+          "elapsed_seconds": 0.001435576006770134,
+          "newton_iterations": 1,
+          "residual": 1.914282182281456e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5365199999999999,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001437789760529995,
+          "newton_iterations": 1,
+          "residual": 1.788342565025688e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5241,
+          "system_cpu_seconds": 0.029019999999999997
+        },
+        {
+          "elapsed_seconds": 0.0014306060038506985,
+          "newton_iterations": 1,
+          "residual": 1.71277879470606e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.538028,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001457336824387312,
+          "newton_iterations": 1,
+          "residual": 1.6372150243198997e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.539562,
+          "system_cpu_seconds": 0.014036
+        },
+        {
+          "elapsed_seconds": 0.001457237172871828,
+          "newton_iterations": 1,
+          "residual": 1.5364633307797864e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.52564,
+          "system_cpu_seconds": 0.029019999999999997
+        },
+        {
+          "elapsed_seconds": 0.0014443020336329937,
+          "newton_iterations": 1,
+          "residual": 1.486087483873282e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5410840000000001,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014288625679910183,
+          "newton_iterations": 1,
+          "residual": 1.4105237134950296e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.527142,
+          "system_cpu_seconds": 0.029020999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014574872329831123,
+          "newton_iterations": 1,
+          "residual": 1.3601478663988508e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.528681,
+          "system_cpu_seconds": 0.029020999999999998
+        },
+        {
+          "elapsed_seconds": 0.0014391429722309113,
+          "newton_iterations": 1,
+          "residual": 1.3601478663743346e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.542611,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014377087354660034,
+          "newton_iterations": 1,
+          "residual": 1.2845840960041849e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5301960000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014305058866739273,
+          "newton_iterations": 1,
+          "residual": 1.2090203258361066e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.544119,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014418968930840492,
+          "newton_iterations": 1,
+          "residual": 1.1838324022043272e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.53172,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001434453297406435,
+          "newton_iterations": 1,
+          "residual": 1.1334565553915775e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.545637,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.001442739274352789,
+          "newton_iterations": 1,
+          "residual": 1.0830807095206919e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.533239,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014356360770761967,
+          "newton_iterations": 1,
+          "residual": 1.0578927849515633e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.54715,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014383811503648758,
+          "newton_iterations": 1,
+          "residual": 1.0327048614938108e-14,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.534756,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001431277021765709,
+          "newton_iterations": 1,
+          "residual": 9.571410912038433e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.548659,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014417576603591442,
+          "newton_iterations": 1,
+          "residual": 9.319531676913344e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5362749999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014347946271300316,
+          "newton_iterations": 1,
+          "residual": 8.563893974118175e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5501719999999999,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014382200315594673,
+          "newton_iterations": 1,
+          "residual": 8.56389397339973e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.53779,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014309571124613285,
+          "newton_iterations": 1,
+          "residual": 8.312014739338352e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5516809999999999,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014454149641096592,
+          "newton_iterations": 1,
+          "residual": 7.808256271008636e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.539313,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014380007050931454,
+          "newton_iterations": 1,
+          "residual": 8.06013550512e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.553197,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014430698938667774,
+          "newton_iterations": 1,
+          "residual": 7.808256270975058e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5408330000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014361469075083733,
+          "newton_iterations": 1,
+          "residual": 7.556377036320898e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.554711,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014462461695075035,
+          "newton_iterations": 1,
+          "residual": 7.052618566337225e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5423559999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001438952051103115,
+          "newton_iterations": 1,
+          "residual": 7.052618566301737e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.556227,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014381608925759792,
+          "newton_iterations": 1,
+          "residual": 6.800739332772491e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.543872,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014311079867184162,
+          "newton_iterations": 1,
+          "residual": 6.548860099822271e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.557735,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014457451179623604,
+          "newton_iterations": 1,
+          "residual": 6.2969808646525335e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.545395,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014392430894076824,
+          "newton_iterations": 1,
+          "residual": 5.7932223950870345e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.559253,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.001433111261576414,
+          "newton_iterations": 1,
+          "residual": 6.045101628294245e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.546906,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014264178462326527,
+          "newton_iterations": 1,
+          "residual": 5.541343161055491e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.560756,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.001446225680410862,
+          "newton_iterations": 1,
+          "residual": 6.045101629646063e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.548429,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014396440237760544,
+          "newton_iterations": 1,
+          "residual": 5.5413431594192205e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.562273,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014359168708324432,
+          "newton_iterations": 1,
+          "residual": 5.037584690276992e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.549942,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014290539547801018,
+          "newton_iterations": 1,
+          "residual": 5.037584690267994e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.56378,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014449427835643291,
+          "newton_iterations": 1,
+          "residual": 4.785705457146287e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.551464,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014378000050783157,
+          "newton_iterations": 1,
+          "residual": 4.785705457307218e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5652949999999999,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014374591410160065,
+          "newton_iterations": 1,
+          "residual": 4.533826221191271e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.552979,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001430385746061802,
+          "newton_iterations": 1,
+          "residual": 4.53382622616344e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5668039999999999,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014502443373203278,
+          "newton_iterations": 1,
+          "residual": 4.785705458913057e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.554507,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014432710595428944,
+          "newton_iterations": 1,
+          "residual": 4.030067752345261e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.568325,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014677061699330807,
+          "newton_iterations": 1,
+          "residual": 4.2819469867254295e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.569869,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014608041383326054,
+          "newton_iterations": 1,
+          "residual": 4.030067752809068e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.556051,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001441917847841978,
+          "newton_iterations": 1,
+          "residual": 3.778188518286442e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.571389,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014342330396175385,
+          "newton_iterations": 1,
+          "residual": 4.030067757666335e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.557557,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014409059658646584,
+          "newton_iterations": 1,
+          "residual": 3.274430048638612e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5590760000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014332318678498268,
+          "newton_iterations": 1,
+          "residual": 3.778188517827396e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5729009999999999,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014441930688917637,
+          "newton_iterations": 1,
+          "residual": 3.022550814487581e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.560598,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014377390034496784,
+          "newton_iterations": 1,
+          "residual": 3.022550818219421e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.574417,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014356058090925217,
+          "newton_iterations": 1,
+          "residual": 3.526309283166915e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.562111,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001429073978215456,
+          "newton_iterations": 1,
+          "residual": 3.0225508147599165e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.575923,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014433301985263824,
+          "newton_iterations": 1,
+          "residual": 2.519890784656583e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5636320000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014327401295304298,
+          "newton_iterations": 1,
+          "residual": 3.274430048953202e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.577437,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.001437067985534668,
+          "newton_iterations": 1,
+          "residual": 2.770671580427301e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.565146,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014302260242402554,
+          "newton_iterations": 1,
+          "residual": 3.0225508158612906e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.578945,
+          "system_cpu_seconds": 0.014036999999999999
+        },
+        {
+          "elapsed_seconds": 0.00143846170976758,
+          "newton_iterations": 1,
+          "residual": 2.7706715799592828e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5666660000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014317785389721394,
+          "newton_iterations": 1,
+          "residual": 3.0225508141336864e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.580452,
+          "system_cpu_seconds": 0.014039
+        },
+        {
+          "elapsed_seconds": 0.0014379997737705708,
+          "newton_iterations": 1,
+          "residual": 2.7706715804789642e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.568181,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001431016717106104,
+          "newton_iterations": 1,
+          "residual": 2.7706715796169743e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.581956,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001439953688532114,
+          "newton_iterations": 1,
+          "residual": 2.519423686363938e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.569703,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001432980876415968,
+          "newton_iterations": 1,
+          "residual": 2.5187923492897227e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.583472,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001442908775061369,
+          "newton_iterations": 1,
+          "residual": 2.2669131164806113e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5712229999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014363671652972698,
+          "newton_iterations": 1,
+          "residual": 2.5187923484559235e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.584985,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014380100183188915,
+          "newton_iterations": 1,
+          "residual": 2.7706715799822686e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.572738,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014306572265923023,
+          "newton_iterations": 1,
+          "residual": 2.518792346153536e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.586494,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014428901486098766,
+          "newton_iterations": 1,
+          "residual": 2.5187923506232226e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.574259,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014360169880092144,
+          "newton_iterations": 1,
+          "residual": 2.015033879647617e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5880079999999999,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014396240003407001,
+          "newton_iterations": 1,
+          "residual": 2.0150338762447452e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5757759999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001432530116289854,
+          "newton_iterations": 1,
+          "residual": 2.2669131134363257e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.589518,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001443331129848957,
+          "newton_iterations": 1,
+          "residual": 2.266913112327566e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.577296,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001436126884073019,
+          "newton_iterations": 1,
+          "residual": 2.0150338881447084e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.591032,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001442478969693184,
+          "newton_iterations": 1,
+          "residual": 2.0150338882897945e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.578815,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014348751865327358,
+          "newton_iterations": 1,
+          "residual": 2.2669131115188486e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5925449999999999,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014606732875108719,
+          "newton_iterations": 1,
+          "residual": 2.0150338791458644e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5803530000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014532087370753288,
+          "newton_iterations": 1,
+          "residual": 2.0150338845761348e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5940759999999998,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001440565101802349,
+          "newton_iterations": 1,
+          "residual": 1.7637168301917928e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.581871,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014336518943309784,
+          "newton_iterations": 1,
+          "residual": 1.511741081267574e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.595588,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014453837648034096,
+          "newton_iterations": 1,
+          "residual": 1.7631546450259449e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.583393,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014384607784450054,
+          "newton_iterations": 1,
+          "residual": 1.7631546416897436e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.597103,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014411970041692257,
+          "newton_iterations": 1,
+          "residual": 1.5112754071869662e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.584911,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014344141818583012,
+          "newton_iterations": 1,
+          "residual": 1.763154641607224e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5986150000000001,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001449531875550747,
+          "newton_iterations": 1,
+          "residual": 1.5112754071298103e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.586438,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001442078035324812,
+          "newton_iterations": 1,
+          "residual": 1.2601527845526558e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6001349999999999,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014664838090538979,
+          "newton_iterations": 1,
+          "residual": 1.7631546416010346e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.601678,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014651310630142689,
+          "newton_iterations": 1,
+          "residual": 1.763154641883267e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.587986,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014554229564964771,
+          "newton_iterations": 1,
+          "residual": 1.763154641646228e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.603211,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014416971243917942,
+          "newton_iterations": 1,
+          "residual": 1.2593961725568262e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5895009999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014453339390456676,
+          "newton_iterations": 1,
+          "residual": 1.2593961757931811e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.591024,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.00143782002851367,
+          "newton_iterations": 1,
+          "residual": 1.5112754073178694e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.604727,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014640693552792072,
+          "newton_iterations": 1,
+          "residual": 1.5112754074748442e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.606269,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014672856777906418,
+          "newton_iterations": 1,
+          "residual": 1.2598823997830765e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.592574,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001465050969272852,
+          "newton_iterations": 1,
+          "residual": 1.5112754070947537e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.607812,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014465870335698128,
+          "newton_iterations": 1,
+          "residual": 1.008182441445419e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5940949999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001449833158403635,
+          "newton_iterations": 1,
+          "residual": 1.2596611327121046e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.595625,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.00144179817289114,
+          "newton_iterations": 1,
+          "residual": 1.5112754073633892e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.609335,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001449091825634241,
+          "newton_iterations": 1,
+          "residual": 1.2593961726973491e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6108609999999999,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001441366970539093,
+          "newton_iterations": 1,
+          "residual": 1.7631546415938493e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.5971440000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014509852044284344,
+          "newton_iterations": 1,
+          "residual": 1.2593961727231258e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.612395,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014442019164562225,
+          "newton_iterations": 1,
+          "residual": 1.0079059198264612e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.598673,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014446931891143322,
+          "newton_iterations": 1,
+          "residual": 1.0079059198264612e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6001949999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014381599612534046,
+          "newton_iterations": 1,
+          "residual": 1.2593961726512359e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.61391,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014431402087211609,
+          "newton_iterations": 1,
+          "residual": 1.2593961725558462e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.601715,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014362973161041737,
+          "newton_iterations": 1,
+          "residual": 1.2593961727554296e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.615424,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014422889798879623,
+          "newton_iterations": 1,
+          "residual": 1.5112754070940204e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.603234,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014354651793837547,
+          "newton_iterations": 1,
+          "residual": 1.259396172577796e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.616937,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001438802108168602,
+          "newton_iterations": 1,
+          "residual": 1.511275407083824e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6047500000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014319890178740025,
+          "newton_iterations": 1,
+          "residual": 1.0075169380426957e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.618446,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014473982155323029,
+          "newton_iterations": 1,
+          "residual": 1.2593961727968643e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6062750000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014398442581295967,
+          "newton_iterations": 1,
+          "residual": 1.259396172800098e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.619964,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001440064050257206,
+          "newton_iterations": 1,
+          "residual": 1.0076062691029012e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.607793,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014332816936075687,
+          "newton_iterations": 1,
+          "residual": 1.0076907949954838e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.621475,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001452948898077011,
+          "newton_iterations": 1,
+          "residual": 1.007516938069195e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.609324,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.00144594581797719,
+          "newton_iterations": 1,
+          "residual": 1.2593961726389101e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.622999,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014404961839318275,
+          "newton_iterations": 1,
+          "residual": 7.559294398698459e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.610841,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014335419982671738,
+          "newton_iterations": 1,
+          "residual": 7.560625864462926e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.624511,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001445795875042677,
+          "newton_iterations": 1,
+          "residual": 7.560625864462926e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.612365,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014394032768905163,
+          "newton_iterations": 1,
+          "residual": 7.558167590618621e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6260279999999998,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014415169134736061,
+          "newton_iterations": 1,
+          "residual": 7.559294398698459e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.613884,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014346837997436523,
+          "newton_iterations": 1,
+          "residual": 1.0075169396287593e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.62754,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014490820467472076,
+          "newton_iterations": 1,
+          "residual": 8.817069426309795e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.615411,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014417581260204315,
+          "newton_iterations": 1,
+          "residual": 1.1334565554138655e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.62906,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014396533370018005,
+          "newton_iterations": 1,
+          "residual": 7.559294398698459e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.616928,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014332006685435772,
+          "newton_iterations": 1,
+          "residual": 7.556377037043664e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.630571,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014463458210229874,
+          "newton_iterations": 1,
+          "residual": 1.007516938099695e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.618453,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001439583022147417,
+          "newton_iterations": 1,
+          "residual": 7.558167590618621e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6320890000000001,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001444753259420395,
+          "newton_iterations": 1,
+          "residual": 8.815773213382797e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.63361,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.001437509898096323,
+          "newton_iterations": 1,
+          "residual": 1.1334565554439223e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.619968,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014446834102272987,
+          "newton_iterations": 1,
+          "residual": 7.556377035581232e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.62149,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001437659841030836,
+          "newton_iterations": 1,
+          "residual": 7.556377041990861e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.635126,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014428403228521347,
+          "newton_iterations": 1,
+          "residual": 7.556377041044766e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6230099999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014360561035573483,
+          "newton_iterations": 1,
+          "residual": 1.0075169410819273e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.636639,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014408761635422707,
+          "newton_iterations": 1,
+          "residual": 8.815773208065879e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.624529,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014345142990350723,
+          "newton_iterations": 1,
+          "residual": 7.556377036791409e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6381510000000001,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014395443722605705,
+          "newton_iterations": 1,
+          "residual": 8.814961550333548e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.626046,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014324099756777287,
+          "newton_iterations": 1,
+          "residual": 6.300763922763279e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6396609999999998,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014425991103053093,
+          "newton_iterations": 1,
+          "residual": 7.558167590618621e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6275659999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014361469075083733,
+          "newton_iterations": 1,
+          "residual": 6.296980862797118e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.641175,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014469870366156101,
+          "newton_iterations": 1,
+          "residual": 7.557245531768645e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.62909,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014396538026630878,
+          "newton_iterations": 1,
+          "residual": 1.00751694214335e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.642693,
+          "system_cpu_seconds": 0.014044
+        },
+        {
+          "elapsed_seconds": 0.0014460361562669277,
+          "newton_iterations": 1,
+          "residual": 7.556377107655776e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6306180000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014382600784301758,
+          "newton_iterations": 1,
+          "residual": 7.556377107183507e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.64322,
+          "system_cpu_seconds": 0.015038
+        },
+        {
+          "elapsed_seconds": 0.0014372891746461391,
+          "newton_iterations": 1,
+          "residual": 6.298305663560523e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.632133,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014303256757557392,
+          "newton_iterations": 1,
+          "residual": 6.300763922763279e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.644723,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014454950578510761,
+          "newton_iterations": 1,
+          "residual": 6.296980868050446e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.63366,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014384621754288673,
+          "newton_iterations": 1,
+          "residual": 6.297445046133686e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6462439999999998,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014423481188714504,
+          "newton_iterations": 1,
+          "residual": 6.298305663560523e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.63518,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014348342083394527,
+          "newton_iterations": 1,
+          "residual": 1.0075169380563911e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.647757,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014424989931285381,
+          "newton_iterations": 1,
+          "residual": 8.815773231853614e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6366999999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001434945035725832,
+          "newton_iterations": 1,
+          "residual": 8.815773226911858e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.64927,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.001454952172935009,
+          "newton_iterations": 1,
+          "residual": 6.2968302473851495e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.638232,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014477679505944252,
+          "newton_iterations": 1,
+          "residual": 5.039529599132306e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.650796,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014503542333841324,
+          "newton_iterations": 1,
+          "residual": 5.037584704660643e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.639759,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014428799040615559,
+          "newton_iterations": 1,
+          "residual": 5.038453974977419e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.652316,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.001445624977350235,
+          "newton_iterations": 1,
+          "residual": 6.296980867529173e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.641282,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014381413348019123,
+          "newton_iterations": 1,
+          "residual": 7.556377039446327e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.653833,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014418871141970158,
+          "newton_iterations": 1,
+          "residual": 6.2968302473851495e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.642801,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014340630732476711,
+          "newton_iterations": 1,
+          "residual": 5.037584730830871e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.655345,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014625471085309982,
+          "newton_iterations": 1,
+          "residual": 6.296980872227039e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.656886,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014551728963851929,
+          "newton_iterations": 1,
+          "residual": 6.296980862948552e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6443349999999999,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014420482330024242,
+          "newton_iterations": 1,
+          "residual": 5.037685531399967e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.645855,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001435224898159504,
+          "newton_iterations": 1,
+          "residual": 5.037584692722762e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.658399,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014597722329199314,
+          "newton_iterations": 1,
+          "residual": 6.296980868835078e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.647392,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014521670527756214,
+          "newton_iterations": 1,
+          "residual": 7.5563770468713e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6599300000000001,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014425292611122131,
+          "newton_iterations": 1,
+          "residual": 5.037224408983886e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6489129999999999,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014356761239469051,
+          "newton_iterations": 1,
+          "residual": 3.7810809399050603e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.661444,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014511258341372013,
+          "newton_iterations": 1,
+          "residual": 3.7796471993492294e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6504409999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014435001648962498,
+          "newton_iterations": 1,
+          "residual": 5.037584690413989e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6629649999999998,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.001442889217287302,
+          "newton_iterations": 1,
+          "residual": 3.7786227658843225e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6519629999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014361669309437275,
+          "newton_iterations": 1,
+          "residual": 5.037584690406745e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.66448,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014501833356916904,
+          "newton_iterations": 1,
+          "residual": 1.0075169400529247e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6534900000000001,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014424892142415047,
+          "newton_iterations": 1,
+          "residual": 6.29698086835594e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.666001,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014386819675564766,
+          "newton_iterations": 1,
+          "residual": 7.555606038196523e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.655006,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014318190515041351,
+          "newton_iterations": 1,
+          "residual": 1.0075169421812706e-15,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.66751,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014587999321520329,
+          "newton_iterations": 1,
+          "residual": 3.7786227658843225e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.656542,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014514862559735775,
+          "newton_iterations": 1,
+          "residual": 5.037584750380646e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.669033,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014456650242209435,
+          "newton_iterations": 1,
+          "residual": 5.037584750218987e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6580659999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001438541803508997,
+          "newton_iterations": 1,
+          "residual": 5.037584820510855e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.67055,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014431499876081944,
+          "newton_iterations": 1,
+          "residual": 3.7796471993492294e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.659595,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014347243122756481,
+          "newton_iterations": 1,
+          "residual": 5.037584733048095e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6720679999999999,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014410358853638172,
+          "newton_iterations": 1,
+          "residual": 7.556377035429174e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.661114,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001433802768588066,
+          "newton_iterations": 1,
+          "residual": 3.778188600357501e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6735799999999998,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014369483105838299,
+          "newton_iterations": 1,
+          "residual": 7.556377048087667e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.662634,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014302358031272888,
+          "newton_iterations": 1,
+          "residual": 6.296980862782187e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.675093,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014459057711064816,
+          "newton_iterations": 1,
+          "residual": 3.7780079724698534e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6641569999999999,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014380109496414661,
+          "newton_iterations": 1,
+          "residual": 5.037584735647243e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.67661,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014431998133659363,
+          "newton_iterations": 1,
+          "residual": 3.7781885345228257e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.665678,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014358661137521267,
+          "newton_iterations": 1,
+          "residual": 5.037584719156137e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.678124,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014558443799614906,
+          "newton_iterations": 1,
+          "residual": 6.296980900140421e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.667211,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.001451015006750822,
+          "newton_iterations": 1,
+          "residual": 3.7810809399050603e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.679654,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014519770629703999,
+          "newton_iterations": 1,
+          "residual": 3.7781886149473113e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6687409999999998,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014449041336774826,
+          "newton_iterations": 1,
+          "residual": 3.778188518053904e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.681174,
+          "system_cpu_seconds": 0.015042999999999999
+        },
+        {
+          "elapsed_seconds": 0.0014661937020719051,
+          "newton_iterations": 1,
+          "residual": 5.03758471383353e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006491,
+          "affinity_cpus": [
+            16
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.670287,
+          "system_cpu_seconds": 0.029022
+        },
+        {
+          "elapsed_seconds": 0.0014576981775462627,
+          "newton_iterations": 1,
+          "residual": 5.037224408983886e-16,
+          "backtracks": [
+            0
+          ],
+          "pid": 4006488,
+          "affinity_cpus": [
+            0
+          ],
+          "peak_rss_bytes": 82780160,
+          "user_cpu_seconds": 1.6827130000000001,
+          "system_cpu_seconds": 0.015042999999999999
+        }
+      ],
+      "physical_time_steps": 0
+    },
+    "pair": "delta_bar,u,f,g,force,current are consistent; next_delta_bar is a separate proposed update"
+  }
+}
