@@ -1,0 +1,243 @@
+{
+  "plan_sha256": "31ed82114a7d5f4b1fd5bc63f0e473c27d362d4056bb0e77c39ffae2f951c52c",
+  "sources": {
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/refined_cells.py": "4db06214b90de9fa4f51100789a1af0f58428e1c898bfbf274b7fb2981951d1c",
+    "pysnspd/experimental/cell_closures.py": "6617523ff7c9032bfebe2f8bd11594c8eb1a0a85f1795d005fc61b6c6b324176",
+    "pysnspd/experimental/spatial_functional.py": "200ceb881908283fdac5f34eb1675c78d10e004dee1c8a26787af32aa1d28157",
+    "pysnspd/experimental/spatial_nodal.py": "068a912ccefa9368a97b217961805ae0630fbfda33adb12acd904e28796b7cf8",
+    "pysnspd/experimental/spatial_open.py": "ce2698f4b59280bdfefa052a002d0e8102a28b86b3d2b9ee61afe32ff58603b2",
+    "pysnspd/experimental/mixed_spatial.py": "564ea9e620b19de3005b903a7ee26bab71b4401493a9b7d390cc0f7437c2fe69",
+    "pysnspd/experimental/rectangular_spatial.py": "c1be38b481d815f36e224bc19066bfdf1e12d48412186de3e6523a53da5f961f",
+    "pysnspd/experimental/spatial_dynamics.py": "1de2f9a87dfab4b0afc7d94db9494ea7fd1d5976eda03862a6f8f79d48d374ba",
+    "sandbox/stage4_core/run_campaign.py": "6c37ed8b2117dbbb41d83751bf3a9014de43c31b7b56f0f45539c360445fbdbc",
+    "sandbox/stage4_core/controls.py": "6af1be66af1df4138830652d588d2c116dd0335530bcd7abfa3ce3a146b01471",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "task_ids": [
+    "pilot_smooth",
+    "pilot_suppressed"
+  ],
+  "material": {
+    "Tc_K": 8.65,
+    "Tb_K": 0.9,
+    "D_m2_s": 5e-05,
+    "R_sheet_ohm": 608,
+    "thickness_m": 7e-09,
+    "width_m": 8e-08,
+    "conductivity_S_m": 234962.40601503762,
+    "N0_per_J_m3": 9.153297821093998e+46,
+    "ell0_m": 4.698490895830414e-09,
+    "N0_convention": "single-spin; sigma=2e^2 N0 D"
+  },
+  "resource_snapshot": {
+    "logical_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "physical_core_groups": [
+      [
+        0,
+        16
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        2,
+        18
+      ],
+      [
+        3,
+        19
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        5,
+        21
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        7,
+        23
+      ],
+      [
+        8,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        11,
+        27
+      ],
+      [
+        12,
+        28
+      ],
+      [
+        13,
+        29
+      ],
+      [
+        14,
+        30
+      ],
+      [
+        15,
+        31
+      ]
+    ],
+    "available_memory_bytes": 125526872064,
+    "host_available_memory_bytes": 125526872064,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-57803.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-57803.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "budget": {
+    "cpu_fraction": 0.9,
+    "memory_fraction": 0.9,
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29
+    ],
+    "coordinator_cpu": 29,
+    "worker_affinity_cpus": [
+      0,
+      16,
+      1,
+      17
+    ],
+    "workers": 4,
+    "threads_per_process": 1,
+    "total_processes": 5,
+    "logical_budget": 28,
+    "effective_cpu_quota_units": 32,
+    "physical_cores_used": 14,
+    "physical_cores_reserved": 2,
+    "memory_limit_bytes": 112974184857,
+    "coordinator_reserve_bytes": 3221225472,
+    "worker_reserve_bytes": 1073741824,
+    "estimated_memory_reservation_bytes": 7516192768,
+    "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+  },
+  "execution": "Shared exact-key pool across cases; request collection and final spatial assembly serial",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1"
+  }
+}

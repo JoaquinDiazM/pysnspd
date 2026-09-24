@@ -1,0 +1,472 @@
+{
+  "schema": "pysnspd.stage4A.followup_audit.v1",
+  "date": "2026-09-23",
+  "source_commit": "e8f23fab7a0431cc0917bf0ab3bf73684623e6ee",
+  "scope": "Prescribed static non-photon fields; no trajectory or physical core admission",
+  "identity": {
+    "plan_sha256": "f04979f463b6132ef9e4d6d98865e784a0cb6f6771a055187f002288051069ef",
+    "plan_hash_match": true,
+    "sources": {
+      "pysnspd/experimental/energy_catalog.py": "current",
+      "pysnspd/experimental/refined_cells.py": "current",
+      "pysnspd/experimental/cell_closures.py": "current",
+      "pysnspd/experimental/spatial_functional.py": "current",
+      "pysnspd/experimental/spatial_nodal.py": "current",
+      "pysnspd/experimental/spatial_open.py": "current",
+      "pysnspd/experimental/mixed_spatial.py": "current",
+      "pysnspd/experimental/rectangular_spatial.py": "current",
+      "pysnspd/experimental/spatial_dynamics.py": "current",
+      "sandbox/stage4_core/run_campaign.py": "current",
+      "sandbox/stage4_core/controls.py": "followup_archive"
+    },
+    "all_sources_verified": true,
+    "cases_expected": 2,
+    "cases_completed": 2,
+    "task_ids_match": true,
+    "output_checks": [
+      {
+        "path": "2d_suppressed_d0.05_8x4_fixed_boundary/fields.npz",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "path": "2d_suppressed_d0.05_8x4_fixed_boundary/result.json",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "path": "2d_suppressed_d0.1_16x8_fixed_boundary/fields.npz",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "path": "2d_suppressed_d0.1_16x8_fixed_boundary/result.json",
+        "sha256_match": true,
+        "size_match": true
+      }
+    ],
+    "all_output_checks_pass": true,
+    "runtime_seconds": 2765.4401553748176,
+    "summary_sha256": "3e50b2d459251bea0848b92c10b54f52b4dd4bd585f0d0d964ca60c054d4f4ce",
+    "identity_sha256": "2e6cc953718291dd8ac8690a329bb9239db3883ea4da5daf8ca755424d599272"
+  },
+  "new_cases": {
+    "2d_suppressed_d0.05_8x4_fixed_boundary": {
+      "nodes": 561,
+      "elements": [
+        8,
+        4
+      ],
+      "delta_reg": 0.05,
+      "energy_bar": -11.613194588270275,
+      "interior_force_L2": 1.0701313989860652,
+      "interior_heat": {
+        "memory_effective": 1.0914539431607138,
+        "Allmaras_reference": 0.5293958513172846,
+        "Korzh_reference": 0.5836092613387396
+      },
+      "symbol_minimum": 1.570796326794895,
+      "positive_symbols": 561,
+      "negative_symbols": 0,
+      "unresolved_symbols": 0,
+      "gamma_relative_weighted_L2_error": 0.06286470368594187,
+      "gamma_maximum_absolute_error": 0.0019047080527275712,
+      "center_gamma_discrete": 0.001124718749855436,
+      "center_gamma_analytic": 0.00042521658195890095,
+      "center_gamma_absolute_error": 0.0006995021678965351,
+      "center_gamma_ratio": 2.645049129255606,
+      "runtime_seconds": 517.5151295899414,
+      "result_sha256": "0881464f52c195e9e2bba70bbc95be78950ef16a853edfac27a0038af1196925",
+      "fields_sha256": "24103fc530d987b91f9ddb73e93d83553b621791bd2fda6941b0d73306ae7aed",
+      "derivative_diagnostics": {
+        "all_nodes": {
+          "l2_error_bar": 0.013896347019924753,
+          "relative_l2_error": 0.02555859851546246,
+          "maximum_component_error": 0.012251835628971142
+        },
+        "interior": {
+          "l2_error_bar": 0.013883675661352582,
+          "relative_l2_error": 0.025780740682178383,
+          "maximum_component_error": 0.012251835628971142
+        },
+        "center": {
+          "node": 280,
+          "coordinates_bar": [
+            17.026743644644384,
+            0.0
+          ],
+          "derivative_discrete": [
+            [
+              -2.5647230825340716e-16,
+              -0.004550200013554329
+            ],
+            [
+              1.4709467644612355e-16,
+              -0.0003723801487516363
+            ]
+          ],
+          "derivative_analytic": [
+            [
+              0.0,
+              0.0027999999999999948
+            ],
+            [
+              0.0,
+              0.00019999999999999963
+            ]
+          ],
+          "derivative_error_norm": 0.007372452731210891,
+          "gamma_discrete": 0.001124718749855436,
+          "gamma_analytic": 0.0004252165819589009,
+          "gamma_ratio_discrete_to_analytic": 2.6450491292556064,
+          "discrete_symbol_eigenvalues": [
+            1.5707963267948966,
+            1.5707963267948974,
+            7.372461562751833,
+            7.51055115140486
+          ],
+          "discrete_symbol_uncertainty": 0.0003485887607712575,
+          "analytic_symbol_eigenvalues": [
+            1.5707963267948963,
+            1.5707963267948966,
+            7.503669259832605,
+            7.5524540821180715
+          ],
+          "analytic_symbol_uncertainty": 0.0017904285167067951,
+          "interpretation": "Signs refer to their specified gradients; a coarse discrete negative sign alone does not establish failure of this analytic profile"
+        }
+      },
+      "section_current_summary_A": {
+        "minimum": 2.6659357008211494e-06,
+        "maximum": 3.6009316531835784e-06,
+        "leftmost": 3.6004803716737467e-06,
+        "rightmost": 3.6004803716737628e-06,
+        "meaning": "Nonstationary prescribed field section response, not an imposed detector bias or circuit solution"
+      },
+      "fixed_boundary_checks": {
+        "memory_effective": {
+          "boundary_velocity_max": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "boundary_heat": 0.0,
+          "total_heat": 1.091453943160714,
+          "recorded_total_heat": 1.0914539431607138,
+          "heat_record_absolute_difference": 2.220446049250313e-16,
+          "field_work": -1.0914539431607142,
+          "constraint_work": 0.0,
+          "recorded_power_identity_residual": -4.440892098500626e-16
+        },
+        "Allmaras_reference": {
+          "boundary_velocity_max": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "boundary_heat": 0.0,
+          "total_heat": 0.5293958513172846,
+          "recorded_total_heat": 0.5293958513172846,
+          "heat_record_absolute_difference": 0.0,
+          "field_work": -0.5293958513172846,
+          "constraint_work": 0.0,
+          "recorded_power_identity_residual": 0.0
+        },
+        "Korzh_reference": {
+          "boundary_velocity_max": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "boundary_heat": 0.0,
+          "total_heat": 0.5836092613387397,
+          "recorded_total_heat": 0.5836092613387397,
+          "heat_record_absolute_difference": 0.0,
+          "field_work": -0.5836092613387397,
+          "constraint_work": 0.0,
+          "recorded_power_identity_residual": 0.0
+        }
+      }
+    },
+    "2d_suppressed_d0.1_16x8_fixed_boundary": {
+      "nodes": 2145,
+      "elements": [
+        16,
+        8
+      ],
+      "delta_reg": 0.1,
+      "energy_bar": -11.612548429814582,
+      "interior_force_L2": 1.0733989637951569,
+      "interior_heat": {
+        "memory_effective": 1.0629085363716566,
+        "Allmaras_reference": 0.43513374919307607,
+        "Korzh_reference": 0.46909483882301256
+      },
+      "symbol_minimum": 1.570796326794895,
+      "positive_symbols": 2145,
+      "negative_symbols": 0,
+      "unresolved_symbols": 0,
+      "gamma_relative_weighted_L2_error": 0.001813125753395924,
+      "gamma_maximum_absolute_error": 6.778622985797772e-05,
+      "center_gamma_discrete": 6.568802815622958e-05,
+      "center_gamma_analytic": 5.312047222598922e-05,
+      "center_gamma_absolute_error": 1.2567555930240363e-05,
+      "center_gamma_ratio": 1.2365859225944849,
+      "runtime_seconds": 2247.92357235495,
+      "result_sha256": "4e50e72dcf09fb8f2e7806e289847aa31689e329bc59cff3c8ba062a52ba0653",
+      "fields_sha256": "67a3f6a3fce5909f037ca1d8338a2e9063f6f7f924301f68bb97cbe03ecd2a94",
+      "derivative_diagnostics": {
+        "all_nodes": {
+          "l2_error_bar": 0.0018997468815078206,
+          "relative_l2_error": 0.003491230666883607,
+          "maximum_component_error": 0.0015133487820492761
+        },
+        "interior": {
+          "l2_error_bar": 0.0018997228653398637,
+          "relative_l2_error": 0.0035078880282617716,
+          "maximum_component_error": 0.0015133487820492761
+        },
+        "center": {
+          "node": 1072,
+          "coordinates_bar": [
+            17.026743644644384,
+            0.0
+          ],
+          "derivative_discrete": [
+            [
+              -5.551115123125783e-17,
+              0.003113663492194746
+            ],
+            [
+              -1.486782927269174e-16,
+              0.0002222537455660121
+            ]
+          ],
+          "derivative_analytic": [
+            [
+              0.0,
+              0.0027999999999999948
+            ],
+            [
+              0.0,
+              0.00019999999999999963
+            ]
+          ],
+          "derivative_error_norm": 0.00031445192880235847,
+          "gamma_discrete": 6.568802815622958e-05,
+          "gamma_analytic": 5.312047222598923e-05,
+          "gamma_ratio_discrete_to_analytic": 1.2365859225944846,
+          "discrete_symbol_eigenvalues": [
+            1.5707963267948966,
+            1.5707963267948966,
+            2.319758430564303,
+            2.3204112393763094
+          ],
+          "discrete_symbol_uncertainty": 0.00045037200518646946,
+          "analytic_symbol_eigenvalues": [
+            1.5707963267948966,
+            1.5707963267948966,
+            2.3199849318730825,
+            2.3204666867640893
+          ],
+          "analytic_symbol_uncertainty": 0.00046163532655544247,
+          "interpretation": "Signs refer to their specified gradients; a coarse discrete negative sign alone does not establish failure of this analytic profile"
+        }
+      },
+      "section_current_summary_A": {
+        "minimum": 2.6440765916803383e-06,
+        "maximum": 3.594086869948493e-06,
+        "leftmost": 3.5940765983410477e-06,
+        "rightmost": 3.5940765983410113e-06,
+        "meaning": "Nonstationary prescribed field section response, not an imposed detector bias or circuit solution"
+      },
+      "fixed_boundary_checks": {
+        "memory_effective": {
+          "boundary_velocity_max": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "boundary_heat": 0.0,
+          "total_heat": 1.0629085363716564,
+          "recorded_total_heat": 1.0629085363716566,
+          "heat_record_absolute_difference": 2.220446049250313e-16,
+          "field_work": -1.0629085363716566,
+          "constraint_work": 0.0,
+          "recorded_power_identity_residual": 0.0
+        },
+        "Allmaras_reference": {
+          "boundary_velocity_max": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "boundary_heat": 0.0,
+          "total_heat": 0.435133749193076,
+          "recorded_total_heat": 0.435133749193076,
+          "heat_record_absolute_difference": 0.0,
+          "field_work": -0.43513374919307585,
+          "constraint_work": 0.0,
+          "recorded_power_identity_residual": 1.6653345369377348e-16
+        },
+        "Korzh_reference": {
+          "boundary_velocity_max": 0.0,
+          "interior_velocity_max_change": 0.0,
+          "boundary_heat": 0.0,
+          "total_heat": 0.46909483882301256,
+          "recorded_total_heat": 0.46909483882301256,
+          "heat_record_absolute_difference": 0.0,
+          "field_work": -0.46909483882301245,
+          "constraint_work": 0.0,
+          "recorded_power_identity_residual": 1.1102230246251565e-16
+        }
+      }
+    }
+  },
+  "baseline_cases": {
+    "2d_suppressed_d0.05_4x2": {
+      "nodes": 153,
+      "elements": [
+        4,
+        2
+      ],
+      "delta_reg": 0.05,
+      "energy_bar": -11.589619392574319,
+      "interior_force_L2": 1.1597920064837517,
+      "interior_heat": {
+        "memory_effective": 1.087473990779521,
+        "Allmaras_reference": 0.720440155583785,
+        "Korzh_reference": 0.8099853155389279
+      },
+      "symbol_minimum": -0.78485642905098,
+      "positive_symbols": 152,
+      "negative_symbols": 1,
+      "unresolved_symbols": 0,
+      "gamma_relative_weighted_L2_error": 0.6332823146232889,
+      "gamma_maximum_absolute_error": 0.0462544663688084,
+      "center_gamma_discrete": 0.046679682950767305,
+      "center_gamma_analytic": 0.00042521658195890095,
+      "center_gamma_absolute_error": 0.0462544663688084,
+      "center_gamma_ratio": 109.77860443664237,
+      "runtime_seconds": 136.19759808527306,
+      "result_sha256": "d2f3cbaaf42bc770ad8c6d84e57a4511ea2595830f61e16d31622975455d8600",
+      "fields_sha256": "a177fe9beb778c95350efa75de061fc203bb90446faf6d0b13942b1a6a61facb"
+    },
+    "2d_suppressed_d0.1_4x2": {
+      "nodes": 153,
+      "elements": [
+        4,
+        2
+      ],
+      "delta_reg": 0.1,
+      "energy_bar": -11.59011222393079,
+      "interior_force_L2": 1.1598851456018062,
+      "interior_heat": {
+        "memory_effective": 1.0846013197635034,
+        "Allmaras_reference": 0.6102400307922574,
+        "Korzh_reference": 0.6771067633194717
+      },
+      "symbol_minimum": 1.5707963267948954,
+      "positive_symbols": 153,
+      "negative_symbols": 0,
+      "unresolved_symbols": 0,
+      "gamma_relative_weighted_L2_error": 0.2225143857365103,
+      "gamma_maximum_absolute_error": 0.005778370835758528,
+      "center_gamma_discrete": 0.0058314913079845175,
+      "center_gamma_analytic": 5.312047222598922e-05,
+      "center_gamma_absolute_error": 0.005778370835758528,
+      "center_gamma_ratio": 109.77860443664235,
+      "runtime_seconds": 283.3954793657176,
+      "result_sha256": "02dfc3de8fca22d4ffce9563ad1f0d1ee2f06c6d6de10fd43fce061e3461e0c4",
+      "fields_sha256": "caf5393694c6d1cf0f1a7c6a62d8b0cda7e7c483424c6ea4c92728c51bd248fc"
+    },
+    "2d_suppressed_d0.1_8x4": {
+      "nodes": 561,
+      "elements": [
+        8,
+        4
+      ],
+      "delta_reg": 0.1,
+      "energy_bar": -11.613580355180078,
+      "interior_force_L2": 1.0672900240749794,
+      "interior_heat": {
+        "memory_effective": 1.077781250878264,
+        "Allmaras_reference": 0.4438367924834966,
+        "Korzh_reference": 0.48137291634370744
+      },
+      "symbol_minimum": 1.5707963267948954,
+      "positive_symbols": 561,
+      "negative_symbols": 0,
+      "unresolved_symbols": 0,
+      "gamma_relative_weighted_L2_error": 0.04255462298131756,
+      "gamma_maximum_absolute_error": 0.0008761042073807287,
+      "center_gamma_discrete": 0.00014050625880699942,
+      "center_gamma_analytic": 5.312047222598922e-05,
+      "center_gamma_absolute_error": 8.73857865810102e-05,
+      "center_gamma_ratio": 2.6450491292556064,
+      "runtime_seconds": 517.966562661808,
+      "result_sha256": "c1623f9aa2e0506f7f576d33ad4c6defd5ca0899cd5164518c112eca4912ea30",
+      "fields_sha256": "30477189d551df7f5efa3241fa554f3ea02dc63e13bcb97415671f3f75b372ce"
+    }
+  },
+  "comparisons": {
+    "delta_005_mesh_153_to_561": {
+      "energy_relative_change": -0.002034164789834385,
+      "interior_force_L2_relative_change": -0.07730748875353843,
+      "interior_heat_relative_change": {
+        "memory_effective": 0.0036598138575616446,
+        "Allmaras_reference": -0.26517720144526635,
+        "Korzh_reference": -0.2794816768370274
+      },
+      "gamma_weighted_error_coarse": 0.6332823146232889,
+      "gamma_weighted_error_fine": 0.06286470368594187
+    },
+    "delta_010_mesh_153_to_561": {
+      "energy_relative_change": -0.0020248407259450094,
+      "interior_force_L2_relative_change": -0.07983128491466618,
+      "interior_heat_relative_change": {
+        "memory_effective": -0.006288088315000828,
+        "Allmaras_reference": -0.27268489432383547,
+        "Korzh_reference": -0.28907383233951445
+      },
+      "gamma_weighted_error_coarse": 0.2225143857365103,
+      "gamma_weighted_error_fine": 0.04255462298131756
+    },
+    "delta_010_mesh_561_to_2145": {
+      "energy_relative_change": 8.885505881356314e-05,
+      "interior_force_L2_relative_change": 0.005723786021022859,
+      "interior_heat_relative_change": {
+        "memory_effective": -0.013799381362858076,
+        "Allmaras_reference": -0.019608656690497717,
+        "Korzh_reference": -0.025506373756865375
+      },
+      "gamma_weighted_error_coarse": 0.04255462298131756,
+      "gamma_weighted_error_fine": 0.001813125753395924
+    },
+    "regularizer_010_to_005_same_561_nodes": {
+      "energy_relative_change": 3.321688041111179e-05,
+      "interior_force_L2_relative_change": 0.0026622331765431273,
+      "interior_heat_relative_change": {
+        "memory_effective": 0.012685962268603301,
+        "Allmaras_reference": 0.19277144275273073,
+        "Korzh_reference": 0.21238491307648455
+      },
+      "gamma_weighted_error_coarse": 0.04255462298131756,
+      "gamma_weighted_error_fine": 0.06286470368594187
+    }
+  },
+  "diagnosis": {
+    "coarse_negative_center_removed": true,
+    "sampled_D36_positive_new_nodes": 2706,
+    "all_new_D36_positive": true,
+    "bulk_numerical_resolution_sufficient_for_next_diagnostic": true,
+    "pointwise_center_gamma_fully_converged": false,
+    "no_new_mesh_only_batch_recommended": true,
+    "stage4_complete": false,
+    "physical_core_admitted": false,
+    "photon_admitted": false,
+    "production_promotion": false,
+    "time_trajectories": 0,
+    "new_spectral_queries_in_audit": 0
+  },
+  "interpretation": [
+    "The delta=.05 negative coarse center disappears at 561 nodes; its exact analytic reference is positive. This confirms the earlier spatial discretization diagnosis for this field, not universal physical stability.",
+    "For delta=.10 the next mesh changes energy by about .009%, weighted interior force by .57%, and constrained Korzh heat by -2.55%; this is sufficient to move to a physical reference and controlled weak dynamics, without claiming a strict asymptotic error bound.",
+    "The center Gamma is still 23.7% above an unusually small analytic value; the absolute difference and integrated error must also be reported. Do not require pointwise vanishing relative error before any further scientific work.",
+    "At equal 561-node resolution changing delta=.10 to .05 changes Korzh heat by +21.2%. This is candidate-closure sensitivity in a prescribed synthetic population; it is not a measured uncertainty or a reason to calibrate delta from numerical positivity.",
+    "D.4.4 still requires adequate spatial core reference and mobility/heat comparison; no vortex barrier, phase event, kinetic time identification or material detector validation is supplied by these snapshots."
+  ],
+  "next_action": "Retain delta=.10 as the declared candidate; proceed to a same-ensemble physical spatial reference and an explicitly controlled weak non-photon transient/energy ledger. Do not schedule another blanket mesh refinement merely to tighten pointwise Gamma.",
+  "formula_conventions": {
+    "force": "F_i=G_i/m_i; ||F||_L2=sqrt(sum_i m_i |F_i|^2)",
+    "gamma_error": "sqrt(sum_i m_i (Gamma_i-Gamma_exact_i)^2 / sum_i m_i Gamma_exact_i^2)",
+    "heat": "Interior weighted algebraic KWT response, equivalent to the explicitly clamped static boundary result",
+    "comparison": "(new-old)/abs(old) for energy; new/old-1 for positive force and heat"
+  },
+  "audit_script_sha256": "4ba2ae930619cb43ee361e4f88b29fd30c7907c7557d5d417a71ccfb91de4e7a"
+}

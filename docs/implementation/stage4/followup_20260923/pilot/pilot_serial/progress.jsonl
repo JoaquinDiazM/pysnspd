@@ -1,0 +1,20 @@
+{"event": "START", "elapsed_seconds": 1.9627157598733902e-05, "tasks": 2, "phase": "all"}
+{"event": "TASK_START", "elapsed_seconds": 7.024221122264862e-05, "index": 1, "total": 2, "task": "pilot_smooth", "completed_average_eta_seconds": null, "eta_note": "Prior task average is approximate; local and spatial costs differ"}
+{"event": "PROGRESS", "task": "pilot_smooth", "stage": "energy and force", "done": 1, "total": 15, "elapsed_seconds": 0.13242490217089653, "section_eta_seconds": null}
+{"event": "PROGRESS", "task": "pilot_smooth", "stage": "energy and force", "done": 15, "total": 15, "elapsed_seconds": 1.3311618170700967, "section_eta_seconds": 0.0}
+{"event": "PROGRESS", "task": "pilot_smooth", "stage": "local stability", "done": 1, "total": 15, "elapsed_seconds": 2.061495983041823, "section_eta_seconds": null}
+{"event": "PROGRESS", "task": "pilot_smooth", "stage": "local stability", "done": 8, "total": 15, "elapsed_seconds": 7.719802198000252, "section_eta_seconds": 4.951017938088626}
+{"event": "PROGRESS", "task": "pilot_smooth", "stage": "local stability", "done": 15, "total": 15, "elapsed_seconds": 10.14935761783272, "section_eta_seconds": 0.0}
+{"event": "PROGRESS", "task": "pilot_smooth", "stage": "equivalent temperatures", "done": 1, "total": 15, "elapsed_seconds": 10.976350759156048, "section_eta_seconds": null}
+{"event": "PROGRESS", "task": "pilot_smooth", "stage": "equivalent temperatures", "done": 15, "total": 15, "elapsed_seconds": 11.813509684056044, "section_eta_seconds": 0.0}
+{"event": "TASK_COMPLETE", "elapsed_seconds": 11.816130742896348, "task": "pilot_smooth", "runtime_seconds": 11.815646670293063, "diagnostics": {"count_states": 630, "direct_queries": 98, "direct_seconds": 11.79590179817751, "exact_cache": {"hits": 40, "misses": 98, "maxsize": 4096, "currsize": 98}, "prefetched_keys": 0, "prefetch_hits": 0, "strict_prefetch": false}}
+{"event": "TASK_START", "elapsed_seconds": 11.816196558065712, "index": 2, "total": 2, "task": "pilot_suppressed", "completed_average_eta_seconds": 11.816195034887642, "eta_note": "Prior task average is approximate; local and spatial costs differ"}
+{"event": "PROGRESS", "task": "pilot_suppressed", "stage": "energy and force", "done": 1, "total": 15, "elapsed_seconds": 11.948378312867135, "section_eta_seconds": null}
+{"event": "PROGRESS", "task": "pilot_suppressed", "stage": "energy and force", "done": 15, "total": 15, "elapsed_seconds": 12.78200480202213, "section_eta_seconds": 0.0}
+{"event": "PROGRESS", "task": "pilot_suppressed", "stage": "local stability", "done": 1, "total": 15, "elapsed_seconds": 13.501390705816448, "section_eta_seconds": null}
+{"event": "PROGRESS", "task": "pilot_suppressed", "stage": "local stability", "done": 8, "total": 15, "elapsed_seconds": 18.868188510183245, "section_eta_seconds": 4.695948078820948}
+{"event": "PROGRESS", "task": "pilot_suppressed", "stage": "local stability", "done": 15, "total": 15, "elapsed_seconds": 18.869163311086595, "section_eta_seconds": 0.0}
+{"event": "PROGRESS", "task": "pilot_suppressed", "stage": "equivalent temperatures", "done": 1, "total": 15, "elapsed_seconds": 19.320862206164747, "section_eta_seconds": null}
+{"event": "PROGRESS", "task": "pilot_suppressed", "stage": "equivalent temperatures", "done": 15, "total": 15, "elapsed_seconds": 19.552875453140587, "section_eta_seconds": 0.0}
+{"event": "TASK_COMPLETE", "elapsed_seconds": 19.55537450220436, "task": "pilot_suppressed", "runtime_seconds": 7.73879513097927, "diagnostics": {"count_states": 630, "direct_queries": 66, "direct_seconds": 7.7206105212680995, "exact_cache": {"hits": 67, "misses": 66, "maxsize": 4096, "currsize": 66}, "prefetched_keys": 0, "prefetch_hits": 0, "strict_prefetch": false}}
+{"event": "COMPLETE", "elapsed_seconds": 19.555465644225478, "tasks": 2, "summary": "tmp/stage4_followup_20260923/pilot_serial/summary.json"}

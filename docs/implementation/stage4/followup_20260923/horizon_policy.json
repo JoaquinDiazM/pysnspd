@@ -1,0 +1,70 @@
+{
+  "schema": "pysnspd.photon_observation_horizon.v1",
+  "status": "AUTHORIZED_POLICY_NOT_IMPLEMENTED",
+  "scope": "Future Korzh80nm 775nm/1550nm relative-delay runs; not the current static non-photon controls",
+  "authorized_change": "Time horizon and stopping rule only",
+  "production_code_changed": false,
+  "new_physical_runs": 0,
+  "physical_model_changed": false,
+  "circuit_changed": false,
+  "boundary_conditions_changed": false,
+  "physical_parameters_changed": false,
+  "full_recovery_postponed_until_relative_delay_comparison": true,
+  "signal": "V_out_V",
+  "signal_meaning": "Load output voltage from the full thesis circuit; not the internal mesoscopic voltage",
+  "event": {
+    "selection": "First upward interpolated threshold crossing that meets the registered confirmation criterion",
+    "states": "Accepted integration states only",
+    "baseline": "Valid registered pre-event baseline",
+    "threshold_V": null,
+    "polarity": null,
+    "confirmation_s": null,
+    "hysteresis_fraction": null,
+    "crossing_interpolation": "t_i + (V_threshold-v_i)*(t_j-t_i)/(v_j-v_i)",
+    "reported_trigger_time": "Interpolated crossing time, not the later confirmation time",
+    "already_above_threshold_or_missing_baseline": "No invented earlier crossing; explicit unavailable/invalid-initial-event classification"
+  },
+  "stopping": {
+    "post_trigger_margin_s": null,
+    "no_trigger_time_ceiling_s": null,
+    "target": "max(t_cross + post_trigger_margin, t_confirmation)",
+    "requires_peak_confirmation": false,
+    "requires_full_recovery": false,
+    "requires_continued_full_coupled_dynamics_until_stop": true,
+    "preserve_final_full_state_for_continuation": true,
+    "record_crossing_confirmation_target_and_actual_stop_times": true,
+    "no_crossing_by_ceiling": "Right-censored observation; do not assign a detected latency",
+    "numerical_failure": "Numerical failure, separate from physical non-detection censoring",
+    "confirmed_crossing_but_margin_cut_short": "Retain valid crossing and latency; report incomplete post-trigger margin"
+  },
+  "color_pair": {
+    "wavelengths_nm": [775, 1550],
+    "shared_signal_and_operational_criterion": true,
+    "shared_post_trigger_margin_and_ceiling_policy": true,
+    "reported_difference": "(t_cross_1550-t0_1550) - (t_cross_775-t0_775)",
+    "clock_origin": "Transfer to the model, with the omitted color-dependent optical-cascade delay still explicit",
+    "one_censored_member": "No complete measured relative-delay value"
+  },
+  "forbidden_shortcuts": [
+    "Quasistatic circuit replacement",
+    "Removal or freezing of circuit states",
+    "Resetting the pulse tail or populations",
+    "Changing material, geometry or boundary parameters solely to shorten the horizon",
+    "Treating an unobserved crossing as latency equal to the time ceiling",
+    "Silently adopting existing default100uV as the physical experimental threshold"
+  ],
+  "existing_code_audit": {
+    "crossing_helper": "pysnspd/analysis/timing.py:_confirmed_crossing_time",
+    "current_latency_stop": "Confirmed peak plus post_peak_safety_s; different from trigger plus margin",
+    "configuration": "pysnspd/solver/transient.py:CoupledTransientConfig",
+    "new_policy_requires_explicit_future_implementation": true
+  },
+  "later_user_input_if_sources_insufficient": [
+    "Output threshold and polarity in the represented readout chain",
+    "Post-trigger observation margin",
+    "Finite observation ceiling when no trigger occurs",
+    "Confirmation interval and hysteresis"
+  ],
+  "current_non_photon_work_blocked_by_missing_values": false,
+  "historical_frontdoors_modified_here": false
+}

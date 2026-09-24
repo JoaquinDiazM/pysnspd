@@ -1,0 +1,72 @@
+{
+  "schema": "pysnspd.stage4.radial_thermal_reference.v1",
+  "date": "2026-09-23",
+  "purpose": "Independent nonlinear spatial thermal core-force reference for D.4.4; no new full device model",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "D_m2_s": 5e-05,
+  "prescribed_amplitude": "d(r)=d_eq(T)*tanh(r/ell0)",
+  "phase": "azimuthal unit winding, A=0, no imposed background current",
+  "rmin_ell0": 0.001,
+  "bvp_relative_tolerance": 1e-05,
+  "bvp_max_nodes": 12000,
+  "comparison_window_ell0": 4.0,
+  "candidate_delta_fractions": [
+    0.05,
+    0.1,
+    0.2
+  ],
+  "candidate_matsubara_count": 600,
+  "cases": [
+    {
+      "id": "R8_N128",
+      "R_ell0": 8.0,
+      "matsubara_count": 128
+    },
+    {
+      "id": "R8_N256",
+      "R_ell0": 8.0,
+      "matsubara_count": 256
+    },
+    {
+      "id": "R12_N256",
+      "R_ell0": 12.0,
+      "matsubara_count": 256
+    }
+  ],
+  "pilot_modes": [
+    0,
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    63
+  ],
+  "outer_boundary": "Positive local circulation root eps*sin(theta)+R^-2*sin(theta)*cos(theta)-d(R)*cos(theta)=0",
+  "inner_boundary": "Leading regular Robin theta_prime(rmin)=theta(rmin)/rmin; finite-rmin error is O(rmin^2)",
+  "tail_policy": "Report raw sums and separate leading spatial high-frequency estimate; compare N128/256, never identify cutoff difference with physical confidence",
+  "execution": {
+    "shared_worker_pool": true,
+    "reference_unique_modes": 512,
+    "candidate_jobs": 6,
+    "max_cpu_fraction": 0.9,
+    "max_memory_fraction": 0.9,
+    "threads_per_process": 1,
+    "progress_and_eta": true,
+    "no_retry_or_fallback": true,
+    "full_campaign_user_run": true,
+    "pilot_agent_max_modes": 8,
+    "pilot_agent_timeout_seconds": 240
+  },
+  "interpretation": [
+    "Same imposed temperature and thermal free-energy derivatives on both sides; no comparison with synthetic frozen-count forces",
+    "Prescribed vortex amplitude, spectral stationarity only; not self-consistent stationary vortex, barrier, nucleation or phase-event simulation",
+    "Radial circular/infinite-film local core diagnostic, not the finite80nmKorzh strip geometry",
+    "Full spectral force already contains spatial dependence; no extra K0 laplacian on the Usadel reference",
+    "Candidate uses finite delta q_delta; independent Usadel reference uses genuine winding q=1/r",
+    "Compare inner r<=4ell0 to control finite outer boundary; total vortex energy or barrier is not evaluated",
+    "No KWT mobility or tau_kin calibration, phonon rates, photon, hotbelt, circuit transient, jitter or production admission"
+  ]
+}

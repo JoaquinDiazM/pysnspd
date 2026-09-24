@@ -1,0 +1,472 @@
+{
+  "kind": "full2D_static_prescribed_field",
+  "profile": "suppressed",
+  "nodes": 2145,
+  "elements": [
+    16,
+    8
+  ],
+  "degree": 4,
+  "delta_reg": 0.1,
+  "population": "synthetic_fixed_count",
+  "minimum_amplitude": 0.039999999999999925,
+  "energy_bar": -11.612548429814582,
+  "energy_J": -1.2410432521178175e-19,
+  "integrated_force_norm": 0.16205198616757274,
+  "maximum_current_A": 1.6465439459705988e-07,
+  "historical_nodal_metrics": {
+    "integrated_force_norm": "Unweighted Euclidean norm of integrated DOF gradients, not a volume-force norm",
+    "maximum_current_A": "Maximum single weighted graph-edge current, not device section current",
+    "mobility": "Unconstrained historical diagnostic including boundary reactions"
+  },
+  "volume_force_norms": {
+    "all_dofs_including_boundary_reactions": {
+      "mass_bar": 34.053487289288775,
+      "l2_volume_bar": 1.1862949485653762,
+      "rms_volume_bar": 0.20328806620232406,
+      "maximum_volume_force_bar": 1.2204814298797761
+    },
+    "interior": {
+      "mass_bar": 33.41764483130908,
+      "l2_volume_bar": 1.0733989637951569,
+      "rms_volume_bar": 0.1856834737344504,
+      "maximum_volume_force_bar": 1.2204814298797761
+    }
+  },
+  "section_currents": {
+    "x_m": [
+      8.633658232300567e-10,
+      3.363365823230057e-09,
+      6.6366341767699446e-09,
+      9.136634176769945e-09,
+      1.0863365823230057e-08,
+      1.3363365823230058e-08,
+      1.6636634176769944e-08,
+      1.9136634176769946e-08,
+      2.0863365823230058e-08,
+      2.3363365823230057e-08,
+      2.6636634176769947e-08,
+      2.9136634176769947e-08,
+      3.086336582323006e-08,
+      3.336336582323006e-08,
+      3.663663417676995e-08,
+      3.9136634176769944e-08,
+      4.0863365823230065e-08,
+      4.336336582323007e-08,
+      4.663663417676995e-08,
+      4.9136634176769954e-08,
+      5.0863365823230055e-08,
+      5.336336582323006e-08,
+      5.663663417676994e-08,
+      5.9136634176769944e-08,
+      6.086336582323006e-08,
+      6.336336582323006e-08,
+      6.663663417676995e-08,
+      6.913663417676995e-08,
+      7.086336582323006e-08,
+      7.336336582323006e-08,
+      7.663663417676995e-08,
+      7.913663417676995e-08,
+      8.086336582323007e-08,
+      8.336336582323007e-08,
+      8.663663417676996e-08,
+      8.913663417676996e-08,
+      9.086336582323008e-08,
+      9.336336582323008e-08,
+      9.663663417676996e-08,
+      9.913663417676994e-08,
+      1.0086336582323007e-07,
+      1.0336336582323008e-07,
+      1.0663663417676995e-07,
+      1.0913663417676995e-07,
+      1.1086336582323006e-07,
+      1.1336336582323006e-07,
+      1.1663663417676995e-07,
+      1.1913663417676995e-07,
+      1.2086336582323007e-07,
+      1.2336336582323007e-07,
+      1.2663663417676995e-07,
+      1.2913663417676995e-07,
+      1.3086336582323008e-07,
+      1.3336336582323008e-07,
+      1.3663663417676996e-07,
+      1.3913663417676996e-07,
+      1.4086336582323006e-07,
+      1.4336336582323006e-07,
+      1.4663663417676997e-07,
+      1.4913663417676997e-07,
+      1.5086336582323007e-07,
+      1.5336336582323007e-07,
+      1.5663663417676995e-07,
+      1.5913663417676993e-07
+    ],
+    "current_A": [
+      3.5940765983410477e-06,
+      3.594076741793874e-06,
+      3.5940770069618993e-06,
+      3.594077285495538e-06,
+      3.594077405277531e-06,
+      3.59407778549565e-06,
+      3.5940784350434137e-06,
+      3.594079071269861e-06,
+      3.5940793283954505e-06,
+      3.5940801491921675e-06,
+      3.594081388698412e-06,
+      3.5940826213347288e-06,
+      3.594082526814851e-06,
+      3.5940850910036078e-06,
+      3.59408372290073e-06,
+      3.594086869948488e-06,
+      3.5940735615576786e-06,
+      3.594046702299179e-06,
+      3.5938081603862345e-06,
+      3.5930636693882665e-06,
+      3.5924346355401314e-06,
+      3.589240693351732e-06,
+      3.5764994798067386e-06,
+      3.5501577654483285e-06,
+      3.5360015168159673e-06,
+      3.4757967167112694e-06,
+      3.3352528700535494e-06,
+      3.1752354638704302e-06,
+      3.1038209010227193e-06,
+      2.920692653424833e-06,
+      2.70198699373237e-06,
+      2.6440765916803383e-06,
+      2.6440765916803387e-06,
+      2.7019869937323666e-06,
+      2.9206926534248342e-06,
+      3.1038209010227366e-06,
+      3.1752354638704476e-06,
+      3.3352528700535443e-06,
+      3.47579671671126e-06,
+      3.5360015168159457e-06,
+      3.5501577654483425e-06,
+      3.5764994798067124e-06,
+      3.5892406933517347e-06,
+      3.592434635540098e-06,
+      3.593063669388276e-06,
+      3.593808160386215e-06,
+      3.594046702299154e-06,
+      3.594073561557677e-06,
+      3.594086869948493e-06,
+      3.5940837229006887e-06,
+      3.5940850910035887e-06,
+      3.594082526814849e-06,
+      3.594082621334734e-06,
+      3.594081388698398e-06,
+      3.5940801491921498e-06,
+      3.594079328395423e-06,
+      3.594079071269874e-06,
+      3.5940784350433777e-06,
+      3.5940777854956437e-06,
+      3.5940774052774674e-06,
+      3.594077285495543e-06,
+      3.5940770069618638e-06,
+      3.5940767417938438e-06,
+      3.5940765983410113e-06
+    ],
+    "maximum_absolute_A": 3.594086869948493e-06,
+    "orientation": "Positive left-to-right; sum of oriented graph edges crossing each x cut"
+  },
+  "derivative_diagnostics": {
+    "all_nodes": {
+      "l2_error_bar": 0.0018997468815078206,
+      "relative_l2_error": 0.003491230666883607,
+      "maximum_component_error": 0.0015133487820492761
+    },
+    "interior": {
+      "l2_error_bar": 0.0018997228653398637,
+      "relative_l2_error": 0.0035078880282617716,
+      "maximum_component_error": 0.0015133487820492761
+    },
+    "center": {
+      "node": 1072,
+      "coordinates_bar": [
+        17.026743644644384,
+        0.0
+      ],
+      "derivative_discrete": [
+        [
+          -5.551115123125783e-17,
+          0.003113663492194746
+        ],
+        [
+          -1.486782927269174e-16,
+          0.0002222537455660121
+        ]
+      ],
+      "derivative_analytic": [
+        [
+          0.0,
+          0.0027999999999999948
+        ],
+        [
+          0.0,
+          0.00019999999999999963
+        ]
+      ],
+      "derivative_error_norm": 0.00031445192880235847,
+      "gamma_discrete": 6.568802815622958e-05,
+      "gamma_analytic": 5.312047222598923e-05,
+      "gamma_ratio_discrete_to_analytic": 1.2365859225944846,
+      "discrete_symbol_eigenvalues": [
+        1.5707963267948966,
+        1.5707963267948966,
+        2.319758430564303,
+        2.3204112393763094
+      ],
+      "discrete_symbol_uncertainty": 0.00045037200518646946,
+      "analytic_symbol_eigenvalues": [
+        1.5707963267948966,
+        1.5707963267948966,
+        2.3199849318730825,
+        2.3204666867640893
+      ],
+      "analytic_symbol_uncertainty": 0.00046163532655544247,
+      "interpretation": "Signs refer to their specified gradients; a coarse discrete negative sign alone does not establish failure of this analytic profile"
+    }
+  },
+  "response_boundary_policy": "fixed_prescribed_all_sides",
+  "constraint_reaction_ledger": {
+    "active": true,
+    "unique_boundary_nodes": 192,
+    "external_conjugate_load_sum_cartesian_bar": [
+      -0.2162107206100676,
+      -1.63877158371184e-15
+    ],
+    "integrated_load_l2_bar": 0.03104470785942889,
+    "phase_torque_bar": 2.7755575615628914e-17,
+    "sign": "Applied conjugate load +G at fixed nodes cancels intrinsic force -G; each corner counted once",
+    "array_file": "fields.npz:constraint_load_cartesian_bar",
+    "scope": "Prescribed fixed control values, not a superconducting reservoir or device boundary admission"
+  },
+  "noether_max": 4.414871246360974e-16,
+  "symbol_min_eigenvalue": 1.570796326794895,
+  "maximum_symbol_uncertainty": 0.004342846747234224,
+  "positive_symbols": 2145,
+  "negative_symbols": 0,
+  "unresolved_symbols": 0,
+  "identity_checks": [],
+  "mobility": {
+    "memory_effective": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 0.5,
+        "tau_ep_Tc_ps": 2.47,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 2.548039791855112,
+      "interior_heat_bar": 1.0629085363716566,
+      "boundary_heat_bar": 1.4851312554834553,
+      "field_work_bar": -2.548039791855112,
+      "boundary_work_bar": 0.0,
+      "identity_residual_bar": 0.0,
+      "maximum_velocity_per_ps": 6.42016321950303,
+      "maximum_interior_velocity_per_ps": 2.006861983678128,
+      "maximum_boundary_velocity_per_ps": 6.42016321950303,
+      "interpretation": "Unconstrained instantaneous descent including boundary DOFs; no reservoir/circuit/trajectory"
+    },
+    "Allmaras_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 5.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 14.684784451984887,
+      "interior_heat_bar": 0.43513374919307607,
+      "boundary_heat_bar": 14.249650702791811,
+      "field_work_bar": -14.684784451984886,
+      "boundary_work_bar": 0.0,
+      "identity_residual_bar": 1.7763568394002505e-15,
+      "maximum_velocity_per_ps": 61.60079927103447,
+      "maximum_interior_velocity_per_ps": 4.7156890154764595,
+      "maximum_boundary_velocity_per_ps": 61.60079927103447,
+      "interpretation": "Unconstrained instantaneous descent including boundary DOFs; no reservoir/circuit/trajectory"
+    },
+    "Korzh_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 6.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 17.384408838916016,
+      "interior_heat_bar": 0.46909483882301256,
+      "boundary_heat_bar": 16.915314000093005,
+      "field_work_bar": -17.384408838916016,
+      "boundary_work_bar": 0.0,
+      "identity_residual_bar": 0.0,
+      "maximum_velocity_per_ps": 73.12441325518563,
+      "maximum_interior_velocity_per_ps": 5.6363129379415415,
+      "maximum_boundary_velocity_per_ps": 73.12441325518563,
+      "interpretation": "Unconstrained instantaneous descent including boundary DOFs; no reservoir/circuit/trajectory"
+    }
+  },
+  "mobility_fixed_boundary": {
+    "memory_effective": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 0.5,
+        "tau_ep_Tc_ps": 2.47,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 1.0629085363716566,
+      "interior_heat_bar": 1.0629085363716566,
+      "boundary_heat_bar": 0.0,
+      "field_work_bar": -1.0629085363716566,
+      "boundary_work_bar": 0.0,
+      "identity_residual_bar": 0.0,
+      "maximum_velocity_per_ps": 2.006861983678128,
+      "maximum_interior_velocity_per_ps": 2.006861983678128,
+      "maximum_boundary_velocity_per_ps": 0.0,
+      "interpretation": "Instantaneous interior descent with all four sides fixed by conjugate reaction loads; diagnostic constraint, not device boundary conditions"
+    },
+    "Allmaras_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 5.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 0.435133749193076,
+      "interior_heat_bar": 0.43513374919307607,
+      "boundary_heat_bar": 0.0,
+      "field_work_bar": -0.43513374919307585,
+      "boundary_work_bar": 0.0,
+      "identity_residual_bar": 1.6653345369377348e-16,
+      "maximum_velocity_per_ps": 4.7156890154764595,
+      "maximum_interior_velocity_per_ps": 4.7156890154764595,
+      "maximum_boundary_velocity_per_ps": 0.0,
+      "interpretation": "Instantaneous interior descent with all four sides fixed by conjugate reaction loads; diagnostic constraint, not device boundary conditions"
+    },
+    "Korzh_reference": {
+      "metadata": {
+        "closure": "effective KWT D.11--13",
+        "tau_ee_Tc_ps": 6.0,
+        "tau_ep_Tc_ps": 24.7,
+        "taupsi_convention": "1/taupsi = (Tmob/Tc)/tau_ee_Tc + (Tmob/Tc)^3/tau_ep_Tc",
+        "temperature_floor": "Tmob = max(Te_equivalent, Tb)",
+        "time_unit": "physical ps; independent of BGK tau_kin",
+        "scales": {
+          "delta0_J": 2.1065301756880164e-22,
+          "N0_per_J_m3": 9.153297821093998e+46,
+          "Tc_K": 8.65,
+          "Tb_K": 0.9,
+          "t_ref_ps": 1.0,
+          "energy_density_scale_J_m3": 4061.7478817049205,
+          "temperature_convention": "temperature_bar = k_B T / Delta0",
+          "force_convention": "X = d[U/(N0 Delta0^2)] / d[Delta/Delta0]",
+          "time_convention": "dimensionless time = physical time / t_ref"
+        }
+      },
+      "total_heat_bar": 0.46909483882301256,
+      "interior_heat_bar": 0.46909483882301256,
+      "boundary_heat_bar": 0.0,
+      "field_work_bar": -0.46909483882301245,
+      "boundary_work_bar": 0.0,
+      "identity_residual_bar": 1.1102230246251565e-16,
+      "maximum_velocity_per_ps": 5.6363129379415415,
+      "maximum_interior_velocity_per_ps": 5.6363129379415415,
+      "maximum_boundary_velocity_per_ps": 0.0,
+      "interpretation": "Instantaneous interior descent with all four sides fixed by conjugate reaction loads; diagnostic constraint, not device boundary conditions"
+    }
+  },
+  "identity_scope": "Uses the same tested assembly; finite differences only at registered coarse anchors",
+  "fields_file": "fields.npz",
+  "no_trajectory": true,
+  "physical_core_admitted": false,
+  "photon": false,
+  "boundaries": "Independent prescribed input values; no current-driven reservoir or dynamic boundary admission",
+  "case": {
+    "id": "2d_suppressed_d0.1_16x8_fixed_boundary",
+    "phase": "spatial",
+    "profile": "suppressed",
+    "delta_reg": 0.1,
+    "elements_x": 16,
+    "elements_y": 8,
+    "degree": 4,
+    "population": "synthetic_fixed_count",
+    "resolution": "reference",
+    "finite_differences": false,
+    "boundary_response": "fixed_prescribed_all_sides"
+  },
+  "runtime_seconds": 2247.92357235495,
+  "catalogue_diagnostics": {
+    "count_states": 630,
+    "direct_queries": 18809,
+    "direct_seconds": 2246.7861258913763,
+    "exact_cache": {
+      "hits": 474,
+      "misses": 18809,
+      "maxsize": 4096,
+      "currsize": 4096
+    }
+  }
+}

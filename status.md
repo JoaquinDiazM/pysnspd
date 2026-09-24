@@ -4,14 +4,17 @@ Last updated: 2026-09-23
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: stage4A initial campaigns completed (40 local, 6 spatial controls).
-The [results report](docs/implementation/stage4/review_20260923/Informe_avance_etapa_4A.md)
-separates boundary reactions from interior dissipation and diagnoses an unresolved
-core gradient. Two focused manual cases are prepared with progress/ETA. A new
-thermal Usadel reference quantifies constitutive spatial bias independently of
-mesh error. Stage4 remains open; no photon or physical time trajectories.
-Production retains Delaunay-Voronoi and adaptive Euler; the static GLL controls
-are experimental. See [current stage4](docs/implementation/stage4/README.md).
+Current phase: stage 4 core follow-up and independent radial Usadel reference completed.
+The [new illustrated review](docs/implementation/stage4/followup_20260923/README.md)
+separates spatial convergence from a substantial constitutive core-force mismatch.
+The current regularized core is not physically admitted; next work corrects the
+closure using the preserved spatial spectral reference. Stage 4 remains open.
+Parallel case/query scheduling now shares a resource budget no greater than 90%;
+the measured equivalence pilot is 2.24x faster with 4 workers and identical arrays.
+The photon horizon policy is Vout trigger plus margin, with the same equations,
+geometry, mesh, accuracy and full thesis circuit. It is documented, not yet active
+in production. No new long run is required. Production retains Delaunay-Voronoi
+and adaptive Euler; static GLL/radial controls are experimental.
 
 ## Historical stage 3.5 closure and stage4 preparation
 

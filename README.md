@@ -45,15 +45,17 @@ controlled core, stability and dissipation diagnostics. Its
 separates source-supported values, planning margins and open inputs. The Gaussian
 photon width and Korzh transfer remain unselected; absolute NbN rates still need
 a consistent volumetric phonon DOS. Stage 4 has now started with [explicit core/KWT parameters and full2D diagnostics](docs/implementation/stage4/README.md).
-The [46 completed controls and results report](docs/implementation/stage4/review_20260923/Informe_avance_etapa_4A.md)
-separate unconstrained boundary reactions from interior heating and identify an
-underresolved prescribed core. A fresh thermal Usadel reference quantifies
-constitutive spatial bias. Only two additional static cases are queued for manual
-execution with progress/ETA. Stage4 remains open; no physical core admission or
-time trajectories. Production retains Delaunay-Voronoi and adaptive first-order
-Euler; the GLL rectangle is an experimental static control. The weak coupled
-transient and kinetic interface remain prerequisites for capabilities using them.
-Production and v1.0.0 are unchanged. The stage4 guide gives the current work queue.
+The [focused follow-up and parallel reference](docs/implementation/stage4/followup_20260923/README.md)
+complete both queued cases. Refinement changes Korzh heat by 2.55%, whereas the
+independent spatial Usadel reference exposes a large core-force discrepancy,
+including an opposite local force sign. The regularized core is not physically
+admitted. Stage 4 remains open; next work corrects the core closure before heavy
+trajectories. A shared process pool caps execution at 90% of available resources;
+Geminga currently permits 28 logical CPUs, reserving two complete physical cores.
+The future photon observation window ends after confirmed Vout triggering plus
+a margin, retaining the same full physics/circuit. Production still uses
+Delaunay-Voronoi and adaptive first-order Euler; no production solver or frozen
+v1.0.0 files change in this delivery. No new long run is pending.
 The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 

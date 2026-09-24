@@ -1,0 +1,101 @@
+{
+  "status": "COMPLETED_DIAGNOSTICS_NOT_PHYSICAL_ADMISSION",
+  "cases": [
+    {
+      "id": "pilot_smooth",
+      "runtime_seconds": 0.006498412229120731,
+      "result": "pilot_smooth/result.json",
+      "sha256": "c9bb3c071de27b28c91c54fc83aa27c56663d929ea86d0da970133f7afa60949",
+      "files": [
+        {
+          "path": "pilot_smooth/fields.npz",
+          "sha256": "46f691265004d591db109a0c47f7fc9950b91749b2ac1fb0f72e8eefefb4b959",
+          "bytes": 10511
+        },
+        {
+          "path": "pilot_smooth/result.json",
+          "sha256": "c9bb3c071de27b28c91c54fc83aa27c56663d929ea86d0da970133f7afa60949",
+          "bytes": 13887
+        }
+      ]
+    },
+    {
+      "id": "pilot_suppressed",
+      "runtime_seconds": 0.0059660361148417,
+      "result": "pilot_suppressed/result.json",
+      "sha256": "0678d9e314a1fa23b2fef46c7f324dbdfaa9be517687d33024313b3bb0107506",
+      "files": [
+        {
+          "path": "pilot_suppressed/fields.npz",
+          "sha256": "0d24d9af9f9b5d26e9b206be87dd1a82eda62a7a9fdc4d1cc865a71ab9253216",
+          "bytes": 10476
+        },
+        {
+          "path": "pilot_suppressed/result.json",
+          "sha256": "0678d9e314a1fa23b2fef46c7f324dbdfaa9be517687d33024313b3bb0107506",
+          "bytes": 13913
+        }
+      ]
+    }
+  ],
+  "runtime_seconds": 8.71745276497677,
+  "budget": {
+    "cpu_fraction": 0.9,
+    "memory_fraction": 0.9,
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29
+    ],
+    "coordinator_cpu": 29,
+    "worker_affinity_cpus": [
+      0,
+      16,
+      1,
+      17
+    ],
+    "workers": 4,
+    "threads_per_process": 1,
+    "total_processes": 5,
+    "logical_budget": 28,
+    "effective_cpu_quota_units": 32,
+    "physical_cores_used": 14,
+    "physical_cores_reserved": 2,
+    "memory_limit_bytes": 112974184857,
+    "coordinator_reserve_bytes": 3221225472,
+    "worker_reserve_bytes": 1073741824,
+    "estimated_memory_reservation_bytes": 7516192768,
+    "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+  },
+  "unique_spectral_queries": 164,
+  "summed_worker_compute_seconds": 33.20755604002625,
+  "stage4_complete": false,
+  "photon": false,
+  "time_trajectories": 0,
+  "production_promotion": false
+}

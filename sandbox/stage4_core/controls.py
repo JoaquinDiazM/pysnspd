@@ -31,9 +31,18 @@ class CachedDirect:
         self.count_nodes, self.count_weights = source.count_nodes, source.count_weights
         self.calls = 0
         self.seconds = 0.
+        self.prefetched = {}
+        self.prefetch_hits = 0
+        self.strict_prefetch = False
         self.energy_kernel = lru_cache(maxsize=4096)(self._kernel)
 
     def _kernel(self, amplitude, gamma):
+        key = (float(amplitude), float(gamma))
+        if key in self.prefetched:
+            self.prefetch_hits += 1
+            return self.prefetched[key]
+        if self.strict_prefetch:
+            raise RuntimeError('Unscheduled spectral key; no implicit serial fallback: '+repr(key))
         start = time.monotonic()
         result = self.source.energy_kernel(amplitude, gamma)
         self.calls += 1
@@ -42,9 +51,27 @@ class CachedDirect:
             value.setflags(write=False)
         return result
 
+    def install_prefetched(self, values):
+        """Exact evaluated keys only: no rounding, interpolation or projection."""
+        checked = {}
+        for key, kernels in values.items():
+            if len(key) != 2 or len(kernels) != 3:
+                raise ValueError('Expected exact (amplitude,Gamma) and three kernels')
+            arrays = tuple(np.asarray(value, dtype=float) for value in kernels)
+            if any(value.shape != self.count_nodes.shape or np.any(~np.isfinite(value)) for value in arrays):
+                raise ValueError('Invalid prefetched spectral kernel')
+            for value in arrays:
+                value.setflags(write=False)
+            checked[(float(key[0]), float(key[1]))] = arrays
+        self.energy_kernel.cache_clear()
+        self.prefetched = checked
+        self.strict_prefetch = True
+
     def diagnostics(self):
         return dict(count_states=len(self.count_nodes), direct_queries=self.calls,
-                    direct_seconds=self.seconds, exact_cache=self.energy_kernel.cache_info()._asdict())
+                    direct_seconds=self.seconds, exact_cache=self.energy_kernel.cache_info()._asdict(),
+                    prefetched_keys=len(self.prefetched), prefetch_hits=self.prefetch_hits,
+                    strict_prefetch=self.strict_prefetch)
 
 
 def material_reference(plan):

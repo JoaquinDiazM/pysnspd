@@ -1,0 +1,451 @@
+{
+  "schema": "pysnspd.stage4.radial_reference_analysis.v1",
+  "integrity": {
+    "summary_sha256": "34bcc36ac0a5b0eea3f46d00551dc8379324b62c3f7fd17c53e507b1af678256",
+    "identity_sha256": "a5eba7304fea8443d32c369d0b4f3c07d4dbcbcb21d8e7d0a7bd890686fa992d",
+    "registered_outputs_checked": 521,
+    "all_registered_output_hashes_match": true,
+    "plan_hash_matches": true,
+    "current_source_hashes_match": {
+      "sandbox/stage4_core/radial_usadel_reference.py": true,
+      "sandbox/stage4_core/parallel_runtime.py": true
+    }
+  },
+  "measured_runtime_seconds": 4.842744544148445,
+  "reference_cutoff_and_outer_comparisons": {
+    "cutoff_R8_N128_to_N256": {
+      "raw": {
+        "reference_L2": 3.1065660164247966,
+        "candidate_L2": 3.049973075061547,
+        "difference_L2": 0.05804374839877612,
+        "relative_L2_difference": 0.018684215333552124,
+        "reference_peak_absolute": 0.9355092283389661,
+        "candidate_peak_absolute": 0.9144608202605236,
+        "maximum_absolute_difference": 0.02213936115684323,
+        "reference_peak_radius": 0.9227574750830565,
+        "candidate_peak_radius": 0.9352159468438538
+      },
+      "with_leading_tail_estimate": {
+        "reference_L2": 3.162814518333834,
+        "candidate_L2": 3.1624190475098364,
+        "difference_L2": 0.0025315009496892876,
+        "relative_L2_difference": 0.0008003950073628973,
+        "reference_peak_absolute": 0.9571933212448572,
+        "candidate_peak_absolute": 0.9577385929914544,
+        "maximum_absolute_difference": 0.001181921979709899,
+        "reference_peak_radius": 0.9227574750830565,
+        "candidate_peak_radius": 0.9227574750830565
+      },
+      "interpretation": "Observed change, not a rigorous tail bound or physical confidence interval"
+    },
+    "outer_R8_to_R12_N256": {
+      "raw": {
+        "reference_L2": 3.106566955991548,
+        "candidate_L2": 3.1065660164247966,
+        "difference_L2": 3.2894834556634096e-06,
+        "relative_L2_difference": 1.0588805914255527e-06,
+        "reference_peak_absolute": 0.9355086885616517,
+        "candidate_peak_absolute": 0.9355092283389661,
+        "maximum_absolute_difference": 1.3684628701327028e-06,
+        "reference_peak_radius": 0.9227574750830565,
+        "candidate_peak_radius": 0.9227574750830565
+      },
+      "with_leading_tail_estimate": {
+        "reference_L2": 3.162815453057909,
+        "candidate_L2": 3.162814518333834,
+        "difference_L2": 3.2894834556634096e-06,
+        "relative_L2_difference": 1.0400491285329448e-06,
+        "reference_peak_absolute": 0.9571927814675428,
+        "candidate_peak_absolute": 0.9571933212448572,
+        "maximum_absolute_difference": 1.3684628701327028e-06,
+        "reference_peak_radius": 0.9227574750830565,
+        "candidate_peak_radius": 0.9227574750830565
+      },
+      "interpretation": "Observed change, not a rigorous tail bound or physical confidence interval"
+    }
+  },
+  "reference_solver_diagnostics": {
+    "maximum_BVP_rms_residual": 9.23495521717135e-06,
+    "maximum_BVP_boundary_residual": 2.220446049250313e-16
+  },
+  "candidate_force_variation_checks": [
+    {
+      "delta_fraction": 0.05,
+      "compact_variation_support": [
+        0.01,
+        0.5
+      ],
+      "predicted_energy_derivative": -2.511111167028875,
+      "centered_energy_derivatives": [
+        -2.5111111668252306,
+        -2.511111165404145
+      ],
+      "absolute_errors": [
+        2.0364421260410381e-10,
+        1.6247296841243042e-09
+      ],
+      "relative_errors": [
+        8.109725100105938e-11,
+        6.470162314823642e-10
+      ]
+    },
+    {
+      "delta_fraction": 0.1,
+      "compact_variation_support": [
+        0.01,
+        0.5
+      ],
+      "predicted_energy_derivative": -2.0919633104542283,
+      "centered_energy_derivatives": [
+        -2.091963310135725,
+        -2.091963310135725
+      ],
+      "absolute_errors": [
+        3.18503445839724e-10,
+        3.18503445839724e-10
+      ],
+      "relative_errors": [
+        1.5225097125176986e-10,
+        1.5225097125176986e-10
+      ]
+    },
+    {
+      "delta_fraction": 0.2,
+      "compact_variation_support": [
+        0.01,
+        0.5
+      ],
+      "predicted_energy_derivative": -0.8834406032387658,
+      "centered_energy_derivatives": [
+        -0.8834406045821196,
+        -0.8834406031610341
+      ],
+      "absolute_errors": [
+        1.3433537615625823e-09,
+        7.773170995761802e-11
+      ],
+      "relative_errors": [
+        1.520593186047525e-09,
+        8.798747722557373e-11
+      ]
+    },
+    {
+      "delta_fraction": 0.1,
+      "compact_variation_support": [
+        0.25,
+        4.0
+      ],
+      "predicted_energy_derivative": 12.903910447877038,
+      "centered_energy_derivatives": [
+        12.903910447903398,
+        12.903910445061227
+      ],
+      "absolute_errors": [
+        2.6359359139860317e-11,
+        2.8158115839005404e-09
+      ],
+      "relative_errors": [
+        2.0427419460429515e-12,
+        2.182138193902144e-10
+      ]
+    }
+  ],
+  "max_candidate_Gateaux_relative_error_final_step": 6.470162314823642e-10,
+  "ordinary_BCS_plus_K0": {
+    "meaning": "Counterfactual local BCS free energy plus ordinary Cartesian K0 gradient; removing the flow embedding, not an adopted model",
+    "force_L2": 5.745663652356171,
+    "relative_L2_error_against_leading_tail_reference": 0.8367674513277977
+  },
+  "candidates": {
+    "0.05": {
+      "raw_relative_L2_error": 2.3295286333676057,
+      "leading_tail_relative_L2_error": 2.287927278409894,
+      "peak": {
+        "radius_ell0": 0.0609723757789153,
+        "radius_nm": 0.2864781525821498,
+        "candidate": -27.60561761033601,
+        "reference_raw": 0.10716615541386576,
+        "reference_with_leading_tail": 0.11057822117442724,
+        "ordinary_BCS_plus_K0": -0.014982476795926292,
+        "uniform_flow_embedding_correction": -27.590635133540086,
+        "explicit_components": {
+          "uniform_depaired_force": 1.0074866783052363,
+          "complex_gradient_completion": 0.44849134037364685,
+          "phase_gradient_subtraction": -16.193267136579973,
+          "amplitude_dependence_of_q_delta": -12.86832849243492
+        }
+      },
+      "component_sum_max_error": 7.105427357601002e-15,
+      "flow_embedding_correction_L2": 7.422439190375469,
+      "decomposition_cross_term": -9.732891431549467,
+      "error_by_radial_zone": [
+        {
+          "radial_interval_ell0": [
+            0.001,
+            0.25
+          ],
+          "radial_interval_nm": [
+            0.004698490897269843,
+            1.1746227243174607
+          ],
+          "squared_error_fraction_of_total": 0.8610563815662254,
+          "relative_force_L2_error": 48.58751959632808
+        },
+        {
+          "radial_interval_ell0": [
+            0.25,
+            0.5
+          ],
+          "radial_interval_nm": [
+            1.1746227243174607,
+            2.3492454486349215
+          ],
+          "squared_error_fraction_of_total": 0.11545183868125089,
+          "relative_force_L2_error": 5.04790480147387
+        },
+        {
+          "radial_interval_ell0": [
+            0.5,
+            1.0
+          ],
+          "radial_interval_nm": [
+            2.3492454486349215,
+            4.698490897269843
+          ],
+          "squared_error_fraction_of_total": 0.01325480948448078,
+          "relative_force_L2_error": 0.5925931898200855
+        },
+        {
+          "radial_interval_ell0": [
+            1.0,
+            4.0
+          ],
+          "radial_interval_nm": [
+            4.698490897269843,
+            18.79396358907937
+          ],
+          "squared_error_fraction_of_total": 0.010236970268042853,
+          "relative_force_L2_error": 0.26264874921924974
+        },
+        {
+          "radial_interval_ell0": [
+            0.5,
+            4.0
+          ],
+          "radial_interval_nm": [
+            2.3492454486349215,
+            18.79396358907937
+          ],
+          "squared_error_fraction_of_total": 0.023491779752523635,
+          "relative_force_L2_error": 0.35525273632080356
+        }
+      ],
+      "sampled_opposite_sign_intervals_ell0": [
+        [
+          0.003739738404695361,
+          0.4867109634551495
+        ]
+      ]
+    },
+    "0.1": {
+      "raw_relative_L2_error": 1.5809176439464339,
+      "leading_tail_relative_L2_error": 1.5519937240853148,
+      "peak": {
+        "radius_ell0": 0.116116192113789,
+        "radius_nm": 0.5455708716722739,
+        "candidate": -11.879000760132438,
+        "reference_raw": 0.2026504651286002,
+        "reference_with_leading_tail": 0.20907299441266972,
+        "ordinary_BCS_plus_K0": 0.052993520458982535,
+        "uniform_flow_embedding_correction": -11.931994280591422,
+        "explicit_components": {
+          "uniform_depaired_force": 1.3517082219859338,
+          "complex_gradient_completion": 0.8441949743451994,
+          "phase_gradient_subtraction": -7.771267738063385,
+          "amplitude_dependence_of_q_delta": -6.303636218400185
+        }
+      },
+      "component_sum_max_error": 3.552713678800501e-15,
+      "flow_embedding_correction_L2": 5.17830758273195,
+      "decomposition_cross_term": -9.724020370447757,
+      "error_by_radial_zone": [
+        {
+          "radial_interval_ell0": [
+            0.001,
+            0.25
+          ],
+          "radial_interval_nm": [
+            0.004698490897269843,
+            1.1746227243174607
+          ],
+          "squared_error_fraction_of_total": 0.7205867719453998,
+          "relative_force_L2_error": 30.150868113619474
+        },
+        {
+          "radial_interval_ell0": [
+            0.25,
+            0.5
+          ],
+          "radial_interval_nm": [
+            1.1746227243174607,
+            2.3492454486349215
+          ],
+          "squared_error_fraction_of_total": 0.22597074955852814,
+          "relative_force_L2_error": 4.7905412766666675
+        },
+        {
+          "radial_interval_ell0": [
+            0.5,
+            1.0
+          ],
+          "radial_interval_nm": [
+            2.3492454486349215,
+            4.698490897269843
+          ],
+          "squared_error_fraction_of_total": 0.02956717740147679,
+          "relative_force_L2_error": 0.6003749855507713
+        },
+        {
+          "radial_interval_ell0": [
+            1.0,
+            4.0
+          ],
+          "radial_interval_nm": [
+            4.698490897269843,
+            18.79396358907937
+          ],
+          "squared_error_fraction_of_total": 0.023875301094595246,
+          "relative_force_L2_error": 0.27208950403701826
+        },
+        {
+          "radial_interval_ell0": [
+            0.5,
+            4.0
+          ],
+          "radial_interval_nm": [
+            2.3492454486349215,
+            18.79396358907937
+          ],
+          "squared_error_fraction_of_total": 0.053442478496072046,
+          "relative_force_L2_error": 0.3634716240768341
+        }
+      ],
+      "sampled_opposite_sign_intervals_ell0": [
+        [
+          0.015333740718319644,
+          0.4867109634551495
+        ]
+      ]
+    },
+    "0.2": {
+      "raw_relative_L2_error": 0.7537406833704924,
+      "leading_tail_relative_L2_error": 0.7345851469288981,
+      "peak": {
+        "radius_ell0": 0.20797382295430566,
+        "radius_nm": 0.977163114021215,
+        "candidate": -3.251307114538471,
+        "reference_raw": 0.3552685295814624,
+        "reference_with_leading_tail": 0.366372783260894,
+        "ordinary_BCS_plus_K0": 0.34195865837961503,
+        "uniform_flow_embedding_correction": -3.5932657729180857,
+        "explicit_components": {
+          "uniform_depaired_force": 1.395811547495131,
+          "complex_gradient_completion": 1.4595737497502868,
+          "phase_gradient_subtraction": -3.4483553825062714,
+          "amplitude_dependence_of_q_delta": -2.6583370292776163
+        }
+      },
+      "component_sum_max_error": 8.881784197001252e-16,
+      "flow_embedding_correction_L2": 2.6549455924940366,
+      "decomposition_cross_term": -8.654925619236039,
+      "error_by_radial_zone": [
+        {
+          "radial_interval_ell0": [
+            0.001,
+            0.25
+          ],
+          "radial_interval_nm": [
+            0.004698490897269843,
+            1.1746227243174607
+          ],
+          "squared_error_fraction_of_total": 0.3176303803814452,
+          "relative_force_L2_error": 9.474796211713091
+        },
+        {
+          "radial_interval_ell0": [
+            0.25,
+            0.5
+          ],
+          "radial_interval_nm": [
+            1.1746227243174607,
+            2.3492454486349215
+          ],
+          "squared_error_fraction_of_total": 0.385676557315341,
+          "relative_force_L2_error": 2.962253876013242
+        },
+        {
+          "radial_interval_ell0": [
+            0.5,
+            1.0
+          ],
+          "radial_interval_nm": [
+            2.3492454486349215,
+            4.698490897269843
+          ],
+          "squared_error_fraction_of_total": 0.15753609493163104,
+          "relative_force_L2_error": 0.6559335963186372
+        },
+        {
+          "radial_interval_ell0": [
+            1.0,
+            4.0
+          ],
+          "radial_interval_nm": [
+            4.698490897269843,
+            18.79396358907937
+          ],
+          "squared_error_fraction_of_total": 0.13915696737158278,
+          "relative_force_L2_error": 0.31091524723489244
+        },
+        {
+          "radial_interval_ell0": [
+            0.5,
+            4.0
+          ],
+          "radial_interval_nm": [
+            2.3492454486349215,
+            18.79396358907937
+          ],
+          "squared_error_fraction_of_total": 0.29669306230321385,
+          "relative_force_L2_error": 0.4053527218744889
+        }
+      ],
+      "sampled_opposite_sign_intervals_ell0": [
+        [
+          0.001,
+          0.0036267643271329754
+        ],
+        [
+          0.06684959559901753,
+          0.44933554817275745
+        ]
+      ]
+    }
+  },
+  "diagnosis": {
+    "candidate_variation_formula_supported": true,
+    "physical_core_admitted": false,
+    "stage4_complete": false,
+    "neither_mesh_refinement_nor_positive_mobility_rescaling_can_fix_observed_force": true,
+    "full_core_model_change_applied": false
+  },
+  "limits": [
+    "Prescribed thermal radial vortex, not a self-consistent vortex, barrier or strip geometry",
+    "Leading-tail curve is an asymptotic estimate; cutoff and boundary comparisons are observed sensitivity, not rigorous uncertainty bounds",
+    "Mean free path is unknown; subnanometer candidate peaks should not be interpreted as measured microscopic forces",
+    "Mismatch remains about27% outside one ell0 and36% outside half ell0 for delta=.10, so the diagnosis is not solely a subnanometer peak",
+    "This thermal free-energy comparison does not by itself construct the nonthermal kinetic closure or calibrate KWT"
+  ],
+  "recommendation": "Freeze the current local core completion as a failed reference for low-temperature radial-core fidelity. Before advancing physical core transients, introduce a thermal spatial-response reference backend and an energy-level alternative/completion that reproduces the same-ensemble spatial response, deriving its force and current consistently. Keep the existing solver as a controlled baseline; do not tune delta or KWT to hide the discrepancy, and do not promote the ordinary BCS+K0 counterfactual.",
+  "analysis_script_sha256": "548b123a1069fee66599a6dade073c00b1d0f2d1d047d690e4569eea329b15c3"
+}

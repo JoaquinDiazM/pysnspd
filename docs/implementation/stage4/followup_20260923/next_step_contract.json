@@ -1,0 +1,102 @@
+{
+  "schema": "pysnspd.stage4.next_step.v1",
+  "date": "2026-09-23",
+  "status": "READY_FOR_BOUNDED_DEVELOPMENT",
+  "objective": "Diagnosticar y revisar el cierre espacial del núcleo antes de invertir en un transiente de núcleo costoso",
+  "evidence": {
+    "spatial_resolution_audit": "independent_audit.json",
+    "thermal_radial_reference": "raw/stage4_radial_reference_20260923/summary.json",
+    "parallel_execution_equivalence": "pilot/parallel_equivalence_receipt.json",
+    "reason": "El error observado entre las mallas más finas ya es menor que la sensibilidad del cierre; la referencia térmica espacial muestra una discrepancia grande de fuerza sobre el mismo perfil"
+  },
+  "authorized_now": [
+    {
+      "id": "4D1",
+      "work": "Convertir la referencia espacial térmica existente en una interfaz reutilizable con entradas y procedencia explícitas",
+      "inputs": [
+        "Geometría y simetría realmente resueltas",
+        "Perfil complejo prescrito y sus derivadas",
+        "Temperatura impuesta y escalas materiales",
+        "Condiciones espectrales de borde",
+        "Corte espectral y tratamiento declarado de cola"
+      ],
+      "outputs": [
+        "Estado espectral estacionario de referencia",
+        "Fuerza térmica con unidades y medida espacial explícitas",
+        "Residuos numéricos, sensibilidad de corte y borde, dominio de uso"
+      ],
+      "initial_supported_profiles": [
+        "Vórtice radial prescrito de la referencia actual, con giro de fase y temperatura impuesta",
+        "Controles uniformes térmicos y normales compatibles con el argumento espectral",
+        "Perfil real del control GL cercano a Tc, dentro de su régimen asintótico"
+      ],
+      "scope_rule": "No convertir el perfil gaussiano 2D previo en un problema radial ni atribuir al oráculo direcciones espaciales que no resuelve; ampliar soporte sólo cuando la comparación concreta lo requiera"
+    },
+    {
+      "id": "4D2",
+      "work": "Mantener una sola energía para cada candidato y comprobar sus derivadas en las rutas que se modifiquen",
+      "checks": [
+        "Variación direccional independiente de la energía libre y trabajo de su fuerza, a la misma temperatura y con los mismos bordes",
+        "Consistencia de fuerza y corriente con la energía que se utilice",
+        "Límites uniforme, normal y GL dentro del soporte y régimen declarados"
+      ],
+      "reuse_rule": "Conservar las verificaciones anteriores válidas; no repetir baterías ajenas a los cambios ni confundir conservación numérica con fidelidad física"
+    },
+    {
+      "id": "4D3",
+      "work": "Comparar las fuerzas del candidato y de la referencia en direcciones localizadas del núcleo y de su exterior",
+      "initial_directions": [
+        "Variaciones radiales de amplitud localizadas en distintas zonas del núcleo",
+        "Variaciones radiales de amplitud en la transición al estado lejano",
+        "Cambio global de fase como identidad de simetría, sin interpretarlo como validación de perturbaciones de fase no uniformes"
+      ],
+      "deferred_directions": "Desplazamiento de vórtices, perturbaciones de fase no uniformes y otros modos 2D requieren una referencia que resuelva también su respuesta espectral espacial",
+      "comparison_rule": "Usar el mismo perfil, régimen estadístico, unidades, bordes y medida espacial; separar error numérico observado de discrepancia constitutiva. No dividir por fuerzas puntuales próximas a cero"
+    },
+    {
+      "id": "4D4",
+      "work": "Preparar opciones concretas de revisión del cierre a partir de la comparación, con su coste y alcance",
+      "decision_rule": "No ajustar delta para hacer coincidir un resultado aislado ni cambiar automáticamente la formulación física. Si la elección entre opciones afecta la representación física del dispositivo más allá del alcance aprobado, consultar al usuario cuando las opciones y sus consecuencias sean concretas"
+    }
+  ],
+  "acceptance_approach": {
+    "new_universal_tolerances": false,
+    "rule": "Resolver las diferencias relevantes para el observable con comprobaciones proporcionadas de discretización y suma espectral; documentar los límites sin exigir precisión arbitraria sobre contribuciones despreciables",
+    "passing_numerical_checks_admits_physical_core": false,
+    "thermal_reference_validates_nonthermal_transient": false,
+    "complete_microscopic_equivalence_required": false
+  },
+  "preserve": [
+    "La cinética y los contratos energéticos de etapa2 que continúen siendo aplicables en su dominio probado",
+    "La topología y ecuaciones circuitales de la memoria; el contraste térmico no necesita activarlas",
+    "La distinción entre energía libre térmica a temperatura impuesta y energía interna a ocupaciones fijas",
+    "Los datos y fuentes archivados, incluido el candidato ensayado y las conclusiones negativas",
+    "El backend de producción y la etiqueta v1.0.0"
+  ],
+  "later_requirements": [
+    "Revisar los acoplamientos energéticos y las derivadas cinéticas afectados por cualquier cambio futuro de la energía común",
+    "Transiente espacial débil con campo, poblaciones, potencial y balances coherentes",
+    "Condiciones de borde, reservorios, trabajo exterior y circuito cuando el ensayo los use",
+    "Transporte cinético de interfaz si se introduce una reducción2D–1D; no asumir esa reducción",
+    "Referencia y observables de núcleo antes de afirmar barreras o eventos de fase físicos",
+    "Preparación fotónica y parámetros operacionales todavía abiertos antes de predecir hotbelt o latencia óptica"
+  ],
+  "future_photon_horizon": {
+    "policy": "horizon_policy.md",
+    "authorized": true,
+    "implemented": false,
+    "scope": "Sólo el horizonte de observación de futuros transientes fotónicos; conservar todas las ecuaciones y el circuito hasta la parada. No afecta este diagnóstico térmico sin fotón"
+  },
+  "execution": {
+    "reuse_parallel_resource_budget": true,
+    "maximum_resource_fraction": 0.9,
+    "expected_agent_computation_limit_seconds": 300,
+    "uncertain_light_check_timeout_seconds": 240,
+    "long_run_handoff": "Registrar propósito, recursos, salidas y comando en /home/jdiaz/GEMINGA_COMMANDS.md y copiar el comando en el chat; esperar ejecución del usuario",
+    "new_long_calculation_required_by_this_contract": false
+  },
+  "physical_closure_changed": false,
+  "physical_core_admitted": false,
+  "stage4_complete": false,
+  "production_promotion": false
+}
