@@ -98,8 +98,6 @@ algebraica espectral completa conserva el detalle energético y aproxima bien la
 respuesta lenta medida; no acredita todavía el régimen ultrarrápido del detector.
 Tampoco se rechaza por este control congelado toda la fase y el potencial de la
 memoria. El operador temporal térmico ya se contrastó con 2304 raíces espectrales;
-la [trayectoria afín completada](stage4/time_review_20260924/README.md) mantiene
-la deriva de referencia y pasa el contraste temporal. El posterior contraste
-no lineal también pasa tras corregir cancelación de redondeo en Newton. Sigue
-la integración térmica no lineal ETD2 con la misma fuerza, KWT y potencial normal. Falta unir trabajo y transporte no térmicos antes de evaluar
+su siguiente trayectoria usa la fuerza espacial, KWT y potencial normal con gap
+móvil, conservando la deriva de referencia. Falta unir trabajo y transporte no térmicos antes de evaluar
 un fotón; el circuito completo y el horizonte acordado siguen vigentes.

@@ -4,18 +4,16 @@ Last updated: 2026-09-24 UTC
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: resolved charge moments and the slow-response diagnostic are complete.
-The [current review](docs/implementation/stage4/moment_review_20260924/README.md)
-separates the persistent single-potential discrepancy (20.55% current, 77.53%
-phase torque) from observed numerical variation. The 181-query campaign took
-198.12 s; 24 harmonic checks reused those spectra in 21.19 s. Full spectral
-algebraic elimination reproduces the slow charge response much better than
-compression to one thermal energy profile. This is not validation at detector
-frequencies. A full-node thermal moving-gap operator passed in 32.94 s, retaining
-the 1.1% baseline mobility/gauge correction. The next weak affine trajectory
-reuses spectral factorizations rather than re-solving spectra at each time step.
-Stage 4 stays open for coupled dynamics and the nonthermal energy balance;
-stage 5 and production are not activated. The v1.0.0 tag remains unchanged.
+Current phase: weak thermal time evolution and nonlinear constitutive snapshots passed.
+The [current review](docs/implementation/stage4/time_review_20260924/README.md)
+records 1 ps in 71.10 s with maximum gap displacement0.222% and planned
+temporal refinement. An equivalent stable energy difference resolves the
+Newton failure:2048 nonlinear roots then pass in22.74 s with the same tolerance.
+The next ETD2 trajectory updates nonlinear spectra, retains every spatial
+degree of freedom and preserves constant forcing without an auxiliary state.
+A reciprocal longitudinal population prototype has focused algebraic tests;
+its general nonthermal energy closure remains open. Stage4 stays open;
+stage5,production and the v1.0.0 tag are unchanged.
 
 ## Historical stage 3.5 closure and stage 4 preparation
 

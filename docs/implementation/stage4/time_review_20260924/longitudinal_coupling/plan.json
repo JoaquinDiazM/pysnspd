@@ -1,0 +1,39 @@
+{
+  "schema": "pysnspd.stage4.longitudinal_reciprocal_preparation.v1",
+  "status": "PROTOTYPE_TESTED_DRIVER_NOT_IMPLEMENTED",
+  "physical_sector": "Real spatial gap, constant phase, zero applied current; all nodes and energy-dependent longitudinal population retained",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "reference": "Uniform equilibrium of the same finite Matsubara sum; do not replace previous vortex G0 by zero",
+  "graph": "Reuse admitted full spatial graph geometry as a declared zero-current benchmark; prescribe uniform equilibrium gap/spectra and zero distribution increments at contacts",
+  "matsubara_count": 256,
+  "spectral_mass": "m*Re(g), no floor; zero mass remains algebraic",
+  "population_coordinate": "y=delta_hL/(d hFD/dE)",
+  "force_kernel": "Same frozen Keldysh amplitude force k=-2m Im(f)",
+  "thermal_hessian": "All-node exact spectral tangent Schur Hessian",
+  "temporal_window_ps": [
+    0,
+    1
+  ],
+  "initial_directions": [
+    "Weak compact real amplitude perturbation",
+    "Weak compact longitudinal distribution with nonthermal energy profile"
+  ],
+  "collisions": "Disabled in first reciprocal-block benchmark, not removed from detector model",
+  "regulator": "eta does not enter collision or escape terms",
+  "energy_contract": "Quadratic availability A2; KWT loss reported once, no total internal-energy or nonlinear detector claim",
+  "admission_purpose": "Observe spatial gap/population exchange and exact reciprocal/Dirichlet power algebra; no universal DOS precision gate",
+  "deferred": [
+    "Temporal driver and measured cost",
+    "Heat deposition of order perturbation squared",
+    "Existing electron/phonon collision coupling",
+    "Charge/phase/potential and full thesis circuit for biased device"
+  ],
+  "sources": {
+    "pysnspd/experimental/longitudinal_reciprocal.py": "1a673874f0c5c5319e44d323c2e6cc8f48cf4bc9a6b81bc4ac69e672d9259b48",
+    "pysnspd/experimental/frozen_kinetic_usadel.py": "08a73bd3b85a6eb1b07a64d841d6047a8bcf2ca5f77dfd8256d23802ee594e43",
+    "pysnspd/experimental/thermal_weak_response.py": "42bcc1fe9436287a838cfad43ae7ee9d5b202a773ff3faa3127508dc34d7cfda",
+    "tests/test_longitudinal_reciprocal.py": "273084187dd22ef93587000ea1c421aa88efa39c88f4d55417debbbae73f1d03"
+  },
+  "compute_policy": "No full calculation launched; any future run above5min requires user command handoff, <=90percent shared resources and BLAS1"
+}

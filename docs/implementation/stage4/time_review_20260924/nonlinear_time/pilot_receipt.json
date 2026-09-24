@@ -1,0 +1,55 @@
+{
+  "status": "PILOT_INTEGRITY_PASSED",
+  "horizon_ps": 0.001,
+  "runtime_seconds": 48.94935379689559,
+  "roots": 4096,
+  "maximum_spectral_residual": 8.426249419699657e-08,
+  "maximum_power_residual": 5.615514783995643e-13,
+  "checked_fields": [
+    {
+      "path": "primary/observation_000.npz",
+      "sha256": "5af065e68201256b0a0aa4214438f26455b44e9d08de8faa2669c1eb4d3e64b5"
+    },
+    {
+      "path": "primary/observation_001.npz",
+      "sha256": "9ab256c081c3f07ceef2aaab3875f2650711b8ff265f26cce34982c422b8a2c5"
+    },
+    {
+      "path": "primary/accepted_00001.npz",
+      "sha256": "30aac0e7a8cd2f75714b37a5c79e5a776f0e4859317adc46371657db979fc405"
+    },
+    {
+      "path": "refined/observation_000.npz",
+      "sha256": "5af065e68201256b0a0aa4214438f26455b44e9d08de8faa2669c1eb4d3e64b5"
+    },
+    {
+      "path": "refined/observation_001.npz",
+      "sha256": "9ab256c081c3f07ceef2aaab3875f2650711b8ff265f26cce34982c422b8a2c5"
+    },
+    {
+      "path": "refined/accepted_00001.npz",
+      "sha256": "30aac0e7a8cd2f75714b37a5c79e5a776f0e4859317adc46371657db979fc405"
+    }
+  ],
+  "same_accepted_step_pattern": true,
+  "interpretation": "Short execution verifies the assembled pipeline and fixed contacts. Both passes take one identical step; this is not independent temporal convergence of the 1ps trajectory.",
+  "long_trajectory_executed": false,
+  "timeout_seconds": 180,
+  "exit_code": 0,
+  "source_sha256": "4ece222da657f70d1b0a7cf41fe2da6ee61a1dc2237ecd8872cf2760778da466",
+  "files": {
+    "executed_plan.json": "f73c269bc5da788951d6bddd482f14f5a02a99eb2bc67a534e29df9d3417c38f",
+    "identity.json": "5d302f13e85cd7236cc9fafb38384578f56f28d8ede758ae0df244371d2a5123",
+    "progress.jsonl": "006a48a8a1876f2c8954edfde4a6a8ed4816cec12ff23be5cde04527f1f2c83b",
+    "refinement.json": "b9a02e16c1e62937cafdf2911a19d0349c7c5ba64390d4effadc2c383f10cde9",
+    "summary.json": "527b4d7c67a4411b11f49c96eee0de764bb296fef1274fe783f9bfab6e07fbfb",
+    "primary/accepted_00001.npz": "30aac0e7a8cd2f75714b37a5c79e5a776f0e4859317adc46371657db979fc405",
+    "primary/observation_000.npz": "5af065e68201256b0a0aa4214438f26455b44e9d08de8faa2669c1eb4d3e64b5",
+    "primary/observation_001.npz": "9ab256c081c3f07ceef2aaab3875f2650711b8ff265f26cce34982c422b8a2c5",
+    "primary/summary.json": "ab2674728904cfde795bfd3fbae3a8b94916c808d8fe2ed40eb791db51dddffe",
+    "refined/accepted_00001.npz": "30aac0e7a8cd2f75714b37a5c79e5a776f0e4859317adc46371657db979fc405",
+    "refined/observation_000.npz": "5af065e68201256b0a0aa4214438f26455b44e9d08de8faa2669c1eb4d3e64b5",
+    "refined/observation_001.npz": "9ab256c081c3f07ceef2aaab3875f2650711b8ff265f26cce34982c422b8a2c5",
+    "refined/summary.json": "0e5d2e119b56bd27a4f70effb9f092b3174fe2a9be431f27c849687e07e841ef"
+  }
+}

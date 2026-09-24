@@ -1,49 +1,40 @@
-# Etapa 4: respuesta de carga resuelta y preparación dinámica
+# Etapa 4: evolución térmica y siguiente transiente no lineal
 
-La [revisión actual](moment_review_20260924/README.md) reúne la campaña
-del usuario y el diagnóstico temporal ligero. La etapa 4 continúa: ya no hace
-falta otra campaña estática para decidir la compresión del modo de carga,
-pero todavía falta completar la dinámica acoplada y su balance de energía.
+La [revisión actual](time_review_20260924/README.md) acepta la trayectoria afín
+térmica ejecutada por el usuario: 1 ps físico en 71,10 s de cómputo. El máximo
+desplazamiento es 0,222 % del gap; la comparación temporal registrada pasa.
+Se resta la deriva de referencia al evaluar las perturbaciones.
 
-La campaña de momentos terminó en 198,12 s: 181 espectros, 362 respuestas a dos
-sondas y siete proyecciones. Reducir el defecto de cuadratura de 18,02 % a
-0,424 % no elimina la diferencia de corriente del potencial único, 20,55 %.
-La diferencia del torque de fase es 77,53 %; ambas superan la variación
-numérica observada. Son normas de respuestas de prueba, no errores de latencia.
+El contraste no lineal de los campos guardados también pasa: 2048 raíces en
+22,74 s. Un fallo de Newton se resolvió evaluando de forma estable el mismo
+incremento energético, sin alterar tolerancia, ecuación ni contactos.
+El [informe](../../../output/pdf/implementation/Informe_etapa_4_evolucion_termica.pdf)
+muestra evolución, mapas, disipación y diferencias no lineales con su escala.
 
-La respuesta armónica reutilizó esos espectros: 24 casos en 21,19 s. A la
-frecuencia lenta ν=0,001, conservar toda la dependencia energética y eliminar
-algebraicamente el modo de carga cambia la corriente sólo 0,0258 % y el torque
-0,0422 %. Esto respalda esa reducción en el diagnóstico lento, sin añadir un
-estado temporal por defecto. Las frecuencias altas prueban el cierre aproximado;
-no acreditan la respuesta AC subpicosegundo del detector.
+Sigue la [trayectoria térmica no lineal](time_review_20260924/nonlinear_time/README.md):
+ETD2 reutiliza el operador rígido, mientras cada fuerza usa espectros actuales.
+Se retienen todos los nodos y las derivadas KWT/potencial normal. Las funciones
+phi conservan algebraicamente el término constante sin un estado auxiliar.
 
-El operador para la evolución térmica débil con gap móvil ya pasó en 32,94 s,
-con la misma acción espacial, KWT y potencial normal. Las respuestas tangentes
-reutilizan 256 factores espectrales; sus derivadas se contrastaron con 2304
-raíces independientes. Se conserva el residuo real del núcleo y su corrección
-temporal del 1,1 %. Sigue la trayectoria afín de todos los nodos hasta 1 ps,
-con referencia y perturbaciones débiles separadas. Se distingue energía libre
-térmica del trabajo espectral no térmico pendiente. Véase la
-[decisión física](moment_review_20260924/physics_decision.md).
+También se preparó el [puente longitudinal](time_review_20260924/longitudinal_coupling/README.md)
+para unir amplitud y poblaciones. Sus pruebas comprueban reciprocidad y balance
+de disponibilidad en fase constante y corriente nula. El trabajo espectral
+general y el balance de energía interna siguen pendientes. La etapa 4 no se cierra.
 
-El [cuaderno vigente](../../GEMINGA_COMMANDS.md) identifica la siguiente prueba,
-salidas, recursos y comandos ligeros. Los cálculos previstos de más de cinco
-minutos son manuales y se entregan también en el chat. El presupuesto compartido
-máximo es 28 de 32 hilos, reservando dos núcleos físicos completos en Geminga.
+El [cuaderno vigente](../../GEMINGA_COMMANDS.md) identifica el único cálculo
+largo solicitado, salidas y recursos. Se limita el presupuesto compartido al
+90 %; en Geminga quedan libres dos núcleos físicos completos. No se pide
+repetir los cálculos completados ni crear sesiones de terminal.
 
 ## Evidencia anterior conservada
 
-- [Núcleos autoconsistentes y primeros espectros](self_consistent_review_20260924/README.md):
-  cuatro núcleos aceptados, sin otra relajación térmica requerida.
-- [Energía espacial](spatial_energy_20260924/README.md): recupera la fuerza radial
-  al mismo corte y deriva fuerza y corriente de la misma energía.
-- [Diagnóstico del cierre local](followup_20260923/README.md): explica por qué
-  no bastaba refinar la malla del cierre anterior.
-- [Controles iniciales](review_20260923/Informe_avance_etapa_4A.md): conservan
-  valores, conclusiones y límites originales.
+- [Momentos de carga, respuesta armónica y operador térmico](moment_review_20260924/README.md).
+- [Núcleos autoconsistentes y espectros](self_consistent_review_20260924/README.md).
+- [Energía espacial](spatial_energy_20260924/README.md).
+- [Diagnóstico del cierre local](followup_20260923/README.md).
+- [Controles iniciales](review_20260923/Informe_avance_etapa_4A.md).
 
 Producción y v1.0.0 siguen intactos. Se conserva el circuito completo de la
-memoria. Para el futuro fotón, sólo cambia la ventana hasta Vout más margen.
-Las incertidumbres de transferencia fotónica y tasas materiales permanecen
-explícitas; la etapa 5 no ha comenzado.
+memoria. Para el futuro fotón, sólo cambiará la ventana hasta Vout más margen.
+La transferencia fotónica y las tasas materiales permanecen abiertas; la
+etapa 5 no ha comenzado.

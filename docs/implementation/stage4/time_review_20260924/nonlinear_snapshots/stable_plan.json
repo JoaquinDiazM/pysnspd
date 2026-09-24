@@ -1,0 +1,115 @@
+{
+  "schema": "pysnspd.stage4.nonlinear_thermal_stable_snapshots.v1",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "tau_ee_Tc_ps": 0.5,
+  "tau_ep_Tc_ps": 2.47,
+  "matsubara_count": 256,
+  "probe_radius_ell0": 4.0,
+  "spectral_tolerance": 1e-07,
+  "maximum_newton_iterations": 60,
+  "near_zero_norm": 1e-10,
+  "weak_response_relative_margin": 0.01,
+  "disk_reserve_bytes": 1073741824,
+  "states": [
+    {
+      "id": "t0_baseline",
+      "time_ps": 0.0,
+      "kind": "baseline",
+      "snapshot_path": "refined/observation_000.npz",
+      "reuse_baseline": true
+    },
+    {
+      "id": "t0_amplitude",
+      "time_ps": 0.0,
+      "kind": "amplitude",
+      "snapshot_path": "refined/observation_000.npz",
+      "reuse_baseline": false
+    },
+    {
+      "id": "t0_angular_phase",
+      "time_ps": 0.0,
+      "kind": "angular_phase",
+      "snapshot_path": "refined/observation_000.npz",
+      "reuse_baseline": false
+    },
+    {
+      "id": "t0p01_baseline",
+      "time_ps": 0.01,
+      "kind": "baseline",
+      "snapshot_path": "refined/observation_003.npz",
+      "reuse_baseline": false
+    },
+    {
+      "id": "t0p01_amplitude",
+      "time_ps": 0.01,
+      "kind": "amplitude",
+      "snapshot_path": "refined/observation_003.npz",
+      "reuse_baseline": false
+    },
+    {
+      "id": "t0p01_angular_phase",
+      "time_ps": 0.01,
+      "kind": "angular_phase",
+      "snapshot_path": "refined/observation_003.npz",
+      "reuse_baseline": false
+    },
+    {
+      "id": "t1_baseline",
+      "time_ps": 1.0,
+      "kind": "baseline",
+      "snapshot_path": "refined/observation_007.npz",
+      "reuse_baseline": false
+    },
+    {
+      "id": "t1_amplitude",
+      "time_ps": 1.0,
+      "kind": "amplitude",
+      "snapshot_path": "refined/observation_007.npz",
+      "reuse_baseline": false
+    },
+    {
+      "id": "t1_angular_phase",
+      "time_ps": 1.0,
+      "kind": "angular_phase",
+      "snapshot_path": "refined/observation_007.npz",
+      "reuse_baseline": false
+    }
+  ],
+  "frozen_sources": {
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/thermal_weak_response.py": "42bcc1fe9436287a838cfad43ae7ee9d5b202a773ff3faa3127508dc34d7cfda",
+    "pysnspd/experimental/thermal_time_operator.py": "354e40f7d586b2c6c53582c041f3aa9cfb4a723d902096f654738aa0e63c96a6",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b"
+  },
+  "new_sources": [
+    "pysnspd/experimental/thermal_snapshot.py",
+    "pysnspd/experimental/thermal_stable_newton.py",
+    "sandbox/stage4_core/thermal_nonlinear_stable_snapshots.py",
+    "tests/test_thermal_snapshot.py",
+    "tests/test_thermal_stable_newton.py"
+  ],
+  "operator_inputs": {
+    "summary.json": "ec7d2675bfa7e9cf0960429785a5c7dc8cb93f4cf6eb3c955d2171b97ad317d2",
+    "identity.json": "e249f6fc44e471e9b400cdfee6608043dc6491a0a078cca01504320a481b8c61",
+    "full_node_operator_checks.npz": "f08bb86882ecf7679c98902d1a78bd2cbf379f848771d3c02cef71468dd51548"
+  },
+  "time_inputs": {
+    "summary.json": "dd70deae2d41cfa0fe0d57fc05e2fcd78fdf0b11983d507c9410c0d9f481678f",
+    "identity.json": "5aacfed5e99b6cff74f308d8e4d777072f53323cbb9f71daea3311171106d063",
+    "refined/summary.json": "2ce8d073aa3b14ea90df480309f3f4ba3d3be33720321fccc455b58f65d6e3a4",
+    "refined/observation_000.npz": "9c29047252ddfe44650b398268d42a4e8243aa12a5cf987f168e754893dd4a62",
+    "refined/observation_003.npz": "5f8607ab54564e6e06c09e733129e6c10b06e6bdbe2c7b5881d138d64bfa2c3c",
+    "refined/observation_007.npz": "6e4698f992b777ef1b3661a44431880571b79fd2a6e2a89e047adfb80a57c05f"
+  },
+  "selection_reason": "Initial nonlinear response,0.01ps near half initial angular phase torque, and1ps at maximum baseline displacement/Taylor defect. Same-time exact baseline subtraction for both probes.",
+  "root_count": 2048,
+  "time_steps_repeated": 0,
+  "scope": "Same finite thermal Matsubara action at saved states, same fixed spectral/gap/potential contacts, KWT times and normal law. No photon or nonthermal work closure.",
+  "comparison_policy": "Report errors relative to remaining response and initial impulse. The registered1percent margin uses max(remaining,initial), so vanishing late tails do not impose artificial accuracy gates.",
+  "cost_basis": "2048 nonlinear roots with tangent warm starts; same65x65 geometry and spectral tolerance as2304roots completed in32.94s. Expected safely below5minutes; one process-group timeout240s, no retry or fallback.",
+  "line_search": "Same Newton residual/Jacobian/Armijo threshold1e-4 and tol1e-7; evaluate exactly equivalent energy increment without subtracting extensive absolute energies. No fallback or changed physical equation.",
+  "roundoff_regression_fixture_sha256": "3fbfc8c9fffa034d0c0cede44b89fa8418fb0e776ddedc760d3826313f2d603f",
+  "prior_failed_output": "/home/jdiaz/scratch/stage4_nonlinear_snapshots_20260924"
+}

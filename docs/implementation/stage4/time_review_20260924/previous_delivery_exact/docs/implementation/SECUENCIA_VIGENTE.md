@@ -10,7 +10,7 @@ etapa 4 continúa sin fotón. Los contratos y resultados previos se preservan.
 | 2. Cinética de una y dos celdas | Desarrollo cerrado con límites | Acoplamientos conservativos y trayectorias registradas; certificado dinámico de malla incompleto. |
 | 3. Infraestructura espacial, bordes y circuito | Desarrollo cerrado con pendientes explícitos | Energía y corriente comunes, empalme de campo 2D–1D, potencial, cargas de reservorio y circuito de la memoria; evidencia estática e instantánea. |
 | **3.5. Dominio de confianza físico y numérico** | **Investigación cerrada con límites explícitos** | Establecer qué parámetros, estados, geometrías y ventanas de observación tienen fundamento físico, y qué márgenes numéricos necesitamos para estudiarlos. |
-| 4. Núcleo y disipación | Trayectoria térmica afín y contraste no lineal admitidos | Integrar el transiente térmico no lineal ETD2; completar trabajo, transporte y calor no térmicos. |
+| 4. Núcleo y disipación | Momentos resueltos y operador temporal térmico comprobado | Integrar la trayectoria térmica débil reutilizando matrices y completar el trabajo y transporte no térmicos. |
 | 5. Transientes completos y comparación experimental | No iniciada | Comparar el dispositivo y sus observables con el experimento, incluyendo incertidumbre y cadena de lectura. |
 
 La [decisión de cierre de etapa 3](stage3/closure_20260923/closure_decision.json)

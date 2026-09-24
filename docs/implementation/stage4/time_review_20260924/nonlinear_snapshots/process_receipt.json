@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-u",
+    "sandbox/stage4_core/thermal_nonlinear_stable_snapshots.py",
+    "--plan",
+    "docs/implementation/stage4/time_review_20260924/nonlinear_snapshots/stable_plan.json",
+    "--operator-root",
+    "/home/jdiaz/scratch/stage4_thermal_weak_20260924",
+    "--time-root",
+    "/home/jdiaz/scratch/stage4_thermal_time_20260924",
+    "--output-root",
+    "/home/jdiaz/scratch/stage4_nonlinear_stable_20260924",
+    "--execute"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 23.11934483703226,
+  "timeout_seconds": 240,
+  "cost_basis": "2048roots, same geometry/tolerance and tangent starts as2304roots previously32.94seconds; no temporal integration"
+}

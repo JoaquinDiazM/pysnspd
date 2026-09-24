@@ -1,0 +1,10 @@
+{
+  "status": "NONLINEAR_SNAPSHOTS_INCLUDED",
+  "source": "nonlinear_snapshots/summary.json",
+  "snapshot_times_ps": [0, 0.01, 1],
+  "final_paragraphs": [
+    "<b>2.048 soluciones espectrales en 22,74 s.</b> Se contrastaron nueve estados a 0, 0,01 y 1 ps, reutilizando la base inicial. Todas las respuestas del núcleo cumplen el margen registrado del 1 %, referido a la mayor escala entre respuesta inicial y restante. Se resta la base exacta del mismo instante.",
+    "A 1 ps, la diferencia de velocidad para la sonda de amplitud es <b>0,4056 % de su valor inicial</b> y 0,6107 % de su resto. En la sonda angular es 0,002785 % de la inicial, pero 18,04 % del pequeño resto. El torque tardío vuelve a mostrar que pasar el margen inicial no acredita precisión relativa en las colas.",
+    "<b>Siguiente prueba:</b> avanzar el mismo sistema térmico no lineal con una corrección de segundo orden. El operador guardado agiliza la parte lineal; la fuerza espectral se recalcula para el condensado que va evolucionando. Los estados comprobados aún no equivalen a ejecutar esa trayectoria completa de 1 ps."
+  ]
+}

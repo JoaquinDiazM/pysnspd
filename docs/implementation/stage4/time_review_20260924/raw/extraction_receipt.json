@@ -1,0 +1,2049 @@
+{
+  "status": "ALL_THERMAL_TIME_CHECKPOINTS_VERIFIED_NO_SOLVES",
+  "raw_directory": "/home/jdiaz/scratch/stage4_thermal_time_20260924",
+  "runtime_seconds": 0.9799121101386845,
+  "script_sha256": "a24c69b4d5839810fe774df2f193de21f367586cdcdbd8381fe3802e2bb56c19",
+  "sources_matching_identity": {
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "sandbox/stage4_core/run_spatial_energy.py": "7c5f2356a3decb34889d354666d0ee50fd90e7fd004189406328d7736a3a05e1",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/cell_closures.py": "6617523ff7c9032bfebe2f8bd11594c8eb1a0a85f1795d005fc61b6c6b324176",
+    "pysnspd/experimental/thermal_weak_response.py": "42bcc1fe9436287a838cfad43ae7ee9d5b202a773ff3faa3127508dc34d7cfda",
+    "sandbox/stage4_core/thermal_weak_campaign.py": "bdd213b94d984d53073d79935d760d657c23905bca005a81f1325d5460388c2f",
+    "tests/test_thermal_weak_response.py": "214ccd0d570bb532f4c170d45eafb2603b15a28b9449257b9f1dedd5e0287f8b",
+    "pysnspd/experimental/affine_krylov.py": "9da3abca76af602e6de291572570096c035deabebef2789fd55cf935a7238b92",
+    "pysnspd/experimental/thermal_time_operator.py": "354e40f7d586b2c6c53582c041f3aa9cfb4a723d902096f654738aa0e63c96a6",
+    "sandbox/stage4_core/thermal_time_campaign.py": "b36ac86a0129e4c1e02cebae3fc1d9dc7024716398fcc0b462a9144541216b24",
+    "tests/test_affine_krylov.py": "e2d1fd8c242ba37bd17213596b91ce72996af2d2763c004b2768527c8fc7d38a",
+    "tests/test_thermal_time_operator.py": "6a3e72af437fa0b5068b75310d9de58155bc4ba32729b6bfaa10d63030710f21"
+  },
+  "operator_inputs_verified": 257,
+  "budget": {
+    "cpu_fraction": 0.9,
+    "memory_fraction": 0.9,
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29
+    ],
+    "coordinator_cpu": 29,
+    "worker_affinity_cpus": [
+      0,
+      16,
+      1,
+      17
+    ],
+    "workers": 4,
+    "threads_per_process": 1,
+    "total_processes": 5,
+    "logical_budget": 28,
+    "effective_cpu_quota_units": 32,
+    "physical_cores_used": 14,
+    "physical_cores_reserved": 2,
+    "memory_limit_bytes": 114609774182,
+    "coordinator_reserve_bytes": 3221225472,
+    "worker_reserve_bytes": 1073741824,
+    "estimated_memory_reservation_bytes": 7516192768,
+    "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+  },
+  "checkpoint_certificate": [
+    {
+      "path": "primary/accepted_00001.npz",
+      "sha256": "316f951f95ab3b7e6bdb6f75a984355afe75ed366687c03e75db2569364e762d",
+      "bytes": 119245,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "primary/accepted_00002.npz",
+      "sha256": "66553598f1919f0e3e3f7960e00d839ba048108c730fe428b377971e5043138f",
+      "bytes": 119391,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "primary/accepted_00003.npz",
+      "sha256": "c78662f9596b6b5110b7315ca027b7ea21e3e7b02616f4dda6ce26a77fe14006",
+      "bytes": 119387,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "primary/accepted_00004.npz",
+      "sha256": "96835ed8494f810265b033e49dfd4ba69e8c39b6bbce752c42b502b43592ffdc",
+      "bytes": 120031,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "primary/accepted_00005.npz",
+      "sha256": "2d6d2ba65df21e691c22af950165be460891b7b6d9aeaac2f04463cb474225d9",
+      "bytes": 123212,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "primary/accepted_00006.npz",
+      "sha256": "7bdd10b553228cee33d1ae2730de76b562865fdaa778545b3f61110d5c13da12",
+      "bytes": 124465,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "primary/accepted_00007.npz",
+      "sha256": "d49940c65b72677e06fd36dab8f0b8b4cc767a7c1bd6640e670690e7e2281c5c",
+      "bytes": 131540,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_000.npz",
+      "sha256": "9c29047252ddfe44650b398268d42a4e8243aa12a5cf987f168e754893dd4a62",
+      "bytes": 536248,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_001.npz",
+      "sha256": "29cf0bfbe3ea4a47cbd9a3848935cfaa5566595e9f0407f18998e782d380266c",
+      "bytes": 946657,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_002.npz",
+      "sha256": "a7caeb9466f42c3ee4088f51d7e54a22d9c2663f001cf00476c08d22ccd52459",
+      "bytes": 951393,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_003.npz",
+      "sha256": "dff8d52386ecd66679c28150e516a89886478b3927e27b243976e141206fe5ae",
+      "bytes": 954024,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_004.npz",
+      "sha256": "8af5ae95663398bd0cf3b117d727a5ec82df194c26d84588a1e64bc45890b896",
+      "bytes": 960559,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_005.npz",
+      "sha256": "9251e1c6ca7a7ff4ffa98d458f2057d14c94e403184f57728c751bc284c12d19",
+      "bytes": 971720,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_006.npz",
+      "sha256": "135b89823e6e057f5ccde7ed269897ee58003e3eb6b852cec4ad1ff9489e0628",
+      "bytes": 977914,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "primary/observation_007.npz",
+      "sha256": "3219a4abd36c5f790441e4878985ac21d0bbbc547c8015c09d2fc75ece1ef74a",
+      "bytes": 1009035,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00001.npz",
+      "sha256": "6074d0ab601e764e96f4896c367a3bdd9cf3445352bd87c8e077cb0fbd5714ff",
+      "bytes": 119106,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00002.npz",
+      "sha256": "17927148ae63e2baec6ae1f32afa276bd2aad4a4c905a79edbc82413ff4b4f3a",
+      "bytes": 118836,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00003.npz",
+      "sha256": "7b7884c57606d934fd94d80bd369f974b85db3cfa09fe81f3ad066c91dc7f2f7",
+      "bytes": 118960,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00004.npz",
+      "sha256": "100f3034f1bfab8d6d3c8a4559a8fe754df39d30870f3075307e7384be6b46a0",
+      "bytes": 119008,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00005.npz",
+      "sha256": "278b768c5fa2e04ab3a02df7ffd2d9b1767bbfd3e7a0910bfde2b36a3d7f42dc",
+      "bytes": 119437,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00006.npz",
+      "sha256": "85411c7366d8c7ad340b56e36ff7c79c5f68b3c7086eb1798f8a4ec521f7a986",
+      "bytes": 119535,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00007.npz",
+      "sha256": "05932a259b10d22e64c13d7067457054cf2c136b64cee7de58de6533ec5dfbe6",
+      "bytes": 119812,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00008.npz",
+      "sha256": "e6f596bf3e520ddcdfc7fdc01420815d05c9b45293a36accffa75f8bd120d7b6",
+      "bytes": 120170,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00009.npz",
+      "sha256": "13933f89d4ce22e97636b78591538715a81b542ed14496201580cbc34655e919",
+      "bytes": 121272,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00010.npz",
+      "sha256": "87112db0b8528b72396226cf4d76795f8138267564778b570ffac3ee635d8c8f",
+      "bytes": 123640,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00011.npz",
+      "sha256": "9b0af3e07a2e6c21b5a736c0c4f9a5d1fe664ba38be21a9dae8876d66ad1eb43",
+      "bytes": 134148,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00012.npz",
+      "sha256": "1a388e6b785ee0bef461713ed4491c3784470184c4d8589a6fee735fee72d03d",
+      "bytes": 136518,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00013.npz",
+      "sha256": "b0ed7b99617a4bb02d1fba169be37aab6a85681512c280f43aa765e4ed4d70f5",
+      "bytes": 142321,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/accepted_00014.npz",
+      "sha256": "6764755741dfac57a6186f80970887527b74f497e90930cd297b00138ccedb7f",
+      "bytes": 142107,
+      "recorded_observation_hash_verified": false,
+      "arrays_finite": true,
+      "shapes": {
+        "time_ps": [],
+        "affine_state": [
+          23815
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_000.npz",
+      "sha256": "9c29047252ddfe44650b398268d42a4e8243aa12a5cf987f168e754893dd4a62",
+      "bytes": 536248,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_001.npz",
+      "sha256": "2b80c3ee7dc43049fcfa2032ff0f46781801c98c32c20df739144b80835f21b2",
+      "bytes": 946603,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_002.npz",
+      "sha256": "b2217969eb390b1f884f7c53b556696453178cd112cf878d5197e50dafecb044",
+      "bytes": 952233,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_003.npz",
+      "sha256": "5f8607ab54564e6e06c09e733129e6c10b06e6bdbe2c7b5881d138d64bfa2c3c",
+      "bytes": 954133,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_004.npz",
+      "sha256": "8ad19d498d210dd6b50fe6d48dfe523cb3d52138a0b83c947410088ebff131da",
+      "bytes": 960194,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_005.npz",
+      "sha256": "37986072fda2eca31345aaba194ee0f4e0ebf8e87605ada045d64e5e59df1fde",
+      "bytes": 963399,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_006.npz",
+      "sha256": "6b8eeda497e9d89412dd168636673e07ce6a35ccc0777999dfd977e59a25e240",
+      "bytes": 992754,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    },
+    {
+      "path": "refined/observation_007.npz",
+      "sha256": "6e4698f992b777ef1b3661a44431880571b79fd2a6e2a89e047adfb80a57c05f",
+      "bytes": 1025244,
+      "recorded_observation_hash_verified": true,
+      "arrays_finite": true,
+      "shapes": {
+        "baseline_displacement": [
+          4225
+        ],
+        "baseline_velocity": [
+          4225
+        ],
+        "baseline_hessian": [
+          4225
+        ],
+        "baseline_current_increment": [
+          8320
+        ],
+        "baseline_potential_increment": [
+          4225
+        ],
+        "baseline_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "amplitude_displacement": [
+          4225
+        ],
+        "amplitude_velocity": [
+          4225
+        ],
+        "amplitude_hessian": [
+          4225
+        ],
+        "amplitude_current_increment": [
+          8320
+        ],
+        "amplitude_potential_increment": [
+          4225
+        ],
+        "amplitude_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "angular_phase_displacement": [
+          4225
+        ],
+        "angular_phase_velocity": [
+          4225
+        ],
+        "angular_phase_hessian": [
+          4225
+        ],
+        "angular_phase_current_increment": [
+          8320
+        ],
+        "angular_phase_potential_increment": [
+          4225
+        ],
+        "angular_phase_constitutive_taylor_rhs_defect": [
+          4225
+        ],
+        "d0": [
+          4225
+        ],
+        "G0": [
+          4225
+        ],
+        "coordinates_bar": [
+          4225,
+          2
+        ],
+        "area_weights": [
+          4225
+        ],
+        "edges": [
+          8320,
+          2
+        ],
+        "conductance": [
+          8320
+        ],
+        "boundary_nodes": [
+          256
+        ],
+        "amplitude_difference": [
+          4225
+        ],
+        "angular_phase_difference": [
+          4225
+        ]
+      }
+    }
+  ],
+  "copied_file_sha256": {
+    "identity.json": "5aacfed5e99b6cff74f308d8e4d777072f53323cbb9f71daea3311171106d063",
+    "trajectory_compact.npz": "7336451f87e29c9a4b27fc394915ee53259cb70e2655be1e9b0a683f2e80220f",
+    "progress.jsonl": "c2e2838482077029426bd130e8a742dde9e872d1db292c5b0b6ce8cde3fa0581",
+    "refinement.json": "a5d05a115b00c4f05d16076e330f93c41be9ec44cb2bae20f434aaf2dd0b61de",
+    "summary.json": "dd70deae2d41cfa0fe0d57fc05e2fcd78fdf0b11983d507c9410c0d9f481678f",
+    "executed_plan.json": "e12f09a2f15fd327522b6bbcd86ead175df103393bbc895ec0e6bcd6c947cf7d",
+    "refined/summary.json": "2ce8d073aa3b14ea90df480309f3f4ba3d3be33720321fccc455b58f65d6e3a4",
+    "primary/summary.json": "6135e62ec517ccfb7a5bf257179ad787ddc3e1ee93872f875374ca6da67d8e36"
+  },
+  "accepted_steps": [
+    {
+      "pass_name": "primary",
+      "path": "primary/accepted_00001.npz",
+      "time_ps": 0.001,
+      "maximum_relative_displacement": 0.00046999567902816916,
+      "integrated_defect": 5.455773285484596e-15,
+      "tolerance": 0.0014152135623730952,
+      "affine_constant_defect": 4.440892098500626e-16
+    },
+    {
+      "pass_name": "primary",
+      "path": "primary/accepted_00002.npz",
+      "time_ps": 0.003,
+      "maximum_relative_displacement": 0.0004648728445471851,
+      "integrated_defect": 1.0772596422666327e-12,
+      "tolerance": 0.0013909354156856166,
+      "affine_constant_defect": 9.703349235223868e-14
+    },
+    {
+      "pass_name": "primary",
+      "path": "primary/accepted_00003.npz",
+      "time_ps": 0.01,
+      "maximum_relative_displacement": 0.00044696763098703844,
+      "integrated_defect": 1.119925296947095e-08,
+      "tolerance": 0.0013487691029898587,
+      "affine_constant_defect": 8.647202953682154e-10
+    },
+    {
+      "pass_name": "primary",
+      "path": "primary/accepted_00004.npz",
+      "time_ps": 0.03,
+      "maximum_relative_displacement": 0.000396544476565893,
+      "integrated_defect": 6.398267006285939e-06,
+      "tolerance": 0.001247689935256016,
+      "affine_constant_defect": 2.0900165975668017e-07
+    },
+    {
+      "pass_name": "primary",
+      "path": "primary/accepted_00005.npz",
+      "time_ps": 0.1,
+      "maximum_relative_displacement": 0.0002953647119269125,
+      "integrated_defect": 0.0010283821800272134,
+      "tolerance": 0.0011683593865787416,
+      "affine_constant_defect": -1.3077576042075378e-05
+    },
+    {
+      "pass_name": "primary",
+      "path": "primary/accepted_00006.npz",
+      "time_ps": 0.3,
+      "maximum_relative_displacement": 0.0008055708810428783,
+      "integrated_defect": 0.000317790029166293,
+      "tolerance": 0.0019718081343470537,
+      "affine_constant_defect": -1.4163111252796234e-05
+    },
+    {
+      "pass_name": "primary",
+      "path": "primary/accepted_00007.npz",
+      "time_ps": 1.0,
+      "maximum_relative_displacement": 0.0022169524145166913,
+      "integrated_defect": 0.001502882669496853,
+      "tolerance": 0.0052520945502885176,
+      "affine_constant_defect": 1.3758857877688158e-05
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00001.npz",
+      "time_ps": 0.0005,
+      "maximum_relative_displacement": 0.00047127689691516786,
+      "integrated_defect": 2.2380819403118445e-17,
+      "tolerance": 0.0007076067811865476,
+      "affine_constant_defect": 0.0
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00002.npz",
+      "time_ps": 0.001,
+      "maximum_relative_displacement": 0.00046999567902816845,
+      "integrated_defect": 2.060891347938542e-17,
+      "tolerance": 0.0007013902524465001,
+      "affine_constant_defect": 2.220446049250313e-16
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00003.npz",
+      "time_ps": 0.002,
+      "maximum_relative_displacement": 0.0004674338578736462,
+      "integrated_defect": 4.630353567559084e-15,
+      "tolerance": 0.0006954677078428086,
+      "affine_constant_defect": 4.440892098500626e-16
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00004.npz",
+      "time_ps": 0.003,
+      "maximum_relative_displacement": 0.000464872844547014,
+      "integrated_defect": 3.932395830628035e-15,
+      "tolerance": 0.0006844357016563783,
+      "affine_constant_defect": 6.661338147750939e-16
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00005.npz",
+      "time_ps": 0.006500000000000001,
+      "maximum_relative_displacement": 0.00045591551055942816,
+      "integrated_defect": 5.979906045474636e-11,
+      "tolerance": 0.0006743845514949648,
+      "affine_constant_defect": 4.617417559416026e-12
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00006.npz",
+      "time_ps": 0.01,
+      "maximum_relative_displacement": 0.0004469676294282421,
+      "integrated_defect": 3.4353474149288366e-11,
+      "tolerance": 0.0006454699753053094,
+      "affine_constant_defect": 6.482148151576439e-12
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00007.npz",
+      "time_ps": 0.02,
+      "maximum_relative_displacement": 0.0004214533665631394,
+      "integrated_defect": 5.19353758878959e-08,
+      "tolerance": 0.0006238449679643735,
+      "affine_constant_defect": 1.6960262083642874e-09
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00008.npz",
+      "time_ps": 0.03,
+      "maximum_relative_displacement": 0.00039654400770762136,
+      "integrated_defect": 9.597039686721175e-09,
+      "tolerance": 0.0005854380701620356,
+      "affine_constant_defect": 1.64886615472426e-09
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00009.npz",
+      "time_ps": 0.065,
+      "maximum_relative_displacement": 0.00031120837964165594,
+      "integrated_defect": 1.086559704456295e-05,
+      "tolerance": 0.000565511562159201,
+      "affine_constant_defect": -1.468307569973959e-07
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00010.npz",
+      "time_ps": 0.1,
+      "maximum_relative_displacement": 0.00029519307104415175,
+      "integrated_defect": 3.6121016205107635e-06,
+      "tolerance": 0.0005841811129629835,
+      "affine_constant_defect": -1.53942973923904e-07
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00011.npz",
+      "time_ps": 0.2,
+      "maximum_relative_displacement": 0.0005605806205807457,
+      "integrated_defect": 0.00040438980878812253,
+      "tolerance": 0.0007607089303212465,
+      "affine_constant_defect": 2.6044820118364953e-06
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00012.npz",
+      "time_ps": 0.3,
+      "maximum_relative_displacement": 0.000805608756760882,
+      "integrated_defect": 0.0007141346647575883,
+      "tolerance": 0.0009859292854175303,
+      "affine_constant_defect": -8.437953546991395e-06
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00013.npz",
+      "time_ps": 0.65,
+      "maximum_relative_displacement": 0.0015685018061571418,
+      "integrated_defect": 0.0017152634984862537,
+      "tolerance": 0.001827300981850852,
+      "affine_constant_defect": 1.5243948726428869e-05
+    },
+    {
+      "pass_name": "refined",
+      "path": "refined/accepted_00014.npz",
+      "time_ps": 1.0,
+      "maximum_relative_displacement": 0.0022171308022353696,
+      "integrated_defect": 0.0005349771267139264,
+      "tolerance": 0.0026260929291409187,
+      "affine_constant_defect": 2.2099371020045666e-05
+    }
+  ],
+  "observed_fields": [
+    "amplitude_constitutive_taylor_rhs_defect",
+    "amplitude_current_increment",
+    "amplitude_difference",
+    "amplitude_displacement",
+    "amplitude_hessian",
+    "amplitude_potential_increment",
+    "amplitude_velocity",
+    "angular_phase_constitutive_taylor_rhs_defect",
+    "angular_phase_current_increment",
+    "angular_phase_difference",
+    "angular_phase_displacement",
+    "angular_phase_hessian",
+    "angular_phase_potential_increment",
+    "angular_phase_velocity",
+    "baseline_constitutive_taylor_rhs_defect",
+    "baseline_current_increment",
+    "baseline_displacement",
+    "baseline_hessian",
+    "baseline_potential_increment",
+    "baseline_velocity"
+  ],
+  "maximum_accepted_relative_displacement": 0.0022171308022353696,
+  "maximum_affine_constant_defect": 2.2099371020045666e-05,
+  "new_physics_solves": 0,
+  "originals_retained_remotely": true
+}

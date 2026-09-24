@@ -1,0 +1,22 @@
+{
+  "schema": "pysnspd.stage4.thermal_time_review.v1",
+  "stage4_complete": false,
+  "stage5_started": false,
+  "thermal_time_completed": true,
+  "thermal_affine_trajectory_admitted": true,
+  "nonlinear_constitutive_snapshots_completed": true,
+  "nonlinear_constitutive_snapshots_admitted": true,
+  "thermal_nonlinear_time_prepared": true,
+  "thermal_nonlinear_time_completed": false,
+  "nonthermal_work_closed": false,
+  "production_changed": false,
+  "tag_v1_0_0_preserved": true,
+  "conclusion": "Accept the completed weak thermal trajectory and nonlinear snapshot contrast at the measured scope; resolve Newton roundoff without changing physics or tolerance. Proceed to nonlinear thermal time integration, then reciprocal population work.",
+  "numerical_change": "Equivalent stable Armijo energy increment; physical-coordinate phi actions and ETD2 nonlinear remainder.",
+  "pending": [
+    "Full nonlinear thermal trajectory",
+    "General nonthermal spectral work,transport and heat/circuit coupling",
+    "Photon transfer and absolute NbN rates before device prediction"
+  ],
+  "thermal_nonlinear_time_pilot_completed": true
+}

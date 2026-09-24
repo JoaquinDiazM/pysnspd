@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "review": "Visual and quantitative QA of the four-page results report",
+  "reviewed_utc": "2026-09-24T14:58:25.060230+00:00",
+  "pdf_path": "output/pdf/implementation/Informe_etapa_4_evolucion_termica.pdf",
+  "pdf_sha256": "d9107e52bd2b236eea41c5bedc7e48f83418d82ff2beb5d44563394dbcc58c2a",
+  "pdf_bytes": 685933,
+  "pages": 4,
+  "visually_reviewed_pages": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "render_sha256": {
+    "1": "600626be650c46eaa8269b7628f60f19f4ab09141fa977663ecdf4ac20ab72e4",
+    "2": "b7ade9d46ea8082be56c952a705980982bef087c9cd4c9d1407a6e711e0a12f5",
+    "3": "243b3519e072f7b122c6d6146482c923654756d3adb41b7203f9f91a144a6e32",
+    "4": "82e06951c14aa82ef0b90f80e552a2bbd9b7ee769b492770b6e39ae85bb2cf77"
+  },
+  "source_and_data_sha256": {
+    "sandbox/stage4_core/build_time_review_report.py": "d46c35cf14a0b5a87d60eef9ec8173dd84e64281adbac0e99a61fe22eeddd5e6",
+    "docs/implementation/stage4/time_review_20260924/analysis.json": "da86807b99eb242f5d555947a367f209fd0701064f3accbb1576509532d0a58f",
+    "docs/implementation/stage4/time_review_20260924/report_context.json": "543103c30c2b8cb1b34629e6ebd2b7537355cfdc3cda04808d18509db7cbbd3f",
+    "docs/implementation/stage4/time_review_20260924/Informe_evolucion_termica.md": "da49dd4deacf6da7da3e9afef89d1174e12dd5ffbffcb061ba42273b294da89f",
+    "docs/implementation/stage4/time_review_20260924/raw/trajectory_compact.npz": "7336451f87e29c9a4b27fc394915ee53259cb70e2655be1e9b0a683f2e80220f",
+    "docs/implementation/stage4/time_review_20260924/raw/extraction_receipt.json": "12b1fae15b557af4d6f8c6b15e89057995e4bb66bae51c1ef68efc34da4b8587",
+    "docs/implementation/stage4/time_review_20260924/nonlinear_snapshots/summary.json": "e5fb267c28a7a418bf97cd7d53f898ecb46e61cdb87dec03b0296b9ad2879b1b",
+    "docs/implementation/stage4/time_review_20260924/nonlinear_snapshots/identity.json": "1cbb58b959d98b1fa797f25b44d5082ec94cd7f7ecb9f0dc8326227a5118c284",
+    "docs/implementation/stage4/time_review_20260924/nonlinear_snapshots/verification_receipt.json": "776746a0b8e181e48d0e142070a7ab226d7f0c1a067fa1d6152a5ee05497cd4d",
+    "docs/implementation/stage4/time_review_20260924/nonlinear_snapshots/stable_plan.json": "acedbaa06f455072c04043a9c52051dbc3fe8b9828b80f3c9cb18fc52f67cbe7",
+    "docs/implementation/stage4/time_review_20260924/nonlinear_snapshots/n09_diagnosis.json": "60dfd909ffe975ff2dc7a79675823c7fdf53b42c1abbf7b0419f4b685958dece"
+  },
+  "figure_sha256": {
+    "energy_and_taylor_limits.png": "4a360859226c3c0c3ef6d7a5b591dda15167d9b48f530007f5c24f3b0904643d",
+    "nonlinear_snapshot_differences.png": "3c74109087e2093697486847918761129b403277fe6787374ce8c9360fc04d07",
+    "numerical_repairs.png": "63974af1a8a7419fdc624182b1430a0b17af370b68312267f09a91a5eabc2101",
+    "refinement_two_scales.png": "5e572c25f86e8c008c62cc1af9f177fba418608e6108cb0d15d85d4a52a3d1a2",
+    "response_and_baseline.png": "4e250ef20882c189fc3c3b3c8449c8f82d28b6d4a3375744a29c99100ac760e3",
+    "transverse_phase_maps.png": "1582cf4190910fd9da9ea6ef8940fa78864234611cc6c01360b703956569a31e"
+  },
+  "checks": {
+    "all_four_pages_visually_reviewed": true,
+    "no_clipping_overlap_or_missing_glyphs": true,
+    "response_curves_subtract_time_matched_affine_baseline": true,
+    "primary_refined_differences_in_separate_panels": true,
+    "initial_and_remaining_response_norms_are_distinguished": true,
+    "maps_share_identical_color_limits": true,
+    "phase_map_uses_transverse_component_not_division_by_zero": true,
+    "central_undefined_phase_mask_is_visible_and_explained": true,
+    "energy_is_quadratic_Taylor_not_exact_nonlinear_trajectory": true,
+    "snapshots_are_not_claimed_as_nonlinear_time_integration": true,
+    "snapshot_core_response_scope_and_one_percent_margin_explained": true,
+    "small_tail_relative_error_not_hidden": true,
+    "unchanged_physics_and_open_stage4_scope_explicit": true,
+    "ETD2_next_step_recomputes_full_spectral_force": true,
+    "rounded_report_values_match_certified_data": true
+  },
+  "remaining_blockers": []
+}

@@ -59,7 +59,11 @@ differs by only 0.0258% in current at the selected slow frequency. This supports
 an economical spectral reduction in that diagnostic, not ultrafast device admission.
 The full-node moving-gap thermal operator also passed in 32.94 s against 2304
 spectral roots, retaining KWT, normal potential and the baseline residual.
-The next trajectory uses its saved matrices for affine weak dynamics up to 1 ps.
+The [completed weak thermal trajectory](docs/implementation/stage4/time_review_20260924/README.md)
+reached 1 ps in 71.10 s and passed its planned refinement. A subsequent nonlinear
+contrast passed 2048 roots in 22.74 s after correcting energy-cancellation in
+Newton without changing the tolerance or equations. The next ETD2 trajectory
+uses nonlinear spectra while reusing the saved stiff linear operator.
 Stage 4 remains open for coupled dynamics and the nonthermal spectral-work balance.
 Stage 5 has not started.
 Production retains Delaunay-Voronoi, adaptive first-order Euler and the thesis

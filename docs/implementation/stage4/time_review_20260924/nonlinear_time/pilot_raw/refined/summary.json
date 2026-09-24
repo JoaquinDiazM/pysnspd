@@ -1,0 +1,103 @@
+{
+  "observations": [
+    {
+      "time_ps": 0.0,
+      "states": [
+        {
+          "name": "baseline",
+          "free_energy_change": 0.0,
+          "free_energy_rate": -0.0010452765190579179,
+          "kwt_loss": 0.001044262071818777,
+          "normal_loss": 1.014447250250345e-06,
+          "power_residual": 1.1109521717619767e-14,
+          "continuity_max": 1.6653345369377348e-16,
+          "noether_max": 2.3878692798102494e-11
+        },
+        {
+          "name": "amplitude",
+          "free_energy_change": 0.0003565436454386782,
+          "free_energy_rate": -0.0011362739059490774,
+          "kwt_loss": 0.0011352622903481578,
+          "normal_loss": 1.011615689833698e-06,
+          "power_residual": 8.891408481809487e-14,
+          "continuity_max": 1.1102230246251565e-16,
+          "noether_max": 5.4125142350277746e-11
+        },
+        {
+          "name": "angular_phase",
+          "free_energy_change": 4.665892241125399e-07,
+          "free_energy_rate": -0.001067572157261852,
+          "kwt_loss": 0.0010656488917762832,
+          "normal_loss": 1.9232655048005377e-06,
+          "power_residual": 1.923186697378289e-14,
+          "continuity_max": 1.3877787807814457e-16,
+          "noether_max": 1.214674712849968e-09
+        }
+      ],
+      "fields_path": "refined/observation_000.npz",
+      "fields_sha256": "5af065e68201256b0a0aa4214438f26455b44e9d08de8faa2669c1eb4d3e64b5"
+    },
+    {
+      "time_ps": 0.001,
+      "states": [
+        {
+          "name": "baseline",
+          "free_energy_change": -2.3642990850935462e-06,
+          "free_energy_rate": -0.001042526735025233,
+          "kwt_loss": 0.0010416370473235676,
+          "normal_loss": 8.89687699728281e-07,
+          "power_residual": -1.9370924584491867e-15,
+          "continuity_max": 1.3877787807814457e-16,
+          "noether_max": 2.38941411792827e-11
+        },
+        {
+          "name": "amplitude",
+          "free_energy_change": 0.0003539733150744459,
+          "free_energy_rate": -0.001133462103306798,
+          "kwt_loss": 0.0011325749440947214,
+          "normal_loss": 8.87159478911087e-07,
+          "power_residual": 2.668344249797148e-13,
+          "continuity_max": 1.6653345369377348e-16,
+          "noether_max": 5.40193050527463e-11
+        },
+        {
+          "name": "angular_phase",
+          "free_energy_change": -1.9446831835847995e-06,
+          "free_energy_rate": -0.0010617999468054283,
+          "kwt_loss": 0.0010600988108277047,
+          "normal_loss": 1.7011365392751368e-06,
+          "power_residual": 5.615514783995643e-13,
+          "continuity_max": 1.6653345369377348e-16,
+          "noether_max": 1.1562832609285075e-09
+        }
+      ],
+      "fields_path": "refined/observation_001.npz",
+      "fields_sha256": "9ab256c081c3f07ceef2aaab3875f2650711b8ff265f26cce34982c422b8a2c5"
+    }
+  ],
+  "history": [
+    {
+      "attempt": 1,
+      "start_ps": 0.0,
+      "step_ps": 0.001,
+      "accepted": true,
+      "embedded_correction": 3.689187667869905e-07,
+      "embedded_tolerance": 0.0005,
+      "first_dimension": 8,
+      "first_defect": 5.821105344090921e-17,
+      "second_dimension": 8,
+      "second_defect": 9.343984161852817e-24,
+      "time_ps": 0.001,
+      "fields_path": "accepted_00001.npz",
+      "fields_sha256": "30aac0e7a8cd2f75714b37a5c79e5a776f0e4859317adc46371657db979fc405",
+      "maximum_relative_displacement": 0.00046999577485777426
+    }
+  ],
+  "runtime_seconds": 18.32236059382558,
+  "response_scales": [
+    0.0016985893204389847,
+    0.0016985893204389847,
+    0.0005121035679652362
+  ],
+  "auxiliary_constant_state": false
+}
