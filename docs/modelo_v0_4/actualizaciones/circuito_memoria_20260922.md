@@ -2,6 +2,16 @@
 
 **Actualización normativa documental, 22 de septiembre de 2026. No implementada.**
 
+**Nota posterior, 24 de septiembre de 2026.** La topología y las convenciones CM
+de esta adenda se conservan. Para la nueva preparación interior de Korzh, el
+[contrato DC](../../implementation/stage5/prephoton_dc_20260924/physical_scope.md)
+sustituye el escenario histórico de 10 nH por una inductancia exterior fija:
+96 nH del inductor añadido más la contribución diferencial del tramo activo no
+resuelto, evaluada una sola vez en el equilibrio DC. Los 96 nH no son un total
+al que se reste la región resuelta. No se introduce $L_k(t)$ ni cambia la red de
+tres estados. El texto y los ejemplos históricos siguientes conservan su fecha
+y no describen los parámetros de la nueva campaña.
+
 El modelo previsto adopta la red de polarización y lectura utilizada en los
 resultados de la memoria: fuente de tensión, resistencia e inductancia de
 polarización, rama del detector con inductancia serie y lectura acoplada mediante

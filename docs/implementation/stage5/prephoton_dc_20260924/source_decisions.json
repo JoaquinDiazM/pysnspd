@@ -1,0 +1,145 @@
+{
+  "schema": "pysnspd.stage5.prephoton_dc.sources.v1",
+  "date": "2026-09-24",
+  "status": "DOCUMENTARY_SCOPE_AND_IMPLEMENTATION_CONTRACT",
+  "simulations_performed_by_this_research": 0,
+  "supersedes_for_new_campaign": [
+    "Stage 4 zero-current BCS contacts at finite phase bias are not an admissible interior-strip baseline.",
+    "Stage 3.5 restriction of the 96 nH component to research only is superseded by the user's explicit device-level steering.",
+    "CM historical 10 nH total remains historical; it is not the new Korzh-motivated exterior inductance."
+  ],
+  "sources": [
+    {
+      "id": "K20",
+      "primary": true,
+      "title": "Demonstration of sub-3 ps temporal resolution with a superconducting nanowire single-photon detector",
+      "authors": "Boris Korzh et al.",
+      "year": 2020,
+      "doi": "10.1038/s41566-020-0589-x",
+      "url": "https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf",
+      "version": "Accepted manuscript and supplement, 37 PDF pages",
+      "access": "Official repository PDF text revisited through web tool 2026-09-24; screenshot endpoint failed; no new download needed",
+      "pdf_pages_one_based": {
+        "active_device_length": [4, 23, 24],
+        "inductor_length_inductance_sheet_estimate": [10],
+        "inductor_width_and_single_photon_insensitivity": [23],
+        "DC_bias_and_bath": [11],
+        "fixed_inductance_in_supplementary_interpretation": [28],
+        "interior_events_vs_taper_events": [6, 28],
+        "relative_latency_protocol": [12]
+      }
+    },
+    {
+      "id": "A20",
+      "primary": true,
+      "title": "Modeling and Development of Superconducting Nanowire Single-Photon Detectors",
+      "author": "Jason Paul Allmaras",
+      "year": 2020,
+      "doi": "10.7907/wgak-vs11",
+      "record_url": "https://thesis.caltech.edu/13748/",
+      "url": "https://thesis.caltech.edu/13748/08/Allmaras_Thesis_Final.pdf",
+      "access": "Official record revisited; web PDF unavailable; existing local PDF hash checked and extracted text read",
+      "local_path": "tmp/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf",
+      "sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96",
+      "printed_pages": [60, 61, 63, 64, 65],
+      "pdf_pages_one_based": [72, 73, 75, 76, 77]
+    },
+    {
+      "id": "CK12",
+      "primary": true,
+      "title": "Kinetic impedance and depairing in thin and narrow superconducting films",
+      "authors": "John R. Clem and V. G. Kogan",
+      "year": 2012,
+      "doi": "10.1103/PhysRevB.86.174521",
+      "url": "https://arxiv.org/pdf/1207.6421",
+      "access": "Primary author PDF read through web tool 2026-09-24",
+      "pdf_pages_one_based": [1, 2, 3, 4],
+      "equations_used": [3, 4, 5, 6, 7, 8, 11],
+      "scope": "Uniform dirty-limit current-carrying superconducting strip, negligible self-field, stable current-controlled branch. Its AC analysis is not adopted as the new campaign stimulus."
+    },
+    {
+      "id": "CM",
+      "primary": true,
+      "path": "docs/modelo_v0_4/actualizaciones/circuito_memoria_20260922.md",
+      "scope": "Thesis three-state circuit topology, power-port convention and inductance accounting",
+      "changes_in_this_document": "New exterior parameter scenario only; no topology reduction and no dynamic circuit inductance"
+    }
+  ],
+  "facts_and_estimates": {
+    "active_width_m": {"value": 8e-8, "status": "SELECTED_DEVICE", "source": "K20", "pdf_page": 23},
+    "active_length_m": {"value": 5e-6, "status": "PUBLISHED_GEOMETRY", "source": "K20", "pdf_pages": [4, 23, 24]},
+    "added_inductor_length_m": {"value": 0.0015, "status": "PUBLISHED_GEOMETRY", "source": "K20", "pdf_page": 10},
+    "added_inductor_width_m": {"value": 1e-6, "status": "PUBLISHED_GEOMETRY", "source": "K20", "pdf_page": 23},
+    "added_inductor_H": {"value": 9.6e-8, "status": "PUBLISHED_ESTIMATE_NOT_DIRECT_MEASUREMENT_OF_SELECTED_DEVICE", "source": "K20", "pdf_page": 10},
+    "sheet_inductance_H_per_square": {"value": 6.4e-11, "status": "ASSUMED_FROM_PULSE_SHAPES_OF_SIMILAR_FILMS", "source": "K20", "pdf_page": 10},
+    "added_inductor_purpose": {"value": "Avoid latching while preserving fast pulse rise; wide section not single-photon-sensitive", "sources": ["K20", "A20"]},
+    "exterior_to_active_current_density_ratio": {"value": 0.08, "formula": "80nm/1000nm at equal series current and film thickness", "status": "OUR_GEOMETRIC_CONVERSION_NOT_INDUCTANCE_CHANGE_BOUND"},
+    "Pearl_length_from_sheet_estimate_m": {"value": 0.00010185916357881301, "formula": "2*64e-12/mu0, mu0 approximately 4*pi*1e-7 H/m", "status": "OUR_THIN_FILM_CONVERSION_NOT_INDEPENDENT_PENETRATION_MEASUREMENT"},
+    "active_inductance_sheet_estimate_H": {"value": 4e-9, "formula": "64e-12*(5e-6/80e-9)", "status": "OUR_GEOMETRIC_CONVERSION_NOT_MEASUREMENT"},
+    "active_plus_added_sheet_estimate_H": {"value": 1e-7, "formula": "96e-9+4e-9", "status": "OUR_GEOMETRIC_CONVERSION_EXCLUDES_TAPERS_CONNECTIONS_BIAS_DEPENDENCE"},
+    "resolved_length_examples_m": {"value": [1.2e-7, 4.8e-7], "status": "NUMERICAL_WINDOW_EXAMPLES_NOT_EXPERIMENTAL_DEVICE_LENGTH_RANGE"},
+    "resolved_inductance_sheet_examples_H": {"value": [9.6e-11, 3.84e-10], "status": "OUR_GEOMETRIC_CONVERSION_NOT_NONLINEAR_CHANGE_BOUND"},
+    "remaining_active_inductance_sheet_examples_H": {"value": [3.904e-9, 3.616e-9], "status": "OUR_GEOMETRIC_CONVERSION_CORRESPONDING_TO_WINDOW_EXAMPLES"},
+    "diffusivity_m2_per_s": {"value": 5e-5, "status": "USER_SELECTED_K20_FITTED_MODEL_REFERENCE_NOT_MEASUREMENT"},
+    "normal_sheet_resistance_ohm": {"value": 608, "status": "USER_SELECTED_K20_FITTED_MODEL_REFERENCE_NOT_MEASUREMENT"},
+    "sheet_inductance_equality_between_fit_and_estimated_hardware": {"value": false, "status": "NOT_ESTABLISHED"},
+    "absolute_inductance_uncertainty_H": {"value": null, "status": "NOT_QUANTIFIED_BY_SOURCE"},
+    "tapers_and_connections_inductance_H": {"value": null, "status": "NOT_QUANTIFIED_BY_SOURCE"},
+    "Korzh_full_electrical_transfer_and_threshold": {"value": null, "status": "NOT_IDENTIFIED"}
+  },
+  "scope_decisions": {
+    "excitation_for_this_campaign": "NONE_DC_EQUILIBRIUM_ONLY",
+    "voltage_source": "CONSTANT_V_bias=R_bias*I_DC",
+    "future_excitation": "ONE_PHOTON_AT_FIXED_LONGITUDINAL_COORDINATE",
+    "longitudinal_geometric_jitter": "EXCLUDED_BY_USER_SCOPE",
+    "transverse_geometric_jitter": "FUTURE_TRANSVERSE_ABSORPTION_POSITION_FAMILY",
+    "contacts_and_tapers": "OUTSIDE_SPATIAL_WINDOW",
+    "spatial_baseline": "Uniform amplitude and longitudinal current, phase gradient q; all spectral and distribution fields consistent with same current-carrying bulk branch",
+    "boundary_condition": "Continuation of same current-carrying equilibrium, not zero-current BCS reservoirs",
+    "current_match_across_lengths": "Same I_DC; phase advance q*L changes with length",
+    "circuit_topology": "CM_THREE_STATES_UNCHANGED",
+    "external_inductance_time_policy": "FIXED_PER_INITIAL_DC_REFERENCE_NO_HOTSPOT_RECALCULATION",
+    "dynamic_lumped_inductance": false,
+    "resolved_condensate_dynamics_removed": false,
+    "new_AC_campaign": false,
+    "old_AC_results": "HISTORICAL_COUPLING_DIAGNOSTICS_NOT_PHOTON_TRANSIENTS",
+    "full_finite_photon_heat_closure_demonstrated_by_DC_null_test": false
+  },
+  "inductance_partition_recommendation": {
+    "method": "ADD_PHYSICALLY_EXTERIOR_SEGMENTS_ONCE",
+    "formula": "L_ext_ref=96e-9+(5e-6-L_resolved_m)*L_bulk_diff_per_m_ref",
+    "bulk_reference_formula": "L_bulk_diff_per_m_ref=(hbar/(2*e))*dq_dI_at_I_DC",
+    "reference_evaluation": "ONCE_PER_CURRENT_AND_MATERIAL_REFERENCE_FROM_STABLE_BULK_BRANCH",
+    "physical_units": "H for L_ext_ref; H/m for L_bulk_diff_per_m_ref; q in 1/m; I in A",
+    "phase_current_convention": "Use a consistent positive passive-current phase convention; derivative must have stable positive inductive sign",
+    "resolved_length_includes": "Entire 2D window plus any explicitly resolved 1D continuations",
+    "required_resolved_length_interval_m": [0, 5e-6],
+    "interval_endpoints_excluded": true,
+    "taper_and_connection_contribution": "UNQUANTIFIED_OMITTED_FROM_CONTROLLED_SCENARIO_NOT_ASSERTED_ZERO_IN_REAL_DEVICE",
+    "sheet_estimate_role": "Secondary transparent comparison of scale; do not force equality with fitted microscopic material",
+    "do_not_use": [
+      "L_ext=96nH-L_resolved: 96nH already describes only the added exterior component",
+      "L_ext=100nH plus full resolved voltage without partition: double counts the resolved segment",
+      "L_ext(t)=L_total-L_resolved(t): artificial dynamic repartition",
+      "Add I*dL/dt to a full resolved port already carrying condensate dynamics",
+      "Treat the 0.096-0.384nH initial geometric estimate as an upper bound near a normal core"
+    ],
+    "alternative_if_consistent_total_available": "Fixed L_ext=L_total_ref-L_resolved_ref evaluated once; alternative accounting, never used simultaneously with segment addition"
+  },
+  "CM_parameters_preserved": {
+    "R_bias_ohm": 10000,
+    "L_bias_H": 1e-6,
+    "R_load_ohm": 50,
+    "C_couple_F": 1e-10,
+    "parameter_status": "THESIS_CIRCUIT_SCENARIO_NOT_MEASURED_KORZH_FULL_READOUT",
+    "initial_state": "I_bias=I_detector=I_DC, capacitor_voltage=0, V_dev=V_out=0"
+  },
+  "remaining_before_photon_admission": [
+    "Uniform DC reference must pass actual discrete relaxation and spatial checks; copied analytic values alone are not evidence.",
+    "Bulk boundary fields must include finite-current spectral depairing, not only imposed phase.",
+    "Future dynamic ports must follow the circuit consistently; do not freeze both phase endpoints during current redistribution.",
+    "Finite-energy nonlinear heat balance and admitted absolute material rates remain separate from a zero-power DC null test.",
+    "Photon transfer, spatial width, omitted cascade delay and measurement trigger remain under their existing scope contracts.",
+    "The fixed exterior approximation is controlled modeling, not proof of frequency-independent experimental transfer at all frequencies."
+  ]
+}

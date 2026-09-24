@@ -52,7 +52,15 @@ circuit. Two biased references and five coupled responses completed in 48.57 min
 Complex admittance changes 1.589 percent under refinement; Vout changes 0.0005825 percent.
 Absolute dissipation and local current continuity are not certified by this weak
 reactive result. The [stage 5 entry](docs/implementation/stage5/README.md) identifies
-the remaining energy/current interfaces before photon transients; production remains
+the next [interior-strip DC campaign](docs/implementation/stage5/prephoton_dc_20260924/physical_scope.md).
+Its long run is pending: prepare a uniform current-depressed gap, phase gradient
+q, consistent bulk boundary spectra and a quiet DC circuit before photon injection.
+The thesis three-state topology is preserved. Exterior inductance is fixed once
+per operating point: the published 96 nH added inductor plus the differential
+inductance of the unmodeled part of the 5 micrometer active strip. There is no
+dynamic lumped Lk, new AC campaign or longitudinal geometric-jitter scan; future
+position dependence concerns the 80 nm width. Finite-energy heat balance and
+photon preparation remain separate admission requirements. Production remains
 unchanged. The completed dual-mesh inherited Euler and longitudinal controls need
 no repetition. The [archive index](docs/implementation/ARCHIVOS_ARCHIVADOS.md)
 retains exact recovery of superseded PDFs and duplicate data removed from main.

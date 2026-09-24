@@ -66,3 +66,29 @@
 - The existing production `latency` early-stop mode waits for a peak; it is not
   yet the requested trigger-plus-margin semantics. Production changes require
   the later implementation step, not a silent change in these static controls.
+
+## Interior-strip DC preparation and device scope
+
+- The next campaign prepares a photon-free DC equilibrium in an interior section
+  of the 80 nm strip. Its longitudinal cuts are continuations of the same
+  current-carrying superconductor, not metallic contacts or zero-current BCS
+  reservoirs. Prepare the gap, spectral fields, distributions, potential and
+  circuit consistently at the same operating current.
+- For the ideal straight strip, require a spatially uniform gap magnitude and
+  longitudinal current up to measured discretization error. The phase has a
+  finite gradient q; compare lengths at equal current, not equal total phase.
+  Preserve the Delaunay-Voronoi mesh and inherited first-order KWT Euler update.
+- Use a constant DC source and a future single localized photon. Do not add new
+  AC campaigns or unrelated artificial perturbations as mandatory intermediate
+  stages. Existing AC results remain historical coupling diagnostics.
+- Exclude longitudinal geometric jitter. Hold the longitudinal absorption
+  coordinate fixed; future position dependence concerns the strip width.
+- Preserve the thesis three-state circuit. For the Korzh-motivated scenario,
+  freeze the exterior inductance once per DC reference as 96 nH plus the
+  differential bulk inductance of the unmodeled part of the 5 micrometer active
+  strip. The 96 nH describes only the added exterior inductor; never subtract
+  the resolved segment from it or double count resolved condensate dynamics.
+  Do not introduce a dynamic lumped Lk(t) or recompute the partition during a pulse.
+- A photon-free equilibrium with zero dissipated power does not establish the
+  missing finite-energy heat balance, absolute NbN rates or photon preparation.
+  Report that scope explicitly before admitting a photon transient.

@@ -1,0 +1,71 @@
+{
+  "schema": "pysnspd.stage5.prephoton_dual_mesh.v1",
+  "status": "MESH_PREPARED_NO_SPECTRAL_OR_TIME_SOLVE",
+  "case": "l320_h5",
+  "parameters": {
+    "length_m": 3.2e-07,
+    "width_m": 8e-08,
+    "target_spacing_m": 5e-09,
+    "seed": 12345,
+    "max_edge_length_m": 5e-09,
+    "min_angle_deg": 32.5,
+    "smooth": 0,
+    "min_points": null,
+    "boundary_points": 325,
+    "terminal_contact_mode": "normal_left_right"
+  },
+  "seed_scope": "12345 retained as metadata; the meshpy construction path does not explicitly consume a random seed",
+  "material": {
+    "Tc_K": 8.65,
+    "diffusion_m2_s": 5e-05
+  },
+  "ell0_m": 4.698490897269843e-09,
+  "coordinate_origin_m": [
+    1.6e-07,
+    0.0
+  ],
+  "boundary_rule": "Requested boundary spacing <= half the target interior edge length",
+  "requested_points_per_long_side": 130,
+  "requested_points_per_short_side": 33,
+  "requested_long_side_spacing_m": 2.4806201550387596e-09,
+  "requested_short_side_spacing_m": 2.5e-09,
+  "terminal_label_scope": "normal_left_right is inherited mesh metadata only; the DC solver imposes superconducting current-carrying bulk spectra at these cuts, not normal-metal contacts",
+  "fixed_node_policy": "Only x=0 and x=L cuts are fixed; transverse side walls retain natural graph boundaries",
+  "n_nodes": 3659,
+  "n_edges": 10652,
+  "n_triangles": 6994,
+  "n_left_contact": 33,
+  "n_right_contact": 33,
+  "n_geometric_boundary": 322,
+  "bounds_m": {
+    "x": [
+      0.0,
+      3.2e-07
+    ],
+    "y": [
+      -4e-08,
+      4e-08
+    ]
+  },
+  "area_relative_error": 0.0,
+  "minimum_dual_area_m2": 1.4981009255587255e-18,
+  "minimum_conductance": 0.00019629389161471148,
+  "maximum_edge_length_m": 4.969773839622138e-09,
+  "minimum_triangle_angle_degrees": 32.51377745584771,
+  "n_circumcenters_outside_rectangle": 0,
+  "mesh_warnings": [],
+  "laplacian_relative_difference": 1.691187546518133e-14,
+  "runtime_seconds": 0.2321818652562797,
+  "profile": "Saved smooth cosine profile is only an operator check; not a photon or an applied perturbation",
+  "base_mesh_reused_without_copy": "docs/implementation/stage4/practical_time_review_20260924/dual_mesh/resampled/mesh.npz",
+  "base_mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4",
+  "mesh_sha256": "0fee80bcb7cb83239f77d97c05e6e2f4da48b2ba7235ee7079d3288d2dd61807",
+  "source_sha256": {
+    "sandbox/stage5_prephoton/prepare_meshes.py": "0015940a1d5bcccee638b8ec1bbd5de1e6a0d406e20276f5c1e66c3920738904",
+    "pysnspd/mesh/pytdgl_like.py": "d0d547cbf30a6445600db4f69d2f40f5fc6e5e306a393bc1cea7db8cf84c3e79",
+    "pysnspd/mesh/finite_volume/mesh.py": "30be3eeb8a890eaabbf6988486e85d468344dc5893bedf664b78fd77a555a978",
+    "pysnspd/mesh/finite_volume/edge_mesh.py": "786e9f1e04fff8ff3a1af86eab80f39079e0ffb86788cc6bae0cde045e2153b9",
+    "pysnspd/experimental/thermal_mesh_adapter.py": "66992c99153fac92f1c859a48febcb3cc29ac18c305be7ea88c8f048b12c3b1b",
+    "pysnspd/gtdgl/tdgl_operators.py": "3bc80ecc0c5ea70446a09328eda60a895098dbccc9477b5ae98b7b69dbab406b"
+  }
+}

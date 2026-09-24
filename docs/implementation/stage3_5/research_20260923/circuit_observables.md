@@ -1,5 +1,13 @@
 # Circuito y observables para el caso de 80 nm
 
+**Nota posterior, 24 de septiembre de 2026.** Las observaciones del usuario
+autorizan ahora el [escenario DC interior](../../stage5/prephoton_dc_20260924/physical_scope.md):
+misma topología CM y una inductancia exterior fija de 96 nH más la contribución
+del tramo activo no resuelto, precomputada en el equilibrio con corriente.
+Queda superada para esa campaña la restricción de este documento que mantenía
+los 96 nH sólo como investigación. No se altera la procedencia de los valores,
+la contabilidad por segmentos ni el contenido histórico del 23 de septiembre.
+
 Investigación documental, 23 de septiembre de 2026. Se adopta la elección comunicada del caso Korzh de 80 nm y del contraste 775/1550 nm, estudiando la formación del hotbelt a partir de un depósito localizado. **Se conserva el circuito CM de la memoria**; la elección de parámetros materiales ajustados de K20 no autoriza cambiarlo por el montaje de 96 nH. Aquí se resuelve la procedencia de la lectura; no se ejecutan transientes ni se cambia el circuito implementado. El registro de fuentes y decisiones está en [circuit_sources.json](circuit_sources.json).
 
 ## Qué representa el circuito disponible

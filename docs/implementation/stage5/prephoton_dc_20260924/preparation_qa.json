@@ -1,0 +1,207 @@
+{
+  "status": "PREPARED_LONG_CAMPAIGN_NOT_EXECUTED",
+  "total_distinct_tests_passed": 70,
+  "tests": [
+    {
+      "environment": "Windows bundled Python with local scientific dependencies",
+      "tests_passed": 35,
+      "seconds": 5.262,
+      "modules": [
+        "test_bulk_current_reference",
+        "test_prephoton_dc_reference",
+        "test_prephoton_dc_hold",
+        "test_prephoton_campaign",
+        "test_prephoton_dc_analysis",
+        "test_heredado_kwt_bridge"
+      ],
+      "note": "These 35 tests passed. An additional attempted pytest-based module could not import pytest in this runtime; it was then run successfully in the existing Geminga environment below."
+    },
+    {
+      "environment": "Windows bundled Python",
+      "tests_passed": 3,
+      "seconds": 0.037,
+      "modules": [
+        "test_prephoton_spectral_cache"
+      ]
+    },
+    {
+      "environment": "Geminga snspd Python, pytest",
+      "tests_passed": 32,
+      "seconds": 0.12,
+      "modules": [
+        "test_experimental_electrical_ports"
+      ]
+    }
+  ],
+  "static_pilot": "pilot/receipt.json",
+  "temporal_pilot": "pilot/temporal_pilot.json",
+  "mesh_receipts": [
+    "meshes/l160_h35/morphology.json",
+    "meshes/l320_h5/morphology.json"
+  ],
+  "geminga_dry_run": {
+    "status": "DRY_RUN",
+    "long_output_exists": false,
+    "allocation": {
+      "shared_budget": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13,
+          29
+        ],
+        "coordinator_cpu": 29,
+        "worker_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13
+        ],
+        "workers": 27,
+        "threads_per_process": 1,
+        "total_processes": 28,
+        "logical_budget": 28,
+        "effective_cpu_quota_units": 32,
+        "physical_cores_used": 14,
+        "physical_cores_reserved": 2,
+        "memory_limit_bytes": 113153579827,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 1073741824,
+        "estimated_memory_reservation_bytes": 32212254720,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      },
+      "parallel_cases": 2,
+      "slots": [
+        {
+          "slot": 0,
+          "cpus": [
+            0,
+            16,
+            1,
+            17,
+            2,
+            18,
+            3,
+            19,
+            4,
+            20,
+            5,
+            21,
+            6,
+            22
+          ],
+          "workers": 13,
+          "case_coordinator_cpu": 22,
+          "numerical_worker_cpus": [
+            0,
+            16,
+            1,
+            17,
+            2,
+            18,
+            3,
+            19,
+            4,
+            20,
+            5,
+            21,
+            6
+          ]
+        },
+        {
+          "slot": 1,
+          "cpus": [
+            7,
+            23,
+            8,
+            24,
+            9,
+            25,
+            10,
+            26,
+            11,
+            27,
+            12,
+            28,
+            13
+          ],
+          "workers": 12,
+          "case_coordinator_cpu": 13,
+          "numerical_worker_cpus": [
+            7,
+            23,
+            8,
+            24,
+            9,
+            25,
+            10,
+            26,
+            11,
+            27,
+            12,
+            28
+          ]
+        }
+      ],
+      "numerical_worker_ceiling": 25,
+      "total_process_cpu_ceiling": 28,
+      "case_coordinator_reserve_bytes": 3221225472,
+      "estimated_memory_reservation_bytes": 36507222016,
+      "accounting": "Each case slot includes its subprocess coordinator plus workers; BLAS/OpenMP=1. CPU sets are disjoint."
+    }
+  },
+  "data_retention": "Only compact pilot receipts, one physical plot, new required meshes, plans and source; full spectra/trajectories remain in Geminga scratch",
+  "unchanged_preexisting_files": 86,
+  "production_changed": false,
+  "tag_v1_0_0_peeled_commit": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+  "physical_admission": "Only the static 15.5 uA reference and a 0.005 ps integration pilot are admitted. All long-case/mesh/length/time comparisons remain pending."
+}

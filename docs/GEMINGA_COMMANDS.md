@@ -1,4 +1,71 @@
-# Geminga: etapa 4 cerrada como desarrollo; sin corrida larga pendiente
+# Geminga: preparación DC de una sección interior antes del fotón
+
+## 2026-09-24 — Comando vigente: equilibrios intrínsecos y conservación DC
+
+**Pendiente de ejecución manual.** Prepara cuatro referencias con bordes del
+mismo superconductor portador de corriente, y cinco trayectorias de 10 ps con
+fuente DC y circuito CM completo. No añade sonda AC ni fotón. Lext se calcula
+una sola vez por referencia: 96 nH del inductor añadido más el tramo activo
+omitido, sin inductancia circuital dependiente del tiempo. Compara corriente,
+longitud, malla y paso temporal. No hace falta configurar ninguna screen.
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage5_prephoton/run_prephoton_dc.py \
+  --plan docs/implementation/stage5/prephoton_dc_20260924/campaign.json \
+  --output-root /home/jdiaz/scratch/stage5_prephoton_dc_20260924 --execute
+```
+
+**Tiempo orientativo: 10–24 horas para el conjunto**, sujeto al coste de las
+mallas mayores y a cuántas veces deba renovarse el Jacobiano. Es una proyección,
+no un tiempo medido de esta campaña. El piloto de 1712 nodos/256 frecuencias
+completó 50 pasos en 7,26 s con 12 trabajadores. La primera versión reconstruía
+Newton en cada paso (~4,7 s/paso) y se detuvo al límite de 180 s; la versión
+actual reutiliza las factorizaciones y verifica el mismo residuo no lineal.
+La ETA se actualiza con el progreso real; la de preparación estática indica
+el presupuesto de iteraciones restante, que puede terminar mucho antes.
+
+**Recursos:** hasta 28 CPU lógicas en el inventario actual de 16 núcleos/32
+hilos; dos núcleos completos libres. Dos casos simultáneos, con 13 y 12
+trabajadores espectrales, dos coordinadores de caso y uno global. Un hilo
+BLAS/OpenMP por proceso, afinidades disjuntas y reducción de concurrencia si
+RAM/cuotas lo exigen. Reserva estimada por el planificador ≈34 GiB para dos
+casos; los factores LU residentes están dentro de ese presupuesto. Los datos
+se guardan en scratch; las referencias no se duplican en Git.
+
+**Salidas:** `references/cases/*/reference.npz`, `summary.json`; después
+`holds/cases/*/{summary.json,history.json,fields.npz}`. Al finalizar:
+`analysis.md`, `analysis.json`, `figures/*.png` y `workflow_result.json`.
+El informe incluye perfiles del gap, mapas, deriva temporal, Vdev y Vout en
+paneles separados, además de la partición inductiva. El destino debe ser nuevo.
+Los casos independientes continúan si otro falla; sus dependientes se bloquean.
+No se reintenta, sobrescribe ni ajustan tolerancias silenciosamente.
+
+**Alcance:** verifica el fondo DC térmico y el circuito. No certifica por sí
+solo el balance de calor fuera del equilibrio ni la transferencia del fotón.
+Los detalles y márgenes están en
+`docs/implementation/stage5/prephoton_dc_20260924/README.md`.
+
+Comprobación útil y ligera de entradas, versiones y recursos, sin simulación:
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage5_prephoton/run_prephoton_dc.py \
+  --plan docs/implementation/stage5/prephoton_dc_20260924/campaign.json \
+  --output-root /home/jdiaz/scratch/stage5_prephoton_dc_20260924
+```
+
+Rehacer sólo las figuras y el análisis de datos ya terminados, segundos:
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage5_prephoton/analyze_prephoton_dc.py \
+  --output-root /home/jdiaz/scratch/stage5_prephoton_dc_20260924
+```
+
+Avisar al terminar; no es necesario pegar los registros extensos en el chat.
+
+## Historial: cierre de etapa 4, previo a las observaciones sobre el bulk DC
 
 ## Entrega actual: cierre físico y preparación de etapa 5
 

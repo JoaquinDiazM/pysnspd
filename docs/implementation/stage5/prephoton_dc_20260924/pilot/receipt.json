@@ -1,0 +1,71 @@
+{
+  "schema": "pysnspd.stage5.prephoton_static_pilot_receipt.v1",
+  "status": "DC_REFERENCE_ADMITTED",
+  "admitted_for_dark_hold": true,
+  "scope": "Static current-carrying intrinsic-bulk reference only; physical_time_steps=0; long DC hold remains independent evidence",
+  "physical_time_steps": 0,
+  "photon": false,
+  "ac_source": false,
+  "runtime_seconds": 107.965,
+  "numerical_workers": 12,
+  "runtime_provenance": "Observed Geminga pilot wall time and admitted worker allocation, supplied with the static pilot receipt",
+  "nodes": 1712,
+  "positive_matsubara_frequencies": 256,
+  "optimization_sweeps": 22,
+  "source": {
+    "remote_reference": "/home/jdiaz/scratch/prephoton_dc_pilot_20260924/reference.npz",
+    "reference_sha256": "ab275c0b7f68444846bd39e231ddc359e4d53448454767c83a7fee07111195ca",
+    "raw_archive_copied_into_repository": false,
+    "summary_sha256": "1a9767596726c5abd51019deaf7913c3ee2d02989af2878a5fa1de27895c0af8",
+    "mesh_path": "docs/implementation/stage4/practical_time_review_20260924/dual_mesh/resampled/mesh.npz",
+    "mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4"
+  },
+  "physical_case": {
+    "T_K": 0.9,
+    "Tc_K": 8.65,
+    "diffusion_m2_s": 5e-05,
+    "sheet_resistance_ohm": 608.0,
+    "width_m": 8e-08,
+    "current_A": 1.55e-05,
+    "active_length_m": 5e-06,
+    "added_inductance_H": 9.6e-08
+  },
+  "resolved_length_m": 1.6000000004901756e-07,
+  "q_bar": 0.2858457255980943,
+  "bulk": {
+    "gap_bulk_bar": 1.699382925343127,
+    "gap_relative_rms_vs_bulk": 0.00036079591583221276,
+    "gap_peak_to_peak_relative": 0.0023737974949897874,
+    "gap_mean_relative_to_bulk": 1.0000616398173992,
+    "current_left_A": 1.5429439929933273e-05,
+    "current_right_A": 1.5430042440938486e-05,
+    "current_reference_A": 1.542974118543588e-05,
+    "current_target_A": 1.55e-05,
+    "current_target_relative_error": 0.00453282674607236,
+    "crosscut_max_relative_error": 0.00044909739142755543,
+    "crosscut_count": 1477,
+    "definition": "Gap magnitudes on every free node, area-weighted RMS. Current is oriented sum over every distinct-x interval; crosscut deviations from mean end current are normalized by the nonzero nominal current."
+  },
+  "stationary_gap_mass_rms_relative": 1.959272354195802e-06,
+  "maximum_spectral_residual": 6.437760945526781e-12,
+  "gap_zero_current_same_temperature_kBTc": 1.7639259275772057,
+  "gap_zero_current_same_temperature_meV": 1.314829199603571,
+  "bulk_gap_over_zero_current_gap": 0.9634094599863782,
+  "fixed_external_inductance_H": 1.0310885409850862e-07,
+  "resolved_equilibrium_inductance_H": 2.3500344134738776e-10,
+  "total_equilibrium_inductance_H": 1.0334385753985601e-07,
+  "figure": {
+    "path": "perfil_dc_intrinseco.png",
+    "sha256": "c3c99fc5122623b1f2c1f9e52625b898a223a30f0b1f22e0a87e61ce3f7611bb",
+    "upper": "All nodal gap magnitudes divided by zero-current equilibrium gap at the same T and finite Matsubara count; no subtraction",
+    "lower": "100*(nodal gap magnitude/current-carrying continuum bulk gap-1), in percent",
+    "mean": "20 non-overlapping equal-width x bins; within each bin the mean x and gap use original dual-cell area weights, including end cells",
+    "coordinates": "x measured from the center of the resolved window, in nm",
+    "boundary": "End-node gap magnitudes equal the same current-carrying continuum bulk"
+  },
+  "renderer": {
+    "path": "sandbox/stage5_prephoton/plot_pilot_reference.py",
+    "sha256": "18b51198fdc0768524ddf9391a6d7d6d4ff849b4eb9fde9172c098d0afde4d7a"
+  },
+  "reproduction_command": "python sandbox/stage5_prephoton/plot_pilot_reference.py --reference /home/jdiaz/scratch/prephoton_dc_pilot_20260924/reference.npz --summary \\home\\jdiaz\\scratch\\prephoton_dc_pilot_20260924\\summary.json --output docs/implementation/stage5/prephoton_dc_20260924/pilot"
+}

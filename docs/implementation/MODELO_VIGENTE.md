@@ -12,6 +12,11 @@ con esta sustitución normativa solicitada por el usuario:
   voltaje del capacitor. Sustituye el circuito ideal simplificado de C/D,
   sus balances y su inicialización. La adenda contiene las ecuaciones completas,
   las convenciones de signo y la partición de inductancia que evita doble conteo.
+- **Preparación y escenario del detector:** el
+  [contrato DC interior del 24 de septiembre](stage5/prephoton_dc_20260924/physical_scope.md)
+  sustituye los contactos de corriente cero para la siguiente ventana espacial
+  y adopta una inductancia exterior fija motivada por el dispositivo de Korzh.
+  Conserva la topología CM, con fuente DC, sin $L_k(t)$ ni jitter longitudinal.
 - **Implementación:** el [cierre de desarrollo de etapa 2](stage2/closure_20260922/closure_decision.json),
   autorizado por el usuario, acepta la evidencia disponible para continuar con
   la secuencia espacial, sus bordes y el circuito. No cambia retrospectivamente
@@ -38,6 +43,38 @@ cinética lineal de carga y energía.
 Siguen pendientes las capacidades dinámicas antes de interpretar el detector.
 La transferencia fotónica, su ancho y la normalización de tasas NbN no se
 admiten mediante este avance estático.
+
+## Preparación vigente antes de la inyección
+
+La siguiente campaña, todavía pendiente, representa una sección interior recta
+de la cinta de 80 nm. Su estado inicial debe tener $|\Delta|$ uniforme con la
+depresión correspondiente a la corriente, fase $qx$, espectro autoconsistente,
+distribuciones térmicas y potencial uniforme. Los extremos numéricos continúan
+ese mismo estado; no son contactos metálicos ni reservorios de corriente cero.
+Se conservan la malla dual Delaunay-Voronoi y el avance KWT Euler heredado.
+
+La [preparación DC](stage5/README.md) compara longitudes a igual corriente y
+verifica que el circuito no genere señal basal espuria. Su fuente es constante,
+$V_b=R_bI_{\rm DC}$, y mantiene los tres estados CM. Para una ventana de longitud
+$L$ se fija una sola vez
+
+$$L_{k,\rm ext}^{\rm ref}=96\,\mathrm{nH}
++(5\,\mathrm{\mu m}-L)\frac{\hbar}{2e}
+\left.\frac{dq}{dI}\right|_{I_{\rm DC}}.$$
+
+Los 96 nH son una estimación publicada del inductor exterior añadido, no el
+total de la rama. La contribución del resto activo usa el mismo equilibrio
+material que la región resuelta; no se recalcula durante el pulso. El escenario
+histórico de 10 nH y las respuestas AC de etapa 4 no se reinterpretan. El
+[registro de fuentes y decisiones](stage5/prephoton_dc_20260924/source_decisions.json)
+separa valores publicados, conversiones y contribuciones no cuantificadas.
+
+La coordenada longitudinal de absorción permanecerá fija. La futura familia
+de posiciones estudia el ancho; se excluye el jitter geométrico longitudinal.
+No se requieren nuevas fuentes AC ni perturbaciones artificiales intermedias.
+El ensayo sin fotón verifica la preparación y conservación DC, no la cinética
+general de una población excitada. En particular, ausencia de calentamiento DC
+no resuelve el balance no lineal de energía pendiente antes del fotón.
 
 ## Ventana inicial de observación del mismo dispositivo
 

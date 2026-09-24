@@ -11,7 +11,7 @@ etapa 4 se cierra como desarrollo sin fotón, con límites de admisión. Los con
 | 3. Infraestructura espacial, bordes y circuito | Desarrollo cerrado con pendientes explícitos | Energía y corriente comunes, empalme de campo 2D–1D, potencial, cargas de reservorio y circuito de la memoria; evidencia estática e instantánea. |
 | **3.5. Dominio de confianza físico y numérico** | **Investigación cerrada con límites explícitos** | Establecer qué parámetros, estados, geometrías y ventanas de observación tienen fundamento físico, y qué márgenes numéricos necesitamos para estudiarlos. |
 | 4. Núcleo y disipación | Desarrollo cerrado con límites físicos | Núcleo y Euler dual admitidos; respuesta reactiva condicionada. Calor absoluto y continuidad local del acoplamiento reducido pendientes. |
-| 5. Transientes completos y comparación experimental | Entrada preparada; no ejecutada | Comparar el dispositivo y sus observables con el experimento, incluyendo incertidumbre y cadena de lectura. |
+| 5. Transientes completos y comparación experimental | Preparación DC interior pendiente; fotón no iniciado | Acreditar el piso uniforme de una ventana de la cinta con bordes intrínsecos y circuito DC, antes de la latencia relativa y el jitter transversal. |
 
 La [decisión de cierre de etapa 3](stage3/closure_20260923/closure_decision.json)
 no declara completado todo el contrato histórico D.4.3. La [etapa 3.5](stage3_5/README.md)
@@ -25,9 +25,9 @@ ni altera los requisitos dinámicos siguientes.
 
 ## Pendientes que no desaparecen con el cierre
 
-Antes de interpretar resultados dinámicos de las etapas 4–5 deben completarse:
+Antes de interpretar el transiente fotónico completo deben completarse:
 
-- La evolución espacial débil acoplada al potencial, las poblaciones y el circuito,
+- La evolución espacial acoplada al potencial, las poblaciones y el circuito,
   con contraste temporal sobre los observables relevantes y balance integrado.
 - La rama de reservorio dependiente de la corriente, su trabajo y las condiciones
   externas completas; el radio fijo del diagnóstico no resuelve este problema.
@@ -38,6 +38,30 @@ Antes de interpretar resultados dinámicos de las etapas 4–5 deben completarse
 
 Estos pendientes son requisitos de entrada al ensayo que los necesite. No se
 convierten en una afirmación de validación mediante el cambio de número de etapa.
+
+## Siguiente campaña: equilibrio DC en el interior del detector
+
+El [contrato actualizado](stage5/prephoton_dc_20260924/physical_scope.md)
+incorpora las observaciones posteriores al cierre de etapa 4. Se prepara una
+ventana recta del tramo activo de 80 nm de ancho y 5 µm de longitud total:
+los extremos computacionales son cortes del mismo superconductor con corriente.
+Gap, espectro, distribuciones y potencial se inicializan consistentemente.
+Se busca magnitud homogénea del condensado, con fase $qx$ y corriente longitudinal
+uniforme. Las distintas longitudes se comparan a igual corriente, no igual fase.
+
+El circuito conserva las tres variables de la memoria y usa fuente DC.
+$L_{k,\rm ext}$ se fija una sola vez como 96 nH del inductor añadido más
+la inductancia diferencial del tramo activo no resuelto en ese equilibrio.
+No se recalcula con el hotspot ni se añade un elemento $L_k(t)$.
+Se excluye el jitter geométrico longitudinal; la futura dependencia de posición
+corresponde al ancho. No se incorpora otra campaña AC ni una familia adicional
+de sondas artificiales. Los resultados armónicos previos conservan su alcance
+histórico y sus límites.
+
+La [entrada a etapa 5](stage5/README.md) identifica preparación, conservación
+temporal y pendientes. No hay aún un resultado de la campaña larga. Su pase
+acreditará la preparación DC dentro del margen declarado; no el balance de calor
+de una perturbación fotónica finita ni la transferencia tras la cascada.
 
 ## Regla física para 3.5
 
@@ -75,7 +99,8 @@ exime de entregar manualmente cálculos previstos de más de cinco minutos.
 El [cierre de desarrollo de etapa 4](stage4/closure_20260924/README.md)
 recoge las dos referencias con corriente y cinco respuestas completadas.
 Se admite su respuesta reactiva condicionada; la estabilidad de Vout no acredita
-disipación absoluta. La [entrada a etapa 5](stage5/README.md) prioriza continuidad
-interior y balance independiente de energía, trabajo y reservorios antes del fotón.
+disipación absoluta. La [entrada a etapa 5](stage5/README.md) prioriza el piso
+DC intrínseco y conserva el balance de energía, trabajo y reservorios como
+requisito del transiente fotónico.
 La respuesta a frecuencia finita no reemplaza Euler ni acredita un transiente
 no lineal con calor. No se repiten controles ya admitidos por cambiar de etapa.
