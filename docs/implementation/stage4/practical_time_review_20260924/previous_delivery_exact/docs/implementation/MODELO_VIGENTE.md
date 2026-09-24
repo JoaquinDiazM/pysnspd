@@ -101,9 +101,5 @@ memoria. El operador temporal térmico ya se contrastó con 2304 raíces espectr
 la [trayectoria afín completada](stage4/time_review_20260924/README.md) mantiene
 la deriva de referencia y pasa el contraste temporal. El posterior contraste
 no lineal también pasa tras corregir cancelación de redondeo en Newton. Sigue
-la conexión con la malla dual y el paso KWT heredados. La
-[trayectoria no lineal completada](stage4/practical_time_review_20260924/README.md)
-permite cerrar ese ensayo como desarrollo con el límite explícito del torque
-secundario tardío; se conserva su certificado temporal incompleto. No se pide
-otra repetición cartesiana ni otro integrador para resolver esa cola. Falta unir trabajo y transporte no térmicos antes de evaluar
+la integración térmica no lineal ETD2 con la misma fuerza, KWT y potencial normal. Falta unir trabajo y transporte no térmicos antes de evaluar
 un fotón; el circuito completo y el horizonte acordado siguen vigentes.

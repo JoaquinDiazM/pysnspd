@@ -1,0 +1,33 @@
+{
+  "schema": "pysnspd.stage4.dual_mesh_boundary_resampling.v1",
+  "status": "RESAMPLING_ONLY_REVIEW_GEOMETRY_METRICS",
+  "parameters": {
+    "length_m": 1.6e-07,
+    "width_m": 8e-08,
+    "target_spacing_m": 5e-09,
+    "seed": 12345,
+    "max_edge_length_m": 5e-09,
+    "min_angle_deg": 32.5,
+    "smooth": 0,
+    "min_points": null,
+    "boundary_points": 196,
+    "terminal_contact_mode": "normal_left_right"
+  },
+  "unchanged": "Material, rectangular boundary, target interior edge length, equations; no spectra solved",
+  "boundary_rule": "Half target interior length: 64 longitudinal and 32 transverse intervals before Triangle refinement",
+  "source_mesh_sha256": "340361eaece1ab958d0e627eab63e6f3f69b4ad36025c837f7d59bab31cc9e11",
+  "n_nodes": 1712,
+  "n_edges": 4941,
+  "n_triangles": 3230,
+  "n_left_contact": 33,
+  "n_right_contact": 33,
+  "area_relative_error": 0.0,
+  "n_circumcenters_outside_rectangle": 0,
+  "mesh_warnings": [],
+  "minimum_dual_area_m2": 1.5624999999999865e-18,
+  "minimum_conductance": 0.00015935982352086947,
+  "laplacian_relative_difference": 1.5969489762469426e-14,
+  "runtime_seconds": 0.11365745402872562,
+  "mesh_sha256": "da1abb237cbe0fe6ac4260db9949144e5a2a7f4fecae6766a0def68fa5e2ccf4",
+  "runner_sha256": "a4176952447bec6d7d664c3dcd08a10ae4a95ff7038199753d8422066d987ca1"
+}

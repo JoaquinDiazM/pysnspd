@@ -4,16 +4,15 @@ Last updated: 2026-09-24 UTC
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: weak thermal time evolution and nonlinear constitutive snapshots passed.
-The [current review](docs/implementation/stage4/time_review_20260924/README.md)
-records 1 ps in 71.10 s with maximum gap displacement0.222% and planned
-temporal refinement. An equivalent stable energy difference resolves the
-Newton failure:2048 nonlinear roots then pass in22.74 s with the same tolerance.
-The next ETD2 trajectory updates nonlinear spectra, retains every spatial
-degree of freedom and preserves constant forcing without an auxiliary state.
-A reciprocal longitudinal population prototype has focused algebraic tests;
-its general nonthermal energy closure remains open. Stage4 stays open;
-stage5,production and the v1.0.0 tag are unchanged.
+Current phase: the nonlinear thermal benchmark completed both1ps trajectories.
+The [current practical review](docs/implementation/stage4/practical_time_review_20260924/README.md)
+preserves its failed post-run gate:95/96 comparisons pass, including23/24 with
+independent time stepping. The sole miss is a nearly extinguished secondary
+phase torque. Its precision remains limited; the benchmark is closed for
+development without another full rerun or a replacement integrator. Next work
+connects the existing action to the inherited dual mesh and KWT implementation.
+Stage4 stays open for nonthermal coupling and relevant port controls. No long
+calculation is currently requested. Production,v1.0.0 and stage5 are unchanged.
 
 ## Historical stage 3.5 closure and stage 4 preparation
 

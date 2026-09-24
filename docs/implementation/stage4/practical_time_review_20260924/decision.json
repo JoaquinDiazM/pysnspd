@@ -1,0 +1,25 @@
+{
+  "schema": "pysnspd.stage4.practical_thermal_time_review.v1",
+  "execution_complete": true,
+  "original_status": "TEMPORAL_REFINEMENT_NOT_MET",
+  "original_temporal_certificate_passed": false,
+  "original_certificate_changed": false,
+  "comparisons_passed": 95,
+  "comparisons_total": 96,
+  "independent_comparisons_passed": 23,
+  "independent_comparisons_total": 24,
+  "thermal_benchmark_development_closed": true,
+  "stage4_complete": false,
+  "stage5_started": false,
+  "production_changed": false,
+  "long_run_requested": false,
+  "limitation": "Late amplitude-induced phase torque is not quantitatively resolved; no precise tail relaxation time is inferred.",
+  "decision": "Use the completed thermal benchmark as a limited development reference. Do not rerun to resolve the extinguished cross response. Transfer the same action to the inherited dual mesh and reuse published KWT implementation with explicit conversions.",
+  "evidence": "Both trajectories reach1ps; only one secondary late signal misses the historical criterion. Difference8.30465e-8 is1.500percent of its own initial torque and0.004566percent of the initial main angular torque. Preserve all values and the failed gate.",
+  "next": [
+    "Connect ThermalGraph to compatible dual areas/faces and explicit physical contacts",
+    "Reuse inherited KWT local update after converting force/time/potential; keep spectral current",
+    "Connect nonthermal populations and common spectral work on that spatial representation",
+    "Use realistic smooth states and declared primary observables for next coupled run"
+  ]
+}

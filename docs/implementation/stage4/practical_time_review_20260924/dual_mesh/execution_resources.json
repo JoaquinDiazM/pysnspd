@@ -1,0 +1,202 @@
+{
+  "resources": {
+    "logical_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "physical_core_groups": [
+      [
+        0,
+        16
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        2,
+        18
+      ],
+      [
+        3,
+        19
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        5,
+        21
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        7,
+        23
+      ],
+      [
+        8,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        11,
+        27
+      ],
+      [
+        12,
+        28
+      ],
+      [
+        13,
+        29
+      ],
+      [
+        14,
+        30
+      ],
+      [
+        15,
+        31
+      ]
+    ],
+    "available_memory_bytes": 127430098944,
+    "host_available_memory_bytes": 127430098944,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-59914.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-59914.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "budget_ceiling": {
+    "cpu_fraction": 0.9,
+    "memory_fraction": 0.9,
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29
+    ],
+    "coordinator_cpu": 29,
+    "worker_affinity_cpus": [
+      0
+    ],
+    "workers": 1,
+    "threads_per_process": 1,
+    "total_processes": 2,
+    "logical_budget": 28,
+    "effective_cpu_quota_units": 32,
+    "physical_cores_used": 14,
+    "physical_cores_reserved": 2,
+    "memory_limit_bytes": 114687089049,
+    "coordinator_reserve_bytes": 3221225472,
+    "worker_reserve_bytes": 1073741824,
+    "estimated_memory_reservation_bytes": 4294967296,
+    "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+  },
+  "actual_processes": 1,
+  "actual_cpu": 29
+}

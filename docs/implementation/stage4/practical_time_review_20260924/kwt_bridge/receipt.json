@@ -1,0 +1,74 @@
+{
+  "status": "PASSED",
+  "runtime_seconds": 0.1720000000204891,
+  "nodes": 63,
+  "free_nodes": 35,
+  "temperature_K": 0.9,
+  "critical_temperature_K": 8.65,
+  "gap_scale_Delta0_over_kBTc": 1.764,
+  "spectral_frequencies": 16,
+  "spectral_tolerance": 1e-07,
+  "maximum_spectral_residual": 9.515204242185548e-08,
+  "direct_inherited_solver_calls": 3,
+  "reference": "ThermalKWTNormal.response velocity divided by tD_ps",
+  "error_norm": "sqrt(sum_i m_i |delta velocity_i|^2), integrated adimensional area",
+  "nonzero_fields": {
+    "minimum_gap": 1.55,
+    "integrated_force_norm": 0.7621430970244846,
+    "potential_max": 0.39633023669487155,
+    "material_velocity_norm_per_ps": 17.810671301284973,
+    "gauge_velocity_norm_per_ps": 1.7583499618687009,
+    "total_velocity_norm_per_ps": 19.568953785205842
+  },
+  "refinements": [
+    {
+      "dt_ps": 0.0001,
+      "velocity_relative_error": 0.0001877821956273409,
+      "amplitude_velocity_absolute_error": 0.0036746995872237232,
+      "phase_velocity_absolute_error": 3.3430788593937897e-06,
+      "fixed_contact_change": 0.0,
+      "backend_dt": 0.00028837880884354883,
+      "backend_tau0_ps": 0.3467661178053203,
+      "backend_gamma": 19.157759956494687
+    },
+    {
+      "dt_ps": 5e-05,
+      "velocity_relative_error": 9.388979075146976e-05,
+      "amplitude_velocity_absolute_error": 0.0018373241922953706,
+      "phase_velocity_absolute_error": 1.6971369297015945e-06,
+      "fixed_contact_change": 0.0,
+      "backend_dt": 0.00014418940442177441,
+      "backend_tau0_ps": 0.3467661178053203,
+      "backend_gamma": 19.157759956494687
+    },
+    {
+      "dt_ps": 2.5e-05,
+      "velocity_relative_error": 4.697001105556973e-05,
+      "amplitude_velocity_absolute_error": 0.0009191535782302351,
+      "phase_velocity_absolute_error": 8.547256592346681e-07,
+      "fixed_contact_change": 0.0,
+      "backend_dt": 7.209470221088721e-05,
+      "backend_tau0_ps": 0.3467661178053203,
+      "backend_gamma": 19.157759956494687
+    }
+  ],
+  "first_order_ratios": [
+    2.0000278424776585,
+    1.9989305653002665
+  ],
+  "scope": "Local KWT time and force conversion on a smooth nonzero-gap state. No finite-horizon trajectory, GL current, circuit or photon validation.",
+  "source_sha256": {
+    "pysnspd/experimental/heredado_kwt_bridge.py": "336d781ac20299cc99f042e89cfd1216553e0996f9627daa1ef08b05923d2573",
+    "pysnspd/experimental/thermal_weak_response.py": "42bcc1fe9436287a838cfad43ae7ee9d5b202a773ff3faa3127508dc34d7cfda",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/thermal_stable_newton.py": "7e0faa9c643afde845b3f57f57146a99d34ba9777ecc6bc2a9b61d233c6c06ae",
+    "pysnspd/solver/core.py": "688a18ebbac835aa1b94b57f37e97deb9231d5f5bcec90a8403d2046e7c7f2f0",
+    "sandbox/stage4_core/kwt_bridge_check.py": "c4fd4e954625068b3a4a55b2d3bc7a90defa936c393a1155da09a398bc491bee",
+    "tests/test_heredado_kwt_bridge.py": "92e9a72109062221f35c7371da55c1143b6d913073efbc92c0d757c3acce48fc"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  }
+}

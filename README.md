@@ -62,8 +62,11 @@ spectral roots, retaining KWT, normal potential and the baseline residual.
 The [completed weak thermal trajectory](docs/implementation/stage4/time_review_20260924/README.md)
 reached 1 ps in 71.10 s and passed its planned refinement. A subsequent nonlinear
 contrast passed 2048 roots in 22.74 s after correcting energy-cancellation in
-Newton without changing the tolerance or equations. The next ETD2 trajectory
-uses nonlinear spectra while reusing the saved stiff linear operator.
+Newton without changing the tolerance or equations. The [completed nonlinear ETD2 trajectory](docs/implementation/stage4/practical_time_review_20260924/README.md)
+reached1ps in both resolutions. Only the late secondary phase torque missed
+the comparison gate; that failure is preserved. The thermal benchmark is
+closed for development with this limit, without another full rerun. The next
+work reuses the inherited dual mesh and KWT update with explicit unit conversions.
 Stage 4 remains open for coupled dynamics and the nonthermal spectral-work balance.
 Stage 5 has not started.
 Production retains Delaunay-Voronoi, adaptive first-order Euler and the thesis

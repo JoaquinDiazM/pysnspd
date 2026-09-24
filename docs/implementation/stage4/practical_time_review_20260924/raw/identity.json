@@ -1,0 +1,249 @@
+{
+  "plan_sha256": "f73c269bc5da788951d6bddd482f14f5a02a99eb2bc67a534e29df9d3417c38f",
+  "sources": {
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/thermal_weak_response.py": "42bcc1fe9436287a838cfad43ae7ee9d5b202a773ff3faa3127508dc34d7cfda",
+    "pysnspd/experimental/thermal_time_operator.py": "354e40f7d586b2c6c53582c041f3aa9cfb4a723d902096f654738aa0e63c96a6",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pysnspd/experimental/energy_catalog.py": "8915d5c1b6c278928e4f80fc4dbb3cbb8089fba86e7e06dfc7a9941039f2429b",
+    "pysnspd/experimental/exponential_actions.py": "986ecbc2fe6f6604965acae1a1689e9d0e1cd641b1e9b527e38449dc311d51ed",
+    "pysnspd/experimental/thermal_snapshot.py": "59ac461ebed9c9a5e665ea7720af3c519b41427ccbb7bc7ca404f006aab120b2",
+    "pysnspd/experimental/thermal_stable_newton.py": "7e0faa9c643afde845b3f57f57146a99d34ba9777ecc6bc2a9b61d233c6c06ae",
+    "sandbox/stage4_core/thermal_nonlinear_time.py": "876dd04f34ee7f2fa9abf3c10c2a1fc8da24a401a8c9026878e5ecb7420bc0b2",
+    "tests/test_exponential_actions.py": "931cf3d2e80019070ca4842a919f83815300a62b49c5babeb91eea2756aed150",
+    "tests/test_thermal_stable_newton.py": "e57b7027cf8145b5be5d61cabc878f037419318bf58c0ad04d958d17a2105a3d"
+  },
+  "operator_inputs": {
+    "summary.json": "ec7d2675bfa7e9cf0960429785a5c7dc8cb93f4cf6eb3c955d2171b97ad317d2",
+    "identity.json": "e249f6fc44e471e9b400cdfee6608043dc6491a0a078cca01504320a481b8c61",
+    "full_node_operator_checks.npz": "f08bb86882ecf7679c98902d1a78bd2cbf379f848771d3c02cef71468dd51548"
+  },
+  "resources": {
+    "logical_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "physical_core_groups": [
+      [
+        0,
+        16
+      ],
+      [
+        1,
+        17
+      ],
+      [
+        2,
+        18
+      ],
+      [
+        3,
+        19
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        5,
+        21
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        7,
+        23
+      ],
+      [
+        8,
+        24
+      ],
+      [
+        9,
+        25
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        11,
+        27
+      ],
+      [
+        12,
+        28
+      ],
+      [
+        13,
+        29
+      ],
+      [
+        14,
+        30
+      ],
+      [
+        15,
+        31
+      ]
+    ],
+    "available_memory_bytes": 123208667136,
+    "host_available_memory_bytes": 123208667136,
+    "total_memory_bytes": 132537782272,
+    "cpu_quota_units": null,
+    "cgroup_limits": {
+      "cpu_quota_units": null,
+      "memory_headroom_bytes": null,
+      "cpu_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-48549.scope/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/cpu.max",
+          "version": 2,
+          "cpu_units": null,
+          "status": "unlimited"
+        }
+      ],
+      "memory_records": [
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-48549.scope/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        },
+        {
+          "path": "/sys/fs/cgroup/user.slice/memory.max",
+          "version": 2,
+          "status": "unlimited"
+        }
+      ],
+      "unavailable": []
+    }
+  },
+  "budget": {
+    "cpu_fraction": 0.9,
+    "memory_fraction": 0.9,
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29
+    ],
+    "coordinator_cpu": 29,
+    "worker_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13
+    ],
+    "workers": 27,
+    "threads_per_process": 1,
+    "total_processes": 28,
+    "logical_budget": 28,
+    "effective_cpu_quota_units": 32,
+    "physical_cores_used": 14,
+    "physical_cores_reserved": 2,
+    "memory_limit_bytes": 110887800422,
+    "coordinator_reserve_bytes": 3221225472,
+    "worker_reserve_bytes": 1073741824,
+    "estimated_memory_reservation_bytes": 32212254720,
+    "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+  },
+  "operator_root": "/home/jdiaz/scratch/stage4_thermal_weak_20260924",
+  "horizon_ps": 1.0,
+  "pilot": false,
+  "physical_constants_changed": false
+}

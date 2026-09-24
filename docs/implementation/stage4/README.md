@@ -1,40 +1,40 @@
-# Etapa 4: evolución térmica y siguiente transiente no lineal
+# Etapa 4: control térmico completado y conexión con la malla final
 
-La [revisión actual](time_review_20260924/README.md) acepta la trayectoria afín
-térmica ejecutada por el usuario: 1 ps físico en 71,10 s de cómputo. El máximo
-desplazamiento es 0,222 % del gap; la comparación temporal registrada pasa.
-Se resta la deriva de referencia al evaluar las perturbaciones.
+La [revisión actual](practical_time_review_20260924/README.md) recupera las dos
+trayectorias no lineales completas hasta 1 ps. La interrupción ocurrió después,
+al fallar una comparación de una señal cruzada casi extinguida; el original
+se conserva como certificado incompleto. Los campos principales concuerdan
+al nivel medido y el balance instantáneo térmico se mantiene.
 
-El contraste no lineal de los campos guardados también pasa: 2048 raíces en
-22,74 s. Un fallo de Newton se resolvió evaluando de forma estable el mismo
-incremento energético, sin alterar tolerancia, ecuación ni contactos.
-El [informe](../../../output/pdf/implementation/Informe_etapa_4_evolucion_termica.pdf)
-muestra evolución, mapas, disipación y diferencias no lineales con su escala.
+Se cierra este ensayo térmico como desarrollo con un límite explícito en la
+cola de torque de fase de la sonda de amplitud. **No se repite la campaña.**
+La etapa 4 permanece abierta para el acoplamiento no térmico y los puertos.
+El [informe](../../../output/pdf/implementation/Informe_etapa_4_revision_practica.pdf)
+identifica exactamente campos, normas, unidades, sustracciones y denominadores.
 
-Sigue la [trayectoria térmica no lineal](time_review_20260924/nonlinear_time/README.md):
-ETD2 reutiliza el operador rígido, mientras cada fuerza usa espectros actuales.
-Se retienen todos los nodos y las derivadas KWT/potencial normal. Las funciones
-phi conservan algebraicamente el término constante sin un estado auxiliar.
+Las [fuentes y ruta numérica](practical_time_review_20260924/published_methods.md)
+indican reutilizar el backend Delaunay–Voronoi y el paso KWT de la memoria.
+La nueva acción ya es un grafo general: el adaptador convierte áreas y caras
+sin reconstruir Usadel. La adaptación temporal requiere convertir fuerza,
+movilidad, tiempo y potencial; la corriente también se toma de esa acción.
+Una publicación respalda cada método, pero no sustituye comprobar las unidades
+y transferencias entre bloques al conectarlos.
 
-También se preparó el [puente longitudinal](time_review_20260924/longitudinal_coupling/README.md)
-para unir amplitud y poblaciones. Sus pruebas comprueban reciprocidad y balance
-de disponibilidad en fase constante y corriente nula. El trabajo espectral
-general y el balance de energía interna siguen pendientes. La etapa 4 no se cierra.
-
-El [cuaderno vigente](../../GEMINGA_COMMANDS.md) identifica el único cálculo
-largo solicitado, salidas y recursos. Se limita el presupuesto compartido al
-90 %; en Geminga quedan libres dos núcleos físicos completos. No se pide
-repetir los cálculos completados ni crear sesiones de terminal.
+La [ruta física](practical_time_review_20260924/physical_route.md) conserva el
+trabajo espectral no térmico como tarea constitutiva. Los
+[criterios de implementación y figuras](../REPORTES_Y_CRITERIOS.md) priorizan
+el sistema final y las decisiones útiles, sin nuevas baterías extremas por defecto.
+El [cuaderno](../../GEMINGA_COMMANDS.md) ya no pide otra corrida larga.
 
 ## Evidencia anterior conservada
 
+- [Trayectoria afín, corrección de Newton y preparación ETD2](time_review_20260924/README.md).
 - [Momentos de carga, respuesta armónica y operador térmico](moment_review_20260924/README.md).
 - [Núcleos autoconsistentes y espectros](self_consistent_review_20260924/README.md).
 - [Energía espacial](spatial_energy_20260924/README.md).
 - [Diagnóstico del cierre local](followup_20260923/README.md).
-- [Controles iniciales](review_20260923/Informe_avance_etapa_4A.md).
 
-Producción y v1.0.0 siguen intactos. Se conserva el circuito completo de la
-memoria. Para el futuro fotón, sólo cambiará la ventana hasta Vout más margen.
-La transferencia fotónica y las tasas materiales permanecen abiertas; la
-etapa 5 no ha comenzado.
+Producción y v1.0.0 siguen intactos. El circuito es el de tres estados de la
+memoria. Para el futuro fotón se conserva el mismo sistema hasta V_out más
+margen; transferencia fotónica y tasas materiales siguen abiertas. No hay
+predicción de hotbelt o retardo experimental ni inicio de etapa 5.
