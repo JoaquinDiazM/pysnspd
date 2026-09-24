@@ -1,13 +1,3 @@
-# Etapa 4: estado vigente
-
-La [referencia espacial térmica](spatial_energy_20260924/README.md) recupera
-la fuerza de Usadel: 2,90 % → 0,720 % → 0,180 % al refinar la malla,
-sin el completado local rechazado. Los 2.048 espectros terminaron en 60,35 s.
-La campaña siguiente busca el núcleo autoconsistente con la misma energía.
-Etapa 4 abierta: producción y cinética no térmica todavía no adoptan este bloque.
-
-## Revisión anterior conservada
-
 # Etapa 4: núcleo, referencia física y ejecución paralela
 
 La [continuación actual](followup_20260923/README.md) recoge las dos corridas

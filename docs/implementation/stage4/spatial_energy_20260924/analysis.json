@@ -1,0 +1,607 @@
+{
+  "schema": "pysnspd.stage4.thermal_spatial_postprocessing.v1",
+  "provenance": {
+    "raw_directory": "docs/implementation/stage4/spatial_energy_20260924/raw/stage4_spatial_energy_reference_20260924",
+    "summary_sha256": "e96df63bb4659ec786f8e956f96a236e788cd881cc74a0cfb0bc85d3c426d9de",
+    "identity_sha256": "05fdf5803ac216dc4b3cef79a697cc1e8f219415ca2347dd4ef4592ab782cd7d",
+    "plan_sha256": "7800f995d5d8056a6b672534c460acc50b36ba0caee22a7945620d940e5e4322",
+    "analysis_script_sha256": "c9f93f61f9a3046492f659ab9c656c0289f5d56d47a66d0e7bf0ae63d37bd72e",
+    "sources_matching_identity": {
+      "sandbox/stage4_core/run_spatial_energy.py": "7c5f2356a3decb34889d354666d0ee50fd90e7fd004189406328d7736a3a05e1",
+      "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+      "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+    },
+    "map_sha256": {
+      "radial_33_N128.npz": "614b433e21b4f9da7781b3551d1c6463eca8f6d733bf8d2889adbe441fbaba31",
+      "radial_33_N256.npz": "2b56cb34f5b5dd9430baa540a2a380c09d4aba16071110f4b3cbc00f6219a746",
+      "radial_65_N128.npz": "f3ed489edd5beb55f48baea3ca8dc65c24163e5a2fb1b30a2bef36fc8852fd70",
+      "radial_65_N256.npz": "0c927fb0e6cacdcda766b4dee018640e894659b3b9d9120f0f9f1a3b1540c6cf",
+      "radial_129_N128.npz": "7f878833d8f0f8dcd389c5c7d08b8e542a02e787818dc89cee6d953cdce74a41",
+      "radial_129_N256.npz": "fa6f12aa777a8dc3a821296ffb83074f837e5a5e383e72c819b07244a0becfd8",
+      "asymmetric_65_N128.npz": "a7ca3a68f9dca9c2892078e1e5596dd0de19bd4ebacda3df140d27e4f67a5a85",
+      "asymmetric_65_N256.npz": "aec89c70cb2892141a93cd166ebf75b5bd66fc987eb3a6938e3fbcd6c855edd5",
+      "amplitude_plus_N256.npz": "887dc10d6ad7f4b950e4dc1bde02a06746b535d5eb51164c661482dfb9aaf4de",
+      "amplitude_minus_N256.npz": "882739e0dfc14750fd6e29c829322eed3dc3aae4ec3a089878d22b21451f0400",
+      "phase_plus_N256.npz": "6b5df07aeffed13983047064df6ce9e69fa3b4aa8a8510a66b8fe7b34e618700",
+      "phase_minus_N256.npz": "02e25998908b6e4d99140f8abfe354c049d347cda3557a93938b5eff5c3fc08a"
+    },
+    "locally_verified_maps": 12,
+    "expected_spectral_records": 2048,
+    "spectral_records_unique_complete": true,
+    "all_records_converged": true,
+    "mode_files": "2048 individual mode files retained on Geminga; record hashes present in summary, mode contents not reverified locally"
+  },
+  "execution": {
+    "runtime_seconds": 60.34713084809482,
+    "maximum_spectral_residual": 9.861798512062297e-07,
+    "maximum_newton_iterations": 3,
+    "maximum_worker_seconds": 2.8570948224514723,
+    "process_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13
+      ],
+      "workers": 27,
+      "threads_per_process": 1,
+      "total_processes": 28,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 112998437683,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 32212254720,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "physical_time_steps": 0
+  },
+  "cases": {
+    "radial_33": {
+      "128": {
+        "energy_finite_sum": -173.11379626813255,
+        "force_core_L2_including_origin": 2.9828293908999757,
+        "raw_force_core_L2_excluding_origin": 2.9828293908999757,
+        "current_core_L2_reconstructed": 13.850412640772603,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          9.350489640571643e-17,
+          2.621041206298635e-16
+        ],
+        "center_force_magnitude": 2.782835526993965e-16,
+        "center_lowest_spectral_f": [
+          -2.3987973066241786e-17,
+          -1.5556183592798853e-16
+        ],
+        "center_lowest_spectral_g": 1.0,
+        "center_dual_area": 0.140625,
+        "phase_lowest_max_abs_rad": 0.001671180087669963,
+        "phase_lowest_max_abs_deg": 0.09575156582979179,
+        "phase_lowest_area_weighted_rms_rad": 0.0006586026828540409,
+        "phase_peak_coordinates_ell0": [
+          -1.125,
+          -0.375
+        ],
+        "phase_peak_gap_magnitude": 1.4627631034847521,
+        "phase_peak_f_magnitude": 0.8554473723800642,
+        "tangential_force_L2_excluding_origin": 0.019266648321159076,
+        "interior_condensate_torque_plus_current_divergence_max": 1.126071100688436e-08,
+        "radial_force_relative_L2_including_origin": 0.029076816039883796
+      },
+      "256": {
+        "energy_finite_sum": -172.81746186797022,
+        "force_core_L2_including_origin": 3.038362080898307,
+        "raw_force_core_L2_excluding_origin": 3.038362080898307,
+        "current_core_L2_reconstructed": 13.951110030907035,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          9.308801605727402e-17,
+          2.623759381763886e-16
+        ],
+        "center_force_magnitude": 2.7839991319578283e-16,
+        "center_lowest_spectral_f": [
+          -2.3987973066241786e-17,
+          -1.5556183592798853e-16
+        ],
+        "center_lowest_spectral_g": 1.0,
+        "center_dual_area": 0.140625,
+        "phase_lowest_max_abs_rad": 0.001671180087669963,
+        "phase_lowest_max_abs_deg": 0.09575156582979179,
+        "phase_lowest_area_weighted_rms_rad": 0.0006586026828540409,
+        "phase_peak_coordinates_ell0": [
+          -1.125,
+          -0.375
+        ],
+        "phase_peak_gap_magnitude": 1.4627631034847521,
+        "phase_peak_f_magnitude": 0.8554473723800642,
+        "tangential_force_L2_excluding_origin": 0.019598225273860712,
+        "interior_condensate_torque_plus_current_divergence_max": 1.1260790600659508e-08,
+        "radial_force_relative_L2_including_origin": 0.029026829016298623
+      }
+    },
+    "radial_65": {
+      "128": {
+        "energy_finite_sum": -172.9659221908828,
+        "force_core_L2_including_origin": 3.0334111266035895,
+        "raw_force_core_L2_excluding_origin": 3.0334111266035895,
+        "current_core_L2_reconstructed": 13.912047582656085,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          9.45136064994317e-17,
+          -1.7843380743062476e-16
+        ],
+        "center_force_magnitude": 2.0191940334628243e-16,
+        "center_lowest_spectral_f": [
+          1.8778085165917398e-17,
+          6.369935255791614e-17
+        ],
+        "center_lowest_spectral_g": 1.0,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.00039197289350178437,
+        "phase_lowest_max_abs_deg": 0.022458392481183136,
+        "phase_lowest_area_weighted_rms_rad": 0.00015744669314777333,
+        "phase_peak_coordinates_ell0": [
+          1.3125,
+          -0.5625
+        ],
+        "phase_peak_gap_magnitude": 1.5720504854275164,
+        "phase_peak_f_magnitude": 0.8994234953876132,
+        "tangential_force_L2_excluding_origin": 0.004745197575344933,
+        "interior_condensate_torque_plus_current_divergence_max": 1.4415127317317757e-09,
+        "radial_force_relative_L2_including_origin": 0.0072051336109000726
+      },
+      "256": {
+        "energy_finite_sum": -172.66866359948807,
+        "force_core_L2_including_origin": 3.08973891914641,
+        "raw_force_core_L2_excluding_origin": 3.0897389191464097,
+        "current_core_L2_reconstructed": 14.013442995511756,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          9.289159568290661e-17,
+          -1.7860169365724753e-16
+        ],
+        "center_force_magnitude": 2.013142159057673e-16,
+        "center_lowest_spectral_f": [
+          1.8778085165917398e-17,
+          6.369935255791614e-17
+        ],
+        "center_lowest_spectral_g": 1.0,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.00039197289350178437,
+        "phase_lowest_max_abs_deg": 0.022458392481183136,
+        "phase_lowest_area_weighted_rms_rad": 0.00015744669314777333,
+        "phase_peak_coordinates_ell0": [
+          1.3125,
+          -0.5625
+        ],
+        "phase_peak_gap_magnitude": 1.5720504854275164,
+        "phase_peak_f_magnitude": 0.8994234953876132,
+        "tangential_force_L2_excluding_origin": 0.0048301754167733085,
+        "interior_condensate_torque_plus_current_divergence_max": 1.4415132253148147e-09,
+        "radial_force_relative_L2_including_origin": 0.007195198004453982
+      }
+    },
+    "radial_129": {
+      "128": {
+        "energy_finite_sum": -172.92904909764349,
+        "force_core_L2_including_origin": 3.0458160592909547,
+        "raw_force_core_L2_excluding_origin": 3.0458160592909547,
+        "current_core_L2_reconstructed": 13.91878412982324,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -7.623701318886713e-17,
+          -1.0983383736273427e-15
+        ],
+        "center_force_magnitude": 1.1009810466862342e-15,
+        "center_lowest_spectral_f": [
+          -4.907398968359505e-16,
+          1.0454819853238789e-15
+        ],
+        "center_lowest_spectral_g": 1.0,
+        "center_dual_area": 0.0087890625,
+        "phase_lowest_max_abs_rad": 9.792522693526333e-05,
+        "phase_lowest_max_abs_deg": 0.005610702211251398,
+        "phase_lowest_area_weighted_rms_rad": 3.896026580645467e-05,
+        "phase_peak_coordinates_ell0": [
+          1.125,
+          0.46875
+        ],
+        "phase_peak_gap_magnitude": 1.4803955697501028,
+        "phase_peak_f_magnitude": 0.8589334430648363,
+        "tangential_force_L2_excluding_origin": 0.001182056717221992,
+        "interior_condensate_torque_plus_current_divergence_max": 3.976678036887206e-10,
+        "radial_force_relative_L2_including_origin": 0.0017975661304549058
+      },
+      "256": {
+        "energy_finite_sum": -172.63155770664616,
+        "force_core_L2_including_origin": 3.102342429968971,
+        "raw_force_core_L2_excluding_origin": 3.102342429968971,
+        "current_core_L2_reconstructed": 14.020298826296848,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -7.59048670893647e-17,
+          -1.100026413715777e-15
+        ],
+        "center_force_magnitude": 1.1026421267665443e-15,
+        "center_lowest_spectral_f": [
+          -4.907398968359505e-16,
+          1.0454819853238789e-15
+        ],
+        "center_lowest_spectral_g": 1.0,
+        "center_dual_area": 0.0087890625,
+        "phase_lowest_max_abs_rad": 9.792522693526333e-05,
+        "phase_lowest_max_abs_deg": 0.005610702211251398,
+        "phase_lowest_area_weighted_rms_rad": 3.896026580645467e-05,
+        "phase_peak_coordinates_ell0": [
+          1.125,
+          0.46875
+        ],
+        "phase_peak_gap_magnitude": 1.4803955697501028,
+        "phase_peak_f_magnitude": 0.8589334430648363,
+        "tangential_force_L2_excluding_origin": 0.001203424953730969,
+        "interior_condensate_torque_plus_current_divergence_max": 3.976677723061499e-10,
+        "radial_force_relative_L2_including_origin": 0.0017952231497122089
+      }
+    },
+    "asymmetric_65": {
+      "128": {
+        "energy_finite_sum": -171.51014488481582,
+        "force_core_L2_including_origin": 4.249185252770815,
+        "raw_force_core_L2_excluding_origin": 4.247822327045849,
+        "current_core_L2_reconstructed": 13.98329466992608,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -0.5739417600375478,
+          1.9997972144888975e-16
+        ],
+        "center_force_magnitude": 0.5739417600375478,
+        "center_lowest_spectral_f": [
+          0.07046909679853938,
+          2.1449955391866086e-17
+        ],
+        "center_lowest_spectral_g": 0.9975139630082368,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.3142197186153521,
+        "phase_lowest_max_abs_deg": 18.003463716447982,
+        "phase_lowest_area_weighted_rms_rad": 0.022015178804213997,
+        "phase_peak_coordinates_ell0": [
+          0.0,
+          0.1875
+        ],
+        "phase_peak_gap_magnitude": 0.32690495801458347,
+        "phase_peak_f_magnitude": 0.22150823413159176,
+        "tangential_force_L2_excluding_origin": 0.8239247433965915,
+        "interior_condensate_torque_plus_current_divergence_max": 1.6900099794429913e-08
+      },
+      "256": {
+        "energy_finite_sum": -171.20183010004504,
+        "force_core_L2_including_origin": 4.307677727793229,
+        "raw_force_core_L2_excluding_origin": 4.306287558542955,
+        "current_core_L2_reconstructed": 14.087883012134279,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -0.5836253206354874,
+          1.998825399249111e-16
+        ],
+        "center_force_magnitude": 0.5836253206354874,
+        "center_lowest_spectral_f": [
+          0.07046909679853938,
+          2.1449955391866086e-17
+        ],
+        "center_lowest_spectral_g": 0.9975139630082368,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.3142197186153521,
+        "phase_lowest_max_abs_deg": 18.003463716447982,
+        "phase_lowest_area_weighted_rms_rad": 0.022015178804213997,
+        "phase_peak_coordinates_ell0": [
+          0.0,
+          0.1875
+        ],
+        "phase_peak_gap_magnitude": 0.32690495801458347,
+        "phase_peak_f_magnitude": 0.22150823413159176,
+        "tangential_force_L2_excluding_origin": 0.8372342824282892,
+        "interior_condensate_torque_plus_current_divergence_max": 3.45124909397615e-08
+      }
+    },
+    "amplitude_plus": {
+      "256": {
+        "energy_finite_sum": -171.19516939360193,
+        "force_core_L2_including_origin": 4.3114577002722445,
+        "raw_force_core_L2_excluding_origin": 4.310069116463839,
+        "current_core_L2_reconstructed": 14.090997094103292,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -0.58354838041977,
+          1.210405215256488e-16
+        ],
+        "center_force_magnitude": 0.58354838041977,
+        "center_lowest_spectral_f": [
+          0.07044110739717671,
+          -4.249223313332647e-16
+        ],
+        "center_lowest_spectral_g": 0.997515939917082,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.31403073249509583,
+        "phase_lowest_max_abs_deg": 17.992635609370748,
+        "phase_lowest_area_weighted_rms_rad": 0.02200048875431256,
+        "phase_peak_coordinates_ell0": [
+          0.0,
+          0.1875
+        ],
+        "phase_peak_gap_magnitude": 0.3270890722180704,
+        "phase_peak_f_magnitude": 0.22154660564592998,
+        "tangential_force_L2_excluding_origin": 0.8370775691612867,
+        "interior_condensate_torque_plus_current_divergence_max": 3.462978627293001e-08
+      }
+    },
+    "amplitude_minus": {
+      "256": {
+        "energy_finite_sum": -171.20847986646726,
+        "force_core_L2_including_origin": 4.303901213366982,
+        "raw_force_core_L2_excluding_origin": 4.302509456876968,
+        "current_core_L2_reconstructed": 14.084769587802551,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -0.5837022779870428,
+          -5.437844396186366e-16
+        ],
+        "center_force_magnitude": 0.5837022779870428,
+        "center_lowest_spectral_f": [
+          0.07049709970487948,
+          4.1295935265789724e-16
+        ],
+        "center_lowest_spectral_g": 0.9975119843556769,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.3144088407292495,
+        "phase_lowest_max_abs_deg": 18.014299615386896,
+        "phase_lowest_area_weighted_rms_rad": 0.022029881318278516,
+        "phase_peak_coordinates_ell0": [
+          0.0,
+          -0.1875
+        ],
+        "phase_peak_gap_magnitude": 0.32672084381109656,
+        "phase_peak_f_magnitude": 0.22146986673711444,
+        "tangential_force_L2_excluding_origin": 0.8373910451384188,
+        "interior_condensate_torque_plus_current_divergence_max": 3.439547223774153e-08
+      }
+    },
+    "phase_plus": {
+      "256": {
+        "energy_finite_sum": -171.20114618626894,
+        "force_core_L2_including_origin": 4.308129230983224,
+        "raw_force_core_L2_excluding_origin": 4.306742587209367,
+        "current_core_L2_reconstructed": 14.088109606902307,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -0.5829154829660865,
+          2.8794056757496895e-16
+        ],
+        "center_force_magnitude": 0.5829154829660865,
+        "center_lowest_spectral_f": [
+          0.07033705191412487,
+          -4.3692702270745917e-17
+        ],
+        "center_lowest_spectral_g": 0.9975232824992256,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.31369165718738234,
+        "phase_lowest_max_abs_deg": 17.973208025301666,
+        "phase_lowest_area_weighted_rms_rad": 0.021993961148855563,
+        "phase_peak_coordinates_ell0": [
+          0.0,
+          0.1875
+        ],
+        "phase_peak_gap_magnitude": 0.32690495801458347,
+        "phase_peak_f_magnitude": 0.22146931455146376,
+        "tangential_force_L2_excluding_origin": 0.8380661909305691,
+        "interior_condensate_torque_plus_current_divergence_max": 3.4556870960253394e-08
+      }
+    },
+    "phase_minus": {
+      "256": {
+        "energy_finite_sum": -171.20251288774298,
+        "force_core_L2_including_origin": 4.307226893019367,
+        "raw_force_core_L2_excluding_origin": 4.305833193702489,
+        "current_core_L2_reconstructed": 14.087656573725154,
+        "center_gap": [
+          0.0,
+          0.0
+        ],
+        "center_force": [
+          -0.5843351478890911,
+          4.273025524143619e-16
+        ],
+        "center_force_magnitude": 0.5843351478890911,
+        "center_lowest_spectral_f": [
+          0.07060113859429876,
+          -2.3280594370927937e-16
+        ],
+        "center_lowest_spectral_g": 0.9975046261693168,
+        "center_dual_area": 0.03515625,
+        "phase_lowest_max_abs_rad": 0.3147475739041439,
+        "phase_lowest_max_abs_deg": 18.03370759668941,
+        "phase_lowest_area_weighted_rms_rad": 0.02203645133426467,
+        "phase_peak_coordinates_ell0": [
+          0.0,
+          0.1875
+        ],
+        "phase_peak_gap_magnitude": 0.32690495801458347,
+        "phase_peak_f_magnitude": 0.22154721992632104,
+        "tangential_force_L2_excluding_origin": 0.8364049997527331,
+        "interior_condensate_torque_plus_current_divergence_max": 3.446807927964812e-08
+      }
+    }
+  },
+  "raw_cutoff_changes": {
+    "radial_33": {
+      "force_relative_L2": 0.018743409584535266,
+      "current_relative_L2_reconstructed": 0.007221993090645626,
+      "energy_change": 0.2963344001623227,
+      "energy_relative_change": 0.001714724871892387,
+      "interpretation": "Observed raw finite-sum change N128 to N256, not a rigorous remainder bound"
+    },
+    "radial_65": {
+      "force_relative_L2": 0.01869661272543276,
+      "current_relative_L2_reconstructed": 0.0072404762615521645,
+      "energy_change": 0.29725859139472277,
+      "energy_relative_change": 0.0017215549434275235,
+      "interpretation": "Observed raw finite-sum change N128 to N256, not a rigorous remainder bound"
+    },
+    "radial_129": {
+      "force_relative_L2": 0.018687267254471594,
+      "current_relative_L2_reconstructed": 0.00724565503274436,
+      "energy_change": 0.29749139099732247,
+      "energy_relative_change": 0.0017232735135417788,
+      "interpretation": "Observed raw finite-sum change N128 to N256, not a rigorous remainder bound"
+    },
+    "asymmetric_65": {
+      "force_relative_L2": 0.01487091469236779,
+      "current_relative_L2_reconstructed": 0.007491122585060238,
+      "energy_change": 0.3083147847707721,
+      "energy_relative_change": 0.0018008848654865576,
+      "interpretation": "Observed raw finite-sum change N128 to N256, not a rigorous remainder bound"
+    }
+  },
+  "mesh_changes": {
+    "33_to_65": {
+      "force_relative_L2_on_coarse_nodes": 0.021952201819023773,
+      "current_relative_L2_on_coarse_nodes": 0.0063761439663507875,
+      "radial_error_reduction_factor": 4.034194611229655,
+      "energy_change": 0.14879826848215316,
+      "energy_relative_change": 0.00086175606725779
+    },
+    "65_to_129": {
+      "force_relative_L2_on_coarse_nodes": 0.005407499533234207,
+      "current_relative_L2_on_coarse_nodes": 0.0015985924801345342,
+      "radial_error_reduction_factor": 4.007968594660468,
+      "energy_change": 0.03710589284190746,
+      "energy_relative_change": 0.00021494269839678865
+    }
+  },
+  "directional_derivatives": {
+    "amplitude": {
+      "energy_directional_derivative": 6.655236432663969,
+      "force_directional_work": 6.6552358113166346,
+      "absolute_difference": 6.213473344729437e-07,
+      "relative_difference": 9.33621816099135e-08,
+      "perturbation_step": 0.001,
+      "spectral_boundary_trace_fixed": true,
+      "same_finite_sum": true
+    },
+    "phase": {
+      "energy_directional_derivative": 0.6833507370203051,
+      "force_directional_work": 0.683350891543765,
+      "absolute_difference": 1.5452345991651129e-07,
+      "relative_difference": 2.2612608226415824e-07,
+      "perturbation_step": 0.001,
+      "spectral_boundary_trace_fixed": true,
+      "same_finite_sum": true
+    }
+  },
+  "interpretation": {
+    "admitted": "Consistent finite-sum thermal Cartesian spatial energy oracle for prescribed fields and fixed spectral contacts",
+    "spectral_phase": "The anomalous Matsubara propagator phase is solved independently of the condensate phase; it is not a new independent dynamical quantum state",
+    "current_reconstruction": "Cartesian arithmetic average of adjacent face current densities I/(w*edge_length); used only for weighted diagnostic comparisons",
+    "raw_origin_policy": "Frozen runner excluded origin from core norm; this postprocessing includes it and preserves both values",
+    "next_action": "Adopt this experimental auxiliary-spectral energy as the thermal spatial reference; derive and verify any tail from the same action, then connect the dissipative/kinetic contract. Do not fit another q_delta or refine a rejected local closure.",
+    "limitations": [
+      "Finite Matsubara sum still has a measurable cutoff dependence",
+      "Square 12 ell0 local core test, not the full Korzh detector geometry",
+      "Prescribed gap profile, not a self-consistent stationary vortex or activation barrier",
+      "Thermal oracle does not establish a closure for nonthermal occupations",
+      "No mobility, time integration, photon, normal current or circuit evolution has been validated"
+    ],
+    "stage4_complete": false,
+    "production_solver_changed": false
+  }
+}

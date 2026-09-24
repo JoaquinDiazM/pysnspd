@@ -1,0 +1,45 @@
+{
+  "schema": "pysnspd.stage4.self_consistent_thermal_core.v1",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "spectral_tolerance": 1e-6,
+  "max_newton_iterations": 40,
+  "max_outer_iterations": 150,
+  "checkpoint_cadence": 5,
+  "core_radius_ell0": 4.0,
+  "core_mass_rms_relative_tolerance": 0.001,
+  "cases": [
+    {"id": "radial_65_N128", "nx": 65, "ny": 65, "length_ell0": 12.0, "width_ell0": 12.0, "profile": "radial_vortex", "matsubara_count": 128},
+    {"id": "radial_65_N256", "nx": 65, "ny": 65, "length_ell0": 12.0, "width_ell0": 12.0, "profile": "radial_vortex", "matsubara_count": 256},
+    {"id": "radial_129_N256", "nx": 129, "ny": 129, "length_ell0": 12.0, "width_ell0": 12.0, "profile": "radial_vortex", "matsubara_count": 256},
+    {"id": "asymmetric_65_N256", "nx": 65, "ny": 65, "length_ell0": 12.0, "width_ell0": 12.0, "profile": "asymmetric_vortex", "matsubara_count": 256}
+  ],
+  "method": {
+    "action": "Same finite positive-Matsubara graph action as prescribed spatial reference; raw sum, no tail",
+    "spectral_block": "Sparse damped Newton with stationary energy descent; previous u is the next initial guess",
+    "gap_block": "Exact interior minimizer d*=2*pi*t*sum(f_n)/(ln(t)+sum(1/(n+0.5))); no mixing",
+    "fixed_boundary": "Initial prescribed complex gap and independent radial spectral traces remain fixed",
+    "checkpoint": "d and solved u/f/g are consistent; next_d is separate and never declared converged with old spectra; full fields at first sweep, every fifth, accepted, pilot end and budget end; metrics every sweep",
+    "stop": "Core mass-weighted RMS of (d-d*)/gap_reference <= 1e-3 on free nodes r<=4ell0",
+    "outside_core": "Report global maximum residual; the core criterion is not full-domain stationarity",
+    "iteration_limit": "Incomplete checkpoint, not acceptance",
+    "pilot": "At most two sweeps; execution measurement only, not physical admission"
+  },
+  "scope": [
+    "Stationary thermal local core with prescribed winding at the boundary, not physical time",
+    "No KWT mobility, photon, circuit, kinetic populations, physical stability or activation barrier",
+    "Cutoff and mesh are compared as declared cases; no delta regularizer and no extra K0 term",
+    "No production promotion or full stage4 closure"
+  ],
+  "execution": {
+    "shared_frequency_pool_across_active_cases": true,
+    "maximum_resource_fraction": 0.9,
+    "threads_per_process": 1,
+    "long_run_policy": "User executes anything reasonably expected to exceed five minutes",
+    "pilot_timeout_seconds": 240,
+    "eta": "Estimated work at the configured maximum sweeps, based on completed jobs; not a prediction of convergence",
+    "resume": "Explicit --resume-from with identical plan/sources/reference and a fresh output directory; hashes verified; only complete field checkpoints are indexed; at most four completed sweeps may be recomputed",
+    "disk_preflight": "Conservative uncompressed checkpoint projection, including first/final and header margin, must fit within 90% of available disk; pilot projection is limited to its requested sweeps",
+    "no_overwrite_retry_or_fallback": true
+  }
+}

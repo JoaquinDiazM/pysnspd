@@ -17,6 +17,11 @@ La [decisión de cierre de etapa 3](stage3/closure_20260923/closure_decision.jso
 no declara completado todo el contrato histórico D.4.3. La [etapa 3.5](stage3_5/README.md)
 se cerró como investigación y conserva las incertidumbres de cascada y tasas materiales.
 
+La [referencia térmica espacial](stage4/spatial_energy_20260924/README.md)
+recupera el contraste del núcleo al mismo corte espectral. La continuación
+autoconsistente está preparada; no constituye todavía un cierre fuera del
+equilibrio ni altera los requisitos dinámicos siguientes.
+
 ## Pendientes que no desaparecen con el cierre
 
 Antes de interpretar resultados dinámicos de las etapas 4–5 deben completarse:

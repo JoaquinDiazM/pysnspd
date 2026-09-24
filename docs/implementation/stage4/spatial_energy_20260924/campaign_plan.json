@@ -1,0 +1,164 @@
+{
+  "schema": "pysnspd.stage4.thermal_spatial_campaign.v1",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "D_m2_s": 5e-05,
+  "spectral_tolerance": 1e-06,
+  "max_newton_iterations": 40,
+  "cases": [
+    {
+      "id": "radial_33",
+      "nx": 33,
+      "ny": 33,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "radial_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        128,
+        256
+      ]
+    },
+    {
+      "id": "radial_65",
+      "nx": 65,
+      "ny": 65,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "radial_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        128,
+        256
+      ]
+    },
+    {
+      "id": "radial_129",
+      "nx": 129,
+      "ny": 129,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "radial_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        128,
+        256
+      ]
+    },
+    {
+      "id": "asymmetric_65",
+      "nx": 65,
+      "ny": 65,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "asymmetric_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        128,
+        256
+      ]
+    },
+    {
+      "id": "amplitude_plus",
+      "nx": 65,
+      "ny": 65,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "asymmetric_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        256
+      ],
+      "perturbation": "amplitude",
+      "perturbation_step": 0.001
+    },
+    {
+      "id": "amplitude_minus",
+      "nx": 65,
+      "ny": 65,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "asymmetric_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        256
+      ],
+      "perturbation": "amplitude",
+      "perturbation_step": -0.001
+    },
+    {
+      "id": "phase_plus",
+      "nx": 65,
+      "ny": 65,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "asymmetric_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        256
+      ],
+      "perturbation": "phase",
+      "perturbation_step": 0.001
+    },
+    {
+      "id": "phase_minus",
+      "nx": 65,
+      "ny": 65,
+      "length_ell0": 12.0,
+      "width_ell0": 12.0,
+      "profile": "asymmetric_vortex",
+      "matsubara_count": 256,
+      "report_cutoffs": [
+        256
+      ],
+      "perturbation": "phase",
+      "perturbation_step": -0.001
+    }
+  ],
+  "pilot_cases": [
+    "radial_33",
+    "radial_129",
+    "asymmetric_65"
+  ],
+  "pilot_modes": [
+    0,
+    1,
+    8,
+    127
+  ],
+  "directional_checks": [
+    {
+      "kind": "amplitude",
+      "base": "asymmetric_65",
+      "plus": "amplitude_plus",
+      "minus": "amplitude_minus",
+      "count": 256,
+      "step": 0.001
+    },
+    {
+      "kind": "phase",
+      "base": "asymmetric_65",
+      "plus": "phase_plus",
+      "minus": "phase_minus",
+      "count": 256,
+      "step": 0.001
+    }
+  ],
+  "interpretation": [
+    "Exact change of variables in thermal positive-Matsubara Usadel; a consistent finite-volume approximation on the graph, not exact at finite mesh",
+    "Prescribed 56.38nm square local core control, not full80nm device or photon geometry",
+    "Radial spectral BVP gives fixed boundary traces and initial guesses; all interior complex spectral phases are solved freely",
+    "Raw finite Matsubara sum in energy,force,current; no delta regularizer,no addedK0,no force-only tail",
+    "All perturbations compact inside r<4ell0, keeping boundarygap and spectraltraces fixed",
+    "No time trajectory,kineticpopulations,mobility,circuit or physicalcore admission; stage4 remains open"
+  ],
+  "execution": {
+    "shared_pool": true,
+    "resource_fraction_max": 0.9,
+    "threads_per_process": 1,
+    "agent_pilot_timeout_seconds": 240,
+    "user_runs_if_expected_over_seconds": 300,
+    "full_campaign_runtime": "Pending measured pilot; no untested speedup assumed",
+    "no_retry_or_overwrite": true
+  }
+}

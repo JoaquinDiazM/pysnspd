@@ -1,22 +1,19 @@
 # pySNSPD publication status
 
-Last updated: 2026-09-23
+Last updated: 2026-09-24 UTC
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: stage 4 core follow-up and independent radial Usadel reference completed.
-The [new illustrated review](docs/implementation/stage4/followup_20260923/README.md)
-separates spatial convergence from a substantial constitutive core-force mismatch.
-The current regularized core is not physically admitted; next work corrects the
-closure using the preserved spatial spectral reference. Stage 4 remains open.
-Parallel case/query scheduling now shares a resource budget no greater than 90%;
-the measured equivalence pilot is 2.24x faster with 4 workers and identical arrays.
-The photon horizon policy is Vout trigger plus margin, with the same equations,
-geometry, mesh, accuracy and full thesis circuit. It is documented, not yet active
-in production. No new long run is required. Production retains Delaunay-Voronoi
-and adaptive Euler; static GLL/radial controls are experimental.
+Current phase: stage 4 thermal spatial-energy reference implemented and checked.
+The [current report](docs/implementation/stage4/spatial_energy_20260924/README.md)
+shows 0.18% spatial discrepancy at fixed spectral cutoff on 129² nodes, versus the
+previously rejected local core completion. The actual 128-to-256 cutoff change is
+1.87%; neither number is a full physical error bar. Independent energy variations,
+current and gauge identities pass. The self-consistent static core campaign is
+prepared for the user; its iteration count is not detector time. Stage 4 remains
+open. Production and v1.0.0 are unchanged; nonthermal promotion remains unproved.
 
-## Historical stage 3.5 closure and stage4 preparation
+## Historical stage 3.5 closure and stage 4 preparation
 
 The user selected “Cerrar investigación 3.5 y preparar etapa 4 sin fotón”. The
 [current delivery](docs/implementation/stage3_5/CURRENT.md) covers 127 variables in
@@ -44,7 +41,8 @@ states, and the supplied phonon DOS is not normalized with verified units. These
 findings remain explicit in A-D. The pedagogical notebook is E-r02, with eight active
 classes and 24 unanswered activities, independently versioned from the physics.
 
-No long calculation is currently pending. Future computations expected to exceed
+One self-consistent thermal-core continuation is prepared in the command notebook.
+Computations expected to exceed
 five minutes must be recorded in `/home/jdiaz/GEMINGA_COMMANDS.md` and supplied
 in the chat as exact copyable commands, with their purpose, outputs and estimated
 resources. The user launches them; completed batches are not automatically repeated.

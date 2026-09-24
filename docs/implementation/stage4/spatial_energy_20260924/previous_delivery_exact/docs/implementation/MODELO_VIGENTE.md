@@ -69,12 +69,3 @@ simplificado como contrato vigente por leer un PDF anterior.
 La [revisión previa del alcance](stage2/practical_review_20260922/validation_scope_review.md)
 se conserva como antecedente de esta decisión; su preparación limitada a 3A
 no sustituye la secuencia completa vigente.
-
-## Referencia térmica espacial regular
-
-La [entrega espacial](stage4/spatial_energy_20260924/README.md) implementa
-un oráculo térmico con campos espectrales complejos, sin completado δ ni
-gradiente K0 añadido. Recupera el contraste radial y deriva fuerza y corriente
-de la misma energía. La campaña siguiente busca el núcleo autoconsistente.
-No sustituye el cierre de poblaciones no térmicas: falta justificar la rama
-retardada y sus contratos de energía y transporte. Producción sigue intacta.

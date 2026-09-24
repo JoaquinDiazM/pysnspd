@@ -1,0 +1,24 @@
+{
+  "status": "DRY_RUN_VERIFIED",
+  "timeout_seconds": 30,
+  "exit_code": 0,
+  "physics_executed": false,
+  "verified_on": "2026-09-24 UTC",
+  "resume_source": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924",
+  "output_root": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924",
+  "checkpoint_projected_bytes": 9140091776,
+  "available_disk_bytes": 1054519439360,
+  "workers": 27,
+  "coordinator_processes": 1,
+  "physical_cores_reserved": 2,
+  "logical_cpu_budget": 28,
+  "estimated_memory_reservation_bytes": 32212254720,
+  "plan_sha256": "889e7e594cee1b0d08ec4046e6c5894b740914abb52f874542f208e16920c79e",
+  "sources": {
+    "sandbox/stage4_core/run_self_consistent_core.py": "e00cbe90cde9af35548382d6adff5fc803b82f3ddf246bda019bd231dc671f66",
+    "sandbox/stage4_core/run_spatial_energy.py": "7c5f2356a3decb34889d354666d0ee50fd90e7fd004189406328d7736a3a05e1",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8"
+  },
+  "explanation": "Without --execute the runner verifies resume hashes/resources/storage and returns before creating output directories or launching workers. This receipt records the successful read-only SSH preflight."
+}
