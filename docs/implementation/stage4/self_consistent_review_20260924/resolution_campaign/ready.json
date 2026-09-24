@@ -1,0 +1,20 @@
+{
+  "status": "READY_FOR_MANUAL_FULL_EXECUTION",
+  "full_campaign_executed": false,
+  "registered_spectral_queries": 181,
+  "kinetic_response_queries": 181,
+  "projection_groups": 7,
+  "estimated_wall_minutes": [
+    5,
+    15
+  ],
+  "estimation": "Previous72 queries took88.48s; new129x129 eta=.01 gap-edge probe took13.45s alone. Denser near-gap queries and shared contention can exceed5minutes; entirecampaign delegated, no long simulation launched.",
+  "source_checks": true,
+  "exact_command": "/home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/resolution_campaign.py --plan docs/implementation/stage4/self_consistent_review_20260924/resolution_campaign/plan.json --output-root /home/jdiaz/scratch/pysnspd_stage4_moment_resolution_20260924 --execute",
+  "input_manifests": {
+    "dry_run_sha256": "4de450f3e3bc3fe685629231ebdcab855670d7ea1cb5962391c7e3980ce0fd51",
+    "plan_sha256": "8e58e767e90d9da6695cade2fa0669d6d0c56aeeea8c02e988a0dbf1978aa67b",
+    "pilot_identity_sha256": "c1ae15b2b0c09305f2aea5d45221bf266dde19ee8224ad8f579cc40755f43d8c",
+    "test_receipt_sha256": "f50e27057584d80f1c9cccc242f35eb13906c0e03454fe3f23d8548b4780aef6"
+  }
+}

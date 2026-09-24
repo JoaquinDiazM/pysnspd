@@ -1,0 +1,279 @@
+{
+  "schema": "pysnspd.stage4.self_consistent_extraction.v1",
+  "raw_directory": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924",
+  "runtime_seconds": 1.308161314111203,
+  "extraction_script_sha256": "82d4ee5bed936a87ced820ad7f64728ff923e6e7d18739678c86f39191261a2e",
+  "plan_sha256": "889e7e594cee1b0d08ec4046e6c5894b740914abb52f874542f208e16920c79e",
+  "identity_sha256": "3f02c990198b64544fade08581a7a4d63d5e1d6cb43964897f64ce04175cddb7",
+  "summary_sha256": "09078cd22036228fb7f8d1dc78acb2dd95aad6e3f52ce848e8a5b1f01de48871",
+  "sources_matching_identity": {
+    "sandbox/stage4_core/run_self_consistent_core.py": "e00cbe90cde9af35548382d6adff5fc803b82f3ddf246bda019bd231dc671f66",
+    "sandbox/stage4_core/run_spatial_energy.py": "7c5f2356a3decb34889d354666d0ee50fd90e7fd004189406328d7736a3a05e1",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8"
+  },
+  "checkpoint_files_verified": [
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/asymmetric_65_N256_sweep0001.npz",
+      "sha256": "743e78aa70f7ea166a42dfcad02cbce3fc6f2505f84de8b52eb2df9546d6d19b",
+      "bytes": 24734917
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/asymmetric_65_N256_sweep0002.npz",
+      "sha256": "d5358216714980bf250c076c0bbcba762fa9323bf4ca9f8325a714e65d1b42c9",
+      "bytes": 26495617
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/radial_129_N256_sweep0001.npz",
+      "sha256": "0d75e172cf401ec2438462668a3d7742758c472f560b78e5423e73f817cd1fd5",
+      "bytes": 91713843
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/radial_129_N256_sweep0002.npz",
+      "sha256": "39a2e51c7ae0ff53289f9bb48c6e88b0e8371f81d8f3f11131321a13c34f87f0",
+      "bytes": 93467708
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/radial_65_N128_sweep0001.npz",
+      "sha256": "cf16f7d84768916361809f37a33f4c6ca31ca0238583ceec3b70c9a78a2d78f1",
+      "bytes": 8561231
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/radial_65_N128_sweep0002.npz",
+      "sha256": "3b05c570ba04f23de5827d60e7bb154bb37b72bce52b8b4fa3e7f617704cb818",
+      "bytes": 8835717
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/radial_65_N256_sweep0001.npz",
+      "sha256": "f2a03a5d644157b02a6392c627c0a49265fd52f49cc96fe2a44cd440bf11d10c",
+      "bytes": 16500311
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/tmp/stage4_self_consistent_pilot_20260924/checkpoints/radial_65_N256_sweep0002.npz",
+      "sha256": "e5ee1f2d214d67dd237ed636d4b4bdde99c60e4666b2b988040ff9f423e7552f",
+      "bytes": 17199999
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/asymmetric_65_N256_sweep0005.npz",
+      "sha256": "9a92aea770a3199ad6deafd7e35fc232982ea5638610586b7a447383b0dd6766",
+      "bytes": 26641634
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/asymmetric_65_N256_sweep0010.npz",
+      "sha256": "229e2051d28fba2da0220be0e88f770094407e4b6b86c797227f85f8bb88f378",
+      "bytes": 26728676
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/asymmetric_65_N256_sweep0015.npz",
+      "sha256": "a0dd8eab3aca8d5e4e9dbccb58b9f87982305f9f7790cae58d4f6e3e922b6d1e",
+      "bytes": 26747824
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/asymmetric_65_N256_sweep0017.npz",
+      "sha256": "03d293a7c654681477fd754c514eff51a90da98b5b384d9312e035414d0e42da",
+      "bytes": 26739190
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_129_N256_sweep0005.npz",
+      "sha256": "109288b32b402174f9a4ef3dbfcee05b060c8f3d4663aea89011b7714c5e272e",
+      "bytes": 93987358
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_129_N256_sweep0010.npz",
+      "sha256": "e5ae633570cd82fcffe9fff5032941c3339c82d16106351d47aeeac40d48ee42",
+      "bytes": 94220954
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_129_N256_sweep0015.npz",
+      "sha256": "70287fe36da476d0646afadc48e37cee7fa2dd8df7eb0ff4b1b8017cdd69ed1a",
+      "bytes": 94382615
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_129_N256_sweep0016.npz",
+      "sha256": "10fb0c8f2b8e611efa18d28ee26adf1d324a3094ff55432c0d03086ed6360ada",
+      "bytes": 94288166
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N128_sweep0005.npz",
+      "sha256": "4ef04ece6147415e8efda6888268c646377a549f0cb7a2e3a30043dd620e86b7",
+      "bytes": 8943435
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N128_sweep0010.npz",
+      "sha256": "e80e94ed7c9ab8eac90d51b276ba4f21779cc52dccd78ce1fef282c09dfbcdb9",
+      "bytes": 8997518
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N128_sweep0015.npz",
+      "sha256": "b4a9f77d1c123550705f22a17b38b7b105589bdca9a2be34693ee1fba8f17e9a",
+      "bytes": 9017862
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N256_sweep0005.npz",
+      "sha256": "0ad1adc4a6675eaef8994c899037bfd45e55177d434cd418e2a7e493174a3324",
+      "bytes": 17511189
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N256_sweep0010.npz",
+      "sha256": "c25442811440ec05a3feb16670222ee695d9b961b2a6542c675e2154e9bfcbc2",
+      "bytes": 17528751
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N256_sweep0015.npz",
+      "sha256": "5f97d3f08f9a0bc676cd732b6243c51940daa0c7f07955e4ca0ad3948cb5ddbe",
+      "bytes": 17590755
+    },
+    {
+      "path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N256_sweep0016.npz",
+      "sha256": "89568dbdc5b6bc04d914c03424ea6ca05dae973fd59420062cd15240326bf897",
+      "bytes": 17543649
+    }
+  ],
+  "completed_sweep_records": 64,
+  "final_cases": {
+    "radial_65_N128": {
+      "case_id": "radial_65_N128",
+      "full_checkpoint_path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N128_sweep0015.npz",
+      "full_checkpoint_sha256": "b4a9f77d1c123550705f22a17b38b7b105589bdca9a2be34693ee1fba8f17e9a",
+      "compact_file": "radial_65_N128.npz",
+      "compact_sha256": "3eda822aeec6ab06cb9bfbe6942ce7e6041eb6b9c843cbf5f8e1c52af06caa30",
+      "compact_bytes": 242548,
+      "checks": {
+        "maximum_f_minus_g_u": 0.0,
+        "maximum_normalization_error": 7.771561172376096e-16,
+        "maximum_positive_chart_error": 0.0,
+        "maximum_next_d_error": 0.0,
+        "maximum_force_error": 2.196502859271244e-14,
+        "maximum_current_error": 0.0,
+        "energy_error": 3.126388037344441e-13,
+        "maximum_recomputed_spectral_residual": 7.90554697621781e-07,
+        "core_mass_rms_relative": 0.0008441534267811437,
+        "core_mass_rms_record_error": 1.0842021724855044e-19,
+        "fixed_gap_block_change": 0.0,
+        "coherent_pair": "All saved d,u,f,g,force,current checked together; next_d remains a separate proposal"
+      }
+    },
+    "radial_65_N256": {
+      "case_id": "radial_65_N256",
+      "full_checkpoint_path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_65_N256_sweep0016.npz",
+      "full_checkpoint_sha256": "89568dbdc5b6bc04d914c03424ea6ca05dae973fd59420062cd15240326bf897",
+      "compact_file": "radial_65_N256.npz",
+      "compact_sha256": "1ce424556df2c1b7a081c6d0eeac9ded953906df4f7587b50ed825a287a5e296",
+      "compact_bytes": 242084,
+      "checks": {
+        "maximum_f_minus_g_u": 0.0,
+        "maximum_normalization_error": 7.771561172376096e-16,
+        "maximum_positive_chart_error": 0.0,
+        "maximum_next_d_error": 0.0,
+        "maximum_force_error": 3.600480329765242e-14,
+        "maximum_current_error": 0.0,
+        "energy_error": 7.105427357601002e-13,
+        "maximum_recomputed_spectral_residual": 9.952886826517167e-07,
+        "core_mass_rms_relative": 0.0009742418201488793,
+        "core_mass_rms_record_error": 0.0,
+        "fixed_gap_block_change": 0.0,
+        "coherent_pair": "All saved d,u,f,g,force,current checked together; next_d remains a separate proposal"
+      }
+    },
+    "asymmetric_65_N256": {
+      "case_id": "asymmetric_65_N256",
+      "full_checkpoint_path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/asymmetric_65_N256_sweep0017.npz",
+      "full_checkpoint_sha256": "03d293a7c654681477fd754c514eff51a90da98b5b384d9312e035414d0e42da",
+      "compact_file": "asymmetric_65_N256.npz",
+      "compact_sha256": "6ee4a589c9b7973a30019757615656cd4d73c979fe35dde55b10ce4a734e94d6",
+      "compact_bytes": 323994,
+      "checks": {
+        "maximum_f_minus_g_u": 0.0,
+        "maximum_normalization_error": 7.771561172376096e-16,
+        "maximum_positive_chart_error": 0.0,
+        "maximum_next_d_error": 0.0,
+        "maximum_force_error": 4.2148957302105076e-14,
+        "maximum_current_error": 0.0,
+        "energy_error": 4.263256414560601e-13,
+        "maximum_recomputed_spectral_residual": 6.747813488219537e-07,
+        "core_mass_rms_relative": 0.0008951620526274195,
+        "core_mass_rms_record_error": 1.0842021724855044e-19,
+        "fixed_gap_block_change": 0.0,
+        "coherent_pair": "All saved d,u,f,g,force,current checked together; next_d remains a separate proposal"
+      }
+    },
+    "radial_129_N256": {
+      "case_id": "radial_129_N256",
+      "full_checkpoint_path": "/home/jdiaz/scratch/pysnspd_stage4_self_consistent_20260924/checkpoints/radial_129_N256_sweep0016.npz",
+      "full_checkpoint_sha256": "10fb0c8f2b8e611efa18d28ee26adf1d324a3094ff55432c0d03086ed6360ada",
+      "compact_file": "radial_129_N256.npz",
+      "compact_sha256": "3865190bb7cf67883f8757a16a9f846982c09a5cbded426ac0af4fd78d0eb7d1",
+      "compact_bytes": 1187546,
+      "checks": {
+        "maximum_f_minus_g_u": 0.0,
+        "maximum_normalization_error": 8.881784197001252e-16,
+        "maximum_positive_chart_error": 0.0,
+        "maximum_next_d_error": 0.0,
+        "maximum_force_error": 3.782769849516433e-14,
+        "maximum_current_error": 0.0,
+        "energy_error": 1.4210854715202004e-13,
+        "maximum_recomputed_spectral_residual": 5.90283183819489e-07,
+        "core_mass_rms_relative": 0.0009760147562164687,
+        "core_mass_rms_record_error": 2.168404344971009e-19,
+        "fixed_gap_block_change": 0.0,
+        "coherent_pair": "All saved d,u,f,g,force,current checked together; next_d remains a separate proposal"
+      }
+    }
+  },
+  "process_budget": {
+    "cpu_fraction": 0.9,
+    "memory_fraction": 0.9,
+    "selected_affinity_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29
+    ],
+    "coordinator_cpu": 29,
+    "worker_affinity_cpus": [
+      0,
+      16,
+      1,
+      17
+    ],
+    "workers": 4,
+    "threads_per_process": 1,
+    "total_processes": 5,
+    "logical_budget": 28,
+    "effective_cpu_quota_units": 32,
+    "physical_cores_used": 14,
+    "physical_cores_reserved": 2,
+    "memory_limit_bytes": 112990545100,
+    "coordinator_reserve_bytes": 3221225472,
+    "worker_reserve_bytes": 1073741824,
+    "estimated_memory_reservation_bytes": 7516192768,
+    "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+  },
+  "physical_time_steps": 0,
+  "new_spectral_solves": 0,
+  "production_changed": false
+}

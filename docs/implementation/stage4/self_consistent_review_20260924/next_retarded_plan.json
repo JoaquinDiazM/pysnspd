@@ -1,0 +1,72 @@
+{
+  "schema": "pysnspd.stage4.retarded_oracle.v1",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "gap_reference_kBTc": 1.7638769425910419,
+  "cases": [
+    {
+      "id": "radial_65_N256",
+      "fields_path": "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_65_N256.npz",
+      "fields_sha256": "1ce424556df2c1b7a081c6d0eeac9ded953906df4f7587b50ed825a287a5e296"
+    },
+    {
+      "id": "radial_129_N256",
+      "fields_path": "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_129_N256.npz",
+      "fields_sha256": "3865190bb7cf67883f8757a16a9f846982c09a5cbded426ac0af4fd78d0eb7d1"
+    },
+    {
+      "id": "asymmetric_65_N256",
+      "fields_path": "docs/implementation/stage4/self_consistent_review_20260924/raw/asymmetric_65_N256.npz",
+      "fields_sha256": "6ee4a589c9b7973a30019757615656cd4d73c979fe35dde55b10ce4a734e94d6"
+    }
+  ],
+  "energies_relative": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    0.9,
+    1.0,
+    1.1,
+    1.25,
+    1.5,
+    2.0,
+    3.0,
+    5.0
+  ],
+  "etas_relative": [
+    0.04,
+    0.02
+  ],
+  "continuation_steps": 24,
+  "spectral_tolerance": 1e-07,
+  "maximum_newton_iterations": 60,
+  "causal_tolerance": 1e-08,
+  "radial_tolerance": 1e-05,
+  "radial_max_nodes": 12000,
+  "matsubara_bridge_tolerance": 1e-09,
+  "core_radius_ell0": 4.0,
+  "pilot": {
+    "cases": [
+      "radial_65_N256",
+      "asymmetric_65_N256"
+    ],
+    "energies_relative": [
+      0.0,
+      0.75,
+      1.25
+    ],
+    "etas_relative": [
+      0.04
+    ]
+  },
+  "physical_scope": "Fixed completed thermal gap and same R12 prescribed-tanh spectral exterior. eta is an analytic-contour numerical resolution, not a fitted Dynes rate. No physical time or kinetic populations.",
+  "execution": {
+    "shared_pool": true,
+    "maximum_resource_fraction": 0.9,
+    "threads_per_worker": 1,
+    "pilot_timeout_seconds": 240,
+    "long_run_user_handoff": true,
+    "no_overwrite": true
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "plan_sha256": "8e58e767e90d9da6695cade2fa0669d6d0c56aeeea8c02e988a0dbf1978aa67b",
+  "sources": {
+    "sandbox/stage4_core/next_retarded_oracle.py": "908d004a7719df58be59185f1e18de66c451120d7fd50b653a05b595bd02e9f8",
+    "sandbox/stage4_core/next_kinetic_response.py": "7349e64b9032e9bb695ac13aa51762aee30388ac3c3c71546b534bc12ca742cd",
+    "sandbox/stage4_core/next_potential_projection.py": "45a9159cd806a27eb9a95d39fec19a4936c766e7f5037a4b6c235edc07682952",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/retarded_spatial_usadel.py": "b3bd991d93db49e4e474290b8b5991e69bf1803fd72d4c267bdd2e7f44b15635",
+    "pysnspd/experimental/frozen_kinetic_usadel.py": "08a73bd3b85a6eb1b07a64d841d6047a8bcf2ca5f77dfd8256d23802ee594e43",
+    "sandbox/stage4_core/resolution_campaign.py": "86e8c8516755fd6c4489be395b7b90f1d61d8c0e979b3ddf26188c9e3992e033",
+    "sandbox/stage4_core/resolution_campaign_analysis.py": "d82485d1b04361f688e2c860d52f355147d2fd9170795fefe796e18f5a0aa60a"
+  },
+  "inputs": {
+    "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_65_N256.npz": "1ce424556df2c1b7a081c6d0eeac9ded953906df4f7587b50ed825a287a5e296",
+    "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_129_N256.npz": "3865190bb7cf67883f8757a16a9f846982c09a5cbded426ac0af4fd78d0eb7d1",
+    "docs/implementation/stage4/self_consistent_review_20260924/raw/asymmetric_65_N256.npz": "6ee4a589c9b7973a30019757615656cd4d73c979fe35dde55b10ce4a734e94d6",
+    "docs/implementation/stage4/followup_20260923/raw/stage4_radial_reference_20260923/identity.json": "a5eba7304fea8443d32c369d0b4f3c07d4dbcbcb21d8e7d0a7bd890686fa992d",
+    "docs/implementation/stage4/followup_20260923/raw/stage4_radial_reference_20260923/tasks/R12_n0000.npz": "9e222a61cd1063b883f82b4fe9bab076344841ed5f1cc7e52d2f69edd9e9f390"
+  },
+  "spectral_queries": 1,
+  "kinetic_queries": 0,
+  "projection_groups": 0,
+  "pilot": true,
+  "disk_budget": {
+    "projected_uncompressed_with_margin_bytes": 5447936,
+    "available_bytes": 4531281920,
+    "volume_checked": "/home/jdiaz/pysnspd/tmp",
+    "available_fraction_limit": 0.9,
+    "note": "All completed jobs are saved once. No full thermal checkpoint or recovery transient is generated."
+  },
+  "initial_resources": {
+    "resources": {
+      "logical_cpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "physical_core_groups": [
+        [
+          0,
+          16
+        ],
+        [
+          1,
+          17
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          10,
+          26
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "available_memory_bytes": 125449097216,
+      "host_available_memory_bytes": 125449097216,
+      "total_memory_bytes": 132537782272,
+      "cpu_quota_units": null,
+      "cgroup_limits": {
+        "cpu_quota_units": null,
+        "memory_headroom_bytes": null,
+        "cpu_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-58766.scope/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          }
+        ],
+        "memory_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-58766.scope/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          }
+        ],
+        "unavailable": []
+      }
+    },
+    "budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0
+      ],
+      "workers": 1,
+      "threads_per_process": 1,
+      "total_processes": 2,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 112904187494,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 4294967296,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    }
+  },
+  "production_changed": false,
+  "physical_time_steps": 0,
+  "thermal_relaxations": 0,
+  "purpose": "Resolution of integrated force,current,energy flux and full-vs-potential projection; not a physical transient"
+}

@@ -4,14 +4,15 @@ Last updated: 2026-09-24 UTC
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: stage 4 thermal spatial-energy reference implemented and checked.
-The [current report](docs/implementation/stage4/spatial_energy_20260924/README.md)
-shows 0.18% spatial discrepancy at fixed spectral cutoff on 129² nodes, versus the
-previously rejected local core completion. The actual 128-to-256 cutoff change is
-1.87%; neither number is a full physical error bar. Independent energy variations,
-current and gauge identities pass. The self-consistent static core campaign is
-prepared for the user; its iteration count is not detector time. Stage 4 remains
-open. Production and v1.0.0 are unchanged; nonthermal promotion remains unproved.
+Current phase: the self-consistent thermal core is accepted within its declared scope.
+The [current review](docs/implementation/stage4/self_consistent_review_20260924/README.md)
+records four passing cases, 23 verified full checkpoints and 64 sweep histories.
+Mesh and cutoff sensitivities permit continuing without another thermal refinement
+campaign. The retarded spectral graph and frozen kinetic response now pass
+their declared checks. The next campaign resolves energy-integrated moments
+and tests an electrochemical-potential reduction, using the same radial
+boundary. Stage 4 stays open for the dynamic energy balance; stage 5 and production are not activated. The v1.0.0 tag
+remains unchanged.
 
 ## Historical stage 3.5 closure and stage 4 preparation
 
@@ -41,7 +42,8 @@ states, and the supplied phonon DOS is not normalized with verified units. These
 findings remain explicit in A-D. The pedagogical notebook is E-r02, with eight active
 classes and 24 unanswered activities, independently versioned from the physics.
 
-One self-consistent thermal-core continuation is prepared in the command notebook.
+The command notebook records the completed thermal continuation and the next
+nested energy-moment campaign.
 Computations expected to exceed
 five minutes must be recorded in `/home/jdiaz/GEMINGA_COMMANDS.md` and supplied
 in the chat as exact copyable commands, with their purpose, outputs and estimated

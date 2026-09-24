@@ -1,0 +1,79 @@
+{
+  "schema": "pysnspd.stage4.frozen_kinetic_review.v1",
+  "result": "FROZEN_SPECTRUM_LINEAR_RESPONSE_COMPUTED_NOT_DYNAMIC_MODEL_ADMISSION",
+  "spectral_maps": 72,
+  "mathematical_probe_responses": 144,
+  "integrated_checks": 12,
+  "runtime_seconds": 5.128210234921426,
+  "verified_raw_files": 84,
+  "maximum_joint_ward_residual": 1.1352387435508564e-16,
+  "maximum_uniform_energy_mode_free_residual": 2.46030598671787e-10,
+  "exact_zero_force_increment": true,
+  "exact_zero_current_increment": true,
+  "probes": {
+    "radial": {
+      "maximum_energy_flux_change_relative": 0.015206493072138812,
+      "largest_flux_change_id": "asymmetric_65_N256_eta0p0200_E0p7500",
+      "largest_flux_change_metrics": {
+        "omitted_charge_residual_density_L2": 0.045566274984124765,
+        "corrected_charge_residual_density_L2": 1.1113753086420369e-15,
+        "maximum_free_charge_residual": 2.7755575615628914e-17,
+        "maximum_contact_charge_reaction": 7.195208129029676e-05,
+        "hT_maximum_absolute": 0.004286987599140049,
+        "hT_to_hL_core_L2": 0.00666887391885094,
+        "energy_residual_feedback_relative": 0.007393484149094109,
+        "energy_flux_feedback_relative": 0.015206493072138812,
+        "energy_flux_feedback_norm": 0.010728081795953373,
+        "energy_flux_norm_definition": "sqrt(sum(J_L^2/c)) on active edges with midpoint r<=4ell0",
+        "energy_residual_density_L2_after": 0.8790366589407809,
+        "maximum_ward_residual": 4.144362804325841e-17,
+        "artificial_eta_energy_leakage_density_L2": 0.07406739548106867,
+        "artificial_eta_charge_leakage_density_L2": 0.000468928539910067
+      },
+      "maximum_hT_to_hL_core_L2": 0.00666887391885094,
+      "largest_response_id": "asymmetric_65_N256_eta0p0200_E0p7500",
+      "maximum_omitted_charge_residual_density_L2": 0.04603155366762155,
+      "maximum_corrected_charge_residual_density_L2": 2.0154952016162437e-15
+    },
+    "angular": {
+      "maximum_energy_flux_change_relative": 0.180984288312665,
+      "largest_flux_change_id": "radial_129_N256_eta0p0200_E0p7500",
+      "largest_flux_change_metrics": {
+        "omitted_charge_residual_density_L2": 0.25385825484799135,
+        "corrected_charge_residual_density_L2": 1.3105437266937856e-14,
+        "maximum_free_charge_residual": 1.3704315460216776e-16,
+        "maximum_contact_charge_reaction": 0.0001469709778631424,
+        "hT_maximum_absolute": 0.024874988067548166,
+        "hT_to_hL_core_L2": 0.1422532666237143,
+        "energy_residual_feedback_relative": 0.08843994956638909,
+        "energy_flux_feedback_relative": 0.180984288312665,
+        "energy_flux_feedback_norm": 0.057445971343717095,
+        "energy_flux_norm_definition": "sqrt(sum(J_L^2/c)) on active edges with midpoint r<=4ell0",
+        "energy_residual_density_L2_after": 0.44093170473902715,
+        "maximum_ward_residual": 6.057979638762756e-18,
+        "artificial_eta_energy_leakage_density_L2": 0.018189860929865295,
+        "artificial_eta_charge_leakage_density_L2": 0.0025595377988236246
+      },
+      "maximum_hT_to_hL_core_L2": 0.1422532666237143,
+      "largest_response_id": "radial_129_N256_eta0p0200_E0p7500",
+      "maximum_omitted_charge_residual_density_L2": 0.25385825484799135,
+      "maximum_corrected_charge_residual_density_L2": 1.344124731221468e-14
+    }
+  },
+  "artificial_eta_leakage": "Excluded from collisionless operator and reported separately; numerical eta is not a physical bath rate",
+  "interpretation": "Frozen gap and potential: angular energy perturbations couple to a charge-mode response and modify energy flux. This does not alone invalidate the memory scalar closure with an evolving phase and electrochemical potential.",
+  "next_decisive_comparison": "Compare spectral charge response and its moments with the electrochemical-potential and phase closure before choosing additional dynamic states.",
+  "mathematical_basis": "Infinitesimal odd-compatible compact energy direction and radial/angular spatial directions; no finite Pauli-admitted distribution or photon deposit",
+  "energy_quadrature_scope": "Finite 0..5 gap-reference trapezoid tests a shared algebraic identity, not convergence of a physical energy integral",
+  "not_admitted": [
+    "moving-gap energy dynamics",
+    "finite population trajectory",
+    "additional independent dynamic hT state",
+    "eta->0 closure",
+    "full thesis circuit coupling",
+    "photon",
+    "production promotion"
+  ],
+  "stage4_complete": false,
+  "production_changed": false
+}

@@ -1,6 +1,6 @@
 # Secuencia vigente de implementación e investigación
 
-Actualización del 23 de septiembre de 2026. Las etapas 1-3 se cerraron como
+Actualización del 24 de septiembre de 2026. Las etapas 1-3 se cerraron como
 desarrollo con los límites registrados; 3.5 se cerró como investigación. La
 etapa 4 continúa sin fotón. Los contratos y resultados previos se preservan.
 
@@ -10,7 +10,7 @@ etapa 4 continúa sin fotón. Los contratos y resultados previos se preservan.
 | 2. Cinética de una y dos celdas | Desarrollo cerrado con límites | Acoplamientos conservativos y trayectorias registradas; certificado dinámico de malla incompleto. |
 | 3. Infraestructura espacial, bordes y circuito | Desarrollo cerrado con pendientes explícitos | Energía y corriente comunes, empalme de campo 2D–1D, potencial, cargas de reservorio y circuito de la memoria; evidencia estática e instantánea. |
 | **3.5. Dominio de confianza físico y numérico** | **Investigación cerrada con límites explícitos** | Establecer qué parámetros, estados, geometrías y ventanas de observación tienen fundamento físico, y qué márgenes numéricos necesitamos para estudiarlos. |
-| 4. Núcleo y disipación | En ejecución sin fotón | Contrastar los cierres físicos dentro del dominio que proponga 3.5 y con las capacidades dinámicas requeridas. |
+| 4. Núcleo y disipación | Núcleo térmico y respuesta espectral implementados; reducción cinética en evaluación | Resolver momentos energéticos, elegir una reducción justificada y completar el balance dinámico de trabajo y disipación. |
 | 5. Transientes completos y comparación experimental | No iniciada | Comparar el dispositivo y sus observables con el experimento, incluyendo incertidumbre y cadena de lectura. |
 
 La [decisión de cierre de etapa 3](stage3/closure_20260923/closure_decision.json)
@@ -18,9 +18,10 @@ no declara completado todo el contrato histórico D.4.3. La [etapa 3.5](stage3_5
 se cerró como investigación y conserva las incertidumbres de cascada y tasas materiales.
 
 La [referencia térmica espacial](stage4/spatial_energy_20260924/README.md)
-recupera el contraste del núcleo al mismo corte espectral. La continuación
-autoconsistente está preparada; no constituye todavía un cierre fuera del
-equilibrio ni altera los requisitos dinámicos siguientes.
+recupera el contraste del núcleo al mismo corte espectral. La [continuación
+autoconsistente](stage4/self_consistent_review_20260924/README.md) terminó con los
+cuatro casos aceptados; no constituye todavía un cierre fuera del equilibrio
+ni altera los requisitos dinámicos siguientes.
 
 ## Pendientes que no desaparecen con el cierre
 
@@ -71,5 +72,5 @@ físicos y 32 hilos; el límite es 28 hilos, reservando dos núcleos completos.
 Se limita la anidación BLAS/OpenMP y la memoria disponible. El paralelismo no
 exime de entregar manualmente cálculos previstos de más de cinco minutos.
 
-La [revisión actual de etapa 4](stage4/followup_20260923/README.md) contiene los
+La [revisión actual de etapa 4](stage4/self_consistent_review_20260924/README.md) contiene los
 resultados, el contraste físico siguiente y el estado real de implementación.

@@ -45,16 +45,20 @@ controlled core, stability and dissipation diagnostics. Its
 separates source-supported values, planning margins and open inputs. The Gaussian
 photon width and Korzh transfer remain unselected; absolute NbN rates still need
 a consistent volumetric phonon DOS. Stage 4 has now started with [explicit core/KWT parameters and full 2D diagnostics](docs/implementation/stage4/README.md).
-The [new thermal spatial energy reference](docs/implementation/stage4/spatial_energy_20260924/README.md)
-recovers the independent Usadel core force with 0.18% spatial discrepancy at the
-same finite spectral cutoff, after the local completion failed that comparison.
-All 2,048 prescribed-field spectral solves completed in 60.35 s. Energy, force and
-current share one experimental graph action; the next campaign determines the
-self-consistent thermal core. Stage 4 remains open, with nonthermal coupling still
-to justify. Shared parallel work stays below 90% of available resources.
+The [self-consistent thermal core review](docs/implementation/stage4/self_consistent_review_20260924/README.md)
+accepts all four static cases after an 8.08-minute continuation. Core RMS residuals
+are 0.084-0.098%; current-density differences are 0.0798% under mesh refinement and
+0.6151% when doubling the frequency cutoff. These are observed sensitivities,
+not experimental uncertainties. No further thermal relaxation is requested.
+The experimental continuation completed 72 retarded spectra and 144 frozen
+kinetic responses with a shared force-current identity. A scalar electrochemical
+projection is being compared on energy-integrated moments; nested energy grids
+will resolve an identified quadrature defect before accepting that reduction.
+Stage 4 remains open for moving-gap work and the dynamic energy balance.
+Stage 5 has not started.
 Production retains Delaunay-Voronoi, adaptive first-order Euler and the thesis
 circuit. The future Vout-trigger-plus-margin horizon changes only observation
-length. No thermal oracle has silently replaced the nonequilibrium solver.
+length. Parallel work shares at most 90% of available resources.
 The [stage 2 guide](docs/implementation/stage2/README.md)
 keeps the earlier reviews and their original verdicts as historical evidence.
 

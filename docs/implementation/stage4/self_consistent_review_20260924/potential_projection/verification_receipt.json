@@ -1,0 +1,23 @@
+{
+  "status": "SIX_REAL_DATA_PROJECTIONS_VERIFIED_NO_NEW_SPECTRAL_SOLVES",
+  "sources": {
+    "sandbox/stage4_core/next_potential_projection.py": "45a9159cd806a27eb9a95d39fec19a4936c766e7f5037a4b6c235edc07682952",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pysnspd/experimental/frozen_kinetic_usadel.py": "08a73bd3b85a6eb1b07a64d841d6047a8bcf2ca5f77dfd8256d23802ee594e43",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8"
+  },
+  "identity_sha256": "92f534d5d2538b1c5f87525b21337d6ff93ea03cfa8311f9fb4fd7ae8e8a721c",
+  "summary_sha256": "1ec8f15a9188ec04169de0190ea0afe3cf172f4e079634ff7160a82fba82d9f6",
+  "verified_maps": {
+    "fields/radial_65_N256_eta0p0200.npz": "8e0db44d1277d096de98b87c575e88c0c4fe05c3041c374a51288ef6e0c44d77",
+    "fields/radial_65_N256_eta0p0400.npz": "f2d3e99711ea4a3cb66e15c2891edd3e8add87827125c6d671b4238ba4b32494",
+    "fields/asymmetric_65_N256_eta0p0200.npz": "a4047b52ab2e24ed7e8522d13f897eb36025ab7cbd77e09c4e13f1d4a73e0162",
+    "fields/asymmetric_65_N256_eta0p0400.npz": "e8402d09b9ef2880d7c8b36e31b29dd572bf9f494b52e4ba8ea2bbdd812e453a",
+    "fields/radial_129_N256_eta0p0400.npz": "6341bc00abf155fa5c3928b974b39c549401a17de2b57f54841e9a2041e06781",
+    "fields/radial_129_N256_eta0p0200.npz": "7f5228a4f5e06f57f9495eb8b51407c73a53fe2549f887ad70dfca7610bee8f4"
+  },
+  "new_spectral_solves": 0,
+  "physical_time_steps": 0,
+  "validation": "All arrays finite; every projected free charge residual and joint Ward identity <1e-12, paired full response force reconstructed by executed worker; no standalone duplicate unit tests added",
+  "charge_effect_comparison_formula": "effect=norm(I_full-I_zero); miss=norm(I_projected-I_full); ratios use norm(I_full) or effect as stated; norm=sqrt(sum(J^2/c)) on midpoint r<=4ell0"
+}

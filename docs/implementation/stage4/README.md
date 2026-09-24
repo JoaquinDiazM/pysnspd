@@ -1,50 +1,42 @@
-# Etapa 4: estado vigente
+# Etapa 4: núcleo aceptado y reducción cinética en evaluación
 
-La [referencia espacial térmica](spatial_energy_20260924/README.md) recupera
-la fuerza de Usadel: 2,90 % → 0,720 % → 0,180 % al refinar la malla,
-sin el completado local rechazado. Los 2.048 espectros terminaron en 60,35 s.
-La campaña siguiente busca el núcleo autoconsistente con la misma energía.
-Etapa 4 abierta: producción y cinética no térmica todavía no adoptan este bloque.
+Los cuatro núcleos autoconsistentes cumplen el criterio anunciado. La
+[revisión actual](self_consistent_review_20260924/README.md) acepta el problema
+térmico estático y obtiene su espectro a energías reales y su respuesta
+cinética de carga y energía. La etapa 4 permanece abierta hasta
+resolver esa unión física; la etapa 5 y producción aún no se activan.
 
-## Revisión anterior conservada
+La corrida del usuario terminó en 8,08 min. Los residuos RMS finales son
+0,084–0,098 %. El refinamiento de malla cambia la densidad de corriente
+0,0798 %; duplicar las frecuencias la cambia 0,6151 %. No se solicita otra
+relajación térmica. El informe muestra perfiles, diferencias e historia de
+convergencia, y distingue el residuo del núcleo del máximo global.
 
-# Etapa 4: núcleo, referencia física y ejecución paralela
+El nuevo módulo experimental `retarded_spatial_usadel.py` continúa la misma
+acción mediante dos campos complejos independientes. Se conservan el entorno
+radial de borde y los condensados calculados. Pasaron 72 consultas en 88,48 s.
+El operador cinético añade 144 respuestas en 5,13 s, con una identidad conjunta
+de fuerza y corriente. La comparación con un potencial por nodo tiene una
+cuadratura todavía gruesa: la siguiente prueba concentra energías donde falta
+resolución antes de juzgar la reducción física. Sigue pendiente el balance
+dinámico de energía al mover el gap.
 
-La [continuación actual](followup_20260923/README.md) recoge las dos corridas
-finalizadas y la comprobación del nuevo ejecutor paralelo. **La etapa 4 sigue
-abierta; la referencia física ya calculada exige diagnosticar el cierre del núcleo.**
+El [comando vigente](../../GEMINGA_COMMANDS.md) identifica la siguiente prueba,
+sus salidas y recursos. Los cálculos de más de cinco minutos siguen siendo
+ejecuciones manuales del usuario; cada comando largo se copia también en el chat.
+El presupuesto compartido llega como máximo a 28 de 32 hilos en Geminga,
+dejando dos núcleos físicos completos libres.
 
-El signo negativo del núcleo grueso con δ=0,05 desapareció al resolver mejor
-el gradiente. Para δ=0,10, pasar de 561 a 2.145 nodos cambia la fuerza interior
-un 0,572 % y el calor interior del par KWT Korzh un −2,551 %. En cambio, variar
-δ de 0,10 a 0,05 a igual malla cambia ese calor un +21,24 %. No se propone seguir
-refinando indefinidamente este perfil; la sensibilidad del cierre necesita una
-referencia física.
+## Evidencia anterior conservada
 
-El piloto serial/paralelo conserva exactamente los resultados y los 33 arrays
-de cada caso: 19,5554 frente a 8,71745 s con cuatro trabajadores. El ejecutor
-comparte las consultas espectrales entre casos y admite hasta 27 trabajadores
-más el coordinador en Geminga, reservando dos núcleos físicos y respetando
-los límites efectivos de CPU y memoria. Conserva barras, ETA y procedencia.
+- [Energía espacial y piloto autoconsistente](spatial_energy_20260924/README.md):
+  recupera la fuerza radial con 0,180 % de diferencia al mismo corte.
+- [Diagnóstico del cierre local](followup_20260923/README.md): contrasta su
+  fuerza con Usadel y documenta por qué no bastaba refinar esa malla.
+- [Controles iniciales](review_20260923/Informe_avance_etapa_4A.md): conserva sus valores,
+  conclusiones y límites originales.
 
-La [referencia radial Usadel](followup_20260923/radial_reference_README.md)
-resolvió 512 problemas espectrales y seis evaluaciones del candidato en
-4,852 s con el pool compartido. La fuerza del candidato δ=0,10 difiere
-158,09 % en norma L² radial frente a la referencia de 256 frecuencias;
-la variación por corte espectral es 1,87 %. El núcleo físico no queda
-admitido: el paso útil es examinar el cierre antes de lanzar una dinámica
-costosa o repetir refinamientos. No se ajusta δ ni se cambia automáticamente
-el modelo. El transiente débil sin fotón y sus balances siguen pendientes.
-Las condiciones de borde fijas de los controles anteriores no se presentan
-como contactos del dispositivo.
-
-La [política de horizonte](followup_20260923/horizon_policy.md) para futuros
-disparos fotónicos está autorizada, todavía sin implementar. No altera las
-ecuaciones ni el circuito de la memoria. No hay predicción admitida de hotbelt,
-latencia o jitter, ni promoción a producción.
-
-El banco GLL 2D sigue siendo experimental; producción conserva
-Delaunay–Voronoi y su integración existente. Se preservan la
-[procedencia numérica](review_20260923/solver_scope.md), el
-[informe anterior](review_20260923/Informe_avance_etapa_4A.md) y la
-[preparación inicial](start_20260923/README.md).
+La infraestructura de la memoria y su circuito completo se mantienen. La
+ventana futura hasta el gatillo en Vout más margen cambia sólo el tiempo
+observado del mismo dispositivo. Los pendientes cinéticos, de transferencia
+fotónica y tasas materiales continúan explícitos en la secuencia vigente.

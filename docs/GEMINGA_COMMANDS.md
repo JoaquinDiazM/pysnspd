@@ -1,3 +1,93 @@
+# Geminga: siguiente ejecución vigente
+
+Actualizado el 24 de septiembre de 2026 UTC. Cuenta jdiaz, sin administrador.
+
+## Resolver los momentos y comparar un potencial por nodo
+
+La continuación térmica terminó bien: cuatro núcleos aceptados en 8,08 min.
+También terminaron 72 consultas espectrales (88,48 s), 144 respuestas cinéticas
+(5,13 s) y seis comparaciones con un potencial electroquímico (2,20 s).
+No hace falta repetir la relajación térmica ni los comandos históricos de abajo.
+
+La comparación preliminar deja diferencias de aproximadamente 20 % en corriente,
+3,1 % en fuerza y 0,42 % en flujo de energía, pero la malla energética actual
+sobrestima una integral térmica conocida en 18 %. El siguiente cálculo resuelve
+esa limitación antes de decidir el cierre físico. No se descarta el potencial
+de la memoria ni se introduce una variable dinámica nueva a partir de datos
+insuficientemente resueltos. Véanse el
+[informe vigente](implementation/stage4/self_consistent_review_20260924/README.md)
+y la [campaña](implementation/stage4/self_consistent_review_20260924/resolution_campaign/README.md).
+
+Ejecutar una vez en la terminal habitual, sin configurar nuevas sesiones:
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/resolution_campaign.py \
+  --plan docs/implementation/stage4/self_consistent_review_20260924/resolution_campaign/plan.json \
+  --output-root /home/jdiaz/scratch/pysnspd_stage4_moment_resolution_20260924 \
+  --execute
+```
+
+**Propósito:** comparar corriente, fuerza y flujo de energía integrados con
+31 y 50 energías anidadas, dos desplazamientos del contorno y dos mallas
+espaciales. Son 181 consultas únicas; la respuesta cinética y las siete
+proyecciones reutilizan esos espectros. El núcleo térmico y sus bordes se
+conservan. No se simula un fotón ni se ejecuta recuperación larga.
+
+**Tiempo previsto:** reservar 5–15 min. La campaña anterior de 72 consultas
+duró 88,48 s; ahora hay más energías en regiones difíciles y un contorno más
+cercano al eje real. La extrapolación es orientativa. Al poder superar cinco
+minutos, esta campaña completa queda para ejecución manual según la política
+acordada. El agente no la inicia ni espera sondeando el proceso.
+
+**Recursos:** hasta 27 trabajadores y un coordinador, 28 de 32 CPU lógicas
+(87,5 %), reservando dos núcleos físicos completos en la topología actual.
+Un hilo BLAS/OMP por proceso. El presupuesto se vuelve a comprobar por fase
+y no supera el 90 % de la memoria disponible; reserva 1 GiB por trabajador
+espectral/cinético y 2 GiB por trabajador de proyección, más el coordinador.
+Son reservas de planificación, no límites impuestos por el sistema operativo.
+Las proyecciones son siete trabajos paralelos, no 27 copias innecesarias.
+
+**Almacenamiento y salidas:** se utiliza scratch propio, que tenía 982 GiB
+libres. La reserva estimada es 1,16 GiB; el preflight la comprueba antes de crear el
+destino. Se guardan `spectra/`, `kinetic/`, `projection/`, identidad, plan,
+barra/ETA por fase, `progress.jsonl`, `summary.json` y `moment_comparisons.json`.
+El programa conserva cada consulta terminada, no sobrescribe una ruta existente
+y se detiene si hay un fallo. No hace reintentos ni cambia el método en silencio.
+Una ETA temprana puede fluctuar porque el coste depende de la energía y la malla.
+
+**Lectura de resultados:** se contrastará el cambio físico con la variación
+numérica observada; no se exige una precisión universal en cada punto de DOS.
+Un diagnóstico estático favorable prepara el siguiente ensayo dinámico débil,
+pero no cierra automáticamente la etapa 4 ni acredita una latencia del detector.
+Cuando termine, basta avisar en el chat: no hace falta copiar todo el registro.
+
+## Comandos ligeros útiles
+
+Verificar esta entrega y su cadena histórica, sin resolver problemas físicos:
+
+```bash
+cd /home/jdiaz/pysnspd
+/home/jdiaz/.conda/envs/snspd/bin/python sandbox/stage4_core/verify_self_consistent_delivery.py
+```
+
+Para revisar sólo fuentes, rutas y recursos del nuevo cálculo, usar el comando
+principal sin `--execute`, con el destino todavía libre. No crea salidas ni
+inicia la campaña. Si el destino ya existe se rechaza para evitar sobrescritura.
+
+## Horizonte futuro con fotón
+
+Se conserva el dispositivo completo y el circuito de la memoria. Sólo se
+limitará el tiempo observado hasta un gatillo confirmado en Vout más margen,
+con un techo finito si no aparece. No se modifican ecuaciones, geometría,
+material, precisión ni constantes físicas para acelerar la recuperación.
+
+## Historial conservado: continuación térmica ya ejecutada
+
+Lo siguiente se conserva íntegro como registro de la entrega anterior.
+Sus instrucciones de ejecución no son la cola vigente: la continuación
+térmica y los pilotos mencionados ya terminaron.
+
 # Geminga: comandos vigentes
 
 Actualizado el 24 de septiembre de 2026 UTC. Cuenta jdiaz, sin administrador.

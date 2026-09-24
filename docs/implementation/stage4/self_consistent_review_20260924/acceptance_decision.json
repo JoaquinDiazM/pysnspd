@@ -1,0 +1,34 @@
+{
+  "schema": "pysnspd.stage4.thermal_core_acceptance.v1",
+  "date": "2026-09-24",
+  "thermal_static_core_accepted": true,
+  "stage4_complete": false,
+  "stage5_started": false,
+  "production_changed": false,
+  "evidence": "analysis.json",
+  "criterion": "Previously declared mass RMS <=0.001 on free nodes r<=4 ell0",
+  "cases": 4,
+  "additional_thermal_refinement_required": false,
+  "next_work": "Energy-resolved moments on nested 31/50 point grids, comparing full charge response with one electrochemical-potential direction",
+  "remaining_device_bridge": "Moving-gap spectral work, kinetic transport, phase/potential and condensate dissipation in one dynamic energy balance",
+  "preserved": [
+    "Thesis circuit",
+    "Production spatial and temporal solvers",
+    "Nonthermal populations",
+    "Vout trigger plus margin changes only horizon",
+    "v1.0.0 tag"
+  ],
+  "not_claimed": [
+    "Global maximum residual below the core RMS goal",
+    "Dynamical stability",
+    "Vortex nucleation barrier",
+    "Photon transfer admission",
+    "Absolute NbN rates",
+    "Korzh latency"
+  ],
+  "retarded_queries_completed": 72,
+  "kinetic_responses_completed": 144,
+  "potential_projection_cases": 6,
+  "scalar_potential_reduction_admitted": false,
+  "coarse_chi_quadrature_relative_excess": 0.1802252159768347
+}

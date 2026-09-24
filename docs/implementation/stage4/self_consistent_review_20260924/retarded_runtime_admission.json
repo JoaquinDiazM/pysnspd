@@ -1,0 +1,13 @@
+{
+  "decision": "Run the full registered 72-query oracle once with enforced 240-second process-group timeout",
+  "measured_65_six_job_wall_seconds": 4.48179249279201,
+  "measured_65_single_query_max_seconds": 3.5386184747330844,
+  "measured_129_gap_edge_single_query_wall_seconds": 13.427999274805188,
+  "expected_full_wall_seconds": [
+    60,
+    150
+  ],
+  "basis": "Measured 24-step paths on both actual mesh sizes; 72 tasks share 27 one-thread workers and one coordinator. Estimate includes severalfold contention/startup allowance, not a promised speedup.",
+  "timeout_seconds": 240,
+  "no_retry_or_split_after_timeout": true
+}

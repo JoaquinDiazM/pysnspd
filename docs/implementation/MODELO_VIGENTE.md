@@ -1,6 +1,6 @@
 # Modelo previsto y ruta de implementación vigente
 
-Actualizado el 23 de septiembre de 2026. El tag `v1.0.0` y el solver de producción
+Actualizado el 24 de septiembre de 2026. El tag `v1.0.0` y el solver de producción
 conservan la implementación de la memoria. Lo siguiente identifica el modelo
 previsto y sus pruebas experimentales posteriores.
 
@@ -29,10 +29,12 @@ La etapa 3 se cerró como desarrollo con pendientes dinámicos explícitos, y la
 investigación 3.5 se cerró dentro de su alcance autorizado. La
 [etapa 4 sin fotón](stage4/README.md) está en ejecución: los controles de campo
 prescrito permiten separar sensibilidad de malla y de cierre constitutivo.
-La referencia Usadel espacial de la [continuación](stage4/followup_20260923/README.md)
-encuentra una discrepancia grande y cambio local de signo en la fuerza del
-núcleo. El cierre regularizado actual no queda admitido para esa dinámica;
-se revisará su respuesta espacial antes de transientes pesados.
+El cierre local regularizado falló el contraste radial y se conserva como
+antecedente rechazado para esa dinámica. La nueva representación espacial
+recupera dicho contraste y produce sus propios núcleos térmicos. La
+[revisión autoconsistente](stage4/self_consistent_review_20260924/README.md)
+acepta los cuatro casos y obtiene su espectro a energías reales y su respuesta
+cinética lineal de carga y energía.
 Siguen pendientes las capacidades dinámicas antes de interpretar el detector.
 La transferencia fotónica, su ancho y la normalización de tasas NbN no se
 admiten mediante este avance estático.
@@ -75,6 +77,20 @@ no sustituye la secuencia completa vigente.
 La [entrega espacial](stage4/spatial_energy_20260924/README.md) implementa
 un oráculo térmico con campos espectrales complejos, sin completado δ ni
 gradiente K0 añadido. Recupera el contraste radial y deriva fuerza y corriente
-de la misma energía. La campaña siguiente busca el núcleo autoconsistente.
-No sustituye el cierre de poblaciones no térmicas: falta justificar la rama
-retardada y sus contratos de energía y transporte. Producción sigue intacta.
+de la misma energía. Los cuatro casos de la campaña autoconsistente cumplen el criterio declarado.
+No sustituye el cierre de poblaciones no térmicas: la rama retardada y el
+operador cinético congelado ya están implementados, pero falta el balance
+dinámico de trabajo espectral, transporte y disipación. Producción sigue intacta.
+
+
+La [decisión actual](stage4/self_consistent_review_20260924/acceptance_decision.json)
+cierra únicamente el problema estático térmico al nivel medido, sin otra
+refinación. Su continuación retardada usa coordenadas complejas independientes
+y el mismo entorno radial de borde. Es una transformación de la acción
+espectral, no una sustitución de distribuciones por temperatura. El
+[puente físico pendiente](stage4/self_consistent_review_20260924/physics_review.md)
+ya obtiene incrementos de fuerza y corriente con una identidad común de
+conversión de carga. La proyección a un potencial por nodo sigue en evaluación
+con cuadratura energética más adecuada; no se identifica automáticamente con
+la ley óhmica completa de la memoria. Falta unir trabajo y transporte dinámicos
+antes de evaluar un fotón.
