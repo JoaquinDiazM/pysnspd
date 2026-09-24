@@ -1,0 +1,378 @@
+{
+  "schema": "pysnspd.stage4.frequency_independent_review.v1",
+  "status": "FROZEN_CHARGE_FREQUENCY_DIAGNOSTIC_VERIFIED_NOT_AC_DEVICE_ADMISSION",
+  "provenance": {
+    "summary_sha256": "4cc14c87ef4dd561758c759e8ba622602c54a73f25fb24125ef97e002775e0b7",
+    "comparisons_sha256": "50d709617f93d76b021717fb90b045f6c8a4a1ca7373fa6504d145f2142433c2",
+    "source_identity_sha256": "741a6cd6eeacf42e0fa1b68f90d5a4784e0b4023febb00ed48c7308f54302230",
+    "postprocess_analysis_sha256": "44d1c5ae57508c795e58a1778045aa6191c36d5209bd799891ee55e9b63e2d09",
+    "compact_identity_sha256": "7ed9f6a1ed46816eb94288d02c126499b022fedbe6d0e1ac712b317564159054",
+    "verified_executed_sources": {
+      "sandbox/stage4_core/next_retarded_oracle.py": "908d004a7719df58be59185f1e18de66c451120d7fd50b653a05b595bd02e9f8",
+      "sandbox/stage4_core/next_kinetic_response.py": "7349e64b9032e9bb695ac13aa51762aee30388ac3c3c71546b534bc12ca742cd",
+      "sandbox/stage4_core/next_potential_projection.py": "45a9159cd806a27eb9a95d39fec19a4936c766e7f5037a4b6c235edc07682952",
+      "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+      "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+      "pysnspd/experimental/retarded_spatial_usadel.py": "b3bd991d93db49e4e474290b8b5991e69bf1803fd72d4c267bdd2e7f44b15635",
+      "pysnspd/experimental/frozen_kinetic_usadel.py": "08a73bd3b85a6eb1b07a64d841d6047a8bcf2ca5f77dfd8256d23802ee594e43",
+      "sandbox/stage4_core/charge_frequency_campaign.py": "d1a55e06627ed1478f9832cb4cc438df4bc4d5d62c362fe747575875cbd7aebd",
+      "pysnspd/experimental/frozen_charge_response.py": "75a49924c62541cc683b9df066f253584837b9f5e21b8a3a7b2d5cdddfe388b7",
+      "tests/test_frozen_charge_response.py": "99c918679b3825b20cd1b7275c7e3292da101fbb1614784502a5ff31f2bd5623"
+    },
+    "full_raw_maps_remotely_verified": 24,
+    "full_raw_bytes": 94412037,
+    "local_compact_field_recomputation_maximum_difference": 0.0,
+    "local_static_compact_maximum_difference": 4.440892098500626e-16
+  },
+  "runtime_seconds": 21.191316633019596,
+  "jobs": 24,
+  "balances_and_regression_maximum_absolute": {
+    "ward": 1.6634903873928846e-16,
+    "integrated_dynamic_charge": 2.2177703265316431e-16,
+    "per_energy_charge_solve": 1.8323016723276828e-16,
+    "static_field_regression": 8.881784197001252e-16
+  },
+  "representative_case": "radial_65_N256",
+  "representative_eta_relative": 0.01,
+  "representative_probe": "angular",
+  "frequency_table": [
+    {
+      "nu": 0,
+      "inverse_omega_ps": null,
+      "period_ps": null,
+      "hbar_omega_over_gap": 0.0,
+      "hbar_omega_over_kBTb": 0.0,
+      "hbar_omega_over_eta": 0.0,
+      "label": "static",
+      "changes": {
+        "current": {
+          "percent_dynamic_change_vs_static": 0.0,
+          "percent_potential_error_vs_dynamic_full": 20.54643836451569
+        },
+        "force_cartesian": {
+          "percent_dynamic_change_vs_static": 0.0,
+          "percent_potential_error_vs_dynamic_full": 3.2285951754617273
+        },
+        "amplitude_force_density": {
+          "percent_dynamic_change_vs_static": 0.0,
+          "percent_potential_error_vs_dynamic_full": 0.0015349648151981544
+        },
+        "phase_torque_density": {
+          "percent_dynamic_change_vs_static": 0.0,
+          "percent_potential_error_vs_dynamic_full": 77.52784328482828
+        },
+        "energy_flux": {
+          "percent_dynamic_change_vs_static": 0.0,
+          "percent_potential_error_vs_dynamic_full": 0.43816994354494415
+        }
+      }
+    },
+    {
+      "nu": 0.0001,
+      "inverse_omega_ps": 4415.163342345513,
+      "period_ps": 27741.289441423243,
+      "hbar_omega_over_gap": 0.00011338659470553008,
+      "hbar_omega_over_kBTb": 0.0019222222222222223,
+      "hbar_omega_over_eta": 0.011338659470553007,
+      "label": "slow anchor; not uniform AC validation",
+      "changes": {
+        "current": {
+          "percent_dynamic_change_vs_static": 0.0025764035043787706,
+          "percent_potential_error_vs_dynamic_full": 20.546438268951402
+        },
+        "force_cartesian": {
+          "percent_dynamic_change_vs_static": 0.00014807511827352277,
+          "percent_potential_error_vs_dynamic_full": 3.2285951831501376
+        },
+        "amplitude_force_density": {
+          "percent_dynamic_change_vs_static": 2.004211100654366e-08,
+          "percent_potential_error_vs_dynamic_full": 0.001534964817077914
+        },
+        "phase_torque_density": {
+          "percent_dynamic_change_vs_static": 0.004219885431130529,
+          "percent_potential_error_vs_dynamic_full": 77.52784367845442
+        },
+        "energy_flux": {
+          "percent_dynamic_change_vs_static": 2.1726170394928268e-05,
+          "percent_potential_error_vs_dynamic_full": 0.4381699424598028
+        }
+      }
+    },
+    {
+      "nu": 0.001,
+      "inverse_omega_ps": 441.5163342345514,
+      "period_ps": 2774.1289441423246,
+      "hbar_omega_over_gap": 0.0011338659470553007,
+      "hbar_omega_over_kBTb": 0.01922222222222222,
+      "hbar_omega_over_eta": 0.11338659470553007,
+      "label": "slow anchor; not uniform AC validation",
+      "changes": {
+        "current": {
+          "percent_dynamic_change_vs_static": 0.025764009471904586,
+          "percent_potential_error_vs_dynamic_full": 20.546428808122418
+        },
+        "force_cartesian": {
+          "percent_dynamic_change_vs_static": 0.0014807502988068682,
+          "percent_potential_error_vs_dynamic_full": 3.2285959443007037
+        },
+        "amplitude_force_density": {
+          "percent_dynamic_change_vs_static": 2.0042097644027485e-07,
+          "percent_potential_error_vs_dynamic_full": 0.0015349650031486295
+        },
+        "phase_torque_density": {
+          "percent_dynamic_change_vs_static": 0.04219882846335365,
+          "percent_potential_error_vs_dynamic_full": 77.52788264735419
+        },
+        "energy_flux": {
+          "percent_dynamic_change_vs_static": 0.0002172615603294571,
+          "percent_potential_error_vs_dynamic_full": 0.43816983503115653
+        }
+      }
+    },
+    {
+      "nu": 0.01,
+      "inverse_omega_ps": 44.15163342345514,
+      "period_ps": 277.4128944142324,
+      "hbar_omega_over_gap": 0.011338659470553007,
+      "hbar_omega_over_kBTb": 0.1922222222222222,
+      "hbar_omega_over_eta": 1.1338659470553007,
+      "label": "exploratory leading-adiabatic kinetic closure",
+      "changes": {
+        "current": {
+          "percent_dynamic_change_vs_static": 0.257614533424831,
+          "percent_potential_error_vs_dynamic_full": 20.545483078574538
+        },
+        "force_cartesian": {
+          "percent_dynamic_change_vs_static": 0.014806619348652742,
+          "percent_potential_error_vs_dynamic_full": 3.22867204189743
+        },
+        "amplitude_force_density": {
+          "percent_dynamic_change_vs_static": 2.004076181455983e-06,
+          "percent_potential_error_vs_dynamic_full": 0.0015349836030621364
+        },
+        "phase_torque_density": {
+          "percent_dynamic_change_vs_static": 0.421962445039088,
+          "percent_potential_error_vs_dynamic_full": 77.53177872381374
+        },
+        "energy_flux": {
+          "percent_dynamic_change_vs_static": 0.0021724720292203726,
+          "percent_potential_error_vs_dynamic_full": 0.43815909467703185
+        }
+      }
+    },
+    {
+      "nu": 0.1,
+      "inverse_omega_ps": 4.415163342345513,
+      "period_ps": 27.741289441423245,
+      "hbar_omega_over_gap": 0.11338659470553007,
+      "hbar_omega_over_kBTb": 1.9222222222222223,
+      "hbar_omega_over_eta": 11.338659470553006,
+      "label": "exploratory leading-adiabatic kinetic closure",
+      "changes": {
+        "current": {
+          "percent_dynamic_change_vs_static": 2.5515903645992624,
+          "percent_potential_error_vs_dynamic_full": 20.45426627348594
+        },
+        "force_cartesian": {
+          "percent_dynamic_change_vs_static": 0.14721020302018678,
+          "percent_potential_error_vs_dynamic_full": 3.2361141927509554
+        },
+        "amplitude_force_density": {
+          "percent_dynamic_change_vs_static": 1.9911325132432892e-05,
+          "percent_potential_error_vs_dynamic_full": 0.0015367750536192408
+        },
+        "phase_torque_density": {
+          "percent_dynamic_change_vs_static": 4.194584821341433,
+          "percent_potential_error_vs_dynamic_full": 77.91357311567133
+        },
+        "energy_flux": {
+          "percent_dynamic_change_vs_static": 0.021585526092592896,
+          "percent_potential_error_vs_dynamic_full": 0.43710915800367117
+        }
+      }
+    },
+    {
+      "nu": 1.0,
+      "inverse_omega_ps": 0.4415163342345514,
+      "period_ps": 2.7741289441423245,
+      "hbar_omega_over_gap": 1.1338659470553007,
+      "hbar_omega_over_kBTb": 19.22222222222222,
+      "hbar_omega_over_eta": 113.38659470553006,
+      "label": "exploratory leading-adiabatic kinetic closure",
+      "changes": {
+        "current": {
+          "percent_dynamic_change_vs_static": 18.905180890758178,
+          "percent_potential_error_vs_dynamic_full": 17.504998999251388
+        },
+        "force_cartesian": {
+          "percent_dynamic_change_vs_static": 1.1916231450075694,
+          "percent_potential_error_vs_dynamic_full": 3.578140320767704
+        },
+        "amplitude_force_density": {
+          "percent_dynamic_change_vs_static": 0.00016085248285763068,
+          "percent_potential_error_vs_dynamic_full": 0.0015545944058566958
+        },
+        "phase_torque_density": {
+          "percent_dynamic_change_vs_static": 33.694233997514225,
+          "percent_potential_error_vs_dynamic_full": 97.38818512614472
+        },
+        "energy_flux": {
+          "percent_dynamic_change_vs_static": 0.16922001587657315,
+          "percent_potential_error_vs_dynamic_full": 0.38860939165382524
+        }
+      }
+    }
+  ],
+  "ranges_all_four_groups": [
+    {
+      "nu": 0.0001,
+      "moment": "current",
+      "minimum": 2.5640983777617903e-05,
+      "maximum": 2.6119145966128197e-05,
+      "minimum_percent": 0.0025640983777617905,
+      "maximum_percent": 0.00261191459661282
+    },
+    {
+      "nu": 0.0001,
+      "moment": "phase_torque_density",
+      "minimum": 4.200581161373614e-05,
+      "maximum": 4.367556576109693e-05,
+      "minimum_percent": 0.004200581161373614,
+      "maximum_percent": 0.004367556576109693
+    },
+    {
+      "nu": 0.0001,
+      "moment": "energy_flux",
+      "minimum": 2.156104546517043e-07,
+      "maximum": 2.210076086569193e-07,
+      "minimum_percent": 2.1561045465170432e-05,
+      "maximum_percent": 2.2100760865691932e-05
+    },
+    {
+      "nu": 0.001,
+      "moment": "current",
+      "minimum": 0.0002564095837354667,
+      "maximum": 0.0002611912029837944,
+      "minimum_percent": 0.025640958373546668,
+      "maximum_percent": 0.026119120298379442
+    },
+    {
+      "nu": 0.001,
+      "moment": "phase_torque_density",
+      "minimum": 0.0004200578601243751,
+      "maximum": 0.00043675538895079983,
+      "minimum_percent": 0.04200578601243751,
+      "maximum_percent": 0.04367553889507998
+    },
+    {
+      "nu": 0.001,
+      "moment": "energy_flux",
+      "minimum": 2.1561031262039623e-06,
+      "maximum": 2.2100746205246743e-06,
+      "minimum_percent": 0.00021561031262039624,
+      "maximum_percent": 0.00022100746205246742
+    },
+    {
+      "nu": 0.01,
+      "moment": "current",
+      "minimum": 0.002563841901811432,
+      "maximum": 0.0026116554570678224,
+      "minimum_percent": 0.25638419018114317,
+      "maximum_percent": 0.26116554570678224
+    },
+    {
+      "nu": 0.01,
+      "moment": "phase_torque_density",
+      "minimum": 0.004200322671007892,
+      "maximum": 0.004367285314635671,
+      "minimum_percent": 0.42003226710078917,
+      "maximum_percent": 0.4367285314635671
+    },
+    {
+      "nu": 0.01,
+      "moment": "energy_flux",
+      "minimum": 2.1559611401302096e-05,
+      "maximum": 2.2099280619588665e-05,
+      "minimum_percent": 0.0021559611401302096,
+      "maximum_percent": 0.0022099280619588667
+    },
+    {
+      "nu": 0.1,
+      "moment": "current",
+      "minimum": 0.025394478290330237,
+      "maximum": 0.025869939061489083,
+      "minimum_percent": 2.5394478290330236,
+      "maximum_percent": 2.5869939061489085
+    },
+    {
+      "nu": 0.1,
+      "moment": "phase_torque_density",
+      "minimum": 0.041755217487779,
+      "maximum": 0.04341244727057457,
+      "minimum_percent": 4.1755217487779,
+      "maximum_percent": 4.341244727057457
+    },
+    {
+      "nu": 0.1,
+      "moment": "energy_flux",
+      "minimum": 0.00021421955770599093,
+      "maximum": 0.0002195711721509643,
+      "minimum_percent": 0.021421955770599094,
+      "maximum_percent": 0.021957117215096432
+    },
+    {
+      "nu": 1.0,
+      "moment": "current",
+      "minimum": 0.1882460350627265,
+      "maximum": 0.19149175134774027,
+      "minimum_percent": 18.82460350627265,
+      "maximum_percent": 19.149175134774026
+    },
+    {
+      "nu": 1.0,
+      "moment": "phase_torque_density",
+      "minimum": 0.3357788201293141,
+      "maximum": 0.3471255674080004,
+      "minimum_percent": 33.57788201293141,
+      "maximum_percent": 34.71255674080004
+    },
+    {
+      "nu": 1.0,
+      "moment": "energy_flux",
+      "minimum": 0.0016808276684770994,
+      "maximum": 0.0017135106284173354,
+      "minimum_percent": 0.16808276684770995,
+      "maximum_percent": 0.17135106284173354
+    }
+  ],
+  "sign_review": {
+    "phasor_convention": "exp(-i omega t)",
+    "linear_equation": "(-L_TT - i nu M)hT=L_TL hL",
+    "storage": "M=m Re(g), no artificial eta bath",
+    "dynamic_identity": "rT+i nu M hT=0 on free nodes",
+    "static_limit": "nu=0 returns L_TT hT=-L_TL hL, same prior exact charge elimination",
+    "cartesian_force": "Two complex phasors for real/imaginary condensate coordinates; Nambu imaginary unit is not mixed with temporal quadrature",
+    "normal_limit": "-L_TT is the positive diffusion stiffness in the normal case, giving decaying diffusion and the causal sign for exp(-i omega t)",
+    "stability_limit": "This sign check and the real-frequency solves do not prove stability of every nonuniform spectral eigenmode",
+    "phase_alignment": "Weighted projection of dynamic full spatial pattern onto the static pattern; its phase is not a unique detector delay or the scalar-potential projection"
+  },
+  "scope": {
+    "slow_anchors": [
+      0.0001,
+      0.001
+    ],
+    "exploratory_nu": [
+      0.01,
+      0.1,
+      1.0
+    ],
+    "tD_ps": 0.4415163342345514,
+    "inverse_omega_is_not_period": true,
+    "high_frequency_reason": "At nu=.01, hbar omega/eta=1.134 for eta/gap=.01; at nu=.1, hbar omega/kBTb=1.922. Frozen leading-adiabatic spectra do not establish exact AC response in that band.",
+    "instantaneous_elimination_candidate": "Energy-resolved charge elimination is accurate on tested slow fixed-spectrum probes; one thermal chi potential retains static moment mismatch.",
+    "detector_bandwidth_admitted": false,
+    "photon_or_moving_gap_admitted": false,
+    "stage4_complete": false,
+    "production_changed": false
+  }
+}

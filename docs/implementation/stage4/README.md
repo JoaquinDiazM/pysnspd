@@ -1,42 +1,49 @@
-# Etapa 4: núcleo aceptado y reducción cinética en evaluación
+# Etapa 4: respuesta de carga resuelta y preparación dinámica
 
-Los cuatro núcleos autoconsistentes cumplen el criterio anunciado. La
-[revisión actual](self_consistent_review_20260924/README.md) acepta el problema
-térmico estático y obtiene su espectro a energías reales y su respuesta
-cinética de carga y energía. La etapa 4 permanece abierta hasta
-resolver esa unión física; la etapa 5 y producción aún no se activan.
+La [revisión actual](moment_review_20260924/README.md) reúne la campaña
+del usuario y el diagnóstico temporal ligero. La etapa 4 continúa: ya no hace
+falta otra campaña estática para decidir la compresión del modo de carga,
+pero todavía falta completar la dinámica acoplada y su balance de energía.
 
-La corrida del usuario terminó en 8,08 min. Los residuos RMS finales son
-0,084–0,098 %. El refinamiento de malla cambia la densidad de corriente
-0,0798 %; duplicar las frecuencias la cambia 0,6151 %. No se solicita otra
-relajación térmica. El informe muestra perfiles, diferencias e historia de
-convergencia, y distingue el residuo del núcleo del máximo global.
+La campaña de momentos terminó en 198,12 s: 181 espectros, 362 respuestas a dos
+sondas y siete proyecciones. Reducir el defecto de cuadratura de 18,02 % a
+0,424 % no elimina la diferencia de corriente del potencial único, 20,55 %.
+La diferencia del torque de fase es 77,53 %; ambas superan la variación
+numérica observada. Son normas de respuestas de prueba, no errores de latencia.
 
-El nuevo módulo experimental `retarded_spatial_usadel.py` continúa la misma
-acción mediante dos campos complejos independientes. Se conservan el entorno
-radial de borde y los condensados calculados. Pasaron 72 consultas en 88,48 s.
-El operador cinético añade 144 respuestas en 5,13 s, con una identidad conjunta
-de fuerza y corriente. La comparación con un potencial por nodo tiene una
-cuadratura todavía gruesa: la siguiente prueba concentra energías donde falta
-resolución antes de juzgar la reducción física. Sigue pendiente el balance
-dinámico de energía al mover el gap.
+La respuesta armónica reutilizó esos espectros: 24 casos en 21,19 s. A la
+frecuencia lenta ν=0,001, conservar toda la dependencia energética y eliminar
+algebraicamente el modo de carga cambia la corriente sólo 0,0258 % y el torque
+0,0422 %. Esto respalda esa reducción en el diagnóstico lento, sin añadir un
+estado temporal por defecto. Las frecuencias altas prueban el cierre aproximado;
+no acreditan la respuesta AC subpicosegundo del detector.
 
-El [comando vigente](../../GEMINGA_COMMANDS.md) identifica la siguiente prueba,
-sus salidas y recursos. Los cálculos de más de cinco minutos siguen siendo
-ejecuciones manuales del usuario; cada comando largo se copia también en el chat.
-El presupuesto compartido llega como máximo a 28 de 32 hilos en Geminga,
-dejando dos núcleos físicos completos libres.
+El operador para la evolución térmica débil con gap móvil ya pasó en 32,94 s,
+con la misma acción espacial, KWT y potencial normal. Las respuestas tangentes
+reutilizan 256 factores espectrales; sus derivadas se contrastaron con 2304
+raíces independientes. Se conserva el residuo real del núcleo y su corrección
+temporal del 1,1 %. Sigue la trayectoria afín de todos los nodos hasta 1 ps,
+con referencia y perturbaciones débiles separadas. Se distingue energía libre
+térmica del trabajo espectral no térmico pendiente. Véase la
+[decisión física](moment_review_20260924/physics_decision.md).
+
+El [cuaderno vigente](../../GEMINGA_COMMANDS.md) identifica la siguiente prueba,
+salidas, recursos y comandos ligeros. Los cálculos previstos de más de cinco
+minutos son manuales y se entregan también en el chat. El presupuesto compartido
+máximo es 28 de 32 hilos, reservando dos núcleos físicos completos en Geminga.
 
 ## Evidencia anterior conservada
 
-- [Energía espacial y piloto autoconsistente](spatial_energy_20260924/README.md):
-  recupera la fuerza radial con 0,180 % de diferencia al mismo corte.
-- [Diagnóstico del cierre local](followup_20260923/README.md): contrasta su
-  fuerza con Usadel y documenta por qué no bastaba refinar esa malla.
-- [Controles iniciales](review_20260923/Informe_avance_etapa_4A.md): conserva sus valores,
-  conclusiones y límites originales.
+- [Núcleos autoconsistentes y primeros espectros](self_consistent_review_20260924/README.md):
+  cuatro núcleos aceptados, sin otra relajación térmica requerida.
+- [Energía espacial](spatial_energy_20260924/README.md): recupera la fuerza radial
+  al mismo corte y deriva fuerza y corriente de la misma energía.
+- [Diagnóstico del cierre local](followup_20260923/README.md): explica por qué
+  no bastaba refinar la malla del cierre anterior.
+- [Controles iniciales](review_20260923/Informe_avance_etapa_4A.md): conservan
+  valores, conclusiones y límites originales.
 
-La infraestructura de la memoria y su circuito completo se mantienen. La
-ventana futura hasta el gatillo en Vout más margen cambia sólo el tiempo
-observado del mismo dispositivo. Los pendientes cinéticos, de transferencia
-fotónica y tasas materiales continúan explícitos en la secuencia vigente.
+Producción y v1.0.0 siguen intactos. Se conserva el circuito completo de la
+memoria. Para el futuro fotón, sólo cambia la ventana hasta Vout más margen.
+Las incertidumbres de transferencia fotónica y tasas materiales permanecen
+explícitas; la etapa 5 no ha comenzado.

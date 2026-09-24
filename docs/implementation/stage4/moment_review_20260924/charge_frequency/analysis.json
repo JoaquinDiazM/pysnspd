@@ -1,0 +1,1697 @@
+{
+  "status": "CHARGE_FREQUENCY_EVIDENCE_COMPLETE",
+  "runtime_seconds": 21.191316633019596,
+  "jobs": 24,
+  "maximum_ward_residual": 1.6634903873928846e-16,
+  "maximum_integrated_dynamic_charge_residual": 2.2177703265316431e-16,
+  "maximum_per_energy_charge_solve_residual": 1.8323016723276828e-16,
+  "static_overlap": [
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "baseline_fields": "fields/asymmetric_65_N256_eta0p0100_base31.npz",
+      "baseline_sha256": "96b1602ebc27da8f98221e650fb8cbede1e13cb7967cff8b70a3b3cf5c7d9eac",
+      "maximum_absolute_difference": 8.881784197001252e-16
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "baseline_fields": "fields/radial_65_N256_eta0p0200_fine50.npz",
+      "baseline_sha256": "4e6eb99fe07b3e04bd4ecb2be1cfc1704d24bae84199c1910befe87cb19c5099",
+      "maximum_absolute_difference": 8.881784197001252e-16
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "baseline_fields": "fields/radial_65_N256_eta0p0100_fine50.npz",
+      "baseline_sha256": "ac47b7b0950741f195b049ee8798a3d5b3f7764ba6a664fcedc3560810d07b5b",
+      "maximum_absolute_difference": 8.881784197001252e-16
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "baseline_fields": "fields/radial_129_N256_eta0p0100_fine50.npz",
+      "baseline_sha256": "bfe28cb342a85dcfb7c3ef2c60be92e324ac5a682fcfc450f35476a45d98d818",
+      "maximum_absolute_difference": 8.881784197001252e-16
+    }
+  ],
+  "phasor_alignment": [
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 0.9999999999999999,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000000002,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.00000000000506,
+      "projected_gain_imag": -2.8721008220647175e-08,
+      "phase_degrees": -1.6455925543952983e-06
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999344,
+      "projected_gain_imag": 7.817572889515005e-10,
+      "phase_degrees": 4.47913932605131e-08
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.999999996524083,
+      "projected_gain_imag": 4.430105528718711e-05,
+      "phase_degrees": 0.0025382635030938177
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000000015861297,
+      "projected_gain_imag": -1.0168578025229343e-05,
+      "phase_degrees": -0.0005826166035509282
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999927297,
+      "projected_gain_imag": 1.0287226983450912e-07,
+      "phase_degrees": 5.8941468904911754e-06
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999971368825,
+      "projected_gain_imag": 4.116291830364903e-05,
+      "phase_degrees": 0.0023584614966614
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.000000000505987,
+      "projected_gain_imag": -2.872090663297592e-07,
+      "phase_degrees": -1.645586733026121e-05
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999934256,
+      "projected_gain_imag": 7.817564266615362e-09,
+      "phase_degrees": 4.479134385522897e-07
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.999999652409039,
+      "projected_gain_imag": 0.00044301011287033084,
+      "phase_degrees": 0.025382616911338366
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000001586122698,
+      "projected_gain_imag": -0.00010168547042452332,
+      "phase_degrees": -0.005826147348948429
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999992729673,
+      "projected_gain_imag": 1.028721815996188e-06,
+      "phase_degrees": 5.894141839244678e-05
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999997136888137,
+      "projected_gain_imag": 0.0004116288377888811,
+      "phase_degrees": 0.023584600551667827
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000505765811,
+      "projected_gain_imag": -2.8710752895993736e-06,
+      "phase_degrees": -0.00016450048843802038
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999993427053,
+      "projected_gain_imag": 7.81670227123061e-08,
+      "phase_degrees": 4.478640501462166e-06
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999652483414232,
+      "projected_gain_imag": 0.004429661271164306,
+      "phase_degrees": 0.25380805564681647
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000158545028197,
+      "projected_gain_imag": -0.001016545029623889,
+      "phase_degrees": -0.05824279641019469
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.999999927311797,
+      "projected_gain_imag": 1.0286336109588716e-05,
+      "phase_degrees": 0.0005893636885514529
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999713747027255,
+      "projected_gain_imag": 0.004115943243951169,
+      "phase_degrees": 0.23583159557107233
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000048475325762,
+      "projected_gain_imag": -2.774303097245395e-05,
+      "phase_degrees": -0.001589550879814853
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999357036307,
+      "projected_gain_imag": 7.733318051569604e-07,
+      "phase_degrees": 4.430865144760373e-05
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.996596350864579,
+      "projected_gain_imag": 0.043870535387880466,
+      "phase_degrees": 2.52055387931383
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0015216036318897,
+      "projected_gain_imag": -0.009870279525891968,
+      "phase_degrees": -0.5646478810600902
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999928757486661,
+      "projected_gain_imag": 0.00010200982409545421,
+      "phase_degrees": 0.00584477400890676
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9971934086783,
+      "projected_gain_imag": 0.040825168177048884,
+      "phase_degrees": 2.3443840226181796
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0001164147752375,
+      "projected_gain_imag": -8.857309456930663e-05,
+      "phase_degrees": -0.0050742737635267
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999969992948632,
+      "projected_gain_imag": 5.111875451113938e-06,
+      "phase_degrees": 0.00029288976761864146
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.8360416640586583,
+      "projected_gain_imag": 0.3007103638791908,
+      "phase_degrees": 19.782819465331436
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0400181347509507,
+      "projected_gain_imag": -0.03971303298524915,
+      "phase_degrees": -2.186773638777788
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9996345132030512,
+      "projected_gain_imag": 0.0007398702042197658,
+      "phase_degrees": 0.04240693152205391
+    },
+    {
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.8562078846226703,
+      "projected_gain_imag": 0.29779769574604714,
+      "phase_degrees": 19.178187657988403
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 0.9999999999999999,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 0.9999999999999999,
+      "projected_gain_imag": 8.134167975169129e-13,
+      "phase_degrees": 4.660534948276658e-11
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 3.433757784807906e-13,
+      "phase_degrees": 1.9673982893968377e-11
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999998889396,
+      "projected_gain_imag": 8.858212364013292e-06,
+      "phase_degrees": 0.0005075381825316575
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000000016154278,
+      "projected_gain_imag": -1.046668922347985e-05,
+      "phase_degrees": -0.0005996971169897897
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999924348,
+      "projected_gain_imag": 1.0520304818905574e-07,
+      "phase_degrees": 6.027690653189891e-06
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.999999996967178,
+      "projected_gain_imag": 4.274865599377293e-05,
+      "phase_degrees": 0.0024493175742361633
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000003468,
+      "projected_gain_imag": 8.134489890988215e-11,
+      "phase_degrees": 4.6607193924529615e-09
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999581,
+      "projected_gain_imag": 3.433750598475267e-11,
+      "phase_degrees": 1.967394171931616e-09
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999988894277968,
+      "projected_gain_imag": 0.0008858190979550543,
+      "phase_degrees": 0.05075373881551848
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.00001614749085,
+      "projected_gain_imag": -0.0010463538205487011,
+      "phase_degrees": -0.05995066786320611
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999243674427,
+      "projected_gain_imag": 1.051938119406669e-05,
+      "phase_degrees": 0.0006027161910720449
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.999969677930745,
+      "projected_gain_imag": 0.004274497397755882,
+      "phase_degrees": 0.24491659512058028
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000019683424,
+      "projected_gain_imag": 1.0441328704335599e-08,
+      "phase_degrees": 5.982440660896809e-07
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.999999999598502,
+      "projected_gain_imag": 3.366362208603202e-09,
+      "phase_degrees": 1.9287834694274214e-07
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9894096562533113,
+      "projected_gain_imag": 0.08662506068967776,
+      "phase_degrees": 5.003616640552575
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0414996115698647,
+      "projected_gain_imag": -0.04122029555901106,
+      "phase_degrees": -2.2664597717579134
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9996202133934153,
+      "projected_gain_imag": 0.0007490211654663117,
+      "phase_degrees": 0.042932048532405294
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.8479599599608899,
+      "projected_gain_imag": 0.3058932920123909,
+      "phase_degrees": 19.836414833424282
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000344857,
+      "projected_gain_imag": 8.166238937763462e-10,
+      "phase_degrees": 4.678910256131074e-08
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999958357,
+      "projected_gain_imag": 3.4330396041741437e-10,
+      "phase_degrees": 1.9669868022126027e-08
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9998890015615366,
+      "projected_gain_imag": 0.00885607589253825,
+      "phase_degrees": 0.5074588309536819
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0015509233686957,
+      "projected_gain_imag": -0.010165956504057001,
+      "phase_degrees": -0.5815444694984983
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999925852195891,
+      "projected_gain_imag": 0.00010430835751652415,
+      "phase_degrees": 0.005976472946197758
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9970263524870882,
+      "projected_gain_imag": 0.042391701686170936,
+      "phase_degrees": 2.434643321753069
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000000033,
+      "projected_gain_imag": 8.134171162579893e-12,
+      "phase_degrees": 4.660536774528485e-10
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999993,
+      "projected_gain_imag": 3.433757713655576e-12,
+      "phase_degrees": 1.967398248629557e-10
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999888942276,
+      "projected_gain_imag": 8.858212152283768e-05,
+      "phase_degrees": 0.005075381746664451
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.000000161542084,
+      "projected_gain_imag": -0.00010466658010237762,
+      "phase_degrees": -0.005996952305274973
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999992435197,
+      "projected_gain_imag": 1.0520295671098518e-06,
+      "phase_degrees": 6.027685416394553e-05
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999996967184035,
+      "projected_gain_imag": 0.00042748619526491386,
+      "phase_degrees": 0.024493160725113098
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000000002,
+      "projected_gain_imag": 1.42773218957538e-12,
+      "phase_degrees": 8.18030287376412e-11
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 3.524720911549876e-13,
+      "phase_degrees": 2.0195163219331225e-11
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.99999999990294,
+      "projected_gain_imag": 8.213142936146052e-06,
+      "phase_degrees": 0.000470578426813947
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000000015990416,
+      "projected_gain_imag": -1.0225003094945954e-05,
+      "phase_degrees": -0.000585849521891393
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.999999999992637,
+      "projected_gain_imag": 1.0374553144068275e-07,
+      "phase_degrees": 5.944181094936654e-06
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999971119126,
+      "projected_gain_imag": 4.1357412110916285e-05,
+      "phase_degrees": 0.002369605171031348
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000000002,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999999999998,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000000002,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000000024,
+      "projected_gain_imag": 1.4277324564985642e-11,
+      "phase_degrees": 8.180304403121293e-10
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999993,
+      "projected_gain_imag": 3.524720845580717e-12,
+      "phase_degrees": 2.01951628413558e-10
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999902940561,
+      "projected_gain_imag": 8.213142760461322e-05,
+      "phase_degrees": 0.004705784202221612
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000001599034571,
+      "projected_gain_imag": -0.00010224971837865203,
+      "phase_degrees": -0.005858476362290588
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999992637146,
+      "projected_gain_imag": 1.0374544186491007e-06,
+      "phase_degrees": 5.944175966953664e-05
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999997111918391,
+      "projected_gain_imag": 0.00041357377208947155,
+      "phase_degrees": 0.02369603715062485
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000002003,
+      "projected_gain_imag": 1.4277591476929527e-10,
+      "phase_degrees": 8.180457332398537e-09
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999593,
+      "projected_gain_imag": 3.524714248706941e-11,
+      "phase_degrees": 2.0195125044054074e-09
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999990294098335,
+      "projected_gain_imag": 0.0008213125192158287,
+      "phase_degrees": 0.047057776105122996
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000159835605964,
+      "projected_gain_imag": -0.001022184767528032,
+      "phase_degrees": -0.05856591657261169
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.999999926386759,
+      "projected_gain_imag": 1.0373648732265036e-05,
+      "phase_degrees": 0.0005943663342419352
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999711250730647,
+      "projected_gain_imag": 0.0041353888162299485,
+      "phase_degrees": 0.2369458168709426
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000006881564,
+      "projected_gain_imag": 1.6153308766217644e-08,
+      "phase_degrees": 9.255164168390459e-07
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999996070085,
+      "projected_gain_imag": 3.461791830514294e-09,
+      "phase_degrees": 1.9834606151928496e-07
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9907053939408347,
+      "projected_gain_imag": 0.0804976250711903,
+      "phase_degrees": 4.645239975874556
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.040266513034621,
+      "projected_gain_imag": -0.039770847336726416,
+      "phase_degrees": -2.1894316794865696
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9996307629231751,
+      "projected_gain_imag": 0.0007447228258958184,
+      "phase_degrees": 0.0426852279055004
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.8552876775146654,
+      "projected_gain_imag": 0.2986578626874914,
+      "phase_degrees": 19.248688469563195
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0000000000198417,
+      "projected_gain_imag": 1.4304170690568936e-09,
+      "phase_degrees": 8.195686099880707e-08
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999959382,
+      "projected_gain_imag": 3.524054991001163e-10,
+      "phase_degrees": 2.0191347775720006e-08
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999029876653697,
+      "projected_gain_imag": 0.00821137005573125,
+      "phase_degrees": 0.4705119178313012
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0015339307950417,
+      "projected_gain_imag": -0.009924067890794861,
+      "phase_degrees": -0.5677177573955141
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999927855813042,
+      "projected_gain_imag": 0.00010287002066154486,
+      "phase_degrees": 0.005894060523759594
+    },
+    {
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9971690966160996,
+      "projected_gain_imag": 0.04101598265194741,
+      "phase_degrees": 2.3553865869258988
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 0.9999999981331267,
+      "projected_gain_imag": 9.431569505648902e-09,
+      "phase_degrees": 5.403891278668084e-07
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999998987705,
+      "projected_gain_imag": 7.01548783349515e-10,
+      "phase_degrees": 4.019578441253397e-08
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.99111428759812,
+      "projected_gain_imag": 0.08457028050640202,
+      "phase_degrees": 4.877148192963281
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.040085761209791,
+      "projected_gain_imag": -0.03958170822380442,
+      "phase_degrees": -2.179407729730421
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9996313746080285,
+      "projected_gain_imag": 0.0007445371381856708,
+      "phase_degrees": 0.04267455874648432
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 1.0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.8554694077659232,
+      "projected_gain_imag": 0.298555969711213,
+      "phase_degrees": 19.238816930598635
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 0.9999999999803887,
+      "projected_gain_imag": 9.831033775417022e-10,
+      "phase_degrees": 5.632767435930055e-08
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999989444,
+      "projected_gain_imag": 7.203257113065924e-11,
+      "phase_degrees": 4.127162313267027e-09
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.999911962041198,
+      "projected_gain_imag": 0.008539490363320579,
+      "phase_degrees": 0.48930793995001576
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0015282159871086,
+      "projected_gain_imag": -0.009882855583653538,
+      "phase_degrees": -0.5653635389357649
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999927971627718,
+      "projected_gain_imag": 0.00010279934783541573,
+      "phase_degrees": 0.00589001117171026
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.1,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9971723479944029,
+      "projected_gain_imag": 0.04099115696231645,
+      "phase_degrees": 2.353954882703029
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0000000000000002,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999999,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 0.0,
+      "phase_degrees": 0.0
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 1.0,
+      "projected_gain_imag": 9.83527996927676e-13,
+      "phase_degrees": 5.6352003256911626e-11
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 1.0000000000000002,
+      "projected_gain_imag": 7.205275974161074e-14,
+      "phase_degrees": 4.128319035464423e-12
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999999119937,
+      "projected_gain_imag": 8.540211903635958e-06,
+      "phase_degrees": 0.0004893180982568938
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000000015930852,
+      "projected_gain_imag": -1.018271790505407e-05,
+      "phase_degrees": -0.0005834267589822803
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999926488,
+      "projected_gain_imag": 1.0367347841983282e-07,
+      "phase_degrees": 5.940052760940686e-06
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.0001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999999971152262,
+      "projected_gain_imag": 4.133221696916667e-05,
+      "phase_degrees": 0.0023681615957353123
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 0.9999999999999979,
+      "projected_gain_imag": 9.835279548728889e-12,
+      "phase_degrees": 5.635200084734995e-10
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999999,
+      "projected_gain_imag": 7.205275774157597e-13,
+      "phase_degrees": 4.128318920870873e-11
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.999999991197679,
+      "projected_gain_imag": 8.54021183234198e-05,
+      "phase_degrees": 0.004893180972584004
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.0000001593078491,
+      "projected_gain_imag": -0.00010182686760033614,
+      "phase_degrees": -0.005834248804930514
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999992648957,
+      "projected_gain_imag": 1.0367338898572117e-06,
+      "phase_degrees": 5.940047641064324e-05
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.001,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999997115232129,
+      "projected_gain_imag": 0.0004133218210518275,
+      "phase_degrees": 0.023681601409974915
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "current",
+      "projected_gain_real": 0.9999999999998037,
+      "projected_gain_imag": 9.835237494076086e-11,
+      "phase_degrees": 5.635175989194944e-09
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999999999895,
+      "projected_gain_imag": 7.205255773948097e-12,
+      "phase_degrees": 4.128307461594978e-10
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "radial",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999991197632454,
+      "projected_gain_imag": 0.0008540204702805927,
+      "phase_degrees": 0.048931799740264396
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "current",
+      "projected_gain_real": 1.000015924025172,
+      "projected_gain_imag": -0.0010179573797251176,
+      "phase_degrees": -0.058323712688768625
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "energy_flux",
+      "projected_gain_real": 0.9999999265048688,
+      "projected_gain_imag": 1.036644486042189e-05,
+      "phase_degrees": 0.0005939535826886785
+    },
+    {
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "nu": 0.01,
+      "probe": "angular",
+      "moment": "phase_torque_density",
+      "projected_gain_real": 0.9999711582038983,
+      "projected_gain_imag": 0.004132869685555246,
+      "phase_degrees": 0.23680147176888805
+    }
+  ],
+  "full_array_certificate": [
+    {
+      "path": "fields/asymmetric_65_N256_eta0p0100_nu0.npz",
+      "sha256": "0e52eaafce11c8bd577b8b87a16825db1c619c0d3cfb240d0ad7909d0f15be53",
+      "bytes": 1473733
+    },
+    {
+      "path": "fields/asymmetric_65_N256_eta0p0100_nu0p0001.npz",
+      "sha256": "a971355713cd716084c423a5d993d1263b1524d8abb5623a24c007fada048b0c",
+      "bytes": 2485634
+    },
+    {
+      "path": "fields/asymmetric_65_N256_eta0p0100_nu0p001.npz",
+      "sha256": "f62db1b4954aed75830a19fde32a4d0d445c2209df1df8d98a22d159a9c64b3e",
+      "bytes": 2480657
+    },
+    {
+      "path": "fields/asymmetric_65_N256_eta0p0100_nu0p01.npz",
+      "sha256": "00eb0e7494cdbfe9bd1cb8f2d782b3ecc0ddd46344e432e496d98f21ec8a7ccb",
+      "bytes": 2473489
+    },
+    {
+      "path": "fields/asymmetric_65_N256_eta0p0100_nu0p1.npz",
+      "sha256": "68bd1f3dee68dc9b0c11b3c84a4af8e950b35bbb892eb95af47e475529116517",
+      "bytes": 2460739
+    },
+    {
+      "path": "fields/asymmetric_65_N256_eta0p0100_nu1p0.npz",
+      "sha256": "75ab4b157b9a8f11d593e7667c0c7daee0c6799a6ee4c567f244c91445205497",
+      "bytes": 2451801
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0200_nu0.npz",
+      "sha256": "640a0df3017a623de2ccff5df41f5df51af13d76444ea46e76e53a844a6f5660",
+      "bytes": 1305792
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0200_nu0p0001.npz",
+      "sha256": "f303e2a25dbf241fbe3d56e2154ff09ebab4b79b949956c847256a21d5a73ba0",
+      "bytes": 2238550
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0200_nu0p01.npz",
+      "sha256": "366dc8ad504f435eeb090f20264d0761194db1ac90fd6ca470bb410db4699837",
+      "bytes": 2227484
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0200_nu1p0.npz",
+      "sha256": "f3e0f3115dbb0b51764577ef3a659811bbe759d3d3df3399c0de0ef36e63e1b7",
+      "bytes": 2190931
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0200_nu0p1.npz",
+      "sha256": "3dd4025a022b96ccd093155f887148fe0dee0dfbf9ba4120102ec779f6b85d4f",
+      "bytes": 2214421
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0200_nu0p001.npz",
+      "sha256": "dca76276613893b3c169e0592090c347aff6b60d0d14b93532c102369b9ce998",
+      "bytes": 2238357
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0100_nu0p0001.npz",
+      "sha256": "8a496cad961faaa939fb6aac24117705d71caa47d00280fbb9c6c39b604ce55c",
+      "bytes": 2257345
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0100_nu0.npz",
+      "sha256": "01973ebc3e4c567c38d16fc588e6924aa1405c6af547ff7d97402d61aa77c6d1",
+      "bytes": 1313120
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0100_nu0p001.npz",
+      "sha256": "348cadf10424eb8ec0a5cf77bdd98ce10d1a675cbc389e58742444edabba32da",
+      "bytes": 2253784
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0100_nu0p01.npz",
+      "sha256": "61a6f33e52f3dac4f994c4991e1de642404666df2fc414b19cd2a869d3d4dc50",
+      "bytes": 2244564
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0100_nu1p0.npz",
+      "sha256": "3778db0f67b8a38e4d2bc9d490f5bde052db90138f6c6b2da1b5d39171994c7e",
+      "bytes": 2207802
+    },
+    {
+      "path": "fields/radial_65_N256_eta0p0100_nu0p1.npz",
+      "sha256": "a59d4b49b27a65372dd01e54719f4dec821c7d8bff8bfce62e09d5331153890d",
+      "bytes": 2231861
+    },
+    {
+      "path": "fields/radial_129_N256_eta0p0100_nu1p0.npz",
+      "sha256": "4ddca6adc784b63129acd2ae003157984bf73b1c8d0480420ed15e23506029a1",
+      "bytes": 9865630
+    },
+    {
+      "path": "fields/radial_129_N256_eta0p0100_nu0p1.npz",
+      "sha256": "2deb48f85013c2d728631c56450426d5f156825c260d5b7efb9263f0ae364100",
+      "bytes": 9955562
+    },
+    {
+      "path": "fields/radial_129_N256_eta0p0100_nu0.npz",
+      "sha256": "40f87406dd9eb23cb82bf250e7de8a05fcbc90b58e4be3d2f15b60ef2b65398e",
+      "bytes": 5784930
+    },
+    {
+      "path": "fields/radial_129_N256_eta0p0100_nu0p0001.npz",
+      "sha256": "837b15559adde7303c3f7b8781c7ccd5471a48e541e2bd6732f878e2250988a5",
+      "bytes": 10032084
+    },
+    {
+      "path": "fields/radial_129_N256_eta0p0100_nu0p001.npz",
+      "sha256": "8b29cd9120490dfef44b5a7d614d2449500841be572781fda6db3069ff761b5d",
+      "bytes": 10023016
+    },
+    {
+      "path": "fields/radial_129_N256_eta0p0100_nu0p01.npz",
+      "sha256": "69a6f1a1732035c7f0ddf73659099ed2ae45982adcc122ca5d96e1bfff0f4ac5",
+      "bytes": 10000751
+    }
+  ],
+  "full_array_bytes": 94412037,
+  "slow_anchor_ranges": [
+    {
+      "nu": 0.0001,
+      "moment": "current",
+      "minimum": 2.5640983777617903e-05,
+      "maximum": 2.6119145966128197e-05
+    },
+    {
+      "nu": 0.0001,
+      "moment": "phase_torque_density",
+      "minimum": 4.200581161373614e-05,
+      "maximum": 4.367556576109693e-05
+    },
+    {
+      "nu": 0.0001,
+      "moment": "energy_flux",
+      "minimum": 2.156104546517043e-07,
+      "maximum": 2.210076086569193e-07
+    },
+    {
+      "nu": 0.001,
+      "moment": "current",
+      "minimum": 0.0002564095837354667,
+      "maximum": 0.0002611912029837944
+    },
+    {
+      "nu": 0.001,
+      "moment": "phase_torque_density",
+      "minimum": 0.0004200578601243751,
+      "maximum": 0.00043675538895079983
+    },
+    {
+      "nu": 0.001,
+      "moment": "energy_flux",
+      "minimum": 2.1561031262039623e-06,
+      "maximum": 2.2100746205246743e-06
+    },
+    {
+      "nu": 0.01,
+      "moment": "current",
+      "minimum": 0.002563841901811432,
+      "maximum": 0.0026116554570678224
+    },
+    {
+      "nu": 0.01,
+      "moment": "phase_torque_density",
+      "minimum": 0.004200322671007892,
+      "maximum": 0.004367285314635671
+    },
+    {
+      "nu": 0.01,
+      "moment": "energy_flux",
+      "minimum": 2.1559611401302096e-05,
+      "maximum": 2.2099280619588665e-05
+    },
+    {
+      "nu": 0.1,
+      "moment": "current",
+      "minimum": 0.025394478290330237,
+      "maximum": 0.025869939061489083
+    },
+    {
+      "nu": 0.1,
+      "moment": "phase_torque_density",
+      "minimum": 0.041755217487779,
+      "maximum": 0.04341244727057457
+    },
+    {
+      "nu": 0.1,
+      "moment": "energy_flux",
+      "minimum": 0.00021421955770599093,
+      "maximum": 0.0002195711721509643
+    },
+    {
+      "nu": 1.0,
+      "moment": "current",
+      "minimum": 0.1882460350627265,
+      "maximum": 0.19149175134774027
+    },
+    {
+      "nu": 1.0,
+      "moment": "phase_torque_density",
+      "minimum": 0.3357788201293141,
+      "maximum": 0.3471255674080004
+    },
+    {
+      "nu": 1.0,
+      "moment": "energy_flux",
+      "minimum": 0.0016808276684770994,
+      "maximum": 0.0017135106284173354
+    }
+  ],
+  "raw_remote_directory": "/home/jdiaz/scratch/pysnspd_stage4_charge_frequency_20260924",
+  "interpretation": "Fixed-spectrum leading-adiabatic charge resolvent. Slow anchors test static charge elimination; high frequencies are exploratory, not a detector bandwidth certificate."
+}

@@ -50,11 +50,17 @@ accepts all four static cases after an 8.08-minute continuation. Core RMS residu
 are 0.084-0.098%; current-density differences are 0.0798% under mesh refinement and
 0.6151% when doubling the frequency cutoff. These are observed sensitivities,
 not experimental uncertainties. No further thermal relaxation is requested.
-The experimental continuation completed 72 retarded spectra and 144 frozen
-kinetic responses with a shared force-current identity. A scalar electrochemical
-projection is being compared on energy-integrated moments; nested energy grids
-will resolve an identified quadrature defect before accepting that reduction.
-Stage 4 remains open for moving-gap work and the dynamic energy balance.
+The [resolved charge-moment review](docs/implementation/stage4/moment_review_20260924/README.md)
+records 181 spectra, 362 kinetic probe responses and seven integrated comparisons.
+The thermal-weight quadrature defect falls from 18.02% to 0.424%, while a single
+potential still differs from the full spectral response by 20.55% in current.
+A 24-case harmonic diagnostic took 21.19 s: the full instantaneous elimination
+differs by only 0.0258% in current at the selected slow frequency. This supports
+an economical spectral reduction in that diagnostic, not ultrafast device admission.
+The full-node moving-gap thermal operator also passed in 32.94 s against 2304
+spectral roots, retaining KWT, normal potential and the baseline residual.
+The next trajectory uses its saved matrices for affine weak dynamics up to 1 ps.
+Stage 4 remains open for coupled dynamics and the nonthermal spectral-work balance.
 Stage 5 has not started.
 Production retains Delaunay-Voronoi, adaptive first-order Euler and the thesis
 circuit. The future Vout-trigger-plus-margin horizon changes only observation

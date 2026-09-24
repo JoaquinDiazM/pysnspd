@@ -1,0 +1,1162 @@
+{
+  "case_id": "radial_129_N256",
+  "eta_relative": 0.01,
+  "worker_seconds": 4.162323583848774,
+  "temperature_ratio": 0.10404624277456648,
+  "chi_quadrature": 1.0042433074305517,
+  "chi_integral_exact_window": 1.0,
+  "chi_not_renormalized": true,
+  "probes": {
+    "radial": {
+      "v_maximum_absolute": 6.589242880027376e-05,
+      "v_core_L2": 0.0002516599945666295,
+      "norms": {
+        "zero_hT": {
+          "charge_current_norm": 3.2895200545172343,
+          "energy_weighted_energy_flux_norm": 37.68941844367965,
+          "gap_force_density_norm": 10.847882798668401,
+          "amplitude_force_density_norm": 10.847882797737775,
+          "phase_torque_density_norm": 0.00019435296522378416,
+          "integrated_charge_residual_density_L2": 0.0011915369118405297,
+          "maximum_free_integrated_charge_residual": 3.1002558034403975e-06,
+          "maximum_joint_ward_residual": 7.472445251338633e-17
+        },
+        "full": {
+          "charge_current_norm": 3.2895200591309974,
+          "energy_weighted_energy_flux_norm": 37.689418707921504,
+          "gap_force_density_norm": 10.8478828041317,
+          "amplitude_force_density_norm": 10.847882801890243,
+          "phase_torque_density_norm": 0.0003602185089495771,
+          "integrated_charge_residual_density_L2": 6.859550505596573e-16,
+          "maximum_free_integrated_charge_residual": 5.2902417896200804e-18,
+          "maximum_joint_ward_residual": 6.886040221125612e-17
+        },
+        "projected": {
+          "charge_current_norm": 3.28951970228447,
+          "energy_weighted_energy_flux_norm": 37.68941844694212,
+          "gap_force_density_norm": 10.8478827986195,
+          "amplitude_force_density_norm": 10.847882789465752,
+          "phase_torque_density_norm": 0.0007345292266350951,
+          "integrated_charge_residual_density_L2": 6.545634177796958e-16,
+          "maximum_free_integrated_charge_residual": 8.415478298944e-18,
+          "maximum_joint_ward_residual": 7.543980657892831e-17
+        }
+      },
+      "projection_errors": {
+        "charge_current": {
+          "full_norm": 3.2895200591309974,
+          "projected_norm": 3.28951970228447,
+          "difference_norm": 0.00021310245731253244,
+          "relative_difference": 6.478223372464504e-05
+        },
+        "energy_weighted_energy_flux": {
+          "full_norm": 37.689418707921504,
+          "projected_norm": 37.68941844694212,
+          "difference_norm": 9.779013664995834e-05,
+          "relative_difference": 2.594631066289302e-06
+        },
+        "gap_force_density": {
+          "full_norm": 10.8478828041317,
+          "projected_norm": 10.8478827986195,
+          "difference_norm": 0.00023469243598733315,
+          "relative_difference": 2.1634860942445323e-05
+        },
+        "amplitude_force_density": {
+          "full_norm": 10.847882801890243,
+          "projected_norm": 10.847882789465752,
+          "difference_norm": 2.596784164972744e-07,
+          "relative_difference": 2.3938165745303353e-08
+        },
+        "phase_torque_density": {
+          "full_norm": 0.0003602185089495771,
+          "projected_norm": 0.0007345292266350951,
+          "difference_norm": 0.0003839903853934561,
+          "relative_difference": 1.0659929344363772
+        }
+      },
+      "per_energy": [
+        {
+          "energy_kBTc": 0.0,
+          "chi": 4.805555555555555,
+          "zero_hT_charge_residual_density_L2": 0.0,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 0.0,
+          "full_hT_core_L2": 0.0,
+          "projected_charge_residual_density_L2": 0.00562121855728722,
+          "projected_hT_core_L2": 0.0012093660850007472
+        },
+        {
+          "energy_kBTc": 0.022048461782388024,
+          "chi": 4.752007280339569,
+          "zero_hT_charge_residual_density_L2": 5.387774367891629e-07,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.966780676160855e-19,
+          "full_hT_core_L2": 5.697047180797153e-08,
+          "projected_charge_residual_density_L2": 0.005559376241266521,
+          "projected_hT_core_L2": 0.0011958901263508397
+        },
+        {
+          "energy_kBTc": 0.04409692356477605,
+          "chi": 4.5960573418565875,
+          "zero_hT_charge_residual_density_L2": 2.1546607724944143e-06,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.315075717933365e-18,
+          "full_hT_core_L2": 2.278576862533219e-07,
+          "projected_charge_residual_density_L2": 0.005379209016035475,
+          "projected_hT_core_L2": 0.0011566437656795464
+        },
+        {
+          "energy_kBTc": 0.06614538534716406,
+          "chi": 4.350937192981707,
+          "zero_hT_charge_residual_density_L2": 4.84630420781842e-06,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.128558439992112e-18,
+          "full_hT_core_L2": 5.125886174784691e-07,
+          "projected_charge_residual_density_L2": 0.005095825960231807,
+          "projected_hT_core_L2": 0.0010949568303455226
+        },
+        {
+          "energy_kBTc": 0.0881938471295521,
+          "chi": 4.036112768316735,
+          "zero_hT_charge_residual_density_L2": 8.611469303494969e-06,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.718490651139175e-18,
+          "full_hT_core_L2": 9.110401822041118e-07,
+          "projected_charge_residual_density_L2": 0.0047314674209076755,
+          "projected_hT_core_L2": 0.0010157281173448934
+        },
+        {
+          "energy_kBTc": 0.11024230891194012,
+          "chi": 3.674192008143095,
+          "zero_hT_charge_residual_density_L2": 1.3447030514960335e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.4669098573540985e-17,
+          "full_hT_core_L2": 1.4230371163141609e-06,
+          "projected_charge_residual_density_L2": 0.004311986177666972,
+          "projected_hT_core_L2": 0.0009246471408060448
+        },
+        {
+          "energy_kBTc": 0.13229077069432812,
+          "chi": 3.2878274995752976,
+          "zero_hT_charge_residual_density_L2": 1.9348983757999614e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.191781977858378e-17,
+          "full_hT_core_L2": 2.048349032849328e-06,
+          "projected_charge_residual_density_L2": 0.0038633198334950105,
+          "projected_hT_core_L2": 0.0008274146506791344
+        },
+        {
+          "energy_kBTc": 0.15433923247671616,
+          "chi": 2.8972460346677136,
+          "zero_hT_charge_residual_density_L2": 2.6312456517586844e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 3.057601993232508e-17,
+          "full_hT_core_L2": 2.7866865863709418e-06,
+          "projected_charge_residual_density_L2": 0.0034086728443478197,
+          "projected_hT_core_L2": 0.0007291209213426657
+        },
+        {
+          "energy_kBTc": 0.1763876942591042,
+          "chi": 2.5187246982233127,
+          "zero_hT_charge_residual_density_L2": 3.433171958834786e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 3.996157863528481e-17,
+          "full_hT_core_L2": 3.6376967390336857e-06,
+          "projected_charge_residual_density_L2": 0.0029667730454552535,
+          "projected_hT_core_L2": 0.0006338622438697145
+        },
+        {
+          "energy_kBTc": 0.22048461782388024,
+          "chi": 1.8405390505946129,
+          "zero_hT_charge_residual_density_L2": 5.351049445054431e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.601965168298576e-17,
+          "full_hT_core_L2": 5.6759692720020895e-06,
+          "projected_charge_residual_density_L2": 0.002170634854451771,
+          "projected_hT_core_L2": 0.0004631900474723097
+        },
+        {
+          "energy_kBTc": 0.26458154138865625,
+          "chi": 1.2992009431439402,
+          "zero_hT_charge_residual_density_L2": 7.682284305300023e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.405832231490749e-17,
+          "full_hT_core_L2": 8.158828706089923e-06,
+          "projected_charge_residual_density_L2": 0.0015288893168553662,
+          "projected_hT_core_L2": 0.0003269569022925639
+        },
+        {
+          "energy_kBTc": 0.3086784649534323,
+          "chi": 0.8948889346158029,
+          "zero_hT_charge_residual_density_L2": 0.00010419343450302866,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.1516400334970792e-16,
+          "full_hT_core_L2": 1.1080451040533751e-05,
+          "projected_charge_residual_density_L2": 0.0010435868875076156,
+          "projected_hT_core_L2": 0.0002252077444231498
+        },
+        {
+          "energy_kBTc": 0.3527753885182084,
+          "chi": 0.6060664252384039,
+          "zero_hT_charge_residual_density_L2": 0.00013553440371553803,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.5334775136341251e-16,
+          "full_hT_core_L2": 1.4433192719764813e-05,
+          "projected_charge_residual_density_L2": 0.000692872731725372,
+          "projected_hT_core_L2": 0.0001525226732825133
+        },
+        {
+          "energy_kBTc": 0.39687231208298446,
+          "chi": 0.40578158324501107,
+          "zero_hT_charge_residual_density_L2": 0.0001707454859742784,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.9059768229903014e-16,
+          "full_hT_core_L2": 1.8207177704352156e-05,
+          "projected_charge_residual_density_L2": 0.0004513779509289636,
+          "projected_hT_core_L2": 0.00010211899103467781
+        },
+        {
+          "energy_kBTc": 0.44096923564776047,
+          "chi": 0.26960484370774446,
+          "zero_hT_charge_residual_density_L2": 0.00020971381770642247,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.3059562768654025e-16,
+          "full_hT_core_L2": 2.238979513230171e-05,
+          "projected_charge_residual_density_L2": 0.00030306015789895093,
+          "projected_hT_core_L2": 6.784875350262797e-05
+        },
+        {
+          "energy_kBTc": 0.5512115445597006,
+          "chi": 0.09521011816214342,
+          "zero_hT_charge_residual_density_L2": 0.00032270787845913105,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 3.763359032165577e-16,
+          "full_hT_core_L2": 3.4519243672344346e-05,
+          "projected_charge_residual_density_L2": 0.00028035848082845016,
+          "projected_hT_core_L2": 2.3960577819373167e-05
+        },
+        {
+          "energy_kBTc": 0.6614538534716408,
+          "chi": 0.033216633410472145,
+          "zero_hT_charge_residual_density_L2": 0.00045592338323317437,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.831009166633948e-16,
+          "full_hT_core_L2": 4.871309251710414e-05,
+          "projected_charge_residual_density_L2": 0.00043214683349082546,
+          "projected_hT_core_L2": 8.359297783601143e-06
+        },
+        {
+          "energy_kBTc": 0.7716961623835809,
+          "chi": 0.011539351074215574,
+          "zero_hT_charge_residual_density_L2": 0.0006059451627287202,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 7.187806565216826e-16,
+          "full_hT_core_L2": 6.433252156273856e-05,
+          "projected_charge_residual_density_L2": 0.000595817073277789,
+          "projected_hT_core_L2": 2.903993028639522e-06
+        },
+        {
+          "energy_kBTc": 0.8819384712955209,
+          "chi": 0.00400281173403713,
+          "zero_hT_charge_residual_density_L2": 0.0007674391165108004,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.702537513187647e-16,
+          "full_hT_core_L2": 8.033196882879029e-05,
+          "projected_charge_residual_density_L2": 0.0007632587033875977,
+          "projected_hT_core_L2": 1.0073475792390248e-06
+        },
+        {
+          "energy_kBTc": 1.1024230891194011,
+          "chi": 0.0004810718900701655,
+          "zero_hT_charge_residual_density_L2": 0.0010783662272242354,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.6510237342714673e-15,
+          "full_hT_core_L2": 0.0001057811202766078,
+          "projected_charge_residual_density_L2": 0.0010776450758745372,
+          "projected_hT_core_L2": 1.2106654924121604e-07
+        },
+        {
+          "energy_kBTc": 1.3229077069432815,
+          "chi": 5.7798255885415854e-05,
+          "zero_hT_charge_residual_density_L2": 0.0011449427557966517,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.12556148241432e-15,
+          "full_hT_core_L2": 9.667053418157909e-05,
+          "projected_charge_residual_density_L2": 0.0011448010728238298,
+          "projected_hT_core_L2": 1.4545508762084415e-08
+        },
+        {
+          "energy_kBTc": 1.4992954012023856,
+          "chi": 1.0608778109889662e-05,
+          "zero_hT_charge_residual_density_L2": 0.001568304689293668,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.9046274250353548e-15,
+          "full_hT_core_L2": 5.979522632765042e-05,
+          "projected_charge_residual_density_L2": 0.0015682736905308725,
+          "projected_hT_core_L2": 2.6698050414934106e-09
+        },
+        {
+          "energy_kBTc": 1.5433923247671617,
+          "chi": 6.9438871880587056e-06,
+          "zero_hT_charge_residual_density_L2": 0.0024343202388893907,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.6908344730897953e-15,
+          "full_hT_core_L2": 8.353530913903854e-05,
+          "projected_charge_residual_density_L2": 0.00243430114945921,
+          "projected_hT_core_L2": 1.747498612018142e-09
+        },
+        {
+          "energy_kBTc": 1.5874892483319378,
+          "chi": 4.545062817729027e-06,
+          "zero_hT_charge_residual_density_L2": 0.003887387642454296,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.606913301622335e-15,
+          "full_hT_core_L2": 0.00013549400606192223,
+          "projected_charge_residual_density_L2": 0.0038873741910307124,
+          "projected_hT_core_L2": 1.1438104840146767e-09
+        },
+        {
+          "energy_kBTc": 1.6315861718967137,
+          "chi": 2.974932293179498e-06,
+          "zero_hT_charge_residual_density_L2": 0.005325835310135436,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.4301424015393194e-15,
+          "full_hT_core_L2": 0.00019560564384188628,
+          "projected_charge_residual_density_L2": 0.0053258255633592995,
+          "projected_hT_core_L2": 7.486714447376431e-10
+        },
+        {
+          "energy_kBTc": 1.6756830954614896,
+          "chi": 1.9472165742146377e-06,
+          "zero_hT_charge_residual_density_L2": 0.0047633798847316194,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.2385735228096059e-15,
+          "full_hT_core_L2": 0.00021303289929546128,
+          "projected_charge_residual_density_L2": 0.004763373121833053,
+          "projected_hT_core_L2": 4.900365124869067e-10
+        },
+        {
+          "energy_kBTc": 1.6977315572438778,
+          "chi": 1.57537096472663e-06,
+          "zero_hT_charge_residual_density_L2": 0.003982604346849305,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.169063162578836e-15,
+          "full_hT_core_L2": 0.0002089709798707667,
+          "projected_charge_residual_density_L2": 0.003982598817819707,
+          "projected_hT_core_L2": 3.964578484235296e-10
+        },
+        {
+          "energy_kBTc": 1.7197800190262658,
+          "chi": 1.2745339635211039e-06,
+          "zero_hT_charge_residual_density_L2": 0.00325522575175962,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.0906749597616275e-15,
+          "full_hT_core_L2": 0.00020263656428509214,
+          "projected_charge_residual_density_L2": 0.0032552212785127393,
+          "projected_hT_core_L2": 3.2074921033470576e-10
+        },
+        {
+          "energy_kBTc": 1.7330090960956988,
+          "chi": 1.122360974157347e-06,
+          "zero_hT_charge_residual_density_L2": 0.0028653606700137124,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.0567479417951333e-15,
+          "full_hT_core_L2": 0.0001979248032004015,
+          "projected_charge_residual_density_L2": 0.0028653567601098027,
+          "projected_hT_core_L2": 2.8245335665823496e-10
+        },
+        {
+          "energy_kBTc": 1.7462381731651315,
+          "chi": 9.883566778008957e-07,
+          "zero_hT_charge_residual_density_L2": 0.002514647594668368,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.019629200083443e-15,
+          "full_hT_core_L2": 0.00019236623591987976,
+          "projected_charge_residual_density_L2": 0.0025146442096549595,
+          "projected_hT_core_L2": 2.487298361652654e-10
+        },
+        {
+          "energy_kBTc": 1.7550575578780867,
+          "chi": 9.080319493299934e-07,
+          "zero_hT_charge_residual_density_L2": 0.002305082167231184,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.695701131253753e-16,
+          "full_hT_core_L2": 0.0001881519416803894,
+          "projected_charge_residual_density_L2": 0.002305079115656706,
+          "projected_hT_core_L2": 2.2851531543471212e-10
+        },
+        {
+          "energy_kBTc": 1.7638769425910419,
+          "chi": 8.342352907237549e-07,
+          "zero_hT_charge_residual_density_L2": 0.0021163973748152113,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.35229996821467e-16,
+          "full_hT_core_L2": 0.00018352330011542605,
+          "projected_charge_residual_density_L2": 0.0021163946460294757,
+          "projected_hT_core_L2": 2.0994364873083073e-10
+        },
+        {
+          "energy_kBTc": 1.7726963273039968,
+          "chi": 7.664361593974547e-07,
+          "zero_hT_charge_residual_density_L2": 0.0019494410959603014,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.902341212561033e-16,
+          "full_hT_core_L2": 0.00017848940861869855,
+          "projected_charge_residual_density_L2": 0.001949438680431842,
+          "projected_hT_core_L2": 1.9288131970963184e-10
+        },
+        {
+          "energy_kBTc": 1.7815157120169522,
+          "chi": 7.041471304642539e-07,
+          "zero_hT_charge_residual_density_L2": 0.0018045424989928437,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.788520949811917e-16,
+          "full_hT_core_L2": 0.0001730731158273521,
+          "projected_charge_residual_density_L2": 0.0018045403870207107,
+          "projected_hT_core_L2": 1.772056630267419e-10
+        },
+        {
+          "energy_kBTc": 1.7947447890863852,
+          "chi": 6.200754756779786e-07,
+          "zero_hT_charge_residual_density_L2": 0.0016277323744295193,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.641854036307789e-16,
+          "full_hT_core_L2": 0.00016431419290499478,
+          "projected_charge_residual_density_L2": 0.0016277306956006415,
+          "projected_hT_core_L2": 1.5604819084002029e-10
+        },
+        {
+          "energy_kBTc": 1.8079738661558178,
+          "chi": 5.46041556517047e-07,
+          "zero_hT_charge_residual_density_L2": 0.0014959255682542197,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.076772566717494e-16,
+          "full_hT_core_L2": 0.00015495367564418894,
+          "projected_charge_residual_density_L2": 0.0014959242857761428,
+          "projected_hT_core_L2": 1.3741681514623398e-10
+        },
+        {
+          "energy_kBTc": 1.8300223279382062,
+          "chi": 4.417680093287361e-07,
+          "zero_hT_charge_residual_density_L2": 0.0013561637820270205,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.172378998838427e-16,
+          "full_hT_core_L2": 0.00013860307318084802,
+          "projected_charge_residual_density_L2": 0.0013561630432825167,
+          "projected_hT_core_L2": 1.1117533482738045e-10
+        },
+        {
+          "energy_kBTc": 1.8520707897205941,
+          "chi": 3.574068151639869e-07,
+          "zero_hT_charge_residual_density_L2": 0.0012799401860135065,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 7.768339584036281e-16,
+          "full_hT_core_L2": 0.00012232403899061674,
+          "projected_charge_residual_density_L2": 0.001279939821260318,
+          "projected_hT_core_L2": 8.99449971622453e-11
+        },
+        {
+          "energy_kBTc": 1.89616771328537,
+          "chi": 2.3393756232466213e-07,
+          "zero_hT_charge_residual_density_L2": 0.001184079796007208,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 6.93618768505758e-16,
+          "full_hT_core_L2": 9.40433221262017e-05,
+          "projected_charge_residual_density_L2": 0.0011840797791783178,
+          "projected_hT_core_L2": 5.887272566355502e-11
+        },
+        {
+          "energy_kBTc": 1.9402646368501462,
+          "chi": 1.531218222529437e-07,
+          "zero_hT_charge_residual_density_L2": 0.0010702230575566974,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 6.549763104323194e-16,
+          "full_hT_core_L2": 7.494542059203948e-05,
+          "projected_charge_residual_density_L2": 0.0010702231260576087,
+          "projected_hT_core_L2": 3.853463695620822e-11
+        },
+        {
+          "energy_kBTc": 1.984361560414922,
+          "chi": 1.002245733817467e-07,
+          "zero_hT_charge_residual_density_L2": 0.000929469152508086,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 6.02004783627511e-16,
+          "full_hT_core_L2": 6.394809517788618e-05,
+          "projected_charge_residual_density_L2": 0.0009294692247288452,
+          "projected_hT_core_L2": 2.5222515592693135e-11
+        },
+        {
+          "energy_kBTc": 2.028458483979698,
+          "chi": 6.560113341559527e-08,
+          "zero_hT_charge_residual_density_L2": 0.0007828561961475021,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.670474999858421e-16,
+          "full_hT_core_L2": 5.713769501864156e-05,
+          "projected_charge_residual_density_L2": 0.0007828562528301142,
+          "projected_hT_core_L2": 1.6509180878933444e-11
+        },
+        {
+          "energy_kBTc": 2.2048461782388022,
+          "chi": 1.2040924840110935e-08,
+          "zero_hT_charge_residual_density_L2": 0.0003501127576613632,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 3.950047409024836e-16,
+          "full_hT_core_L2": 3.57864544669312e-05,
+          "projected_charge_residual_density_L2": 0.00035011276930567285,
+          "projected_hT_core_L2": 3.030219079839512e-12
+        },
+        {
+          "energy_kBTc": 2.645815413886563,
+          "chi": 1.7379252639337316e-10,
+          "zero_hT_charge_residual_density_L2": 6.148678484401417e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.3937254167086357e-16,
+          "full_hT_core_L2": 7.628998609283181e-06,
+          "projected_charge_residual_density_L2": 6.148678494266222e-05,
+          "projected_hT_core_L2": 4.3736626247877104e-14
+        },
+        {
+          "energy_kBTc": 3.0867846495343234,
+          "chi": 2.5084320842881207e-12,
+          "zero_hT_charge_residual_density_L2": 2.237292292204894e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.5014612285330175e-16,
+          "full_hT_core_L2": 2.7926587952691478e-06,
+          "projected_charge_residual_density_L2": 2.237292292187946e-05,
+          "projected_hT_core_L2": 6.312720047027075e-16
+        },
+        {
+          "energy_kBTc": 3.5277538851820838,
+          "chi": 3.6205420635483874e-14,
+          "zero_hT_charge_residual_density_L2": 1.4308131885938052e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.0238562440604134e-16,
+          "full_hT_core_L2": 2.8084258327032438e-06,
+          "projected_charge_residual_density_L2": 1.4308131885920102e-05,
+          "projected_hT_core_L2": 9.111455960408408e-18
+        },
+        {
+          "energy_kBTc": 4.4096923564776045,
+          "chi": 7.54251353940048e-18,
+          "zero_hT_charge_residual_density_L2": 7.891369988583107e-06,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 4.966405048538997e-17,
+          "full_hT_core_L2": 1.9941847790631466e-06,
+          "projected_charge_residual_density_L2": 7.891369988583109e-06,
+          "projected_hT_core_L2": 1.8981489163442546e-21
+        },
+        {
+          "energy_kBTc": 5.291630827773126,
+          "chi": 1.5712981507604199e-21,
+          "zero_hT_charge_residual_density_L2": 3.74639258971128e-06,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.0918453391146263e-17,
+          "full_hT_core_L2": 9.676502436466632e-07,
+          "projected_charge_residual_density_L2": 3.74639258971128e-06,
+          "projected_hT_core_L2": 3.9543288408292225e-25
+        },
+        {
+          "energy_kBTc": 7.0555077703641675,
+          "chi": 6.819359740191317e-29,
+          "zero_hT_charge_residual_density_L2": 3.924148029611647e-07,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.1313318226891427e-18,
+          "full_hT_core_L2": 9.660108854604407e-08,
+          "projected_charge_residual_density_L2": 3.924148029611647e-07,
+          "projected_hT_core_L2": 1.7161600351644388e-32
+        },
+        {
+          "energy_kBTc": 8.819384712955209,
+          "chi": 2.959569909990498e-36,
+          "zero_hT_charge_residual_density_L2": 0.0,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 0.0,
+          "full_hT_core_L2": 0.0,
+          "projected_charge_residual_density_L2": 2.390465960853653e-39,
+          "projected_hT_core_L2": 7.448053474677689e-40
+        }
+      ],
+      "projected_equation_maximum_free_residual": 1.8677076486957322e-19,
+      "projection_enforces": "Integrated charge balance only; not zero residual at every energy",
+      "v_convention": "Dimensionless shift hdiag approximately h0(E+v),h0(E-v); sign mapping to memory phi not asserted"
+    },
+    "angular": {
+      "v_maximum_absolute": 0.042727630216238585,
+      "v_core_L2": 0.11715678640976171,
+      "norms": {
+        "zero_hT": {
+          "charge_current_norm": 0.9296004028999999,
+          "energy_weighted_energy_flux_norm": 14.295266511986606,
+          "gap_force_density_norm": 3.341720480447303,
+          "amplitude_force_density_norm": 3.3417204800984974,
+          "phase_torque_density_norm": 7.045768868265591e-05,
+          "integrated_charge_residual_density_L2": 0.29038445711560684,
+          "maximum_free_integrated_charge_residual": 0.0010780305642100558,
+          "maximum_joint_ward_residual": 2.710505431213761e-17
+        },
+        "full": {
+          "charge_current_norm": 0.7660921455908762,
+          "energy_weighted_energy_flux_norm": 14.330076588996116,
+          "gap_force_density_norm": 3.343971194792806,
+          "amplitude_force_density_norm": 3.3417204751903977,
+          "phase_torque_density_norm": 0.17689860216208245,
+          "integrated_charge_residual_density_L2": 4.744473946695836e-15,
+          "maximum_free_integrated_charge_residual": 4.6262493125034827e-17,
+          "maximum_joint_ward_residual": 2.1222993086290882e-17
+        },
+        "projected": {
+          "charge_current_norm": 0.8107519797281353,
+          "energy_weighted_energy_flux_norm": 14.29630960995171,
+          "gap_force_density_norm": 3.3491875105177495,
+          "amplitude_force_density_norm": 3.341720483189535,
+          "phase_torque_density_norm": 0.3034236358158873,
+          "integrated_charge_residual_density_L2": 2.3825085908074284e-14,
+          "maximum_free_integrated_charge_residual": 1.8010313326702419e-16,
+          "maximum_joint_ward_residual": 1.9730361956868045e-17
+        }
+      },
+      "projection_errors": {
+        "charge_current": {
+          "full_norm": 0.7660921455908762,
+          "projected_norm": 0.8107519797281353,
+          "difference_norm": 0.1578534278679435,
+          "relative_difference": 0.20605018440202563
+        },
+        "energy_weighted_energy_flux": {
+          "full_norm": 14.330076588996116,
+          "projected_norm": 14.29630960995171,
+          "difference_norm": 0.06289851609310598,
+          "relative_difference": 0.0043892658704563344
+        },
+        "gap_force_density": {
+          "full_norm": 3.343971194792806,
+          "projected_norm": 3.3491875105177495,
+          "difference_norm": 0.1076402912381495,
+          "relative_difference": 0.03218935958711778
+        },
+        "amplitude_force_density": {
+          "full_norm": 3.3417204751903977,
+          "projected_norm": 3.341720483189535,
+          "difference_norm": 1.4551356802519901e-05,
+          "relative_difference": 4.354450622232496e-06
+        },
+        "phase_torque_density": {
+          "full_norm": 0.17689860216208245,
+          "projected_norm": 0.3034236358158873,
+          "difference_norm": 0.13672784819709222,
+          "relative_difference": 0.772916498638107
+        }
+      },
+      "per_energy": [
+        {
+          "energy_kBTc": 0.0,
+          "chi": 4.805555555555555,
+          "zero_hT_charge_residual_density_L2": 0.0,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 0.0,
+          "full_hT_core_L2": 0.0,
+          "projected_charge_residual_density_L2": 1.3725129482662666,
+          "projected_hT_core_L2": 0.563003445802466
+        },
+        {
+          "energy_kBTc": 0.022048461782388024,
+          "chi": 4.752007280339569,
+          "zero_hT_charge_residual_density_L2": 7.361075060269726e-05,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.5394048425038459e-18,
+          "full_hT_core_L2": 1.9434194966018763e-05,
+          "projected_charge_residual_density_L2": 1.3573911714498337,
+          "projected_hT_core_L2": 0.5567299019603755
+        },
+        {
+          "energy_kBTc": 0.04409692356477605,
+          "chi": 4.5960573418565875,
+          "zero_hT_charge_residual_density_L2": 0.0002945101172213063,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 6.3887923063027945e-18,
+          "full_hT_core_L2": 7.775845899670175e-05,
+          "projected_charge_residual_density_L2": 1.3133373240801156,
+          "projected_hT_core_L2": 0.5384593083269094
+        },
+        {
+          "energy_kBTc": 0.06614538534716406,
+          "chi": 4.350937192981707,
+          "zero_hT_charge_residual_density_L2": 0.0006628993041681472,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.4189126564318413e-17,
+          "full_hT_core_L2": 0.00017503773601863643,
+          "projected_charge_residual_density_L2": 1.244048404603476,
+          "projected_hT_core_L2": 0.509741819400446
+        },
+        {
+          "energy_kBTc": 0.0881938471295521,
+          "chi": 4.036112768316735,
+          "zero_hT_charge_residual_density_L2": 0.0011791132098371564,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.608597967665162e-17,
+          "full_hT_core_L2": 0.0003113799607107662,
+          "projected_charge_residual_density_L2": 1.1549660938452257,
+          "projected_hT_core_L2": 0.47285800152339574
+        },
+        {
+          "energy_kBTc": 0.11024230891194012,
+          "chi": 3.674192008143095,
+          "zero_hT_charge_residual_density_L2": 0.0018436197096859618,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 4.155164601917574e-17,
+          "full_hT_core_L2": 0.00048693558571705133,
+          "projected_charge_residual_density_L2": 1.0524154434678743,
+          "projected_hT_core_L2": 0.430456528326474
+        },
+        {
+          "energy_kBTc": 0.13229077069432812,
+          "chi": 3.2878274995752976,
+          "zero_hT_charge_residual_density_L2": 0.002657018660667855,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 6.185025654923031e-17,
+          "full_hT_core_L2": 0.0007018969202204012,
+          "projected_charge_residual_density_L2": 0.942741401029161,
+          "projected_hT_core_L2": 0.3851913041198841
+        },
+        {
+          "energy_kBTc": 0.15433923247671616,
+          "chi": 2.8972460346677136,
+          "zero_hT_charge_residual_density_L2": 0.0036200405568779554,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.069519728628891e-17,
+          "full_hT_core_L2": 0.0009564972597686182,
+          "projected_charge_residual_density_L2": 0.8316189776932157,
+          "projected_hT_core_L2": 0.33943203486009443
+        },
+        {
+          "energy_kBTc": 0.1763876942591042,
+          "chi": 2.5187246982233127,
+          "zero_hT_charge_residual_density_L2": 0.004733544813568538,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.0779389898437909e-16,
+          "full_hT_core_L2": 0.001251009799230838,
+          "projected_charge_residual_density_L2": 0.723626297113291,
+          "projected_hT_core_L2": 0.2950856914947402
+        },
+        {
+          "energy_kBTc": 0.22048461782388024,
+          "chi": 1.8405390505946129,
+          "zero_hT_charge_residual_density_L2": 0.007416069380695994,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.6950553540719773e-16,
+          "full_hT_core_L2": 0.0019610555886224335,
+          "projected_charge_residual_density_L2": 0.5290945097328572,
+          "projected_hT_core_L2": 0.21563164042933866
+        },
+        {
+          "energy_kBTc": 0.26458154138865625,
+          "chi": 1.2992009431439402,
+          "zero_hT_charge_residual_density_L2": 0.01071395247243082,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.3982637295957316e-16,
+          "full_hT_core_L2": 0.0028349612867201394,
+          "projected_charge_residual_density_L2": 0.37226368300535434,
+          "projected_hT_core_L2": 0.15221020739927557
+        },
+        {
+          "energy_kBTc": 0.3086784649534323,
+          "chi": 0.8948889346158029,
+          "zero_hT_charge_residual_density_L2": 0.014638424362566455,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 3.3661843491068667e-16,
+          "full_hT_core_L2": 0.003876179910046163,
+          "projected_charge_residual_density_L2": 0.2534401531164723,
+          "projected_hT_core_L2": 0.10484231177324284
+        },
+        {
+          "energy_kBTc": 0.3527753885182084,
+          "chi": 0.6060664252384039,
+          "zero_hT_charge_residual_density_L2": 0.0192024272628999,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 4.376398069278024e-16,
+          "full_hT_core_L2": 0.005088605759055137,
+          "projected_charge_residual_density_L2": 0.1668378811819022,
+          "projected_hT_core_L2": 0.0710047947317835
+        },
+        {
+          "energy_kBTc": 0.39687231208298446,
+          "chi": 0.40578158324501107,
+          "zero_hT_charge_residual_density_L2": 0.024420397100422195,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.834904746017518e-16,
+          "full_hT_core_L2": 0.006476464775477303,
+          "projected_charge_residual_density_L2": 0.10523542147547364,
+          "projected_hT_core_L2": 0.04754006627725071
+        },
+        {
+          "energy_kBTc": 0.44096923564776047,
+          "chi": 0.26960484370774446,
+          "zero_hT_charge_residual_density_L2": 0.03030796739263691,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 7.93369781117934e-16,
+          "full_hT_core_L2": 0.008044174848050051,
+          "projected_charge_residual_density_L2": 0.0625468494397854,
+          "projected_hT_core_L2": 0.03158603708930541
+        },
+        {
+          "energy_kBTc": 0.5512115445597006,
+          "chi": 0.09521011816214342,
+          "zero_hT_charge_residual_density_L2": 0.04806475844558127,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.306928501998899e-15,
+          "full_hT_core_L2": 0.01277882833724105,
+          "projected_charge_residual_density_L2": 0.03096554441255293,
+          "projected_hT_core_L2": 0.011154511477570411
+        },
+        {
+          "energy_kBTc": 0.6614538534716408,
+          "chi": 0.033216633410472145,
+          "zero_hT_charge_residual_density_L2": 0.07035866589463614,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.0249497064626652e-15,
+          "full_hT_core_L2": 0.018722371166086337,
+          "projected_charge_residual_density_L2": 0.061813953948691214,
+          "projected_hT_core_L2": 0.0038915540257220397
+        },
+        {
+          "energy_kBTc": 0.7716961623835809,
+          "chi": 0.011539351074215574,
+          "zero_hT_charge_residual_density_L2": 0.0973554289571517,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.991462739133927e-15,
+          "full_hT_core_L2": 0.025890316376149622,
+          "projected_charge_residual_density_L2": 0.09399863994765636,
+          "projected_hT_core_L2": 0.0013519132891091285
+        },
+        {
+          "energy_kBTc": 0.8819384712955209,
+          "chi": 0.00400281173403713,
+          "zero_hT_charge_residual_density_L2": 0.12897146278783403,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 4.1951257870183566e-15,
+          "full_hT_core_L2": 0.034202705152008656,
+          "projected_charge_residual_density_L2": 0.12767659051793712,
+          "projected_hT_core_L2": 0.00046895655936307596
+        },
+        {
+          "energy_kBTc": 1.1024230891194011,
+          "chi": 0.0004810718900701655,
+          "zero_hT_charge_residual_density_L2": 0.202358588600154,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.522777274788292e-15,
+          "full_hT_core_L2": 0.052899319857958864,
+          "projected_charge_residual_density_L2": 0.20216640211845524,
+          "projected_hT_core_L2": 5.636083667269074e-05
+        },
+        {
+          "energy_kBTc": 1.3229077069432815,
+          "chi": 5.7798255885415854e-05,
+          "zero_hT_charge_residual_density_L2": 0.2646210394830265,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.3978973663081019e-14,
+          "full_hT_core_L2": 0.06763346575394978,
+          "projected_charge_residual_density_L2": 0.26459380049210596,
+          "projected_hT_core_L2": 6.771457919624418e-06
+        },
+        {
+          "energy_kBTc": 1.4992954012023856,
+          "chi": 1.0608778109889662e-05,
+          "zero_hT_charge_residual_density_L2": 0.24963353942445277,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.5942838905852294e-14,
+          "full_hT_core_L2": 0.06515269913818822,
+          "projected_charge_residual_density_L2": 0.24962854563490453,
+          "projected_hT_core_L2": 1.242890351088899e-06
+        },
+        {
+          "energy_kBTc": 1.5433923247671617,
+          "chi": 6.9438871880587056e-06,
+          "zero_hT_charge_residual_density_L2": 0.22957617842987105,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.513753390766942e-14,
+          "full_hT_core_L2": 0.06172308871671232,
+          "projected_charge_residual_density_L2": 0.22957303002999158,
+          "projected_hT_core_L2": 8.135235081448746e-07
+        },
+        {
+          "energy_kBTc": 1.5874892483319378,
+          "chi": 4.545062817729027e-06,
+          "zero_hT_charge_residual_density_L2": 0.20462780206718556,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.4019326035542218e-14,
+          "full_hT_core_L2": 0.05775411660712892,
+          "projected_charge_residual_density_L2": 0.2046258546985081,
+          "projected_hT_core_L2": 5.324849537556293e-07
+        },
+        {
+          "energy_kBTc": 1.6315861718967137,
+          "chi": 2.974932293179498e-06,
+          "zero_hT_charge_residual_density_L2": 0.17870515220880637,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.221931702921594e-14,
+          "full_hT_core_L2": 0.05406134050544955,
+          "projected_charge_residual_density_L2": 0.1787039669106167,
+          "projected_hT_core_L2": 3.485335072555331e-07
+        },
+        {
+          "energy_kBTc": 1.6756830954614896,
+          "chi": 1.9472165742146377e-06,
+          "zero_hT_charge_residual_density_L2": 0.15641306528429866,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.0913123588027365e-14,
+          "full_hT_core_L2": 0.051375896454649114,
+          "projected_charge_residual_density_L2": 0.1564123463212894,
+          "projected_hT_core_L2": 2.2812963627881222e-07
+        },
+        {
+          "energy_kBTc": 1.6977315572438778,
+          "chi": 1.57537096472663e-06,
+          "zero_hT_charge_residual_density_L2": 0.14716386004806717,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.0307260145376237e-14,
+          "full_hT_core_L2": 0.05034119429882244,
+          "projected_charge_residual_density_L2": 0.14716329811541426,
+          "projected_hT_core_L2": 1.8456539963061804e-07
+        },
+        {
+          "energy_kBTc": 1.7197800190262658,
+          "chi": 1.2745339635211039e-06,
+          "zero_hT_charge_residual_density_L2": 0.1387283199005558,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.879046127503245e-15,
+          "full_hT_core_L2": 0.04932059302135046,
+          "projected_charge_residual_density_L2": 0.13872787949267007,
+          "projected_hT_core_L2": 1.49320303336229e-07
+        },
+        {
+          "energy_kBTc": 1.7330090960956988,
+          "chi": 1.122360974157347e-06,
+          "zero_hT_charge_residual_density_L2": 0.1339268050504292,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.765509241485464e-15,
+          "full_hT_core_L2": 0.04869995629761605,
+          "projected_charge_residual_density_L2": 0.13392642424197046,
+          "projected_hT_core_L2": 1.314922049240044e-07
+        },
+        {
+          "energy_kBTc": 1.7462381731651315,
+          "chi": 9.883566778008957e-07,
+          "zero_hT_charge_residual_density_L2": 0.12931705156083503,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.404648085511952e-15,
+          "full_hT_core_L2": 0.048084165126649495,
+          "projected_charge_residual_density_L2": 0.12931672212904335,
+          "projected_hT_core_L2": 1.1579269219778122e-07
+        },
+        {
+          "energy_kBTc": 1.7550575578780867,
+          "chi": 9.080319493299934e-07,
+          "zero_hT_charge_residual_density_L2": 0.12635241392874702,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 9.144880679239318e-15,
+          "full_hT_core_L2": 0.04767922234412191,
+          "projected_charge_residual_density_L2": 0.12635211475989322,
+          "projected_hT_core_L2": 1.0638210514089361e-07
+        },
+        {
+          "energy_kBTc": 1.7638769425910419,
+          "chi": 8.342352907237549e-07,
+          "zero_hT_charge_residual_density_L2": 0.12347543104305973,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.961989270021752e-15,
+          "full_hT_core_L2": 0.04728009459428615,
+          "projected_charge_residual_density_L2": 0.12347515930107164,
+          "projected_hT_core_L2": 9.773632577080842e-08
+        },
+        {
+          "energy_kBTc": 1.7726963273039968,
+          "chi": 7.664361593974547e-07,
+          "zero_hT_charge_residual_density_L2": 0.12068629625577669,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.953407522980762e-15,
+          "full_hT_core_L2": 0.04688758015258093,
+          "projected_charge_residual_density_L2": 0.12068604937474009,
+          "projected_hT_core_L2": 8.979319742324568e-08
+        },
+        {
+          "energy_kBTc": 1.7815157120169522,
+          "chi": 7.041471304642539e-07,
+          "zero_hT_charge_residual_density_L2": 0.11798473668234052,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.840892037446522e-15,
+          "full_hT_core_L2": 0.0465022319570801,
+          "projected_charge_residual_density_L2": 0.11798451234025743,
+          "projected_hT_core_L2": 8.249561496484721e-08
+        },
+        {
+          "energy_kBTc": 1.7947447890863852,
+          "chi": 6.200754756779786e-07,
+          "zero_hT_charge_residual_density_L2": 0.11409490927285594,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.357763239176518e-15,
+          "full_hT_core_L2": 0.045938371692074445,
+          "projected_charge_residual_density_L2": 0.11409471486180366,
+          "projected_hT_core_L2": 7.264605006193633e-08
+        },
+        {
+          "energy_kBTc": 1.8079738661558178,
+          "chi": 5.46041556517047e-07,
+          "zero_hT_charge_residual_density_L2": 0.11039626739016825,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 8.374690527697105e-15,
+          "full_hT_core_L2": 0.04539190899530991,
+          "projected_charge_residual_density_L2": 0.11039609883365567,
+          "projected_hT_core_L2": 6.397247400772151e-08
+        },
+        {
+          "energy_kBTc": 1.8300223279382062,
+          "chi": 4.417680093287361e-07,
+          "zero_hT_charge_residual_density_L2": 0.10464063857036411,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 7.794357763987263e-15,
+          "full_hT_core_L2": 0.044519568332681524,
+          "projected_charge_residual_density_L2": 0.10464050554454823,
+          "projected_hT_core_L2": 5.1756120311592355e-08
+        },
+        {
+          "energy_kBTc": 1.8520707897205941,
+          "chi": 3.574068151639869e-07,
+          "zero_hT_charge_residual_density_L2": 0.0993656220903423,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 7.761572101209818e-15,
+          "full_hT_core_L2": 0.043692565481474814,
+          "projected_charge_residual_density_L2": 0.0993655169594853,
+          "projected_hT_core_L2": 4.18726339055604e-08
+        },
+        {
+          "energy_kBTc": 1.89616771328537,
+          "chi": 2.3393756232466213e-07,
+          "zero_hT_charge_residual_density_L2": 0.09009470867333971,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 7.093766107711133e-15,
+          "full_hT_core_L2": 0.04215431439988855,
+          "projected_charge_residual_density_L2": 0.0900946427447481,
+          "projected_hT_core_L2": 2.740737302249076e-08
+        },
+        {
+          "energy_kBTc": 1.9402646368501462,
+          "chi": 1.531218222529437e-07,
+          "zero_hT_charge_residual_density_L2": 0.08225156856073203,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 6.600970344977059e-15,
+          "full_hT_core_L2": 0.040732461957545055,
+          "projected_charge_residual_density_L2": 0.0822515270107832,
+          "projected_hT_core_L2": 1.7939260624361624e-08
+        },
+        {
+          "energy_kBTc": 1.984361560414922,
+          "chi": 1.002245733817467e-07,
+          "zero_hT_charge_residual_density_L2": 0.075542105895891,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 6.273529718173681e-15,
+          "full_hT_core_L2": 0.03938981150011093,
+          "projected_charge_residual_density_L2": 0.07554207959677432,
+          "projected_hT_core_L2": 1.1741988936694787e-08
+        },
+        {
+          "energy_kBTc": 2.028458483979698,
+          "chi": 6.560113341559527e-08,
+          "zero_hT_charge_residual_density_L2": 0.06973517963734426,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.717194749828212e-15,
+          "full_hT_core_L2": 0.038102656147524325,
+          "projected_charge_residual_density_L2": 0.0697351629298548,
+          "projected_hT_core_L2": 7.685617975809177e-09
+        },
+        {
+          "energy_kBTc": 2.2048461782388022,
+          "chi": 1.2040924840110935e-08,
+          "zero_hT_charge_residual_density_L2": 0.05261850586804125,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 4.489764296568808e-15,
+          "full_hT_core_L2": 0.03333325685512947,
+          "projected_charge_residual_density_L2": 0.05261850307171782,
+          "projected_hT_core_L2": 1.4106760596688713e-09
+        },
+        {
+          "energy_kBTc": 2.645815413886563,
+          "chi": 1.7379252639337316e-10,
+          "zero_hT_charge_residual_density_L2": 0.030404620758193692,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.7197077806296094e-15,
+          "full_hT_core_L2": 0.0236708342312943,
+          "projected_charge_residual_density_L2": 0.030404620722696542,
+          "projected_hT_core_L2": 2.0360973894281295e-11
+        },
+        {
+          "energy_kBTc": 3.0867846495343234,
+          "chi": 2.5084320842881207e-12,
+          "zero_hT_charge_residual_density_L2": 0.01952923483352311,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.799165186701747e-15,
+          "full_hT_core_L2": 0.016768927107107406,
+          "projected_charge_residual_density_L2": 0.019529234833043158,
+          "projected_hT_core_L2": 2.9387984192233673e-13
+        },
+        {
+          "energy_kBTc": 3.5277538851820838,
+          "chi": 3.6205420635483874e-14,
+          "zero_hT_charge_residual_density_L2": 0.01311034030517946,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 1.2114367352663368e-15,
+          "full_hT_core_L2": 0.011856515952094334,
+          "projected_charge_residual_density_L2": 0.013110340305172797,
+          "projected_hT_core_L2": 4.241710732266964e-15
+        },
+        {
+          "energy_kBTc": 4.4096923564776045,
+          "chi": 7.54251353940048e-18,
+          "zero_hT_charge_residual_density_L2": 0.006105068704182439,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 5.590099284427037e-16,
+          "full_hT_core_L2": 0.005780502918413825,
+          "projected_charge_residual_density_L2": 0.006105068704182437,
+          "projected_hT_core_L2": 8.836566477282779e-19
+        },
+        {
+          "energy_kBTc": 5.291630827773126,
+          "chi": 1.5712981507604199e-21,
+          "zero_hT_charge_residual_density_L2": 0.0027073512578345716,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.451398135900292e-16,
+          "full_hT_core_L2": 0.002602231124276948,
+          "projected_charge_residual_density_L2": 0.0027073512578345716,
+          "projected_hT_core_L2": 1.8408824183469208e-22
+        },
+        {
+          "energy_kBTc": 7.0555077703641675,
+          "chi": 6.819359740191317e-29,
+          "zero_hT_charge_residual_density_L2": 0.00028372116571187837,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 2.3384104213819278e-17,
+          "full_hT_core_L2": 0.00027349100753342885,
+          "projected_charge_residual_density_L2": 0.00028372116571187837,
+          "projected_hT_core_L2": 7.989342725329222e-30
+        },
+        {
+          "energy_kBTc": 8.819384712955209,
+          "chi": 2.959569909990498e-36,
+          "zero_hT_charge_residual_density_L2": 0.0,
+          "zero_hT_hT_core_L2": 0.0,
+          "full_charge_residual_density_L2": 0.0,
+          "full_hT_core_L2": 0.0,
+          "projected_charge_residual_density_L2": 5.020871183227861e-37,
+          "projected_hT_core_L2": 3.4673369980951446e-37
+        }
+      ],
+      "projected_equation_maximum_free_residual": 8.847089727481716e-17,
+      "projection_enforces": "Integrated charge balance only; not zero residual at every energy",
+      "v_convention": "Dimensionless shift hdiag approximately h0(E+v),h0(E-v); sign mapping to memory phi not asserted"
+    }
+  },
+  "id": "radial_129_N256_eta0p0100_fine50",
+  "grid": "fine50",
+  "group_id": "radial_129_N256_eta0p0100",
+  "fields_path": "fields/radial_129_N256_eta0p0100_fine50.npz",
+  "fields_sha256": "bfe28cb342a85dcfb7c3ef2c60be92e324ac5a682fcfc450f35476a45d98d818"
+}

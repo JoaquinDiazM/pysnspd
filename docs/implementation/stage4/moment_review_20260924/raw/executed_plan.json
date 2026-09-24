@@ -1,0 +1,191 @@
+{
+  "schema": "pysnspd.stage4.moment_resolution.v1",
+  "cases": [
+    {
+      "id": "radial_65_N256",
+      "fields_path": "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_65_N256.npz",
+      "fields_sha256": "1ce424556df2c1b7a081c6d0eeac9ded953906df4f7587b50ed825a287a5e296"
+    },
+    {
+      "id": "radial_129_N256",
+      "fields_path": "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_129_N256.npz",
+      "fields_sha256": "3865190bb7cf67883f8757a16a9f846982c09a5cbded426ac0af4fd78d0eb7d1"
+    },
+    {
+      "id": "asymmetric_65_N256",
+      "fields_path": "docs/implementation/stage4/self_consistent_review_20260924/raw/asymmetric_65_N256.npz",
+      "fields_sha256": "6ee4a589c9b7973a30019757615656cd4d73c979fe35dde55b10ce4a734e94d6"
+    }
+  ],
+  "energy_grids": {
+    "base31": [
+      0,
+      0.025,
+      0.05,
+      0.075,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.375,
+      0.5,
+      0.625,
+      0.75,
+      0.85,
+      0.9,
+      0.95,
+      0.975,
+      0.99,
+      1,
+      1.01,
+      1.025,
+      1.05,
+      1.1,
+      1.15,
+      1.25,
+      1.5,
+      1.75,
+      2,
+      2.5,
+      3,
+      4,
+      5
+    ],
+    "fine50": [
+      0,
+      0.0125,
+      0.025,
+      0.0375,
+      0.05,
+      0.0625,
+      0.075,
+      0.0875,
+      0.1,
+      0.125,
+      0.15,
+      0.175,
+      0.2,
+      0.225,
+      0.25,
+      0.3125,
+      0.375,
+      0.4375,
+      0.5,
+      0.625,
+      0.75,
+      0.85,
+      0.875,
+      0.9,
+      0.925,
+      0.95,
+      0.9625,
+      0.975,
+      0.9825,
+      0.99,
+      0.995,
+      1,
+      1.005,
+      1.01,
+      1.0175,
+      1.025,
+      1.0375,
+      1.05,
+      1.075,
+      1.1,
+      1.125,
+      1.15,
+      1.25,
+      1.5,
+      1.75,
+      2,
+      2.5,
+      3,
+      4,
+      5
+    ]
+  },
+  "groups": [
+    {
+      "id": "radial_65_N256_eta0p0200",
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.02,
+      "grid": "fine50"
+    },
+    {
+      "id": "radial_65_N256_eta0p0100",
+      "case_id": "radial_65_N256",
+      "eta_relative": 0.01,
+      "grid": "fine50"
+    },
+    {
+      "id": "radial_129_N256_eta0p0100",
+      "case_id": "radial_129_N256",
+      "eta_relative": 0.01,
+      "grid": "fine50"
+    },
+    {
+      "id": "asymmetric_65_N256_eta0p0100",
+      "case_id": "asymmetric_65_N256",
+      "eta_relative": 0.01,
+      "grid": "base31"
+    }
+  ],
+  "spectral": {
+    "T_K": 0.9,
+    "Tc_K": 8.65,
+    "gap_reference_kBTc": 1.7638769425910419,
+    "continuation_steps": 24,
+    "spectral_tolerance": 1e-07,
+    "maximum_newton_iterations": 60,
+    "causal_tolerance": 1e-08,
+    "radial_tolerance": 1e-05,
+    "radial_max_nodes": 12000,
+    "matsubara_bridge_tolerance": 1e-09,
+    "core_radius_ell0": 4.0,
+    "physical_scope": "Fixed completed thermal gap and same R12 prescribed-tanh spectral exterior. eta is an analytic-contour numerical resolution, not a fitted Dynes rate. No physical time or kinetic populations."
+  },
+  "kinetic": {
+    "gap_reference_kBTc": 1.7638769425910419,
+    "probes": [
+      "radial",
+      "angular"
+    ],
+    "probe_radius_ell0": 4.0,
+    "energy_basis": "x*(1-x*x/25)**3 for 0<=x<=5, zero outside; x=E/gap_reference. Odd continuation at negative energy. Arbitrary mathematical probe, not a deposition.",
+    "boundary": "Zero hL and hT increments at existing prescribed spectral contacts; no electrostatic closure inferred",
+    "quadrature": "Trapezoidal in dimensionless E/(kBTc), same finite energy nodes/weights for all force,current,residual increments",
+    "scope": "Static collisionless frozen-spectrum linear response. Pair conversion included; numerical eta leakage excluded and measured. No finite Pauli-admitted population or moving-gap energy dynamics."
+  },
+  "frozen_sources": {
+    "sandbox/stage4_core/next_retarded_oracle.py": "908d004a7719df58be59185f1e18de66c451120d7fd50b653a05b595bd02e9f8",
+    "sandbox/stage4_core/next_kinetic_response.py": "7349e64b9032e9bb695ac13aa51762aee30388ac3c3c71546b534bc12ca742cd",
+    "sandbox/stage4_core/next_potential_projection.py": "45a9159cd806a27eb9a95d39fec19a4936c766e7f5037a4b6c235edc07682952",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/retarded_spatial_usadel.py": "b3bd991d93db49e4e474290b8b5991e69bf1803fd72d4c267bdd2e7f44b15635",
+    "pysnspd/experimental/frozen_kinetic_usadel.py": "08a73bd3b85a6eb1b07a64d841d6047a8bcf2ca5f77dfd8256d23802ee594e43"
+  },
+  "inputs": {
+    "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_65_N256.npz": "1ce424556df2c1b7a081c6d0eeac9ded953906df4f7587b50ed825a287a5e296",
+    "docs/implementation/stage4/self_consistent_review_20260924/raw/radial_129_N256.npz": "3865190bb7cf67883f8757a16a9f846982c09a5cbded426ac0af4fd78d0eb7d1",
+    "docs/implementation/stage4/self_consistent_review_20260924/raw/asymmetric_65_N256.npz": "6ee4a589c9b7973a30019757615656cd4d73c979fe35dde55b10ce4a734e94d6",
+    "docs/implementation/stage4/followup_20260923/raw/stage4_radial_reference_20260923/identity.json": "a5eba7304fea8443d32c369d0b4f3c07d4dbcbcb21d8e7d0a7bd890686fa992d",
+    "docs/implementation/stage4/followup_20260923/raw/stage4_radial_reference_20260923/tasks/R12_n0000.npz": "9e222a61cd1063b883f82b4fe9bab076344841ed5f1cc7e52d2f69edd9e9f390"
+  },
+  "purpose": "Resolve integral force/current and energy-weighted flux moments; compare frozen full charge response against potential projection. Same thermal cores, no repeated gap relaxation.",
+  "execution": {
+    "user_runs_full_campaign": true,
+    "expected_wall_minutes": [
+      5,
+      15
+    ],
+    "maximum_resource_fraction": 0.9,
+    "maximum_logical_cpus": 28,
+    "threads_per_process": 1,
+    "hardest_single_query_pilot_timeout_seconds": 60,
+    "unique_output_required": true,
+    "no_automatic_retry": true,
+    "full_spectral_queries": 181,
+    "nested_projection_groups": 7
+  }
+}

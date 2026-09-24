@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "review": "Independent visual and quantitative QA of all three final pages",
+  "reviewed_utc": "2026-09-24T04:39:31.025954+00:00",
+  "pdf_path": "output/pdf/implementation/Informe_etapa_4_respuesta_de_carga.pdf",
+  "pdf_sha256": "6cd366e06913d3b436aa32bef8e60c30b5d353f8393d68b71b2cae00d0f520d2",
+  "pdf_bytes": 389103,
+  "pages": 3,
+  "visually_reviewed_pages": [
+    1,
+    2,
+    3
+  ],
+  "render_sha256": {
+    "1": "fe91a5b86334bfee3b9fef3621e6bd13245350a4f69850b5c027041a8d742e3b",
+    "2": "8ed6d9ea432add3acae51bdd040dae54ee34af00741ff65ce2c917af7de1855f",
+    "3": "789b1a42d7a22267916e05d104a77dd9d7edaebdc40ef186cb6219626de3d44f"
+  },
+  "source_and_data_sha256": {
+    "sandbox/stage4_core/build_moment_review_report.py": "3aa2f29e801cca3e404f8433bec4941dbaa03064a5214dabb04c267cf65ab90e",
+    "docs/implementation/stage4/moment_review_20260924/report_content.json": "10be57c5ac7a1d35ee8ad7c105a720c6c68dbf239e7b29274b10885909821207",
+    "docs/implementation/stage4/moment_review_20260924/analysis.json": "e5b85c51f13a8b99aad5265611b014dac7db4ae4b0483bffa09d9b05c8b5044d",
+    "docs/implementation/stage4/moment_review_20260924/frequency_review.json": "98a2dcb3dbfabc643211f251e5b4b9402e7375da6403a291b55375cd4a3134dc",
+    "docs/implementation/stage4/moment_review_20260924/charge_frequency/comparisons.json": "50d709617f93d76b021717fb90b045f6c8a4a1ca7373fa6504d145f2142433c2",
+    "docs/implementation/stage4/moment_review_20260924/thermal_weak/raw/summary.json": "ec7d2675bfa7e9cf0960429785a5c7dc8cb93f4cf6eb3c955d2171b97ad317d2",
+    "docs/implementation/stage4/moment_review_20260924/thermal_weak/verification_receipt.json": "de62f53d41dac8121f51982363f1901a02d8cff55f240d616c06369f0f43b0a1",
+    "docs/implementation/stage4/moment_review_20260924/thermal_weak/unit_tests_receipt.json": "5071a7adea0e7d5ef78ac96eb2571b667a6ba09da5fa03cc05ee8912e41100f5",
+    "docs/implementation/stage4/moment_review_20260924/thermal_weak/unit_tests.log": "be6abdbbe2e955ab87e4db391630abcc0e6be7cf9f05fbf8e5670a2ad7a00b9b",
+    "sandbox/stage4_core/thermal_weak_campaign.py": "bdd213b94d984d53073d79935d760d657c23905bca005a81f1325d5460388c2f",
+    "pysnspd/experimental/thermal_weak_response.py": "42bcc1fe9436287a838cfad43ae7ee9d5b202a773ff3faa3127508dc34d7cfda",
+    "tests/test_thermal_weak_response.py": "214ccd0d570bb532f4c170d45eafb2603b15a28b9449257b9f1dedd5e0287f8b"
+  },
+  "figure_sha256": {
+    "frequency_response.png": "ecac5e3514c7ecf2b714393150f684c21c673dd21f15f97056a7b634b90c4db8",
+    "quadrature_and_current.png": "a37870da6767e32b45d9e69b1f9e7865c6537437c0d0a4d0db30bdae8ca1667f",
+    "resolved_charge_error.png": "648053e008b7840eab2342d22c935ac3458157903f1a915b18ad91b6e98df2be"
+  },
+  "checks": {
+    "no_text_or_axis_clipping": true,
+    "no_overlapping_text_figures_footers": true,
+    "readable_figures_legends_units": true,
+    "same_eta_and_mesh_for_energy_quadrature_comparison": true,
+    "current_and_phase_force_D_U_values_match_source_data": true,
+    "phase_torque_spatial_cut_matches_x_zero_fields": true,
+    "frequency_curves_use_common_dynamic_full_norm_reference": true,
+    "slow_and_exploratory_frequency_bands_distinguished": true,
+    "inverse_omega_distinguished_from_period": true,
+    "61_passed_tests_refer_to_existing_charge_controls_not_future_thermal_campaign": true,
+    "no_photon_detector_latency_or_stage4_completion_claim": true,
+    "thermal_operator_runtime_factor_and_root_counts_match_source": true,
+    "thermal_rhs_difference_is_h001_derivative_check_not_time_trajectory": true,
+    "thermal_perturbation_one_percent_is_spatial_upper_bound": true,
+    "five_thermal_tests_have_verified_receipt_and_source_hashes": true,
+    "base_residual_correction_retained_and_rounded_correctly": true
+  },
+  "resolved_issue": "Frequency figure initially used the static norm for its blue curve and dynamic norm for orange; final builder uses dynamic_full_norm for both approximations. Low-frequency reported rounded percentages are unchanged. Final thermal paragraph now says perturbations up to 1 percent: h=0.01 multiplies bounded spatial profiles, rather than imposing exactly 1 percent everywhere.",
+  "remaining_blockers": [],
+  "thermal_operator_values": {
+    "runtime_seconds": 32.94174906890839,
+    "factorizations": 256,
+    "nonlinear_roots": 2304,
+    "maximum_rhs_relative_difference_percent_at_h001": 0.004850027622990931,
+    "baseline_correction_percent": [
+      1.1031644444537854,
+      1.1267202766417663
+    ],
+    "unit_tests": 5,
+    "physical_time_steps": 0
+  }
+}

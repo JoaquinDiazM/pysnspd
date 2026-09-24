@@ -1,0 +1,21 @@
+{
+  "status": "PREPARED_NOT_PHYSICALLY_EXECUTED",
+  "unit_tests": 6,
+  "synthetic_fixture_seconds": 0.5141380606219172,
+  "physical_operator_preflight": "PASSED",
+  "physical_transient_executed": false,
+  "local_remote_numerical_sources_verified": true,
+  "files": {
+    "plan.json": "e12f09a2f15fd327522b6bbcd86ead175df103393bbc895ec0e6bcd6c947cf7d",
+    "README.md": "a4f3f9ba8ad22ba3fd9c0013a24ae7b64665772d39d8fd6b053304037b0cc10b",
+    "unit_tests_receipt_v2.json": "c982404c76761869e0c407c7fb4dc18293c0723c9c6277264655cc4f6ff7dd4c",
+    "dry_run_v2.json": "d2ab1bcc69f19cf8b43bf1b114ca21d4cbf3e403175ae57a326ba3ed76ad0e52",
+    "tests_v2.log": "94d3bf31534193f82a8c976cc684425e34e5728f9ce242aeca0a7a21b28ad222",
+    "smoke_receipt_v3.json": "765201aa7da9e9f2a00ad914ba942d11c4f969f34da7275f55a27ca941990771",
+    "synthetic_summary.json": "db87bac0073e3c2205a6b2f2cb55bc05d0a01b977de153e91059663245c92569",
+    "smoke_v3.log": "696bcfe6a00cf78eb34a17104d72e1cbb020bda6cb368036f357bec918a0573a",
+    "verification_sources/smoke_fixture_v3.py": "cd7e7ed46914eb2164b87d7b742ff9b3cdd278be14f02453e1f10cd3f6558240"
+  },
+  "preserved_preparation_history": "Geminga tmp/stage4_thermal_time_prepare_20260924 retains initial sources, two failed fixture attempts, logs and checkpoints",
+  "command": "/home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage4_core/thermal_time_campaign.py --plan docs/implementation/stage4/moment_review_20260924/thermal_time/plan.json --operator-root /home/jdiaz/scratch/stage4_thermal_weak_20260924 --output-root /home/jdiaz/scratch/stage4_thermal_time_20260924 --execute"
+}

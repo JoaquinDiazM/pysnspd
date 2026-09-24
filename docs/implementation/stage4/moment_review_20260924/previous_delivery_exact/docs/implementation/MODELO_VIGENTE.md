@@ -90,14 +90,7 @@ y el mismo entorno radial de borde. Es una transformación de la acción
 espectral, no una sustitución de distribuciones por temperatura. El
 [puente físico pendiente](stage4/self_consistent_review_20260924/physics_review.md)
 ya obtiene incrementos de fuerza y corriente con una identidad común de
-conversión de carga. La [revisión de momentos y frecuencia](stage4/moment_review_20260924/README.md)
-resuelve la discrepancia de la proyección a un potencial por nodo: 20,55 % en
-corriente y 77,53 % en torque de fase, frente a variaciones numéricas de 2,87 %
-y 3,64 %. No se admite esa compresión energética para este ensayo. La eliminación
-algebraica espectral completa conserva el detalle energético y aproxima bien la
-respuesta lenta medida; no acredita todavía el régimen ultrarrápido del detector.
-Tampoco se rechaza por este control congelado toda la fase y el potencial de la
-memoria. El operador temporal térmico ya se contrastó con 2304 raíces espectrales;
-su siguiente trayectoria usa la fuerza espacial, KWT y potencial normal con gap
-móvil, conservando la deriva de referencia. Falta unir trabajo y transporte no térmicos antes de evaluar
-un fotón; el circuito completo y el horizonte acordado siguen vigentes.
+conversión de carga. La proyección a un potencial por nodo sigue en evaluación
+con cuadratura energética más adecuada; no se identifica automáticamente con
+la ley óhmica completa de la memoria. Falta unir trabajo y transporte dinámicos
+antes de evaluar un fotón.

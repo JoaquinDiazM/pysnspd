@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-u",
+    "sandbox/stage4_core/charge_frequency_campaign.py",
+    "--plan",
+    "docs/implementation/stage4/moment_review_20260924/charge_frequency/plan.json",
+    "--spectra-root",
+    "/home/jdiaz/scratch/pysnspd_stage4_moment_resolution_20260924/spectra",
+    "--output-root",
+    "/home/jdiaz/scratch/pysnspd_stage4_charge_frequency_20260924",
+    "--execute"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 21.42736196797341,
+  "timeout_seconds": 240,
+  "cost_basis": "Representative129x129 family with50energies and both probes completed in6.93s;24parallel independent jobs, reserve2GiB each",
+  "timeout_policy": "A timeout is incomplete; no retry or splitting"
+}

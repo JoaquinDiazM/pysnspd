@@ -1,0 +1,24 @@
+{
+  "status": "FULL_NODE_THERMAL_OPERATOR_VERIFIED",
+  "runtime_seconds": 32.94174906890839,
+  "frequency_tasks": 256,
+  "nonlinear_roots": 2304,
+  "remote_output": "/home/jdiaz/scratch/stage4_thermal_weak_20260924",
+  "checkpoint_hashes_verified": 256,
+  "bad_hashes": [],
+  "total_checkpoint_bytes": 370123137,
+  "full_node_affine_operator": true,
+  "physical_time_steps": 0,
+  "production_changed": false,
+  "all_calculus_flags_met": true,
+  "local_files": {
+    "raw/full_node_operator_checks.npz": "f08bb86882ecf7679c98902d1a78bd2cbf379f848771d3c02cef71468dd51548",
+    "raw/identity.json": "e249f6fc44e471e9b400cdfee6608043dc6491a0a078cca01504320a481b8c61",
+    "raw/progress.jsonl": "39c7cd1a2c7edfdda33cf7450c25540ff13bf8adb7caf94ac328760b02eb1b7f",
+    "raw/summary.json": "ec7d2675bfa7e9cf0960429785a5c7dc8cb93f4cf6eb3c955d2171b97ad317d2"
+  },
+  "pilot_runtime_seconds": 4.348633043002337,
+  "runtime_cap_seconds": 240,
+  "reviewed_by": "stage4_next_impl",
+  "next_step": "Integrate the affine all-node weak thermal response using saved sparse Jacobians; retain baseline drift and do not claim a nonlinear or nonequilibrium energy balance."
+}

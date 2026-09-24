@@ -4,15 +4,18 @@ Last updated: 2026-09-24 UTC
 
 Publication window: 2026-07-23 to 2026-10-23
 
-Current phase: the self-consistent thermal core is accepted within its declared scope.
-The [current review](docs/implementation/stage4/self_consistent_review_20260924/README.md)
-records four passing cases, 23 verified full checkpoints and 64 sweep histories.
-Mesh and cutoff sensitivities permit continuing without another thermal refinement
-campaign. The retarded spectral graph and frozen kinetic response now pass
-their declared checks. The next campaign resolves energy-integrated moments
-and tests an electrochemical-potential reduction, using the same radial
-boundary. Stage 4 stays open for the dynamic energy balance; stage 5 and production are not activated. The v1.0.0 tag
-remains unchanged.
+Current phase: resolved charge moments and the slow-response diagnostic are complete.
+The [current review](docs/implementation/stage4/moment_review_20260924/README.md)
+separates the persistent single-potential discrepancy (20.55% current, 77.53%
+phase torque) from observed numerical variation. The 181-query campaign took
+198.12 s; 24 harmonic checks reused those spectra in 21.19 s. Full spectral
+algebraic elimination reproduces the slow charge response much better than
+compression to one thermal energy profile. This is not validation at detector
+frequencies. A full-node thermal moving-gap operator passed in 32.94 s, retaining
+the 1.1% baseline mobility/gauge correction. The next weak affine trajectory
+reuses spectral factorizations rather than re-solving spectra at each time step.
+Stage 4 stays open for coupled dynamics and the nonthermal energy balance;
+stage 5 and production are not activated. The v1.0.0 tag remains unchanged.
 
 ## Historical stage 3.5 closure and stage 4 preparation
 
@@ -36,14 +39,16 @@ the latest persisted-data diagnostics already on GitHub. Release changes cover
 version/package metadata, documentation, reproducible checks and published artifacts.
 They do not replace the thesis kinetic, condensate or circuit solvers with model 0.4.
 
-The model 0.4 candidate is not admitted for production: the core force is sensitive
-to its effective scale, the condensate principal symbol is negative in demonstrated
-states, and the supplied phonon DOS is not normalized with verified units. These
-findings remain explicit in A-D. The pedagogical notebook is E-r02, with eight active
+The model 0.4 candidate is not admitted for production. The historical local closure
+showed a scale-sensitive core force and a negative condensate principal symbol in
+demonstrated states; A-D retain those findings. The later spatial thermal core
+resolves that static implementation problem within its measured scope, while
+coupled nonthermal dynamics remain incomplete and the phonon DOS still lacks
+verified absolute normalization. The pedagogical notebook is E-r02, with eight active
 classes and 24 unanswered activities, independently versioned from the physics.
 
-The command notebook records the completed thermal continuation and the next
-nested energy-moment campaign.
+The command notebook records the completed thermal, moment and frequency work
+and identifies the next thermal weak-dynamics preparation.
 Computations expected to exceed
 five minutes must be recorded in `/home/jdiaz/GEMINGA_COMMANDS.md` and supplied
 in the chat as exact copyable commands, with their purpose, outputs and estimated

@@ -1,0 +1,1899 @@
+{
+  "schema": "pysnspd.stage4.moment_review.v1",
+  "provenance": {
+    "raw_directory": "docs/implementation/stage4/moment_review_20260924/raw",
+    "analysis_source_sha256": "ebf0eadb7459bd3d9fe0f3bfdd84098ce2ef35d358aec7a84bc5c5b79331551e",
+    "extraction_receipt_sha256": "bb1ab67ff164a8a04e7725fcfe62e6021ad98294aa801998fb2f9cb1e6798680",
+    "frozen_analysis_source_sha256": "d82485d1b04361f688e2c860d52f355147d2fd9170795fefe796e18f5a0aa60a",
+    "sources_matching_identity": {
+      "sandbox/stage4_core/next_retarded_oracle.py": "908d004a7719df58be59185f1e18de66c451120d7fd50b653a05b595bd02e9f8",
+      "sandbox/stage4_core/next_kinetic_response.py": "7349e64b9032e9bb695ac13aa51762aee30388ac3c3c71546b534bc12ca742cd",
+      "sandbox/stage4_core/next_potential_projection.py": "45a9159cd806a27eb9a95d39fec19a4936c766e7f5037a4b6c235edc07682952",
+      "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+      "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+      "pysnspd/experimental/retarded_spatial_usadel.py": "b3bd991d93db49e4e474290b8b5991e69bf1803fd72d4c267bdd2e7f44b15635",
+      "pysnspd/experimental/frozen_kinetic_usadel.py": "08a73bd3b85a6eb1b07a64d841d6047a8bcf2ca5f77dfd8256d23802ee594e43",
+      "sandbox/stage4_core/resolution_campaign.py": "86e8c8516755fd6c4489be395b7b90f1d61d8c0e979b3ddf26188c9e3992e033",
+      "sandbox/stage4_core/resolution_campaign_analysis.py": "d82485d1b04361f688e2c860d52f355147d2fd9170795fefe796e18f5a0aa60a"
+    },
+    "plan_sha256": "8e58e767e90d9da6695cade2fa0669d6d0c56aeeea8c02e988a0dbf1978aa67b",
+    "verified_raw_fields": 369,
+    "verified_raw_bytes": 282802889,
+    "locally_verified_compact_files": 25,
+    "moment_recomputation_maximum_difference": 7.105427357601002e-15,
+    "retained_raw_spectra": "181 complete spectral and181 kinetic field files remain on Geminga; all were verified there"
+  },
+  "execution": {
+    "runtime_seconds": 198.12230064626783,
+    "spectral_queries": 181,
+    "kinetic_queries": 181,
+    "projection_groups": 7,
+    "mathematical_probe_responses": 362,
+    "continuation_steps": 4344,
+    "phase_resources": {
+      "spectra": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13,
+          29
+        ],
+        "coordinator_cpu": 29,
+        "worker_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13
+        ],
+        "workers": 27,
+        "threads_per_process": 1,
+        "total_processes": 28,
+        "logical_budget": 28,
+        "effective_cpu_quota_units": 32,
+        "physical_cores_used": 14,
+        "physical_cores_reserved": 2,
+        "memory_limit_bytes": 114673187635,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 1073741824,
+        "estimated_memory_reservation_bytes": 32212254720,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      },
+      "kinetic": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13,
+          29
+        ],
+        "coordinator_cpu": 29,
+        "worker_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13
+        ],
+        "workers": 27,
+        "threads_per_process": 1,
+        "total_processes": 28,
+        "logical_budget": 28,
+        "effective_cpu_quota_units": 32,
+        "physical_cores_used": 14,
+        "physical_cores_reserved": 2,
+        "memory_limit_bytes": 113969262182,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 1073741824,
+        "estimated_memory_reservation_bytes": 32212254720,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      },
+      "projection": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13,
+          29
+        ],
+        "coordinator_cpu": 29,
+        "worker_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3
+        ],
+        "workers": 7,
+        "threads_per_process": 1,
+        "total_processes": 8,
+        "logical_budget": 28,
+        "effective_cpu_quota_units": 32,
+        "physical_cores_used": 14,
+        "physical_cores_reserved": 2,
+        "memory_limit_bytes": 113487781478,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 2147483648,
+        "estimated_memory_reservation_bytes": 18253611008,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      }
+    },
+    "extraction_seconds": 0.817945544142276,
+    "new_review_spectral_solves": 0,
+    "physical_time_steps": 0
+  },
+  "checks": {
+    "maximum_root_residual": 9.90184174494347e-08,
+    "maximum_spectral_normalization_residual": 9.272854936269104e-15,
+    "minimum_DOS_along_continuation": 0.010092947603649417,
+    "maximum_matsubara_bridge_action_difference": 2.842170944342071e-13,
+    "maximum_kinetic_ward_residual": 4.969118785067353e-17,
+    "maximum_full_free_charge_residual": 1.5959455978986625e-16,
+    "maximum_projected_free_integrated_charge_residual": 2.0177425946428865e-16,
+    "maximum_projected_integrated_ward_residual": 1.6425898494193847e-16
+  },
+  "reference": "radial_65_N256_eta0p0100_fine50",
+  "criteria": {
+    "radial": {
+      "charge_current": {
+        "projection_difference_D": 0.0008214476379920784,
+        "omitted_response_C": 0.0038683389834642647,
+        "full_norm": 3.2904358057323027,
+        "projected_norm": 3.2904324767643143,
+        "D_over_C": 0.212351513531639,
+        "weighted_alignment": 0.9999999688386522,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.07503323985647845,
+        "observed_variation_U_C": 0.07520184465237797,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy unresolved against observed numerical variation",
+        "alignment_warning": false,
+        "D_over_full_percent": 0.02496470639424194,
+        "C_over_full_percent": 0.11756311965500711,
+        "U_D_over_full_percent": 2.2803435254917375,
+        "U_C_over_full_percent": 2.2854676125687683,
+        "D_over_U_D": 0.010947783136691435,
+        "projected_to_full_norm": 0.9999989882896416,
+        "discrepancy_resolved": false,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "energy_weighted_energy_flux": {
+        "projection_difference_D": 0.0003282561538785738,
+        "omitted_response_C": 0.0003300175757054118,
+        "full_norm": 37.67130088329401,
+        "projected_norm": 37.671299234516496,
+        "D_over_C": 0.9946626423666287,
+        "weighted_alignment": 0.9999999999620368,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.05655869414152813,
+        "observed_variation_U_C": 0.056559075412062544,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy unresolved against observed numerical variation",
+        "alignment_warning": false,
+        "D_over_full_percent": 0.0008713693081518846,
+        "C_over_full_percent": 0.0008760450740148551,
+        "U_D_over_full_percent": 0.15013735341061732,
+        "U_C_over_full_percent": 0.15013836550875428,
+        "D_over_U_D": 0.0058038142298188645,
+        "projected_to_full_norm": 0.9999999562325305,
+        "discrepancy_resolved": false,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "gap_force_density": {
+        "projection_difference_D": 0.0008604278886376621,
+        "omitted_response_C": 0.0010860075360512895,
+        "full_norm": 10.855855768447688,
+        "projected_norm": 10.85585566403343,
+        "D_over_C": 0.7922853756302353,
+        "weighted_alignment": 0.9999999968589791,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.17045588744651416,
+        "observed_variation_U_C": 0.17028063586913822,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy unresolved against observed numerical variation",
+        "alignment_warning": false,
+        "D_over_full_percent": 0.007925933311848867,
+        "C_over_full_percent": 0.010003886927161901,
+        "U_D_over_full_percent": 1.570174577502591,
+        "U_C_over_full_percent": 1.568560226859823,
+        "D_over_U_D": 0.005047803871882385,
+        "projected_to_full_norm": 0.999999990381757,
+        "discrepancy_resolved": false,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "amplitude_force_density": {
+        "projection_difference_D": 4.99415900389691e-07,
+        "omitted_response_C": 3.429344411971268e-07,
+        "full_norm": 10.855855730528864,
+        "projected_norm": 10.855855524231536,
+        "D_over_C": 1.4563013812386811,
+        "weighted_alignment": 0.999999999999999,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.17016886336636644,
+        "observed_variation_U_C": 0.17016895030515894,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy unresolved against observed numerical variation",
+        "alignment_warning": false,
+        "D_over_full_percent": 4.600428679106635e-06,
+        "C_over_full_percent": 3.1589811960445062e-06,
+        "U_D_over_full_percent": 1.5675306266996267,
+        "U_C_over_full_percent": 1.5675314275466041,
+        "D_over_U_D": 2.934825387617883e-06,
+        "projected_to_full_norm": 0.9999999809966775,
+        "discrepancy_resolved": false,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "phase_torque_density": {
+        "projection_difference_D": 0.0013905751223144143,
+        "omitted_response_C": 0.0017299445497358063,
+        "full_norm": 0.001467301723335318,
+        "projected_norm": 0.002834872203883345,
+        "D_over_C": 0.8038264131221894,
+        "weighted_alignment": 0.9923730701013007,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.003429465678897355,
+        "observed_variation_U_C": 0.0016601047440147976,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy unresolved against observed numerical variation",
+        "alignment_warning": false,
+        "D_over_full_percent": 94.77090500197214,
+        "C_over_full_percent": 117.89971498182909,
+        "U_D_over_full_percent": 233.72600361307076,
+        "U_C_over_full_percent": 113.1399709830109,
+        "D_over_U_D": 0.40547865251169773,
+        "projected_to_full_norm": 1.9320308555485153,
+        "discrepancy_resolved": false,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      }
+    },
+    "angular": {
+      "charge_current": {
+        "projection_difference_D": 0.15726026026189033,
+        "omitted_response_C": 0.38473733560363743,
+        "full_norm": 0.7653893948524114,
+        "projected_norm": 0.8102341651482212,
+        "D_over_C": 0.4087470741958414,
+        "weighted_alignment": 0.981681905585943,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.021977299700439826,
+        "observed_variation_U_C": 0.022032925944697846,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection improves this moment beyond observed variation; not dynamic admission",
+        "alignment_warning": false,
+        "D_over_full_percent": 20.546438364515687,
+        "C_over_full_percent": 50.26687568330178,
+        "U_D_over_full_percent": 2.871388060541088,
+        "U_C_over_full_percent": 2.8786557656637526,
+        "D_over_U_D": 7.155577000150893,
+        "projected_to_full_norm": 1.0585907912984045,
+        "discrepancy_resolved": true,
+        "improvement_resolved": true,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "energy_weighted_energy_flux": {
+        "projection_difference_D": 0.06273239319988336,
+        "omitted_response_C": 0.06386349780888938,
+        "full_norm": 14.316909254970097,
+        "projected_norm": 14.283238056306324,
+        "D_over_C": 0.982288715027936,
+        "weighted_alignment": 0.9999931498396993,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.02805642937760302,
+        "observed_variation_U_C": 0.028054470968769035,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy resolved; improvement over omitted response remains uncertain",
+        "alignment_warning": false,
+        "D_over_full_percent": 0.43816994354494415,
+        "C_over_full_percent": 0.44607042394097207,
+        "U_D_over_full_percent": 0.19596708254516082,
+        "U_C_over_full_percent": 0.19595340355342378,
+        "D_over_U_D": 2.235936453480484,
+        "projected_to_full_norm": 0.9976481517020104,
+        "discrepancy_resolved": true,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "gap_force_density": {
+        "projection_difference_D": 0.108018433435475,
+        "omitted_response_C": 0.12263216150611736,
+        "full_norm": 3.3456790822351112,
+        "projected_norm": 3.3509140004659503,
+        "D_over_C": 0.8808328264693159,
+        "weighted_alignment": 0.9994808450833905,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.051290862077864305,
+        "observed_variation_U_C": 0.05095703712870113,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy resolved; improvement over omitted response remains uncertain",
+        "alignment_warning": false,
+        "D_over_full_percent": 3.2285951754617273,
+        "C_over_full_percent": 3.6653892525816265,
+        "U_D_over_full_percent": 1.5330478750998133,
+        "U_C_over_full_percent": 1.5230700816247689,
+        "D_over_U_D": 2.105997619449113,
+        "projected_to_full_norm": 1.0015646803241338,
+        "discrepancy_resolved": true,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "amplitude_force_density": {
+        "projection_difference_D": 5.1320487100829205e-05,
+        "omitted_response_C": 1.6086569643159884e-05,
+        "full_norm": 3.3434308456253583,
+        "projected_norm": 3.343430901329032,
+        "D_over_C": 3.190269164852745,
+        "weighted_alignment": 0.9999999998821942,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.05082603024852526,
+        "observed_variation_U_C": 0.050825804039657134,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection discrepancy unresolved against observed numerical variation",
+        "alignment_warning": false,
+        "D_over_full_percent": 0.0015349648151980896,
+        "C_over_full_percent": 0.0004811395954011735,
+        "U_D_over_full_percent": 1.5201759089776752,
+        "U_C_over_full_percent": 1.5201691432068676,
+        "D_over_U_D": 0.0010097284177002649,
+        "projected_to_full_norm": 1.0000000166606329,
+        "discrepancy_resolved": false,
+        "improvement_resolved": false,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      },
+      "phase_torque_density": {
+        "projection_difference_D": 0.13715633224358312,
+        "omitted_response_C": 0.17691206343528393,
+        "full_norm": 0.17691235359106625,
+        "projected_norm": 0.303834805541385,
+        "D_over_C": 0.7752797043925508,
+        "weighted_alignment": 0.9748609902740839,
+        "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance",
+        "observed_variation_U_D": 0.006433329146468284,
+        "observed_variation_U_C": 0.0021221261063691277,
+        "components": [
+          "energy_radial_65_N256_eta0p0100",
+          "contour_eta",
+          "spatial_mesh"
+        ],
+        "assessment": "Projection improves this moment beyond observed variation; not dynamic admission",
+        "alignment_warning": false,
+        "D_over_full_percent": 77.52784328482828,
+        "C_over_full_percent": 99.99983598896492,
+        "U_D_over_full_percent": 3.6364499232987173,
+        "U_C_over_full_percent": 1.1995352858593653,
+        "D_over_U_D": 21.31965101130852,
+        "projected_to_full_norm": 1.7174312555001139,
+        "discrepancy_resolved": true,
+        "improvement_resolved": true,
+        "method": "Predeclared observed-variation criteria; U is not a rigorous uncertainty bound"
+      }
+    }
+  },
+  "control_changes": {
+    "energy_radial_65_N256_eta0p0200": {
+      "radial": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.009219151735149918,
+            "projected": 0.009219111588335238,
+            "zero_hT": 0.009219153269509643
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.2822174348948521,
+            "projected": 0.2822162059172429,
+            "zero_hT": 0.2822174818647988
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.0016717803714450517,
+            "projected": 0.001671763408102217,
+            "zero_hT": 0.0016717631232157056
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.0044390715793382945,
+            "projected": 0.00443902653664348,
+            "zero_hT": 0.004439025780185493
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.005212631353706653,
+            "projected": 0.0052126208507429555,
+            "zero_hT": 0.005212641712407604
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.04833136424243266,
+            "projected": 0.04833126685926288,
+            "zero_hT": 0.048331460288002503
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.005212610734516575,
+            "projected": 0.005212609567417707,
+            "zero_hT": 0.005212609821745718
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.048331173224840075,
+            "projected": 0.048331162403533745,
+            "zero_hT": 0.04833116476165557
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 1.9323937363263596e-05,
+            "projected": 1.336223651552729e-05,
+            "zero_hT": 2.5997056675985694e-05
+          },
+          "percent_of_reference_full_norm": {
+            "full": 1.350019515021454,
+            "projected": 0.9335198992410458,
+            "zero_hT": 1.8162206379545025
+          }
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.0021569085700015238,
+            "projected": 0.00228817870075301,
+            "zero_hT": 0.0025261887995711293
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.2842626814049536,
+            "projected": 0.30156299717854707,
+            "zero_hT": 0.3329307564950436
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.0010658642479845204,
+            "projected": 0.000871011749923927,
+            "zero_hT": 0.0008681698426347763
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.007446847734030303,
+            "projected": 0.006085476540281671,
+            "zero_hT": 0.006065621055967835
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0014070395249935663,
+            "projected": 0.0014177727181474947,
+            "zero_hT": 0.0013240928751580853
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.042334343765933626,
+            "projected": 0.04265727903577734,
+            "zero_hT": 0.03983868395965787
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0013240747945710927,
+            "projected": 0.0013240750620784824,
+            "zero_hT": 0.0013240750857662627
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.039865052132513866,
+            "projected": 0.039865060186587614,
+            "zero_hT": 0.039865060899775866
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 0.0006900628365916348,
+            "projected": 0.0006652325100903772,
+            "zero_hT": 1.0363614474627267e-05
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.3917291711856269,
+            "projected": 0.37763369653487094,
+            "zero_hT": 0.005883131061926135
+          }
+        }
+      }
+    },
+    "energy_radial_65_N256_eta0p0100": {
+      "radial": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.009959117614204387,
+            "projected": 0.009959068804527958,
+            "zero_hT": 0.009959126509256053
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.3026686494492463,
+            "projected": 0.3026671660689493,
+            "zero_hT": 0.30266891977974936
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.001656872986705583,
+            "projected": 0.0016568488803054178,
+            "zero_hT": 0.0016568484716195013
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.004398236715632913,
+            "projected": 0.00439817272421345,
+            "zero_hT": 0.004398171639340067
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.00540887044710202,
+            "projected": 0.005408848662229953,
+            "zero_hT": 0.005408892658290933
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.04982445016285852,
+            "projected": 0.049824249488931646,
+            "zero_hT": 0.049824654763853476
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.005408826736929513,
+            "projected": 0.0054088254730626775,
+            "zero_hT": 0.005408825819177329
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.04982404769546446,
+            "projected": 0.049824036053205505,
+            "zero_hT": 0.04982403924148159
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 3.0018920115043134e-05,
+            "projected": 2.1058918532944215e-05,
+            "zero_hT": 3.906640126217175e-05
+          },
+          "percent_of_reference_full_norm": {
+            "full": 2.0458587104230506,
+            "projected": 1.4352139166766102,
+            "zero_hT": 2.662465438490051
+          }
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.0023355086484966223,
+            "projected": 0.002480804485484704,
+            "zero_hT": 0.002732011342022755
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.3051399280162451,
+            "projected": 0.3241231851615965,
+            "zero_hT": 0.3569439765427588
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.0010856726441620566,
+            "projected": 0.0008773458311120244,
+            "zero_hT": 0.0008743585321596426
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.007583149580871771,
+            "projected": 0.006128039337872138,
+            "zero_hT": 0.006107173808174485
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0014834063506492356,
+            "projected": 0.001492218575915511,
+            "zero_hT": 0.0013908635884685016
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.04433797486811654,
+            "projected": 0.04460136609751049,
+            "zero_hT": 0.04157193664669483
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0013908232626888754,
+            "projected": 0.0013908239578565103,
+            "zero_hT": 0.0013908239836556472
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.041598684911,
+            "projected": 0.04159870570304466,
+            "zero_hT": 0.041598706474681287
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 0.0007477082345470534,
+            "projected": 0.0007060256102622117,
+            "zero_hT": 1.5986638426893968e-05
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.4226433142568351,
+            "projected": 0.3990821420499516,
+            "zero_hT": 0.009036473769292086
+          }
+        }
+      }
+    },
+    "energy_radial_129_N256_eta0p0100": {
+      "radial": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.009977899819813285,
+            "projected": 0.009977900020398178,
+            "zero_hT": 0.009977908268938787
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.3033238782696214,
+            "projected": 0.30332388436731617,
+            "zero_hT": 0.3033241351194156
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.001656343327098708,
+            "projected": 0.0016563351720073336,
+            "zero_hT": 0.0016563350743655366
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.004394717095359659,
+            "projected": 0.004394695457744503,
+            "zero_hT": 0.004394695198674981
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0054115668360431,
+            "projected": 0.005411546348881375,
+            "zero_hT": 0.005411580044671983
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.04988592644070568,
+            "projected": 0.04988573758208603,
+            "zero_hT": 0.04988604820298059
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.005411516585188665,
+            "projected": 0.005411516312940389,
+            "zero_hT": 0.005411516406004379
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.049885463219105836,
+            "projected": 0.04988546070941541,
+            "zero_hT": 0.04988546156731545
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 3.4510467441184575e-05,
+            "projected": 2.664328445107856e-05,
+            "zero_hT": 3.9165779794790956e-05
+          },
+          "percent_of_reference_full_norm": {
+            "full": 9.580425931421338,
+            "projected": 7.396422945831485,
+            "zero_hT": 10.872783830292667
+          }
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.002340265069228918,
+            "projected": 0.0024864384276658386,
+            "zero_hT": 0.0027401975629033457
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.3054808853866925,
+            "projected": 0.3245612739898388,
+            "zero_hT": 0.3576851138174599
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.0010813030155644777,
+            "projected": 0.0008704914051218398,
+            "zero_hT": 0.0008675187974775179
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.007545689018820714,
+            "projected": 0.006074576082798323,
+            "zero_hT": 0.006053832246393397
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.001483029294999268,
+            "projected": 0.0014916102427639999,
+            "zero_hT": 0.0013897829759114372
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.044349344196164854,
+            "projected": 0.044605953696213604,
+            "zero_hT": 0.04156085369621579
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0013897406341313943,
+            "projected": 0.0013897412302576885,
+            "zero_hT": 0.0013897412434153923
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.04158757874720843,
+            "projected": 0.041587596586112024,
+            "zero_hT": 0.04158759697985244
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 0.0007498876376216097,
+            "projected": 0.0007069334739269199,
+            "zero_hT": 1.6577726285811458e-05
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.42390817590210744,
+            "projected": 0.39962637651551125,
+            "zero_hT": 0.009371315591641702
+          }
+        }
+      }
+    },
+    "contour_eta": {
+      "radial": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.02379470929972123,
+            "projected": 0.023794425663288085,
+            "zero_hT": 0.0237949279540192
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.7231476529117578,
+            "projected": 0.7231390328854179,
+            "zero_hT": 0.7231542980588106
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.011116433798606423,
+            "projected": 0.011116297407225851,
+            "zero_hT": 0.011116295334450455
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.02950902553921677,
+            "projected": 0.02950866348275104,
+            "zero_hT": 0.029508657980484472
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.07067621817876982,
+            "projected": 0.07067622440561014,
+            "zero_hT": 0.07067621165388568
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.651042346971749,
+            "projected": 0.6510424043310253,
+            "zero_hT": 0.6510422868670067
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.07067621317427723,
+            "projected": 0.07067620352433772,
+            "zero_hT": 0.07067621164703602
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.6510423031463233,
+            "projected": 0.6510422142547632,
+            "zero_hT": 0.6510422890779601
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 4.13713995101384e-05,
+            "projected": 8.839351089997564e-05,
+            "zero_hT": 1.1573227370554617e-06
+          },
+          "percent_of_reference_full_norm": {
+            "full": 2.8195563906309076,
+            "projected": 6.024221841643359,
+            "zero_hT": 0.07887421643755421
+          }
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.007547328597763378,
+            "projected": 0.00617347401682855,
+            "zero_hT": 0.00689206614147073
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.9860769757880843,
+            "projected": 0.8065795082017002,
+            "zero_hT": 0.9004653301735013
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.004356952564418235,
+            "projected": 0.0039042500688251107,
+            "zero_hT": 0.003910596361366322
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.03043221471076744,
+            "projected": 0.027270201963945223,
+            "zero_hT": 0.027314529216623785
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0220508968532394,
+            "projected": 0.022148860680087964,
+            "zero_hT": 0.02204412285103854
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.6590858331369934,
+            "projected": 0.6620139031772054,
+            "zero_hT": 0.6588833629647397
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.02204412050689057,
+            "projected": 0.022044125451029357,
+            "zero_hT": 0.02204412284967291
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.6593263484343854,
+            "projected": 0.6593264963105945,
+            "zero_hT": 0.6593264185055923
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 0.0007835243861076844,
+            "projected": 0.002680769513484256,
+            "zero_hT": 3.1357292478486257e-07
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.44288845306914226,
+            "projected": 1.5153093942104616,
+            "zero_hT": 0.00017724761353279372
+          }
+        }
+      }
+    },
+    "spatial_mesh": {
+      "radial": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.0038874012666558727,
+            "projected": 0.0036385172080809153,
+            "zero_hT": 0.003806562008521227
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.1181424436204952,
+            "projected": 0.11057858055587094,
+            "zero_hT": 0.11568564874870908
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.015488279904144343,
+            "projected": 0.015523961164540512,
+            "zero_hT": 0.015524344916536236
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.041114268796098016,
+            "projected": 0.04120898615270512,
+            "zero_hT": 0.04121000483798205
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.009091961020970736,
+            "projected": 0.009193764731831497,
+            "zero_hT": 0.00901848191011903
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.08375167480942707,
+            "projected": 0.08468945173859971,
+            "zero_hT": 0.08307481328492826
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.00899945432535498,
+            "projected": 0.008999340132404315,
+            "zero_hT": 0.008999418602383843
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.08289953872587577,
+            "projected": 0.08289848682399442,
+            "zero_hT": 0.08289920965949885
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 0.0011259768848492925,
+            "projected": 0.002122646044989961,
+            "zero_hT": 0.0004225138155410965
+          },
+          "percent_of_reference_full_norm": {
+            "full": 76.73792424163715,
+            "projected": 144.6632285120597,
+            "zero_hT": 28.795291985392204
+          }
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "absolute_difference_norms": {
+            "full": 0.0011330747493924903,
+            "projected": 0.0023071092024740817,
+            "zero_hT": 0.0013929364655518696
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.14803899257200695,
+            "projected": 0.3014294708014549,
+            "zero_hT": 0.18199056257115595
+          }
+        },
+        "energy_weighted_energy_flux": {
+          "absolute_difference_norms": {
+            "full": 0.008873907244586997,
+            "projected": 0.008958301024498596,
+            "zero_hT": 0.008952983622075784
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.06198200384280868,
+            "projected": 0.06257147310889558,
+            "zero_hT": 0.06253433239417765
+          }
+        },
+        "gap_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0019993740262855154,
+            "projected": 0.0021161055916866785,
+            "zero_hT": 0.001988373459019939
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.059759886622174636,
+            "projected": 0.06324891119781263,
+            "zero_hT": 0.05943108738604984
+          }
+        },
+        "amplitude_force_density": {
+          "absolute_difference_norms": {
+            "full": 0.0019779638773834802,
+            "projected": 0.001978173192676461,
+            "zero_hT": 0.0019779495593656455
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.05915970656224295,
+            "projected": 0.059165967056407344,
+            "zero_hT": 0.05915927831896544
+          }
+        },
+        "phase_torque_density": {
+          "absolute_difference_norms": {
+            "full": 0.00044119393655306697,
+            "projected": 0.0010741074655140122,
+            "zero_hT": 0.00013339933780964422
+          },
+          "percent_of_reference_full_norm": {
+            "full": 0.24938560117338604,
+            "projected": 0.607141018538941,
+            "zero_hT": 0.07540419597717717
+          }
+        }
+      }
+    }
+  },
+  "chi_quadrature": {
+    "asymmetric_65_N256_eta0p0100_base31": {
+      "numerical": 1.0161617632433495,
+      "exact": 1.0,
+      "error_percent": 1.6161763243349503
+    },
+    "radial_65_N256_eta0p0200_base31": {
+      "numerical": 1.0161617632433495,
+      "exact": 1.0,
+      "error_percent": 1.6161763243349503
+    },
+    "radial_65_N256_eta0p0100_base31": {
+      "numerical": 1.0161617632433495,
+      "exact": 1.0,
+      "error_percent": 1.6161763243349503
+    },
+    "radial_65_N256_eta0p0100_fine50": {
+      "numerical": 1.0042433074305517,
+      "exact": 1.0,
+      "error_percent": 0.42433074305516794
+    },
+    "radial_65_N256_eta0p0200_fine50": {
+      "numerical": 1.0042433074305517,
+      "exact": 1.0,
+      "error_percent": 0.42433074305516794
+    },
+    "radial_129_N256_eta0p0100_base31": {
+      "numerical": 1.0161617632433495,
+      "exact": 1.0,
+      "error_percent": 1.6161763243349503
+    },
+    "radial_129_N256_eta0p0100_fine50": {
+      "numerical": 1.0042433074305517,
+      "exact": 1.0,
+      "error_percent": 0.42433074305516794
+    }
+  },
+  "all_groups": {
+    "asymmetric_65_N256_eta0p0100_base31": {
+      "radial": {
+        "charge_current": {
+          "projection_difference_D": 0.035850261557000405,
+          "omitted_response_C": 0.08005981067986499,
+          "full_norm": 3.287883598360349,
+          "projected_norm": 3.288317030449427,
+          "D_over_C": 0.44779348405350067,
+          "weighted_alignment": 0.9999405706389989,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.013660479222867176,
+          "omitted_response_C": 0.01386018267409591,
+          "full_norm": 37.676484649526124,
+          "projected_norm": 37.67592666269386,
+          "D_over_C": 0.9855915714875843,
+          "weighted_alignment": 0.9999999343790746,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.023616840706440868,
+          "omitted_response_C": 0.025669857175287827,
+          "full_norm": 10.856755277180797,
+          "projected_norm": 10.856852441882952,
+          "D_over_C": 0.920022287041652,
+          "weighted_alignment": 0.999997634067936,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 8.982760102435848e-05,
+          "omitted_response_C": 5.2549904979213874e-06,
+          "full_norm": 10.856725803557163,
+          "projected_norm": 10.856765398198917,
+          "D_over_C": 17.093770399754252,
+          "weighted_alignment": 0.9999999999724218,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.031001277931618006,
+          "omitted_response_C": 0.03800363463340078,
+          "full_norm": 0.03705325894448233,
+          "projected_norm": 0.06346054465995025,
+          "D_over_C": 0.815745078876521,
+          "weighted_alignment": 0.9439201641554463,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "projection_difference_D": 0.1564309255025372,
+          "omitted_response_C": 0.3833955739399665,
+          "full_norm": 0.7647483116164298,
+          "projected_norm": 0.8094990182446195,
+          "D_over_C": 0.4080144272271431,
+          "weighted_alignment": 0.9818532132923544,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.06252320577075289,
+          "omitted_response_C": 0.0636508204542936,
+          "full_norm": 14.31807241520529,
+          "projected_norm": 14.284541260690608,
+          "D_over_C": 0.9822843652997305,
+          "weighted_alignment": 0.9999931920684628,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.10759443066745628,
+          "omitted_response_C": 0.12258097442844527,
+          "full_norm": 3.3416257591108405,
+          "projected_norm": 3.3468189612422337,
+          "D_over_C": 0.8777416819301175,
+          "weighted_alignment": 0.9994836470979345,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 0.0004216295056238356,
+          "omitted_response_C": 5.051699675673536e-05,
+          "full_norm": 3.339369337901815,
+          "projected_norm": 3.339345854254831,
+          "D_over_C": 8.34629001510507,
+          "weighted_alignment": 0.9999999920538497,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.136450610433406,
+          "omitted_response_C": 0.1767125179969718,
+          "full_norm": 0.17693499151902933,
+          "projected_norm": 0.30314954175918724,
+          "D_over_C": 0.7721615422612238,
+          "weighted_alignment": 0.974936907179626,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      }
+    },
+    "radial_65_N256_eta0p0200_base31": {
+      "radial": {
+        "charge_current": {
+          "projection_difference_D": 0.0008015597112537753,
+          "omitted_response_C": 0.0037930646700281272,
+          "full_norm": 3.27467379305795,
+          "projected_norm": 3.2746706561417196,
+          "D_over_C": 0.21132244793702168,
+          "weighted_alignment": 0.9999999700429224,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.00032263973682009495,
+          "omitted_response_C": 0.00032459261196452795,
+          "full_norm": 37.66154198590598,
+          "projected_norm": 37.661540472925005,
+          "D_over_C": 0.9939836118492851,
+          "weighted_alignment": 0.9999999999633057,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.000835180564281657,
+          "omitted_response_C": 0.0010650594719720512,
+          "full_norm": 10.789523280626788,
+          "projected_norm": 10.789523176006112,
+          "D_over_C": 0.7841633131859265,
+          "weighted_alignment": 0.9999999970041072,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 4.5787247558631143e-07,
+          "omitted_response_C": 3.0149146727769293e-07,
+          "full_norm": 10.789523244481114,
+          "projected_norm": 10.789523044087765,
+          "D_over_C": 1.5186913239059652,
+          "weighted_alignment": 0.9999999999999996,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.0013471453908864496,
+          "omitted_response_C": 0.001697587626042973,
+          "full_norm": 0.0014261905968477506,
+          "projected_norm": 0.002744444127888655,
+          "D_over_C": 0.7935645678724732,
+          "weighted_alignment": 0.9901627035535076,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "projection_difference_D": 0.15348907553366248,
+          "omitted_response_C": 0.381413639663836,
+          "full_norm": 0.7604739534083198,
+          "projected_norm": 0.8059462925154105,
+          "D_over_C": 0.4024215695824148,
+          "weighted_alignment": 0.9824676767062611,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.06208939840735327,
+          "omitted_response_C": 0.06323763271608838,
+          "full_norm": 14.313657233255988,
+          "projected_norm": 14.280299404331883,
+          "D_over_C": 0.9818425475556585,
+          "weighted_alignment": 0.9999932918194122,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.10646143572514538,
+          "omitted_response_C": 0.1225604072245619,
+          "full_norm": 3.3244662221888137,
+          "projected_norm": 3.329630501165501,
+          "D_over_C": 0.8686445984964859,
+          "weighted_alignment": 0.9994892439184216,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 4.956376533218089e-05,
+          "omitted_response_C": 1.608207583029788e-05,
+          "full_norm": 3.3222062777963566,
+          "projected_norm": 3.322206327368256,
+          "D_over_C": 3.0819258567855443,
+          "weighted_alignment": 0.9999999998887128,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.1351910534518246,
+          "omitted_response_C": 0.17682456703017949,
+          "full_norm": 0.1768248696442127,
+          "projected_norm": 0.30185275234425163,
+          "D_over_C": 0.7645490427172991,
+          "weighted_alignment": 0.9752258001410823,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      }
+    },
+    "radial_65_N256_eta0p0100_base31": {
+      "radial": {
+        "charge_current": {
+          "projection_difference_D": 0.0008254925416573987,
+          "omitted_response_C": 0.00389445730083034,
+          "full_norm": 3.299017473565206,
+          "projected_norm": 3.2990140826605536,
+          "D_over_C": 0.21196600139418523,
+          "weighted_alignment": 0.9999999686945321,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.0003291208787151822,
+          "omitted_response_C": 0.0003309087261439229,
+          "full_norm": 37.6720817985749,
+          "projected_norm": 37.67208014595216,
+          "D_over_C": 0.9945971584080767,
+          "weighted_alignment": 0.9999999999618377,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.0008637533264077707,
+          "omitted_response_C": 0.0010921654991837776,
+          "full_norm": 10.860147171545792,
+          "projected_norm": 10.860147061072112,
+          "D_over_C": 0.7908630395789747,
+          "weighted_alignment": 0.9999999968371541,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 5.056096608896715e-07,
+          "omitted_response_C": 3.46146506269113e-07,
+          "full_norm": 10.860147134240515,
+          "projected_norm": 10.860146922560645,
+          "D_over_C": 1.460681103903973,
+          "weighted_alignment": 0.9999999999999991,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.0013948658141436057,
+          "omitted_response_C": 0.001739628792364628,
+          "full_norm": 0.001454370666454871,
+          "projected_norm": 0.0028223808842280187,
+          "D_over_C": 0.8018180776644909,
+          "weighted_alignment": 0.9909619346820444,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "projection_difference_D": 0.15727843465530997,
+          "omitted_response_C": 0.3854040276449804,
+          "full_norm": 0.7671618752782825,
+          "projected_norm": 0.8121636097710141,
+          "D_over_C": 0.408087158861217,
+          "weighted_alignment": 0.9817743756753387,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.06292186999778064,
+          "omitted_response_C": 0.06405713101995072,
+          "full_norm": 14.317570018359582,
+          "projected_norm": 14.28373796152043,
+          "D_over_C": 0.9822773670301203,
+          "weighted_alignment": 0.9999931187339958,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.10811732002097131,
+          "omitted_response_C": 0.12312617137940403,
+          "full_norm": 3.3464235731604215,
+          "projected_norm": 3.3516742815414533,
+          "D_over_C": 0.878101859334324,
+          "weighted_alignment": 0.9994801329224284,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 5.150957381142339e-05,
+          "omitted_response_C": 1.6179569900579628e-05,
+          "full_norm": 3.3441576844137413,
+          "projected_norm": 3.344157737746915,
+          "D_over_C": 3.1836182375637856,
+          "weighted_alignment": 0.9999999998813761,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.13719041267047127,
+          "omitted_response_C": 0.1776342425715551,
+          "full_norm": 0.17763455346241358,
+          "projected_norm": 0.30451285158654723,
+          "D_over_C": 0.7723196309698445,
+          "weighted_alignment": 0.9748289343012831,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      }
+    },
+    "radial_65_N256_eta0p0100_fine50": {
+      "radial": {
+        "charge_current": {
+          "projection_difference_D": 0.0008214476379920784,
+          "omitted_response_C": 0.0038683389834642647,
+          "full_norm": 3.2904358057323027,
+          "projected_norm": 3.2904324767643143,
+          "D_over_C": 0.212351513531639,
+          "weighted_alignment": 0.9999999688386522,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.0003282561538785738,
+          "omitted_response_C": 0.0003300175757054118,
+          "full_norm": 37.67130088329401,
+          "projected_norm": 37.671299234516496,
+          "D_over_C": 0.9946626423666287,
+          "weighted_alignment": 0.9999999999620368,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.0008604278886376621,
+          "omitted_response_C": 0.0010860075360512895,
+          "full_norm": 10.855855768447688,
+          "projected_norm": 10.85585566403343,
+          "D_over_C": 0.7922853756302353,
+          "weighted_alignment": 0.9999999968589791,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 4.99415900389691e-07,
+          "omitted_response_C": 3.429344411971268e-07,
+          "full_norm": 10.855855730528864,
+          "projected_norm": 10.855855524231536,
+          "D_over_C": 1.4563013812386811,
+          "weighted_alignment": 0.999999999999999,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.0013905751223144143,
+          "omitted_response_C": 0.0017299445497358063,
+          "full_norm": 0.001467301723335318,
+          "projected_norm": 0.002834872203883345,
+          "D_over_C": 0.8038264131221894,
+          "weighted_alignment": 0.9923730701013007,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "projection_difference_D": 0.15726026026189033,
+          "omitted_response_C": 0.38473733560363743,
+          "full_norm": 0.7653893948524114,
+          "projected_norm": 0.8102341651482212,
+          "D_over_C": 0.4087470741958414,
+          "weighted_alignment": 0.981681905585943,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.06273239319988336,
+          "omitted_response_C": 0.06386349780888938,
+          "full_norm": 14.316909254970097,
+          "projected_norm": 14.283238056306324,
+          "D_over_C": 0.982288715027936,
+          "weighted_alignment": 0.9999931498396993,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.108018433435475,
+          "omitted_response_C": 0.12263216150611736,
+          "full_norm": 3.3456790822351112,
+          "projected_norm": 3.3509140004659503,
+          "D_over_C": 0.8808328264693159,
+          "weighted_alignment": 0.9994808450833905,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 5.1320487100829205e-05,
+          "omitted_response_C": 1.6086569643159884e-05,
+          "full_norm": 3.3434308456253583,
+          "projected_norm": 3.343430901329032,
+          "D_over_C": 3.190269164852745,
+          "weighted_alignment": 0.9999999998821942,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.13715633224358312,
+          "omitted_response_C": 0.17691206343528393,
+          "full_norm": 0.17691235359106625,
+          "projected_norm": 0.303834805541385,
+          "D_over_C": 0.7752797043925508,
+          "weighted_alignment": 0.9748609902740839,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      }
+    },
+    "radial_65_N256_eta0p0200_fine50": {
+      "radial": {
+        "charge_current": {
+          "projection_difference_D": 0.0007983281490686093,
+          "omitted_response_C": 0.003771693897523228,
+          "full_norm": 3.266683980238417,
+          "projected_norm": 3.2666808904809597,
+          "D_over_C": 0.21166302747761434,
+          "weighted_alignment": 0.9999999701384363,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.00032176384310170187,
+          "omitted_response_C": 0.00032369680228899484,
+          "full_norm": 37.66058603844937,
+          "projected_norm": 37.660584532416664,
+          "D_over_C": 0.9940284884693819,
+          "weighted_alignment": 0.9999999999635029,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.0008322004246926157,
+          "omitted_response_C": 0.0010595941017737189,
+          "full_norm": 10.785193911679837,
+          "projected_norm": 10.785193810872375,
+          "D_over_C": 0.7853954861579022,
+          "weighted_alignment": 0.9999999970230609,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 4.5289068175285396e-07,
+          "omitted_response_C": 2.9847556342263626e-07,
+          "full_norm": 10.785193875321704,
+          "projected_norm": 10.785193678515538,
+          "D_over_C": 1.5173459313034903,
+          "weighted_alignment": 0.9999999999999992,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.0013430678569253324,
+          "omitted_response_C": 0.0016888954452042378,
+          "full_norm": 0.0014313820762032843,
+          "projected_norm": 0.002748599594025609,
+          "D_over_C": 0.7952344597405884,
+          "weighted_alignment": 0.9912602819329188,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "projection_difference_D": 0.1534505619762612,
+          "omitted_response_C": 0.3807745621168015,
+          "full_norm": 0.7587730332174152,
+          "projected_norm": 0.8041101456632246,
+          "D_over_C": 0.4029958333434855,
+          "weighted_alignment": 0.9823878752759913,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.06191388749181967,
+          "omitted_response_C": 0.063058247873411,
+          "full_norm": 14.312958798845546,
+          "projected_norm": 14.279749307453539,
+          "D_over_C": 0.981852328280852,
+          "weighted_alignment": 0.9999933203196079,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.10636215398131724,
+          "omitted_response_C": 0.12210475605959255,
+          "full_norm": 3.323636083207244,
+          "projected_norm": 3.3287854375309807,
+          "D_over_C": 0.8710729820336218,
+          "weighted_alignment": 0.9994899345999964,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 4.932247417890752e-05,
+          "omitted_response_C": 1.591476768553508e-05,
+          "full_norm": 3.321392356818667,
+          "projected_norm": 3.3213924075388337,
+          "D_over_C": 3.099163943419462,
+          "weighted_alignment": 0.9999999998897396,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.1351460562739826,
+          "omitted_response_C": 0.176157854636088,
+          "full_norm": 0.17615814377649142,
+          "projected_norm": 0.3012091143067531,
+          "D_over_C": 0.7671872284841982,
+          "weighted_alignment": 0.9752479307385414,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      }
+    },
+    "radial_129_N256_eta0p0100_base31": {
+      "radial": {
+        "charge_current": {
+          "projection_difference_D": 0.00021627510487587368,
+          "omitted_response_C": 0.0009853465584998132,
+          "full_norm": 3.2981314221018607,
+          "projected_norm": 3.2981310515079323,
+          "D_over_C": 0.21949140940335934,
+          "weighted_alignment": 0.9999999978499631,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 9.788067734338496e-05,
+          "omitted_response_C": 9.818315560753615e-05,
+          "full_norm": 37.6902077832195,
+          "projected_norm": 37.69020752805346,
+          "D_over_C": 0.9969192448309537,
+          "weighted_alignment": 0.9999999999966278,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.00023682485979719642,
+          "omitted_response_C": 0.0002767711929266327,
+          "full_norm": 10.85217617114443,
+          "projected_norm": 10.852176161786023,
+          "D_over_C": 0.8556701920202173,
+          "weighted_alignment": 0.9999999997618829,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 2.6219423495230586e-07,
+          "omitted_response_C": 2.503753277394742e-07,
+          "full_norm": 10.852176169040295,
+          "projected_norm": 10.852176153062565,
+          "D_over_C": 1.0472047598281318,
+          "weighted_alignment": 0.9999999999999998,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.0003867523641697866,
+          "omitted_response_C": 0.00044627715602887577,
+          "full_norm": 0.00034741680439596045,
+          "projected_norm": 0.0007175808474084255,
+          "D_over_C": 0.866619227412936,
+          "weighted_alignment": 0.9748175083512419,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "projection_difference_D": 0.1578739231976952,
+          "omitted_response_C": 0.38671726770597553,
+          "full_norm": 0.767869370458998,
+          "projected_norm": 0.812687895825845,
+          "D_over_C": 0.4082412045735907,
+          "weighted_alignment": 0.9816393631793572,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.06308999628540303,
+          "omitted_response_C": 0.06422753195897415,
+          "full_norm": 14.330735808443052,
+          "projected_norm": 14.296806769210152,
+          "D_over_C": 0.9822889711175927,
+          "weighted_alignment": 0.9999930956755232,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.10773732905197661,
+          "omitted_response_C": 0.12316497695410666,
+          "full_norm": 3.344714419565842,
+          "projected_norm": 3.3499464769309792,
+          "D_over_C": 0.8747399765448042,
+          "weighted_alignment": 0.999483250500587,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 1.4492333923433891e-05,
+          "omitted_response_C": 5.626905135693255e-06,
+          "full_norm": 3.3424459498225074,
+          "projected_norm": 3.342445955447117,
+          "D_over_C": 2.575542607161509,
+          "weighted_alignment": 0.9999999999906006,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.13675983080696305,
+          "omitted_response_C": 0.17762326910753468,
+          "full_norm": 0.1776233262736775,
+          "projected_norm": 0.30410256444726386,
+          "D_over_C": 0.7699432146143389,
+          "weighted_alignment": 0.9749493834089829,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      }
+    },
+    "radial_129_N256_eta0p0100_fine50": {
+      "radial": {
+        "charge_current": {
+          "projection_difference_D": 0.00021310245731253244,
+          "omitted_response_C": 0.0009729058338651566,
+          "full_norm": 3.2895200591309974,
+          "projected_norm": 3.289519702284469,
+          "D_over_C": 0.21903708446882242,
+          "weighted_alignment": 0.9999999979016369,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 9.779013664995835e-05,
+          "omitted_response_C": 9.807709754501012e-05,
+          "full_norm": 37.68941870792151,
+          "projected_norm": 37.68941844694212,
+          "D_over_C": 0.9970741294121181,
+          "weighted_alignment": 0.9999999999966338,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.00023469243598733347,
+          "omitted_response_C": 0.000274909912781708,
+          "full_norm": 10.8478828041317,
+          "projected_norm": 10.8478827986195,
+          "D_over_C": 0.853706705635205,
+          "weighted_alignment": 0.9999999997659664,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 2.596784164972744e-07,
+          "omitted_response_C": 2.480790140414391e-07,
+          "full_norm": 10.847882801890243,
+          "projected_norm": 10.847882789465752,
+          "D_over_C": 1.0467568871178186,
+          "weighted_alignment": 0.9999999999999997,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.00038399038539345604,
+          "omitted_response_C": 0.00044358200875118417,
+          "full_norm": 0.0003602185089495771,
+          "projected_norm": 0.0007345292266350951,
+          "D_over_C": 0.8656581597493181,
+          "weighted_alignment": 0.9861293428954303,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      },
+      "angular": {
+        "charge_current": {
+          "projection_difference_D": 0.1578534278679435,
+          "omitted_response_C": 0.38604551616876337,
+          "full_norm": 0.7660921455908762,
+          "projected_norm": 0.8107519797281354,
+          "D_over_C": 0.40889848801905637,
+          "weighted_alignment": 0.9815466043089438,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "energy_weighted_energy_flux": {
+          "projection_difference_D": 0.06289851609310598,
+          "omitted_response_C": 0.06403187263518148,
+          "full_norm": 14.330076588996116,
+          "projected_norm": 14.29630960995171,
+          "D_over_C": 0.9823001187466007,
+          "weighted_alignment": 0.9999931272202365,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "gap_force_density": {
+          "projection_difference_D": 0.1076402912381495,
+          "omitted_response_C": 0.12266869973722452,
+          "full_norm": 3.343971194792806,
+          "projected_norm": 3.3491875105177495,
+          "D_over_C": 0.8774878307892052,
+          "weighted_alignment": 0.9994839442382539,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "amplitude_force_density": {
+          "projection_difference_D": 1.4551356802519901e-05,
+          "omitted_response_C": 5.711034695674004e-06,
+          "full_norm": 3.3417204751903977,
+          "projected_norm": 3.341720483189535,
+          "D_over_C": 2.5479370338167033,
+          "weighted_alignment": 0.9999999999905194,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        },
+        "phase_torque_density": {
+          "projection_difference_D": 0.13672784819709222,
+          "omitted_response_C": 0.17689855764052895,
+          "full_norm": 0.17689860216208245,
+          "projected_norm": 0.3034236358158873,
+          "D_over_C": 0.7729166931645276,
+          "weighted_alignment": 0.9749798838300855,
+          "tiny_denominator_policy": "Report absolute norms when a dimensionless norm is <=1e-12; this is presentation, not an acceptance tolerance"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "D": "Norm(projected-full)",
+    "C": "Norm(zero_hT-full)",
+    "U_D": "Sum over energy, contour and mesh of (change in full + change in projected)",
+    "U_C": "Sum over energy, contour and mesh of (change in full + change in zero_hT)",
+    "criterion_resolved": "D>U_D",
+    "criterion_improved": "D+U_D<C-U_C",
+    "criteria_source": "Frozen resolution_campaign_analysis.py; retained without retrospective tightening",
+    "limitations": "U is a sum of observed changes, not a rigorous bound; asymmetric base31 lacks a separate fine-grid control"
+  },
+  "decision": {
+    "moment_control_complete": true,
+    "additional_repetition_of_same_static_campaign_required": false,
+    "scalar_potential_projection_exact_frozen_replacement": false,
+    "reject_full_memory_KWT_potential_dynamics": false,
+    "new_dynamic_charge_state_admitted": false,
+    "stage4_complete": false,
+    "production_changed": false,
+    "conclusion": "Angular current and phase-torque mismatch persist beyond observed resolution changes. The potential projection improves omission but does not reproduce the frozen full response. Assess the dynamic phase/potential coupling before choosing an additional charge state.",
+    "amplitude_vs_phase": "Complex force mismatch is dominated by phase torque; amplitude mismatch is unresolved and much smaller. Do not use only a total complex-force percentage to justify a closure.",
+    "scope": "Infinitesimal static probes, frozen gap and numerical eta; no detector transient, photon, material relaxation or dynamic energy-balance admission"
+  }
+}

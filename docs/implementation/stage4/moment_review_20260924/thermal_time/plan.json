@@ -1,0 +1,55 @@
+{
+  "schema": "pysnspd.stage4.full_node_affine_thermal_time.v1",
+  "operator_summary_sha256": "ec7d2675bfa7e9cf0960429785a5c7dc8cb93f4cf6eb3c955d2171b97ad317d2",
+  "operator_checks_sha256": "f08bb86882ecf7679c98902d1a78bd2cbf379f848771d3c02cef71468dd51548",
+  "operator_identity_sha256": "e249f6fc44e471e9b400cdfee6608043dc6491a0a078cca01504320a481b8c61",
+  "T_K": 0.9,
+  "Tc_K": 8.65,
+  "tau_ee_Tc_ps": 0.5,
+  "tau_ep_Tc_ps": 2.47,
+  "gap_reference_kBTc": 1.7638769425910419,
+  "matsubara_count": 256,
+  "link_field": "alpha_zero",
+  "perturbation_amplitude": 0.001,
+  "maximum_relative_displacement": 0.02,
+  "observation_times_ps": [0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1.0],
+  "maximum_workers": 27,
+  "maximum_restarts_per_interval": 64,
+  "composition_relative_tolerance": 0.000001,
+  "refinement_relative_limit": 0.005,
+  "refinement_absolute_norm": 0.00000001,
+  "output_reserve_bytes": 4294967296,
+  "passes": {
+    "primary": {
+      "defect_rtol": 0.001,
+      "defect_atol": 0.000001,
+      "maximum_krylov_dimension": 64,
+      "midpoint_intervals": false
+    },
+    "refined": {
+      "defect_rtol": 0.0005,
+      "defect_atol": 0.0000005,
+      "maximum_krylov_dimension": 96,
+      "midpoint_intervals": true
+    }
+  },
+  "cost_estimate": {
+    "status": "Conservative unmeasured forecast; full run left to user",
+    "expected_minutes": [5, 45],
+    "basis": "256 resident LU factorizations reused; each full Krylov action solves all256 frequency tangents for3full-node states; restart count depends on stiffness. No nonlinear spectral roots. Planned second trajectory doubles the main work.",
+    "memory_reserve": "At most27GiB for workers plus3GiB coordinator, reduced under the runtime90percent RAM/CPU budget",
+    "progress": "Factor readiness, every attempted/accepted Arnoldi step, physical time and ETA; checkpoints of every accepted state"
+  },
+  "new_sources": [
+    "pysnspd/experimental/affine_krylov.py",
+    "pysnspd/experimental/thermal_time_operator.py",
+    "sandbox/stage4_core/thermal_time_campaign.py",
+    "tests/test_affine_krylov.py",
+    "tests/test_thermal_time_operator.py"
+  ],
+  "physical_contract": "Full-node fixed-temperature thermal linearization xdot=F0+J0x. J0 contains the spectral Schur Hessian, inherited KWT, normal potential and derivatives of mobility/gauge acting on nonzero G0. No photon, no effective replacement circuit, no modified physical time constants.",
+  "accuracy_contract": "Mass-weighted response coordinates, not background gap. Integrated Arnoldi defect is a backward-error diagnostic, not a nonnormal forward bound. Independent planned refinement compares displacement, force, current and torque relative to response/initial probe. Stop on failure; do not tighten repeatedly.",
+  "energy_contract": "Report quadratic Taylor free energy and approximate KWT/Joule dissipation with their truncation defect. Do not assert exact nonlinear conservation or monotonicity of the original model.",
+  "weak_domain": "The2percent displacement limit is a declared linear-neighborhood cutoff, not a material range or clipping rule. It applies to affine baseline and both perturbed states at every accepted step.",
+  "failure_contract": "Stop and retain accepted checkpoints on weak-domain exit, unresolved Krylov defect, failed composition or failed refinement. No changed constants, clipping, repeated campaign or implicit resume."
+}
