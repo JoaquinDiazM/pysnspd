@@ -271,3 +271,48 @@ def intrinsic_boundary_fields(graph, reference, *, nodes=None, axis=0,
                 u=reference.u[:, None]*phase[None, :],
                 f=reference.f[:, None]*phase[None, :],
                 g=np.broadcast_to(reference.g[:, None], (len(reference.g), len(selected))).copy())
+
+
+@dataclass(frozen=True)
+class BulkCurrentTangent:
+    """SI current derivative of the same finite-sum DC bulk reference."""
+    q_bar_derivative_per_A: float
+    gap_bar_derivative_per_A: float
+    gap_J_derivative_per_A: float
+    current_A_derivative_per_q_bar: float
+    gap_bar_derivative_per_q_bar: float
+
+
+def bulk_current_tangent(reference, *, width_m, Tc_K, diffusion_m2_s,
+                         sheet_resistance_ohm):
+    """Differentiate the self-consistent ascending DC branch, without fits.
+
+    The exact finite Matsubara gap equation and current are differentiated
+    together. Multiplying q_bar_derivative_per_A or gap_bar_derivative_per_A
+    by dI/dt [A/s] gives the moving bulk-cut rates in s^-1. These derivatives
+    describe the declared quasi-static current-carrying continuation; they
+    are not a separate relaxation law or an added dynamic lumped inductance.
+    """
+    scale = physical_scales(Tc_K=Tc_K, diffusion_m2_s=diffusion_m2_s,
+                            sheet_resistance_ohm=sheet_resistance_ohm)
+    if not np.isfinite(width_m) or width_m <= 0:
+        raise ValueError('Positive finite strip width required')
+    if not np.isfinite(reference.gap_bar) or reference.gap_bar <= 0:
+        raise ValueError('A superconducting bulk reference is required')
+    t, q, ep, f, g = (reference.temperature_ratio, reference.q_bar,
+                     reference.epsilon_bar, reference.f, reference.g)
+    coefficient = np.log(t)+2*np.pi*t*np.sum(1/ep)
+    response = g**3/(ep+q*q*g**3)
+    radial_stiffness = coefficient-2*np.pi*t*np.sum(response)
+    if not np.isfinite(radial_stiffness) or radial_stiffness <= 0:
+        raise ValueError('Positive homogeneous radial stiffness required')
+    gap_prime = -4*np.pi*t*q*np.sum(response*f)/radial_stiffness
+    f_prime = response*(gap_prime-2*q*f)
+    current_density_prime = 4*np.pi*t*(np.sum(f*f)+2*q*np.sum(f*f_prime))
+    current_prime = scale['current_unit_A']*width_m/scale['ell0_m']*current_density_prime
+    if not np.isfinite(current_prime) or current_prime <= 0:
+        raise ValueError('Current-biased continuation requires the ascending bulk branch')
+    dq_dI = 1/current_prime
+    dd_dI = gap_prime/current_prime
+    return BulkCurrentTangent(float(dq_dI), float(dd_dI),
+        float(scale['energy_unit_J']*dd_dI), float(current_prime), float(gap_prime))

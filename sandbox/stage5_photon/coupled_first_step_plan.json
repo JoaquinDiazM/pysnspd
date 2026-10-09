@@ -1,0 +1,63 @@
+{
+  "schema": "pysnspd.stage51.coupled_first_step.plan.v1",
+  "status": "READY_FOR_USER_EXECUTION_PENDING_STAGE51",
+  "stage51_complete": false,
+  "stage5_complete": false,
+  "production_detector_admitted": false,
+  "initial": "/home/jdiaz/pysnspd/docs/implementation/stage5/photon_readiness_20261008/fd_be_775_variance_1p0_v2_uv24",
+  "prior_snapshot": "/home/jdiaz/scratch/stage51_joint_775_20261009",
+  "output": "/home/jdiaz/scratch/stage51_first_step_775_20261009",
+  "command": "cd /home/jdiaz/pysnspd\nset -o pipefail\nOPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache /home/jdiaz/.conda/envs/snspd/bin/python -u sandbox/stage5_photon/run_joint_first_step.py \\\n  --initial /home/jdiaz/pysnspd/docs/implementation/stage5/photon_readiness_20261008/fd_be_775_variance_1p0_v2_uv24 \\\n  --snapshot /home/jdiaz/scratch/stage51_joint_775_20261009 \\\n  --output /home/jdiaz/scratch/stage51_first_step_775_20261009 \\\n  --dt-ps 0.001 0.0005 --tau-escape-ps 15 --workers 8 --execute \\\n  2>&1 | tee -a /home/jdiaz/scratch/stage51_first_step_775_20261009.console.log",
+  "method": "First-step IMEX Rosenbrock-Euler; coupled state stiffness, two-mode kinetic M+dtL, moving superconducting cuts, neutrality, ports and implicit CM",
+  "dt_ps": [
+    0.001,
+    0.0005
+  ],
+  "steps_are_independent": true,
+  "source_applied_again": false,
+  "full_electrical_reset": false,
+  "tau_escape_ps": 15,
+  "tau_escape_role": "Free effective inherited interface parameter from v0.4 D.19; not Allmaras universal nominal",
+  "inelastic_calibrators": {
+    "tau_ee_Tc_nominal_ps": 5,
+    "tau_ep_Tc_nominal_ps": 24.7,
+    "reference": "Allmaras2020",
+    "role": "Free calibration parameters; nominal values are not fixed or centers of requested ranges"
+  },
+  "constraints": {
+    "original_scaled_rows_max": 1e-07,
+    "exact_Pauli_support_excess": 7.105427357601002e-15,
+    "observer_only_Pauli_excess": 1e-07,
+    "no_clipping": true,
+    "no_physical_damping_added": true,
+    "positive_global_Ib_Is": true
+  },
+  "material_scope": "Explicit local detailed-balance C(y0)=0 at first FD/BE state only; phonon escape implicit; general Born material provider and resummed physical spectral width not admitted",
+  "energy_scope": "Finite neutral adiabatic U and phonons/CM are independent diagnostics; full K1/charge/cut-work completion still pending",
+  "implementation_pilot": {
+    "total_s": 99.02944199298508,
+    "two_evaluations_s": 24.49343439299264,
+    "gauge_max_difference": 1.5376588891058418e-13,
+    "unknowns": 4940,
+    "electronic_energies": 112,
+    "spatial_nodes": 1712,
+    "Matsubara_modes": 256,
+    "reservation_bytes": 85610993280
+  },
+  "resources": {
+    "workers": 8,
+    "BLAS_threads_per_process": 1,
+    "max_resource_fraction": 0.9,
+    "estimated_campaign_h": [
+      5,
+      8
+    ]
+  },
+  "required_next": [
+    "Review first-step refinement and finite-state reconstruction",
+    "General same-state material provider and temporal evolution for 5.1",
+    "Complete independent energy balance for 5.2",
+    "Temporal/physical convergence and detector admission for 5.3"
+  ],
+  "no_reports_until_stage5_complete": true
+}

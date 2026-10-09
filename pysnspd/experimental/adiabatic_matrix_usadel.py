@@ -173,6 +173,9 @@ def solve_first_spectral(graph, retarded, B, *, alpha=None, alpha_time=None,
     consistent overdetermined equations without a fictitious damping term.
     Exact residuals are returned: no least-squares status is an acceptance.
     Energy/time derivatives must already be derivatives of the same R0.
+    Prescribed moving cuts must supply a first correction consistent with
+    R0*R1+R1*R0=-i*kappa*(RE*Rt-Rt*RE). A zero correction remains the default
+    for the historical stationary-cut controls when that law permits it.
     """
     n = graph.n_nodes
     zero = replace(retarded, first=np.zeros_like(retarded.value))
@@ -204,8 +207,20 @@ def solve_first_spectral(graph, retarded, B, *, alpha=None, alpha_time=None,
     if np.any(fixed < 0) or np.any(fixed >= n) or len(np.unique(fixed)) != len(fixed):
         raise ValueError('Unique valid fixed nodes required')
     known = np.zeros((n, 2, 2), complex)
+    boundary_normalization_max = 0.
     if len(fixed):
         known[fixed] = 0 if fixed_first is None else np.broadcast_to(fixed_first, (len(fixed), 2, 2))
+        if np.any(~np.isfinite(known[fixed])):
+            raise ValueError('Finite prescribed first spectral corrections required')
+        boundary_norm = (R[fixed]@known[fixed]+known[fixed]@R[fixed]
+                         +norm.first[fixed])
+        boundary_normalization_max = float(np.max(abs(boundary_norm), initial=0.))
+        boundary_scale = max(1., float(np.max(abs(norm.first[fixed]), initial=0.)),
+                             float(np.max(abs(known[fixed]), initial=0.)))
+        if boundary_normalization_max > max(64*tolerance, 512*np.finfo(float).eps)*boundary_scale:
+            raise ValueError('Prescribed first spectral correction violates moving-cut star normalization')
+    elif fixed_first is not None and np.asarray(fixed_first).size:
+        raise ValueError('First spectral corrections supplied without prescribed nodes')
     columns = np.ones((n, 4), bool); columns[fixed] = False; columns = columns.ravel()
     rows = np.ones((2, n, 4), bool); rows[0, fixed] = False; rows[1, fixed] = False; rows = rows.ravel()
     rhs = (rhs-matrix@known.ravel())[rows]
@@ -218,7 +233,102 @@ def solve_first_spectral(graph, retarded, B, *, alpha=None, alpha_time=None,
     metrics = {'lsmr_stop': int(answer[1]), 'iterations': int(answer[2]),
                'spectral_first_max': float(np.max(abs(residual.first[free]/graph.area_weights[free, None, None]), initial=0)),
                'normalization_first_max': float(np.max(abs(normalization.first[free]), initial=0)),
+               'normalization_first_boundary_max': boundary_normalization_max,
+               'fixed_first_was_explicit': fixed_first is not None,
                'spectral_zero_max': float(np.max(abs(residual.value[free]/graph.area_weights[free, None, None]), initial=0)),
                'normalization_zero_max': float(np.max(abs(normalization.value), initial=0)),
                'identity_first_max': float(np.max(abs(np.trace(solved, axis1=-2, axis2=-1)/2), initial=0))}
+    return result, metrics
+
+
+def bulk_spectral_residual(retarded, B, q_bar, *, q_time_per_s=0., kappa_s):
+    """Continuous homogeneous dirty-strip residual, per dimensionless volume.
+
+    Q=q*tau3/2 and
+      F=-[Q,R star [Q,R]_star]_star-[B,R]_star/2.
+    Its static theta equation is exactly z*sin(theta)-d*cos(theta)
+    +q**2*sin(theta)*cos(theta)=0, with the graph convention ell0^2=hbar D/(2Eu).
+    Rates are per second and kappa_s=hbar/(2Eu); Qdot is explicit. This
+    local bulk continuation supplies cut values, not a separate circuit law.
+    """
+    kappa = np.asarray(kappa_s)
+    if np.iscomplexobj(kappa) or kappa.ndim or not np.isfinite(kappa) or kappa <= 0:
+        raise ValueError('Positive real kappa_s in seconds required')
+    shape = retarded.value.shape[:-2]
+    q, qt = np.asarray(q_bar), np.asarray(q_time_per_s)
+    if np.iscomplexobj(q) or np.iscomplexobj(qt):
+        raise ValueError('Real bulk q and qdot required')
+    try:
+        q = np.broadcast_to(q, shape)
+        qt = np.broadcast_to(qt, shape)
+    except ValueError as error:
+        raise ValueError('Bulk q and qdot must match the spectral batch') from error
+    if np.any(~np.isfinite(q)) or np.any(~np.isfinite(qt)):
+        raise ValueError('Finite bulk q and qdot required')
+    Q = Jet.of(.5*q[..., None, None]*TAU3,
+               time=.5*qt[..., None, None]*TAU3)
+    residual = commutator(Q, star(retarded, commutator(Q, retarded, kappa), kappa),
+                          kappa).scale(-1)-commutator(B, retarded, kappa).scale(.5)
+    normalization = star(retarded, retarded, kappa)-Jet.of(
+        np.broadcast_to(I2, retarded.value.shape))
+    return residual, normalization
+
+
+def bulk_first_spectral(retarded, B, q_bar, *, q_time_per_s=0., kappa_s,
+                        tolerance=1e-10, require_consistent=True):
+    """Dense exact first-order bulk cut solve, with no damping/regularization.
+
+    All four complex R1 entries are retained. Spectral and normalization
+    equations are stacked as an 8-by-4 system at each supplied cut. The
+    unregularized least-squares algebra returns exact residual diagnostics;
+    an incompatible prescribed moving cut raises by default. Setting
+    require_consistent=False only exposes its residual for joint-system
+    assembly; it never makes the cut physically admitted.
+    """
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError('Positive finite bulk spectral tolerance required')
+    if retarded.value.shape != B.value.shape:
+        raise ValueError('Bulk R and B jets must have matching matrix batches')
+    zero = replace(retarded, first=np.zeros_like(retarded.value))
+    base, norm = bulk_spectral_residual(zero, B, q_bar,
+        q_time_per_s=q_time_per_s, kappa_s=kappa_s)
+    # Differentiate the same first-order residual through its affine R1 slot.
+    columns = []
+    basis = np.eye(4, dtype=complex).reshape(4, 2, 2)
+    for item in basis:
+        trial = replace(zero, first=np.broadcast_to(item, zero.value.shape))
+        residual, normalization = bulk_spectral_residual(trial, B, q_bar,
+            q_time_per_s=q_time_per_s, kappa_s=kappa_s)
+        columns.append(np.concatenate(((residual.first-base.first).reshape(-1, 4),
+            (normalization.first-norm.first).reshape(-1, 4)), axis=-1))
+    matrix = np.stack(columns, axis=-1)
+    rhs = -np.concatenate((base.first.reshape(-1, 4), norm.first.reshape(-1, 4)), axis=-1)
+    solved = np.empty((len(rhs), 4), complex)
+    ranks, conditions = [], []
+    for index, (operator, source) in enumerate(zip(matrix, rhs)):
+        answer, _, rank, singular = np.linalg.lstsq(operator, source, rcond=None)
+        solved[index] = answer
+        ranks.append(int(rank))
+        conditions.append(float(singular[0]/singular[-1]) if singular[-1] > 0 else float('inf'))
+    result = replace(retarded, first=solved.reshape(retarded.value.shape))
+    residual, normalization = bulk_spectral_residual(result, B, q_bar,
+        q_time_per_s=q_time_per_s, kappa_s=kappa_s)
+    metrics = dict(
+        spectral_first_max=float(np.max(abs(residual.first), initial=0.)),
+        normalization_first_max=float(np.max(abs(normalization.first), initial=0.)),
+        spectral_zero_max=float(np.max(abs(residual.value), initial=0.)),
+        normalization_zero_max=float(np.max(abs(normalization.value), initial=0.)),
+        rank_min=min(ranks), condition_max=max(conditions),
+        source_max=float(np.max(abs(rhs), initial=0.)),
+        first_max=float(np.max(abs(result.first), initial=0.)))
+    first_scale = max(1., metrics['source_max'], metrics['first_max'])
+    metrics['consistent'] = bool(metrics['rank_min'] == 4
+        and metrics['spectral_first_max'] <= tolerance*first_scale
+        and metrics['normalization_first_max'] <= tolerance*first_scale
+        and metrics['spectral_zero_max'] <= 64*tolerance
+        and metrics['normalization_zero_max'] <= 64*tolerance)
+    if np.any(~np.isfinite(solved)):
+        raise FloatingPointError('Nonfinite bulk first spectral correction; no repair')
+    if require_consistent and not metrics['consistent']:
+        raise FloatingPointError('Incompatible moving bulk spectral cut; residuals='+str(metrics))
     return result, metrics

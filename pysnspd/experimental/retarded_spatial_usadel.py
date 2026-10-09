@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 from scipy.sparse import coo_matrix
-from scipy.sparse.linalg import MatrixRankWarning, spsolve
+from scipy.sparse.linalg import MatrixRankWarning, spsolve, splu
 import warnings
 
 from .thermal_spatial_usadel import ThermalGraph, _alpha, _complex_vector, _fixed_indices
@@ -82,6 +82,7 @@ def evaluate(graph: ThermalGraph, d, z, a, b, alpha=None):
 def residual_jacobian(graph, d, z, a, b, alpha=None):
     """Exact sparse complex Jacobian; no numerical differencing or conjugation."""
     size = graph.n_nodes
+    d = _complex_vector(d, size, 'd')
     a, b = _complex_vector(a, size, 'a'), _complex_vector(b, size, 'b')
     observation = evaluate(graph, d, z, a, b, alpha)
     phase = np.exp(-1j*_alpha(graph, alpha))
@@ -194,3 +195,237 @@ def solve(graph, d, z, alpha=None, *, initial_a=None, initial_b=None,
         else:
             raise RuntimeError('Retarded root merit line search failed; no alternate root or clipping')
     raise AssertionError('Unreachable retarded root state')
+
+
+def _direction_vector(value, size, name, *, real=False):
+    """A scalar zero/direction or one finite direction per node/edge."""
+    raw = np.asarray(value)
+    if real and np.iscomplexobj(raw):
+        raise ValueError(name+' must be real')
+    result = np.asarray(value, float if real else complex)
+    if result.ndim == 0:
+        result = np.full(size, result, dtype=result.dtype)
+    if result.shape != (size,) or np.any(~np.isfinite(result)):
+        raise ValueError(name+' must be a finite scalar or one direction per entry')
+    return result
+
+
+def nambu_matrix(f, f_tilde, g):
+    """Traceless R=[[g,f],[f_tilde,-g]], without conjugating f_tilde."""
+    f, ft, g = np.broadcast_arrays(f, f_tilde, g)
+    result = np.empty(f.shape+(2, 2), complex)
+    result[..., 0, 0], result[..., 0, 1] = g, f
+    result[..., 1, 0], result[..., 1, 1] = ft, -g
+    return result
+
+
+def field_direction(a, b, da, db):
+    """Exact Cartesian derivative of the stereographic fields and R0."""
+    a, b, da, db = np.broadcast_arrays(
+        np.asarray(a, complex), np.asarray(b, complex), da, db)
+    if not all(np.all(np.isfinite(x)) for x in (a, b, da, db)):
+        raise ValueError('Finite stereographic fields and directions required')
+    denominator = 1+a*b
+    if np.any(abs(denominator) < 1e-14):
+        raise FloatingPointError('Stereographic chart approached a pole; no clipping')
+    product = b*da+a*db
+    df = 2*da/denominator-2*a*product/denominator**2
+    dft = 2*db/denominator-2*b*product/denominator**2
+    dg = -2*product/denominator**2
+    return df, dft, dg, nambu_matrix(df, dft, dg)
+
+
+def current_carrying_cut_tangent(theta, z, gap_bar, q_bar, phase, *,
+                                 gap_direction=0., q_direction=0.,
+                                 phase_direction=0., z_direction=0.):
+    """Derivative of the SAME homogeneous current-carrying cut law.
+
+    The supplied causal theta satisfies
+      z*sin(theta)-gap_bar*cos(theta)+q_bar**2*sin(theta)*cos(theta)=0.
+    phase is a real angle in radians, not exp(i*phase). Returned (da,db)
+    preserve the independent retarded partners a=tan(theta/2)*exp(i*phase),
+    b=tan(theta/2)*exp(-i*phase). A physical gap-magnitude/q/phase time
+    direction is supplied per second; the result is then per second.
+    For d/d(E/Eu), use z_direction=-1j with fixed numerical eta. This
+    function does not select a root, alter eta or determine a boundary law.
+    """
+    theta, z = np.asarray(theta, complex), np.asarray(z, complex)
+    real_inputs = (gap_bar, q_bar, phase, gap_direction, q_direction, phase_direction)
+    if any(np.iscomplexobj(np.asarray(x)) for x in real_inputs):
+        raise ValueError('Gap magnitude, q, phase and their directions must be real')
+    theta, z, d, q, phase, dd, dq, dp, dz = np.broadcast_arrays(
+        theta, z, *[np.asarray(x, float) for x in real_inputs],
+        np.asarray(z_direction, complex))
+    if not all(np.all(np.isfinite(x)) for x in (theta, z, d, q, phase, dd, dq, dp, dz)):
+        raise ValueError('Finite current-carrying cut data required')
+    if np.any(d < 0) or np.any(z.real <= 0):
+        raise ValueError('Nonnegative gap and causal open-half-plane z required')
+    sine, cosine = np.sin(theta), np.cos(theta)
+    equation = z*sine-d*cosine+q*q*sine*cosine
+    scale = np.maximum(1., abs(z)+d+q*q)
+    if np.any(abs(equation) > 1e-8*scale):
+        raise ValueError('Supplied theta does not solve the declared current-carrying cut law')
+    denominator = z*cosine+d*sine+q*q*np.cos(2*theta)
+    if np.any(abs(denominator) <= 32*np.finfo(float).eps*scale):
+        raise FloatingPointError('Singular current-carrying cut tangent; no regularization')
+    direction = (dd*cosine-dz*sine-2*q*dq*sine*cosine)/denominator
+    chart = np.tan(theta/2)
+    chart_direction = .5*direction/(np.cos(theta/2)**2)
+    da = np.exp(1j*phase)*(chart_direction+1j*chart*dp)
+    db = np.exp(-1j*phase)*(chart_direction-1j*chart*dp)
+    if np.any(~np.isfinite(da)) or np.any(~np.isfinite(db)):
+        raise FloatingPointError('Nonfinite current-carrying cut tangent')
+    return da, db
+
+
+@dataclass(frozen=True)
+class RetardedDirection:
+    """Full-node spectral derivative, including prescribed-cut reactions.
+
+    Units follow the supplied direction: energy derivative is per E/Eu,
+    time derivative is per second; residual_derivative has graph residual
+    units times those same derivative units. No boundary reaction is dropped.
+    """
+    da: np.ndarray
+    db: np.ndarray
+    df: np.ndarray
+    df_tilde: np.ndarray
+    dg: np.ndarray
+    matrix: np.ndarray
+    residual_derivative: np.ndarray
+    fixed_nodes: np.ndarray
+    boundary_reaction: np.ndarray
+    free_equation_residual_max: float
+    free_equation_residual_relative: float
+    fixed_law_residual_max: float
+    normalization_derivative_max: float
+
+
+class RetardedTangent:
+    """Reuse one exact sparse Jacobian for moving gap/link/cut directions.
+
+    Solve J_ff dx_f=-F_parameter,f-J_fb dx_b with explicitly prescribed
+    cut dx_b. Default zero cut directions retain the old fixed-cut controls;
+    they do not assert that physical superconducting cuts remain stationary.
+    Gap directions are physical complex Cartesian variations, so d* varies
+    as conjugate(dd); a,b remain independent complex spectral coordinates.
+    """
+    def __init__(self, graph, d, solution, alpha=None, *, fixed_nodes=(),
+                 spectral_tolerance=1e-7):
+        self.graph = graph
+        self.d = _complex_vector(d, graph.n_nodes, 'd').copy()
+        self.alpha = _alpha(graph, alpha).copy()
+        self.z = complex(solution.z)
+        self.a = _complex_vector(solution.a, graph.n_nodes, 'a').copy()
+        self.b = _complex_vector(solution.b, graph.n_nodes, 'b').copy()
+        if not np.isfinite(spectral_tolerance) or spectral_tolerance <= 0:
+            raise ValueError('Positive finite spectral tolerance required')
+        raw_fixed = np.asarray(fixed_nodes)
+        self.fixed_nodes = (np.empty(0, int) if raw_fixed.size == 0
+                            else _fixed_indices(fixed_nodes, graph.n_nodes))
+        self.free = np.ones(graph.n_nodes, bool)
+        self.free[self.fixed_nodes] = False
+        self.components = np.flatnonzero(np.repeat(self.free, 2))
+        self.fixed_components = np.flatnonzero(np.repeat(~self.free, 2))
+        self.value, self._jacobian = residual_jacobian(
+            graph, self.d, self.z, self.a, self.b, self.alpha)
+        for storage in (self._jacobian.data, self._jacobian.indices, self._jacobian.indptr):
+            storage.setflags(write=False)
+        scale = graph.area_weights*np.maximum(1., abs(self.d))
+        self.reference_spectral_residual = float(np.max(
+            abs(self.value.residual[self.free])/scale[self.free, None], initial=0.))
+        if self.reference_spectral_residual > spectral_tolerance:
+            raise ValueError('Supplied spectrum is not stationary on the free nodes')
+        self.matrix = nambu_matrix(self.value.f, self.value.f_tilde, self.value.g)
+        self.factor = (splu(self.jacobian[self.components][:, self.components].tocsc())
+                       if len(self.components) else None)
+
+    @property
+    def jacobian(self):
+        """Read-only stationary CSR Jacobian; use .copy() for assembly edits."""
+        return self._jacobian
+
+    def _fixed_coordinates(self, fixed_a_direction, fixed_b_direction,
+                           fixed_matrix_direction):
+        count = len(self.fixed_nodes)
+        if fixed_matrix_direction is not None:
+            if fixed_a_direction is not None or fixed_b_direction is not None:
+                raise ValueError('Supply fixed matrix OR both stereographic directions')
+            raw = np.asarray(fixed_matrix_direction, complex)
+            if raw.shape != (count, 2, 2) or np.any(~np.isfinite(raw)):
+                raise ValueError('One finite 2x2 R0 derivative per prescribed node required')
+            fixed = self.fixed_nodes
+            f, ft, g = self.value.f[fixed], self.value.f_tilde[fixed], self.value.g[fixed]
+            denominator = 1+g
+            if np.any(abs(denominator) < 1e-14):
+                raise FloatingPointError('Prescribed derivative approached chart pole; no clipping')
+            dg, df, dft = raw[:, 0, 0], raw[:, 0, 1], raw[:, 1, 0]
+            da = (df*denominator-f*dg)/denominator**2
+            db = (dft*denominator-ft*dg)/denominator**2
+            reconstructed = field_direction(self.a[fixed], self.b[fixed], da, db)[3]
+            scale = np.maximum(1., np.max(abs(raw), axis=(-2, -1)))
+            if np.any(np.max(abs(reconstructed-raw), axis=(-2, -1)) > 1e-9*scale):
+                raise ValueError('Prescribed R0 derivative violates traceless normalization tangent')
+            return da, db
+        if (fixed_a_direction is None) != (fixed_b_direction is None):
+            raise ValueError('Both prescribed stereographic directions are required together')
+        if fixed_a_direction is None:
+            return np.zeros(count, complex), np.zeros(count, complex)
+        da = _direction_vector(fixed_a_direction, count, 'fixed_a_direction')
+        db = _direction_vector(fixed_b_direction, count, 'fixed_b_direction')
+        return da, db
+
+    def apply(self, gap_direction=0., *, z_direction=0., alpha_direction=0.,
+              fixed_a_direction=None, fixed_b_direction=None,
+              fixed_matrix_direction=None):
+        """Exact tangent of the same stationary graph, with moving cuts.
+
+        Use z_direction=-1j for RE=dR0/d(E/Eu). Use gap_direction=d(Delta/Eu)/dt
+        and alpha_direction=dalpha/dt in s^-1 for Rt. No term from a constant
+        numerical eta is differentiated into a physical relaxation or source.
+        fixed_matrix_direction supplies a normalized traceless R0 derivative;
+        alternatively prescribe both da and db. Values refer to fixed_nodes
+        in their original order. Boundary residuals are explicit reactions.
+        """
+        n = self.graph.n_nodes
+        dd = _direction_vector(gap_direction, n, 'gap_direction')
+        dalpha = _direction_vector(alpha_direction, len(self.graph.edges),
+                                   'alpha_direction', real=True)
+        dz = np.asarray(z_direction, complex)
+        if dz.ndim or not np.isfinite(dz):
+            raise ValueError('Finite scalar z_direction required')
+        m, c = self.graph.area_weights, self.graph.conductance
+        a, b = self.a, self.b
+        parameter = m[:, None]*np.column_stack((
+            np.conj(dd)*a*a-dd+2*dz*a, dd*b*b-np.conj(dd)+2*dz*b))
+        tail, head = self.graph.edges.T
+        phase = np.exp(-1j*self.alpha)
+        for i, j, transport, sign in ((tail, head, phase, 1),
+                                      (head, tail, np.conj(phase), -1)):
+            dhp = -1j*sign*c*dalpha*transport*self.value.f[j]
+            dhm = 1j*sign*c*dalpha*np.conj(transport)*self.value.f_tilde[j]
+            np.add.at(parameter[:, 0], i, dhm*a[i]*a[i]-dhp)
+            np.add.at(parameter[:, 1], i, dhp*b[i]*b[i]-dhm)
+        fixed_da, fixed_db = self._fixed_coordinates(
+            fixed_a_direction, fixed_b_direction, fixed_matrix_direction)
+        direction = np.zeros((n, 2), complex)
+        direction[self.fixed_nodes, 0] = fixed_da
+        direction[self.fixed_nodes, 1] = fixed_db
+        flat = direction.ravel()
+        if self.factor is not None:
+            flat[self.components] = self.factor.solve(
+                (-parameter.ravel()-self.jacobian@flat)[self.components])
+        if np.any(~np.isfinite(direction)):
+            raise FloatingPointError('Nonfinite retarded tangent; no repair applied')
+        residual = (self.jacobian@flat+parameter.ravel()).reshape(n, 2)
+        df, dft, dg, matrix = field_direction(a, b, direction[:, 0], direction[:, 1])
+        norm = self.matrix@matrix+matrix@self.matrix
+        free_scale = m*np.maximum(1., np.max(abs(parameter/m[:, None]), axis=1))
+        fixed_error = np.max(abs(direction[self.fixed_nodes]-
+            np.column_stack((fixed_da, fixed_db))), initial=0.)
+        return RetardedDirection(direction[:, 0].copy(), direction[:, 1].copy(),
+            df, dft, dg, matrix, residual, self.fixed_nodes.copy(),
+            residual[self.fixed_nodes].copy(),
+            float(np.max(abs(residual[self.free]), initial=0.)),
+            float(np.max(abs(residual[self.free])/free_scale[self.free, None], initial=0.)),
+            float(fixed_error), float(np.max(abs(norm), initial=0.)))
