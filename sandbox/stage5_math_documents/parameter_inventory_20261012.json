@@ -1,0 +1,1276 @@
+{
+  "schema": "pysnspd.parameter_inventory.readonly.v1",
+  "repo": "/home/jdiaz/pysnspd",
+  "git_head": "b2ec4970f2c020d6e6354e991053c68f58bac1ad",
+  "scope": "Read only current final implementation and executed nominal receipts. No simulation/core modified.",
+  "row_columns": [
+    "symbol",
+    "name",
+    "nominal",
+    "unit",
+    "status",
+    "source"
+  ],
+  "groups": {
+    "material": [
+      [
+        "T_c",
+        "critical temperature",
+        8.65,
+        "K",
+        "adopted/fixed runner",
+        "pipelines/05_effective_photon_run.py:192"
+      ],
+      [
+        "T_b",
+        "bath temperature",
+        0.9,
+        "K",
+        "physical CLI",
+        "pipelines/05_effective_photon_run.py:566"
+      ],
+      [
+        "D",
+        "electron diffusivity",
+        5e-05,
+        "m²/s",
+        "adopted/fixed runner",
+        "pipelines/05_effective_photon_run.py:192"
+      ],
+      [
+        "R_square",
+        "normal sheet resistance",
+        608,
+        "Ω",
+        "adopted/fixed runner",
+        "pipelines/05_effective_photon_run.py:192"
+      ],
+      [
+        "d_f",
+        "physical film thickness",
+        7,
+        "nm",
+        "adopted/fixed runner",
+        "pipelines/05_effective_photon_run.py:192"
+      ],
+      [
+        "w",
+        "strip width",
+        80,
+        "nm",
+        "adopted/fixed runner/API default",
+        "pysnspd/experimental/effective_bcs_preparation.py:120"
+      ],
+      [
+        "N_0",
+        "normal single-spin DOS",
+        9.153297821093998e+46,
+        "J⁻¹m⁻³",
+        "derived",
+        "pipelines/05_effective_photon_run.py:193"
+      ],
+      [
+        "E_u",
+        "energy unit",
+        1.194261385e-22,
+        "J",
+        "derived",
+        "pipelines/05_effective_photon_run.py:192"
+      ],
+      [
+        "ell_0",
+        "length unit",
+        4.698490897269843,
+        "nm",
+        "derived",
+        "pysnspd/experimental/effective_bcs_preparation.py:133"
+      ],
+      [
+        "v_avg",
+        "effective acoustic sound speed",
+        4912,
+        "m/s",
+        "constitutive/API fixed",
+        "pysnspd/experimental/effective_material.py:216"
+      ],
+      [
+        "Theta_D",
+        "Debye temperature",
+        664,
+        "K",
+        "constitutive/API fixed",
+        "pysnspd/experimental/effective_material.py:216"
+      ],
+      [
+        "tau_ee(Tc)",
+        "free electron-electron calibrator",
+        5,
+        "ps",
+        "free CLI",
+        "pipelines/05_effective_photon_run.py:562"
+      ],
+      [
+        "tau_ep(Tc)",
+        "free electron-phonon calibrator",
+        24.7,
+        "ps",
+        "free CLI",
+        "pipelines/05_effective_photon_run.py:563"
+      ],
+      [
+        "tau_esc",
+        "free phonon interface escape time",
+        15,
+        "ps",
+        "free CLI (+infinity disables)",
+        "pipelines/05_effective_photon_run.py:564"
+      ],
+      [
+        "tau_0^eph",
+        "acoustic collision time",
+        1.868435901588345,
+        "ns",
+        "derived from tau_ep",
+        "pipelines/05_effective_photon_run.py:211"
+      ],
+      [
+        "tau_K",
+        "KWT time unit",
+        0.34676611801779056,
+        "ps",
+        "derived",
+        "pysnspd/experimental/effective_coupled.py:71"
+      ],
+      [
+        "B_ph",
+        "acoustic heat capacity coefficient",
+        1.0320228421636426,
+        "Jm⁻³K⁻⁴",
+        "derived",
+        "pysnspd/experimental/effective_material.py:42"
+      ],
+      [
+        "gamma_A20",
+        "heat capacity ratio convention",
+        23.477445888197597,
+        "1",
+        "derived, not independent",
+        "pysnspd/experimental/effective_material.py:239"
+      ],
+      [
+        "C_ph(Tc)",
+        "phonon heat capacity",
+        667.9402767823761,
+        "Jm⁻³K⁻¹",
+        "derived",
+        "pysnspd/experimental/effective_material.py:266"
+      ],
+      [
+        "Omega_D",
+        "Debye energy cutoff",
+        57.21909286064399,
+        "meV",
+        "derived",
+        "pysnspd/experimental/effective_material.py:236"
+      ],
+      [
+        "lambda_ep",
+        "Eliashberg acoustic diagnostic",
+        0.8864467222068224,
+        "1",
+        "derived, not rate input",
+        "pysnspd/experimental/effective_material.py:269"
+      ]
+    ],
+    "bias_and_circuit": [
+      [
+        "I_0",
+        "initial bias and detector current",
+        21.29720614489798,
+        "µA",
+        "physical CLI",
+        "pipelines/05_effective_photon_run.py:565"
+      ],
+      [
+        "I_dep",
+        "effective bulk depairing current",
+        30.367443054650344,
+        "µA",
+        "derived/internal",
+        "pysnspd/experimental/effective_bcs_functional.py:408"
+      ],
+      [
+        "I_0/I_dep",
+        "internal normalized bias",
+        0.7013170686307293,
+        "1",
+        "derived/internal",
+        "pysnspd/experimental/effective_bcs_functional.py:408"
+      ],
+      [
+        "j_0",
+        "geometric current density",
+        38030725258.74639,
+        "A/m²",
+        "derived",
+        "pipelines/05_effective_photon_run.py:192"
+      ],
+      [
+        "R_b",
+        "bias resistor",
+        10000.0,
+        "Ω",
+        "adopted/API fixed",
+        "pysnspd/experimental/electrical_ports.py:212"
+      ],
+      [
+        "L_b",
+        "bias inductance",
+        1,
+        "µH",
+        "adopted/API fixed",
+        "pysnspd/experimental/electrical_ports.py:213"
+      ],
+      [
+        "R_l",
+        "readout load",
+        50,
+        "Ω",
+        "adopted/API fixed",
+        "pysnspd/experimental/electrical_ports.py:214"
+      ],
+      [
+        "C_c",
+        "coupling capacitor",
+        100,
+        "pF",
+        "adopted/API fixed",
+        "pysnspd/experimental/electrical_ports.py:215"
+      ],
+      [
+        "V_b",
+        "bias voltage",
+        0.2129720614489798,
+        "V",
+        "derived R_b I_0; overrides class default.300V",
+        "pipelines/05_effective_photon_run.py:225"
+      ],
+      [
+        "L_added",
+        "additional exterior inductance",
+        96,
+        "nH",
+        "adopted/API fixed",
+        "pysnspd/experimental/effective_bcs_ports.py:113"
+      ],
+      [
+        "L_active",
+        "active wire length",
+        5,
+        "µm",
+        "adopted/API fixed",
+        "pysnspd/experimental/effective_bcs_ports.py:113"
+      ],
+      [
+        "L_bulk_prime",
+        "unresolved wire differential inductance per length",
+        0.0015610057666279686,
+        "H/m",
+        "derived freshDC",
+        "pipelines/05_effective_photon_run.py:223"
+      ],
+      [
+        "L_unresolved",
+        "unresolved wire inductance",
+        7.305506987818893,
+        "nH",
+        "derived freshDC; frozen",
+        "pysnspd/experimental/effective_bcs_ports.py:122"
+      ],
+      [
+        "L_k_ext",
+        "exterior total inductance",
+        103.3055069878189,
+        "nH",
+        "derived freshDC; frozen",
+        "pysnspd/experimental/effective_bcs_ports.py:123"
+      ],
+      [
+        "y_CM(0)",
+        "initial circuit state",
+        [
+          "I_0",
+          "I_0",
+          0
+        ],
+        "A,A,V",
+        "initial rule fixed",
+        "pipelines/05_effective_photon_run.py:340"
+      ]
+    ],
+    "photon": [
+      [
+        "lambda_gamma",
+        "photon wavelength",
+        [
+          775,
+          1550
+        ],
+        "nm",
+        "CLI only those two choices",
+        "pipelines/05_effective_photon_run.py:554"
+      ],
+      [
+        "eta_ret",
+        "retained fraction",
+        0.667,
+        "1",
+        "free CLI; retained energy, not detection probability",
+        "pipelines/05_effective_photon_run.py:556"
+      ],
+      [
+        "sigma",
+        "Gaussian transfer width",
+        7.549834435,
+        "nm",
+        "free CLI; exploratory sqrt(2D*.57ps)",
+        "pipelines/05_effective_photon_run.py:555"
+      ],
+      [
+        "r_0",
+        "deposition coordinate",
+        [
+          "L/2",
+          0
+        ],
+        "m",
+        "source fixed at center",
+        "pipelines/05_effective_photon_run.py:142"
+      ],
+      [
+        "E_gamma",
+        "photon energy",
+        [
+          1.5997961088154873,
+          0.7998980544077436
+        ],
+        "eV",
+        "derived",
+        "pipelines/05_effective_photon_run.py:147"
+      ],
+      [
+        "E_ret",
+        "retained photon energy",
+        [
+          1.0670640045799298,
+          0.5335320022899649
+        ],
+        "eV",
+        "derived",
+        "pipelines/05_effective_photon_run.py:147"
+      ],
+      [
+        "t_0",
+        "clock origin",
+        0,
+        "ps",
+        "postcascade transfer; no additional.57ps delay",
+        "pipelines/05_effective_photon_run.py:167"
+      ],
+      [
+        "profile",
+        "spatial deposition shape",
+        "exp[-|r-r0|²/(2sigma²)], zero at cuts; normalized with physical volumes",
+        "1",
+        "source assumption fixed",
+        "pipelines/05_effective_photon_run.py:143"
+      ],
+      [
+        "T_i^0",
+        "initial common FD/BE temperature",
+        "energy inversion per node",
+        "K",
+        "derived jointly from source and finite material; gap unchanged",
+        "pipelines/05_effective_photon_run.py:150"
+      ],
+      [
+        "f_e^0",
+        "electron/phonon initial partition",
+        "emergent commonFD/BE",
+        "1",
+        "not independent input; varies with sigma/eta/material",
+        "pipelines/05_effective_photon_run.py:150"
+      ],
+      [
+        "t_cascade_ref",
+        "sigma motivational scale",
+        0.57,
+        "ps",
+        "heuristic reference, not evolution input",
+        "pipelines/05_effective_photon_run.py:168"
+      ]
+    ],
+    "space_spectrum": [
+      [
+        "L",
+        "resolved length",
+        320,
+        "nm",
+        "CLI; parser default160nm",
+        "pipelines/05_effective_photon_run.py:548"
+      ],
+      [
+        "h_mesh",
+        "target spacing",
+        5,
+        "nm",
+        "CLI; fine3.5nm; NOT thickness",
+        "pipelines/05_effective_photon_run.py:549"
+      ],
+      [
+        "seed_mesh",
+        "mesher metadata seed",
+        12345,
+        "integer",
+        "fixed/API; no outcome search",
+        "pysnspd/experimental/effective_bcs_preparation.py:159"
+      ],
+      [
+        "ds_boundary",
+        "boundary spacing",
+        "h_mesh/2",
+        "nm",
+        "numeric rule",
+        "pysnspd/experimental/effective_bcs_preparation.py:111"
+      ],
+      [
+        "xi_max/E_u",
+        "electronic cutoff",
+        32,
+        "1",
+        "CLI; control64; maxxi23.85277847meV",
+        "pipelines/05_effective_photon_run.py:550"
+      ],
+      [
+        "order_xi",
+        "Gauss order/bin",
+        6,
+        "integer",
+        "CLI; control8",
+        "pipelines/05_effective_photon_run.py:551"
+      ],
+      [
+        "knots_xi",
+        "electronic bin edges",
+        [
+          0,
+          0.125,
+          0.25,
+          0.5,
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ],
+        "1",
+        "fixed rule until chosen cutoff",
+        "pysnspd/experimental/effective_bcs_functional.py:35"
+      ],
+      [
+        "N_xi",
+        "native electronic states",
+        54,
+        "integer",
+        "derived9bins*6; control10bins*8=80",
+        "pysnspd/experimental/effective_bcs_functional.py:30"
+      ],
+      [
+        "1/g",
+        "pairing constant inverse",
+        3.591368861907803,
+        "1",
+        "derived same quadrature, matchesTc",
+        "pysnspd/experimental/effective_bcs_functional.py:132"
+      ],
+      [
+        "N_ph",
+        "native phonon nodes",
+        96,
+        "integer",
+        "CLI; control144",
+        "pipelines/05_effective_photon_run.py:552"
+      ],
+      [
+        "omega_min",
+        "lowest native phonon energy",
+        1e-08,
+        "E_u",
+        "numeric/API fixed; not physical gap",
+        "pysnspd/experimental/effective_bcs_kinetics.py:605"
+      ],
+      [
+        "N_ph_low",
+        "low geometric nodes",
+        8,
+        "integer",
+        "derived max(5,Nph//12)",
+        "pysnspd/experimental/effective_bcs_kinetics.py:614"
+      ],
+      [
+        "N_ph_mid",
+        "midlinear nodes",
+        64,
+        "integer",
+        "derived2*Nph//3",
+        "pysnspd/experimental/effective_bcs_kinetics.py:614"
+      ],
+      [
+        "omega_split",
+        "phonon grid transition",
+        "min(4,omega_D/3)",
+        "E_u",
+        "fixedrule",
+        "pysnspd/experimental/effective_bcs_kinetics.py:615"
+      ],
+      [
+        "order_transport",
+        "equal-energy Gauss transport order",
+        48,
+        "integer",
+        "CLI; control96",
+        "pipelines/05_effective_photon_run.py:553"
+      ],
+      [
+        "N_export",
+        "acoustic material export nodes",
+        1025,
+        "integer",
+        "runnerfixed; APIdefault4097; exactanalyticcollisiona2F",
+        "pipelines/05_effective_photon_run.py:213"
+      ]
+    ],
+    "measurement": [
+      [
+        "V_th",
+        "positive Vout trigger",
+        0.1,
+        "mV",
+        "CLI",
+        "pipelines/05_effective_photon_run.py:559"
+      ],
+      [
+        "V_base",
+        "Vout reference",
+        0,
+        "V",
+        "freshDC fixed",
+        "pipelines/05_effective_photon_run.py:351"
+      ],
+      [
+        "polarity",
+        "trigger polarity",
+        "positive",
+        "sign",
+        "runnerfixed",
+        "pipelines/05_effective_photon_run.py:352"
+      ],
+      [
+        "t_confirm",
+        "confirmation delay",
+        0.5,
+        "ps",
+        "CLI",
+        "pipelines/05_effective_photon_run.py:560"
+      ],
+      [
+        "eta_hyst",
+        "hysteresis fraction",
+        0.05,
+        "1",
+        "runnerfixed",
+        "pipelines/05_effective_photon_run.py:353"
+      ],
+      [
+        "t_extra",
+        "stop margin after crossing",
+        5,
+        "ps",
+        "CLI; crossing+5, not confirmation+5",
+        "pipelines/05_effective_photon_run.py:561"
+      ],
+      [
+        "t_ceiling",
+        "no-trigger finite ceiling",
+        200,
+        "ps",
+        "CLI; censored if absent; confirmedmargin may exceedceiling",
+        "pipelines/05_effective_photon_run.py:558"
+      ],
+      [
+        "rho_hotbelt",
+        "gap/DC hotbelt criterion",
+        0.2,
+        "1",
+        "postprocessing diagnostic only; not electricalevent",
+        "docs/implementation/MODELO_VIGENTE.md"
+      ],
+      [
+        "I_b,I_s",
+        "global current support",
+        "strictly positive",
+        "A",
+        "stop if nonpositive, no reversal/clipping",
+        "pysnspd/experimental/effective_coupled.py:122"
+      ]
+    ],
+    "constitutive_ambiguities": [
+      [
+        "alpha_ij",
+        "gauge link",
+        0,
+        "rad",
+        "zero field; API supports suppliedlinks",
+        "pysnspd/experimental/effective_bcs_functional.py:194"
+      ],
+      [
+        "Gamma_DOS",
+        "local spectral depairing",
+        0,
+        "J",
+        "current enters gradient, not DOS broadening",
+        "docs/implementation/MODELO_VIGENTE.md"
+      ],
+      [
+        "D_L",
+        "spectral transport multiplier",
+        1,
+        "above localgap",
+        "effective constitutive fixed",
+        "pysnspd/experimental/effective_bcs_kinetics.py:184"
+      ],
+      [
+        "D_ph",
+        "lateral phonon diffusivity",
+        0,
+        "m²/s",
+        "local phonons, escapeonly",
+        "docs/implementation/MODELO_VIGENTE.md"
+      ],
+      [
+        "G_ij",
+        "normal face conductance",
+        "c_ij/R_square",
+        "S",
+        "fixedtemperature/gap-independent normalnetwork",
+        "pysnspd/experimental/effective_bcs_ports.py:132"
+      ],
+      [
+        "T_stiffness",
+        "radial stiffness temperature",
+        "T_b",
+        "K",
+        "notlocalTE; highTE>Tc extension phenomenological",
+        "pysnspd/experimental/effective_bcs_functional.py:165"
+      ],
+      [
+        "Delta_cut",
+        "longitudinalcut amplitude",
+        "freshDC bulk",
+        "J",
+        "rigidSC; Josephsonphase; noKWTcutheat",
+        "pysnspd/experimental/effective_coupled.py:137"
+      ],
+      [
+        "p_cut,n_cut",
+        "longitudinalpopulationreservoir",
+        "FD/BEbath",
+        "1",
+        "fixedreservoir; signedpowerledger",
+        "pysnspd/experimental/effective_coupled.py:159"
+      ],
+      [
+        "a2F_multiplier",
+        "extra rate multiplier",
+        1,
+        "1",
+        "noextraindependent knob",
+        "pysnspd/experimental/effective_material.py:263"
+      ],
+      [
+        "branches",
+        "acousticbranches",
+        3,
+        "integer",
+        "3D Debyeassumption",
+        "pysnspd/experimental/effective_material.py:237"
+      ],
+      [
+        "scatteringfactor",
+        "phononscattering relativepairfactor",
+        2,
+        "integer",
+        "Vodolazov3-4conservative; A20printed2.7discrepancy",
+        "pysnspd/experimental/effective_material.py:253"
+      ],
+      [
+        "MIT/QNNdat",
+        "historical optical/acoustic data",
+        "archived, notcurrentrates",
+        "none",
+        "absoluteDOSnormunresolved; noownQE/DFPT",
+        "docs/implementation/MODELO_VIGENTE.md"
+      ],
+      [
+        "noise",
+        "stochasticnoise and amplifiertransfer",
+        "absent",
+        "none",
+        "jitter/absoluteopticaltime/fullreset notadmitted",
+        "docs/implementation/MODELO_VIGENTE.md"
+      ]
+    ]
+  },
+  "internal_numeric_columns": [
+    "name",
+    "nominal",
+    "unit",
+    "source_note"
+  ],
+  "internal_numeric": [
+    [
+      "dt_cap",
+      0.02,
+      "ps",
+      "P:557; adaptive acceptedstep <=cap"
+    ],
+    [
+      "epsilon_NL",
+      2e-07,
+      "1",
+      "P:573; API2e-9 overridden"
+    ],
+    [
+      "epsilon_E_step",
+      2.5e-06,
+      "1",
+      "P:574; parser1e-5; currentfreshrecommended2.5e-6"
+    ],
+    [
+      "max_iterations",
+      40,
+      "integer",
+      "P:576"
+    ],
+    [
+      "max_rejections",
+      50,
+      "integer",
+      "P:577"
+    ],
+    [
+      "stable_before_double",
+      8,
+      "integer",
+      "P:483"
+    ],
+    [
+      "reject_factor",
+      0.5,
+      "1",
+      "P:463"
+    ],
+    [
+      "grow_factor",
+      2,
+      "1",
+      "P:483"
+    ],
+    [
+      "current_scale",
+      "I_0",
+      "A",
+      "S:63"
+    ],
+    [
+      "voltage_scale",
+      1,
+      "mV",
+      "S:56; nottriggerthreshold"
+    ],
+    [
+      "kinetic_residual_reference",
+      "E_ret photon or sum_i N0Eu²Vi DC",
+      "J",
+      "S:72"
+    ],
+    [
+      "epsilon_DC",
+      1e-10,
+      "1",
+      "B:189"
+    ],
+    [
+      "max_DC_iterations",
+      60,
+      "integer",
+      "B:189"
+    ],
+    [
+      "phi_DC_admission",
+      1,
+      "nV",
+      "B:303"
+    ],
+    [
+      "DC_damping_amplitude_max",
+      0.35,
+      "gapbar",
+      "B:263"
+    ],
+    [
+      "DC_damping_phase_max",
+      0.5,
+      "rad",
+      "B:264"
+    ],
+    [
+      "source_temperature_bisection_iterations",
+      60,
+      "integer",
+      "P:160"
+    ],
+    [
+      "phonon_temperature_bisection_iterations",
+      52,
+      "integer",
+      "P:185"
+    ],
+    [
+      "FD_energy_temperature_iterations",
+      64,
+      "integer",
+      "K:234"
+    ],
+    [
+      "FD_energy_tolerance",
+      "64 machine epsilon times moment",
+      "1",
+      "K:233"
+    ],
+    [
+      "equilibrium_recognition",
+      "32 machineepsilon",
+      "1",
+      "K:175"
+    ],
+    [
+      "Anderson_history",
+      5,
+      "integer",
+      "S:329"
+    ],
+    [
+      "Anderson_lstsq_rcond",
+      1e-10,
+      "1",
+      "S:324"
+    ],
+    [
+      "internal_positivity_fraction",
+      0.95,
+      "1",
+      "S:308; correctiondampingonly"
+    ],
+    [
+      "snapshot_every",
+      0.1,
+      "ps",
+      "P:570"
+    ],
+    [
+      "checkpoint_every",
+      1,
+      "ps",
+      "P:571"
+    ],
+    [
+      "checkpoint_wall",
+      60,
+      "s",
+      "P:572"
+    ],
+    [
+      "threads",
+      4,
+      "integer",
+      "P:578; parser env/default1"
+    ],
+    [
+      "cpu_start",
+      0,
+      "integer",
+      "P:579"
+    ],
+    [
+      "BLAS_threads",
+      1,
+      "integer",
+      "P:8,parallel_runtime"
+    ],
+    [
+      "resource_budget_max",
+      0.9,
+      "fraction",
+      "AGENTS.md"
+    ],
+    [
+      "output_dir",
+      "scratchonly",
+      "path",
+      "P:52"
+    ],
+    [
+      "resume",
+      false,
+      "boolean",
+      "P:547; sources/params/DC/mesh exactidentity"
+    ],
+    [
+      "dc_only",
+      false,
+      "boolean",
+      "P:567"
+    ],
+    [
+      "duration",
+      null,
+      "ps",
+      "P:568; shortdevelopmentnotcensorshiporlatency"
+    ]
+  ],
+  "all_cli_options": [
+    {
+      "flags": [
+        "--threads"
+      ],
+      "source_line": 11,
+      "default": "int(os.environ.get('NUMBA_NUM_THREADS', '1'))"
+    },
+    {
+      "flags": [
+        "--output-dir"
+      ],
+      "source_line": 546,
+      "required": true
+    },
+    {
+      "flags": [
+        "--resume"
+      ],
+      "source_line": 547,
+      "action": "store_true"
+    },
+    {
+      "flags": [
+        "--length-nm"
+      ],
+      "source_line": 548,
+      "default": 160.0
+    },
+    {
+      "flags": [
+        "--spacing-nm"
+      ],
+      "source_line": 549,
+      "default": 5.0
+    },
+    {
+      "flags": [
+        "--xi-cutoff"
+      ],
+      "source_line": 550,
+      "default": 32.0
+    },
+    {
+      "flags": [
+        "--xi-order"
+      ],
+      "source_line": 551,
+      "default": 6
+    },
+    {
+      "flags": [
+        "--phonon-nodes"
+      ],
+      "source_line": 552,
+      "default": 96
+    },
+    {
+      "flags": [
+        "--transport-order"
+      ],
+      "source_line": 553,
+      "default": 48
+    },
+    {
+      "flags": [
+        "--wavelength-nm"
+      ],
+      "source_line": 554,
+      "choices": [
+        775.0,
+        1550.0
+      ],
+      "default": 775.0
+    },
+    {
+      "flags": [
+        "--sigma-nm"
+      ],
+      "source_line": 555,
+      "default": 7.549834435
+    },
+    {
+      "flags": [
+        "--retained-fraction"
+      ],
+      "source_line": 556,
+      "default": 0.667
+    },
+    {
+      "flags": [
+        "--dt-ps"
+      ],
+      "source_line": 557,
+      "default": 0.02
+    },
+    {
+      "flags": [
+        "--ceiling-ps"
+      ],
+      "source_line": 558,
+      "default": 200.0
+    },
+    {
+      "flags": [
+        "--threshold-mV"
+      ],
+      "source_line": 559,
+      "default": 0.1
+    },
+    {
+      "flags": [
+        "--confirmation-ps"
+      ],
+      "source_line": 560,
+      "default": 0.5
+    },
+    {
+      "flags": [
+        "--extra-time-ps"
+      ],
+      "source_line": 561,
+      "default": 5.0
+    },
+    {
+      "flags": [
+        "--tau-ee-Tc-ps"
+      ],
+      "source_line": 562,
+      "dest": "tau_ee_Tc_ps",
+      "default": 5.0
+    },
+    {
+      "flags": [
+        "--tau-ep-Tc-ps"
+      ],
+      "source_line": 563,
+      "dest": "tau_ep_Tc_ps",
+      "default": 24.7
+    },
+    {
+      "flags": [
+        "--tau-escape-ps"
+      ],
+      "source_line": 564,
+      "default": 15.0
+    },
+    {
+      "flags": [
+        "--current-uA"
+      ],
+      "source_line": 565,
+      "default": 21.29720614489798
+    },
+    {
+      "flags": [
+        "--bath-K"
+      ],
+      "source_line": 566,
+      "dest": "bath_K",
+      "default": 0.9
+    },
+    {
+      "flags": [
+        "--dc-only"
+      ],
+      "source_line": 567,
+      "action": "store_true"
+    },
+    {
+      "flags": [
+        "--duration-ps"
+      ],
+      "source_line": 568,
+      "default": null
+    },
+    {
+      "flags": [
+        "--snapshot-every-ps"
+      ],
+      "source_line": 570,
+      "default": 0.1
+    },
+    {
+      "flags": [
+        "--checkpoint-every-ps"
+      ],
+      "source_line": 571,
+      "default": 1.0
+    },
+    {
+      "flags": [
+        "--checkpoint-wall-s"
+      ],
+      "source_line": 572,
+      "default": 60.0
+    },
+    {
+      "flags": [
+        "--step-tolerance"
+      ],
+      "source_line": 573,
+      "default": 2e-07
+    },
+    {
+      "flags": [
+        "--local-energy-tolerance"
+      ],
+      "source_line": 574,
+      "default": 1e-05
+    },
+    {
+      "flags": [
+        "--max-iterations"
+      ],
+      "source_line": 576,
+      "default": 40
+    },
+    {
+      "flags": [
+        "--max-rejections"
+      ],
+      "source_line": 577,
+      "default": 50
+    },
+    {
+      "flags": [
+        "--threads"
+      ],
+      "source_line": 578,
+      "default": "_early_threads.threads"
+    },
+    {
+      "flags": [
+        "--cpu-start"
+      ],
+      "source_line": 579,
+      "default": 0
+    }
+  ],
+  "nominal_executed_cli": {
+    "length_nm": 320.0,
+    "spacing_nm": 5.0,
+    "xi_cutoff": 32.0,
+    "xi_order": 6,
+    "phonon_nodes": 96,
+    "transport_order": 48,
+    "wavelength_nm": 775.0,
+    "sigma_nm": 7.549834435,
+    "retained_fraction": 0.667,
+    "dt_ps": 0.02,
+    "ceiling_ps": 200.0,
+    "threshold_mV": 0.1,
+    "confirmation_ps": 0.5,
+    "extra_time_ps": 5.0,
+    "tau_ee_Tc_ps": 5.0,
+    "tau_ep_Tc_ps": 24.7,
+    "tau_escape_ps": 15.0,
+    "current_uA": 21.29720614489798,
+    "bath_K": 0.9,
+    "dc_only": false,
+    "duration_ps": null,
+    "snapshot_every_ps": 0.1,
+    "checkpoint_every_ps": 1.0,
+    "checkpoint_wall_s": 60.0,
+    "step_tolerance": 2e-07,
+    "local_energy_tolerance": 2.5e-06,
+    "max_iterations": 40,
+    "max_rejections": 50,
+    "threads": 4
+  },
+  "fundamental_constants": {
+    "kB": 1.380649e-23,
+    "hbar": 1.0545718176461565e-34,
+    "e": 1.602176634e-19,
+    "h": 6.62607015e-34,
+    "c": 299792458.0
+  },
+  "allmaras_note": "tau_ee=5ps andtau_ep=24.7ps are nominalreferences, freely calibrable; neither measuredconstants norcalibrationrange centers.",
+  "critical_dependencies": [
+    "N0=1/(2e²DR_square d_f). Same volumetricmaterial thicknesssweep requiresRs*d_fconstant ifD,N0fixed.",
+    "Eu=kBTc, ell0=sqrt(hbarD/(2kBTc)); varyingTc/D requires consistentnewmeshunits.",
+    "tau_ep controls collisiontau0=720zeta(5)/pi²*tau_ep, acoustic alpha2F, andsameKWTmobilityrate.",
+    "tau_ee controls BGKandKWTrelaxation together.",
+    "Vbias=Rbias*Iinput; defaultclass.300V is overwritten.",
+    "Lext=96nH+(5um-L)*hbar/(2e)*dq/dI|freshDC; recomputepercase, freezepulse.",
+    "sigma,eta alter bothinitialtemperatureandFD/BEenergy partition; sigma sweep notpuregeometry.",
+    "g matchedsamefinitequadrature toTc; spectral80statecontrol notcontinuumproof.",
+    "gamma,Cph,alpha2F diagnosticsaredependent, notindependentfreeknobs.",
+    "Sourcezeroonrigidcuts, fixedcenter; lengthsensitivity tests reservoir influence.",
+    "Vout is ideal50Ωnetworkquantity; measuredamplifierbandwidth/noise absent."
+  ],
+  "omissions_to_avoid": [
+    "ParserL160 vsproduction320",
+    "parserguard1e-5 vsfreshguard2.5e-6",
+    "tau0ephns vs tauKps",
+    "hmeshvsphysicalthickness",
+    "Allmarasnominalsnotfixednorcenters",
+    "derivedgammanot60independent",
+    "MITdatnotcurrentrateinput",
+    "noCLIforTc,D,Rs,d_f,w,circuit,vavg,Debye,position,hysteresis,field",
+    "noindependentpartitionorLdynamic",
+    "noabsoluteopticaljitter/resetclaim"
+  ],
+  "candidate_sweeps": [
+    "I_0 biasfirst withfreshDC",
+    "eta_ret retainedenergy",
+    "sigma withpartitioncaveat",
+    "tau_ee/tau_ep separatelinkeduse sweeps",
+    "tau_esc",
+    "Tb withfreshDC",
+    "offlinesavedVoutthreshold/timewalk ifsavedhorizonallows"
+  ],
+  "source_sha256": {
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63"
+  }
+}

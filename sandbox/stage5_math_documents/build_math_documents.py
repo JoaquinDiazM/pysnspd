@@ -18,6 +18,7 @@ DOCUMENTS=(
  ('Matematica_etapa5_principales_2D','Principal.pdf'),
  ('Matematica_etapa5_auxiliares','Auxiliar.pdf'),
  ('Matematica_etapa5_precomputados','Precomputo.pdf'),
+ ('Matematica_etapa5_parametros','Parametros.pdf'),
 )
 PHYSICAL_SOURCES=(
  'pysnspd/experimental/effective_bcs_functional.py',
@@ -48,8 +49,10 @@ def preserve_pdf(path,history):
 def main():
  parser=argparse.ArgumentParser(description=__doc__)
  parser.add_argument('--build-root',type=Path,default=DEFAULT_BUILD)
+ parser.add_argument('--documents',nargs='+',choices=tuple(short for _,short in DOCUMENTS),
+  help='Compile only these exact maintained PDF filenames; default: all documents')
  parser.add_argument('--publish',action='store_true',
-  help='After visual QA, copy compiled PDFs to Matematica and output/pdf/implementation')
+  help='After visual QA, copy compiled PDFs to the exact maintained Matematica filenames')
  parser.add_argument('--stage5-status',choices=('in_progress','complete'),default='in_progress')
  args=parser.parse_args()
  build=args.build_root.resolve()
@@ -62,7 +65,7 @@ def main():
  environment=os.environ.copy()
  for variable,leaf in (('TEXMFVAR','texlive-var'),('TEXMFCONFIG','texlive-config'),('TEXMFHOME','texmf')):
   environment.setdefault(variable,str(Path('/home/jdiaz/scratch/tmp/pysnspd')/leaf))
- receipt=dict(schema='pysnspd.mathematical_documents.v2',date='2026-10-11',
+ receipt=dict(schema='pysnspd.mathematical_documents.v2',date='2026-10-12',
   model='Effective neutral native BCS/shared radial gradient/KWT/kinetics/CM',
   stage5_status_declared_by_caller=args.stage5_status,compiled_in_scratch=str(build),
   physical_simulations_launched=0,tex_sources_rewritten=False,published=False,
@@ -70,6 +73,8 @@ def main():
   physical_source_sha256={p:digest(REPO/p)for p in PHYSICAL_SOURCES if(REPO/p).exists()},
   outputs=[])
  for name,short_name in DOCUMENTS:
+  if args.documents is not None and short_name not in args.documents:
+   continue
   source=SOURCE/(name+'.tex')
   before=digest(source)
   for attempt in (1,2):
@@ -90,10 +95,10 @@ def main():
  if args.publish:
   history=build/'previous_final_pdfs'
   history.mkdir(exist_ok=True)
-  mathdir=REPO/'Matematica';legacydir=REPO/'output/pdf/implementation'
-  mathdir.mkdir(exist_ok=True);legacydir.mkdir(parents=True,exist_ok=True)
+  mathdir=REPO/'Matematica'
+  mathdir.mkdir(exist_ok=True)
   for record in receipt['outputs']:
-   targets=(mathdir/record['short_name'],legacydir/(record['name']+'.pdf'))
+   targets=(mathdir/record['short_name'],)
    for target in targets:
     preserve_pdf(target,history)
    for target in targets:

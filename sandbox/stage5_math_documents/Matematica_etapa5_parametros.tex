@@ -1,0 +1,251 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,bm,array,geometry,color,fancyhdr,hyperref}
+\geometry{left=19mm,right=19mm,top=18mm,bottom=19mm}
+\definecolor{ink}{RGB}{20,52,72}
+\definecolor{accent}{RGB}{22,115,139}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=ink}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\small\color{ink}pysnspd / cierre efectivo BCS / 12 de octubre de 2026}
+\fancyfoot[R]{\small\thepage}
+\newcommand{\block}[1]{\par\vspace{5pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
+\newcommand{\origin}[1]{\par{\footnotesize\raggedright\color{ink}\textbf{Procedencia / implementación:} #1\par}}
+\newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Dependencia crítica.} #1\par}}
+\newcommand{\row}[3]{\(\displaystyle #1\)& #2& #3\\[3pt]}
+\newenvironment{ptable}{\par\small\renewcommand{\arraystretch}{1.13}\begin{tabular}{@{}p{.26\linewidth}p{.32\linewidth}p{.36\linewidth}@{}}\hline
+\textbf{Símbolo / tipo}&\textbf{Referencia física}&\textbf{Nombre / función}\\ \hline}{\hline\end{tabular}\par}
+\begin{document}
+{\LARGE\bfseries\color{ink}Parámetros del sistema}\par
+{\large Modelo neutral efectivo BCS / KWT / cinética / circuito}\par
+{\small \textbf{F}: fijado en la pipeline actual; \textbf{C}: calibrable; \textbf{I}: entrada física; \textbf{D}: derivado; \textbf{O}: observación; \textbf{N}: numérico.
+F no significa constante universal. Valores nominales exploratorios; unidades físicas.}
+\block{Material y geometría}
+\begin{ptable}
+\row{T_c\ [F]}{8,65 K}{temperatura crítica}
+\row{T_b\ [I]}{0,9 K}{temperatura del baño}
+\row{D\ [F]}{$5\,10^{-5}$ m$^2$/s}{difusión electrónica}
+\row{R_\square\ [F]}{608 $\Omega$}{resistencia por cuadrado normal}
+\row{d_f\ [F]}{7 nm}{espesor físico de la película}
+\row{W,\ L_{\rm total}\ [F]}{80 nm; 5 $\mu$m}{ancho; longitud activa total}
+\row{L\ [I]}{320 nm}{longitud 2D resuelta}
+\row{h_{\rm mesh}\ [N]}{5 nm}{separación objetivo Delaunay}
+\row{I_0\ [I]}{21,2972061449 $\mu$A}{corriente DC; $I_b(0)=I_s(0)=I_0$}
+\end{ptable}
+\block{Escalas derivadas, no entradas independientes}
+\begin{gather*}
+ N_0=\frac1{2e^2DR_\square d_f}
+ =9,1532978211\,10^{46}\ {\rm J^{-1}m^{-3}},\\
+ E_u=k_BT_c=0,7453993272\ {\rm meV},\qquad
+ \ell_0=\sqrt{\frac{\hbar D}{2E_u}}=4,6984908973\ {\rm nm},\\
+ \tau_K=\frac{\pi\hbar}{8E_u}=0,3467661180\ {\rm ps},\qquad
+ \sigma_n=(R_\square d_f)^{-1},\\
+ V_i=d_fA_i^{\rm dual},\qquad u_i^*=N_0E_u^2V_i,\qquad
+ I_{\rm dep}^{\rm efectivo}=30,36744305\ \mu{\rm A},\quad
+ I_0/I_{\rm dep}=0,701317 .
+\end{gather*}
+{\small $N_0$: DOS normal monoespín; $\sigma_n=234962,4060$ S/m: conductividad normal; $E_u,\ell_0,\tau_K$: escalas de energía, longitud y KWT;
+$V_i$: volumen dual; $u_i^*$: escala energética nodal. $I_{\rm dep}$: predicción bulk interna a $T_b$, no corriente crítica experimental medida.}
+\critical{$h_{\rm mesh}$ es resolución, no espesor. Para barrer $d_f$ a material volumétrico fijo ($N_0,D$), conservar $R_\square d_f$.
+$7\to4,9$ nm requiere $608\to868,57\ \Omega$. A la misma corriente, el ejemplo de 4,9 nm supera ligeramente el depairing efectivo: no admite el mismo DC superconductor estable.}
+\vfill
+\origin{Einstein; BCS; volúmenes finitos Delaunay--Voronoi. \texttt{05\_effective\_photon\_run.py}: \texttt{build\_system}; \texttt{effective\_bcs\_preparation.py}.}
+\newpage
+
+\block{Calibradores de relajación y material fonónico}
+\begin{ptable}
+\row{\tau_{ee}(T_c)\ [C]}{5 ps nominal}{relajación e-e; BGK y movilidad KWT}
+\row{\tau_{ep}(T_c)\ [C]}{24,7 ps nominal}{relajación e-ph; tasas y KWT}
+\row{\tau_{\rm esc}\ [C]}{15 ps nominal}{escape de fonones a sustrato}
+\row{v_{\rm avg}\ [F,C]}{4912 m/s}{velocidad acústica efectiva}
+\row{\Theta_D\ [F,C]}{664 K}{temperatura de corte Debye}
+\row{\tau_0^{e-ph}\ [D]}{1,8684359016 ns}{normalización cinética acústica}
+\row{\gamma_{\rm ac}\ [D]}{23,4774458882}{razón normalizada de capacidades}
+\row{\lambda_{ep}\ [D]}{0,8864467222}{integral acústica; diagnóstico}
+\end{ptable}
+\begin{gather*}
+ \tau_0^{e-ph}=\frac{720\zeta(5)}{\pi^2}\tau_{ep}(T_c),\qquad
+ \Omega_D=k_B\Theta_D=57,21909286\ {\rm meV},\\
+ g_{ph}(\Omega)=\frac{3\Omega^2}{2\pi^2\hbar^3v_{\rm avg}^3},\qquad
+ \alpha^2F(\Omega)=\frac{\hbar\Omega^2}{\pi\tau_0^{e-ph}E_u^3},
+ \quad 0<\Omega\le\Omega_D,\\
+ \gamma_{\rm ac}=\frac{8\pi^2}{5}\frac{C_{e,N}(T_c)}{C_{ph}(T_c)},\qquad
+ \lambda_{ep}=2\int_0^{\Omega_D}\frac{\alpha^2F(\Omega)}{\Omega}\,{\rm d}\Omega .
+\end{gather*}
+\begin{ptable}
+\row{C_{e,N}(T_c)\ [D]}{993,0446 J/(m$^3$K)}{capacidad normal electrónica}
+\row{C_{ph}(T_c)\ [D]}{667,9403 J/(m$^3$K)}{capacidad acústica volumétrica}
+\row{B_{ph}\ [D]}{1,0320228422 J/(m$^3$K$^4$)}{$C_{ph}\simeq B_{ph}T^3$}
+\row{\alpha^2F/g_{ph}\ [D]}{J m$^3$}{retroacción fonónica ligada}
+\end{ptable}
+\critical{Los 5 ps y 24,7 ps son nominales con nomenclatura Allmaras (2020), no valores fijos, centros de rango ni intervalos experimentales. $\tau_{ee}$ cambia BGK \emph{y} KWT; $\tau_{ep}$ cambia $\alpha^2F$ \emph{y} KWT. $\tau_{\rm esc}=15$ ps es hipótesis independiente de interfaz. $\tau_0^{e-ph}\ne\tau_K$; $\gamma_{\rm ac}$ no se ajusta aparte.}
+\critical{Fonones acústicos 3D hasta Debye: aproximación efectiva de película. $v_{\rm avg}^{-3}$ fija DOS/capacidad y retroacción, por lo que un cambio de velocidad altera más que una escala temporal. El archivo externo MIT/QNN \texttt{nbn-a2f-ph.dat} conserva forma y procedencia, pero su normalización absoluta no identifica las tasas actuales; no se usó DFPT propio.}
+\vfill
+\origin{\href{https://thesis.caltech.edu/13748/}{Allmaras, tesis (2020)}, ecs.\ 2.6--2.8 y 3.24; \href{https://arxiv.org/abs/1611.06060}{Vodolazov (2017)}, ecs.\ 3--4. Material y eventos conservativos en \texttt{effective\_material.py}, \texttt{effective\_bcs\_kinetics.py}.}
+\newpage
+
+\block{Fotón y depósito inicial postcascada}
+\begin{ptable}
+\row{\lambda\ [I]}{775 o 1550 nm}{longitud de onda; opciones actuales}
+\row{\eta_{\rm ret}\ [C]}{0,667; $0<\eta\le1$}{fracción de energía retenida}
+\row{\sigma\ [C]}{7,549834435 nm}{desviación espacial gaussiana}
+\row{\mathbf r_0\ [F]}{$(L/2,0)$}{centro de depósito, coordenadas reales}
+\row{t_0\ [F]}{0 ps}{transferencia efectiva postcascada}
+\row{E_\gamma\ [D]}{1,599796109 / 0,799898054 eV}{energía 775 / 1550 nm}
+\row{E_{\rm ret}\ [D]}{1,067064005 / 0,533532002 eV}{energía retenida nominal}
+\end{ptable}
+\begin{gather*}
+ E_{\rm ret}=\eta_{\rm ret}\frac{h_{\rm P}c}{\lambda},\qquad
+ a_i=\mathbf1_{i\notin{\rm cortes}}
+ e^{-|\mathbf r_i-\mathbf r_0|^2/(2\sigma^2)},\\
+ E_{{\rm ret},i}=E_{\rm ret}\frac{V_i a_i}{\sum_jV_ja_j},\qquad
+ p_i(0)=f_{\rm FD}(E_i^{DC},T_i^0),\quad n_i(0)=n_{\rm BE}(\Omega,T_i^0),\\
+ \Delta_i(0)=\Delta_i^{DC},\qquad
+ U_i(T_i^0;\Delta_i^{DC})-U_i(T_b;\Delta_i^{DC})=E_{{\rm ret},i}.
+\end{gather*}
+{\small $h_{\rm P}$: constante de Planck; $c$: velocidad de luz; $a_i$: perfil; $T_i^0$: inversión energética FD/BE, no entrada libre. $T_{\max}^0\simeq20,1462$ K (775), $16,1732$ K (1550), perfil nominal.}
+\critical{$\sigma=\sqrt{2D(0,57\ {\rm ps})}$ es una referencia extrapolada, no ancho medido ni tiempo de cascada simulado. No se suma 0,57 ps al reloj. A energía fija, cambiar $\sigma$ cambia densidad \emph{y} reparto inicial e/ph al imponer FD/BE común. Variar $\eta$ y $\sigma$ puede producir efectos correlacionados. La energía se deposita una sola vez.}
+\block{Definición de lectura y detección}
+\begin{ptable}
+\row{V_{{\rm out},DC}\ [F]}{0 mV}{basal del DC fresco $I_b=I_s$}
+\row{V_{\rm th}\ [O]}{+0,1 mV}{primer cruce positivo menos basal}
+\row{\delta t_{\rm conf}\ [O]}{0,5 ps}{persistencia sobre piso de histéresis}
+\row{\epsilon_{\rm hyst}\ [F,O]}{0,05}{piso $0,95V_{\rm th}$}
+\row{\delta t_{\rm extra}\ [O]}{5 ps}{final en $t_{\rm cruce}+5$ ps}
+\row{t_{\rm techo}\ [O]}{200 ps}{techo sin cruce confirmado; censura}
+\row{\tau_{\rm rel}\ [D]}{$t_{\rm cruce}-t_0$}{latencia relativa postcascada}
+\row{\delta_{\rm HB}\ [O]}{0,2}{hotbelt: $|\Delta|\le0,2|\Delta^{DC}|$}
+\end{ptable}
+{\small Hotbelt: componente conectada que toca ambos bordes transversales; diagnóstico separado del gatillo. Confirmación a partir de estados aceptados; interpolación lineal del cruce. Cruce confirmado puede llevar el margen final más allá de 200 ps. Sin cruce no se asigna latencia.}
+\vfill
+\origin{\texttt{prepare\_photon}; \texttt{trigger\_window.py}. Umbral, histéresis y margen: elecciones de esta campaña, no constantes del SNSPD ni umbral experimental universal.}
+\newpage
+
+\block{Circuito completo y estado inicial}
+\begin{ptable}
+\row{R_b\ [F]}{10 k$\Omega$}{resistencia de polarización}
+\row{L_b\ [F]}{1 $\mu$H}{inductancia de polarización}
+\row{R_l\ [F]}{50 $\Omega$}{carga de lectura}
+\row{C_c\ [F]}{100 pF}{capacidad de acoplamiento}
+\row{L_{\rm add}\ [F]}{96 nH}{inductor exterior añadido}
+\row{L_{k,\rm ext}\ [D]}{103,3055069878 nH}{nominal 320 nm; congelada por DC}
+\row{V_b\ [D]}{$R_bI_0=0,21297206145$ V}{fuente DC constante}
+\row{v_c(0)\ [F]}{0 V}{condensador inicial}
+\row{I_b(0),I_s(0)\ [D]}{$I_0,\ I_0$}{mismo DC físico que la cinta}
+\end{ptable}
+\begin{gather*}
+ L_{k,\rm ext}=L_{\rm add}+
+ (L_{\rm total}-L)\frac{\hbar}{2e}
+ \left.\frac{{\rm d}q}{{\rm d}I}\right|_{\rm DC},\qquad
+ V_{\rm out}=R_l(I_b-I_s),\\
+ V_{\rm dev}=\phi_L-\phi_R,\qquad
+ G_{ij}=\frac{c_{ij}}{R_\square},\quad
+ c_{ij}=\frac{L_{ij}^{dual}}{L_{ij}},\qquad
+ \alpha_{ij}=0,\quad\Gamma_{\rm DOS}=0.
+\end{gather*}
+{\small $\alpha_{ij}$: fase de enlace electromagnético; $\Gamma_{\rm DOS}$: depairing local de la DOS. Ambos nulos en esta pipeline.}
+\block{Hipótesis constitutivas y de borde}
+\begin{ptable}
+\row{K(|\Delta|;T_b)\ [F]}{radial BCS a $T_b$ fijo}{derivadas completas de rigidez}
+\row{\sigma_n,\ G_{ij}\ [F]}{conductancia normal constante}{neutralidad cuasiestática}
+\row{\Delta_{\rm cortes}\ [D]}{amplitud del nuevo DC}{fases Josephson equipotenciales}
+\row{p_{\rm cortes},n_{\rm cortes}\ [D]}{FD / BE al baño}{reservorios; calor firmado registrado}
+\row{D_t\Delta_{\rm cortes}\ [F]}{0; $Q_{\Delta,\rm cortes}=0$}{sin relajación material en los cortes}
+\row{\mathbf j\cdot\hat{\mathbf n}\ [F]}{0 en laterales}{aislamiento transversal}
+\row{D_L(E)\ [F]}{1 sobre el gap local}{coeficiente espectral de transporte}
+\row{D_{ph,\parallel}\ [F]}{0 m$^2$/s}{fonones locales; escape al baño}
+\row{I_b,I_s\ [F]}{$>0$ durante el ensayo}{fallo controlado si se invierte corriente}
+\end{ptable}
+\critical{$L_{k,\rm ext}$ se calcula una vez por DC; al cambiar corriente, baño o cuadratura puede cambiar su valor. No se fuerza 103,3055 nH en todos los casos ni se usa $L_k(t)$ lumped. $V_{\rm out}$ es lectura de carga, distinta de $V_{\rm dev}$. No hay amplificador, ancho de banda instrumental ni ruido de lectura añadidos.}
+\critical{La rigidez a $T_b$ y movilidad KWT usadas incluso cuando la energía equivalente supera $T_c$ son cierre fenomenológico. El baño no impone FD/BE durante la evolución. No se resuelve carga $h_T$, cascada inicial explícita, difusión fonónica lateral ni geometría completa del meandro.}
+\vfill
+\origin{Circuito de la memoria; BCS/KWT efectivo; \texttt{electrical\_ports.py}, \texttt{effective\_bcs\_ports.py}, \texttt{effective\_coupled.py}.}
+\newpage
+
+\block{Perfil numérico explícito de las nuevas corridas}
+\begin{ptable}
+\row{L,\ h_{\rm mesh}\ [I,N]}{320 nm; 5 nm}{dominio y resolución de referencia}
+\row{\Lambda/E_u,\ n_{\rm GL}\ [N]}{32; 6}{corte y orden electrónico}
+\row{N_\xi,\ N_{ph},n_{\rm tr}\ [N]}{54; 96; 48}{estados e; modos ph; orden de transporte}
+\row{\omega_{\min}\ [N]}{$10^{-8}$}{mínimo fonónico $\Omega/E_u$}
+\row{N_{\rm mat}\ [N]}{1025}{nodos de exportación acústica analítica}
+\row{\Delta t_{\max}\ [N]}{0,02 ps}{cap de paso; reducción adaptativa}
+\row{\epsilon_{\rm NL}\ [N]}{$2\,10^{-7}$}{tolerancia del punto medio implícito}
+\row{\epsilon_{E,\rm local}\ [N]}{$2,5\,10^{-6}$ desde $t=0$}{guarda de energía por paso aceptado}
+\row{N_{\rm NL,max},N_{\rm rej,max}\ [N]}{40; 50}{iteraciones; rechazos por avance}
+\row{\delta t_{\rm snap}\ [N]}{0,1 ps}{mapas espaciales guardados}
+\row{\delta t_{\rm checkpoint}\ [N]}{1 ps; pared 60 s}{estado completo para reanudar}
+\row{N_{\rm hilos},N_{\rm BLAS}\ [N]}{4; 1}{Numba; librerías numéricas}
+\row{\texttt{cpu-start}\ [N]}{0}{primer grupo de núcleos físicos admitidos}
+\end{ptable}
+\begin{gather*}
+ g^{-1}=\sum_kw_k\tanh(\bar\xi_k/2)/\bar\xi_k,\qquad
+ \bar\xi\text{ por intervalos }[0,\tfrac18,\tfrac14,\tfrac12,1,2,4,8,16,32],\\
+ |E_{m+1}-E_m-\Delta W_m|
+ \le\epsilon_{E,\rm local}
+ \left(E_{\rm ret}+\sum_{j<m}|\Delta W_j|+|\Delta W_m|\right).
+\end{gather*}
+{\small Paquete espectral de control: $(\Lambda/E_u,n_{\rm GL},N_\xi,N_{ph},n_{\rm tr})=(64,8,80,144,96)$.
+Malla: 3,5 nm; dominio: 480 nm; paso de contraste: cap 0,01 ps, guarda $3,125\,10^{-7}$.
+El acoplamiento $g$ se recalcula con la misma cuadratura que energía y fuerza para conservar $T_c$.}
+\block{Preparación, aceptación y controles internos}
+{\small DC: tolerancia $10^{-10}$, máximo 60 iteraciones; amplitud y corriente resueltas conjuntamente.
+Inicialización energética: expansión de bracket máximo 32; bisección 60. Temperatura fonónica equivalente: bracket 32; bisección 52.
+Modo fotónico: \texttt{dc-only=false}, \texttt{duration-ps=None}. Los modos DC o duración de desarrollo no certifican latencia ni censura fotónica. Soporte $0\le p\le1,\ n\ge0$ mediante eventos compartidos conservativos, sin clipping de estados aceptados.}
+\begin{gather*}
+ \epsilon_{E,\rm global}\le0,01,\qquad
+ |r_P|\le10^{-20}\ {\rm W}+10^{-10}S_P .
+\end{gather*}
+{\small $S_P$: suma de magnitudes de potencias de puerto, escape, cortes y circuito.
+Presupuesto global $\le90\%$ de recursos disponibles; datos, cachés, logs y renders en scratch.
+Identidad de fuentes, DC, malla y parámetros obligatoria para reanudar.}
+\critical{Los defaults del parser son $L=160$ nm y $\epsilon_{E,\rm local}=10^{-5}$: los comandos de esta entrega los sobrescriben. $54$ estados es resolución exploratoria admitida, no límite continuo. La nueva guarda desde cero no reproduce exactamente la historia segmentada anterior. La calibración física no debe compensar errores de resolución.}
+\vfill
+\origin{\texttt{pipelines/05\_effective\_photon\_run.py}, punto medio acoplado y auditor independiente. Parámetros F (incluidos F,C) requieren cambiar la configuración en fuente; no están expuestos como opciones CLI. Perfil vigente: \texttt{GEMINGA\_COMMANDS\_PRESENT.md}.}
+\newpage
+
+\block{Puntos exploratorios preparados: un parámetro por caso}
+{\small Referencia común: 775 nm, $I_0=21,2972061449\ \mu$A; $\eta=0,667$; $\sigma=7,549834435$ nm; tiempos 5/24,7/15 ps; mismo perfil numérico. Cada caso prepara su propio DC.}
+\begin{ptable}
+\row{I_0\ [I]}{19,7388379855; 22,7755822910 $\mu$A}{$\{0,65;\,0,75\}I_{\rm dep}^{ref}$; 775 nm}
+\row{\tau_{ee}(T_c)\ [C]}{2,5; 10 ps}{775 nm; demás entradas nominales}
+\row{\tau_{ep}(T_c)\ [C]}{12,35; 49,4 ps}{775 nm; $\tau_0^{e-ph}$ vinculado}
+\row{\tau_{\rm esc}\ [C]}{7,5; 30 ps}{775 nm; escape solamente}
+\row{\eta_{\rm ret}\ [C]}{0,5; 0,8}{775 nm; misma anchura}
+\row{\sigma\ [C]}{5,338539126; 10,677078252 nm}{$\sigma_{\rm ref}/\sqrt2$; $\sqrt2\sigma_{\rm ref}$}
+\row{\lambda=1550\ {\rm nm}}{nominal; $I$ alto; $\eta=0,8$}{tres casos separados, no combinación}
+\end{ptable}
+{\small Total 16 casos: 2 referencias, 12 variaciones a 775 nm, 2 variaciones a 1550 nm. Los puntos son elecciones de exploración; no intervalos medidos ni centro/rango de calibración. No se extraen sensibilidades de parámetros confundidos sin declarar sus dependencias.}
+\block{Magnitudes a comparar}
+\begin{gather*}
+ \widetilde V_{\rm out}(t)=V_{\rm out}(t)-V_{{\rm out},DC},\qquad
+ t_{\rm cruce},\quad
+ \left.\frac{{\rm d}\widetilde V_{\rm out}}{{\rm d}t}\right|_{\rm cruce},\\
+ \max_{t\in[0,t_f]}\widetilde V_{\rm out}(t),\qquad
+ \min_{t\in[0,t_f]}I_s(t),\qquad
+ [0,\min_{\rm casos}(t_f)]\text{ para comparación común}.
+\end{gather*}
+{\small Voltajes en mV/µV; tiempos en ps; pendiente en mV/ps; corrientes en µA.
+Máximo observado hasta el final guardado, no pico completo.
+Sin cruce: latencia sin asignar, censura a 200 ps.
+Curvas al reloj postcascada común; alineación por gatillo sólo como vista secundaria.
+Sin ruido ni ensemble, no jitter estadístico ni latencia óptica absoluta.}
+\block{Trazabilidad y alcance}
+{\small Modelo de referencia: \texttt{main b2ec4970f2c0}, cierre efectivo de etapa5 del 12/octubre/2026.
+Entradas exactas de cada caso: \texttt{manifest.json}, \texttt{material.json}, recibo DC y hashes de fuentes.
+Los números derivados aquí corresponden al nominal 775 nm y no se copian como constantes a otras corridas.}
+\begin{gather*}
+ X=\{\Delta_i,p_{ik},n_{iq},I_b,I_s,v_c\},\qquad
+ \phi_i\text{ algebraico},\qquad
+ T_{E,i},T_{ph,i}\text{ observadores de energía}.
+\end{gather*}
+{\small Variables de estado y temperaturas equivalentes no son calibradores adicionales. $\alpha^2F$, $g_{ph}$, $K$, $g$ y $L_{k,\rm ext}$ son funcionales/derivados de las entradas y del cierre; no se ajustan de forma independiente sin redefinir el modelo.}
+\vfill
+\origin{\href{https://doi.org/10.1103/PhysRev.108.1175}{BCS (1957)};
+\href{https://doi.org/10.1103/PhysRevLett.40.1041}{Kramer--Watts-Tobin (1978)};
+\href{https://thesis.caltech.edu/13748/}{Allmaras (2020)};
+\href{https://arxiv.org/abs/1611.06060}{Vodolazov (2017)}.
+Rigidez radial energética, transporte nativo y ensamblado conservativo: hipótesis/implementación propias.}
+\end{document}

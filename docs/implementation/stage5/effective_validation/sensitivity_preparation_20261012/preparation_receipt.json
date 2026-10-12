@@ -1,0 +1,33 @@
+{
+  "status": "PREPARED_AND_FAST_VERIFIED_NO_NEW_SIMULATIONS",
+  "tests": {
+    "command": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-o",
+      "cache_dir=/home/jdiaz/scratch/sensitivity_campaign_preparation_20261012/pytest_cache",
+      "tests/test_effective_sensitivity_campaign.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 0.6247374869999476,
+    "output": "...........                                              [100%]\n11 passed, 16 subtests passed in 0.37s\n"
+  },
+  "source_sha256": {
+    "pipelines/06_effective_sensitivity_campaign.py": "d984c56373e07597aa41f16b76347f015f2afcdcd77a463b574d202519945487",
+    "plot_pipelines/06_plot_effective_sensitivity_campaign.py": "fa50ae611eac50dc78cc7c14faae0e97da12732e6d6b5cce78038cc15abde298",
+    "tests/test_effective_sensitivity_campaign.py": "84853cf6e347f88220328a56e7edf83eac062c2ec97da895c021e78681c55ac1"
+  },
+  "saved_visual_probe": "/home/jdiaz/scratch/sensitivity_saved_data_visual_probe_20261012",
+  "saved_visual_manifest": "/home/jdiaz/scratch/sensitivity_saved_data_visual_probe_20261012/figures_v2/comparison_manifest.json",
+  "historical_probe_not_production_campaign": true,
+  "production_plan_only": "/home/jdiaz/scratch/sensitivity_campaign_preparation_20261012/production_profile_plan_preview/campaign_plan.json",
+  "present_candidate_sha256": "584a831148ec39fb8b043873739172c6758399b604cc82fa925161c731699af3",
+  "long_runs_started": false,
+  "pdf_plot_manual_QA_pending": false,
+  "final_visual_QA": {
+    "path": "/home/jdiaz/scratch/sensitivity_campaign_preparation_20261012/final_saved_visual_qa_receipt.json",
+    "sha256": "31904a580ebfc398257261c54d745e10fd7a0bc912ca3d8b76e2d6416309b363"
+  }
+}

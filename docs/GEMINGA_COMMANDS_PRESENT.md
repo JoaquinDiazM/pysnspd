@@ -152,3 +152,176 @@ Cada corrida conserva manifest.json, trajectory.npz, snapshots.npz, source_initi
 - Dispatcher de auditoría: sandbox/stage5_effective_validation/guard_protocol_dispatcher.py; SHA256 13663d94b35184452a274a9bad73b395154af0e0dca224b370074239dd1ce50c.
 
 El historial /home/jdiaz/GEMINGA_COMMANDS.md permanece íntegro. Este PRESENT y docs/GEMINGA_COMMANDS_PRESENT.md deben publicarse con contenido idéntico; los PRESENT históricos de stage5 conservan su alcance fechado.
+
+## Campaña de sensibilidad eléctrica — preparada el 12 de octubre de 2026
+
+**No ejecutada.** Hasta16 casos distintos, en grupos que permiten detenerse tras
+obtener información útil. No hace falta correrlos todos para utilizar el modelo
+cerrado. Cada caso prepara su propio DC y mantiene ecuaciones, geometría,
+circuito y perfil numérico fresh; cambia un solo input respecto de la referencia
+de su misma longitud de onda. El sesgo se mantiene positivo.
+
+| Grupo | Casos nuevos | Input físico |
+|---|---:|---|
+| bias — empezar aquí | 5 | Nominal775; 775 a0,65/0,75Idep; nominal1550; 1550 a0,75Idep |
+| rates — calibradores | 6 | 775nm: τee(Tc)=2.5/10ps, τep(Tc)=12.35/49.4ps, τesc=7.5/30ps |
+| source — deposición | 5 | 775nm: ηret=0.5/0.8, σ=5.338539125824206/10.677078251648414nm; 1550nm: ηret=0.8 |
+
+rates incluye nominal775, source ambas referencias; si ya existen completas
+en ESTA campaña, verifica identidad, todos sus SHA terminales y una auditoría
+nueva antes de reutilizarlas. **No reutiliza los originales históricos como
+si fueran fresh.** La unión de los tres grupos contiene16 simulaciones,
+no19. El grupo all es opcional y solicita esa unión completa.
+
+Los puntos son **sondas exploratorias escogidas para medir sensibilidad**;
+no son intervalos experimentales, límites de calibración ni sus centros.
+Los nominales libres siguen Allmaras: τee(Tc)=5ps y τep(Tc)=24.7ps.
+El nominal de escape es15ps, retención0.667, σ=7.549834435nm y
+I=21.29720614489798µA. La escala de sesgo usa la predicción bulk efectiva
+Idep=30.36744305465µA de esta película de7nm:
+I065=19.7388379855225µA e I075=22.7755822909875µA.
+No se identifica con una corriente crítica experimental medida.
+Un nuevo DC sin rama superconductora admisible detiene el caso y conserva
+su evidencia.
+
+### Órdenes normales
+
+Ejecutar en geminga con la preparación común de este cuaderno. El directorio
+sensitivity_20261012_01 debe ser nuevo al iniciar bias; los otros grupos usan
+exactamente el mismo destino y --resume. Cambiar el sufijo en todas las órdenes
+si ese destino ya pertenece a otra campaña.
+
+~~~bash
+cd /home/jdiaz/pysnspd
+set -o pipefail
+mkdir -p /home/jdiaz/scratch/photon_runs/logs
+
+/home/jdiaz/.conda/envs/snspd/bin/python -u pipelines/06_effective_sensitivity_campaign.py \
+  --output-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01 \
+  --group bias --execute \
+  2>&1 | tee -a /home/jdiaz/scratch/photon_runs/logs/sensitivity_20261012_01_bias.log
+~~~
+
+Tras completar y auditar bias, continuar por separado si se desea medir
+los calibradores:
+
+~~~bash
+/home/jdiaz/.conda/envs/snspd/bin/python -u pipelines/06_effective_sensitivity_campaign.py \
+  --output-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01 \
+  --group rates --execute --resume \
+  2>&1 | tee -a /home/jdiaz/scratch/photon_runs/logs/sensitivity_20261012_01_rates.log
+~~~
+
+Para la fuente inicial:
+
+~~~bash
+/home/jdiaz/.conda/envs/snspd/bin/python -u pipelines/06_effective_sensitivity_campaign.py \
+  --output-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01 \
+  --group source --execute --resume \
+  2>&1 | tee -a /home/jdiaz/scratch/photon_runs/logs/sensitivity_20261012_01_source.log
+~~~
+
+Ante una interrupción, repetir el mismo grupo/comando, añadiendo --resume
+también a bias. El fotón no se deposita de nuevo en un checkpoint.
+Un lock exclusivo impide lanzar dos escritores/grupos simultáneamente
+sobre esta campaña. No editar fuentes físicas ni el orquestador mientras
+se usa su plan: sus SHA forman parte de la identidad. Si cambian, usar
+un destino nuevo.
+
+Perfil explícito: L=320nm, hmesh=5nm, película7nm, Tb=0.9K,
+cuadratura54 estados/96 fonones/48 transporte; cap0.02ps, NL2e-7,
+guarda local2.5e-6 desde cero, máximo40 iteraciones.
+**No son los defaults genéricos del parser.** La campaña histórica admitida
+conserva sus guardas por segmentos y no se declara idéntica a este perfil fresh.
+
+Evento: Vout−Vout,DC positivo, umbral0.1mV, confirmación0.5ps,
+histéresis5% y final en cruce+5ps; sin detección, techo200ps y
+latencia censurada. No espera pico, FWHM, recuperación ni reset total.
+El cero de tiempo es la transferencia efectiva postcascada, no la absorción
+óptica absoluta. Mantiene el circuito completo de tres estados y la
+inductancia exterior congelada desde cada DC.
+
+Recursos: **un caso en primer plano, cuatro núcleos físicos, cuatro hilos
+Numba, BLAS/OpenMP=1**. El runner repite inventario/afinidad/cuota/RAM y aplica
+techo90% para cada caso. Auditoría y visual son procesos únicos.
+Datos, cachés, checkpoints, logs y figuras van a scratch. Reservar núcleos
+completos libres y comprobar carga ajena según la política del servidor.
+Planificar varias horas por caso; algunos casos censurados a200ps con este
+perfil estricto pueden requerir un día o más. No hay ETA calibrada ni plazo
+garantizado; los16 pueden requerir varios días. El grupo bias reduce el
+compromiso inicial a cinco casos. Progreso y ETA al objetivo vigente salen
+por pantalla, con checkpoints cada1ps o60s. **No se ejecutaron estas simulaciones
+al preparar el cuaderno.**
+
+Productos: campaign_plan.json fija inputs/comandos/SHA;
+runs/<caso>/ conserva material, DC, trayectoria, snapshots, fuente y
+checkpoint completos. audits/<caso>_<fecha>/audit.json comprueba balance,
+soporte, corriente, deposición, guardas y evento.
+campaign_execution.json y aggregate_<grupo>.json autentican terminales y
+auditorías. Un fallo detiene la secuencia y preserva lo anterior; no se presenta
+como ausencia física de detección. Los nuevos inputs no heredan los cuatro
+controles de convergencia de la referencia775: es exploración de sensibilidad,
+con conservación individual y necesidad de contrastar precisión donde
+cambie el régimen.
+
+### Órdenes visuales comparativas
+
+Ejecutar tras completar el grupo correspondiente. Leen estados guardados,
+sin evaluar RHS ni lanzar simulaciones. --individual añade figuras físicas
+y snapshots de visual05 para cada caso. Cada destino debe ser nuevo;
+para repetir, cambiar visual_..._01 por un sufijo nuevo, preservando anteriores.
+
+~~~bash
+env NUMBA_NUM_THREADS=1 /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/06_plot_effective_sensitivity_campaign.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01 \
+  --output-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/visual_bias_01 \
+  --group bias --individual
+~~~
+
+~~~bash
+env NUMBA_NUM_THREADS=1 /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/06_plot_effective_sensitivity_campaign.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01 \
+  --output-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/visual_rates_01 \
+  --group rates --individual
+~~~
+
+~~~bash
+env NUMBA_NUM_THREADS=1 /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/06_plot_effective_sensitivity_campaign.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01 \
+  --output-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/visual_source_01 \
+  --group source --individual
+~~~
+
+Omitir --individual si sólo se desean comparaciones eléctricas rápidas.
+El análisis entrega PNG/PDF de Vout menos basal[mV], con recuadro[µV]
+para señales pequeñas; cada familia se corta en la ventana temporal común
+de sus miembros. Las líneas de cruce sólo muestran eventos confirmados
+guardados. metrics.csv y comparison_manifest.json incluyen:
+latencia relativa[ps], diferencia respecto de referencia sólo si ambas
+detectan, máxima diferencia Vout en ventana común[mV], mínimo Is[µA]
+y pendiente local[mV/ps], ajustada sobre muestras aceptadas en cruce±0.25ps.
+No asigna pendiente ni latencia ficticia a censurados.
+Esa pendiente no incluye filtro, ganancia, ruido ni ancho de banda del setup;
+no constituye una predicción de jitter.
+
+Los máximos Vout se llaman **máximos observados en la ventana guardada**:
+una corrida que termina en cruce+5ps puede seguir subiendo. No se usan como
+pico total del pulso ni para comparar amplitudes a ventanas diferentes.
+Los cruces representan un discriminador ideal en la carga50Ω; la comparación
+absoluta con voltajes medidos requiere calibrar el readout real.
+
+Interpretación crítica: variar τee(Tc) cambia conjuntamente BGK y movilidad
+KWT; variar τep(Tc) cambia conjuntamente normalización acústica de colisiones
+y movilidad KWT. Variar σ o ηret con inicialización FD/BE común también cambia
+el reparto energético electrón/fonón; σ no es una sensibilidad geométrica pura.
+La extrapolación efectiva KWT/rigidez en la zona caliente por encima de Tc
+sigue siendo una hipótesis calibrable, identificada en Parametros.pdf.
+
+--plan-only inspecciona un destino NUEVO sin lanzar hijos numéricos.
+Si luego se ejecuta ese mismo destino, añadir --resume.
+Las pruebas rápidas cubren los16 comandos con parser real05, censuras,
+ventanas comunes, checksums/identidad, lock, memoria descomprimida y
+coordinación de receipts con fixtures, sin evoluciones nuevas.
