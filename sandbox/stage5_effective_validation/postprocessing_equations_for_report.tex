@@ -1,0 +1,77 @@
+% Fuente de ANALISIS/POSTPROCESO para informe y certificados.
+% Fragmento no independiente: NO pertenece a los tres PDF matematicos.
+% P1 complejo espacial -> magnitud por muestra -> interpolacion escalar temporal.
+\paragraph{Observables físicos de postproceso}
+\begin{gather}
+ {\cal R}=\{(x,y):|x-x_\gamma|\leq60\,\mathrm{nm},
+                    \ |y|\leq40\,\mathrm{nm}\},\qquad
+ w_i^{\cal R}=\int_{\cal R}\varphi_i(\mathbf r)\,\mathrm d^2r,\\
+ D_{h,\rm nod}(t)
+ =\sum_i w_i^{\cal R}
+ \bigl[|\Delta_{{\rm DC},i}|-|\Delta_i(t)|\bigr]_+,\qquad
+ d_{h,\rm nod}
+ =\frac{D_{h,\rm nod}}{\sum_iw_i^{\cal R}|\Delta_{{\rm DC},i}|},\\
+ A_{\cal R}=\sum_iw_i^{\cal R},\qquad
+ \overline\Delta_{\rm DC}
+ =\frac{\sum_iw_i^{\cal R}|\Delta_{{\rm DC},i}|}{A_{\cal R}},\qquad
+ \Delta_h(\mathbf r,t_{h,j})=\sum_i\Delta_i(t_{h,j})\varphi_i(\mathbf r),\quad
+ A_h^j(\mathbf r)=|\Delta_h(\mathbf r,t_{h,j})|,\\
+ \widehat A_h(\mathbf r,t)=(1-\alpha_{h,j})A_h^j(\mathbf r)
+                  +\alpha_{h,j} A_h^{j+1}(\mathbf r),\quad
+ \alpha_{h,j}=\frac{t-t_{h,j}}{t_{h,j+1}-t_{h,j}},\quad t\in[t_{h,j},t_{h,j+1}],\\
+ \widehat D_h(t)=(1-\alpha_{h,j})D_{h,\rm nod}(t_{h,j})
+                  +\alpha_{h,j}D_{h,\rm nod}(t_{h,j+1}),\\
+ e_{L^2}(t)=
+ \frac{\left\{N_{\cal R}^{-1}\sum_{\nu=1}^{N_{\cal R}}
+       \bigl[\widehat A_h(\mathbf r_\nu,t)
+       -\widehat A_{\tilde h}(\mathbf r_\nu,t)\bigr]^2
+       \right\}^{1/2}}{\overline\Delta_{\rm DC}},\\
+ e_{L^2}^{\max}=\max_{t\in{\cal T}}e_{L^2}(t),\qquad
+ e_D=\frac{\max_{t\in{\cal T}}|\widehat D_h(t)-\widehat D_{\tilde h}(t)|}
+ {\max_{t\in{\cal T}}\widehat D_h(t)},\qquad
+ (0/0)\mapsto0,\quad(x/0)\mapsto+\infty\;(x>0),\\
+ \nu_\triangle=\frac1{2\pi}\sum_{(ij)\in\partial\triangle_{\rm CCW}}
+             \operatorname{Arg}(\Delta_j/\Delta_i),\qquad
+ \Phi_0=\frac{\pi\hbar}{e},\\
+ {\cal I}_{\rm CM}(t)=\int_0^tV_{\rm dev}\,\mathrm ds
+ =\int_0^t[v_c+R_l(I_b-I_s)]\,\mathrm ds
+       -L_{k,\rm ext}[I_s(t)-I_s(0)],\\
+ {\cal C}_{\theta}=
+ \bigwedge_k
+ \left[
+ \left|\frac{2\pi}{\Phi_0}
+   ({\cal I}_{{\rm CM},k+1}-{\cal I}_{{\rm CM},k})\right|
+ <\pi-10^{-8}
+ \right].
+\end{gather}
+\begin{gather}
+ e_{L^2}^{\max}\leq\epsilon_{L^2}^{\rm ax},\qquad
+ e_D\leq\epsilon_D^{\rm ax},\qquad
+ \epsilon_{L^2}^{\rm ax}=\epsilon_D^{\rm ax}=0.05,
+ \quad\mathrm{ax}\in\{\mathrm{sp},\mathrm{ma},\mathrm{do}\},\\
+ \epsilon_V^{\rm ax}=\epsilon_\tau^{\rm ax}
+ =\begin{cases}0.02,&\mathrm{ax}\in\{\mathrm{sp},\mathrm{te}\},\\
+                 0.05,&\mathrm{ax}\in\{\mathrm{ma},\mathrm{do}\},\end{cases}
+ \qquad\epsilon_U=0.01,\\
+ m_{\rm nod}^{\rm ax}(t)=\min_i|\Delta_i^{\rm ax}(t)|
+ \quad\text{(sólo diagnóstico: }\mathrm{ax}\in\{\mathrm{sp},\mathrm{ma},\mathrm{do}\}\text{)}.
+\end{gather}
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{\varphi_i,w_i^{\cal R},[\cdot]_+}{base lineal triangular; pesos de área [m$^2$]; parte positiva}
+\labelrow{D_{h,\rm nod},d_{h,\rm nod},e_D}{déficit nodal [J\,m$^2$]; déficit relativo; error sobre el pico real}
+\labelrow{\overline\Delta_{\rm DC},\mathbf r_\nu,N_{\cal R}}{gap DC medio [J]; cuadratura central de paso 0.5 nm; número de puntos}
+\labelrow{A_h^j,\widehat A_h,\widehat D_h}{magnitud espacial guardada y comparada [J]; déficit nodal comparado [J\,m$^2$]}
+\labelrow{t_{h,j},\alpha_{h,j},{\cal T},e_{L^2},e_{L^2}^{\max}}{tiempos guardados de cada corrida [s]; peso temporal; tiempos físicos comunes; errores RMS [1]}
+\labelrow{\nu_\triangle,\Phi_0,{\cal I}_{\rm CM}}{winding CCW; cuanto [V\,s]; impulso circuital [V\,s]}
+\labelrow{{\cal C}_\theta}{bandera de fase desenvuelta admisible; falsa: diagnóstico ambiguo}
+\labelrow{\mathrm{sp},\mathrm{te},\mathrm{ma},\mathrm{do}}{espectral de 775 nm, 54/80 estados; temporal; malla; longitud del dominio}
+\labelrow{\epsilon_{L^2},\epsilon_D,\epsilon_V,\epsilon_\tau,\epsilon_U}{márgenes relativos de análisis; las demás reglas eléctricas, de latencia y cobertura siguen vigentes}
+\hline
+\end{tabular}
+{\small Presupuesto exploratorio propio; no admite el modelo por sí solo.}
+% T comprende la ventana fisica comun completa de gatillo confirmado +5ps desde cruce.
+% Conserva todos los maximos previos; ninguna cola200ps para diluir denominadores.
+% Sin alineamiento de vortices/tiempo ni extrapolacion; no winding/eventos interpolados.
+% Las formulas P1/|.|/interpolacion describen datos guardados, no dinamica no guardada.
+% Historiales2%,3/2/2%yFAILactual pertenecen a decisiones/certificados/informe, no a este fragmento general.

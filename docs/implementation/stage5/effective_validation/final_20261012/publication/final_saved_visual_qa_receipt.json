@@ -1,0 +1,49 @@
+{
+  "schema": "pysnspd.saved_visual_final_qa.v1",
+  "status": "PASS_NO_BLOCKING_PRESENTATION_FINDINGS",
+  "created_utc": "2026-10-12T07:35:41.779002+00:00",
+  "reviewer": "rate_pipeline_audit",
+  "scope": "Final 18 PNG products: four pulse/energy figures viewed individually, fourteen maps viewed in contacts and verified byte-identical to their prior individually inspected products. No new physical admission.",
+  "inventory_path": "/home/jdiaz/scratch/stage5_final_visual_v2_qa_20261012/inventory.json",
+  "inventory_sha256": "01cd56895265e8e87824f641f56eae740fbcb3592f6c3e74df04fb7bbca97678",
+  "root_execution_receipts_sha256": {
+    "/home/jdiaz/scratch/stage5_last_presentation_root_promotion_20261012/final_visual_1550_receipt.json": "026206f65f1a371530a783297380b628a6068a4f77afff32dda191b9485096aa",
+    "/home/jdiaz/scratch/stage5_last_presentation_root_promotion_20261012/final_visual_775_receipt.json": "dd2cace21a0d4111892e346b0b013cf67f10407afadc486134327ba90cf4ba01",
+    "/home/jdiaz/scratch/stage5_last_presentation_root_promotion_20261012/final_visual_tests_receipt.json": "22719bfaa973d08d3dd218bec7e15909d10aea558e785d4677a374353ca5c8ea"
+  },
+  "checks": {
+    "18_png_sha_match_their_plot_manifests": true,
+    "four_trace_figures_inspected_at_readable_scale": true,
+    "fourteen_maps_contact_inspected": true,
+    "fourteen_maps_byte_identical_to_prior_individual_QA": true,
+    "775_readout_inset_mV_visible": true,
+    "1550_readout_inset_microV_visible": true,
+    "threshold_remains_point1_mV_on_main_axis": true,
+    "baseline_subtraction_explicit": true,
+    "true_775_crossing_and_confirmation_separate": true,
+    "1550_censored_200ps_without_fictitious_latency": true,
+    "P1_complex_spatial_gap_then_magnitude_preserved": true,
+    "gap_meV_temperature_K_density_J_m3_time_ps_coordinates_nm": true,
+    "saved_energy_increments_eV": true,
+    "energy_global_absolute_norm_and_signed_retained_norm_distinct": true,
+    "figure_labels_readable_without_truncation": true
+  },
+  "readout_values_from_prior_saved_data_preview": {
+    "775_peak_mV": 0.14906788136217164,
+    "1550_peak_microV": 0.33138368385222117,
+    "1550_peak_mV": 0.00033138368385222114
+  },
+  "presentation_qa_erratum": {
+    "prior_receipt": "/home/jdiaz/scratch/stage5_visual_readout_detail_candidate_20261012/saved_visual_qa_receipt.json",
+    "correction": "The final 02 energy PNGs are byte-identical to the original products; therefore the initially reported left-label truncation was not a changed product defect repaired by the explicit tight-bbox option. The full label is readable in the final individual view. Original receipt retained; no physical or rendering data changed."
+  },
+  "commands_present_sha256": {
+    "/home/jdiaz/GEMINGA_COMMANDS_PRESENT.md": "4fe7344e7fbcc933efbec4c2bb3e9284beb57c3a0bf79129d25a58af0e240641",
+    "/home/jdiaz/pysnspd/docs/GEMINGA_COMMANDS_PRESENT.md": "4fe7344e7fbcc933efbec4c2bb3e9284beb57c3a0bf79129d25a58af0e240641"
+  },
+  "fresh_vs_segmented_campaign_explicit": true,
+  "simulations_launched": 0,
+  "physical_audits_repeated": 0,
+  "source_edits": 0,
+  "unresolved_findings": []
+}

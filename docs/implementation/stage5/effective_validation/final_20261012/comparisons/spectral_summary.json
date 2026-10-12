@@ -1,0 +1,497 @@
+{
+  "schema": "pysnspd.publication_saved_comparison_summary.v1",
+  "derivation": "Exact selected fields from the immutable full JSON; no audit rerun, no original rewritten",
+  "full_scratch_result": {
+    "source_path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/spectral_comparison/window.json",
+    "sha256": "3f8166ad1325ee6b5e9e908e254517b0b689143d9eb2ce6076dbdaee9897c84a",
+    "size_bytes": 28964178,
+    "disposition": "REMAIN_SCRATCH_NO_REPOSITORY_COPY"
+  },
+  "kind": "spectral",
+  "stage5_admission_inferred": false,
+  "window": {
+    "schema": "pysnspd.explicit_comparison_window.v1",
+    "status": "EXPLICIT_FINITE_COMPARISON_WINDOW_AUDITED",
+    "declared_interval_ps": [
+      0.0,
+      36.6
+    ],
+    "declaration": {
+      "schema": "pysnspd.comparison_window_declaration.v1",
+      "status": "PENDING_FINAL_COMPLETED_TRAJECTORIES_AND_SCIENTIFIC_REVIEW",
+      "declared_utc": "2026-10-12T06:54:02.716538+00:00",
+      "start_ps": 0.0,
+      "end_ps": 36.6,
+      "purpose": "Final common saved-data numerical comparison selected after every control completes its own event+5ps or200ps observation; critical coverage remains separate mandatory review.",
+      "critical_dynamics_coverage_is_separate_scientific_decision": true,
+      "latency_requires_both_saved_crossings_and_confirmations_inside_window": true,
+      "no_original_terminal_status_rewritten": true,
+      "no_censoring_inferred_at_analysis_endpoint": true,
+      "rationale": "Four axes775nm0--36.6ps only. Original nominal775ends36.94131686164998ps; last0.34131686165ps outsidefour-axiscomparison. Original fullowntrigger+5ps retained. No reset/peak/recovery convergence claim.",
+      "stage5_admission_inferred": false
+    },
+    "originals": {
+      "reference": {
+        "run_complete": true,
+        "terminal_status": "TRIGGER_MARGIN_COMPLETE",
+        "saved_audit_passed": true,
+        "completion_checks": {
+          "complete_declared_window": true,
+          "successful_saved_window_status": true
+        },
+        "noncompletion_failed_checks": [],
+        "original_event": {
+          "confirmed": true,
+          "censored": false,
+          "status": "TRIGGER_MARGIN_COMPLETE",
+          "latency_s": 3.194131686164998e-11,
+          "crossing_time_s": 3.194131686164998e-11,
+          "confirmation_time_s": 3.2441316861649975e-11,
+          "source": "saved accepted-step trigger controller",
+          "saved_crossing_voltage_difference_V": 0.0
+        }
+      },
+      "candidate": {
+        "run_complete": true,
+        "terminal_status": "TRIGGER_MARGIN_COMPLETE",
+        "saved_audit_passed": true,
+        "completion_checks": {
+          "complete_declared_window": true,
+          "successful_saved_window_status": true
+        },
+        "noncompletion_failed_checks": [],
+        "original_event": {
+          "confirmed": true,
+          "censored": false,
+          "status": "TRIGGER_MARGIN_COMPLETE",
+          "latency_s": 3.162778888559053e-11,
+          "crossing_time_s": 3.162778888559053e-11,
+          "confirmation_time_s": 3.212778888559053e-11,
+          "source": "saved accepted-step trigger controller",
+          "saved_crossing_voltage_difference_V": 1.3552527156068805e-20
+        }
+      }
+    },
+    "coverage": {
+      "reference": true,
+      "candidate": true
+    },
+    "checks": {
+      "reference_original_status_safe": true,
+      "candidate_original_status_safe": true,
+      "reference_physical_saved_checks_passed": true,
+      "candidate_physical_saved_checks_passed": true,
+      "reference_declared_interval_covered": true,
+      "candidate_declared_interval_covered": true,
+      "comparison_same_frozen_model_sources": true,
+      "comparison_same_nonrefined_parameters": true,
+      "comparison_actual_declared_refinement": true,
+      "comparison_voltage_waveform": true,
+      "comparison_electrical_latency_if_observed": true,
+      "comparison_temporal_refinement_at_least_two": true,
+      "comparison_verified_bounded_prospective_guard_policy": true,
+      "comparison_verified_explicit_resource_only_continuation": true,
+      "comparison_spectral_common_physical_ROI_available": true,
+      "comparison_spectral_central_gap_magnitude_L2": true,
+      "comparison_spectral_central_deficit_over_reference_peak": true
+    },
+    "passed": true,
+    "latency_certified_in_this_window": true,
+    "electrical_events_generated": false,
+    "scope": "Only declared finite interval. No original run_complete/status/controller is changed; no latency or censoring is assigned outside coverage. Extension is required if later critical dynamics/event is needed.",
+    "interpolation": "Saved scalar observables only in time; complex spatial P1 before magnitude; no electrical event or winding interpolated",
+    "original_full_runs_verified_before_window_crop": true,
+    "physical_gap_interpolation_method": "Saved complex spatial P1 -> magnitude on each frame -> linear scalar interpolation in time"
+  },
+  "metrics": {
+    "kind": "spectral",
+    "passed": true,
+    "checks": {
+      "reference_saved_window_passed": true,
+      "candidate_saved_window_passed": true,
+      "same_frozen_model_sources": true,
+      "same_nonrefined_parameters": true,
+      "actual_declared_refinement": true,
+      "voltage_waveform": true,
+      "electrical_latency_if_observed": true,
+      "temporal_refinement_at_least_two": true,
+      "verified_bounded_prospective_guard_policy": true,
+      "verified_explicit_resource_only_continuation": true,
+      "spectral_common_physical_ROI_available": true,
+      "spectral_central_gap_magnitude_L2": true,
+      "spectral_central_deficit_over_reference_peak": true
+    },
+    "relative_limit": 0.02,
+    "policy_version": "exploratory_spectral_voltage_observables_v1",
+    "legacy_nodal_policy_passed": false,
+    "legacy_nodal_policy_checks": {
+      "reference_saved_window_passed": true,
+      "candidate_saved_window_passed": true,
+      "same_frozen_model_sources": true,
+      "same_nonrefined_parameters": true,
+      "actual_declared_refinement": true,
+      "voltage_waveform": false,
+      "electrical_latency_if_observed": true,
+      "temporal_refinement_at_least_two": true,
+      "gap_min_waveform": false,
+      "verified_bounded_prospective_guard_policy": true,
+      "verified_explicit_resource_only_continuation": true
+    },
+    "common_trajectory_interval_ps": [
+      0.0,
+      36.6
+    ],
+    "common_gap_snapshot_interval_ps": [
+      0.0,
+      36.6
+    ],
+    "changed_parameters": {
+      "xi_order": {
+        "reference": 6,
+        "candidate": 8
+      },
+      "xi_cutoff": {
+        "reference": 32.0,
+        "candidate": 64.0
+      },
+      "phonon_nodes": {
+        "reference": 96,
+        "candidate": 144
+      },
+      "transport_order": {
+        "reference": 48,
+        "candidate": 96
+      }
+    },
+    "forbidden_parameter_changes": {},
+    "step_refinement_ratio": null,
+    "Vout": {
+      "maximum_absolute_difference_mV": 0.003779204888867732,
+      "reference_peak_mV": 0.14549816411004998,
+      "saved_threshold_mV": 0.1,
+      "admission_scale_mV": 0.14549816411004998,
+      "relative_error": 0.025974244499808716,
+      "pulse_scaled_error": 0.025974244499808716
+    },
+    "gap_min": {
+      "maximum_absolute_difference_meV": 0.14767716917023987,
+      "DC_reference_scale_meV": 1.2184475076019632,
+      "relative_error": 0.12120109257795156,
+      "diagnostic_only": true,
+      "former_gate_passed": false,
+      "current_gate_relative_limit": null,
+      "current_gate_passed": null
+    },
+    "latency": {
+      "available": true,
+      "passed": true,
+      "reference_ps": 31.941316861649977,
+      "candidate_ps": 31.62778888559053,
+      "absolute_difference_ps": 0.3135279760594457,
+      "tolerance_ps": 0.6388263372329995
+    },
+    "latency_comparison_complete": true,
+    "robust_spatial": {
+      "region_relative_nm": [
+        -60,
+        60,
+        -40,
+        40
+      ],
+      "x_center": "saved source.center_m[0]",
+      "y_coordinate": "physical",
+      "complex_interpolation": "Saved linear complex triangulation first, magnitude afterwards; no vortex alignment",
+      "time_interpolation": "Saved complex spatial P1 -> magnitude on each frame -> linear scalar interpolation in time",
+      "quadrature": "Uniform midpoint spatial quadrature on fixed physical120x80nm ROI",
+      "sample_spacing_actual_nm": [
+        0.5,
+        0.5
+      ],
+      "L2_field": {
+        "maximum_relative_error": 0.03085254812735303,
+        "DC_gap_scale_meV": 1.2184332629567942
+      },
+      "deficit": {
+        "maximum_absolute_difference_meV_nm2": 228.60093728179888,
+        "reference_actual_peak_meV_nm2": 11597.040914042384,
+        "relative_error_actual_peak": 0.019712005758727242,
+        "relative_error_DCarea": 0.01954362077717269,
+        "zero_peak_rule": "Zero difference/zero peak ->0; nonzero difference/zero peak ->failure, no arbitrary floor",
+        "definition": "D_h,nodal=sum exact clipped linear-nodal weights * positive nodal gap deficit; spatial approximation to continuum, not integral of magnitude of complex interpolant"
+      }
+    }
+  },
+  "original_result_summaries": {
+    "baseline_comparison_without_guard_protocol": {
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": true,
+        "candidate_saved_window_passed": true,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": false,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "gap_min_waveform": false
+      },
+      "relative_limit": 0.02,
+      "Vout": {
+        "maximum_absolute_difference_mV": 0.003779204888867732,
+        "reference_peak_mV": 0.14549816411004998,
+        "saved_threshold_mV": 0.1,
+        "admission_scale_mV": 0.14549816411004998,
+        "relative_error": 0.025974244499808716,
+        "pulse_scaled_error": 0.025974244499808716
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.14767716917023987,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.12120109257795156,
+        "diagnostic_only": false,
+        "former_gate_passed": false
+      },
+      "latency": {
+        "available": true,
+        "passed": true,
+        "reference_ps": 31.941316861649977,
+        "candidate_ps": 31.62778888559053,
+        "absolute_difference_ps": 0.3135279760594457,
+        "tolerance_ps": 0.6388263372329995
+      }
+    },
+    "original_complex_time_interpolation_result": {
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": true,
+        "candidate_saved_window_passed": true,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": false,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "gap_min_waveform": false,
+        "verified_bounded_prospective_guard_policy": true,
+        "verified_explicit_resource_only_continuation": true
+      },
+      "relative_limit": 0.02,
+      "Vout": {
+        "maximum_absolute_difference_mV": 0.003779204888867732,
+        "reference_peak_mV": 0.14549816411004998,
+        "saved_threshold_mV": 0.1,
+        "admission_scale_mV": 0.14549816411004998,
+        "relative_error": 0.025974244499808716,
+        "pulse_scaled_error": 0.025974244499808716
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.14767716917023987,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.12120109257795156,
+        "diagnostic_only": false,
+        "former_gate_passed": false
+      },
+      "latency": {
+        "available": true,
+        "passed": true,
+        "reference_ps": 31.941316861649977,
+        "candidate_ps": 31.62778888559053,
+        "absolute_difference_ps": 0.3135279760594457,
+        "tolerance_ps": 0.6388263372329995
+      }
+    },
+    "original_2percent_spectral_result": {
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": true,
+        "candidate_saved_window_passed": true,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": false,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "gap_min_waveform": false,
+        "verified_bounded_prospective_guard_policy": true,
+        "verified_explicit_resource_only_continuation": true
+      },
+      "relative_limit": 0.02,
+      "Vout": {
+        "maximum_absolute_difference_mV": 0.003779204888867732,
+        "reference_peak_mV": 0.14549816411004998,
+        "saved_threshold_mV": 0.1,
+        "admission_scale_mV": 0.14549816411004998,
+        "relative_error": 0.025974244499808716,
+        "pulse_scaled_error": 0.025974244499808716
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.14767716917023987,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.12120109257795156,
+        "diagnostic_only": false,
+        "former_gate_passed": false
+      },
+      "latency": {
+        "available": true,
+        "passed": true,
+        "reference_ps": 31.941316861649977,
+        "candidate_ps": 31.62778888559053,
+        "absolute_difference_ps": 0.3135279760594457,
+        "tolerance_ps": 0.6388263372329995
+      }
+    },
+    "original_3_2_2_spectral_result": {
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": true,
+        "candidate_saved_window_passed": true,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": false,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "gap_min_waveform": false,
+        "verified_bounded_prospective_guard_policy": true,
+        "verified_explicit_resource_only_continuation": true,
+        "spectral_common_physical_ROI_available": true,
+        "spectral_central_gap_magnitude_L2": false,
+        "spectral_central_deficit_over_reference_peak": true
+      },
+      "relative_limit": 0.02,
+      "Vout": {
+        "maximum_absolute_difference_mV": 0.003779204888867732,
+        "reference_peak_mV": 0.14549816411004998,
+        "saved_threshold_mV": 0.1,
+        "admission_scale_mV": 0.14549816411004998,
+        "relative_error": 0.025974244499808716,
+        "pulse_scaled_error": 0.025974244499808716
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.14767716917023987,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.12120109257795156,
+        "diagnostic_only": false,
+        "former_gate_passed": false,
+        "current_gate_relative_limit": 0.03,
+        "current_gate_passed": false
+      },
+      "latency": {
+        "available": true,
+        "passed": true,
+        "reference_ps": 31.941316861649977,
+        "candidate_ps": 31.62778888559053,
+        "absolute_difference_ps": 0.3135279760594457,
+        "tolerance_ps": 0.6388263372329995
+      }
+    },
+    "original_2percent_voltage_spectral_result": {
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": true,
+        "candidate_saved_window_passed": true,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": false,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "verified_bounded_prospective_guard_policy": true,
+        "verified_explicit_resource_only_continuation": true,
+        "spectral_common_physical_ROI_available": true,
+        "spectral_central_gap_magnitude_L2": true,
+        "spectral_central_deficit_over_reference_peak": true
+      },
+      "relative_limit": 0.02,
+      "Vout": {
+        "maximum_absolute_difference_mV": 0.003779204888867732,
+        "reference_peak_mV": 0.14549816411004998,
+        "saved_threshold_mV": 0.1,
+        "admission_scale_mV": 0.14549816411004998,
+        "relative_error": 0.025974244499808716,
+        "pulse_scaled_error": 0.025974244499808716
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.14767716917023987,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.12120109257795156,
+        "diagnostic_only": true,
+        "former_gate_passed": false,
+        "current_gate_relative_limit": null,
+        "current_gate_passed": null
+      },
+      "latency": {
+        "available": true,
+        "passed": true,
+        "reference_ps": 31.941316861649977,
+        "candidate_ps": 31.62778888559053,
+        "absolute_difference_ps": 0.3135279760594457,
+        "tolerance_ps": 0.6388263372329995
+      }
+    }
+  },
+  "policy_applications": {
+    "spectral_observable_policy": {
+      "schema": "pysnspd.spectral_observable_policy_application.v1",
+      "decision": {
+        "path": "/home/jdiaz/scratch/stage5_spectral_mesh_scope_review_20261011/root_prospective_spectral_policy_decision.json",
+        "sha256": "8c62658c36336a2e19cb0d37bef6b650cf5d44da734e586d3fe1d11b1ce6ed33"
+      },
+      "spectral_limits": {
+        "nodal_minimum_over_DC": 0.03,
+        "central_field_L2_over_DC": 0.02,
+        "central_deficit_over_actual_reference_peak": 0.02
+      },
+      "unchanged_limits": {
+        "global_energy": 0.01,
+        "temporal": 0.02,
+        "mesh": 0.05,
+        "domain": 0.05,
+        "spectral_Vout": 0.02,
+        "spectral_observed_latency": 0.02
+      },
+      "scope": "775nm existing54/80state spectral comparison over the completed declared physical critical window; not universal microscopic core accuracy.",
+      "stage5_admission_inferred": false
+    },
+    "exploratory_spectral_spatial_policy": {
+      "schema": "pysnspd.exploratory_spectral_spatial_policy_application.v1",
+      "decision": {
+        "path": "/home/jdiaz/scratch/stage5_exploratory_spatial_budget_candidate_20261011/root_prospective_exploratory_spatial_decision.json",
+        "sha256": "e683151e6e7b678d95eb6c133391b2ea84ca2ba81cd5a54b1a21cb9f16624e23"
+      },
+      "spectral_limits": {
+        "nodal_minimum_over_DC": null,
+        "central_field_L2_over_DC": 0.05,
+        "central_deficit_over_actual_reference_peak": 0.05
+      },
+      "original_2percent_result_preserved": true,
+      "original_3_2_2_result_preserved": true,
+      "stage5_admission_inferred": false
+    },
+    "exploratory_spectral_voltage_policy": {
+      "schema": "pysnspd.exploratory_spectral_voltage_policy_application.v1",
+      "decision": {
+        "path": "/home/jdiaz/scratch/stage5_exploratory_voltage_policy_candidate_20261012/root_adopted_post_data_voltage_decision_REVIEW_ONLY.json",
+        "sha256": "bda09a6aaf095a175440dc77ac76faef8eaab98072fce2f5b5aa8984eb35efa6"
+      },
+      "policy_timing": "AFTER_COMPLETED_DATA_REVIEW",
+      "voltage_relative_limit": 0.05,
+      "prior_voltage_relative_limit": 0.02,
+      "latency_relative_limit": 0.02,
+      "global_energy_relative_limit": 0.01,
+      "original_2percent_voltage_result_preserved": true,
+      "production_default_electron_states": 54,
+      "sensitivity_control_electron_states": 80,
+      "no_continuum_or_universal_accuracy_claim": true,
+      "stage5_admission_inferred": false
+    }
+  },
+  "source_pins": {
+    "auditor_source_sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "window_source_sha256": "12c241558703955b915076af4ff3020d6588fbd0296047b290dc129f06e3a99e",
+    "guard_dispatcher_source_sha256": "13663d94b35184452a274a9bad73b395154af0e0dca224b370074239dd1ce50c",
+    "bounded_guard_source_sha256": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+  },
+  "complete_original_failures_and_input_hash_map_remain_in_full_scratch_JSON": true,
+  "complete_numerical_control_proof_remains_in_full_scratch_JSON": true
+}

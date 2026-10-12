@@ -1,0 +1,49 @@
+{
+  "schema": "pysnspd.report_DC_evidence_source_validation.v1",
+  "status": "PASS",
+  "admission": false,
+  "builder_sha256": "1f19f14c4f05831e74aa753913e13ae8a79236c05dbe998425cd3e94ed9d1a4c",
+  "test_path": "/home/jdiaz/pysnspd/tests/test_effective_report_DC_evidence.py",
+  "test_sha256": "97a1e300e90efc5c16c49cc018018d379c209089744beb437d59a687cb338ce7",
+  "tests": {
+    "passed": 151,
+    "elapsed_s": 1.925,
+    "physical_evolution": false,
+    "rendered": false
+  },
+  "actual_DC_evidence": {
+    "path": "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/current_v6_DC_evidence.json",
+    "sha256": "f4c26bb1b75abb61baa47227ec0c195fc57b9ebf2a7330e1114c0df2cdd6d721",
+    "schema": "pysnspd.current_effective_DC_evidence.v1",
+    "scope": "Own current-code basal hold only; historical holds are distinct antecedents"
+  },
+  "display": {
+    "max_Vout_V": 0.0,
+    "max_Vdev_V": 1.4558046545474175e-17,
+    "max_energy_defect_J": 2.3700227555395377e-41,
+    "max_gap_drift_J": 0.0,
+    "max_Te_drift_K": 0.0,
+    "max_Tph_drift_K": 0.0,
+    "max_Is_drift_A": 0.0,
+    "duration_ps": 9.999999999999979,
+    "accepted_steps": 100,
+    "same13pins": true,
+    "source_mode": "DC",
+    "own_frozen_exterior_inductance_H": 1.033055069878189e-07,
+    "primary_exterior_inductance_H": 1.033055069878189e-07,
+    "exterior_inductance_difference_fraction": 0.0,
+    "stage5_admission_inferred": false,
+    "scope": "Own current-code basal hold only; historical holds are distinct antecedents"
+  },
+  "input_sha256": {
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/manifest.json": "2206ad1c8aad0dd83a4f7544466ea035f6f7f2605abed7984c538bf7d4f49508",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/trajectory.npz": "ff818d6b04b21171146059fb5490836ca20b811be64c700c94e1911afc6da302",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/snapshots.npz": "f034ada087474815fc9799c44dc44aa2b1ba14ec9afe580c51d401f013600337",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/checkpoint_latest.npz": "64db270e9077ca9bcce4a6b9ca76972775b71bc2d5af5c05d52c6cd1e507708c",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/dc/effective_dc.npz": "37a419975a84d677ce2a1401e4d8a99b1c19ae5ba5ef09431e03fc6eeded515d",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/current_v6_DC_evidence.json": "f4c26bb1b75abb61baa47227ec0c195fc57b9ebf2a7330e1114c0df2cdd6d721",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_audit_20261011/audit.json": "ba2cb6ee065ed86ad2752bed33d0a6b9fc6b08d1339611ae214a2597330b6a7d"
+  },
+  "note": "\\textbf{Basal propio de esta versión.} 10 ps sin fotón (100 pasos): $\\max|V_{\\rm out}|=0$ nV, $\\max|V_{\\rm dev}|=1.4558e-08$ nV; defecto energético máximo 2.37e-41 J. Derivas de $|\\Delta|$, $T_e$, $T_{\\rm ph}$ e $I_s$: nulas en los datos guardados. Este hold verifica el basal; su alcance se separa de la validación fotónica.",
+  "correction": "DCv6 and nominal primary physicalparams are exactly identical. The103.311569169nH value belongs to the refined spectral case, not the nominal hold."
+}

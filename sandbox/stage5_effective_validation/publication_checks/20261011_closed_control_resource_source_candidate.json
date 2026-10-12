@@ -1,0 +1,88 @@
+{
+  "schema": "pysnspd.closed_control_resource_candidate_receipt.v1",
+  "timestamp_UTC": "2026-10-11T20:05:20.715378+00:00",
+  "status": "REVIEW_ONLY_NOT_APPLIED_NOT_EXECUTED",
+  "stage5": false,
+  "files": {
+    "sandbox/stage5_effective_validation/control_resource_transition.py": "7aaa9c4e3266c69f4b033958104b7c945a0d5e7bf1c391e2817fc7e2279394c5",
+    "sandbox/stage5_effective_validation/num8_resource_equivalence.py": "85fab053549194a658835a2933416dcecac335048842d0d8ff7d7d07d9fc1fd6",
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": "e681900a2efbc62c46d3572c8e2e97fd69cc29445fb28a7340d63cafeaab3519",
+    "tests/test_effective_control_resource_transition.py": "b50eef888fcb72ee87d8f155966602dacb43ed4d11ec24c6a1abffc9834b3a66"
+  },
+  "patch": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/closed_control_resources_REVIEW_ONLY.patch",
+    "sha256": "4c73318f8da5243fc1d88f1935a1e25fc4de678fc1d9347f4a97581a14e26645"
+  },
+  "operational_artifacts": {
+    "launch_domain_2to4_CONDITIONAL.sh": "6d898f4f5bfc857aa2c7034c82e56deaab600983d165c29e66f16cafa3b138dd",
+    "launch_spectral_2to4_CONDITIONAL.sh": "56708fe5fcbf69d4bfe59987fa0e2972e27d0cb2e654cf19438c951b5a868859",
+    "launch_spectral_4to8_CONDITIONAL.sh": "4a2a0abf36e2c46ccdc88c68e7022a530bf943521453b3a66bbbe3345e3c3ece",
+    "run_num8_oracle_CONDITIONAL.sh": "c9e02e22fd9ef9a6f77075f59e96df17227ab64eecde75cc3d79ac6d68de2d13"
+  },
+  "plan_sha256": "cb8a778e835db3c75b8c62bf6163c06777c8013c797374f05bdf8d9e11367413",
+  "source_baselines_unchanged": {
+    "sandbox/stage5_effective_validation/audit_runs.py": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "sandbox/stage5_effective_validation/bounded_guard_protocol.py": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6",
+    "sandbox/stage5_effective_validation/fine_resource_transition.py": "c002fac3d2a1487fbaaf7304ef211b33db3357859fbeedf8a21c62093a033312",
+    "sandbox/stage5_effective_validation/fine_resource_guard_adapter.py": "05d713a975f30d1550daeaf867765c16acceb81f776526a779ac2f438fa97c8e",
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": "05233ffe36e05a29fc22261dccb28b744436a2315c3ef6721c6eadfb87ca1269",
+    "sandbox/stage5_effective_validation/build_final_report.py": "bbb9290022fd9aa7f703964df71b4000f57c301385bc47922f409916b2273770"
+  },
+  "frozen_runtime_pins_sha256": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "tests": {
+    "command": "env PYTHONPATH=/home/jdiaz/pysnspd TMPDIR=/home/jdiaz/scratch/tmp/pysnspd PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 OMP_NUM_THREADS=1 NUMBA_NUM_THREADS=1 taskset -c 4 timeout 300 /home/jdiaz/.conda/envs/snspd/bin/python /home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/proposed/tests/test_effective_control_resource_transition.py",
+    "passed_tests": 20,
+    "wall_s": 2.589,
+    "scope": "Original18 synthetic contracts +2 concrete regressions: complete Python/frozen-runner argv and matchingNum8 errors against historicalNum4. Actual shellNum8 vectors pinned6-13 only AFTER global preflight, inspected without execution.",
+    "shell_and_embedded_python_syntax": "PASS"
+  },
+  "num8_status": "PENDING_NOT_EXECUTED_NOT_CERTIFIED; separate checker proof/rootSHA approval required",
+  "guarded_energy_source_event_criteria_changed": false,
+  "physical_run_captured": false,
+  "production_signal_sent": false,
+  "resource_transfer_prepared": false,
+  "resource_job_launched": false,
+  "note": "Review10-to13 domainNum4/spectralNum4/Num8 closed choices only. Parent strictly pretrigger. Host workload recheck remains root responsibility; no reservation or future cross-thread bit identity promised.",
+  "previous_candidate_receipt": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/history/before_runner_argv_correction/candidate_receipt.json",
+    "sha256": "8573928ae3085d67521ce6355c72ded7c16f1bbfdd08cea0ffab0ac414386374"
+  },
+  "independent_findings": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/memory_backend_initial_read_findings.json",
+    "sha256": "7b226b8d27d4a004b9a35dfa9218dde02a4a066220cb37077b8c563ffe167cc9"
+  },
+  "review_corrections": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/review_corrections_from_initial.patch",
+    "sha256": "5a1853e456ce30841bccfcefba0ec54d1271646c03a52c74a8622c9a9b129baa"
+  },
+  "corrected_defects": [
+    "resume_argv remains args-only; runner_argv explicitly prefixes actual Python -u and SHA-bound child frozen runner; PYTHONPATH set to frozen runtime immediately before exec",
+    "Num8 exceptions must match oracle/candidate AND the original reviewedNum4 exception class/text",
+    "Checker cpu_start6 is NOT affinity setup; global preflight stays full-host, then oracle/candidate each taskset6-13 and NUMBA8. Frozen driver b529 unchanged."
+  ],
+  "num8_shell_vector_regression": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/num8_shell_vector_regression.json",
+    "sha256": "96bd6841169e3aa4746108cc6636d56a0b21fed8623868affad49ab6c44a4dc0"
+  },
+  "diff_artifact_correction": {
+    "previous_incomplete_diff_sha256": "bfbdd56afa7633aa128c7021324fd2c6aab49122721ff906e83986d84df9e4c2",
+    "initial_Num8_recovered_from_original_full_patch_sha256": "df70a323d6d84e2c7f8e5eeb1f23b27327011332212836efea0e65f0a943d25b",
+    "initial_Num8_source_sha256": "e0c1e053184efaafc291bf7a6f6b3b4f7320fea90f45f29c60be6438df291df0",
+    "source_code_changed": false,
+    "tests_repeated": false
+  }
+}

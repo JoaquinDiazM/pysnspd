@@ -1,0 +1,52 @@
+{
+  "schema": "pysnspd.stage5_auxiliary_layout_candidate.v1",
+  "status": "REVIEW_ONLY",
+  "created_utc": "2026-10-12T07:26:26.790780+00:00",
+  "stage5_admission_altered": false,
+  "repository_modified": false,
+  "sources": [
+    {
+      "repository_path": "sandbox/stage5_math_documents/Matematica_etapa5_auxiliares.tex",
+      "before": "/home/jdiaz/scratch/stage5_auxiliary_layout_candidate_20261012/before/Matematica_etapa5_auxiliares.tex",
+      "before_sha256": "c6cb321acde23dcc614d45398215c9d9015943ffa8121c938f715a3e46d97c66",
+      "after": "/home/jdiaz/scratch/stage5_auxiliary_layout_candidate_20261012/after/Matematica_etapa5_auxiliares.tex",
+      "after_sha256": "59ee7b645230a960bb96c136754e6452dde6755ab1433d1fd009a0fa723c2513"
+    }
+  ],
+  "patch": {
+    "path": "/home/jdiaz/scratch/stage5_auxiliary_layout_candidate_20261012/layout_REVIEW_ONLY.patch",
+    "sha256": "b7e07bf282f40289d4a918c71c015b351a38898839f953f46125f03941781245"
+  },
+  "pdf": {
+    "path": "/home/jdiaz/scratch/stage5_auxiliary_layout_candidate_20261012/build/Matematica_etapa5_auxiliares.pdf",
+    "sha256": "90ed8d1dc679032115550c6e2f093e3c63c1e6bb283ba6cc35ed68580579fbf9",
+    "pages": 8
+  },
+  "visual_qa": {
+    "path": "/home/jdiaz/scratch/stage5_auxiliary_layout_candidate_20261012/visual_qa.json",
+    "sha256": "533c1a35d5044f2becc8aae6bbf88027bf3e8c8658382f58664f8f9dd45d6df1"
+  },
+  "compile": {
+    "executable": "/usr/bin/pdflatex",
+    "passes": 2,
+    "returncodes": [
+      0,
+      0
+    ],
+    "overfull_warnings": 0,
+    "underfull_warnings": 0,
+    "logs": [
+      {
+        "path": "/home/jdiaz/scratch/stage5_auxiliary_layout_candidate_20261012/build/compile_final_1.console.log",
+        "sha256": "cb885a8a6d8ddb80c5e9ec19c6c5aab9f591e9d164dce1cb2e1399cd5b91aa0d"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_auxiliary_layout_candidate_20261012/build/compile_final_2.console.log",
+        "sha256": "cb885a8a6d8ddb80c5e9ec19c6c5aab9f591e9d164dce1cb2e1399cd5b91aa0d"
+      }
+    ],
+    "scratch_texmf": true
+  },
+  "equation_tokens_unchanged_ignoring_spacing_linebreak_grouping": true,
+  "history": "Prior scratch candidate and decode-error compile log preserved; no repository source or final PDF replaced."
+}

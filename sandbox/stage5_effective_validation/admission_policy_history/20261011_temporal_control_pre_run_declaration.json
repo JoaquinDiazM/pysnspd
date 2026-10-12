@@ -1,0 +1,17 @@
+{
+  "declaration_utc": "2026-10-11T15:12:53.580984+00:00",
+  "status": "CANDIDATE_NOT_APPLIED",
+  "policy": {
+    "declaration_utc": "2026-10-11T15:12:53.580984+00:00",
+    "reference_dt_cap_ps": 0.02,
+    "candidate_dt_cap_ps": 0.01,
+    "reference_local_energy_tolerance": 1e-05,
+    "candidate_local_energy_tolerance": 1.25e-06,
+    "nonlinear_tolerance": 2e-07,
+    "RHS_pins_identical": true,
+    "rationale": "An approximately cubic local midpoint energy defect implies8x stricter tolerance targets2x smaller critical accepted steps; equal guards could adapt to equal critical steps. Actual accepted-step distributions remain visible.",
+    "exception_scope": "Only temporal comparison and exactly declared dt/guard pair; mesh/domain/spectral require equal guards; no physical/source/NL exceptions"
+  },
+  "auditor_sha256": "8e4549e1067deb47171f76e0c55f9224ae11f895618e3046885a1d998b0b90ab",
+  "policy_sha256": "550998f65b12c74142cab9aad3c236e18dbe94b161cb267a58e8cc5c371051f4"
+}

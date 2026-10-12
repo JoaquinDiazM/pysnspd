@@ -1,0 +1,33 @@
+{
+  "decision_date": "2026-10-11",
+  "scope": "effective neutral BCS/KWT/native kinetic/CM model; deterministic post-cascade observation",
+  "instantaneous_energy": {
+    "relative": 1e-10,
+    "absolute_W": 1e-20
+  },
+  "integrated_energy": {
+    "maximum_fraction": 0.01,
+    "denominator": "retained photon energy plus integral(abs(net external power))"
+  },
+  "temporal": {
+    "relative": 0.02,
+    "latency_absolute_ps": 0.1
+  },
+  "mesh_relative": 0.05,
+  "domain_relative": 0.05,
+  "spectral_relative": 0.02,
+  "physical_support": "p in [0,1], n >=0, finite states, Ib and Is positive",
+  "observables": [
+    "Vout",
+    "minimum gap",
+    "confirmed first crossing latency"
+  ],
+  "closure": "Pragmatic admission within this effective hypothesis, not experimental calibration or exact Usadel",
+  "observation": {
+    "threshold_mV": 0.1,
+    "confirmation_ps": 0.5,
+    "extra_ps": 5.0,
+    "ceiling_ps": 200.0,
+    "full_reset": false
+  }
+}

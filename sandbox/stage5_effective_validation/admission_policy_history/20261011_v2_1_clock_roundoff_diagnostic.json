@@ -1,0 +1,21 @@
+{
+  "amended_utc": "2026-10-11T15:22:02.798725+00:00",
+  "status": "ADOPTED_DIAGNOSTIC_ROUNDOFF_FIX",
+  "parent_adoption": "20261011_v2_adoption.json",
+  "before_auditor_sha256": "ef8ddf93bfaa4452f88a8d3c90fa78b807980ca1a5a95439152bdbd875ad9e89",
+  "current_auditor_sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+  "current_tests_sha256": "f98dadcbc337eb48f66ac8b1f4f6205eaf43448e1992c8ee5b86b1c2d95e0466",
+  "change": "Treat a common post-anchor interval as empty when its width<=32eps*max(abs(tstart),abs(tend),1ps); same bound excludes anchor-only endpoints from accepted-step statistics.",
+  "scientific_policy_changed": false,
+  "RHS_modified": false,
+  "physical_gates_changed": false,
+  "tests": {
+    "count": 66,
+    "failures": 0,
+    "errors": 0,
+    "wall_s": 0.943,
+    "cpu_affinity": [
+      6
+    ]
+  }
+}

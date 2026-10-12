@@ -1,0 +1,13 @@
+{
+  "schema": "pysnspd.comparison_window_declaration.v1",
+  "status": "PROPOSED_NOT_ADOPTED",
+  "declared_utc": "2026-10-11T15:42:04.780719+00:00",
+  "start_ps": 0,
+  "end_ps": 20,
+  "purpose": "Initial temporal, mesh, domain and spectral comparison of saved post-cascade curves; extend if the critical region or electrical event lies later.",
+  "critical_dynamics_coverage_is_separate_scientific_decision": true,
+  "latency_requires_both_saved_crossings_and_confirmations_inside_window": true,
+  "no_original_terminal_status_rewritten": true,
+  "no_censoring_inferred_at_analysis_endpoint": true,
+  "criteria_unchanged": "Global1%, instantaneous independent balance, physical support/currents and source pins, adopted axis-specific observable limits; only full-run terminal requirements are separate from the declared comparison window."
+}

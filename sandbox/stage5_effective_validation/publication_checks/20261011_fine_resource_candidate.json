@@ -1,0 +1,165 @@
+{
+  "schema": "pysnspd.fine_resource_only_candidate_receipt.v1",
+  "status": "ROOT_REVIEW_REQUIRED_NOT_APPLIED_NOT_EXECUTED",
+  "utc": "2026-10-11T19:30:37.381799+00:00",
+  "stage5": false,
+  "model_admission": false,
+  "candidate_files": {
+    "fine_resource_transition.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/fine_resource_transition.py",
+      "sha256": "c002fac3d2a1487fbaaf7304ef211b33db3357859fbeedf8a21c62093a033312"
+    },
+    "fine_resource_guard_adapter.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/fine_resource_guard_adapter.py",
+      "sha256": "05d713a975f30d1550daeaf867765c16acceb81f776526a779ac2f438fa97c8e"
+    },
+    "guard_protocol_dispatcher.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/guard_protocol_dispatcher.py",
+      "sha256": "05233ffe36e05a29fc22261dccb28b744436a2315c3ef6721c6eadfb87ca1269"
+    },
+    "test_effective_fine_resource_transition.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/test_effective_fine_resource_transition.py",
+      "sha256": "a96eed6565d3555597a986942c9ed707cfae0b386f8b3500d43b3d6bcb889340"
+    },
+    "resource_only_REVIEW_ONLY.patch": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/resource_only_REVIEW_ONLY.patch",
+      "sha256": "e423789c54de15cf0f98cc75c3aeecfa36039c3da973ef1663e93e98d8391c40"
+    },
+    "schema_lineage_correction_REVIEW_ONLY.patch": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/schema_lineage_correction_REVIEW_ONLY.patch",
+      "sha256": "9b626a6c039f0e46f963ec0d1a9d362ad58d2d1d9f994e75f7f119016a3d17b8"
+    },
+    "launch_resources4_REVIEW_ONLY.sh": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/launch_resources4_REVIEW_ONLY.sh",
+      "sha256": "8f0a7da15241646610f3dd3f8ef79ce09144d225343982cb2c970f1a86e81422"
+    },
+    "CONDITIONAL_COMMANDS_REVIEW_ONLY.md": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/CONDITIONAL_COMMANDS_REVIEW_ONLY.md",
+      "sha256": "71fb2bd9ed10ec8441efaa4446cce215d609c57efb29471ca5848b31f71f38ea"
+    },
+    "verify_real_checkpoint_namespace.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/verify_real_checkpoint_namespace.py",
+      "sha256": "6b0a78b16f9f3107f9a310b1822f04cfa060746021c427fba117827571c51b7f"
+    },
+    "real_checkpoint_namespace_validation.json": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/real_checkpoint_namespace_validation.json",
+      "sha256": "8520dfd19ca61b38c387e7471a004885a0ade27fb195cd576687d2a28a427ab3"
+    }
+  },
+  "current_sources_unchanged": {
+    "sandbox/stage5_effective_validation/audit_runs.py": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "sandbox/stage5_effective_validation/bounded_guard_protocol.py": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6",
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": "732c13316309626ade82cc88565b79a813fc7cd86d3a8c3efa0cc38932d910a7"
+  },
+  "runtime13_sources_unchanged": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "scope": {
+    "axis": "mesh",
+    "parent": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_20261011",
+    "child": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_resources4_20261011",
+    "resources_before": {
+      "threads": 2,
+      "affinity": [
+        12,
+        13
+      ]
+    },
+    "resources_after": {
+      "threads": 4,
+      "affinity": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    "constraints": [
+      "parent stable INTERRUPTED, ACTIVE pre-trigger, no owning pipeline process",
+      "nominal775 actually terminal and its process absent before any preparation/launch",
+      "exact28-key namespace(27numeric arrays+metadata_json), dtype/shape/bytes and all metadata except typed threads2-to4",
+      "guard anchor/maxima, E0, signed/absolute external work, all counters/controller/next_h unchanged",
+      "mesh-only explicit selector; original parent guard proof before resource tail; no role aliases",
+      "full resource chronology separate from resource-free guard-policy projection",
+      "global energy1percent; local guard2.5e-6; NL2e-7; physical comparisons unchanged",
+      "no bitexact prediction for future cross-thread trajectory/scalar reductions",
+      "global pipeline physical core budget<=14of16; reserve14/15; target0..3 unoccupied"
+    ],
+    "checkpoint_schema": {
+      "total_keys": 28,
+      "numeric_arrays": 27,
+      "metadata_entries": 1,
+      "physical_state_arrays": 4,
+      "trajectory_arrays": 16,
+      "snapshot_arrays": 7
+    }
+  },
+  "tests": {
+    "synthetic_only": true,
+    "count": 25,
+    "elapsed_test_s": 1.682,
+    "passed": true,
+    "command": "TMPDIR=/home/jdiaz/scratch/tmp/pysnspd PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=/home/jdiaz/pysnspd taskset -c 4 timeout 300 /home/jdiaz/.conda/envs/snspd/bin/python /home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/test_effective_fine_resource_transition.py",
+    "cases": "Pinned producer exact28-key schema with27numeric arrays; every actual named physical/history/snapshot array; same-cardinality wrong time_ps field; signed-zero/types; counters/ledger/source/solver changes; live prefixes; free target/global reserve; exact1percent; default/explicit/full/finite selector; preserved physical failure"
+  },
+  "checks": {
+    "AST_parse": true,
+    "bash_n": true,
+    "git_apply_check": true,
+    "real_transaction_exercised": false,
+    "active_checkpoint_captured": false,
+    "physical_RHS_evaluated": false,
+    "source_promoted": false,
+    "real_run_output_created": false,
+    "any_signal_sent": false,
+    "any_job_launched": false,
+    "real_checkpoint_namespace_verified": true,
+    "all27_numeric_arrays_and_metadata_verified": true,
+    "real_future_resource_transaction_exercised": false
+  },
+  "notebook_append": {
+    "path": "/home/jdiaz/GEMINGA_COMMANDS.md",
+    "sha256_before": "53f69041160068bfd9499507a599e0d22c7988a85e347522d07c545ac4b7926b",
+    "sha256_after": "d1c44908859ecc7d3d35494869f67da174a5e344d45344fe7d97834c2d3cb7f7",
+    "exact_original_prefix_preserved": true,
+    "entry_title": "## 2026-10-11 \u2014 FE DE ERRATAS: candidato resource-only, esquema real28keys",
+    "prior_proposal_is_superseded": true
+  },
+  "dependency_impact": {
+    "new_sources": [
+      "sandbox/stage5_effective_validation/fine_resource_transition.py",
+      "sandbox/stage5_effective_validation/fine_resource_guard_adapter.py"
+    ],
+    "existing_source_only_selector": "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py",
+    "new_test": "tests/test_effective_fine_resource_transition.py",
+    "runtime_or_baseline_or_bounded_changes": false,
+    "future_binding_only": "After root approval: add the two analysis sources/test/receipt to inventory; use explicit resource-transition-receipt on mesh command; no builder/window policy rewrite required."
+  },
+  "real_existing_immutable_schema_evidence": {
+    "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/real_checkpoint_namespace_validation.json",
+    "sha256": "8520dfd19ca61b38c387e7471a004885a0ade27fb195cd576687d2a28a427ab3",
+    "scope": "Read-only old immutable initial; h.decode and directNPZ preserve all28dtype/shape/bytes. No active capture or physical RHS."
+  },
+  "launcher_ancestry_validation": "h.lineage.verify_receipt authenticates parent checkpoint/capture/manifest/archive/13pins/segments/argv; resolve_receipt reconstructs the full ancestral numerical timeline before any preflight/exec.",
+  "supersedes": {
+    "previous_candidate_receipt_path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/before_real_schema_correction/candidate_receipt.json",
+    "previous_candidate_receipt_sha256": "0b345743a18d746ed3a426d3bd0d3cdcb8ab5846ad4bba9087ddf37f04cb3368",
+    "previous_final_patch_sha256": "2f15eb94d31cb502849679e3872cc6c320d9287b0cc019e9383fa2972aece266",
+    "previous_independent_PASS_reviews_invalid_for_preparation": true,
+    "reason": "Off-by-one: actual27numeric arrays plusmetadata_json=28keys, while old synthetic fixture/len27 includedmetadata. No real resource transfer was executed. Missing launcher ancestor SHA gate also corrected.",
+    "backups": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/before_real_schema_correction",
+    "old_history_preserved": true
+  }
+}

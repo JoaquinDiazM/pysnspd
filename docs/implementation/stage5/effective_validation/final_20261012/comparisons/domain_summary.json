@@ -1,0 +1,303 @@
+{
+  "schema": "pysnspd.publication_saved_comparison_summary.v1",
+  "derivation": "Exact selected fields from the immutable full JSON; no audit rerun, no original rewritten",
+  "full_scratch_result": {
+    "source_path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/domain_comparison/window.json",
+    "sha256": "11d54168049fcb6a4a728b38a8af8f2f418aa9b1919920eba025546e46cbf3e3",
+    "size_bytes": 645501,
+    "disposition": "REMAIN_SCRATCH_NO_REPOSITORY_COPY"
+  },
+  "kind": "domain",
+  "stage5_admission_inferred": false,
+  "window": {
+    "schema": "pysnspd.explicit_comparison_window.v1",
+    "status": "EXPLICIT_FINITE_COMPARISON_WINDOW_AUDITED",
+    "declared_interval_ps": [
+      0.0,
+      36.6
+    ],
+    "declaration": {
+      "schema": "pysnspd.comparison_window_declaration.v1",
+      "status": "PENDING_FINAL_COMPLETED_TRAJECTORIES_AND_SCIENTIFIC_REVIEW",
+      "declared_utc": "2026-10-12T06:54:02.716538+00:00",
+      "start_ps": 0.0,
+      "end_ps": 36.6,
+      "purpose": "Final common saved-data numerical comparison selected after every control completes its own event+5ps or200ps observation; critical coverage remains separate mandatory review.",
+      "critical_dynamics_coverage_is_separate_scientific_decision": true,
+      "latency_requires_both_saved_crossings_and_confirmations_inside_window": true,
+      "no_original_terminal_status_rewritten": true,
+      "no_censoring_inferred_at_analysis_endpoint": true,
+      "rationale": "Four axes775nm0--36.6ps only. Original nominal775ends36.94131686164998ps; last0.34131686165ps outsidefour-axiscomparison. Original fullowntrigger+5ps retained. No reset/peak/recovery convergence claim.",
+      "stage5_admission_inferred": false
+    },
+    "originals": {
+      "reference": {
+        "run_complete": true,
+        "terminal_status": "TRIGGER_MARGIN_COMPLETE",
+        "saved_audit_passed": true,
+        "completion_checks": {
+          "complete_declared_window": true,
+          "successful_saved_window_status": true
+        },
+        "noncompletion_failed_checks": [],
+        "original_event": {
+          "confirmed": true,
+          "censored": false,
+          "status": "TRIGGER_MARGIN_COMPLETE",
+          "latency_s": 3.194131686164998e-11,
+          "crossing_time_s": 3.194131686164998e-11,
+          "confirmation_time_s": 3.2441316861649975e-11,
+          "source": "saved accepted-step trigger controller",
+          "saved_crossing_voltage_difference_V": 0.0
+        }
+      },
+      "candidate": {
+        "run_complete": true,
+        "terminal_status": "TRIGGER_MARGIN_COMPLETE",
+        "saved_audit_passed": true,
+        "completion_checks": {
+          "complete_declared_window": true,
+          "successful_saved_window_status": true
+        },
+        "noncompletion_failed_checks": [],
+        "original_event": {
+          "confirmed": true,
+          "censored": false,
+          "status": "TRIGGER_MARGIN_COMPLETE",
+          "latency_s": 3.1826263729983526e-11,
+          "crossing_time_s": 3.1826263729983526e-11,
+          "confirmation_time_s": 3.2326263729983525e-11,
+          "source": "saved accepted-step trigger controller",
+          "saved_crossing_voltage_difference_V": 1.3552527156068805e-20
+        }
+      }
+    },
+    "coverage": {
+      "reference": true,
+      "candidate": true
+    },
+    "checks": {
+      "reference_original_status_safe": true,
+      "candidate_original_status_safe": true,
+      "reference_physical_saved_checks_passed": true,
+      "candidate_physical_saved_checks_passed": true,
+      "reference_declared_interval_covered": true,
+      "candidate_declared_interval_covered": true,
+      "comparison_same_frozen_model_sources": true,
+      "comparison_same_nonrefined_parameters": true,
+      "comparison_actual_declared_refinement": true,
+      "comparison_voltage_waveform": true,
+      "comparison_electrical_latency_if_observed": true,
+      "comparison_temporal_refinement_at_least_two": true,
+      "comparison_common_physical_ROI_available": true,
+      "comparison_central_gap_magnitude_L2": true,
+      "comparison_central_deficit_over_reference_peak": true,
+      "comparison_verified_bounded_prospective_guard_policy": true,
+      "comparison_verified_explicit_resource_only_continuation": true
+    },
+    "passed": true,
+    "latency_certified_in_this_window": true,
+    "electrical_events_generated": false,
+    "scope": "Only declared finite interval. No original run_complete/status/controller is changed; no latency or censoring is assigned outside coverage. Extension is required if later critical dynamics/event is needed.",
+    "interpolation": "Saved scalar observables only in time; complex spatial P1 before magnitude; no electrical event or winding interpolated",
+    "original_full_runs_verified_before_window_crop": true,
+    "physical_gap_interpolation_method": "Saved complex spatial P1 -> magnitude on each frame -> linear scalar interpolation in time"
+  },
+  "metrics": {
+    "kind": "domain",
+    "passed": true,
+    "checks": {
+      "reference_saved_window_passed": true,
+      "candidate_saved_window_passed": true,
+      "same_frozen_model_sources": true,
+      "same_nonrefined_parameters": true,
+      "actual_declared_refinement": true,
+      "voltage_waveform": true,
+      "electrical_latency_if_observed": true,
+      "temporal_refinement_at_least_two": true,
+      "common_physical_ROI_available": true,
+      "central_gap_magnitude_L2": true,
+      "central_deficit_over_reference_peak": true,
+      "verified_bounded_prospective_guard_policy": true,
+      "verified_explicit_resource_only_continuation": true
+    },
+    "relative_limit": 0.05,
+    "policy_version": "spatial_observables_v2",
+    "legacy_nodal_policy_passed": false,
+    "legacy_nodal_policy_checks": {
+      "reference_saved_window_passed": true,
+      "candidate_saved_window_passed": true,
+      "same_frozen_model_sources": true,
+      "same_nonrefined_parameters": true,
+      "actual_declared_refinement": true,
+      "voltage_waveform": true,
+      "electrical_latency_if_observed": true,
+      "temporal_refinement_at_least_two": true,
+      "gap_min_waveform": false,
+      "verified_bounded_prospective_guard_policy": true,
+      "verified_explicit_resource_only_continuation": true
+    },
+    "common_trajectory_interval_ps": [
+      0.0,
+      36.6
+    ],
+    "common_gap_snapshot_interval_ps": [
+      0.0,
+      36.6
+    ],
+    "changed_parameters": {
+      "length_nm": {
+        "reference": 320.0,
+        "candidate": 480.0
+      }
+    },
+    "forbidden_parameter_changes": {},
+    "step_refinement_ratio": null,
+    "Vout": {
+      "maximum_absolute_difference_mV": 0.001226833318968549,
+      "reference_peak_mV": 0.14549816411004998,
+      "saved_threshold_mV": 0.1,
+      "admission_scale_mV": 0.14549816411004998,
+      "relative_error": 0.008431950509290364,
+      "pulse_scaled_error": 0.008431950509290364
+    },
+    "gap_min": {
+      "maximum_absolute_difference_meV": 0.18251065652678208,
+      "DC_reference_scale_meV": 1.2184475076019632,
+      "relative_error": 0.14978951115094227,
+      "diagnostic_only": true,
+      "former_gate_passed": false
+    },
+    "latency": {
+      "available": true,
+      "passed": true,
+      "reference_ps": 31.941316861649977,
+      "candidate_ps": 31.826263729983527,
+      "absolute_difference_ps": 0.11505313166645069,
+      "tolerance_ps": 1.5970658430824989
+    },
+    "latency_comparison_complete": true,
+    "robust_spatial": {
+      "region_relative_nm": [
+        -60,
+        60,
+        -40,
+        40
+      ],
+      "x_center": "saved source.center_m[0]",
+      "y_coordinate": "physical",
+      "complex_interpolation": "Saved linear complex triangulation first, magnitude afterwards; no vortex alignment",
+      "time_interpolation": "Saved complex spatial P1 -> magnitude on each frame -> linear scalar interpolation in time",
+      "quadrature": "Uniform midpoint spatial quadrature on fixed physical120x80nm ROI",
+      "sample_spacing_actual_nm": [
+        0.5,
+        0.5
+      ],
+      "L2_field": {
+        "maximum_relative_error": 0.027377201649065323,
+        "DC_gap_scale_meV": 1.2184332629567942
+      },
+      "deficit": {
+        "maximum_absolute_difference_meV_nm2": 145.69208183155567,
+        "reference_actual_peak_meV_nm2": 11597.040914042384,
+        "relative_error_actual_peak": 0.01256286693402479,
+        "relative_error_DCarea": 0.012455551719994806,
+        "zero_peak_rule": "Zero difference/zero peak ->0; nonzero difference/zero peak ->failure, no arbitrary floor",
+        "definition": "D_h,nodal=sum exact clipped linear-nodal weights * positive nodal gap deficit; spatial approximation to continuum, not integral of magnitude of complex interpolant"
+      }
+    }
+  },
+  "original_result_summaries": {
+    "baseline_comparison_without_guard_protocol": {
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": true,
+        "candidate_saved_window_passed": true,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": true,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "common_physical_ROI_available": true,
+        "central_gap_magnitude_L2": false,
+        "central_deficit_over_reference_peak": true
+      },
+      "relative_limit": 0.05,
+      "Vout": {
+        "maximum_absolute_difference_mV": 0.001226833318968549,
+        "reference_peak_mV": 0.14549816411004998,
+        "saved_threshold_mV": 0.1,
+        "admission_scale_mV": 0.14549816411004998,
+        "relative_error": 0.008431950509290364,
+        "pulse_scaled_error": 0.008431950509290364
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.18251065652678208,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.14978951115094227,
+        "diagnostic_only": true,
+        "former_gate_passed": false
+      },
+      "latency": {
+        "available": true,
+        "passed": true,
+        "reference_ps": 31.941316861649977,
+        "candidate_ps": 31.826263729983527,
+        "absolute_difference_ps": 0.11505313166645069,
+        "tolerance_ps": 1.5970658430824989
+      }
+    },
+    "original_complex_time_interpolation_result": {
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": true,
+        "candidate_saved_window_passed": true,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": true,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "common_physical_ROI_available": true,
+        "central_gap_magnitude_L2": false,
+        "central_deficit_over_reference_peak": true,
+        "verified_bounded_prospective_guard_policy": true,
+        "verified_explicit_resource_only_continuation": true
+      },
+      "relative_limit": 0.05,
+      "Vout": {
+        "maximum_absolute_difference_mV": 0.001226833318968549,
+        "reference_peak_mV": 0.14549816411004998,
+        "saved_threshold_mV": 0.1,
+        "admission_scale_mV": 0.14549816411004998,
+        "relative_error": 0.008431950509290364,
+        "pulse_scaled_error": 0.008431950509290364
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.18251065652678208,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.14978951115094227,
+        "diagnostic_only": true,
+        "former_gate_passed": false
+      },
+      "latency": {
+        "available": true,
+        "passed": true,
+        "reference_ps": 31.941316861649977,
+        "candidate_ps": 31.826263729983527,
+        "absolute_difference_ps": 0.11505313166645069,
+        "tolerance_ps": 1.5970658430824989
+      }
+    }
+  },
+  "policy_applications": {},
+  "source_pins": {
+    "auditor_source_sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "window_source_sha256": "12c241558703955b915076af4ff3020d6588fbd0296047b290dc129f06e3a99e",
+    "guard_dispatcher_source_sha256": "54b3454a6a3ebb081ef1d398f6ea3e08e8483a77431878243f4d19521ecd5530",
+    "bounded_guard_source_sha256": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+  },
+  "complete_original_failures_and_input_hash_map_remain_in_full_scratch_JSON": true,
+  "complete_numerical_control_proof_remains_in_full_scratch_JSON": true
+}

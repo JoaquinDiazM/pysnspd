@@ -1,0 +1,27 @@
+{
+  "schema": "pysnspd.resource_source_repository_integration_tests.v1",
+  "timestamp_UTC": "2026-10-11T20:07:19.692995+00:00",
+  "command": [
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-o",
+    "cache_dir=/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/pytest_cache",
+    "/home/jdiaz/pysnspd/tests/test_effective_control_resource_transition.py",
+    "/home/jdiaz/pysnspd/tests/test_effective_fine_resource_transition.py",
+    "/home/jdiaz/pysnspd/tests/test_effective_guard_protocol_dispatcher.py",
+    "/home/jdiaz/pysnspd/tests/test_effective_spectral_policy_wiring.py",
+    "/home/jdiaz/pysnspd/tests/test_effective_bounded_guard_protocol.py",
+    "/home/jdiaz/pysnspd/tests/test_effective_comparison_window.py",
+    "/home/jdiaz/pysnspd/tests/test_effective_physical_gap_policy_integration.py",
+    "/home/jdiaz/pysnspd/tests/test_effective_physical_gap_interpolation.py"
+  ],
+  "return_code": 0,
+  "wall_s": 12.855569087027106,
+  "log": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/root_repository_pytest_integration.log",
+  "log_sha256": "56bb77d7528ba3f7576c3b4eff8b1bd61e826919689378493d40ff30a1109cfb",
+  "source_promotion_sha256": "14c8738e67dc0c004ebe413626681e48745ad8aa2fe8554209c0083b46ff2a6f",
+  "stage5": false,
+  "RHS_or_physical_evolution_executed": false
+}

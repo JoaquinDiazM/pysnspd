@@ -1,0 +1,47 @@
+{
+  "schema": "pysnspd.math_effective_scope_edits.v1",
+  "status": "SOURCE_ONLY_EDITS_COMPLETED_NO_PDF",
+  "created_UTC": "2026-10-11T16:10:50.135695+00:00",
+  "authorizations": "Parent explicitly authorized only auxiliaryhot-state phenomenology and precomputedacousticcapacity gamma diagnostic; no RHS or parameter changes.",
+  "before_sha256": {
+    "Matematica_etapa5_auxiliares.tex": "a38de03c6c70131df722264b627fd44d7245d5b6a73dd4465d9caa25f080da56",
+    "Matematica_etapa5_precomputados.tex": "0432019f687db319666001d0af3376b0fb4676461d8ed82ce4368961c6a5b16f"
+  },
+  "after_sha256": {
+    "Matematica_etapa5_auxiliares.tex": "65367437030c96c869b957dd5e3314cedcaefccb1348781c3e32912825ad0225",
+    "Matematica_etapa5_precomputados.tex": "d672167f3be289b066664f058b7c74c477e2c642c19f2d49cc82f09fb6781657"
+  },
+  "patch_sha256": "739b2eaeeb969ef61a4706267044586469240a6a79911b0023a42170cf0d8f42",
+  "material_source_sha256": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+  "primary_pdf": {
+    "path": "/home/jdiaz/scratch/pysnspd_tmp_archive_20261008/pdfs/modelo_v0_3/sources/Allmaras_Thesis_Final.pdf",
+    "sha256": "2554e9a2b047f93f7c7f50a2897887afaf522eb530e057307c5a31ef4e1e0e96",
+    "locator": "Allmaras2020 printed13Eq2.8 and printed15-16materialvalues"
+  },
+  "independent_primary_review": {
+    "path": "/home/jdiaz/scratch/stage5_math_scope_review_20261011/review_receipt.json",
+    "sha256": "9dd0afbc046679e53e9057081f7b2a4e2870d801537c210df40ac2d284f7ecc8"
+  },
+  "capacity_verification": {
+    "Tc_K": 8.65,
+    "Rsheet_ohm": 608.0,
+    "N0_single_spin_per_J_m3": 9.153297821093998e+46,
+    "Bph_J_m3_K4": 1.0320228421636426,
+    "Ce_normal_at_Tc_J_m3_K": 993.0445960285349,
+    "Cph_at_Tc_J_m3_K": 667.9402767823756,
+    "Cph_method": "ExistingEffectivePhononMaterial.heat_capacity_J_per_m3_K; analyticDebyeDOS, finiteDebyecutoff and existingpositivequadrature",
+    "gamma_heat_capacity_ratio": 23.477445888197632,
+    "gamma_independent_closed_acoustic": 23.47744588819761,
+    "gamma_existing_material_manifest": 23.477445888197597,
+    "relative_difference_to_existing_manifest": 1.5543122344752192e-15,
+    "definition": "gamma_ac=(8*pi^2/5)*Ce,N(Tc)/Cph(Tc), dimensionless",
+    "diagnostic_only": true
+  },
+  "Te_hot_scope": "Approximate20K initialequivalenttemperature refers to775nmnominal; KWT andfrozenTb radialstiffness remainphenomenologicalcalibrable closure, notmicroscopicderivation forwholetemperature/distributionrange.",
+  "CPU_affinity": [
+    4
+  ],
+  "PDFs_created": 0,
+  "simulations_run": 0,
+  "physics_or_policies_changed": false
+}

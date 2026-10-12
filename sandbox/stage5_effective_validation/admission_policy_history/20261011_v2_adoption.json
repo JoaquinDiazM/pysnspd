@@ -1,0 +1,53 @@
+{
+  "adopted_utc": "2026-10-11T15:15:37.164719+00:00",
+  "status": "ADOPTED",
+  "original_declaration_utc": "2026-10-11T15:12:53.580984+00:00",
+  "original_declaration_preserved_sha256": "933e6d2d74648612f236196c7cd077b4ebe7dfce36f11e58056942c47eb944fc",
+  "adopted_auditor_sha256": "ef8ddf93bfaa4452f88a8d3c90fa78b807980ca1a5a95439152bdbd875ad9e89",
+  "adopted_policy_sha256": "3af823302d8a75d1011e6729286c95da6483b37f7f15f61a545a4e5c8a4121fc",
+  "adopted_tests_sha256": "a5750d09ef2049f23e0cc05ee086173b9de4e2ecd2659776264f9cd970c414e8",
+  "base_auditor_sha256": "21025a9765443d2631f8b0edf82af0f6c76ead8add89e499ab0896c24445aed8",
+  "base_policy_sha256": "4518188ce124fbd98fbf9721d7108f5456b730bd78c55c979d92ee7a378d4f80",
+  "tests": {
+    "count": 35,
+    "failures": 0,
+    "errors": 0,
+    "wall_s": 0.7785533239948563,
+    "cpu_affinity": [
+      6
+    ]
+  },
+  "git_apply_check": true,
+  "RHS_modified": false,
+  "PDF_generated": false,
+  "declaration_hash_scope": "The unchanged pre-run declaration identifies its preparation-stage candidate; this adoption receipt identifies the FINAL applied auditor and policy hashes.",
+  "post_apply_tests": {
+    "count": 60,
+    "failures": 0,
+    "errors": 0,
+    "wall_s": 2.522,
+    "cpu_affinity": [
+      6
+    ],
+    "modules": [
+      "tests.test_effective_saved_audit",
+      "tests.test_effective_spatial_audit",
+      "tests.test_effective_vortex_diagnostics"
+    ]
+  },
+  "runtime_pin_checks_against_v5_manifest": {
+    "pysnspd/experimental/effective_bcs_functional.py": true,
+    "pysnspd/experimental/effective_bcs_preparation.py": true,
+    "pysnspd/experimental/effective_bcs_kinetics.py": true,
+    "pysnspd/experimental/effective_bcs_ports.py": true,
+    "pysnspd/experimental/effective_coupled.py": true,
+    "pysnspd/experimental/effective_material.py": true,
+    "pysnspd/experimental/electrical_ports.py": true,
+    "pysnspd/experimental/thermal_spatial_usadel.py": true,
+    "pysnspd/experimental/kinetic_events.py": true,
+    "pysnspd/experimental/trigger_window.py": true,
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": true,
+    "pipelines/05_effective_photon_run.py": true,
+    "sandbox/stage4_core/parallel_runtime.py": true
+  }
+}

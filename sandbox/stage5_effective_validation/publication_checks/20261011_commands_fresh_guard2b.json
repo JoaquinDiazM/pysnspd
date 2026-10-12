@@ -1,0 +1,45 @@
+{
+  "schema": "pysnspd.commands_proposal_fresh_guard2b_update.v1",
+  "status": "PROPOSAL_ONLY_NOT_PROMOTED",
+  "created_utc": "2026-10-11T17:10:54.344673+00:00",
+  "proposal_path": "/home/jdiaz/scratch/stage5_publication_proposals_20261011/GEMINGA_COMMANDS_PRESENT.proposal.md",
+  "before_sha256": "2e0cd37138cd28ed6408ee08e56d07c702571a7bdc86fac5a1337fb813d85913",
+  "after_sha256": "6f78872d2cbddee5737b35c17fddab346904d49315dcc0812343ee3bac4fd21d",
+  "backup_path": "/home/jdiaz/scratch/stage5_publication_proposals_20261011/history/commands_before_fresh_guard2b_20261011/GEMINGA_COMMANDS_PRESENT.proposal.md",
+  "backup_sha256": "2e0cd37138cd28ed6408ee08e56d07c702571a7bdc86fac5a1337fb813d85913",
+  "changed_fields": [
+    "two fresh --local-energy-tolerance values",
+    "corresponding numerical-precision explanation",
+    "fresh temporal guard pair explanation"
+  ],
+  "fresh_command_checks": [
+    {
+      "wavelength_nm": "775",
+      "--dt-ps": "0.02",
+      "--step-tolerance": "2e-7",
+      "--local-energy-tolerance": "2.5e-6",
+      "cache_paths_preserved": true
+    },
+    {
+      "wavelength_nm": "1550",
+      "--dt-ps": "0.02",
+      "--step-tolerance": "2e-7",
+      "--local-energy-tolerance": "2.5e-6",
+      "cache_paths_preserved": true
+    }
+  ],
+  "historical_campaign_policy": "Piecewise precision preserved; no retrospective guard2b attribution.",
+  "protected_files_before": {
+    "/home/jdiaz/GEMINGA_COMMANDS_PRESENT.md": "d19ad686af66450da42b5abb156988c6275ddddff1b55ce27c84cd8c576033f5",
+    "/home/jdiaz/pysnspd/pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa"
+  },
+  "protected_files_after": {
+    "/home/jdiaz/GEMINGA_COMMANDS_PRESENT.md": "d19ad686af66450da42b5abb156988c6275ddddff1b55ce27c84cd8c576033f5",
+    "/home/jdiaz/pysnspd/pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa"
+  },
+  "other_physical_command_fields_unchanged": true,
+  "commands_executed": false,
+  "runner_modified": false,
+  "live_PRESENT_modified": false,
+  "promoted": false
+}

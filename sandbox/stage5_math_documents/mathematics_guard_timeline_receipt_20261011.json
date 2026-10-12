@@ -1,0 +1,51 @@
+{
+  "schema": "stage5_math_prospective_guard_timeline_v1",
+  "path": "/home/jdiaz/pysnspd/sandbox/stage5_math_documents/Matematica_etapa5_auxiliares.tex",
+  "source_before_sha256": "65367437030c96c869b957dd5e3314cedcaefccb1348781c3e32912825ad0225",
+  "source_after_sha256": "03913d5a57d24d13063b5c752554bc03f0c5ae7b6f971275a608d3d9ec25cb95",
+  "provenance": {
+    "/home/jdiaz/scratch/stage5_guard2_contingency_plan_20261011/root_prospective_decision_before_stop.json": "4053e1a15560af4a079bae919de86081b9344e4c64492f7ef44755507afd74f5",
+    "/home/jdiaz/scratch/stage5_guard2_contingency_plan_20261011/final_stop_and_anchor_declaration.json": "fbe65cb96af882a82a1649f5dee6cb7dd80584a691abc2b16109df0fa556ec80",
+    "/home/jdiaz/scratch/stage5_effective_L320_h5_775_temporal_adaptive_v6_20261011/provenance/transfer_receipt.json": "a512e11fe9f9da1d734a71250e7ddc03616afa9b7c1000ad186e5dde4941dd29"
+  },
+  "historical_nominal": {
+    "first_guard_ps": 12.4,
+    "first_guard": 1e-05,
+    "new_guard": 2.5e-06,
+    "new_anchor_ps": 22.43500000000006
+  },
+  "historical_temporal": {
+    "first_guard_ps": 12.419999999999877,
+    "first_guard": 1.25e-06,
+    "new_guard": 3.125e-07,
+    "new_anchor_ps": null,
+    "adopted_future_anchor_band_ps": [
+      22.18500000000006,
+      22.43500000000006
+    ]
+  },
+  "fresh_commands": {
+    "nominal_guard": 2.5e-06,
+    "temporal_guard": 3.125e-07,
+    "from_time_ps": 0
+  },
+  "mathematical_checks": {
+    "local_guard_uses_step_start_time": true,
+    "denominator_includes_all_accepted_absolute_work_from_origin": true,
+    "trial_denominator_includes_trial_absolute_work": true,
+    "global_energy_gate_unchanged": 0.01,
+    "global_initial_energy_origin_preserved": true,
+    "absolute_local_defect_sum_preserved": true,
+    "no_retrospective_new_guard": true,
+    "early_unguarded_prefixes_explicit": true,
+    "old_guard_ratio_nominal_over_temporal": 8.0,
+    "new_guard_ratio_nominal_over_temporal": 8.0,
+    "environment_pairs_balanced": true
+  },
+  "other_sources_modified": false,
+  "RHS_modified": false,
+  "PDF_compiled": false,
+  "format_change": "Natural line-to-line pagination allowed only in last mathematical block",
+  "source_intermediate_sha256": "265472ccb9d773373883c103e4b059a3ab3f51702b4c23901c62c10fa15abef3",
+  "timeline_scope": "Existing775nm nominal and temporal campaigns, explicitly named; no timeline applied to existing1550nm"
+}

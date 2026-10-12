@@ -1,0 +1,103 @@
+{
+  "schema": "pysnspd.independent_closed_resource_candidate_read_review.v2",
+  "utc": "2026-10-11T20:06:06.578019+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_EXECUTED_NOT_ADMITTED",
+  "candidate_receipt": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/candidate_receipt.json",
+    "sha256": "c2d47399e381cdc507ad5a309efa9819c7884d617aad2aa62dbe6c83709382c7"
+  },
+  "full_patch": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/closed_control_resources_REVIEW_ONLY.patch",
+    "sha256": "4c73318f8da5243fc1d88f1935a1e25fc4de678fc1d9347f4a97581a14e26645"
+  },
+  "complete_review_corrective_patch": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/review_corrections_from_initial.patch",
+    "sha256": "5a1853e456ce30841bccfcefba0ec54d1271646c03a52c74a8622c9a9b129baa"
+  },
+  "candidate_sources_sha256": {
+    "sandbox/stage5_effective_validation/control_resource_transition.py": "7aaa9c4e3266c69f4b033958104b7c945a0d5e7bf1c391e2817fc7e2279394c5",
+    "sandbox/stage5_effective_validation/num8_resource_equivalence.py": "85fab053549194a658835a2933416dcecac335048842d0d8ff7d7d07d9fc1fd6",
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": "e681900a2efbc62c46d3572c8e2e97fd69cc29445fb28a7340d63cafeaab3519",
+    "tests/test_effective_control_resource_transition.py": "b50eef888fcb72ee87d8f155966602dacb43ed4d11ec24c6a1abffc9834b3a66"
+  },
+  "operational_artifacts_sha256": {
+    "launch_domain_2to4_CONDITIONAL.sh": "6d898f4f5bfc857aa2c7034c82e56deaab600983d165c29e66f16cafa3b138dd",
+    "launch_spectral_2to4_CONDITIONAL.sh": "56708fe5fcbf69d4bfe59987fa0e2972e27d0cb2e654cf19438c951b5a868859",
+    "launch_spectral_4to8_CONDITIONAL.sh": "4a2a0abf36e2c46ccdc88c68e7022a530bf943521453b3a66bbbe3345e3c3ece",
+    "run_num8_oracle_CONDITIONAL.sh": "c9e02e22fd9ef9a6f77075f59e96df17227ab64eecde75cc3d79ac6d68de2d13"
+  },
+  "previous_findings": {
+    "path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/memory_backend_initial_read_findings.json",
+    "sha256": "7b226b8d27d4a004b9a35dfa9218dde02a4a066220cb37077b8c563ffe167cc9"
+  },
+  "checks": {
+    "candidate_sandbox/stage5_effective_validation/control_resource_transition.py": true,
+    "candidate_sandbox/stage5_effective_validation/num8_resource_equivalence.py": true,
+    "candidate_sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": true,
+    "candidate_tests/test_effective_control_resource_transition.py": true,
+    "wrapper_launch_domain_2to4_CONDITIONAL.sh": true,
+    "wrapper_launch_spectral_2to4_CONDITIONAL.sh": true,
+    "wrapper_launch_spectral_4to8_CONDITIONAL.sh": true,
+    "wrapper_run_num8_oracle_CONDITIONAL.sh": true,
+    "current_baseline_sandbox/stage5_effective_validation/audit_runs.py": true,
+    "current_baseline_sandbox/stage5_effective_validation/bounded_guard_protocol.py": true,
+    "current_baseline_sandbox/stage5_effective_validation/fine_resource_transition.py": true,
+    "current_baseline_sandbox/stage5_effective_validation/fine_resource_guard_adapter.py": true,
+    "current_baseline_sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": true,
+    "current_baseline_sandbox/stage5_effective_validation/build_final_report.py": true,
+    "13_runtime_unchanged": true,
+    "patch": true,
+    "previous_candidate_receipt": true,
+    "independent_findings": true,
+    "review_corrections": true,
+    "num8_shell_vector_regression": true,
+    "old_num8_source_recovered_exact_e0c1": true,
+    "corrective_patch_includes_num8_function_and_call": true
+  },
+  "resolved_findings": [
+    {
+      "priority": 1,
+      "finding": "args-only vector wrongly passed toexecv",
+      "resolution": "execution_argv prefixes actual Python -u and SHA-bound child frozen runner; launcher recomputes complete vector and sets PYTHONPATH to frozen runtime. Historical resume_argv contract is preserved."
+    },
+    {
+      "priority": 1,
+      "finding": "Num8 checker affinity not actually pinned",
+      "resolution": "Global preflight retains host affinity, then each numerical checker invocation uses taskset6-13; preserved historical checker does not configure affinity itself."
+    },
+    {
+      "priority": 2,
+      "finding": "MatchingNum8 exceptions could differ from historical support exception",
+      "resolution": "Both class and text must match oracle8,candidate8 and the reviewedNum4 case; mismatch regression present."
+    },
+    {
+      "priority": 3,
+      "finding": "Corrective artifact initially omitted oldNum8 source and its diff",
+      "resolution": "Olde0c1 file recovered byte-exact from preserveddf70 fullpatch; complete5a1853 corrector includes its change. Intermediate7a406/bfbdd remain historical."
+    }
+  ],
+  "verified_architecture": [
+    "Exactly three closed domain/spectral resource cases; no alias for mesh/temporal, no undeclared2to8 path.",
+    "Recursive spectral2to4to8 verification authenticates each complete original parent before any finite metrics; full numerical/resource chronology remains visible separately from guard-only projection.",
+    "28 producer keys, all27numeric dtype/shape/bytes and all typed metadata exceptthreads remain exact. Guard anchor/maxima,E0,all ledgers,counters/controller,next_h andsource13 remain unchanged.",
+    "Prepared state retains last observed old resources; advanced state must report the admitted new actual resources.",
+    "Global resource proof keeps physical14/15 reserved and requires target cores free plus actual prerequisite terminal/moved states. It is a point-in-time pipeline inventory, not a reservation or substitute for root host-wide review.",
+    "FutureNum8 remains blocked without real separate oracle evidence and rootSHA approval; originalNum124 certificate and exact2historicalfrontendbridge remain explicit."
+  ],
+  "reused_test_evidence": {
+    "synthetic_tests": 20,
+    "reported_pass": true,
+    "elapsed_s": 2.589,
+    "num8_shell_vector_parse_pass": true,
+    "rerun_by_reviewer": false
+  },
+  "limitations": [
+    "No real resource transaction was exercised. Actual immutable parent/output receipts require a separate review before any launch.",
+    "No Num8 checker, physical RHS, active capture, signal or evolution was run.",
+    "No future cross-thread bitwise trajectory identity or performance speedup is inferred."
+  ],
+  "source_application": false,
+  "stage5": false,
+  "model_admission": false,
+  "resource_transfer_admission": false
+}

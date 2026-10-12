@@ -1,0 +1,71 @@
+{
+  "schema": "stage5-applied-effective-regression-v1",
+  "status": "PASSED",
+  "pytest_passed": 263,
+  "pytest_subtests_passed": 16,
+  "pytest_reported_wall_s": 73.55,
+  "process_wall_s": 82.04315251298249,
+  "tested_version": "1.1.0",
+  "CPU_affinity": [
+    6,
+    7
+  ],
+  "NumBa_max_threads": 2,
+  "BLAS_max_threads": 1,
+  "complete_effective_test_files": 17,
+  "additional_test_files": 7,
+  "coverage": [
+    "native BCS energy/derivatives/current",
+    "kinetic energy/Pauli/Bose/shared limiter",
+    "DC geometry/preparation",
+    "coupled midpoint and independent power balance",
+    "physical residual norms",
+    "checkpoint/resume/interruption/transactions/local energy guard",
+    "photon source and trigger semantics",
+    "CM circuit and positive global bias",
+    "saved audits/spatial/vortex diagnostics/report presentation",
+    "package version/import API",
+    "optional NumBa unavailable with requested acceleration"
+  ],
+  "optional_NumBa_absent_smoke": "PASSED",
+  "fallback_balance_residual_W": -1.6155871338926322e-27,
+  "source_sha256": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110"
+  },
+  "evidence_files": [
+    {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/publication_checks/pytest_receipt.json",
+      "sha256": "321f00d057a7abeb12c311700289d90e9479a52e4b2d18e3ab8b3063c9110300"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/publication_checks/pytest.log",
+      "sha256": "895f683ce91dda4940780ca2351c7d2717709973db936fc3d677490df94c1206"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/publication_checks/pytest_results.xml",
+      "sha256": "63f9b44bfbb780e558746be156816d8ed7d9303e77847fe5ffbe0bed77d050df"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/publication_checks/no_numba_API_receipt.json",
+      "sha256": "ff5779feb009059b49f59042887d223a5b1510649b618104ebb6dc851930f304"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/run_publication_checks.py",
+      "sha256": "93c16eaef801ae1c124f6195fa5ec989ea1286d795ebf2013386737156fdfeff"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/check_no_numba_API.py",
+      "sha256": "211667775b9edb1cf8ff925393846f4aaa58bb4b6d5dacdad27289731bbd713d"
+    }
+  ],
+  "no_physics_changes": true,
+  "no_campaign_evolution": true,
+  "scope": "Regression of the applied implementation; physical trajectory admission remains a separate audit",
+  "wheel_build_performed": false
+}

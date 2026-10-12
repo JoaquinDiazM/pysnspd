@@ -1,0 +1,25 @@
+{
+  "schema": "pysnspd.report_source_approved_promotion.v1",
+  "utc": "2026-10-11T17:26:52.445990+00:00",
+  "approval_sha256": "83b7b5beec7d045dcf1289d3808bf7419f2cdb279c2062ff7e40d9f0401e8452",
+  "copied_sources": {
+    "sandbox/stage5_effective_validation/build_final_report.py": {
+      "before_sha256": "334b184b4dc9a875febc9f1c8fa43a7801070b3c021b723adaa013580a9f263e",
+      "after_sha256": "75001b1766429322f5aafc26d55dfa2738bb9a766f898152aa9fc9e0f4587513"
+    },
+    "sandbox/stage5_effective_validation/physical_sensitivity.py": {
+      "before_sha256": "0732584ee5582b7ecb6a22dda66b7050ee32dc8d38278a2c81a88875c46609dc",
+      "after_sha256": "0eec885a391c4919a79ae5972e2d068dba43dd8eb3e03dba5444b008c29b34f0"
+    }
+  },
+  "new_test": {
+    "path": "tests/test_effective_report_guard_wiring.py",
+    "sha256": "f2b810dd053edb9bbeaaea6b4a422e6a683a986a68e51dbfd433f4fff80d3066",
+    "imports_relative_to_checkout": true
+  },
+  "backup_dir": "/home/jdiaz/scratch/stage5_report_guard_timeline_20261011/repo_before_approved_wiring",
+  "baseline_auditor_unchanged": true,
+  "physical13pins_unchanged": true,
+  "PDF_created": false,
+  "stage5_admission": false
+}

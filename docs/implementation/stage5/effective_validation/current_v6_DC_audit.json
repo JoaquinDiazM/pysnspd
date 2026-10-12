@@ -1,0 +1,174 @@
+{
+  "schema": "pysnspd.effective_saved_data_audit.v2",
+  "stage5_admission_inferred": false,
+  "all_requested_checks_passed": true,
+  "criteria": {
+    "energy_relative_limit": 0.01,
+    "relative_limits": {
+      "temporal": 0.02,
+      "mesh": 0.05,
+      "domain": 0.05,
+      "spectral": 0.02
+    },
+    "instantaneous_energy_absolute_tolerance_W": 1e-20,
+    "instantaneous_energy_relative_tolerance": 1e-10,
+    "temporal_latency_absolute_margin_ps": 0.1,
+    "hotbelt_gap_fraction": 0.2,
+    "DC_reference_energy_J": 2.339453292436945e-19,
+    "spatial_policy": "Mesh/domain:Vout+latency+central magnitude L2/DC+central nodal-deficit/reference actual peak; temporal/spectral retain nodal-min gate",
+    "spatial_ROI_nm": [
+      -60,
+      60,
+      -40,
+      40
+    ],
+    "field_quadrature_spacing_nm": 0.5
+  },
+  "scope": "Saved finite windows; passing this audit does not establish experiment calibration, full reset, jitter statistics, or stage5 by itself",
+  "runs": {
+    "dc_v6": {
+      "name": "dc_v6",
+      "path": "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011",
+      "passed": true,
+      "checks": {
+        "complete_declared_window": true,
+        "successful_saved_window_status": true,
+        "DC_baseline_within_nV": true,
+        "energy_ledger_recomputation": true,
+        "energy_relative_defect": true,
+        "instantaneous_energy_balance": true,
+        "checkpoint_support": true,
+        "checkpoint_time_consistent": true,
+        "positive_global_currents": true,
+        "positive_snapshot_temperatures": true,
+        "source_initial_support_and_deposition": true,
+        "saved_output_checksums": true,
+        "independent_initial_source_energy": true,
+        "initial_photon_state_present": true,
+        "saved_electrical_event_consistent": true,
+        "independent_local_energy_guard": true
+      },
+      "stage5_admission_inferred": false,
+      "status": "DC_HOLD_COMPLETED",
+      "declared_mode": "DC",
+      "final_time_ps": 9.999999999999979,
+      "energy": {
+        "retained_energy_J": 0.0,
+        "reference_energy_J": 2.339453292436945e-19,
+        "normalization": "explicit DC reference energy plus absolute external work",
+        "applicable": true,
+        "relative_limit": 0.01,
+        "maximum_relative_defect": 1.0130669260213138e-22,
+        "maximum_absolute_defect_J": 2.3700227555395377e-41,
+        "absolute_external_work_J": 2.3700227555395377e-41,
+        "saved_ledger_mismatch_J": 0.0,
+        "ledger_roundoff_bound_J": 3.551993828220727e-30,
+        "maximum_instant_power_residual_W": 1.8031825060708054e-30
+      },
+      "metrics": {
+        "Vout_peak_mV": 0.0,
+        "Vout_min_mV": 0.0,
+        "Vdev_peak_mV": 1.4558046545474175e-14,
+        "Ib_min_uA": 21.297206144897977,
+        "Is_min_uA": 21.297206144897977,
+        "gap_min_meV": 1.2164362266819995,
+        "Te_max_K": 0.9,
+        "Tph_max_K": 0.9
+      },
+      "local_energy_guard": {
+        "applicable": true,
+        "passed": true,
+        "checks": {
+          "strict_parameter_and_manifest_tolerance": true,
+          "positive_photon_reference_matches_retained": true,
+          "anchor_is_saved_accepted_time": true,
+          "post_anchor_local_defects_bounded": true,
+          "absolute_work_ledger": true,
+          "absolute_defect_ledger": true,
+          "maximum_all_ledger": true,
+          "maximum_guarded_ledger": true,
+          "rejection_count_valid": true,
+          "checkpoint_manifest_guard_ledger_matches": true
+        },
+        "tolerance": 1e-05,
+        "reference_energy_J": 2.339453292436945e-19,
+        "guard_active_since_time_ps": 0.0,
+        "post_anchor_accepted_steps": 100,
+        "legacy_accepted_steps": 0,
+        "maximum_all_reconstructed_fraction": 1.0130669260213168e-24,
+        "maximum_guarded_reconstructed_fraction": 1.0130669260213168e-24,
+        "maximum_post_anchor_excess_fraction": -1.0000007591504049e-05,
+        "absolute_work_reconstructed_J": 2.3700227555395377e-41,
+        "sum_abs_local_defect_reconstructed_J": 2.3700227555395377e-41,
+        "ledger_sum_roundoff_bound_J": 1.6622815425911207e-33,
+        "maximum_fraction_roundoff": 7.591504048624777e-12,
+        "maximum_guarded_fraction_roundoff": 7.591504048624777e-12,
+        "roundoff_definition": "Per step16eps*(abs(Eold)+abs(Enew)+abs(Wold)+abs(Wnew)); ledger sum16eps*sum(abs(Wold)+abs(Wnew)), with32eps*max(Eref,sumabsdW) lower arithmetic bound",
+        "denominator": "Ereference+cumsum(abs(diff(saved cumulative midpoint external work)))",
+        "scope": "Only accepted steps starting at/after the saved guard anchor are tested against local tolerance; legacy maxima remain visible; 1% global energy gate remains independent"
+      },
+      "spatial_diagnostics": null,
+      "event": {
+        "confirmed": false,
+        "censored": false,
+        "status": "DC_HOLD_COMPLETED",
+        "latency_s": null,
+        "crossing_time_s": null,
+        "confirmation_time_s": null,
+        "source": "saved accepted-step trigger controller"
+      },
+      "checkpoint_support": {
+        "p_min": 3.217767934596559e-132,
+        "p_max": 1.5425316567089373e-07,
+        "n_min": 3.864e-321,
+        "gap_min_bar": 1.631925576444077,
+        "Ib_A": 2.129720614489798e-05,
+        "Is_A": 2.129720614489798e-05,
+        "physical": true,
+        "checkpoint_time_s": 9.999999999999978e-12
+      },
+      "instantaneous_power": {
+        "absolute_tolerance_W": 1e-20,
+        "relative_tolerance": 1e-10,
+        "normalization": "abs(Is*Vdev)+abs(Pescape)+abs(Pcuts)+abs(Vb*Ib-Rb*Ib^2-Rl*(Ib-Is)^2)",
+        "maximum_residual_over_tolerance": 1.803182506065215e-10,
+        "minimum_allowed_minus_residual_W": 9.999999998227822e-21,
+        "worst_ratio_time_ps": 0.0,
+        "scale_at_worst_ratio_W": 3.100457207160062e-22,
+        "tolerance_at_worst_ratio_W": 1.0000000000031004e-20,
+        "residual_at_worst_ratio_W": 1.8031825060708054e-30,
+        "maximum_power_scale_W": 3.100457207160062e-22,
+        "maximum_circuit_net_power_W": 0.0,
+        "scope": "Saved independent full film+CM instantaneous power residual; DC source/bias cancellation is not used to inflate the scale"
+      },
+      "initial_source": null,
+      "initial_source_density_integral": null,
+      "output_checksums": {
+        "trajectory.npz": true,
+        "snapshots.npz": true,
+        "checkpoint_latest.npz": true,
+        "dc/effective_dc.npz": true,
+        "material.npz": true,
+        "material.json": true
+      },
+      "numerical_event_limiting": {
+        "cumulative_limited_event_energy_J": 8.975028483338269e-162,
+        "cumulative_absolute_event_energy_J": 6.133390070735044e-39,
+        "absolute_event_energy_fraction": 1.4633063248596994e-123,
+        "limited_energy_per_retained_source": null,
+        "acceptance": "Diagnostic only; its effect on observables is tested by temporal refinement"
+      },
+      "positivity_scope": "Initial/full final distributions directly verified; intermediate accepted distributions are enforced by the frozen integrator, not reconstructed from sparse snapshots",
+      "hotbelt": {
+        "gap_fraction_of_initial_local_DC": 0.2,
+        "definition": "Connected suppressed-gap component touching both transverse strip boundaries; diagnostic only, never an electrical detection event",
+        "first_saved_width_spanning": null,
+        "area_method": "original Delaunay-Voronoi dual areas"
+      }
+    }
+  },
+  "comparisons": [],
+  "errors": {},
+  "auditor_source_sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+  "spatial_helper_sha256": "747b2de9cb609aa2ab8d3bce5b10e60c1a21ac411aabcdfb2ca5be8330295d1c"
+}

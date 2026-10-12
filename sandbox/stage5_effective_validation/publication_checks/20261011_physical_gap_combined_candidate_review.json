@@ -1,0 +1,121 @@
+{
+  "schema": "pysnspd.physical_gap_combined_candidate_review.v1",
+  "status": "ROOT_REVIEW_REQUIRED_NOT_APPLIED",
+  "UTC": "2026-10-11T18:51:47.508209+00:00",
+  "stage5_admission": false,
+  "no_PDF_generated": true,
+  "no_physical_evolution_or_new_capture": true,
+  "mathematical_change": "P1 spatial complex gap -> magnitude per saved frame -> scalar temporal interpolation. Original temporal complex chord is retained and labelled analysis artifact.",
+  "spectral_policy": {
+    "path": "/home/jdiaz/scratch/stage5_exploratory_spatial_budget_candidate_20261011/root_prospective_exploratory_spatial_decision.json",
+    "sha256": "e683151e6e7b678d95eb6c133391b2ea84ca2ba81cd5a54b1a21cb9f16624e23",
+    "scope": "Current775nm54->80 full bundle only",
+    "field_L2_over_DC": 0.05,
+    "deficit_over_actual_reference_peak": 0.05,
+    "nodal_minimum": "diagnostic; complete old2percent and3/2/2 results retained and recomputed on current same window"
+  },
+  "entries": {
+    "sandbox/stage5_effective_validation/physical_gap_interpolation.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/physical_gap_interpolation.py",
+      "candidate_sha256": "4702d5c01a0e61c8776bb1b35e9e32ec4086189a6db430d87273036a18b1e939",
+      "before_sha256": null,
+      "change": "ADDED"
+    },
+    "sandbox/stage5_effective_validation/physical_gap_comparison.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/physical_gap_comparison.py",
+      "candidate_sha256": "3ec19b9dc7871fb94ac57bfc1cabacbb2b0610b3987bfb757629f2456d668dc7",
+      "before_sha256": null,
+      "change": "ADDED"
+    },
+    "sandbox/stage5_effective_validation/exploratory_spectral_policy.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/exploratory_spectral_policy.py",
+      "candidate_sha256": "273d86b25cb89c04d71308749759ee3f53b92fe45b33475c4c8c5539243a20e1",
+      "before_sha256": null,
+      "change": "ADDED"
+    },
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/guard_protocol_dispatcher.py",
+      "candidate_sha256": "732c13316309626ade82cc88565b79a813fc7cd86d3a8c3efa0cc38932d910a7",
+      "before_sha256": "e8ac183842c762291c3861a45c27ebe8c444231e60a27b10827e0234704c7005",
+      "change": "MODIFIED"
+    },
+    "sandbox/stage5_effective_validation/window_evidence.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/window_evidence.py",
+      "candidate_sha256": "7a2e76e8167264c65ab83feb416209de26d87964e8a2f12340d442f7333eb8b5",
+      "before_sha256": "c7824f426a4858266f97bbac77bfd107d42d522bb2d7d5f8c462a137a9fb1826",
+      "change": "MODIFIED"
+    },
+    "sandbox/stage5_effective_validation/build_final_report.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/build_final_report.py",
+      "candidate_sha256": "bd12ab77ec8cc53057b60b6d2bf1cce376e49857435c563753a60bd0616dff85",
+      "before_sha256": "d4f090728bff45e6d2ed7a15fc1b7055bd8732e5a5dd1ea20a307a0a7ec04bed",
+      "change": "MODIFIED"
+    },
+    "tests/test_effective_physical_gap_policy_integration.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/test_physical_gap_policy_integration.py",
+      "candidate_sha256": "59ded843856cee3e9d759df7888963898ba1dab8214920c4c4ce8f906ca3a7fe",
+      "before_sha256": null,
+      "change": "ADDED"
+    },
+    "tests/test_effective_physical_gap_interpolation.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/test_effective_physical_gap_interpolation.py",
+      "candidate_sha256": "0b899a254349868628de2e6d25dc41c6aa1173ece99ea234402703718318ba44",
+      "before_sha256": null,
+      "change": "ADDED"
+    },
+    "tests/test_effective_guard_protocol_dispatcher.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/test_effective_guard_protocol_dispatcher.py",
+      "candidate_sha256": "3a2b292f7e2b4e8a7cce3c34148bfc35e38c6ee1b2da9d6fff3cbc20ce588a87",
+      "before_sha256": "1b3b23262616012353496c049c075ed18ef78466ab8da8d7e885bb826a17f589",
+      "change": "MODIFIED"
+    },
+    "tests/test_effective_spectral_policy_wiring.py": {
+      "candidate_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/test_effective_spectral_policy_wiring.py",
+      "candidate_sha256": "28be41565e1520f6c688f0c36701d6f0f2f845f40b95e1e2fd24a3abf8bd249e",
+      "before_sha256": "89e18c1ce94133da1afa0e9ec1f3a45c46e727012b8dedec285ed1f02d587a64",
+      "change": "MODIFIED"
+    }
+  },
+  "patch": {
+    "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/combined_analysis_REVIEW_ONLY.patch",
+    "sha256": "4741ccfd457b8cd7aa13c53b346ef1afb0594cd93110341c4c0c83a4952568e9"
+  },
+  "dependency_impact": {
+    "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/dependency_impact_REVIEW_ONLY.json",
+    "sha256": "97154cb7c258ab71ed19d4190098957cd0e4d7d940d4b639d21bc7619cfa642e"
+  },
+  "tests": {
+    "result": "57passed+3subtests",
+    "wall_s": 0.65,
+    "log": {
+      "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/focused_tests_v2.console.log",
+      "sha256": "2a3357694008086a9857d33d6a9e99fab1a989c9e76df54526b22c334a7e55a2"
+    },
+    "scope": "6 reviewed gauge/math tests;11 focused correction/policy/report/coverage tests; existing guard/spectral wiring tests with isolated missing-spatial synthetic fixtures"
+  },
+  "saved_analysis": {
+    "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/same_capture_combined_candidate.json",
+    "sha256": "5a792b6efac60c2c735d34b5a94d34b3dd1a74b1a04a08ffda47bdaaddb7e761"
+  },
+  "source_runtime_pins_unchanged": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "protected_baseline_unchanged": {
+    "sandbox/stage5_effective_validation/audit_runs.py": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "sandbox/stage5_effective_validation/bounded_guard_protocol.py": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+  },
+  "no_existing_repository_sources_changed": true,
+  "remaining": "Root/independent review; candidate only. Current spectralD5.96265percent andmeshD6.19925percent remain failed on saved provisional window; no final completion/coverage/admission inferred."
+}

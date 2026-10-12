@@ -1,0 +1,58 @@
+{
+  "decision": "ADOPT_PROSPECTIVE_GUARD_TIGHTENING_WITH_BOUNDED_TRANSITIONS",
+  "decision_utc": "2026-10-11T16:54:19.775306+00:00",
+  "nominal_guard": 2.5e-06,
+  "temporal_guard": 3.125e-07,
+  "old_nominal_guard": 1e-05,
+  "old_temporal_guard": 1.25e-06,
+  "nominal_anchor_time_ps": null,
+  "nominal_anchor_definition": "Final coherent accepted checkpoint after intentional SIGTERM, before guard-only transfer",
+  "candidate_anchor_band_ps_relative_to_nominal": [
+    -0.25,
+    0
+  ],
+  "candidate_anchors_must_not_be_after_nominal": true,
+  "candidates": [
+    "temporal775",
+    "mesh775",
+    "domain775",
+    "spectral775"
+  ],
+  "comparison_label": "Spatial/spectral refinement with bounded temporal-policy transition; no claim of exact isolated axis inside transition band",
+  "outside_band": "Equal nominal guards; temporal ratio 8; exact historical policies and all anchor times remain visible",
+  "unmodified": [
+    "13 RHS source pins",
+    "physical state",
+    "complete history",
+    "circuit",
+    "source",
+    "global energy origin",
+    "signed and absolute external work",
+    "sum of local defects",
+    "historical maxima",
+    "counters",
+    "next proposed step",
+    "nonlinear tolerance",
+    "dt caps",
+    "horizon",
+    "workers and affinity"
+  ],
+  "global_energy_limit": 0.01,
+  "review_alert": 0.007,
+  "limits_unchanged": {
+    "temporal_spectral": 0.02,
+    "mesh_domain": 0.05,
+    "integrated_energy": 0.01
+  },
+  "sigma_cases": "Retain original guard1e-5 over their declared0-20ps; compare policies within that window using verified lineage",
+  "helper": "/home/jdiaz/scratch/stage5_effective_controls_20261011/tighten_local_energy_guard_v6.py",
+  "helper_sha256": "94006d29f501657ef339d34689949d0897b889973a75eeada94d513a0d20c94f",
+  "local_physical_evidence": {
+    "path": "/home/jdiaz/scratch/stage5_nominal775_single_step_precision_20261011/receipt.json",
+    "sha256": "e0cc5fe2b09c211d50c44214aea65b6a081a32d36759f2bba0beabcb8c6cc0e1"
+  },
+  "new_state_correction": false,
+  "global_ledger_reset": false,
+  "retrospective_new_guard_certification": false,
+  "admission": false
+}

@@ -1,0 +1,1410 @@
+{
+  "schema": "pysnspd.explicit_checkpoint_transfer.v3",
+  "action": "EXPLICIT_DECLARED_CONTROL_RESOURCE_ONLY_TRANSITION_PREPARED_NO_EVOLUTION_NO_SIGNAL",
+  "case": "spectral_2to4",
+  "helper_sha256": "fc3aae98132d304743897c9151161d77b06b07c0b62b4395f4957b4937118a3c",
+  "admission": false,
+  "parent": {
+    "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_20261011",
+    "anchor": "/home/jdiaz/scratch/stage5_spectral_guard2b_resources4_anchor_20261011",
+    "checkpoint_bytes_sha256": "50825f9b50bcd4c32f66d34404267d39e80e23cf2fcf93f002ca271e19fb64c7",
+    "manifest_sha256": "c4adc7fac69e3ee25ca348d9fefb09c04468e50345790204a32dcc45c45b32c9",
+    "runtime_archive_manifest_sha256": "bff948f73ee3b83f68f458b81478f203f06743d3b058c1a992a82150ce5ff490"
+  },
+  "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_resources4_20261011",
+  "pins_before": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "pins_after": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "state_arrays_sha256_before": {
+    "delta_bar": "84335762dc662cd780d044b456f57fb7de49ed3b6dcfbb0ab0070a69e995aec2",
+    "p": "e7befca2d88b2776f4f28723f2903a251f26f977ae5971074b91d5910b20dd8d",
+    "n": "4939ae1968603082984df69f236a01c360aec8dc26ba5a2ebb23611fd43754c7",
+    "circuit_SI": "96b3fba8497e90b8761267fce3ef50fae526ea2f872a2ccbbff9072fca72e2c1"
+  },
+  "state_arrays_sha256_after": {
+    "delta_bar": "84335762dc662cd780d044b456f57fb7de49ed3b6dcfbb0ab0070a69e995aec2",
+    "p": "e7befca2d88b2776f4f28723f2903a251f26f977ae5971074b91d5910b20dd8d",
+    "n": "4939ae1968603082984df69f236a01c360aec8dc26ba5a2ebb23611fd43754c7",
+    "circuit_SI": "96b3fba8497e90b8761267fce3ef50fae526ea2f872a2ccbbff9072fca72e2c1"
+  },
+  "conserved_metadata_before": {
+    "time_ps": 22.794999999999646,
+    "initial_total_energy_J": 2.50121958649551e-16,
+    "external_energy_integral_J": -1.2848341115781516e-19,
+    "limited_event_energy_J": 8.786949085258748e-21,
+    "totalabs_event_energy_J": 4.8692906468763726e-18,
+    "accepted_steps": 2641,
+    "total_rejections": 241,
+    "source": {
+      "wavelength_nm": 775.0,
+      "photon_energy_J": 2.563155944708295e-19,
+      "retained_fraction": 0.667,
+      "retained_energy_J": 1.7096250151204327e-19,
+      "sigma_nm": 7.549834435,
+      "center_m": [
+        1.6e-07,
+        0.0
+      ],
+      "initialization": "Common FD/BE transfer on NEW native BCS/phonon quadratures; fresh DC gap unchanged",
+      "time_origin": "t=0 is effective post-cascade transfer; no additional cascade delay simulated",
+      "cascade_reference": "Exploratory sigma=sqrt(2*D*0.57ps), freely varied; not a measured775/1550nm width",
+      "energy_deposited_J": 1.7096250151204322e-19,
+      "energy_defect_J": -1.49275310807149e-35,
+      "maximum_nodal_energy_defect_J": 2.256949153578792e-36,
+      "relative_total_energy_defect": 8.731465057361334e-17,
+      "maximum_initial_temperature_K": 20.15242498663668,
+      "cut_deposition_J": 0.0,
+      "source_must_not_be_applied_again": true,
+      "old_prepared_photon_state_reused": false
+    },
+    "controller": {
+      "schema": "pysnspd.trigger_window.v1",
+      "config": {
+        "event_time_s": 0.0,
+        "baseline_V": 0.0,
+        "baseline_reference": "fresh effective DC Ib=Is, vc=0",
+        "threshold_V": 0.0001,
+        "polarity": "positive",
+        "confirmation_s": 5e-13,
+        "hysteresis_fraction": 0.05,
+        "post_trigger_margin_s": 5e-12,
+        "no_trigger_time_ceiling_s": 2e-10
+      },
+      "state": {
+        "last_time_s": 2.2794999999999645e-11,
+        "last_excursion_V": 3.387735699738899e-05,
+        "sample_count": 2642,
+        "maximum_observation_step_s": 2.000000000000032e-14,
+        "candidate_crossing_s": null,
+        "crossing_time_s": null,
+        "confirmation_time_s": null,
+        "stop_target_s": null,
+        "actual_stop_s": null,
+        "status": "ACTIVE",
+        "failure_reason": null,
+        "rejected_candidate_count": 0
+      }
+    }
+  },
+  "conserved_metadata_after": {
+    "time_ps": 22.794999999999646,
+    "initial_total_energy_J": 2.50121958649551e-16,
+    "external_energy_integral_J": -1.2848341115781516e-19,
+    "limited_event_energy_J": 8.786949085258748e-21,
+    "totalabs_event_energy_J": 4.8692906468763726e-18,
+    "accepted_steps": 2641,
+    "total_rejections": 241,
+    "source": {
+      "wavelength_nm": 775.0,
+      "photon_energy_J": 2.563155944708295e-19,
+      "retained_fraction": 0.667,
+      "retained_energy_J": 1.7096250151204327e-19,
+      "sigma_nm": 7.549834435,
+      "center_m": [
+        1.6e-07,
+        0.0
+      ],
+      "initialization": "Common FD/BE transfer on NEW native BCS/phonon quadratures; fresh DC gap unchanged",
+      "time_origin": "t=0 is effective post-cascade transfer; no additional cascade delay simulated",
+      "cascade_reference": "Exploratory sigma=sqrt(2*D*0.57ps), freely varied; not a measured775/1550nm width",
+      "energy_deposited_J": 1.7096250151204322e-19,
+      "energy_defect_J": -1.49275310807149e-35,
+      "maximum_nodal_energy_defect_J": 2.256949153578792e-36,
+      "relative_total_energy_defect": 8.731465057361334e-17,
+      "maximum_initial_temperature_K": 20.15242498663668,
+      "cut_deposition_J": 0.0,
+      "source_must_not_be_applied_again": true,
+      "old_prepared_photon_state_reused": false
+    },
+    "controller": {
+      "schema": "pysnspd.trigger_window.v1",
+      "config": {
+        "event_time_s": 0.0,
+        "baseline_V": 0.0,
+        "baseline_reference": "fresh effective DC Ib=Is, vc=0",
+        "threshold_V": 0.0001,
+        "polarity": "positive",
+        "confirmation_s": 5e-13,
+        "hysteresis_fraction": 0.05,
+        "post_trigger_margin_s": 5e-12,
+        "no_trigger_time_ceiling_s": 2e-10
+      },
+      "state": {
+        "last_time_s": 2.2794999999999645e-11,
+        "last_excursion_V": 3.387735699738899e-05,
+        "sample_count": 2642,
+        "maximum_observation_step_s": 2.000000000000032e-14,
+        "candidate_crossing_s": null,
+        "crossing_time_s": null,
+        "confirmation_time_s": null,
+        "stop_target_s": null,
+        "actual_stop_s": null,
+        "status": "ACTIVE",
+        "failure_reason": null,
+        "rejected_candidate_count": 0
+      }
+    }
+  },
+  "preserved_array_hashes": {
+    "delta_bar": "84335762dc662cd780d044b456f57fb7de49ed3b6dcfbb0ab0070a69e995aec2",
+    "p": "e7befca2d88b2776f4f28723f2903a251f26f977ae5971074b91d5910b20dd8d",
+    "n": "4939ae1968603082984df69f236a01c360aec8dc26ba5a2ebb23611fd43754c7",
+    "circuit_SI": "96b3fba8497e90b8761267fce3ef50fae526ea2f872a2ccbbff9072fca72e2c1",
+    "trajectory__time_s": "ad409645b52c0630e05f4c22a54316d79b03c11f5e6b8a07a40f6bf2c0cf027f",
+    "trajectory__Vout_V": "15a26cc82cbfb5df7c1b6e328bd7940320ecb1064c762c2403dc68d975db4789",
+    "trajectory__Vdev_V": "9c52102b8a98a138c6e2ae76f2e2b08889672ddaa5131a7dbaac4129a8ef4583",
+    "trajectory__Ib_A": "0818e2924feed10d95db3aa022511cf101e46f4ac2e5f60f24ffdb8f0ed4af99",
+    "trajectory__Is_A": "248ab03ea4d48845fe42e1ea4cac97cba0071d6fe74c03cd92cb11bc60230776",
+    "trajectory__vc_V": "5bb3915ca71826247b7a07b4c8d698914673ad5fd278853ba1f38e9978d11198",
+    "trajectory__energy_total_J": "cace973bf8d27b7b851c4f0c01e38bfccdce93f03dee0122fbc239215cf94326",
+    "trajectory__energy_defect_J": "aaae00aecb32e9dc94b28cec8877a55322e9248b3c2e09ab7a08d9a6f83f5904",
+    "trajectory__escape_power_W": "4f2734abd0ef5a7906f673f80b91f2914154b140f8793654fe9268dc957f5aeb",
+    "trajectory__domain_energy_J": "7d53722cd6dabbd8ecdb8552309276e78c4c209071850d771968ebe8097333a7",
+    "trajectory__instant_power_residual_W": "a4e92d3505d41a22ca2c58735d9a1b00ce3a39fa012aa891f9de2d1c517bc976",
+    "trajectory__reservoir_power_out_W": "4f09d94a02a43c6e0ff4f8ddc422fda69de57a64df7da6bd4322cfb6cfa4af78",
+    "trajectory__external_energy_integral_J": "c1afdd9e82059b222107132b5fc8ca3384111f8bfb62f727f0853026514440d1",
+    "trajectory__limited_event_energy_J": "87387dbb23411e28be76b3dd459afec226393b85532d35e07887724ba6d65be3",
+    "trajectory__totalabs_event_energy_J": "dae40c7c3899b9b5fd7e660837af3ab813674b936d72e57eb070c5264229547d",
+    "trajectory__accepted_step_ps": "4c6994f6fed0f9b8cab3c133444c0f6afbdcfdbc05bceaf21293f0c08820ebf0",
+    "snapshots__time_s": "83cd655347528ebd7267ccaf321c3c24bb85a8fb5146632b52d94bcd70e0aea7",
+    "snapshots__delta_J": "a4936e8a18ba04a9147a9095e5b0b3f6d0544815d63f0f1643f6be6a982883ad",
+    "snapshots__Te_K": "d4395c72ef0ce939da49ae527ec8f16152e23c048424a2ca87854954bd5c31ae",
+    "snapshots__Tph_K": "21483bf150a61778c6da5fa3d23ca96daa10c324b2185f96abd798307f5e68fb",
+    "snapshots__u_excess_J_m3": "78c883c40245d78c6d34237ee374d4a25bb6c9fd210fbd3710cf5aead1c330ae",
+    "snapshots__electron_energy_J_m3": "43d9370627737a39dd75f4f50b9c11df3d268b8dd7ee0c076ff89609f866c0ba",
+    "snapshots__phonon_energy_J_m3": "74989ea5f471c8ec1b8e839ff3550daca71c50834e787054f0b9c4e4d58ea012"
+  },
+  "checkpoint_total_keys": 28,
+  "checkpoint_numeric_arrays": 27,
+  "checkpoint_namespace": [
+    "circuit_SI",
+    "delta_bar",
+    "metadata_json",
+    "n",
+    "p",
+    "snapshots__Te_K",
+    "snapshots__Tph_K",
+    "snapshots__delta_J",
+    "snapshots__electron_energy_J_m3",
+    "snapshots__phonon_energy_J_m3",
+    "snapshots__time_s",
+    "snapshots__u_excess_J_m3",
+    "trajectory__Ib_A",
+    "trajectory__Is_A",
+    "trajectory__Vdev_V",
+    "trajectory__Vout_V",
+    "trajectory__accepted_step_ps",
+    "trajectory__domain_energy_J",
+    "trajectory__energy_defect_J",
+    "trajectory__energy_total_J",
+    "trajectory__escape_power_W",
+    "trajectory__external_energy_integral_J",
+    "trajectory__instant_power_residual_W",
+    "trajectory__limited_event_energy_J",
+    "trajectory__reservoir_power_out_W",
+    "trajectory__time_s",
+    "trajectory__totalabs_event_energy_J",
+    "trajectory__vc_V"
+  ],
+  "all_metadata_except_threads_preserved": true,
+  "frontend_changes": {},
+  "implementation_changes": {},
+  "horizon_change": null,
+  "energy_guard_change": null,
+  "RHS_sources_identical": true,
+  "guard_ledger_before": {
+    "absolute_external_energy_integral_J": 1.2848341115781516e-19,
+    "sum_abs_local_energy_defect_J": 1.9905802105230367e-21,
+    "local_energy_rejections": 235,
+    "max_accepted_local_energy_fraction": 9.994892699577096e-06,
+    "max_guarded_accepted_local_energy_fraction": 1.3824769011655042e-06,
+    "guard_active_since_time_ps": 22.32499999999994,
+    "local_energy_reference_energy_J": 1.7096250151204327e-19,
+    "energy_guard_ledger_origin": "accepted_midpoint_receipts_since_time_zero; tolerance_changed_at_explicit_transfer"
+  },
+  "guard_ledger_after": {
+    "absolute_external_energy_integral_J": 1.2848341115781516e-19,
+    "sum_abs_local_energy_defect_J": 1.9905802105230367e-21,
+    "local_energy_rejections": 235,
+    "max_accepted_local_energy_fraction": 9.994892699577096e-06,
+    "max_guarded_accepted_local_energy_fraction": 1.3824769011655042e-06,
+    "guard_active_since_time_ps": 22.32499999999994,
+    "local_energy_reference_energy_J": 1.7096250151204327e-19,
+    "energy_guard_ledger_origin": "accepted_midpoint_receipts_since_time_zero; tolerance_changed_at_explicit_transfer"
+  },
+  "next_step_ps_before": 0.0024999999999888445,
+  "next_step_ps_after": 0.0024999999999888445,
+  "global_energy_error_before": {
+    "defect_J": 1.9773914971116404e-21,
+    "denominator_J": 2.9944591266985843e-19,
+    "absolute_relative_defect": 0.006603501378533528,
+    "formula": "abs(U(t)-U(0)-Wext(t))/(Eref + sum(abs(accepted delta Wext)))",
+    "global_origin_time_ps": 0.0
+  },
+  "global_energy_error_after": {
+    "defect_J": 1.9773914971116404e-21,
+    "denominator_J": 2.9944591266985843e-19,
+    "absolute_relative_defect": 0.006603501378533528,
+    "formula": "abs(U(t)-U(0)-Wext(t))/(Eref + sum(abs(accepted delta Wext)))",
+    "global_origin_time_ps": 0.0
+  },
+  "resources_before": {
+    "runtime_inventory": {
+      "logical_cpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "physical_core_groups": [
+        [
+          0,
+          16
+        ],
+        [
+          1,
+          17
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          10,
+          26
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "available_memory_bytes": 120409001984,
+      "host_available_memory_bytes": 120409001984,
+      "total_memory_bytes": 132537786368,
+      "cpu_quota_units": null,
+      "cgroup_limits": {
+        "cpu_quota_units": null,
+        "memory_headroom_bytes": null,
+        "cpu_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4290.scope/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          }
+        ],
+        "memory_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4290.scope/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          }
+        ],
+        "unavailable": []
+      }
+    },
+    "scheduling_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0
+      ],
+      "workers": 1,
+      "threads_per_process": 1,
+      "total_processes": 2,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 108368101785,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 4294967296,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "actual_processes": 1,
+    "actual_threads": 2,
+    "requested_threads": 2,
+    "reserved_physical_core_count": 2,
+    "actual_affinity_cpus": [
+      6,
+      7
+    ],
+    "selected_physical_core_groups": [
+      [
+        6,
+        22
+      ],
+      [
+        7,
+        23
+      ]
+    ],
+    "threading": "One Numba thread per distinct physical core; BLAS/OpenMP remain1",
+    "global_resource_ceiling_fraction": 0.9
+  },
+  "resources_after": {
+    "requested_threads": 4,
+    "target_affinity_cpus": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "cpu_start": 4,
+    "preparation_only": true,
+    "execution_started": false,
+    "previous_observed_resources": {
+      "runtime_inventory": {
+        "logical_cpus": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "physical_core_groups": [
+          [
+            0,
+            16
+          ],
+          [
+            1,
+            17
+          ],
+          [
+            2,
+            18
+          ],
+          [
+            3,
+            19
+          ],
+          [
+            4,
+            20
+          ],
+          [
+            5,
+            21
+          ],
+          [
+            6,
+            22
+          ],
+          [
+            7,
+            23
+          ],
+          [
+            8,
+            24
+          ],
+          [
+            9,
+            25
+          ],
+          [
+            10,
+            26
+          ],
+          [
+            11,
+            27
+          ],
+          [
+            12,
+            28
+          ],
+          [
+            13,
+            29
+          ],
+          [
+            14,
+            30
+          ],
+          [
+            15,
+            31
+          ]
+        ],
+        "available_memory_bytes": 120409001984,
+        "host_available_memory_bytes": 120409001984,
+        "total_memory_bytes": 132537786368,
+        "cpu_quota_units": null,
+        "cgroup_limits": {
+          "cpu_quota_units": null,
+          "memory_headroom_bytes": null,
+          "cpu_records": [
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4290.scope/cpu.max",
+              "version": 2,
+              "cpu_units": null,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+              "version": 2,
+              "cpu_units": null,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/cpu.max",
+              "version": 2,
+              "cpu_units": null,
+              "status": "unlimited"
+            }
+          ],
+          "memory_records": [
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4290.scope/memory.max",
+              "version": 2,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+              "version": 2,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/memory.max",
+              "version": 2,
+              "status": "unlimited"
+            }
+          ],
+          "unavailable": []
+        }
+      },
+      "scheduling_budget": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13,
+          29
+        ],
+        "coordinator_cpu": 29,
+        "worker_affinity_cpus": [
+          0
+        ],
+        "workers": 1,
+        "threads_per_process": 1,
+        "total_processes": 2,
+        "logical_budget": 28,
+        "effective_cpu_quota_units": 32,
+        "physical_cores_used": 14,
+        "physical_cores_reserved": 2,
+        "memory_limit_bytes": 108368101785,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 1073741824,
+        "estimated_memory_reservation_bytes": 4294967296,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      },
+      "actual_processes": 1,
+      "actual_threads": 2,
+      "requested_threads": 2,
+      "reserved_physical_core_count": 2,
+      "actual_affinity_cpus": [
+        6,
+        7
+      ],
+      "selected_physical_core_groups": [
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          23
+        ]
+      ],
+      "threading": "One Numba thread per distinct physical core; BLAS/OpenMP remain1",
+      "global_resource_ceiling_fraction": 0.9
+    }
+  },
+  "numerical_segments": [
+    {
+      "start_time_ps": 0.0,
+      "end_time_ps": 20.0,
+      "origin": "verified_fresh_STARTED_zero",
+      "duration_ps": 20.0,
+      "energy_guard_enabled": true,
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "local_energy_tolerance": 1e-05
+    },
+    {
+      "start_time_ps": 20.0,
+      "end_time_ps": 22.32499999999994,
+      "origin": "explicit_control_window_only",
+      "duration_ps": null,
+      "energy_guard_enabled": true,
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "local_energy_tolerance": 1e-05
+    },
+    {
+      "start_time_ps": 22.32499999999994,
+      "end_time_ps": 22.794999999999646,
+      "origin": "prospective_local_energy_guard_tightening",
+      "duration_ps": null,
+      "energy_guard_enabled": true,
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "local_energy_tolerance": 2.5e-06,
+      "guard_active_since_time_ps": 22.32499999999994
+    },
+    {
+      "start_time_ps": 22.794999999999646,
+      "end_time_ps": null,
+      "origin": "explicit_declared_control_resource_only_transition",
+      "duration_ps": null,
+      "energy_guard_enabled": true,
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 4,
+      "local_energy_tolerance": 2.5e-06,
+      "guard_active_since_time_ps": 22.32499999999994,
+      "resource_case": "spectral_2to4",
+      "resource_affinity_cpus": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "resource_cpu_start": 4,
+      "guard_window_preserved": true
+    }
+  ],
+  "guard_policy_projection": [
+    {
+      "start_time_ps": 0.0,
+      "end_time_ps": 20.0,
+      "origin": "verified_fresh_STARTED_zero",
+      "duration_ps": 20.0,
+      "energy_guard_enabled": true,
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "local_energy_tolerance": 1e-05
+    },
+    {
+      "start_time_ps": 20.0,
+      "end_time_ps": 22.32499999999994,
+      "origin": "explicit_control_window_only",
+      "duration_ps": null,
+      "energy_guard_enabled": true,
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "local_energy_tolerance": 1e-05
+    },
+    {
+      "start_time_ps": 22.32499999999994,
+      "end_time_ps": null,
+      "origin": "prospective_local_energy_guard_tightening",
+      "duration_ps": null,
+      "energy_guard_enabled": true,
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "local_energy_tolerance": 2.5e-06,
+      "guard_active_since_time_ps": 22.32499999999994
+    }
+  ],
+  "resource_preflight": {
+    "case": "spectral_2to4",
+    "target_affinity_cpus": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "cpu_start": 4,
+    "requested_threads": 4,
+    "active_pipeline_owners": [
+      {
+        "pid": 238900,
+        "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_temporal_adaptive_v6_guard2b_20261011",
+        "affinity": [
+          8,
+          9
+        ]
+      },
+      {
+        "pid": 279800,
+        "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_resources4_20261011",
+        "affinity": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "pid": 280970,
+        "output_dir": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_resources4_20261011",
+        "affinity": [
+          10,
+          11,
+          12,
+          13
+        ]
+      }
+    ],
+    "physical_cores_after": 14,
+    "reserved_physical_cores": [
+      14,
+      15
+    ],
+    "scope": "Point-in-time jdiaz pipeline-owner inventory only; root must recheck ALL host workloads immediately before launch; no CPU reservation",
+    "prerequisite_manifests": {
+      "1550_terminal": {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_resources4_20261011/provenance/prerequisite_1550_terminal_manifest.json",
+        "sha256": "9ac12a3f1ba75b7f1302b80551805d33883a0f2da4362dc95a4e24ab065f7ffe"
+      },
+      "wide_terminal": {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_resources4_20261011/provenance/prerequisite_wide_terminal_manifest.json",
+        "sha256": "2889932f2a31b32c3a2068a375d491d5ff9862c29dc4000b5aab5cec7456f43e"
+      }
+    },
+    "observed_prerequisite_source_paths": {
+      "1550_terminal": "/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011/manifest.json",
+      "wide_terminal": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_sigma_wide_v6_control20_data_20261011/manifest.json"
+    },
+    "runtime_inventory": {
+      "logical_cpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "physical_core_groups": [
+        [
+          0,
+          16
+        ],
+        [
+          1,
+          17
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          10,
+          26
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "available_memory_bytes": 120109387776,
+      "host_available_memory_bytes": 120109387776,
+      "total_memory_bytes": 132537786368,
+      "cpu_quota_units": null,
+      "cgroup_limits": {
+        "cpu_quota_units": null,
+        "memory_headroom_bytes": null,
+        "cpu_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4383.scope/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          }
+        ],
+        "memory_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4383.scope/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          }
+        ],
+        "unavailable": []
+      }
+    },
+    "scheduling_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0
+      ],
+      "workers": 1,
+      "threads_per_process": 1,
+      "total_processes": 2,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 108098448998,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 4294967296,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    }
+  },
+  "parent_guard_entry": {
+    "transfer_receipt": {
+      "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_20261011/provenance/transfer_receipt.json",
+      "sha256": "eeea774f68f0b435ccbdd5e0645f431b3e02a781ddad5c27b81ace9925470bf1"
+    },
+    "initial_checkpoint": {
+      "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_20261011/provenance/initial_guard2b_checkpoint.npz",
+      "sha256": "47f4d07cd824c7ff2cc668e0a09dfeda413baec58c323ebe0016955a10998092"
+    },
+    "initial_manifest": {
+      "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_20261011/provenance/initial_guard2b_manifest.json",
+      "sha256": "00ee77846a1e663787213aa42e230e7d480a842b9d20b70252ad39c43139f7c6"
+    }
+  },
+  "parent_guard_verification": {
+    "role": "spectral",
+    "segments": [
+      {
+        "start_time_ps": 0.0,
+        "end_time_ps": 20.0,
+        "origin": "verified_fresh_STARTED_zero",
+        "duration_ps": 20.0,
+        "energy_guard_enabled": true,
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "local_energy_tolerance": 1e-05
+      },
+      {
+        "start_time_ps": 20.0,
+        "end_time_ps": 22.32499999999994,
+        "origin": "explicit_control_window_only",
+        "duration_ps": null,
+        "energy_guard_enabled": true,
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "local_energy_tolerance": 1e-05
+      },
+      {
+        "start_time_ps": 22.32499999999994,
+        "end_time_ps": null,
+        "origin": "prospective_local_energy_guard_tightening",
+        "duration_ps": null,
+        "energy_guard_enabled": true,
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "local_energy_tolerance": 2.5e-06,
+        "guard_active_since_time_ps": 22.32499999999994
+      }
+    ],
+    "anchor_time_ps": 22.32499999999994,
+    "receipt_sha256": "eeea774f68f0b435ccbdd5e0645f431b3e02a781ddad5c27b81ace9925470bf1",
+    "initial_checkpoint_sha256": "47f4d07cd824c7ff2cc668e0a09dfeda413baec58c323ebe0016955a10998092",
+    "initial_manifest_sha256": "00ee77846a1e663787213aa42e230e7d480a842b9d20b70252ad39c43139f7c6",
+    "current_checkpoint_sha256": "50825f9b50bcd4c32f66d34404267d39e80e23cf2fcf93f002ca271e19fb64c7",
+    "old_guard_independently_verified": {
+      "passed": true,
+      "checks": {
+        "strict_parameter_and_manifest_tolerance": true,
+        "reference_matches_source": true,
+        "anchor_is_saved_accepted_time": true,
+        "every_post_anchor_step_bounded": true,
+        "absolute_work_ledger": true,
+        "absolute_defect_ledger": true,
+        "maximum_all_ledger": true,
+        "maximum_guarded_ledger": true,
+        "rejection_count_valid": true,
+        "checkpoint_manifest_guard_ledger_matches": true
+      },
+      "tolerance": 1e-05,
+      "guard_active_since_time_ps": 0.0,
+      "post_anchor_accepted_steps": 2449,
+      "legacy_accepted_steps": 0,
+      "absolute_work_reconstructed_J": 1.1616328564025755e-19,
+      "sum_abs_local_defect_reconstructed_J": 1.9169024989146943e-21,
+      "maximum_all_reconstructed_fraction": 9.994892699597108e-06,
+      "maximum_guarded_reconstructed_fraction": 9.994892699597108e-06,
+      "ledger_sum_roundoff_bound_J": 9.359979753381918e-31,
+      "maximum_fraction_roundoff": 1.0388659381244294e-11,
+      "maximum_guarded_fraction_roundoff": 1.0388659381244294e-11,
+      "roundoff_definition": "Per step16eps*(abs(Eold)+abs(Enew)+abs(Wold)+abs(Wnew)); ledger16eps*sum(abs(Wold)+abs(Wnew)), lower arithmetic bound32eps*max(Eref,sumabsdW)",
+      "scope": "The historical guard is reconstructed before its window closes; no retrospective certification under the new tolerance."
+    },
+    "current_guard_independently_verified": {
+      "passed": true,
+      "checks": {
+        "strict_parameter_and_manifest_tolerance": true,
+        "reference_matches_source": true,
+        "anchor_is_saved_accepted_time": true,
+        "every_post_anchor_step_bounded": true,
+        "absolute_work_ledger": true,
+        "absolute_defect_ledger": true,
+        "maximum_all_ledger": true,
+        "maximum_guarded_ledger": true,
+        "rejection_count_valid": true,
+        "checkpoint_manifest_guard_ledger_matches": true
+      },
+      "tolerance": 2.5e-06,
+      "guard_active_since_time_ps": 22.32499999999994,
+      "post_anchor_accepted_steps": 192,
+      "legacy_accepted_steps": 2449,
+      "absolute_work_reconstructed_J": 1.2848341115781516e-19,
+      "sum_abs_local_defect_reconstructed_J": 1.9905802105232474e-21,
+      "maximum_all_reconstructed_fraction": 9.994892699597108e-06,
+      "maximum_guarded_reconstructed_fraction": 1.3824769011855638e-06,
+      "ledger_sum_roundoff_bound_J": 1.1027112947851534e-30,
+      "maximum_fraction_roundoff": 1.0388659381244294e-11,
+      "maximum_guarded_fraction_roundoff": 6.188416113187191e-12,
+      "roundoff_definition": "Per step16eps*(abs(Eold)+abs(Enew)+abs(Wold)+abs(Wnew)); ledger16eps*sum(abs(Wold)+abs(Wnew)), lower arithmetic bound32eps*max(Eref,sumabsdW)",
+      "scope": "The historical guard is reconstructed before its window closes; no retrospective certification under the new tolerance."
+    },
+    "ancestry": [
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_anchor_20261011/provenance/parent_transfer_receipt.json",
+        "sha256": "547f8ae293132f1ec76c378aeca3e90d742454787b535d5327c9c458871980db",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_v6_control20_completed_anchor_20261011",
+        "checkpoint_sha256": "e3a725f758ff180c565c34d0085efde8923f043d27da40c2093076afc814fedd",
+        "manifest_sha256": "e1e887211aca361824f2e23f63a3522aa847446329daa311a9c1e9fc8c1a58ae",
+        "capture_receipt_sha256": "5d000480c6dce7cb11091c38ed7f8988f3bf8a7df16ccab6d4000a11baab6286",
+        "runtime_archive_sha256": "bff948f73ee3b83f68f458b81478f203f06743d3b058c1a992a82150ce5ff490",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 20.0,
+        "receipt_hash_references": [],
+        "ancestry_kind": "original run or explicitly documented diagnostic"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_20261011/provenance/transfer_receipt.json",
+        "sha256": "eeea774f68f0b435ccbdd5e0645f431b3e02a781ddad5c27b81ace9925470bf1",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_anchor_20261011",
+        "checkpoint_sha256": "450792a936b5fc56ca8ea36652d594f999003d12bdf412a536ce05426268efff",
+        "manifest_sha256": "358956cb782e0306ab091b4718ea95cc4b962e145c447bbf2185f9df73764394",
+        "capture_receipt_sha256": "ada5e71ee8b5ed7392f134ef22bae06068303dac8c927ff2d9c7e617446ce243",
+        "runtime_archive_sha256": "bff948f73ee3b83f68f458b81478f203f06743d3b058c1a992a82150ce5ff490",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 22.32499999999994,
+        "receipt_hash_references": [],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "547f8ae293132f1ec76c378aeca3e90d742454787b535d5327c9c458871980db"
+      }
+    ],
+    "exact_saved_prefix": true,
+    "global_origin_preserved": true,
+    "admission": false
+  },
+  "parent_guard_protocol": {
+    "path": "/home/jdiaz/scratch/stage5_guard_protocol_actual_five_roles_prepare_20261011/protocol_nominal_temporal_domain_mesh_spectral_actual_REVIEW_ONLY.json",
+    "sha256": "d8d10611591fae37c8319991756e47be97ee912f2911bd6dade6dbefb659f572"
+  },
+  "prior_resource_receipt": null,
+  "existing_thread_evidence": {
+    "certificate": {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/equivalence_certificate.json",
+      "sha256": "a7e0170f5c4b295a89ede835d7c234f4ebda8919f4271d2098b60fee638f937f"
+    },
+    "root_application": {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/root_application_receipt.json",
+      "sha256": "14390a5da13607439036268e17a6be73a0912e838374d8b1400628ecc5dcb4e2"
+    },
+    "scope": "Existing tested1/2/4-thread algebraic evidence only; future trajectories and cross-thread scalar reductions are not asserted bitwise identical"
+  },
+  "initial_checkpoint": {
+    "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_resources4_20261011/provenance/initial_resource_checkpoint.npz",
+    "sha256": "65488bfc48258363b4eb0fc147f57d745ea36feb783b8d63a08bcf25c9b06018"
+  },
+  "initial_manifest": {
+    "path": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_resources4_20261011/provenance/initial_resource_manifest.json",
+    "sha256": "cefdc6492ee7ced10fa002a9b7441fcce4bb37069296ae4f0e8a0e1dc56207ea"
+  },
+  "parent_audit_view_manifest": {
+    "original_manifest_sha256": "c4adc7fac69e3ee25ca348d9fefb09c04468e50345790204a32dcc45c45b32c9",
+    "derived_manifest_sha256": "35ca9125dd0d0ffbcf6bf7c76f3fb8fe149d9067eaef647d5adb83033c78bc60",
+    "recomputed_output_sha256": {
+      "checkpoint_latest.npz": "50825f9b50bcd4c32f66d34404267d39e80e23cf2fcf93f002ca271e19fb64c7",
+      "snapshots.npz": "4aa42868fd1de01247d901c4bdbea312c52dea4a3aced7bdb058494f4bf43cdd",
+      "trajectory.npz": "b28a0eb5df6664bbe6edb9558719ff6eb53b30e55c9ecc890d5d4fc6afff8acc"
+    },
+    "output_sha256_added": true,
+    "reason": "Native INTERRUPTED runner omits output_sha256; derived audit view adds only recomputed saved-output hashes",
+    "original_manifest_bytes_unchanged": true,
+    "physical_files_modified": false
+  },
+  "parent_original_audit_files": {
+    "manifest.json": {
+      "path": "/home/jdiaz/scratch/stage5_spectral_guard2b_resources4_anchor_20261011/manifest.json",
+      "sha256": "35ca9125dd0d0ffbcf6bf7c76f3fb8fe149d9067eaef647d5adb83033c78bc60"
+    },
+    "checkpoint_latest.npz": {
+      "path": "/home/jdiaz/scratch/stage5_spectral_guard2b_resources4_anchor_20261011/checkpoint_latest.npz",
+      "sha256": "50825f9b50bcd4c32f66d34404267d39e80e23cf2fcf93f002ca271e19fb64c7"
+    },
+    "trajectory.npz": {
+      "path": "/home/jdiaz/scratch/stage5_spectral_guard2b_resources4_anchor_20261011/trajectory.npz",
+      "sha256": "b28a0eb5df6664bbe6edb9558719ff6eb53b30e55c9ecc890d5d4fc6afff8acc"
+    },
+    "snapshots.npz": {
+      "path": "/home/jdiaz/scratch/stage5_spectral_guard2b_resources4_anchor_20261011/snapshots.npz",
+      "sha256": "4aa42868fd1de01247d901c4bdbea312c52dea4a3aced7bdb058494f4bf43cdd"
+    }
+  },
+  "parent_runtime_archive_manifest": {
+    "path": "/home/jdiaz/scratch/stage5_spectral_guard2b_resources4_anchor_20261011/runtime_sources/archive_manifest.json",
+    "sha256": "bff948f73ee3b83f68f458b81478f203f06743d3b058c1a992a82150ce5ff490"
+  },
+  "new_checkpoint_bytes_sha256": "65488bfc48258363b4eb0fc147f57d745ea36feb783b8d63a08bcf25c9b06018",
+  "resume_argv": [
+    "--output-dir",
+    "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_guard2b_resources4_20261011",
+    "--resume",
+    "--cpu-start",
+    "4",
+    "--length-nm",
+    "320.0",
+    "--spacing-nm",
+    "5.0",
+    "--xi-cutoff",
+    "64.0",
+    "--xi-order",
+    "8",
+    "--phonon-nodes",
+    "144",
+    "--transport-order",
+    "96",
+    "--wavelength-nm",
+    "775.0",
+    "--sigma-nm",
+    "7.549834435",
+    "--retained-fraction",
+    "0.667",
+    "--dt-ps",
+    "0.02",
+    "--ceiling-ps",
+    "200.0",
+    "--threshold-mV",
+    "0.1",
+    "--confirmation-ps",
+    "0.5",
+    "--extra-time-ps",
+    "5.0",
+    "--tau-ee-Tc-ps",
+    "5.0",
+    "--tau-ep-Tc-ps",
+    "24.7",
+    "--tau-escape-ps",
+    "15.0",
+    "--current-uA",
+    "21.29720614489798",
+    "--bath-K",
+    "0.9",
+    "--snapshot-every-ps",
+    "0.1",
+    "--checkpoint-every-ps",
+    "1.0",
+    "--checkpoint-wall-s",
+    "60.0",
+    "--step-tolerance",
+    "2e-07",
+    "--local-energy-tolerance",
+    "2.5e-06",
+    "--max-iterations",
+    "40",
+    "--max-rejections",
+    "50",
+    "--threads",
+    "4"
+  ],
+  "state_or_heat_correction": false,
+  "global_energy_origin_reset": false,
+  "guard_window_reset": false,
+  "future_cross_thread_bitwise_identity_claimed": false
+}

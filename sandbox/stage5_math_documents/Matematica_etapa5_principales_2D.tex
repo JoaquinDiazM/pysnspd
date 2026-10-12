@@ -1,0 +1,121 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,bm,array,geometry,color,fancyhdr,hyperref}
+\geometry{left=19mm,right=19mm,top=18mm,bottom=19mm}
+\definecolor{ink}{RGB}{20,52,72}
+\definecolor{accent}{RGB}{22,115,139}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=ink}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\small\color{ink}pysnspd / cierre efectivo BCS / 11 de octubre de 2026}
+\fancyfoot[R]{\small\thepage}
+\newcommand{\block}[1]{\par\vspace{5pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
+\newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
+\newcommand{\sourcecode}[1]{\par{\footnotesize\color{ink}\textbf{Implementación:} \texttt{#1}}\par}
+\newcommand{\origin}[1]{\par{\footnotesize\color{ink}\textbf{Campo / procedencia:} #1}\par}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\Eu}{E_u}
+\newcommand{\Tb}{T_b}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\FD}{f_{\rm FD}}
+\newcommand{\BE}{n_{\rm BE}}
+\newcommand{\Uscale}{u_i^*}
+\newcommand{\Rcut}{P_{\rm res}}
+\newcommand{\Fgap}{\mathcal F_i}
+\newcommand{\meV}{\,\mathrm{meV}}
+\begin{document}
+{\LARGE\bfseries\color{ink}Ecuaciones principales en 2D}\par
+{\large Estado acoplado neutral: \(\Delta,\ p_\xi,\ n_\Omega\)}\par
+{\small Sistema efectivo implementado. Variables físicas en SI; coordenadas espectrales normalizadas explícitas.}
+\renewcommand{\theequation}{1.\arabic{equation}}
+\block{Condensado: movilidad de Kramer--Watts-Tobin}
+\begin{gather}
+ d_i=\Delta_i/\Eu,\qquad \Eu=k_BT_c,\qquad
+ E_{ik}=\Eu e_{ik},\quad e_{ik}=\sqrt{\bar\xi_k^2+|d_i|^2},\\
+ D_td_i=\dot d_i+\frac{2ie}{\hbar}\phi_i d_i,\qquad
+ z_i=\begin{cases}d_i/|d_i|,&|d_i|>0,\\1,&d_i=0,\end{cases}\\
+ \Fgap=\left.\frac{\partial U_{e+\nabla}}{\partial d_i^*}\right|_{p,\alpha},
+ \qquad
+ f_i=\frac{z_i^*\Fgap}{\Uscale},\quad \Uscale=N_0\Eu^2V_i,\\
+ \boxed{D_td_i=-\frac{z_i}{A_i\tau_K}
+ \left[\frac{\Rea f_i}{R_i}+iR_i\Ima f_i\right]},\\
+ A_i=\sqrt{\frac{1+\vartheta_i}{2}},\qquad
+ \vartheta_i=\frac{\max(T_{E,i},T_b)}{T_c},\qquad
+ \tau_K=\frac{\pi\hbar}{8k_BT_c},\\
+ \tau_{{\rm sc},i}^{-1}
+ =\frac{\vartheta_i}{\tau_{ee}(T_c)}
+ +\frac{\vartheta_i^3}{\tau_{ep}(T_c)},\qquad
+ R_i=\sqrt{1+\frac{4\Eu^2\tau_{{\rm sc},i}^2|d_i|^2}{\hbar^2}},\\
+ \tau_{ee}(T_c)>0,\quad\tau_{ep}(T_c)>0,\qquad
+ \bigl(\tau_{ee}(T_c),\tau_{ep}(T_c)\bigr)_{\rm nominal}
+ =(5,\ 24.7)\,\mathrm{ps}.
+\end{gather}
+{\small Calibradores libres: los nominales no fijan el rango ni sustituyen el ajuste experimental.}
+\vspace{5pt}
+\par\noindent\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{i,t,\mathbf r_i}{nodo 2D; tiempo [s]; posición [m]}
+\labelrow{\Delta_i,d_i}{parámetro de orden [J]; coordenada adimensional}
+\labelrow{E_{ik},\bar\xi_k}{energía de excitación [J]; energía normal nativa dividida por $E_u$}
+\labelrow{\phi_i,e,\hbar}{potencial [V]; carga elemental positiva [C]; acción [J\,s]}
+\labelrow{U_{e+\nabla},\Fgap}{energía compartida [J]; derivada de Wirtinger [J]}
+\labelrow{N_0,V_i,\Uscale}{DOS normal monoespín [J$^{-1}$m$^{-3}$]; volumen [m$^3$]; escala [J]}
+\labelrow{T_{E,i},T_b,T_c}{temperatura equivalente electrónica, baño y crítica [K]}
+\labelrow{A_i,R_i,f_i,z_i}{factor térmico, factor KWT, fuerza y dirección adimensionales}
+\labelrow{\tau_{\rm sc},\tau_K}{tiempo inelástico combinado; escala cinética KWT [s]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Dinámica disipativa del condensado, teoría KWT; nomenclatura y calibradores de \href{https://thesis.caltech.edu/13748/}{Allmaras (2020)}, ec.\ 3.24, pp.\ 94--98. Fuerza BCS variacional y extrapolación mesoscópica adoptadas aquí.}
+\sourcecode{effective\_coupled.py; effective\_bcs\_functional.py}
+
+\newpage
+\block{Cuasipartículas y fonones: cinética en estados nativos}
+\begin{gather}
+ \boxed{\begin{aligned}\dot p_{ik}={}&
+ \frac{1}{4w_k}\sum_a\nu^{e}_{ka}r_{ia}
+ -\frac{1}{4w_kV_i}\sum_{\ell,a}B_{i\ell}
+ \beta^{(i)}_{ka}J_{\ell a}\\
+& +\frac{\FD(E_{ik},T_{E,i})-p_{ik}}{\tau_{{\rm BGK},i}}
+ +\mathcal H_{ik}\end{aligned}},\\
+ \boxed{\dot n_{iq}=
+ \frac{1}{c_q}\sum_a\nu^{ph}_{qa}r_{ia}
+ -\frac{n_{iq}-\BE(\Omega_q,T_b)}{\tau_{{\rm esc},i}}},\\
+ \tau_{{\rm BGK},i}=
+ \tau_{ee}(T_c)\frac{T_c}{\max(T_{E,i},T_b)},\qquad
+ c_q=\frac{g_{ph}(\Omega_q)W_q^{ph}}{N_0E_u},\\
+ 0\leq p_{ik}\leq1,\qquad n_{iq}\geq0,\qquad
+ \tau_{{\rm esc},i}^{\rm nominal}=15\,\mathrm{ps},\\
+ E_{ik}=E_u\sqrt{\bar\xi_k^2+|d_i|^2},\qquad
+ \Omega_q=E_u\omega_q,\qquad
+ \dot E_{ik}=\frac{E_u\Rea(d_i^*\dot d_i)}{e_{ik}},\\
+ \sum_k e_{ik}\nu^e_{ka}
+ +\sum_q\omega_q\nu^{ph}_{qa}=0,\qquad
+ \sum_q\nu^{ph}_{qa}=1,\\
+ B_{i\ell}=\begin{cases}+1,&i=\text{origen de }\ell,\\
+ -1,&i=\text{destino de }\ell,\\0,&\text{otro nodo}.\end{cases}
+\end{gather}
+{\small Fonones locales con escape a interfaz; sin transporte fonónico lateral en este cierre. La energía móvil del gap se contabiliza mediante la energía común, sin advección artificial de etiquetas \(\xi\).}
+\vspace{5pt}
+\par\noindent\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{p_{ik},n_{iq}}{ocupación cuasipartícula y ocupación fonónica adimensionales}
+\labelrow{k,q,a,\ell}{estado nativo electrónico; modo fonónico; evento; arista orientada}
+\labelrow{w_k,W_q^{ph}}{peso de cuadratura de $\bar\xi$; peso físico fonónico [J]}
+\labelrow{c_q,\nu^e,\nu^{ph}}{capacidad nativa; estequiometrías electrón y fonón}
+\labelrow{r_{ia}}{extensión neta por segundo del evento local [s$^{-1}$]}
+\labelrow{J_{\ell a}}{flujo nativo compartido de transporte [m$^3$/s]}
+\labelrow{\beta^{(i)}_{ka},B_{i\ell}}{pesos baricéntricos en energía e incidencia geométrica}
+\labelrow{\FD,\BE,T_E}{Fermi--Dirac, Bose--Einstein; funcional de energía equivalente}
+\labelrow{\mathcal H_{ik}}{fuente de ocupación por calor físico [s$^{-1}$]}
+\labelrow{\tau_{\rm BGK},\tau_{\rm esc}}{relajación conservativa electrónica y escape fonónico [s]}
+\labelrow{g_{ph}(\Omega)}{densidad de estados fonónica [J$^{-1}$m$^{-3}$]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Estadística cuántica BCS, ecuaciones cinéticas electrón--fonón, conservación por eventos y volúmenes finitos. \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)}, ecs.\ 1--4 y 13--14; discretización nativa conservativa propia. \(15\) ps es hipótesis de interfaz, no calibración experimental.}
+\sourcecode{effective\_bcs\_kinetics.py; effective\_bcs\_kinetics\_numba.py}
+\end{document}

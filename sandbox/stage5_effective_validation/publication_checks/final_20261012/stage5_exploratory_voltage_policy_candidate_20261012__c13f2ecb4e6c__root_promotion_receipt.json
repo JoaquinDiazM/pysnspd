@@ -1,0 +1,59 @@
+{
+  "schema": "pysnspd.root_exploratory_voltage_source_promotion.v1",
+  "created_UTC": "2026-10-12T06:04:07.791011+00:00",
+  "status": "ROOT_REVIEWED_EXACT_SOURCES_AND_TESTS_PASS_NOT_MODEL_ADMISSION",
+  "candidate_receipt_sha256": "a49ec734a0f97694398962a044d63c132f62b854b4d6bdaee76db015bad986ef",
+  "independent_review_sha256": "3211803e3fadf6f47e2fd6b1daf53c763184dce7872e00725f3fb29be867dd52",
+  "decision_sha256": "bda09a6aaf095a175440dc77ac76faef8eaab98072fce2f5b5aa8984eb35efa6",
+  "sources": [
+    {
+      "path": "sandbox/stage5_effective_validation/exploratory_spectral_policy.py",
+      "before_sha256": "273d86b25cb89c04d71308749759ee3f53b92fe45b33475c4c8c5539243a20e1",
+      "after_sha256": "058bfd619bcd74157a647770e8ad13f2f4e7be3ccf9d272eb338d819ea19cf16"
+    },
+    {
+      "path": "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py",
+      "before_sha256": "517aad446b91398466b5807cc1ae3ec017f1ac8f0be81ce972feebff1e184431",
+      "after_sha256": "54b3454a6a3ebb081ef1d398f6ea3e08e8483a77431878243f4d19521ecd5530"
+    },
+    {
+      "path": "sandbox/stage5_effective_validation/build_final_report.py",
+      "before_sha256": "7bc7f0c2561f1dddb1b68b74f56fc2bf0621c486f77f6fedbefb9866bc7dd9a4",
+      "after_sha256": "ddbe54187055ea45cef3880979694b824a943a11978703939aab434f07f87256"
+    },
+    {
+      "path": "tests/test_effective_exploratory_voltage_policy.py",
+      "before_sha256": null,
+      "after_sha256": "46ec1c4c158d4102192d7e8c03e1c2dc43a30fd0aea55f6ed28194fe7e5f87b3"
+    }
+  ],
+  "physics13_unchanged": true,
+  "original2percent_failure_preserved": true,
+  "voltage_relative_limit": 0.05,
+  "latency_relative_limit": 0.02,
+  "global_energy_relative_limit": 0.01,
+  "policy_timing": "AFTER_COMPLETED_DATA_REVIEW",
+  "stage5": false,
+  "tests": {
+    "argv": [
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-B",
+      "-m",
+      "pytest",
+      "-p",
+      "no:cacheprovider",
+      "-q",
+      "--basetemp=/home/jdiaz/scratch/tmp/pysnspd/pytest_voltage_root_20261012",
+      "/home/jdiaz/pysnspd/tests/test_effective_exploratory_voltage_policy.py",
+      "/home/jdiaz/pysnspd/tests/test_effective_report_display.py",
+      "/home/jdiaz/pysnspd/tests/test_effective_spectral_policy_wiring.py",
+      "/home/jdiaz/pysnspd/tests/test_effective_spectral_observable_policy.py",
+      "/home/jdiaz/pysnspd/tests/test_effective_window_evidence.py",
+      "/home/jdiaz/pysnspd/tests/test_effective_physical_gap_clock.py"
+    ],
+    "exit_code": 0,
+    "wall_s": 1.2050419130246155,
+    "log": "/home/jdiaz/scratch/stage5_exploratory_voltage_policy_candidate_20261012/root_repository_tests.log",
+    "log_sha256": "ef3db08f8230cc6ef37116f79a08e5fe272e2b0a63a43924ada244fc007b57e6"
+  }
+}

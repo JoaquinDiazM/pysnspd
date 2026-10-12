@@ -1,0 +1,40 @@
+{
+  "schema": "pysnspd.prospective_spectral_observable_policy.v1",
+  "utc": "2026-10-11T17:21:31.679212+00:00",
+  "status": "ADOPTED_PRACTICAL_SPECTRAL_OBSERVABLE_POLICY_NOT_MODEL_ADMISSION",
+  "review_path": "/home/jdiaz/scratch/stage5_spectral_mesh_scope_review_20261011/proposal.json",
+  "review_sha256": "f251ac1aaa56e821b0ffb23116b40817a6b720e4dc64c5b7b4a64c2ae72bc02b",
+  "original_failures_preserved": {
+    "spectral_nodal_minimum_over_DC": 0.02276239242656607,
+    "spectral_limit": 0.02,
+    "mesh_deficit_over_peak": 0.06583534006348958,
+    "mesh_limit": 0.05
+  },
+  "spectral_limits": {
+    "nodal_minimum_over_DC": 0.03,
+    "central_field_L2_over_DC": 0.02,
+    "central_deficit_over_actual_reference_peak": 0.02
+  },
+  "unchanged_limits": {
+    "global_energy": 0.01,
+    "temporal": 0.02,
+    "mesh": 0.05,
+    "domain": 0.05,
+    "spectral_Vout": 0.02,
+    "spectral_observed_latency": 0.02
+  },
+  "scope": "775nm existing54/80state spectral comparison over the completed declared physical critical window; not universal microscopic core accuracy.",
+  "scientific_reason": "A vortex zero lies between mesh nodes. Both continuous P1 complex fields already vanish and share the same saved pair/onset. A submesh core displacement changes the nodal minimum and its minimizer. Retain a finite3percent nodal check and additionally require BOTH physical-field L2 and integrated-deficit2percent checks throughout the actual window.",
+  "full_physical_and_critical_coverage_required": true,
+  "completed_primary_runs_required": true,
+  "original_2percent_spectral_failure_must_remain_visible": true,
+  "no_automatic_further_margin_increase": true,
+  "next_action_if_any_new_gate_fails": "Review actual full critical-window evidence; a larger spectral run remains the alternative, not another automatic tolerance increase.",
+  "no_simulation_or_RHS_parameter_change": true,
+  "no_global_energy_correction": true,
+  "baseline_auditor_sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+  "baseline_auditor_must_remain_unchanged": true,
+  "implementation": "Explicit SHA-bound analysis wrapper; retain complete baseline result and require original physical checks, real Vout and observed latency. No original failure becomes hidden.",
+  "stage5_admission": false,
+  "PDF_created": false
+}

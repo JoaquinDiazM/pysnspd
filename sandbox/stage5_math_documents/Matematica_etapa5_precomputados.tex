@@ -1,0 +1,264 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,bm,array,geometry,color,fancyhdr,hyperref}
+\geometry{left=19mm,right=19mm,top=18mm,bottom=19mm}
+\definecolor{ink}{RGB}{20,52,72}
+\definecolor{accent}{RGB}{22,115,139}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=ink}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\small\color{ink}pysnspd / cierre efectivo BCS / 11 de octubre de 2026}
+\fancyfoot[R]{\small\thepage}
+\newcommand{\block}[1]{\par\vspace{5pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
+\newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
+\newcommand{\sourcecode}[1]{\par{\footnotesize\color{ink}\textbf{Implementación:} \texttt{#1}}\par}
+\newcommand{\origin}[1]{\par{\footnotesize\color{ink}\textbf{Campo / procedencia:} #1}\par}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\Eu}{E_u}
+\newcommand{\Tb}{T_b}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\FD}{f_{\rm FD}}
+\newcommand{\BE}{n_{\rm BE}}
+\newcommand{\Uscale}{u_i^*}
+\newcommand{\Rcut}{P_{\rm res}}
+\newcommand{\Fgap}{\mathcal F_i}
+\newcommand{\meV}{\,\mathrm{meV}}
+\begin{document}
+{\LARGE\bfseries\color{ink}Cantidades precomputadas}\par
+{\large Escalas, cuadraturas, material y preparación inicial}\par
+{\small Entradas exploratorias explícitas. Fuentes externas preservadas; ningún cálculo Quantum ESPRESSO/DFPT propio.}
+\renewcommand{\theequation}{3.\arabic{equation}}
+\block{Escalas SI y malla Delaunay--Voronoi}
+\begin{gather}
+ E_u=k_BT_c,\qquad
+ \ell_0=\sqrt{\frac{\hbar D}{2k_BT_c}},\qquad
+ \tau_K=\frac{\pi\hbar}{8k_BT_c},\\
+ \sigma_n=\frac1{R_\square d_f}=2e^2N_0D,\qquad
+ N_0=\frac1{2e^2DR_\square d_f},\\
+ m_i=A_i^{dual}/\ell_0^2,\qquad
+ c_{ij}=L_{ij}^{dual}/L_{ij},\qquad V_i=d_fA_i^{dual},\\
+ A_{ij}^{face}=d_fL_{ij}^{dual},\qquad
+ {\cal D}_{ij}=D A_{ij}^{face}/L_{ij},\qquad
+ u_i^*=N_0E_u^2V_i,\\
+ T_c=8.65\,\mathrm K,\quad T_b=0.9\,\mathrm K,\quad
+ D=5\times10^{-5}\,\mathrm{m^2/s},\quad R_\square=608\,\Omega,\\
+ d_f=7\,\mathrm{nm},\qquad W=80\,\mathrm{nm},\qquad
+ h_{\rm mesh}\in\{5,3.5\}\,\mathrm{nm},\quad
+ L\in\{160,320,480\}\,\mathrm{nm},\\
+ N_0=9.1532978211\times10^{46}\,\mathrm{J^{-1}m^{-3}},
+ \qquad \ell_0\simeq4.698490897\,\mathrm{nm}.
+\end{gather}
+\block{Calibradores físicos y nomenclatura Allmaras}
+\begin{gather}
+ \tau_{ee}(T_c)>0,\quad\tau_{ep}(T_c)>0,\qquad
+ \tau_{ee}(T_c)_{\rm nominal}=5\,\mathrm{ps},\quad
+ \tau_{ep}(T_c)_{\rm nominal}=24.7\,\mathrm{ps},\\
+ \tau_{\rm esc}^{\rm nominal}=15\,\mathrm{ps}.
+\end{gather}
+{\small \(\tau_{ee}(T_c),\tau_{ep}(T_c)\): parámetros libres, pendientes de calibración. Valores nominales de referencia; no centro ni límites de un rango. \(\tau_{\rm esc}\): hipótesis de interfaz separada. \(h_{\rm mesh}\) es separación de malla; \(d_f\) es espesor físico.}
+\par\noindent\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{A_i^{dual},L_{ij}^{dual}}{área de Voronoi [m$^2$]; longitud de cara dual [m]}
+\labelrow{L_{ij},m_i,c_{ij}}{arista Delaunay [m]; área y conductancia normalizadas}
+\labelrow{W,L,d_f,h_{\rm mesh}}{ancho, longitud resuelta, espesor y resolución [m]}
+\labelrow{\sigma_n,N_0,D}{conductividad [S/m]; DOS monoespín; difusión [m$^2$/s]}
+\labelrow{\tau_K}{escala cinética KWT [s]}
+\labelrow{\tau_{ee}(T_c),\tau_{ep}(T_c)}{calibradores libres a $T_c$ [s]}
+\labelrow{\tau_{\rm esc}}{tiempo de escape fonónico [s]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Relación de Einstein, geometría de volúmenes finitos y KWT. \href{https://thesis.caltech.edu/13748/}{Allmaras (2020)}, ec.\ 3.24, pp.\ 94--98; escenario experimental motivado por Korzh (2020), sin afirmar calibración de su película.}
+\sourcecode{effective\_bcs\_preparation.py; effective\_coupled.py}
+
+\newpage
+\block{Estados nativos fijos y emparejamiento renormalizado}
+\begin{gather}
+ \xi_k=E_u\bar\xi_k>0,\qquad
+ \int_0^{\Lambda/E_u}F(\bar\xi)\dd\bar\xi
+ \simeq\sum_kw_kF(\bar\xi_k),\qquad w_k>0,\\
+ \frac1g=\sum_kw_k\frac{\tanh(\bar\xi_k/2)}{\bar\xi_k},\qquad
+ \left[\frac1g-\sum_k\frac{w_k[1-2\FD(E_u\bar\xi_k,T_c)]}{\bar\xi_k}\right]=0,\\
+ [0,\Lambda/E_u]=\bigcup_b[a_b,a_{b+1}],\quad
+ \bar\xi_{bk}=\frac{a_b+a_{b+1}}2+\frac{a_{b+1}-a_b}2x_k,\\
+ w_{bk}=\frac{a_{b+1}-a_b}2w_k^{GL},\qquad
+ \{a_b\}=\{0,\tfrac18,\tfrac14,\tfrac12,1,2,4,8,16,32,\ldots\},\\
+ \Lambda/E_u\in\{32,64\},\qquad
+ n_{GL}\in\{6,8\}.
+\end{gather}
+\block{Cuadratura fonónica y regla fija de caras}
+\begin{gather}
+ 0<\omega_0<\cdots<\omega_{Q-1}=\Omega_D/E_u,\qquad
+ W_q^{ph}=E_u\bar W_q^{ph},\\
+ \bar W_0^{ph}=\frac{\omega_1-\omega_0}2,\quad
+ \bar W_q^{ph}=\frac{\omega_{q+1}-\omega_{q-1}}2,\quad
+ \bar W_{Q-1}^{ph}=\frac{\omega_{Q-1}-\omega_{Q-2}}2,\\
+ c_q=\frac{g_{ph}(E_u\omega_q)W_q^{ph}}{N_0E_u},
+ \qquad Q\in\{96,144\},\qquad \omega_0=10^{-8}.
+\end{gather}
+{\small Nodos nativos, modos fonónicos y regla de referencia \(x_a,w_a^{GL}\) precomputados. Las energías \(E_{ik}(d_i)\), los tiempos \(\tau(T)\) y el soporte, nodos y pesos transformados de cada cara se evalúan durante la evolución y se documentan en las ecuaciones principales y auxiliares. La misma cuadratura electrónica se usa en \(g\), energía y fuerza: no tabla de núcleo singular ni \(\delta_{\rm core}\).}
+\par\noindent\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{\xi,\bar\xi,w_k}{energía normal BCS [J], su coordenada/$E_u$, peso adimensional}
+\labelrow{\Lambda,g}{corte electrónico [J]; emparejamiento BCS renormalizado}
+\labelrow{x_a,w_a^{GL},n_{GL}}{nodos y pesos de referencia fijos; orden de Gauss--Legendre}
+\labelrow{Q,K,\omega_q}{número de modos fonónicos, estados electrónicos y energía/$E_u$}
+\labelrow{W_q^{ph},c_q}{peso físico fonónico [J]; capacidad nativa}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Teoría BCS de emparejamiento, renormalización a \(T_c\) y cuadratura positiva. Discretización nativa propia; no consulta Usadel durante la evolución.}
+\sourcecode{effective\_bcs\_functional.py; effective\_bcs\_kinetics.py}
+
+\newpage
+\block{Material acústico efectivo y enlace del calibrador}
+\begin{gather}
+ \Omega_D=k_B\Theta_D,\qquad
+ g_{ph}(\Omega)=\frac{3\Omega^2}{2\pi^2\hbar^3v_{\rm avg}^3}
+ \mathbf1_{(0,\Omega_D]}(\Omega),\\
+ \tau_0^{e-ph}=\frac{720\zeta(5)}{\pi^2}\tau_{ep}(T_c),\qquad
+ \alpha^2F(\Omega)=\frac{\hbar\Omega^2}{\pi\tau_0^{e-ph}(k_BT_c)^3}
+ \mathbf1_{(0,\Omega_D]}(\Omega),\\
+ \alpha^2(\Omega)=\frac{\alpha^2F(\Omega)}{g_{ph}(\Omega)},\qquad
+ \frac{2\pi}{\hbar}\alpha^2F(\Omega)\dd\Omega
+ =\frac{2\omega^2}{\tau_0^{e-ph}}\dd\omega,\quad\omega=\Omega/E_u,\\
+ C_{e,N}(T)=\frac{2\pi^2}3N_0k_B^2T,\qquad
+ P_{e-ph,N}=\frac{96\zeta(5)N_0k_B^2}{\tau_0^{e-ph}T_c^3}
+ (T_e^5-T_{ph}^5),\\
+ \frac{C_{e,N}(T_c)}
+ {\left.\partial_{T_e}P_{e-ph,N}\right|_{T_e=T_{ph}=T_c}}
+ =\frac{\pi^2\tau_0^{e-ph}}{720\zeta(5)}=\tau_{ep}(T_c),\\
+ u_{ph}(T)=\int_0^{\Omega_D}
+ \frac{\Omega g_{ph}(\Omega)}{\exp[\Omega/(k_BT)]-1}\dd\Omega,\\
+ C_{ph}(T)=k_B\int_0^{\Omega_D}g_{ph}(\Omega)
+ \frac{x^2e^x}{(e^x-1)^2}\dd\Omega,\quad x=\Omega/(k_BT),\\
+ C_{ph}(T)\simeq B_{ph}T^3,\qquad
+ B_{ph}=\frac{2\pi^2k_B^4}{5\hbar^3v_{\rm avg}^3},\qquad
+ u_{ph}(T)\simeq B_{ph}T^4/4,\\
+ \gamma_{\rm ac}\equiv\frac{8\pi^2}{5}
+ \frac{C_{e,N}(T_c)}{C_{ph}(T_c)}\simeq23.4774459,\qquad
+ \frac{C_{e,N}(T_c)}{C_{ph}(T_c)}\simeq1.486726629,\\
+ v_{\rm avg}=4912\,\mathrm{m/s},\qquad\Theta_D=664\,\mathrm K,\qquad
+ \Omega_D\simeq57.2191\,\mathrm{meV},\\
+ \tau_{ep}(T_c)_{\rm nominal}=24.7\,\mathrm{ps}
+ \ \Longrightarrow\ \tau_0^{e-ph}\simeq1.868\,\mathrm{ns}.
+\end{gather}
+{\small Material acústico 3D efectivo, sin ajuste absoluto de la película. Cambiar \(\tau_{ep}(T_c)\) cambia de forma vinculada la movilidad KWT y \(\alpha^2F\). \(\tau_0^{e-ph}\neq\tau_K\): escalas de colisiones y del condensado, respectivamente. \(\gamma_{\rm ac}\) es un diagnóstico derivado de las capacidades actuales con \(R_\square=608\,\Omega\), no un calibrador independiente; no se importa \(\gamma=60\) de otra parametrización.}
+\par\noindent\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{\alpha^2F,\alpha^2,g_{ph}}{Eliashberg adimensional; cociente [J\,m$^3$]; DOS [J$^{-1}$m$^{-3}$]}
+\labelrow{v_{\rm avg},\Theta_D,\zeta}{velocidad media [m/s]; temperatura Debye [K]; zeta de Riemann}
+\labelrow{u_{ph},C_{e,N},C_{ph}}{energía fonónica [J/m$^3$]; capacidades volumétricas normal electrónica y fonónica [J/(m$^3$K)]}
+\labelrow{\gamma_{\rm ac},P_{e-ph,N}}{razón normalizada de capacidades a \(T_c\), adimensional; potencia normal [W/m$^3$]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Debye y cinética acústica: \href{https://thesis.caltech.edu/13748/}{Allmaras (2020)}, ecs.\ 2.6--2.8 (definición de \(\gamma_{\rm ac}\)) y p.\ 81, relación explícita \(\tau_0/\tau_{ep}(T_c)\). Normalización conservativa de Vodolazov, ecs.\ 3--4; no se adopta el factor de dispersión fonónica omitido en la ec.\ 2.7 impresa de la tesis.}
+\sourcecode{effective\_material.py; effective\_bcs\_kinetics.py}
+
+\newpage
+\block{Tabla externa NbN: forma QNN/MIT preservada}
+\begin{gather}
+ {\mathsf D}_{RAW}=\{(\nu_j,A_j,F_j)\}_{j=1}^{11999},\qquad
+ {\mathsf D}_{forma}=\operatorname{stable-first}
+ [\operatorname{sort}_{\nu}({\mathsf D}_{RAW})],\quad N_{forma}=11995,\\
+ F'_j=\begin{cases}F_j,&F_j>0,\\0,&F_j\leq0,\end{cases}\qquad
+ A'_j=\begin{cases}A_j,&F'_j>0\ \land\ \nu_j>0,\\0,&\text{otro caso},\end{cases}\\
+ \Omega_j=2\pi\hbar\,\nu_j\,10^{12}\,\mathrm{Hz/THz},\qquad
+ A(\Omega)=\operatorname{interp}_{lin}(\Omega_j,A'_j),\\
+ F(\Omega)=\operatorname{interp}_{lin}(\Omega_j,F'_j),\qquad
+ \lambda_{e-ph}=2\int_0^\infty\frac{\alpha^2F(\Omega)}{\Omega}\dd\Omega,\\
+ C_{forma}(T)=k_B\int F(\Omega)\frac{x^2e^x}{(e^x-1)^2}\dd\Omega,\qquad
+ x=\Omega/(k_BT),\\
+ s_F=\frac{B_{ph}T_{\rm ref}^3}{C_{forma}(T_{\rm ref})},\qquad
+ g_{ph}^{forma}(\Omega)=s_FF(\Omega),\qquad T_{\rm ref}=T_c.
+\end{gather}
+\par\noindent\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{\nu_j}{frecuencia ordinaria THz: hipótesis explícita del lector upstream}
+\labelrow{A_j,F_j}{columnas $\alpha^2F$ y DOS de forma; normalización original incompleta}
+\labelrow{\lambda_{e-ph},s_F}{constante Eliashberg; escala térmica de comparación}
+\labelrow{g_{ph}^{forma}}{otra referencia efectiva anclada; no se usa en el cierre acústico actual}
+\hline
+\end{tabular}\par
+\vspace{8pt}
+{\small
+\textbf{Archivo:} \texttt{nbn-a2f-ph.dat}.\\
+\textbf{Procedencia:} QNN / Alejandro Simon (2025), repositorio externo
+\href{https://github.com/qnngroup/proj-KE-solver}{\texttt{qnngroup/proj-KE-solver}}.\\
+\textbf{Revisión:} \texttt{5b6bd747f80016da5ccd51db73c110a8ecc6abf6}.\\
+\textbf{SHA-256 RAW:} \texttt{e94f11273e6c42b7c8fad978b78d11916}\\
+\hspace*{28mm}\texttt{6e241bec1614ee77e4176906fa8f5df}.\\
+\textbf{Licencia upstream:} MIT.\\
+\textbf{Unidad absoluta y base atómica de \(F_j\):} no recuperadas.\\
+\textbf{\(A_j\) adimensional:} convención del lector, no metadato recuperado.\\
+\textbf{Quantum ESPRESSO / DFPT propios:} \(0\).\\
+\textbf{Uso actual del RAW en las tasas acústicas:} \(0\).
+}
+\vfill
+\origin{Datos externos de espectros fonónicos/Eliashberg. Su conservación documental no acredita normalización absoluta ni reemplaza el material efectivo autorizado.}
+\sourcecode{material\_preprocessing.py; effective\_material.py}
+
+\newpage
+\block{Nuevo equilibrio DC efectivo e inductancia exterior}
+\begin{gather}
+ {\cal F}_i(d_{\rm DC},p_{\rm DC},\alpha=0)=0\quad(i\text{ interior}),\qquad
+ \sum_{i\in L}(BI^s)_i=I_{\rm DC},\\
+ p_{{\rm DC},ik}=\FD(E_{{\rm DC},ik},T_b),\qquad
+ n_{{\rm DC},iq}=\BE(\Omega_q,T_b),\qquad
+ I_{\rm DC}=21.2972061449\,\mathrm{\mu A},\\
+ a=|\Delta|\quad\text{[J]},\qquad j_s(a,q)=\frac{4e}{\hbar}K(a;T_b)a^2q,\qquad
+ \ell_{k,bulk}^{diff}=\frac{\hbar}{2e}
+ \left.\frac{\dd q}{\dd I}\right|_{I_{\rm DC}},\\
+ L_{k,\rm ext}^{ref}=96\,\mathrm{nH}
+ +(5\,\mathrm{\mu m}-L)\ell_{k,bulk}^{diff},\\
+ I_b^0=I_s^0=I_{\rm DC},\quad v_c^0=0,\quad V_b=R_bI_{\rm DC},\\
+ R_b=10\,\mathrm{k\Omega},\quad L_b=1\,\mathrm{\mu H},\quad
+ R_l=50\,\Omega,\quad C_c=100\,\mathrm{pF}.
+\end{gather}
+\block{Fotón: depósito inicial único en el interior}
+\begin{gather}
+ E_\gamma=\frac{2\pi\hbar c}{\lambda},\quad
+ E_{\rm ret}=\eta_{\rm ret}E_\gamma,\quad \eta_{\rm ret}=0.667,\quad
+ \lambda\in\{775,1550\}\,\mathrm{nm},\\
+ \sigma_{\rm ref}=\sqrt{2D\tau_{\rm th,ref}}=7.549834435\,\mathrm{nm},
+ \qquad\tau_{\rm th,ref}=0.57\,\mathrm{ps},\\
+ \sigma\in\{\sigma_{\rm ref}/\sqrt2,\ \sigma_{\rm ref},\
+ \sqrt2\,\sigma_{\rm ref}\},\qquad
+ \mathbf r_0=((x_{\min}+x_{\max})/2,\ y_0),\\
+ a_i=\mathbf1_{i\notin L\cup R}
+ \exp[-|\mathbf r_i-\mathbf r_0|^2/(2\sigma^2)],\quad
+ E_{{\rm ret},i}=\frac{V_ia_i}{\sum_jV_ja_j}E_{\rm ret},\\
+ u_i^{pop}(T)=4u_i^*\sum_kw_ke_{{\rm DC},ik}\FD(E_{{\rm DC},ik},T)
+ +u_i^*\sum_qc_q\omega_q\BE(\Omega_q,T),\\
+ E_{{\rm ret},i}=u_i^{pop}(T_i^0)-u_i^{pop}(T_b),\\
+ \sum_iE_{{\rm ret},i}=E_{\rm ret},\quad
+ p_{ik}^0=\FD(E_{{\rm DC},ik},T_i^0),\quad n_{iq}^0=\BE(\Omega_q,T_i^0),\\
+ d_i^0=d_{{\rm DC},i},\qquad
+ (I_b,I_s,v_c)^0=(I_{\rm DC},I_{\rm DC},0).
+\end{gather}
+{\small \(t_0=0\): transferencia efectiva postcascada; \(\tau_{\rm lat}=t_\times-t_0\), sin sumar \(0.57\) ps. Esa referencia sólo determina \(\sigma_{\rm ref}\), sin cascada óptica resuelta. DC preparado con esta energía y corriente; la admisión Usadel histórica no se reutiliza. \(L_{k,\rm ext}\) queda congelada durante el pulso. FD/BE común es hipótesis inicial tras cascada, no cierre térmico posterior. Retención y anchura son exploratorias sin calibración; \(0.57\) ps no añade una ventana térmica durante la evolución.}
+\par\noindent\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{a=|\Delta|}{módulo físico del parámetro de orden [J]}
+\labelrow{I_{\rm DC},q,j_s}{corriente [A], gradiente de fase [m$^{-1}$], densidad de corriente [A/m$^2$]}
+\labelrow{\ell_{k,bulk}^{diff}}{inductancia cinética diferencial por longitud [H/m]}
+\labelrow{E_\gamma,E_{\rm ret},\eta_{\rm ret}}{energías del fotón y retenida [J]; fracción retenida}
+\labelrow{\lambda,\sigma,\mathbf r_0}{longitud de onda, anchura gaussiana y absorción [m]}
+\labelrow{\tau_{\rm th,ref},T_i^0}{referencia de cascada [s]; temperatura inicial equivalente [K]}
+\labelrow{u_i^{pop},c,k_B}{energía nodal [J]; velocidad de luz [m/s]; constante de Boltzmann [J/K]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Preparación DC variacional propia; circuito de la memoria. Retención motivada por Korzh (2020); escala de cascada de \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)} a 1.3 eV, extrapolación exploratoria autorizada para ambos fotones.}
+\sourcecode{effective\_bcs\_preparation.py; effective\_bcs\_ports.py}
+\vspace{4pt}
+{\footnotesize
+\href{https://thesis.caltech.edu/13748/}{Allmaras, tesis Caltech (2020)};\quad
+\href{https://arxiv.org/pdf/1611.06060}{Vodolazov, Phys.\ Rev.\ Applied 7, 034014 (2017)};\quad
+\href{https://doi.org/10.1103/PhysRev.108.1175}{Bardeen--Cooper--Schrieffer (1957)}.
+}
+\end{document}

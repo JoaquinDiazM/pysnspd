@@ -1,0 +1,460 @@
+{
+  "schema": "pysnspd.prospective_exploratory_spatial_budget.v1",
+  "created_UTC": "2026-10-11T18:34:00.595156+00:00",
+  "status": "ADOPTED_EXPLORATORY_SPECTRAL_SPATIAL_POLICY_NOT_MODEL_ADMISSION",
+  "approval_state": "ROOT_REVIEWED_AND_ADOPTED",
+  "stage5_admission": false,
+  "purpose": "Frontera fija de exactitud espacial exploratoria para el contraste espectral775nm54->80; decision prospectiva adoptada, sin admitir aun el modelo.",
+  "policy_scope": "spectral_775nm_current_54_to_80_bundle",
+  "scope_details": {
+    "current_comparison": "xi_cutoff/order/phonon_nodes/transport_order:32/6/96/48 ->64/8/144/96; electron states54->80",
+    "physical_case": "775nm; film7nm; strip80nm; fixedI21.29720614489798uA; same material/source/circuit/geometry except declared spectral refinement",
+    "spectral_spatial_limits_proposed": {
+      "field_L2_over_DC": 0.05,
+      "central_deficit_over_actual_reference_peak": 0.05
+    },
+    "nodal_minimum": {
+      "diagnostic_only": true,
+      "mandatory_historical_reporting": true,
+      "new_acceptance_limit": null
+    },
+    "mesh_domain_policy": "Existing5% L2/DC and deficit/actual peak retained without further changes; nodal minimum remains diagnostic.",
+    "temporal_policy": "Unchanged existing2% numerical policy; no temporal threshold changed by this proposal.",
+    "applies_only_after_explicit_root_approval": true
+  },
+  "metric_definitions": {
+    "field_L2_over_DC": "max_t sqrt[<(|P1 Delta_candidate(t)|-|P1 Delta_reference(t)|)^2>_ROI]/<|Delta_reference(0)|>_ROI",
+    "central_nodal_deficit": "D_h,nod(t)=sum_i w_i^ROI*[|Delta_i(0)|-|Delta_i(t)|]_+; exact weights of nodal linear interpolant; not exact integral of magnitude of complex interpolant.",
+    "central_deficit_over_actual_reference_peak": "max_t |D_candidate(t)-D_reference(t)| / max_t D_reference(t); numerator and denominator from the SAME complete common physical observation window.",
+    "zero_peak_rule": "zero difference/zero reference peak=>0; nonzero difference/zero peak=>FAIL; no floor or threshold substitute",
+    "ROI": {
+      "relative_nm": [
+        -60,
+        60,
+        -40,
+        40
+      ],
+      "x_origin": "saved source.center_m[0]",
+      "y": "physical coordinates",
+      "spatial_rule": "Complex spatial P1 interpolation first, magnitude afterwards; fixed0.5nm physical midpoint quadrature for L2."
+    },
+    "time_rule": "Gauge-invariant magnitude comparison requires separately reviewed physical-time interpolation or actual shared saved states; no phase/gauge rotation, vortex alignment or fitted time shift may be used to reduce errors. Existing original interpolation results remain visible.",
+    "no_nodal_or_topological_interpolation": "Winding, core positions and first hotbelt are evaluated only on actual saved fields; hotbelt never substitutes electrical detection."
+  },
+  "window": {
+    "start": "effective post-cascade t0=0; no additional0.57ps optical delay assigned",
+    "end": "Existing completed physical trigger-plus5ps common comparison window validated by unchanged coverage protocol; each required run must satisfy its declared observation window.",
+    "trigger_voltage_mV": 0.1,
+    "trigger_sign": "positive intrinsic Vout after saved baseline subtraction",
+    "confirmation_ps": 0.5,
+    "extra_ps_from_first_crossing": 5.0,
+    "all_prior_common_window_maxima_retained": true,
+    "allowed_time_shift_or_vortex_alignment": false,
+    "no_200ps_tail_for_denominator_dilution": true,
+    "cannot_crop_away_prior_failure": true,
+    "no_trigger_rule": "Do not invent latency or declare completed20ps as censored200ps; genuine finite-ceiling censoring and existing completion rules are unchanged."
+  },
+  "unchanged_constraints": {
+    "maximum_global_energy_relative_defect": 0.01,
+    "spectral_Vout_relative_limit": 0.02,
+    "spectral_confirmed_latency_relative_limit": 0.02,
+    "temporal_limit": 0.02,
+    "mesh_limit": 0.05,
+    "domain_limit": 0.05,
+    "Vout_scale": "Existing max(actual reference pulse, saved threshold); also report actual-pulse-scaled error explicitly.",
+    "latency_rule": "Existing actual accepted-step crossing and confirmation, and existing numerical latency tolerance; no latency assigned when unavailable.",
+    "source_hashes_and_declared_parameter_identity": true,
+    "Pauli_Bose_support_and_nonfinite_rejection": true,
+    "positive_global_currents_and_no_polarization_reversal": true,
+    "completion_and_physical_critical_coverage": true,
+    "independent_energy_ledger_and_all_accepted_history": true,
+    "no_change_to_RHS_or_circuit_or_source_or_model_parameters": true
+  },
+  "physical_justification": [
+    "En malla irregular el minimo nodal muestrea la distancia entre nodo y nucleo movil; su diferencia puede ser grande aunque ambos campos tengan un cero submalla. No mide por si sola perdida extensa de superconductividad ni tiempo de deteccion.",
+    "L2 de la magnitud y deficit integrado en ROI fisica comun capturan supresion extensa; el deficit se normaliza por su perdida real maxima, no solo por una gran escala DC que ocultaria perturbaciones pequenas.",
+    "El5%es una decision ingenieril propia para morfologia exploratoria, coherente con el presupuesto de malla/dominio ya declarado. No procede de ningun paper ni acredita exactitud microscopica del nucleo o calibracion experimental.",
+    "Las oscilaciones por nucleacion/paso de vortices y el crecimiento de un dominio resistivo son fenomenos distintos; la bibliografia justifica la distincion fisica, no estos margenes numericos.",
+    "La precision de latencia se decide por cruces electricos reales con el circuito completo; un pulso parcial de pocos microvoltios no permite extrapolar el error al gatillo de100microvoltios.",
+    "Los calibradores fisicos libres y el uso fenomenologico de KWT/rigidez a Te>Tc no eximen conservacion ni convergencia de los observables declarados; solo limitan la interpretacion experimental."
+  ],
+  "primary_source": {
+    "title": "D.Y.Vodolazov, Theory of single photon detection by dirty current-carrying superconducting strip based on the kinetic equation approach",
+    "url": "https://arxiv.org/html/1611.06060v3",
+    "locators": [
+      "SectionV; discussion before Eq36: vortex core has |Delta|=0",
+      "Fig8 and SectionV paragraphs preceding/after Fig9: vortex voltage oscillations versus growing normal domain"
+    ],
+    "supports": "Physical distinction between moving vortex cores, voltage oscillations and macroscopic domain growth.",
+    "does_not_support": "No published5%acceptance threshold is asserted; our neutral effective BCS/KWT closure is not identified with the paper exact equations."
+  },
+  "evidence": {
+    "baseline_audit": {
+      "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/comparisons/audit.json",
+      "sha256": "def48039de7a361b70160c1625991118966928780f7f025e680c02acd689d0e7"
+    },
+    "complete_window_summary": {
+      "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/comparison_summary.json",
+      "sha256": "8ee2714ece94cf00b56d7451ae6f2a1070eaa53efdd375f990fe4bb656216e8c"
+    },
+    "adopted_3_2_2_result": {
+      "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral_adopted_3_2_2_comparison.json",
+      "sha256": "1a4f62141c30bf65cd6bd7262d1e4e20aaa8d7b87e0fad19d377de7ea68b6f34"
+    },
+    "previous_root_3_2_2_decision": {
+      "path": "/home/jdiaz/scratch/stage5_spectral_mesh_scope_review_20261011/root_prospective_spectral_policy_decision.json",
+      "sha256": "8c62658c36336a2e19cb0d37bef6b650cf5d44da734e586d3fe1d11b1ce6ed33"
+    },
+    "baseline_auditor_source": {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/audit_runs.py",
+      "sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a"
+    },
+    "spectral_common_series": {
+      "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral_complete_common_window_series.csv",
+      "sha256": "c36dc0c0f4d3c35d2417d927ddcc4a58f4a1da6bf7a65cf64919b7f56e338065"
+    },
+    "separate_interpolation_candidate_receipt": {
+      "path": "/home/jdiaz/scratch/stage5_physical_gap_interpolation_candidate_20261011/candidate_receipt_v2.json",
+      "sha256": "e6809b85ba27928bea5b3cbeeb5d5a0cae1d02237059e87c6da744db217f7c36"
+    },
+    "separate_interpolation_candidate_metrics": {
+      "path": "/home/jdiaz/scratch/stage5_physical_gap_interpolation_candidate_20261011/same_capture_corrected_metrics_candidate.json",
+      "sha256": "fb8c27ccc6665557001f48d64f8d4ee40a68645cb52dd691accac3ae21a329b5"
+    },
+    "nominal": {
+      "manifest": {
+        "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/nominal/derived_audit_view/manifest.json",
+        "sha256": "e06f9cf4e45a763bf200b601e0419f9ef547525268e5516a178f50419e4d23cd"
+      },
+      "snapshots": {
+        "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/nominal/derived_audit_view/snapshots.npz",
+        "sha256": "c079efd2e1d597937760becd5ded52f31ac2e9baf9dba514a3b9566d33de577f"
+      },
+      "checkpoint": {
+        "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/nominal/derived_audit_view/checkpoint_latest.npz",
+        "sha256": "bb7bc6b85d76d7add477f5624a2d69c7ed6780c740d7f88275ee49727262bd72"
+      },
+      "parameter_identity": {
+        "length_nm": 320.0,
+        "spacing_nm": 5.0,
+        "xi_cutoff": 32.0,
+        "xi_order": 6,
+        "phonon_nodes": 96,
+        "transport_order": 48,
+        "wavelength_nm": 775.0,
+        "sigma_nm": 7.549834435,
+        "retained_fraction": 0.667,
+        "dt_ps": 0.02,
+        "ceiling_ps": 200.0,
+        "threshold_mV": 0.1,
+        "confirmation_ps": 0.5,
+        "extra_time_ps": 5.0,
+        "tau_ee_Tc_ps": 5.0,
+        "tau_ep_Tc_ps": 24.7,
+        "tau_escape_ps": 15.0,
+        "current_uA": 21.29720614489798,
+        "bath_K": 0.9,
+        "dc_only": false,
+        "duration_ps": null,
+        "snapshot_every_ps": 0.1,
+        "checkpoint_every_ps": 1.0,
+        "checkpoint_wall_s": 60.0,
+        "step_tolerance": 2e-07,
+        "local_energy_tolerance": 1e-05,
+        "max_iterations": 40,
+        "max_rejections": 50,
+        "threads": 4
+      },
+      "source_pins_sha256": {
+        "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+        "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+        "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+        "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+        "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+        "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+        "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+        "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+        "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+        "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+        "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+        "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+        "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+      }
+    },
+    "spectral": {
+      "manifest": {
+        "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral/derived_audit_view/manifest.json",
+        "sha256": "a4c59dd5869fe8b304e030c65275a4f29c99e732ae9a9dc2eb370cdfa2dda623"
+      },
+      "snapshots": {
+        "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral/derived_audit_view/snapshots.npz",
+        "sha256": "e2396198a20b81af578aca41e196b0c7ecf48cd521b2e8044dea2a94863cc8d5"
+      },
+      "checkpoint": {
+        "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral/derived_audit_view/checkpoint_latest.npz",
+        "sha256": "251752ffbb84e07fc11f85239066d2c805d77b31ea3096fd2581ac8bcf06c3e2"
+      },
+      "parameter_identity": {
+        "length_nm": 320.0,
+        "spacing_nm": 5.0,
+        "xi_cutoff": 64.0,
+        "xi_order": 8,
+        "phonon_nodes": 144,
+        "transport_order": 96,
+        "wavelength_nm": 775.0,
+        "sigma_nm": 7.549834435,
+        "retained_fraction": 0.667,
+        "dt_ps": 0.02,
+        "ceiling_ps": 200.0,
+        "threshold_mV": 0.1,
+        "confirmation_ps": 0.5,
+        "extra_time_ps": 5.0,
+        "tau_ee_Tc_ps": 5.0,
+        "tau_ep_Tc_ps": 24.7,
+        "tau_escape_ps": 15.0,
+        "current_uA": 21.29720614489798,
+        "bath_K": 0.9,
+        "dc_only": false,
+        "duration_ps": 20.0,
+        "snapshot_every_ps": 0.1,
+        "checkpoint_every_ps": 1.0,
+        "checkpoint_wall_s": 60.0,
+        "step_tolerance": 2e-07,
+        "local_energy_tolerance": 1e-05,
+        "max_iterations": 40,
+        "max_rejections": 50,
+        "threads": 2
+      },
+      "source_pins_sha256": {
+        "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+        "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+        "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+        "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+        "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+        "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+        "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+        "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+        "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+        "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+        "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+        "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+        "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+      }
+    }
+  },
+  "current_provisional_metrics": {
+    "interval_trajectory_ps": [
+      0.0,
+      15.71999999999987
+    ],
+    "interval_gap_ps": [
+      0.0,
+      15.69999999999996
+    ],
+    "nodal_minimum_over_DC": {
+      "value": 0.12120109257795156,
+      "maximum_difference_meV": 0.14767716917023987,
+      "time_ps": 14.499999999999964,
+      "source": "evidence.complete_window_summary:comparisons.spectral.gap_min; common actual saved states"
+    },
+    "field_L2_over_DC": {
+      "value": 0.02840407801607866,
+      "time_ps": 15.499999999999954,
+      "source": "evidence.complete_window_summary:comparisons.spectral.L2_field; maximum on common actual saved15.5ps states"
+    },
+    "deficit_over_partial_actual_peak": {
+      "value": 0.05962648658175642,
+      "absolute_difference_meV_nm2": 169.11616049891416,
+      "time_ps": 15.49999999999996,
+      "reference_peak_meV_nm2": 2836.259021685468,
+      "reference_peak_time_ps": 15.699999999999934,
+      "source": "evidence.complete_window_summary:comparisons.spectral.central_deficit",
+      "status_against_proposed_5percent": "FAIL_PROVISIONAL",
+      "is_final_window": false
+    },
+    "deficit_over_DCarea": {
+      "value": 0.014458130169466296,
+      "source": "evidence.complete_window_summary:comparisons.spectral.central_deficit.relative_error_DCarea",
+      "status": "DIAGNOSTIC_ONLY"
+    },
+    "Vout": {
+      "maximum_absolute_difference_mV": 0.00035038564276311854,
+      "relative_existing_admission_scale": 0.0035038564276311853,
+      "relative_actual_partial_reference_pulse": 0.0737106325352352,
+      "source": "evidence.complete_window_summary:comparisons.spectral.Vout",
+      "future_latency_precision_inferred": false
+    },
+    "latency": {
+      "available": false,
+      "source": "evidence.complete_window_summary:comparisons.spectral.latency",
+      "assigned_value_ps": null
+    },
+    "stiffness": {
+      "scope": "Diagnostico del cierre efectivo dirty-BCS a Tb fijo; no densidad superfluida experimental ni observable de admision.",
+      "formula": "s(a)=a*tanh[a/(2*k_B*T_b)]; L_s(t)=sum_i w_i^ROI*[s(a_i(0))-s(a_i(t))]_+; a=|Delta_J|",
+      "normalization_DC": "sum_i w_i^ROI*s(a_i(0))",
+      "normalization_actual_loss": "max_{t in actual shared saved times} L_s,reference(t)",
+      "units": {
+        "a": "J",
+        "k_B": "J/K",
+        "T_b": "K",
+        "w_i_ROI": "m^2",
+        "L_s": "J*m^2 (common proportional stiffness factor cancels)"
+      },
+      "Tb_K": 0.9,
+      "region_relative_nm": [
+        -60,
+        60,
+        -40,
+        40
+      ],
+      "source_center_m": [
+        1.6e-07,
+        0.0
+      ],
+      "quadrature_function": "sandbox.stage5_effective_validation.vortex_diagnostics.central_linear_weights",
+      "quadrature_source": {
+        "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/vortex_diagnostics.py",
+        "sha256": "747b2de9cb609aa2ab8d3bce5b10e60c1a21ac411aabcdfb2ca5be8330295d1c"
+      },
+      "saved_time_match_absolute_tolerance_ps": 1e-09,
+      "actual_shared_frames": 158,
+      "actual_shared_interval_ps": [
+        0.0,
+        15.699999999999934
+      ],
+      "maximum_difference_time_ps": 15.499999999999954,
+      "maximum_difference_over_DC_integrated_stiffness": 0.015600261048836656,
+      "maximum_difference_over_actual_reference_peak_loss": 0.06341521711713079,
+      "time_integrated_absolute_difference_over_reference_loss": 0.01788984015583139,
+      "time_integrated_signed_difference_over_reference_loss": 0.01781078356555224,
+      "inputs": [
+        "evidence.nominal.snapshots",
+        "evidence.spectral.snapshots"
+      ],
+      "physical_evolution_executed": false,
+      "RHS_evaluated": false,
+      "status": "DIAGNOSTIC_ONLY"
+    }
+  },
+  "historical_failures_preserved": {
+    "original_2percent_result": {
+      "source": "evidence.adopted_3_2_2_result:original_2percent_spectral_result",
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": false,
+        "candidate_saved_window_passed": false,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": true,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "gap_min_waveform": false
+      },
+      "gap_min": {
+        "maximum_absolute_difference_meV": 0.14767716917023987,
+        "DC_reference_scale_meV": 1.2184475076019632,
+        "relative_error": 0.12120109257795156,
+        "diagnostic_only": false,
+        "former_gate_passed": false
+      },
+      "complete_original_dictionary_remains_in_immutable_source": true
+    },
+    "adopted_3_2_2_result": {
+      "source": "evidence.adopted_3_2_2_result",
+      "passed": false,
+      "checks": {
+        "reference_saved_window_passed": false,
+        "candidate_saved_window_passed": false,
+        "same_frozen_model_sources": true,
+        "same_nonrefined_parameters": true,
+        "actual_declared_refinement": true,
+        "voltage_waveform": true,
+        "electrical_latency_if_observed": true,
+        "temporal_refinement_at_least_two": true,
+        "gap_min_waveform": false,
+        "spectral_common_physical_ROI_available": true,
+        "spectral_central_gap_magnitude_L2": false,
+        "spectral_central_deficit_over_reference_peak": false
+      },
+      "limits": {
+        "nodal_minimum_over_DC": 0.03,
+        "central_field_L2_over_DC": 0.02,
+        "central_deficit_over_actual_reference_peak": 0.02
+      },
+      "all_original_fields_remain_in_immutable_source": true
+    },
+    "earlier_prospective_decision_failures": {
+      "spectral_nodal_minimum_over_DC": 0.02276239242656607,
+      "spectral_limit": 0.02,
+      "mesh_deficit_over_peak": 0.06583534006348958,
+      "mesh_limit": 0.05
+    },
+    "original_interpolation_metric": {
+      "temporal_original_L2": 0.38167353542678906,
+      "source": "evidence.complete_window_summary:comparisons.temporal.L2_field",
+      "separate_correction_is_not_tolerance_relaxation": true
+    },
+    "no_historical_results_overwritten": true
+  },
+  "production_resolution": {
+    "status": "PENDING_FINAL_TRAJECTORIES_AND_ROOT_DECISION",
+    "selected": null,
+    "54_state_comparison_evidence_not_automatically_transferred_to_80": true,
+    "80_144_96_is_higher_resolution_not_proven_asymptotic_convergence": true,
+    "no_new_refinement_required_by_this_proposal": true
+  },
+  "fixed_boundary": {
+    "automatic_future_relaxation_permitted": false,
+    "automatic_success_if_5percent_fails": false,
+    "if_complete_window_fails": "Keep FAIL and limit the quantitative capability; no automatic larger margin, deletion of maxima, shifted time, modified threshold, new physical source or changed circuit. Any later change would require a separate explicit root decision with evidence.",
+    "not_a_model_admission_even_if_spatial_checks_pass": true
+  },
+  "execution_record": {
+    "helper_affinity": [
+      4
+    ],
+    "Numba_RHS_workers": 0,
+    "BLAS_threads": 1,
+    "physical_evolution_executed": false,
+    "RHS_evaluated": false,
+    "production_sources_changed": false,
+    "builder_or_PRESENT_changed": false,
+    "PDF_created": false,
+    "only_new_artifact": "this candidateJSON"
+  },
+  "root_review": {
+    "UTC": "2026-10-11T18:35:19.627412+00:00",
+    "candidate": {
+      "path": "/home/jdiaz/scratch/stage5_exploratory_spatial_budget_candidate_20261011/prospective_scientific_decision.json",
+      "sha256": "355cdfb4ec9646f0220a1f1b18da6e2c3e38d77851c649776474ae9bbebb382a"
+    },
+    "candidate_read_in_full": true,
+    "primary_source_section_V_verified": "https://arxiv.org/html/1611.06060v3",
+    "SHA_bound_saved_inputs_verified": [
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/comparisons/audit.json",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/comparison_summary.json",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral_adopted_3_2_2_comparison.json",
+      "/home/jdiaz/scratch/stage5_spectral_mesh_scope_review_20261011/root_prospective_spectral_policy_decision.json",
+      "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/audit_runs.py",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral_complete_common_window_series.csv",
+      "/home/jdiaz/scratch/stage5_physical_gap_interpolation_candidate_20261011/candidate_receipt_v2.json",
+      "/home/jdiaz/scratch/stage5_physical_gap_interpolation_candidate_20261011/same_capture_corrected_metrics_candidate.json",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/nominal/derived_audit_view/manifest.json",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/nominal/derived_audit_view/snapshots.npz",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/nominal/derived_audit_view/checkpoint_latest.npz",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral/derived_audit_view/manifest.json",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral/derived_audit_view/snapshots.npz",
+      "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1820/spectral/derived_audit_view/checkpoint_latest.npz",
+      "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/vortex_diagnostics.py"
+    ],
+    "physical_magnitude_interpolation_candidate_source_sha256": "4702d5c01a0e61c8776bb1b35e9e32ec4086189a6db430d87273036a18b1e939",
+    "physical_magnitude_interpolation_tests_passed": 6,
+    "decision_does_not_change_simulation_or_RHS": true,
+    "candidate_code_integration_requires_separate_root_review": true,
+    "current_5percent_deficit_failure_retained": true,
+    "completion_and_critical_coverage_pending": true,
+    "stage5_admission": false
+  }
+}

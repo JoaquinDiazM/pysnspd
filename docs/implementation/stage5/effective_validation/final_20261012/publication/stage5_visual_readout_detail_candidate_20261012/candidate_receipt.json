@@ -1,0 +1,24 @@
+{
+  "status": "REVIEW_ONLY_NOT_PROMOTED",
+  "created_utc": "2026-10-12T07:25:03.319143+00:00",
+  "scope": "Saved-data visualization only; no runtime/model/observer changes",
+  "before_sha256": "10c77fae7d27d8073f75e33b24b966f559e44cfec4f32b27a22cb88d0d9dbd5b",
+  "after_sha256": "0c9bc10d067ca6be6788c1418e3e96989ebc85f700ed2338c4545cabc24738f0",
+  "test_sha256": "699361b4ccfe0ba5a4ddc1eddc2819fd3756bcf9249b7af6d85ecb029d331094",
+  "patch_sha256": "0c32513eca50c35254d5b7650758b7b8ead7d9ba26c79c0357d11ad500e00130",
+  "runtime_source_changes": 0,
+  "simulations_launched": 0,
+  "plots_recreated_yet": true,
+  "tests": {
+    "command": "env PYSNSPD_VISUAL_SOURCE=<candidate> taskset -c8 timeout300 python -B -m pytest -q <new test>",
+    "passed": 4,
+    "elapsed_s": 0.28
+  },
+  "trace_preview_receipt_sha256": "48d4cb0cd49f0d8935470ccbb175f796a8d6ff712ac6be7c9abaea9770b79660",
+  "visual_qa_receipt_sha256": "c0b86169ea9a9cdb7a9839ddfbb80291715b20e72ca17d18b95d81770a5893f4",
+  "preview_figures_only": [
+    "01_pulse_and_currents",
+    "02_energy_balance"
+  ],
+  "original_saved_outputs_unchanged": true
+}

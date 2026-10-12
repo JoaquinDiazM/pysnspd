@@ -1,0 +1,92 @@
+{
+  "schema": "pysnspd.final_wheel_visual_dependency_verification.v1",
+  "status": "PASSED",
+  "created_UTC": "2026-10-12T05:56:09.666851+00:00",
+  "API_check_elapsed_s": 0.34230735001619905,
+  "CPU_affinity": [
+    8
+  ],
+  "threads_per_process": 1,
+  "previous_API_RHS_certificate": {
+    "path": "/home/jdiaz/scratch/stage5_wheel_optimized_v6_20261011/wheel_verification_receipt.json",
+    "sha256": "673993531fa95545ccb4049776130342f67a3a094b2ef713ecc1fbb12a103e1b"
+  },
+  "wheel": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/dist/pysnspd-1.1.0-py3-none-any.whl",
+  "wheel_sha256": "d25bbed228cf2fa1b9ad17a20fdd9736d7795573003faad724e8aaa47ad1b3c1",
+  "source_inventory_sha256": "6f4b55ee9076fc8b5b0bddfb12dac6516daf3f2b25e205891245aa585d67baea",
+  "new_visual_dependency_sha256": {
+    "pysnspd/plotting/complex_gap.py": "76ecda97479ac5a7d368c7f601cd60cb4d757f479626e68ab2453eeedbe29b51"
+  },
+  "extracted_API": {
+    "version": "1.1.0",
+    "API_module": "pysnspd.effective",
+    "exports": [
+      "EffectiveBCSFunctional",
+      "EffectiveBCSBulk",
+      "bcs_count_quadrature",
+      "EffectiveBCSGeometry",
+      "EffectiveBCSDC",
+      "get_effective_geometry",
+      "prepare_effective_dc",
+      "save_effective_dc",
+      "EffectiveBCSKinetics",
+      "EffectiveBCSKineticResult",
+      "acoustic_phonon_grid",
+      "EffectiveNeutralPorts",
+      "freeze_exterior_inductance",
+      "EffectiveState",
+      "EffectiveRHS",
+      "EffectiveCoupledSystem",
+      "EffectivePhononMaterial",
+      "allmaras_acoustic_material",
+      "ThesisCircuitParameters",
+      "TriggerWindow",
+      "TriggerWindowConfig"
+    ],
+    "package_origins": {
+      "pysnspd": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/__init__.py",
+      "pysnspd.experimental": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/__init__.py",
+      "pysnspd.experimental.thermal_spatial_usadel": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/thermal_spatial_usadel.py",
+      "pysnspd.experimental.effective_bcs_functional": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/effective_bcs_functional.py",
+      "pysnspd.experimental.effective_bcs_preparation": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/effective_bcs_preparation.py",
+      "pysnspd.experimental.energy_catalog": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/energy_catalog.py",
+      "pysnspd.experimental.kinetic_events": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/kinetic_events.py",
+      "pysnspd.experimental.effective_bcs_kinetics_numba": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/effective_bcs_kinetics_numba.py",
+      "pysnspd.experimental.effective_bcs_kinetics": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/effective_bcs_kinetics.py",
+      "pysnspd.experimental.electrical_ports": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/electrical_ports.py",
+      "pysnspd.experimental.effective_bcs_ports": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/effective_bcs_ports.py",
+      "pysnspd.experimental.effective_coupled": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/effective_coupled.py",
+      "pysnspd.experimental.effective_material": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/effective_material.py",
+      "pysnspd.experimental.trigger_window": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/experimental/trigger_window.py",
+      "pysnspd.effective": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/effective.py",
+      "pysnspd.plotting": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/plotting/__init__.py",
+      "pysnspd.plotting.complex_gap": "/home/jdiaz/scratch/stage5_final_wheel_visual_dependency_20261012/extracted/pysnspd/plotting/complex_gap.py"
+    },
+    "helper_sha256": "76ecda97479ac5a7d368c7f601cd60cb4d757f479626e68ab2453eeedbe29b51"
+  },
+  "physical13_unchanged": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "first_smoke_attempt": {
+    "status": "HARNESS_ERROR_NO_PACKAGE_DEFECT",
+    "reason": "Checker referenced experimental.__all__; public exports live in pysnspd.effective.__all__",
+    "wheel_rebuilt": false
+  },
+  "no_install": true,
+  "no_network": true,
+  "no_RHS_evaluation": true,
+  "no_trajectory_evolution": true,
+  "stage5": false
+}

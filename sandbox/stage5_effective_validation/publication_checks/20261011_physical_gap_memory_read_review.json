@@ -1,0 +1,58 @@
+{
+  "schema": "pysnspd.memory_backend_read_only_combined_analysis_review.v1",
+  "utc": "2026-10-11T18:53:19.603546+00:00",
+  "status": "READ_ONLY_REVIEW_PASSED_NO_DETERMINANT_BUG_FOUND",
+  "candidate_receipt": {
+    "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/candidate_receipt.json",
+    "sha256": "8b37c691431ba9bae69b3307993218b4ff672ef17cc5356d444b26525a109a44"
+  },
+  "patch": {
+    "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/combined_analysis_REVIEW_ONLY.patch",
+    "sha256": "4741ccfd457b8cd7aa13c53b346ef1afb0594cd93110341c4c0c83a4952568e9"
+  },
+  "verified_candidate_sources": {
+    "sandbox/stage5_effective_validation/physical_gap_interpolation.py": "4702d5c01a0e61c8776bb1b35e9e32ec4086189a6db430d87273036a18b1e939",
+    "sandbox/stage5_effective_validation/physical_gap_comparison.py": "3ec19b9dc7871fb94ac57bfc1cabacbb2b0610b3987bfb757629f2456d668dc7",
+    "sandbox/stage5_effective_validation/exploratory_spectral_policy.py": "273d86b25cb89c04d71308749759ee3f53b92fe45b33475c4c8c5539243a20e1",
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": "732c13316309626ade82cc88565b79a813fc7cd86d3a8c3efa0cc38932d910a7",
+    "sandbox/stage5_effective_validation/window_evidence.py": "7a2e76e8167264c65ab83feb416209de26d87964e8a2f12340d442f7333eb8b5",
+    "sandbox/stage5_effective_validation/build_final_report.py": "bd12ab77ec8cc53057b60b6d2bf1cce376e49857435c563753a60bd0616dff85",
+    "tests/test_effective_physical_gap_policy_integration.py": "59ded843856cee3e9d759df7888963898ba1dab8214920c4c4ce8f906ca3a7fe",
+    "tests/test_effective_physical_gap_interpolation.py": "0b899a254349868628de2e6d25dc41c6aa1173ece99ea234402703718318ba44",
+    "tests/test_effective_guard_protocol_dispatcher.py": "3a2b292f7e2b4e8a7cce3c34148bfc35e38c6ee1b2da9d6fff3cbc20ce588a87",
+    "tests/test_effective_spectral_policy_wiring.py": "28be41565e1520f6c688f0c36701d6f0f2f845f40b95e1e2fd24a3abf8bd249e"
+  },
+  "verified_unchanged_runtime_and_baseline": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "sandbox/stage5_effective_validation/audit_runs.py": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "sandbox/stage5_effective_validation/bounded_guard_protocol.py": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+  },
+  "reviewed_invariants": [
+    "Original full-run guard/source/ledger verification precedes physical observable correction and every finite-window metric view.",
+    "Complex spatial P1 is evaluated per saved frame, then magnitude is taken and only that scalar is interpolated in time; arbitrary per-frame global phase does not alter the observable.",
+    "The correction changes only robust spatial L2, its saved curve, and the existing mesh/domain L2 check; voltage, latency, deficit, nodal minimum, events, winding, completion and other checks remain unchanged.",
+    "Finite reporting layers normalize to their preserved raw finite comparison when checking exact transformations; the original complete full-run comparison remains separately visible.",
+    "The explicit SHA-bound exploratory spectral budget is scoped to verified775nm54-to80 actual manifest/quadrature bundles; physical and electrical margins outside the two5percent spatial metrics remain unchanged.",
+    "Original complex interpolation, original2percent and3/2/2 full dictionaries remain preserved; the same current common window is used to report their former outcomes.",
+    "Finite-window reporting still requires original physical checks and a separate SHA-bound manual critical-coverage decision; no run completion or latency is invented.",
+    "Current saved deficit failures remain failed under5percent; no future success or stage5 admission is inferred."
+  ],
+  "scope_limitations": [
+    "This review checks source logic and dependency hashes, not arbitrary-input authenticity; the dispatcher supplies the verified original-run provenance.",
+    "No tests or physical evolution were rerun, no simulation sources/capsules or repository files were modified, and no PDF was generated.",
+    "The5percent engineering budget is root's separate scientific decision, not a numerical consequence or literature-derived threshold."
+  ],
+  "findings": []
+}

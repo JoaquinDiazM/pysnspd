@@ -1,0 +1,32 @@
+{
+  "schema": "pysnspd.spectral_wiring_independent_read_review.v1",
+  "utc": "2026-10-11T17:35:32.043661+00:00",
+  "status": "PASS_READING_ONLY",
+  "patch_path": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/spectral_wiring_candidate.patch",
+  "patch_sha256": "624f79fa7ea3385f9b09d907774bbf03abd157c7787bf28f02f23199b76ce09b",
+  "candidate_receipt_path": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/candidate_receipt.json",
+  "candidate_receipt_sha256": "7333780c799d4629bfb5a2a359fe503e5fed6385feec76bcff71936001c2bcbd",
+  "all_candidate_hashes_verified": {
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": true,
+    "sandbox/stage5_effective_validation/window_evidence.py": true,
+    "sandbox/stage5_effective_validation/build_final_report.py": true,
+    "tests/test_effective_spectral_policy_wiring.py": true
+  },
+  "reviewed": {
+    "actual775nm54_to80scope_and_exact_quadratures_bound": true,
+    "all13pins_same": true,
+    "global_one_percent_unchanged": true,
+    "wrapper_applied_after_full_guard_proof_and_to_clipped_metrics": true,
+    "full_original_physical_checks_and_events_preserved": true,
+    "only_four_spectral_observable_margins_changed_or_added": true,
+    "all_four_required_in_quantified_later_bounds": true,
+    "original_two_percent_failure_visible": true,
+    "no_stage5_admission_from_wrapper_or_finite_pass": true
+  },
+  "finite_normalization": "window_evidence copies the verified raw finite-comparison result into original_full_run_comparison before replacing only passed/checks with manual-window semantics. validate_spectral_policy_application normalizes to that preserved raw result, so original completion=false is not confused with the explicit reviewed-window pass. The true full-history comparison remains nested in declared_numerical_control.full_original_comparison.",
+  "concrete_functional_defects_found": [],
+  "tests_not_reexecuted": true,
+  "source_edits": false,
+  "promoted": false,
+  "physical_evolution": false
+}

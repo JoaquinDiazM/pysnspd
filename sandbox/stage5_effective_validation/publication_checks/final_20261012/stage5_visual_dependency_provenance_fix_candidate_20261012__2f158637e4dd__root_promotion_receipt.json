@@ -1,0 +1,51 @@
+{
+  "schema": "pysnspd.root_visual_dependency_provenance_promotion.v1",
+  "status": "APPLIED_TESTED",
+  "created_UTC": "2026-10-12T02:24:10.552236+00:00",
+  "candidate_receipt_sha256": "90cf2c30cadb620b8c572f96c13785f079ee07ad2a910c634e8579575cbaaa85",
+  "patch_sha256": "93598f7308fc438bf1f033cab21ee0e4a11d89884dd7acad707a65db0259306a",
+  "sources": [
+    {
+      "path": "plot_pipelines/05_plot_effective_photon_run.py",
+      "before_sha256": "46300a3e82879194c2d5cf4cd203e207ec79693b45a3b45b8c1493dc9020afc4",
+      "after_sha256": "10c77fae7d27d8073f75e33b24b966f559e44cfec4f32b27a22cb88d0d9dbd5b"
+    },
+    {
+      "path": "sandbox/stage5_effective_validation/build_final_report.py",
+      "before_sha256": "8e24fc9b4ade3aebac6c06ec94dae943dc7c021febd86130d5e3c9f63738a0dc",
+      "after_sha256": "7bc7f0c2561f1dddb1b68b74f56fc2bf0621c486f77f6fedbefb9866bc7dd9a4"
+    },
+    {
+      "path": "tests/test_effective_visual_dependency_provenance.py",
+      "before_sha256": null,
+      "after_sha256": "6e9c08aec173ff364a836b529bcf4a2e9796753eda04eaf5c3be67ce0deec68a"
+    }
+  ],
+  "physical_13_unchanged": true,
+  "visual_calculations_and_gates_unchanged": true,
+  "tests": {
+    "argv": [
+      "taskset",
+      "-c",
+      "8",
+      "timeout",
+      "300",
+      "/home/jdiaz/.conda/envs/snspd/bin/python",
+      "-B",
+      "-m",
+      "pytest",
+      "-p",
+      "no:cacheprovider",
+      "-q",
+      "tests/test_effective_visual_dependency_provenance.py"
+    ],
+    "exit_code": 0,
+    "wall_s": 0.35669989499729127,
+    "log": "/home/jdiaz/scratch/stage5_visual_dependency_provenance_fix_candidate_20261012/root_repo_tests.log",
+    "log_sha256": "2207aede3effc76057a2a3e57150b95838d002e9383df950aadd0fec45f590e8"
+  },
+  "simulations_launched": 0,
+  "figures_generated": 0,
+  "pdfs_compiled": 0,
+  "stage5": false
+}

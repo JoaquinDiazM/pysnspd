@@ -1,0 +1,111 @@
+{
+  "schema": "pysnspd.pragmatic_closure_resource_only_corrected_read_review.v2",
+  "UTC": "2026-10-11T19:31:20.094372+00:00",
+  "status": "CORRECTED_SOURCE_CONTRACT_REVIEW_PASSED_NOT_EXECUTED_NOT_MODEL_ADMISSION",
+  "stage5_admission": false,
+  "supersedes_only_after_explicit_invalidation": {
+    "prior_invalidated_review": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/pragmatic_closure_independent_resource_review.json",
+      "sha256": "971cbaa8dc652b9b237992fd0f4437835372fe10d48dfce3e697f407c2b7c15d"
+    },
+    "invalidation": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/pragmatic_closure_review_invalidation.json",
+      "sha256": "12c79f2b397b8c07fd25c91060bfe27343f0a0bec16fe7e4445464a8381ce819"
+    }
+  },
+  "candidate_files": {
+    "fine_resource_transition.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/fine_resource_transition.py",
+      "sha256": "c002fac3d2a1487fbaaf7304ef211b33db3357859fbeedf8a21c62093a033312"
+    },
+    "fine_resource_guard_adapter.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/fine_resource_guard_adapter.py",
+      "sha256": "05d713a975f30d1550daeaf867765c16acceb81f776526a779ac2f438fa97c8e"
+    },
+    "guard_protocol_dispatcher.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/guard_protocol_dispatcher.py",
+      "sha256": "05233ffe36e05a29fc22261dccb28b744436a2315c3ef6721c6eadfb87ca1269"
+    },
+    "test_effective_fine_resource_transition.py": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/test_effective_fine_resource_transition.py",
+      "sha256": "a96eed6565d3555597a986942c9ed707cfae0b386f8b3500d43b3d6bcb889340"
+    },
+    "launch_resources4_REVIEW_ONLY.sh": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/launch_resources4_REVIEW_ONLY.sh",
+      "sha256": "8f0a7da15241646610f3dd3f8ef79ce09144d225343982cb2c970f1a86e81422"
+    },
+    "resource_only_REVIEW_ONLY.patch": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/resource_only_REVIEW_ONLY.patch",
+      "sha256": "e423789c54de15cf0f98cc75c3aeecfa36039c3da973ef1663e93e98d8391c40"
+    },
+    "candidate_receipt.json": {
+      "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/candidate_receipt.json",
+      "sha256": "726642a528be98a6be3dbdc1829dd2f729be5242e777e676ec659a222dbd8591"
+    }
+  },
+  "independent_actual_schema_check": {
+    "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/pragmatic_closure_real_schema_independent_check.json",
+    "sha256": "3f65a3ef993341f81e4bd0c66113bcebb3a2cfa308aefdec3d268c86d7be8fd8"
+  },
+  "rate_actual_decoder_validation": {
+    "path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/real_checkpoint_namespace_validation.json",
+    "sha256": "8520dfd19ca61b38c387e7471a004885a0ade27fb195cd576687d2a28a427ab3"
+  },
+  "verified_actual_schema": {
+    "total_keys": 28,
+    "numeric_arrays": 27,
+    "metadata_entries": 1,
+    "physical_states": 4,
+    "history": 16,
+    "snapshots": 7,
+    "exact_names_checked": true
+  },
+  "resolved_finding": "The old invented27-key fixture was a real blocking error. The helper now derives the exact28named keys from the SHA-pinned checkpoint producer, checks the complete namespace rather than cardinality alone, and records27numeric arrays plus metadata. Existing immutable checkpoint b083 independently matches every named key and NPY type/shape header.",
+  "minimum_corrective_diff_read_in_full": true,
+  "corrected_contracts": [
+    "Initial transfer requires the actual28-key producer schema; all27numeric arrays preserve dtype, shape and C-order bytes, and every metadata value/type except threads2-to4 remains unchanged.",
+    "E0, signed/absolute work, guard anchor/origin/maxima, all adaptive counters, next_h, controller, accepted-history and snapshot prefixes are preserved; independent global1percent/local guard audit remains mandatory for a later child.",
+    "Runtime13pins, baseline3c08 and boundedb718 stay intact. Fixed Num2CPU12,13 fine775/h3.5/54states only, after real INTERRUPTED ACTIVE pretrigger parent and terminal nominal, with sameNL2e-7/cap.02/guard2.5e-6.",
+    "Full2-to4 resource chronology remains visible; its separate guard-policy projection only merges an identical guard law and cannot reset the guard activation clock.",
+    "Launcher now authenticates the complete ancestral transfer/capture/archive13pins/segments/argv before exec and rechecks the conditional resource preflight. No future cross-thread bitwise-trajectory or speedup claim follows.",
+    "Explicit mesh-only dispatcher leaves default behavior and all physical failures/completion/critical-coverage requirements unchanged; no model admission is inferred."
+  ],
+  "protected_baselines": {
+    "sandbox/stage5_effective_validation/audit_runs.py": {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/audit_runs.py",
+      "sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a"
+    },
+    "sandbox/stage5_effective_validation/bounded_guard_protocol.py": {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/bounded_guard_protocol.py",
+      "sha256": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+    }
+  },
+  "protected_13_runtime_pins": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "findings": [],
+  "operational_scope_note": "The point-in-time preflight inventories jdiaz photon-pipeline owners only; root must retain the real global shared resource inventory and revalidate target0..3/reserve14,15/90percent at launch. It is not a CPU reservation.",
+  "limits": [
+    "This is a source/contract review, not execution of an actual fine transfer. Future real prepared receipt and initial child still require explicit root review.",
+    "The independent check reads an already-existing immutable checkpoint member table and NPY headers. No new checkpoint capture or physical evolution was performed.",
+    "No test suite was rerun by this reviewer; the final25test evidence remains its authors own recorded receipt."
+  ],
+  "candidate_applied": false,
+  "RHS_evaluated": false,
+  "new_capture": false,
+  "migration_or_signal": false,
+  "PDF_created": false,
+  "only_new_outputs": "Independent schema check and this corrected review receipt; prior PASS and invalidation preserved."
+}

@@ -1,0 +1,1809 @@
+{
+  "schema": "pysnspd.stage5_publication_static_staging_candidate.v1",
+  "created_UTC": "2026-10-11T22:00:30.982945+00:00",
+  "stage5": false,
+  "status": "NOT_MODEL_ADMISSION_NOT_STAGED",
+  "branch": "main",
+  "head": "abbeb7a678f9cedc2ffc526c5edc430b790b5482",
+  "index_initially_empty": true,
+  "working_status_counts": {
+    " M": 6,
+    " D": 129,
+    "??": 409
+  },
+  "inventory": {
+    "path": "/home/jdiaz/scratch/stage5_publication_proposals_20261011/source_inventory.json",
+    "sha256": "f04c45818c61b95b2b98573a405664a9e5615118b8841c16090a28b262e30d42"
+  },
+  "stage_after_final_root_admission_and_rebind_current_sources": {
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "plot_pipelines/05_plot_effective_photon_run.py": "ed2a3222b5908e8d76a37067785c8b897b5f46e4e213e26bac03888ec76aa2a2",
+    "pyproject.toml": "ea1fd8f040d503d55509dfd2858d7b3789f96fb483c4b3c318f460ce6a00f506",
+    "pysnspd/__init__.py": "5475b1778f9996ee9f68fd596dcc55906548a960282cb086c539824365aeaaf8",
+    "pysnspd/effective.py": "7145b3ddff931bbdb7a00b872620a3b3803ac77181fc1da11d5784e52bf3f602",
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "sandbox/stage5_effective_validation/admission_policy.json": "41489e2f38644862c474faeed0e52ae98675d8dfce9e4c62852b70eb1b89da8b",
+    "sandbox/stage5_effective_validation/admission_policy_history/20261011_finite_window_initial_declaration.json": "a3c3f2ab1ed18d4a710f32b6bcbbd68e9a3c2b7118aa5b171d78cf6a5ab6b6cf",
+    "sandbox/stage5_effective_validation/admission_policy_history/20261011_temporal_control_pre_run_declaration.json": "933e6d2d74648612f236196c7cd077b4ebe7dfce36f11e58056942c47eb944fc",
+    "sandbox/stage5_effective_validation/admission_policy_history/20261011_v1.json": "4518188ce124fbd98fbf9721d7108f5456b730bd78c55c979d92ee7a378d4f80",
+    "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_1_before_finite_windows.json": "3af823302d8a75d1011e6729286c95da6483b37f7f15f61a545a4e5c8a4121fc",
+    "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_1_clock_roundoff_diagnostic.json": "c2543e10258e84fef0c9d7265867d28117ff4fccfef6b64e50657db6429a324b",
+    "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_2_finite_windows_adoption.json": "cc8cd36e143168f380e650784b2859891a393e514668d822e3cb5a73ff2289d7",
+    "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_adoption.json": "a45a00cec57f7a420f5c3ade03f1365a8cf655aad76c7688285da8a203b1f315",
+    "sandbox/stage5_effective_validation/audit_local_step_energy.py": "d24a34e6b82e3c39e03cecce9a23a76fa74024cfae1cb05a01f9665aa4dd27da",
+    "sandbox/stage5_effective_validation/audit_runs.py": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "sandbox/stage5_effective_validation/bounded_guard_protocol.py": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6",
+    "sandbox/stage5_effective_validation/build_final_report.py": "f5dc1d53b857ebf37434ffa3e351af1347685ac6cec0278a47e3779269e53c5f",
+    "sandbox/stage5_effective_validation/compare_frozen_checkpoint.py": "abbb7390b7f3086d15c61dec2735a22fac91713a4dbc11de8466584f0ae84c67",
+    "sandbox/stage5_effective_validation/comparison_window.py": "12c241558703955b915076af4ff3020d6588fbd0296047b290dc129f06e3a99e",
+    "sandbox/stage5_effective_validation/control_resource_transition.py": "0458f0141d7005578d0ab98fb2e1b963f79b0c34769197a585d5651c4ebf5118",
+    "sandbox/stage5_effective_validation/exploratory_spectral_policy.py": "273d86b25cb89c04d71308749759ee3f53b92fe45b33475c4c8c5539243a20e1",
+    "sandbox/stage5_effective_validation/fine_resource_guard_adapter.py": "aadc8beebe91df8617ff748c954bed3e470e51cc52a8a625fe5eb3ec510e3c1c",
+    "sandbox/stage5_effective_validation/fine_resource_transition.py": "51ad9818845fb89586e7d0fac2f00798fe7d3affa528ee32f3ce1c0f4477e938",
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": "4f58a01c26c5afb6a29e9c749bd3e645db71e5036a8fb3a6b78e0c5b0e89262f",
+    "sandbox/stage5_effective_validation/num8_resource_equivalence.py": "85fab053549194a658835a2933416dcecac335048842d0d8ff7d7d07d9fc1fd6",
+    "sandbox/stage5_effective_validation/physical_gap_comparison.py": "3ec19b9dc7871fb94ac57bfc1cabacbb2b0610b3987bfb757629f2456d668dc7",
+    "sandbox/stage5_effective_validation/physical_gap_interpolation.py": "4702d5c01a0e61c8776bb1b35e9e32ec4086189a6db430d87273036a18b1e939",
+    "sandbox/stage5_effective_validation/physical_sensitivity.py": "0eec885a391c4919a79ae5972e2d068dba43dd8eb3e03dba5444b008c29b34f0",
+    "sandbox/stage5_effective_validation/preserve_checkpoint.py": "3bed654805fd36ccc0a51d2592c343f9aa14b7ecdf9523ae7152613999851a24",
+    "sandbox/stage5_effective_validation/probe_frozen_checkpoint.py": "a72cee8d51f7f9a2a57d06a9094898c864977d3acbf400ebb4a836adeef88e0a",
+    "sandbox/stage5_effective_validation/profile_frozen_checkpoint.py": "573f8fe7b30fe6ac6294acb18ebea34444d3a844f17ac3612c2ce222340fba35",
+    "sandbox/stage5_effective_validation/profile_frozen_checkpoint_initial.py": "c2bcdb2057539f34a0c6d9fae6d90d63349c017b8310d1a7f820272a5fcd46c4",
+    "sandbox/stage5_effective_validation/report_builder_source_receipt.json": "5d8aba08c924b21ed191f797842fbcef0a50f5da55d3ba3eb7d36f2cb8e5fb8e",
+    "sandbox/stage5_effective_validation/review_partial_physics.py": "210062d358f0fcf7652cd5173302cb57f8aa708ab806951613f60c0be25e10db",
+    "sandbox/stage5_effective_validation/spectral_observable_policy.py": "0ceb9ebcf48f3fc685ceb0637b75c66a91fabb677bdf4c7caa1f7970010425c1",
+    "sandbox/stage5_effective_validation/vortex_diagnostics.py": "747b2de9cb609aa2ab8d3bce5b10e60c1a21ac411aabcdfb2ca5be8330295d1c",
+    "sandbox/stage5_effective_validation/width_guard_window_candidate.py": "1cb430f5e704c0c2eae05d843d88cd55ebb5cbd3ca4f9110d3821f6c5334d060",
+    "sandbox/stage5_effective_validation/window_evidence.py": "7a2e76e8167264c65ab83feb416209de26d87964e8a2f12340d442f7333eb8b5",
+    "sandbox/stage5_math_documents/Matematica_etapa5_auxiliares.tex": "c6cb321acde23dcc614d45398215c9d9015943ffa8121c938f715a3e46d97c66",
+    "sandbox/stage5_math_documents/Matematica_etapa5_precomputados.tex": "01ca99fe1310f0ef91c97fc3244b6c6e4e29de44b228d36091c5787d723ad124",
+    "sandbox/stage5_math_documents/Matematica_etapa5_principales_2D.tex": "4228aaafa5796795ba26019e762ce44341859ee4e27d2d984df3fc29383767c8",
+    "sandbox/stage5_math_documents/audit_thickness_bulk.py": "52b0f0a5defa74e6b19d28cf889c7ddb255f33c64b23e344c0ff7c65e2de795e",
+    "sandbox/stage5_math_documents/build_math_documents.py": "e80b32e1848d0f027446741b18a0e9f171a1e31db5691029cf6980ee6119ee3d",
+    "tests/test_effective_bcs_functional.py": "4afc12cd3facc2b7cbdbdcb3f6ce66f2d5dca8ff4e6baba53ce7d9114a5d1a6d",
+    "tests/test_effective_bcs_kinetics.py": "b053ac8c4fed1d279b1dbaf000dbd0de985264ad31a6ba30ce79bedc41269104",
+    "tests/test_effective_bcs_ports.py": "05fa4e588e27e63e250a2063b78cac8c0cbfea7e2a58c2b9191a144b9d6f8e7a",
+    "tests/test_effective_bcs_preparation.py": "be681ec6425526ac055b35a297ff3c744607bdc69f1c4e37ce36576d7522718f",
+    "tests/test_effective_bounded_guard_protocol.py": "b84af711fea51b3bd58035664770304f906fe47cb7df660bda4db305fcca0e9c",
+    "tests/test_effective_comparison_window.py": "1f85fd2024f2b84f40daea635c197a4f447f984057d884625a0bd3337a8702aa",
+    "tests/test_effective_control_resource_transition.py": "b50eef888fcb72ee87d8f155966602dacb43ed4d11ec24c6a1abffc9834b3a66",
+    "tests/test_effective_coupled.py": "00ace220925c90b59260e5b1fb8a935b245fcf6f171b0e4ff6716c8291428304",
+    "tests/test_effective_coupled_independent.py": "913d00091950ce861e9982bb1a1711e87b0dbeddd0ac2226d7e035ae7c847154",
+    "tests/test_effective_fine_resource_transition.py": "81ecf1726e0c075a0fd9ff49ac0263535db3d79b49a2d28307c738bdc828eb19",
+    "tests/test_effective_frontend_transactions.py": "095bd3ea898badfa0e8a76dae3013a11f45aade16d899a544fd8b0f31e88ae63",
+    "tests/test_effective_guard_protocol_dispatcher.py": "3a2b292f7e2b4e8a7cce3c34148bfc35e38c6ee1b2da9d6fff3cbc20ce588a87",
+    "tests/test_effective_local_energy_guard.py": "beb40fce78ffeb157fa5dea06b198a0e427633aa491ebf4ffe131052f4a0524a",
+    "tests/test_effective_midpoint_physical_norm.py": "9d4203e6449829c12157fb6d6858dafb6fa5ff141263b92f206afab4288e84a7",
+    "tests/test_effective_photon_runner.py": "28fa1630c64bee7a12f66e36659e20cd4f1995ffb7781a59fc30631cee5c7234",
+    "tests/test_effective_photon_visual.py": "c43c9896d3d000d7c88a9189e1750241a9b74a92542f1f28e4f28adbd0f2472a",
+    "tests/test_effective_physical_gap_interpolation.py": "0b899a254349868628de2e6d25dc41c6aa1173ece99ea234402703718318ba44",
+    "tests/test_effective_physical_gap_policy_integration.py": "59ded843856cee3e9d759df7888963898ba1dab8214920c4c4ce8f906ca3a7fe",
+    "tests/test_effective_physical_sensitivity.py": "2f8444a31f5cdf5c481dffcd4955ff2976ad41ac0dafbe27f53f6b958f04b1b9",
+    "tests/test_effective_report_DC_evidence.py": "97a1e300e90efc5c16c49cc018018d379c209089744beb437d59a687cb338ce7",
+    "tests/test_effective_report_display.py": "55d146bc612f6bc91f16fb2457f4290041127283d6350b216c23450b0f906fd7",
+    "tests/test_effective_report_guard_wiring.py": "f2b810dd053edb9bbeaaea6b4a422e6a683a986a68e51dbfd433f4fff80d3066",
+    "tests/test_effective_saved_audit.py": "8acd1d2296e4d57411860bb8ccb851cd8cf7cf03393406787c37f9abe75f2337",
+    "tests/test_effective_session_eta.py": "df2596c9d6f445e0173b96f0be4387625ae69b744a549748e314f8a52f94ee34",
+    "tests/test_effective_spatial_audit.py": "f98dadcbc337eb48f66ac8b1f4f6205eaf43448e1992c8ee5b86b1c2d95e0466",
+    "tests/test_effective_spectral_observable_policy.py": "bee850aef1c8f60061ecc668c88f5ea2c1f492cf901b328fd6ee95fbaa98d5b3",
+    "tests/test_effective_spectral_policy_wiring.py": "28be41565e1520f6c688f0c36701d6f0f2f845f40b95e1e2fd24a3abf8bd249e",
+    "tests/test_effective_vortex_diagnostics.py": "8d602f42b85137dd2fe813d5f651d69ad311b82da480978d66635e941725e422",
+    "tests/test_effective_width_guard_window.py": "f005a8e8cf41c2038bcc82a080c0cb16c24e13cf0a5f417556130d0b4a0a44c4",
+    "tests/test_effective_window_evidence.py": "bfaf3ba133978a11378b736447b39d129e17efe0877bbdb2d29d3804bfe64468",
+    "tests/test_trigger_window.py": "608f47d89c514e1a97dd8f509fd5fd210ce782742b0219fb397a31bfb5961fbf"
+  },
+  "source_groups": {
+    "runtime_new_files": [
+      "pysnspd/effective.py",
+      "pysnspd/experimental/effective_bcs_functional.py",
+      "pysnspd/experimental/effective_bcs_kinetics.py",
+      "pysnspd/experimental/effective_bcs_kinetics_numba.py",
+      "pysnspd/experimental/effective_bcs_ports.py",
+      "pysnspd/experimental/effective_bcs_preparation.py",
+      "pysnspd/experimental/effective_coupled.py",
+      "pysnspd/experimental/trigger_window.py",
+      "pipelines/05_effective_photon_run.py",
+      "plot_pipelines/05_plot_effective_photon_run.py",
+      "sandbox/stage5_effective_validation/audit_runs.py"
+    ],
+    "new_tests": [
+      "tests/test_effective_bcs_functional.py",
+      "tests/test_effective_bcs_kinetics.py",
+      "tests/test_effective_bcs_ports.py",
+      "tests/test_effective_bcs_preparation.py",
+      "tests/test_effective_coupled.py",
+      "tests/test_effective_coupled_independent.py",
+      "tests/test_effective_midpoint_physical_norm.py",
+      "tests/test_effective_photon_runner.py",
+      "tests/test_effective_photon_visual.py",
+      "tests/test_effective_saved_audit.py",
+      "tests/test_trigger_window.py",
+      "tests/test_effective_frontend_transactions.py",
+      "tests/test_effective_local_energy_guard.py",
+      "tests/test_effective_session_eta.py",
+      "tests/test_effective_spatial_audit.py",
+      "tests/test_effective_vortex_diagnostics.py",
+      "tests/test_effective_report_display.py",
+      "tests/test_effective_comparison_window.py",
+      "tests/test_effective_window_evidence.py",
+      "tests/test_effective_physical_sensitivity.py",
+      "tests/test_effective_report_DC_evidence.py",
+      "tests/test_effective_bounded_guard_protocol.py",
+      "tests/test_effective_guard_protocol_dispatcher.py",
+      "tests/test_effective_width_guard_window.py",
+      "tests/test_effective_report_guard_wiring.py",
+      "tests/test_effective_spectral_observable_policy.py",
+      "tests/test_effective_spectral_policy_wiring.py",
+      "tests/test_effective_physical_gap_policy_integration.py",
+      "tests/test_effective_physical_gap_interpolation.py",
+      "tests/test_effective_fine_resource_transition.py",
+      "tests/test_effective_control_resource_transition.py"
+    ],
+    "final_document_sources": [
+      "sandbox/stage5_effective_validation/admission_policy.json",
+      "sandbox/stage5_effective_validation/build_final_report.py",
+      "sandbox/stage5_effective_validation/review_partial_physics.py",
+      "sandbox/stage5_effective_validation/preserve_checkpoint.py",
+      "sandbox/stage5_math_documents/Matematica_etapa5_principales_2D.tex",
+      "sandbox/stage5_math_documents/Matematica_etapa5_auxiliares.tex",
+      "sandbox/stage5_math_documents/Matematica_etapa5_precomputados.tex",
+      "sandbox/stage5_math_documents/build_math_documents.py",
+      "sandbox/stage5_math_documents/audit_thickness_bulk.py",
+      "sandbox/stage5_effective_validation/vortex_diagnostics.py",
+      "sandbox/stage5_effective_validation/admission_policy_history/20261011_v1.json",
+      "sandbox/stage5_effective_validation/admission_policy_history/20261011_temporal_control_pre_run_declaration.json",
+      "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_adoption.json",
+      "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_1_clock_roundoff_diagnostic.json",
+      "sandbox/stage5_effective_validation/report_builder_source_receipt.json",
+      "sandbox/stage5_effective_validation/comparison_window.py",
+      "sandbox/stage5_effective_validation/window_evidence.py",
+      "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_1_before_finite_windows.json",
+      "sandbox/stage5_effective_validation/admission_policy_history/20261011_finite_window_initial_declaration.json",
+      "sandbox/stage5_effective_validation/admission_policy_history/20261011_v2_2_finite_windows_adoption.json",
+      "sandbox/stage5_effective_validation/physical_sensitivity.py",
+      "sandbox/stage5_effective_validation/bounded_guard_protocol.py",
+      "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py",
+      "sandbox/stage5_effective_validation/width_guard_window_candidate.py",
+      "sandbox/stage5_effective_validation/spectral_observable_policy.py",
+      "sandbox/stage5_effective_validation/physical_gap_interpolation.py",
+      "sandbox/stage5_effective_validation/physical_gap_comparison.py",
+      "sandbox/stage5_effective_validation/exploratory_spectral_policy.py",
+      "sandbox/stage5_effective_validation/fine_resource_transition.py",
+      "sandbox/stage5_effective_validation/fine_resource_guard_adapter.py",
+      "sandbox/stage5_effective_validation/control_resource_transition.py",
+      "sandbox/stage5_effective_validation/num8_resource_equivalence.py"
+    ],
+    "validation_diagnostics": [
+      "sandbox/stage5_effective_validation/audit_local_step_energy.py",
+      "sandbox/stage5_effective_validation/compare_frozen_checkpoint.py",
+      "sandbox/stage5_effective_validation/probe_frozen_checkpoint.py",
+      "sandbox/stage5_effective_validation/profile_frozen_checkpoint.py",
+      "sandbox/stage5_effective_validation/profile_frozen_checkpoint_initial.py"
+    ],
+    "package_metadata": [
+      "pyproject.toml",
+      "pysnspd/__init__.py"
+    ]
+  },
+  "unchanged_tracked_dependencies_no_staging_needed": [
+    "pysnspd/experimental/effective_material.py",
+    "pysnspd/experimental/electrical_ports.py",
+    "pysnspd/experimental/kinetic_events.py",
+    "pysnspd/experimental/thermal_spatial_usadel.py",
+    "sandbox/stage4_core/parallel_runtime.py",
+    "pysnspd/plotting/style.py"
+  ],
+  "math_history_preservation_explicit_paths": {
+    "sandbox/stage5_math_documents/history/20261008_before_effective_bcs_20261011/Matematica_etapa5_auxiliares.tex": "fefb88d79079e761e41e8ec75d4df1d5fbc35bbd1a05726d0c6acfa60e8d4b0e",
+    "sandbox/stage5_math_documents/history/20261008_before_effective_bcs_20261011/Matematica_etapa5_precomputados.tex": "d2d65624442ae5a835e6c6b6d344e8cd571f470fc35b1b33af33323730351c08",
+    "sandbox/stage5_math_documents/history/20261008_before_effective_bcs_20261011/Matematica_etapa5_principales_2D.tex": "aa3cd0ace9f9b68f7a7fa4e0cf7824f6d6025fdefcae4f4b5da0fc8eea006e35",
+    "sandbox/stage5_math_documents/history/20261008_before_effective_bcs_20261011/build_math_documents.py": "71598fcd3a80eb3af248a39f2ec94bf9d969e5eee87a5c5631a98f10cdd0a42d",
+    "sandbox/stage5_math_documents/history/20261008_before_effective_bcs_20261011/mathematics_document_receipt.json": "7d6d7e308f02504b0c339cc80063da76f3ddea61bf72adf565c6c69d059227d9",
+    "sandbox/stage5_math_documents/history/20261008_before_effective_bcs_20261011/mathematics_visual_qa_20261008.json": "c2b2fa09327318f79f27b7b5c4130479551c5b23653d85692dde00ee76dc0934"
+  },
+  "optional_own_math_history_trace_explicit_paths": {
+    "sandbox/stage5_math_documents/history_20261011_before_guard_temporal_refinement/Matematica_etapa5_auxiliares.tex": "3e6f1bb66f27d332dc0095fd0258d7f0646c6f4347ce764f8937549ddd85bac3",
+    "sandbox/stage5_math_documents/history_20261011_before_practical_numeric_controls/Matematica_etapa5_auxiliares.tex": "2fb1b07da1363ee0b88c1761d5619f4684374aeba9f1238118c3b838ceea5973",
+    "sandbox/stage5_math_documents/mathematics_source_update_20261011.json": "6a382a90b5bab0709c7a085091d24e1f4e00603f3695134469968762927c0e12",
+    "sandbox/stage5_math_documents/guard_temporal_refinement_math_update_20261011.json": "c35497cb59a5fbee3a3a7ccddae812f6a7d5be07445f39d184901fb33e789495",
+    "sandbox/stage5_math_documents/practical_numerical_math_update_20261011.json": "24bfc724a73a6713c83ed5996ccfe53ad12f1898d5a17b149d5b0910c92768b9"
+  },
+  "publication_dependency_copies_not_yet_present": [
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/equivalence_certificate.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/implementation_equivalence/20261011_node_storage_exact_certificate.json",
+      "sha256": "a7e0170f5c4b295a89ede835d7c234f4ebda8919f4271d2098b60fee638f937f",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "a7e0170f5c4b295a89ede835d7c234f4ebda8919f4271d2098b60fee638f937f",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/root_application_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/implementation_equivalence/20261011_node_storage_application.json",
+      "sha256": "14390a5da13607439036268e17a6be73a0912e838374d8b1400628ecc5dcb4e2",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "14390a5da13607439036268e17a6be73a0912e838374d8b1400628ecc5dcb4e2",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_controls_20261011/checkpoint_transfer_v5_v6.py",
+      "intended_repo_path": "sandbox/stage5_effective_validation/checkpoint_transfer_v5_v6.py",
+      "sha256": "8f65a3ec53a2145d26ae39b206cac617839c3ec759da176c8f3a82b45874654c",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "8f65a3ec53a2145d26ae39b206cac617839c3ec759da176c8f3a82b45874654c",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_controls_20261011/numerical_lineage_v6.py",
+      "intended_repo_path": "sandbox/stage5_effective_validation/numerical_lineage_v6.py",
+      "sha256": "a753432bf4ab76881b586bb7426bb7bcef4df8bd7941d048794146dcbcc19848",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "a753432bf4ab76881b586bb7426bb7bcef4df8bd7941d048794146dcbcc19848",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_controls_20261011/test_checkpoint_transfer_v5_v6.py",
+      "intended_repo_path": "tests/test_checkpoint_transfer_v5_v6.py",
+      "sha256": "0f0b59e07745f33465ba053095616481f10eda40395f4e9470b335cbd77d9906",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "0f0b59e07745f33465ba053095616481f10eda40395f4e9470b335cbd77d9906",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_controls_20261011/test_numerical_lineage_v6.py",
+      "intended_repo_path": "tests/test_numerical_lineage_v6.py",
+      "sha256": "d0d3fe3fb1f183f62acc5ae59b2636e98a073645575fe7442ea78545d7c79615",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "d0d3fe3fb1f183f62acc5ae59b2636e98a073645575fe7442ea78545d7c79615",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_independent_v6_review_20261011/verification_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/implementation_equivalence/20261011_independent_exact_review.json",
+      "sha256": "a71d1006e1aec9aa5ee63c5071265605662ad113326b96ef5ae0051c17140248",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "a71d1006e1aec9aa5ee63c5071265605662ad113326b96ef5ae0051c17140248",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_independent_v6_review_20261011/five_transfers_initial_reconstruction_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/implementation_equivalence/20261011_independent_five_transfers.json",
+      "sha256": "d0f92687898451579435e04714d2ff78f9ad3a5a48f0faa05eb4e6d18a3154d3",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "d0f92687898451579435e04714d2ff78f9ad3a5a48f0faa05eb4e6d18a3154d3",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_finite_comparison_window_candidate_20261011/adoption_validation_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_finite_window_validation.json",
+      "sha256": "06730ac6aa96e4eaa9b34935a302c0f2457999aa5c332242dffc7af458f6dfe9",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Verify helper sibling imports/test paths after any relocation; preserve the original scratch version and SHA used for campaigns",
+      "verified_source_sha256": "06730ac6aa96e4eaa9b34935a302c0f2457999aa5c332242dffc7af458f6dfe9",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_finite_window_display_20261011/validation_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_report_finite_window_display_validation.json",
+      "sha256": "5addd124b09f4c756966055e4d49a00d1d63c9cd09e3d1e56b427e571423f1a1",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Display/source regression receipt only; no final scientific admission.",
+      "verified_source_sha256": "5addd124b09f4c756966055e4d49a00d1d63c9cd09e3d1e56b427e571423f1a1",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/publication_checks/publication_regression_summary.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/implementation_equivalence/20261011_applied_regression_summary.json",
+      "sha256": "efa0a844c07499830446157755379d6266cae0f83e1016bf4404745d62b4b4fe",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small implementation/package validation receipt; its preserved scratch inputs remain referenced. No physical admission or heavywheel copied.",
+      "verified_source_sha256": "efa0a844c07499830446157755379d6266cae0f83e1016bf4404745d62b4b4fe",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_wheel_optimized_v6_20261011/wheel_verification_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/implementation_equivalence/20261011_optimized_wheel_verification.json",
+      "sha256": "673993531fa95545ccb4049776130342f67a3a094b2ef713ecc1fbb12a103e1b",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small implementation/package validation receipt; its preserved scratch inputs remain referenced. No physical admission or heavywheel copied.",
+      "verified_source_sha256": "673993531fa95545ccb4049776130342f67a3a094b2ef713ecc1fbb12a103e1b",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_physical_sensitivity_source_20261011/validation_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_physical_sensitivity_source_validation.json",
+      "sha256": "2dfc58d6f79abccb95a31cef18c032bff407e98ccc29f51f4076572e446181f8",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small source/scope validation receipt only; no final physical admission.",
+      "verified_source_sha256": "2dfc58d6f79abccb95a31cef18c032bff407e98ccc29f51f4076572e446181f8",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_math_effective_scope_edits_20261011/receipt.json",
+      "intended_repo_path": "sandbox/stage5_math_documents/mathematics_effective_scope_receipt_20261011.json",
+      "sha256": "90a437bcaa3bfac277e795b767bcd5f6567002e3ab4ca39de16ea88adee4b6f6",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small source/scope validation receipt only; no final physical admission.",
+      "verified_source_sha256": "90a437bcaa3bfac277e795b767bcd5f6567002e3ab4ca39de16ea88adee4b6f6",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_DC_evidence_source_20261011/validation_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_report_DC_evidence_source_validation.json",
+      "sha256": "391d35f1ae882ea63f03b4772d837b5673f04f62a8f82d272fe68e8589950524",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small evidence only; preserve original scratch inputs and paths. This receipt never admits stage5 or replaces final photon controls.",
+      "verified_source_sha256": "391d35f1ae882ea63f03b4772d837b5673f04f62a8f82d272fe68e8589950524",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/current_v6_DC_evidence.json",
+      "intended_repo_path": "docs/implementation/stage5/effective_validation/current_v6_DC_evidence.json",
+      "sha256": "f4c26bb1b75abb61baa47227ec0c195fc57b9ebf2a7330e1114c0df2cdd6d721",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small evidence only; preserve original scratch inputs and paths. This receipt never admits stage5 or replaces final photon controls.",
+      "verified_source_sha256": "f4c26bb1b75abb61baa47227ec0c195fc57b9ebf2a7330e1114c0df2cdd6d721",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_audit_20261011/audit.json",
+      "intended_repo_path": "docs/implementation/stage5/effective_validation/current_v6_DC_audit.json",
+      "sha256": "ba2cb6ee065ed86ad2752bed33d0a6b9fc6b08d1339611ae214a2597330b6a7d",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small evidence only; preserve original scratch inputs and paths. This receipt never admits stage5 or replaces final photon controls.",
+      "verified_source_sha256": "ba2cb6ee065ed86ad2752bed33d0a6b9fc6b08d1339611ae214a2597330b6a7d",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_control_window_helper_independent_review_20261011/review_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_control_window_helper_independent_review.json",
+      "sha256": "cb7d64022462b060c6cb9af14a9437b45e8569fc31be85e12941648d7261afb2",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small evidence only; preserve original scratch inputs and paths. This receipt never admits stage5 or replaces final photon controls.",
+      "verified_source_sha256": "cb7d64022462b060c6cb9af14a9437b45e8569fc31be85e12941648d7261afb2",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_DC_evidence_source_20261011/initial_Tmax_source_validation.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_report_initial_Tmax_display_validation.json",
+      "sha256": "752145a9464feff6e74c407976c96136d9c425bc6586e3ff3f8193be3468a8e3",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source-only display validation; initial temperatures are not completed physical sensitivity admission.",
+      "verified_source_sha256": "752145a9464feff6e74c407976c96136d9c425bc6586e3ff3f8193be3468a8e3",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_DC_evidence_source_20261011/wavelength_scope_source_verification.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_report_wavelength_scope_validation.json",
+      "sha256": "aa0b872455230f224843f8cac275dfa9cd35360ee21a0730f410199aea0accb1",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source-only scope statement; final scientific certificate remains required.",
+      "verified_source_sha256": "aa0b872455230f224843f8cac275dfa9cd35360ee21a0730f410199aea0accb1",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_controls_20261011/tighten_local_energy_guard_v6_guard2b.py",
+      "intended_repo_path": "sandbox/stage5_effective_validation/guard_transition_helpers/tighten_local_energy_guard_v6_guard2b.py",
+      "sha256": "567d90a84c9c89083b37d759e8a07ee04377c69d57810cc19f402850ddf3de41",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "567d90a84c9c89083b37d759e8a07ee04377c69d57810cc19f402850ddf3de41",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_effective_controls_20261011/test_tighten_local_energy_guard_v6_guard2b.py",
+      "intended_repo_path": "sandbox/stage5_effective_validation/guard_transition_helpers/test_tighten_local_energy_guard_v6_guard2b.py",
+      "sha256": "2e13229c913709ade4449501d6ec78b16921f10903403b80d97d52cbde594dee",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "2e13229c913709ade4449501d6ec78b16921f10903403b80d97d52cbde594dee",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_contingency_plan_20261011/root_prospective_decision_before_stop.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_guard2_prospective_root_decision.json",
+      "sha256": "4053e1a15560af4a079bae919de86081b9344e4c64492f7ef44755507afd74f5",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "4053e1a15560af4a079bae919de86081b9344e4c64492f7ef44755507afd74f5",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_contingency_plan_20261011/final_stop_and_anchor_declaration.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_guard2_final_anchor.json",
+      "sha256": "fbe65cb96af882a82a1649f5dee6cb7dd80584a691abc2b16109df0fa556ec80",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "fbe65cb96af882a82a1649f5dee6cb7dd80584a691abc2b16109df0fa556ec80",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_contingency_plan_20261011/root_guard2b_helper_correction_approval.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_guard2b_helper_approval.json",
+      "sha256": "ca185b92256360d92275681e008fb2e36e518bc796d929cfc3de748aa22c2db5",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "ca185b92256360d92275681e008fb2e36e518bc796d929cfc3de748aa22c2db5",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/root_integration_additions_approval.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_bounded_guard_root_integration_approval.json",
+      "sha256": "ce301b90f221634b706f367ef43c97db34ee0c138a506090f6968d1193be0b01",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "ce301b90f221634b706f367ef43c97db34ee0c138a506090f6968d1193be0b01",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/promotion_copy_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_bounded_guard_promotion.json",
+      "sha256": "d20c7343186f10244ac1fa3904cc098dccb7e3e0471bda3befe448c1fae6f1a2",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "d20c7343186f10244ac1fa3904cc098dccb7e3e0471bda3befe448c1fae6f1a2",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/independent_scientific_review_pragmatic_closure_v1.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_bounded_guard_independent_scientific_review.json",
+      "sha256": "2d5ee0de8c6eaef958aac41bb1ad28e2b053c91fc2ddc4e7a8465917b61a0f22",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "2d5ee0de8c6eaef958aac41bb1ad28e2b053c91fc2ddc4e7a8465917b61a0f22",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/memory_backend_dispatcher_read_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_bounded_guard_dispatcher_read_review.json",
+      "sha256": "bb5527efc1118a2ead9f2e1ad343cf65f41400135dd46b0aecf33b13e0514124",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "bb5527efc1118a2ead9f2e1ad343cf65f41400135dd46b0aecf33b13e0514124",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/dispatcher_candidate_tests_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_bounded_guard_dispatcher_tests.json",
+      "sha256": "a1a8bceef7defd712874176af8e8e51f9fdb120898c6ad1e62ba103716041807",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "a1a8bceef7defd712874176af8e8e51f9fdb120898c6ad1e62ba103716041807",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_nominal775_single_step_precision_20261011/receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_guard2_frozen_step_precision.json",
+      "sha256": "e0cc5fe2b09c211d50c44214aea65b6a081a32d36759f2bba0beabcb8c6cc0e1",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "e0cc5fe2b09c211d50c44214aea65b6a081a32d36759f2bba0beabcb8c6cc0e1",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_math_guard_timeline_20261011/receipt_v2.json",
+      "intended_repo_path": "sandbox/stage5_math_documents/mathematics_guard_timeline_receipt_20261011.json",
+      "sha256": "7c20e9a50037f36046fcac915567adb75f5484a74de21e88b18cbb78ab78f093",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "7c20e9a50037f36046fcac915567adb75f5484a74de21e88b18cbb78ab78f093",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_publication_proposals_20261011/commands_proposal_fresh_guard2b_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_commands_fresh_guard2b.json",
+      "sha256": "ecb712a8226555c5eaaba3d3c0eb20dce7d73920c41986700878e22adfad2ff0",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small reviewed analysis/provenance source only. Preserve scratch original and its SHA-bound helper dependencies; no scientific stage5 admission or blanket staging.",
+      "verified_source_sha256": "ecb712a8226555c5eaaba3d3c0eb20dce7d73920c41986700878e22adfad2ff0",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_guard_timeline_20261011/root_wiring_review_approval.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_report_guard_wiring_root_approval.json",
+      "sha256": "83b7b5beec7d045dcf1289d3808bf7419f2cdb279c2062ff7e40d9f0401e8452",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "83b7b5beec7d045dcf1289d3808bf7419f2cdb279c2062ff7e40d9f0401e8452",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_guard_timeline_20261011/promotion_copy_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_report_guard_wiring_promotion.json",
+      "sha256": "b4f19b0f9cacbdd07c174c835164469f891b5a56b8139215aaf60f1f6762544b",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "b4f19b0f9cacbdd07c174c835164469f891b5a56b8139215aaf60f1f6762544b",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_guard_timeline_20261011/promoted_focused_tests_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_report_guard_wiring_tests.json",
+      "sha256": "bb361c8757035758caac823e8b24a5c6bc0809a750d35e88c5bbcd2bf743715f",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "bb361c8757035758caac823e8b24a5c6bc0809a750d35e88c5bbcd2bf743715f",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_mesh_scope_review_20261011/root_prospective_spectral_policy_decision.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_spectral_observable_policy_decision.json",
+      "sha256": "8c62658c36336a2e19cb0d37bef6b650cf5d44da734e586d3fe1d11b1ce6ed33",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "8c62658c36336a2e19cb0d37bef6b650cf5d44da734e586d3fe1d11b1ce6ed33",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/root_policy_source_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_spectral_policy_source_root_approval.json",
+      "sha256": "8bd8124ce1f4a57c7cc1deb07d3b1ced5738a4663acb4295cfdcf3e3b07d7002",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "8bd8124ce1f4a57c7cc1deb07d3b1ced5738a4663acb4295cfdcf3e3b07d7002",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/memory_backend_independent_read_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_spectral_policy_independent_read_review.json",
+      "sha256": "17645157eb07a4965e0d0952d4a6033cd5f8556cd2aa5c8f1b9ea09d57c39d82",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "17645157eb07a4965e0d0952d4a6033cd5f8556cd2aa5c8f1b9ea09d57c39d82",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/promotion_copy_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_spectral_policy_promotion.json",
+      "sha256": "d55246099d171945385015f69745dca6188417354ffb0c59b4dd6f096bfd76b4",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "d55246099d171945385015f69745dca6188417354ffb0c59b4dd6f096bfd76b4",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/promoted_portable_tests_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_spectral_policy_portable_tests.json",
+      "sha256": "07ef438e31ddc186acbb84200b9861b0ce636cf9b31035a622b0ffc9cbfea96b",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "07ef438e31ddc186acbb84200b9861b0ce636cf9b31035a622b0ffc9cbfea96b",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/candidate_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_spectral_policy_original_candidate_validation.json",
+      "sha256": "f73de50fe427044a4fe6fcbfedada1054eedd78602a7adb99cc06aafed7005d5",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Reviewed source/policy/test evidence only; original historical failures and scratch inputs remain intact. No model or stage5 admission.",
+      "verified_source_sha256": "f73de50fe427044a4fe6fcbfedada1054eedd78602a7adb99cc06aafed7005d5",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/memory_backend_read_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_spectral_wiring_independent_read_review.json",
+      "sha256": "a762d2b3b5a1dad570b9f45c0be061082751fc5fa10ac4fdeb0af1c230b58450",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Root-approved analysis wiring only; frozen baseline/13 physical sources remain unchanged. Original failures, original completion, finite-window manual coverage and stage5 gate remain visible.",
+      "verified_source_sha256": "a762d2b3b5a1dad570b9f45c0be061082751fc5fa10ac4fdeb0af1c230b58450",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/root_wiring_approval.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_spectral_wiring_root_approval.json",
+      "sha256": "2d3cb87fe703f33feb3144ad709927a507643873af8bcc16d3b71190f1bfa7c5",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Root-approved analysis wiring only; frozen baseline/13 physical sources remain unchanged. Original failures, original completion, finite-window manual coverage and stage5 gate remain visible.",
+      "verified_source_sha256": "2d3cb87fe703f33feb3144ad709927a507643873af8bcc16d3b71190f1bfa7c5",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/promotion_copy_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_spectral_wiring_promotion.json",
+      "sha256": "dab8bfd55dca7d6ccac030b6d44b2f3e32ff3aace196eec99b67df6f4d73c76d",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Root-approved analysis wiring only; frozen baseline/13 physical sources remain unchanged. Original failures, original completion, finite-window manual coverage and stage5 gate remain visible.",
+      "verified_source_sha256": "dab8bfd55dca7d6ccac030b6d44b2f3e32ff3aace196eec99b67df6f4d73c76d",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/promoted_focused_tests_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_spectral_wiring_portable_tests.json",
+      "sha256": "cf93567f0f7a70813cd5ee6bfcbfa61161c18cb200bd1bdb1305a1e9d2eb88b7",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Root-approved analysis wiring only; frozen baseline/13 physical sources remain unchanged. Original failures, original completion, finite-window manual coverage and stage5 gate remain visible.",
+      "verified_source_sha256": "cf93567f0f7a70813cd5ee6bfcbfa61161c18cb200bd1bdb1305a1e9d2eb88b7",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_math_computational_classification_20261011/receipt.json",
+      "intended_repo_path": "sandbox/stage5_math_documents/publication_checks/20261011_runtime_precompute_classification_receipt.json",
+      "sha256": "0623f1dea8c193a47cf8abf240117c5c75c2f57aeca04180812044eb9eb40bdc",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Only exact equation placement/labels changed; runtime expressions moved from precompute to auxiliary, preserved as recorded. No RHS/PDF/admission change.",
+      "verified_source_sha256": "0623f1dea8c193a47cf8abf240117c5c75c2f57aeca04180812044eb9eb40bdc",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_publication_proposals_20261011/commands_proposal_tmpdir_spectral_scope_receipt_v2.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_commands_tmpdir_spectral_scope_visual_affinity.json",
+      "sha256": "2c3a57f6b9de9bab2d27faa23380919f65ea1c79c25254fa6c97c6bbf8f8f2f4",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Documentation commands only. Real resource planner verifies visual coordinator20 under inherited4,5,20,21; no render/evolution/code change. All proposal command temporary paths are scratch.",
+      "verified_source_sha256": "2c3a57f6b9de9bab2d27faa23380919f65ea1c79c25254fa6c97c6bbf8f8f2f4",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_math_temporal_anchor_actual_20261011/receipt.json",
+      "intended_repo_path": "sandbox/stage5_math_documents/publication_checks/20261011_actual_temporal_guard_anchor_receipt.json",
+      "sha256": "a36568650a65cbfdad2189e881e7a73d8b03dc4af81f1f948ad8c44e870e1f24",
+      "status": "VALIDATED_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Only actual temporal guard anchor22.252500000000108ps replaces the pending symbol; policy/nominal anchor/physical RHS unchanged. No PDF.",
+      "verified_source_sha256": "a36568650a65cbfdad2189e881e7a73d8b03dc4af81f1f948ad8c44e870e1f24",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_exploratory_spatial_budget_candidate_20261011/root_prospective_exploratory_spatial_decision.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/admission_policy_history/20261011_exploratory_spectral_spatial_root_decision.json",
+      "sha256": "e683151e6e7b678d95eb6c133391b2ea84ca2ba81cd5a54b1a21cb9f16624e23",
+      "status": "REVIEWED_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small analysis/math scientific provenance only; source promotion and final admission remain separately gated. Postprocessing formulas belong to report/certificate, not a fourth mathematicalPDF.",
+      "verified_source_sha256": "e683151e6e7b678d95eb6c133391b2ea84ca2ba81cd5a54b1a21cb9f16624e23",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/candidate_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_physical_gap_combined_candidate_review.json",
+      "sha256": "8b37c691431ba9bae69b3307993218b4ff672ef17cc5356d444b26525a109a44",
+      "status": "REVIEWED_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small analysis/math scientific provenance only; source promotion and final admission remain separately gated. Postprocessing formulas belong to report/certificate, not a fourth mathematicalPDF.",
+      "verified_source_sha256": "8b37c691431ba9bae69b3307993218b4ff672ef17cc5356d444b26525a109a44",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/memory_backend_read_only_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_physical_gap_memory_read_review.json",
+      "sha256": "829c9db0233df1a0fde9301bf5d48f9185120033cba660fe6adc4428a7afa344",
+      "status": "REVIEWED_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small analysis/math scientific provenance only; source promotion and final admission remain separately gated. Postprocessing formulas belong to report/certificate, not a fourth mathematicalPDF.",
+      "verified_source_sha256": "829c9db0233df1a0fde9301bf5d48f9185120033cba660fe6adc4428a7afa344",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_math_observable_policy_diff_candidate_20261011/root_math_runtime_classification_promotion.json",
+      "intended_repo_path": "sandbox/stage5_math_documents/publication_checks/20261011_runtime_only_math_root_promotion.json",
+      "sha256": "aa918a5bcb7a4d7f9679f6743ad1825f856f660266a1eb592cf8d3a61320eb6d",
+      "status": "REVIEWED_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small analysis/math scientific provenance only; source promotion and final admission remain separately gated. Postprocessing formulas belong to report/certificate, not a fourth mathematicalPDF.",
+      "verified_source_sha256": "aa918a5bcb7a4d7f9679f6743ad1825f856f660266a1eb592cf8d3a61320eb6d",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_math_observable_policy_diff_candidate_20261011/postprocessing_equations_for_report_v3.tex",
+      "intended_repo_path": "sandbox/stage5_effective_validation/postprocessing_equations_for_report.tex",
+      "sha256": "eed0934df015c67407494eae1c5351fcb187ff19621024541136c523a54c8fca",
+      "status": "REVIEWED_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Small analysis/math scientific provenance only; source promotion and final admission remain separately gated. Postprocessing formulas belong to report/certificate, not a fourth mathematicalPDF.",
+      "verified_source_sha256": "eed0934df015c67407494eae1c5351fcb187ff19621024541136c523a54c8fca",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/candidate_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_fine_resource_candidate.json",
+      "sha256": "726642a528be98a6be3dbdc1829dd2f729be5242e777e676ec659a222dbd8591",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "726642a528be98a6be3dbdc1829dd2f729be5242e777e676ec659a222dbd8591",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/root_real_immutable_arrays_transition_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_fine_resource_real_array_root_review.json",
+      "sha256": "52af1025a81074d26866f1d5c66704c19ca63c0d0f8999fc606c6e3d48a4c356",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "52af1025a81074d26866f1d5c66704c19ca63c0d0f8999fc606c6e3d48a4c356",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/pragmatic_closure_corrected_resource_review_v2.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_fine_resource_corrected_math_review.json",
+      "sha256": "c31176fd0d1cc469b21f13cb24af636e031f7fec735de11f01050e238207cf4b",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "c31176fd0d1cc469b21f13cb24af636e031f7fec735de11f01050e238207cf4b",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/memory_backend_final_schema_lineage_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_fine_resource_corrected_schema_lineage_review.json",
+      "sha256": "f0eea7201770732f3e27715b5ecbd55a6182218fd3c16432af1daa9b9d95c835",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "f0eea7201770732f3e27715b5ecbd55a6182218fd3c16432af1daa9b9d95c835",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/root_exact_source_promotion.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_fine_resource_root_source_promotion.json",
+      "sha256": "627715a3baab39bea7b9dc95d05f9d3daa1b1569bb505fe2d2b5261cd643af9a",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "627715a3baab39bea7b9dc95d05f9d3daa1b1569bb505fe2d2b5261cd643af9a",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_fine_resource_transition_candidate_20261011/root_repository_pytest_integration_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_fine_resource_repository_pytest.json",
+      "sha256": "7ee27e2a483e5ff6373dd4be3b99be33adc7e1ed2b2161ab2ac089efc4ac7ec4",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "7ee27e2a483e5ff6373dd4be3b99be33adc7e1ed2b2161ab2ac089efc4ac7ec4",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_pagination_candidate_20261011/root_exact_layout_source_promotion.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_report_pagination_root_source_promotion.json",
+      "sha256": "d6c778ce920551716f61a1af44696a8545524aaef8d3921a9a98bad0fbad8815",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "d6c778ce920551716f61a1af44696a8545524aaef8d3921a9a98bad0fbad8815",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_report_pagination_candidate_20261011/root_repository_report_tests.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_report_pagination_repository_tests.json",
+      "sha256": "dce01410a2b6f5345e5f06f2a9da07c4687e465bdcf10e83e661b9ddc3c2c122",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "dce01410a2b6f5345e5f06f2a9da07c4687e465bdcf10e83e661b9ddc3c2c122",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/root_exact_source_promotion.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_physical_gap_root_source_promotion.json",
+      "sha256": "4623309e421713810950eb745c1a6c9dd3d93b7580f7962c1d062fc2934e396c",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "4623309e421713810950eb745c1a6c9dd3d93b7580f7962c1d062fc2934e396c",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/root_repository_focused_tests.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_physical_gap_repository_tests.json",
+      "sha256": "10f8313a556284ba9f2e8d5e9c364998927efa48f8fe761094f2aed924809d35",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Source/analysis validation only; corrected28-key schema review supersedes prior uncorrected fixture reviews. No physical resource transition, final model admission or PDF.",
+      "verified_source_sha256": "10f8313a556284ba9f2e8d5e9c364998927efa48f8fe761094f2aed924809d35",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/candidate_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_closed_control_resource_source_candidate.json",
+      "sha256": "c2d47399e381cdc507ad5a309efa9819c7884d617aad2aa62dbe6c83709382c7",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Analysis source/contract validation only. Resource capabilities NOT_USED; no real transition, Num8 evidence, physical admission or PDF.",
+      "verified_source_sha256": "c2d47399e381cdc507ad5a309efa9819c7884d617aad2aa62dbe6c83709382c7",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/memory_backend_final_closed_resource_read_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_closed_control_resource_memory_read_review.json",
+      "sha256": "4b19c6171193864ff5e24b3d2456c211e298386880f232a24c957a5494e92390",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Analysis source/contract validation only. Resource capabilities NOT_USED; no real transition, Num8 evidence, physical admission or PDF.",
+      "verified_source_sha256": "4b19c6171193864ff5e24b3d2456c211e298386880f232a24c957a5494e92390",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/pragmatic_closure_independent_read_review.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_closed_control_resource_math_read_review.json",
+      "sha256": "046d6ec9bb9bd8762052881109395357bd364538965b5ed3e2144282162a5d8d",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Analysis source/contract validation only. Resource capabilities NOT_USED; no real transition, Num8 evidence, physical admission or PDF.",
+      "verified_source_sha256": "046d6ec9bb9bd8762052881109395357bd364538965b5ed3e2144282162a5d8d",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/root_exact_source_promotion.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_closed_control_resource_root_source_promotion.json",
+      "sha256": "14c8738e67dc0c004ebe413626681e48745ad8aa2fe8554209c0083b46ff2a6f",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Analysis source/contract validation only. Resource capabilities NOT_USED; no real transition, Num8 evidence, physical admission or PDF.",
+      "verified_source_sha256": "14c8738e67dc0c004ebe413626681e48745ad8aa2fe8554209c0083b46ff2a6f",
+      "destination_exists": false
+    },
+    {
+      "source_path": "/home/jdiaz/scratch/stage5_control_resource_transition_candidate_20261011/root_repository_pytest_integration_receipt.json",
+      "intended_repo_path": "sandbox/stage5_effective_validation/publication_checks/20261011_closed_control_resource_repository_integration_tests.json",
+      "sha256": "a1d4287a9c36be044db80ecb25cc5c2e9fe7fd99ab5ac199c7257606118092e3",
+      "status": "ROOT_REVIEWED_SMALL_EVIDENCE_NOT_COPIED_OR_STAGED",
+      "relocation_note": "Analysis source/contract validation only. Resource capabilities NOT_USED; no real transition, Num8 evidence, physical admission or PDF.",
+      "verified_source_sha256": "a1d4287a9c36be044db80ecb25cc5c2e9fe7fd99ab5ac199c7257606118092e3",
+      "destination_exists": false
+    }
+  ],
+  "do_not_stage_current_tracked_changes_or_deletions": [
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/A_microscopia_y_funcional_v0_2.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/B_cinetica_energia_y_temperaturas_v0_2.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/C_condensado_corriente_y_senal_v0_2.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/D_sintesis_plan_y_verificaciones_v0_2.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/README.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/A_01_energia_comun.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/A_01_energia_comun.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/A_02_corriente_uniforme.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/A_02_corriente_uniforme.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/A_03_gap_espectral.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/A_03_gap_espectral.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_01_reacciones_balance.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_01_reacciones_balance.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_02_energia_temperatura.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_02_energia_temperatura.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_03_misma_energia.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_03_misma_energia.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_04_limite_normal.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/B_04_limite_normal.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/C_01_coordenadas_energia.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/C_01_coordenadas_energia.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/C_02_celda_balance.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/C_02_celda_balance.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/C_03_circuito_prescrito.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/figuras/C_03_circuito_prescrito.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/latex/A_microscopia_y_funcional_v0_2.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/latex/B_cinetica_energia_y_temperaturas_v0_2.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/latex/C_condensado_corriente_y_senal_v0_2.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/latex/D_sintesis_plan_y_verificaciones_v0_2.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/latex/header.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/latex/sources.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/A_ramas_uniformes.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/A_resumen.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/B_distribuciones.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/B_energia_temperatura.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/B_limite_normal.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/B_paquetes.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/B_potencia_normal.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/B_reacciones.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/B_verificaciones.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/C_celda_balance.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/C_checks.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/C_circuito_prescrito.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/C_coordenadas_energia.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/QA_estructura.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_2/verificaciones/manifiesto_v0_2.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/A_microscopia_y_funcional_v0_3.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/B_cinetica_energia_y_temperaturas_v0_3.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/C_condensado_corriente_y_senal_v0_3.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/D_sintesis_plan_y_verificaciones_v0_3.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/E_cuaderno_de_aprendizaje_v0_3.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/README.md"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/A_01_energia_comun.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/A_01_energia_comun.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/A_03_gap_espectral.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/A_03_gap_espectral.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_01_reacciones_balance.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_01_reacciones_balance.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_02_energia_temperatura.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_02_energia_temperatura.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_03_misma_energia.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_03_misma_energia.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_04_limite_normal.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_04_limite_normal.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_05_burbuja_y_retencion.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/B_05_burbuja_y_retencion.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_01_coordenadas_energia.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_01_coordenadas_energia.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_02_celda_balance.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_02_celda_balance.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_03_circuito_prescrito.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_03_circuito_prescrito.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_04_corriente_uniforme.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/C_04_corriente_uniforme.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_01_campos_ocupacion.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_01_campos_ocupacion.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_02_nambu_spin.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_02_nambu_spin.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_03_variacion_envolvente.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_03_variacion_envolvente.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_04_electron_hueco.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_04_electron_hueco.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_05_modos_dos.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_05_modos_dos.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_06_dfpt_a_cinetica.pdf"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/figuras/E_06_dfpt_a_cinetica.png"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/latex/A_microscopia_y_funcional_v0_3.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/latex/B_cinetica_energia_y_temperaturas_v0_3.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/latex/C_condensado_corriente_y_senal_v0_3.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/latex/D_sintesis_plan_y_verificaciones_v0_3.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/latex/E_cuaderno_de_aprendizaje_v0_3.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/latex/header.tex"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/latex/sources.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/A_ramas_uniformes.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/A_resumen.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/B_distribuciones.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/B_energia_temperatura.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/B_limite_normal.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/B_paquetes.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/B_potencia_normal.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/B_reacciones.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/B_verificaciones.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/C_celda_balance.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/C_checks.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/C_circuito_prescrito.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/C_coordenadas_energia.csv"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/E_ejemplos_verificados.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/QA_estructura.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/QA_visual.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/QA_visual_A.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/QA_visual_B.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/QA_visual_C.json"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/compilacion/A_microscopia_y_funcional_v0_3.log"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/compilacion/B_cinetica_energia_y_temperaturas_v0_3.log"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/compilacion/C_condensado_corriente_y_senal_v0_3.log"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/compilacion/D_sintesis_plan_y_verificaciones_v0_3.log"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/compilacion/E_cuaderno_de_aprendizaje_v0_3.log"
+    },
+    {
+      "status": " D",
+      "path": "docs/modelo_v0_3/verificaciones/manifiesto_v0_3.json"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_2/A_microscopia_y_funcional_v0_2.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_2/B_cinetica_energia_y_temperaturas_v0_2.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_2/C_condensado_corriente_y_senal_v0_2.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_2/D_sintesis_plan_y_verificaciones_v0_2.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_2/pysnspd_documentos_v0_2.zip"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_3/A_microscopia_y_funcional_v0_3.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_3/B_cinetica_energia_y_temperaturas_v0_3.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_3/C_condensado_corriente_y_senal_v0_3.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_3/D_sintesis_plan_y_verificaciones_v0_3.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_3/E_cuaderno_de_aprendizaje_v0_3.pdf"
+    },
+    {
+      "status": " D",
+      "path": "output/pdf/modelo_v0_3/pysnspd_documentos_v0_3.zip"
+    },
+    {
+      "status": " M",
+      "path": "AGENTS.md",
+      "reason": "Preexisting mixed/history edits outside active publication paths; preserve unchanged and unstaged. MODELO will be replaced only after exact history preservation and final root promotion."
+    },
+    {
+      "status": " M",
+      "path": "docs/implementation/MODELO_VIGENTE.md",
+      "reason": "Preexisting mixed/history edits outside active publication paths; preserve unchanged and unstaged. MODELO will be replaced only after exact history preservation and final root promotion."
+    },
+    {
+      "status": " M",
+      "path": "docs/implementation/stage5/README.md",
+      "reason": "Preexisting mixed/history edits outside active publication paths; preserve unchanged and unstaged. MODELO will be replaced only after exact history preservation and final root promotion."
+    },
+    {
+      "status": " M",
+      "path": "docs/implementation/stage5/prephoton_dc_20260924/README.md",
+      "reason": "Preexisting mixed/history edits outside active publication paths; preserve unchanged and unstaged. MODELO will be replaced only after exact history preservation and final root promotion."
+    }
+  ],
+  "do_not_stage_untracked_historical_or_unrelated": [
+    "docs/implementation/stage1/review/independent_vacuum_reference.log",
+    "docs/implementation/stage1/review/low_energy_regulator_reference.log",
+    "docs/implementation/stage1/review/verify_query_contract.log",
+    "docs/implementation/stage1_closure/pytest_final.log",
+    "docs/implementation/stage1_r2/pytest_final.log",
+    "docs/implementation/stage2/complementary_rhs_pilot_01.json",
+    "docs/implementation/stage2/pytest_final.log",
+    "docs/implementation/stage2/recovery_20260921/pytest_final.log",
+    "docs/implementation/stage2/resume_20260921/pytest_final.log",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/CAPTIONS.md",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_000_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_000_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_001_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_001_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_003_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_003_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_007_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_007_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_015_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/mode_015_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/plot_manifest.json",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/port_admittance_and_readout.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/port_admittance_and_readout.png",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/port_balance_diagnostics.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/figures/uniform_eta002/port_balance_diagnostics.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/derived_metadata.json",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/CAPTIONS.md",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_000_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_000_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_001_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_001_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_003_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_003_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_007_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_007_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_015_coupling.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/mode_015_coupling.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/plot_manifest.json",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/port_admittance_and_readout.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/port_admittance_and_readout.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/port_balance_diagnostics.pdf",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/figures/port_balance_diagnostics.png",
+    "docs/implementation/stage4/coupled_closure_20260924/uniform_results/derived_eta002/results_for_plot.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/GEMINGA_COMMANDS_PRESENT.md",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/GEMINGA_COMMANDS_PRESENT_20261008_initial_rhs_used.md",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/analysis.md",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/audit_result.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/closure_decision.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/command_notebook_receipt.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/decision_update_receipt.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/final_work_receipt.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/independent_current_completion.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/independent_review.md",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/next_joint_rhs_contract.md",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/pipeline_review_receipt.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/report_pdf_receipt.json",
+    "docs/implementation/stage5/completed_photon_rhs_20261008/report_visual_qa.json",
+    "docs/implementation/stage5/continuation_20261005/README.md",
+    "docs/implementation/stage5/continuation_20261005/experimental_trigger_scale.md",
+    "docs/implementation/stage5/continuation_20261005/thermal_internal_energy.md",
+    "docs/implementation/stage5/continuation_20261005/transient_contract.json",
+    "docs/implementation/stage5/continuation_20261005/validation.json",
+    "docs/implementation/stage5/dc_admission_20261005/README.md",
+    "docs/implementation/stage5/dc_admission_20261005/verification.json",
+    "docs/implementation/stage5/dc_admission_20261005/workflow_result.json",
+    "docs/implementation/stage5/final_review_20261008/GEMINGA_COMMANDS_PRESENT.md",
+    "docs/implementation/stage5/final_review_20261008/GEMINGA_COMMANDS_PRESENT_20261008_used.md",
+    "docs/implementation/stage5/final_review_20261008/analysis.md",
+    "docs/implementation/stage5/final_review_20261008/audit_result.json",
+    "docs/implementation/stage5/final_review_20261008/closure_decision.json",
+    "docs/implementation/stage5/final_review_20261008/command_notebook_receipt.json",
+    "docs/implementation/stage5/final_review_20261008/commands_used.json",
+    "docs/implementation/stage5/final_review_20261008/initial_photon_rhs_dryrun.json",
+    "docs/implementation/stage5/final_review_20261008/initial_photon_rhs_dryrun_pre_docfix.json",
+    "docs/implementation/stage5/final_review_20261008/initial_photon_rhs_final_integrity.json",
+    "docs/implementation/stage5/final_review_20261008/initial_photon_rhs_plan.json",
+    "docs/implementation/stage5/final_review_20261008/initial_photon_rhs_preparation_receipt.json",
+    "docs/implementation/stage5/final_review_20261008/integrated_validation.json",
+    "docs/implementation/stage5/final_review_20261008/report_pdf_receipt.json",
+    "docs/implementation/stage5/final_review_20261008/scratch_migration_receipt.json",
+    "docs/implementation/stage5/final_review_20261008/storage_policy.json",
+    "docs/implementation/stage5/final_review_20261008/work_receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/CURRENT_PREPARATIONS.json",
+    "docs/implementation/stage5/photon_readiness_20261008/decisions_20261008.json",
+    "docs/implementation/stage5/photon_readiness_20261008/exploratory_choices.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_1550_sigma_1p0/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_1550_variance_0p5_v2_uv24/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_1550_variance_1p0_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_1550_variance_1p0_v2_uv24/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_1550_variance_2p0_v2_uv24/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_775_sigma_1p0/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_775_variance_0p5_v2_uv24/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_775_variance_1p0_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_775_variance_1p0_v2_uv24/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/fd_be_775_variance_2p0_v2_uv24/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_1550_exploratory_manifest/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_1550_manifest/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_1550_prepared/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_1550_prepared_uv24/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_775_exploratory_manifest/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_775_manifest/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_775_prepared/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_775_prepared_uv24/run_contract.json",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_initialization_plots_v2_uv24/photon_source_and_initial_temperature.pdf",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_initialization_plots_v2_uv24/photon_source_and_initial_temperature.png",
+    "docs/implementation/stage5/photon_readiness_20261008/photon_initialization_plots_v2_uv24/plots.json",
+    "docs/implementation/stage5/photon_readiness_20261008/snapshot_and_photon_readiness.md",
+    "docs/implementation/stage5/photon_readiness_20261008/source_1550_sigma_0p75/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_1550_sigma_1p0/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_1550_sigma_1p25/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_1550_variance_0p5_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_1550_variance_1p0_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_1550_variance_2p0_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_775_sigma_0p75/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_775_sigma_1p0/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_775_sigma_1p25/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_775_variance_0p5_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_775_variance_1p0_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_775_variance_2p0_v2/receipt.json",
+    "docs/implementation/stage5/photon_readiness_20261008/source_and_observation_contract.md",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_archive_dc215_l160_h5/accepted_trace.jsonl",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_archive_dc215_l160_h5/archive.json",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_archive_dc215_l160_h5/physical_metrics.json",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_archive_dc215_l160_h5/snapshot_index.json",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/gap_change_ppm_01.pdf",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/gap_change_ppm_01.png",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/gap_difference_meV_01.pdf",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/gap_difference_meV_01.png",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/gap_meV_01.pdf",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/gap_meV_01.png",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/plots.json",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/potential_uV_01.pdf",
+    "docs/implementation/stage5/photon_readiness_20261008/ss_maps_dc215_l160_h5/potential_uV_01.png",
+    "docs/implementation/stage5/photon_readiness_20261008/stationary_nambu_plots/plots.json",
+    "docs/implementation/stage5/photon_readiness_20261008/stationary_nambu_plots/stationary_current_and_virtual_work.pdf",
+    "docs/implementation/stage5/photon_readiness_20261008/stationary_nambu_plots/stationary_current_and_virtual_work.png",
+    "docs/implementation/stage5/photon_readiness_20261008/stationary_nambu_plots/stationary_virtual_energy_maps.pdf",
+    "docs/implementation/stage5/photon_readiness_20261008/stationary_nambu_plots/stationary_virtual_energy_maps.png",
+    "docs/implementation/stage5/photon_readiness_20261008/user_decisions_20261008.json",
+    "docs/implementation/stage5/photon_readiness_20261008/validation.json",
+    "docs/implementation/stage5/photon_readiness_20261008/validation_final_20261008.json",
+    "docs/implementation/stage5/review_20261008/GEMINGA_COMMANDS_PRESENT_20261005_used.md",
+    "docs/implementation/stage5/review_20261008/command_notebook_receipt.json",
+    "docs/implementation/stage5/review_20261008/dc_revalidation.json",
+    "docs/implementation/stage5/review_20261008/integrated_validation_complete.json",
+    "docs/implementation/stage5/review_20261008/integrated_validation_final.json",
+    "docs/implementation/stage5/review_20261008/integrated_validation_initial.json",
+    "docs/implementation/stage5/review_20261008/integrated_validation_second.json",
+    "docs/implementation/stage5/review_20261008/tmp_archive_plan.json",
+    "docs/implementation/stage5/review_20261008/tmp_archive_receipt.json",
+    "docs/implementation/stage5/review_20261008/work_receipt.json",
+    "docs/implementation/stage5/rhs_balance_20261005/dc_recheck.json",
+    "docs/implementation/stage5/rhs_balance_20261005/energy_campaign_preflight.json",
+    "docs/implementation/stage5/rhs_balance_20261005/matrix_final_preflight.json",
+    "docs/implementation/stage5/rhs_balance_20261005/matrix_rhs_snapshot_audit.json",
+    "docs/implementation/stage5/rhs_balance_20261005/matrix_rhs_snapshot_refined.json",
+    "docs/implementation/stage5/rhs_balance_20261005/matrix_rhs_snapshot_uv.json",
+    "docs/implementation/stage5/rhs_balance_20261005/notebook_receipt.json",
+    "docs/implementation/stage5/rhs_balance_20261005/report/Informe_etapa5_RHS_balance.aux",
+    "docs/implementation/stage5/rhs_balance_20261005/report/Informe_etapa5_RHS_balance.log",
+    "docs/implementation/stage5/rhs_balance_20261005/report/Informe_etapa5_RHS_balance.pdf",
+    "docs/implementation/stage5/rhs_balance_20261005/report/Informe_etapa5_RHS_balance.tex",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/01_gap_physical.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/02_fixed_inductance.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/03_dark_circuit_physical.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/04_dc_free_energy_balance.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/rhs_01.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/rhs_02.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/rhs_03.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/rhs_04.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/rhs_05.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/figures/rhs_06.png",
+    "docs/implementation/stage5/rhs_balance_20261005/report/report_context.json",
+    "docs/implementation/stage5/rhs_balance_20261005/report/rhs_payload.json",
+    "docs/implementation/stage5/rhs_balance_20261005/retarded_spatial_usadel_before_dtype_fix.py",
+    "docs/implementation/stage5/rhs_balance_20261005/rhs_energy_derivation.md",
+    "docs/implementation/stage5/rhs_balance_20261005/validation.json",
+    "docs/implementation/stage5/rhs_balance_20261005/validation_final.json",
+    "docs/implementation/stage5/rhs_balance_20261005/work_receipt.json",
+    "docs/implementation/stage5/rhs_balance_20261008/edge_audit_preflight.json",
+    "docs/implementation/stage5/rhs_balance_20261008/edge_quadrature_contract.md",
+    "docs/implementation/stage5/rhs_balance_20261008/finite_closure_path.md",
+    "docs/implementation/stage5/rhs_balance_20261008/matrix_rhs_snapshot_edge.json",
+    "docs/implementation/stage5/rhs_balance_20261008/matrix_rhs_snapshot_edge_panels_halved.json",
+    "docs/implementation/stage5/rhs_balance_20261008/matrix_rhs_snapshot_edge_refined.json",
+    "docs/implementation/stage5/rhs_balance_20261008/nambu_moments_receipt.json",
+    "docs/implementation/stage5/rhs_balance_20261008/pauli_step_pilot.json",
+    "docs/implementation/stage5/rhs_balance_20261008/report/Informe_etapa5_resultados_20261008.aux",
+    "docs/implementation/stage5/rhs_balance_20261008/report/Informe_etapa5_resultados_20261008.log",
+    "docs/implementation/stage5/rhs_balance_20261008/report/Informe_etapa5_resultados_20261008.pdf",
+    "docs/implementation/stage5/rhs_balance_20261008/report/Informe_etapa5_resultados_20261008.tex",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/01_geometry.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/02_dark.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/03_stationary.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/04_energy.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/05_balance.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/06_edge.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/07_transport.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/08_transport_maps.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/09_support.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/10_material.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/photon_source_and_initial_temperature.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/ss_difference.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/ss_gap.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/ss_potential.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/ss_relative.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/stationary_current_and_virtual_work.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/figures/stationary_virtual_energy_maps.png",
+    "docs/implementation/stage5/rhs_balance_20261008/report/pdf_visual_qa_20261008.json",
+    "docs/implementation/stage5/rhs_balance_20261008/report/report_context.json",
+    "docs/implementation/stage5/rhs_balance_20261008/saved_audit_review.json",
+    "docs/implementation/stage5/rhs_balance_20261008/saved_campaign_review.json",
+    "docs/implementation/stage5/rhs_balance_20261008/scientific_closure_receipt.json",
+    "docs/implementation/stage5/rhs_balance_20261008/transport_step_control.md",
+    "docs/implementation/stage5/rhs_balance_20261008/transport_step_control_smoke.json",
+    "output/pdf/implementation/Informe_etapa5_RHS_balance.pdf",
+    "output/pdf/implementation/Informe_etapa5_resultados_20261008.pdf",
+    "output/pdf/implementation/Informe_final_etapa5_20261008.pdf",
+    "output/pdf/implementation/Informe_revision_RHS_fotonico_completo_20261008.pdf",
+    "output/pdf/modelo_v0_4/F_resumen_de_cambios_respecto_a_la_memoria_v0_4.pdf",
+    "pipelines/04_initial_photon_rhs_review.py",
+    "plot_pipelines/04_plot_initial_photon_rhs_review.py",
+    "pysnspd/experimental/conservative_euler.py",
+    "pysnspd/experimental/gaussian_photon_source.py",
+    "pysnspd/experimental/global_bias_direction.py",
+    "pysnspd/experimental/nodal_kinetics.py",
+    "pysnspd/experimental/photon_thermalized_initializer.py",
+    "pysnspd/experimental/thermal_internal_energy_direction.py",
+    "pysnspd/experimental/thermal_matsubara_tail.py",
+    "pysnspd/experimental/transient_archive.py",
+    "sandbox/model_v0_2/checks_a.log",
+    "sandbox/model_v0_2/compilacion/figuras/A_01_energia_comun.pdf",
+    "sandbox/model_v0_2/compilacion/figuras/A_01_energia_comun.png",
+    "sandbox/model_v0_2/compilacion/figuras/A_02_corriente_uniforme.pdf",
+    "sandbox/model_v0_2/compilacion/figuras/A_02_corriente_uniforme.png",
+    "sandbox/model_v0_2/compilacion/figuras/A_03_gap_espectral.pdf",
+    "sandbox/model_v0_2/compilacion/figuras/A_03_gap_espectral.png",
+    "sandbox/model_v0_2/compilacion/figuras/B_01_reacciones_balance.pdf",
+    "sandbox/model_v0_2/compilacion/figuras/B_01_reacciones_balance.png",
+    "sandbox/model_v0_2/compilacion/figuras/B_02_energia_temperatura.pdf",
+    "sandbox/model_v0_2/compilacion/figuras/B_02_energia_temperatura.png",
+    "sandbox/model_v0_2/compilacion/figuras/B_03_misma_energia.pdf",
+    "sandbox/model_v0_2/compilacion/figuras/B_03_misma_energia.png",
+    "sandbox/model_v0_2/compilacion/figuras/B_04_limite_normal.pdf",
+    "sandbox/model_v0_2/compilacion/figuras/B_04_limite_normal.png",
+    "sandbox/model_v0_2/compilacion/figuras/C_01_coordenadas_energia.png",
+    "sandbox/model_v0_2/compilacion/figuras/C_02_celda_balance.png",
+    "sandbox/model_v0_2/compilacion/figuras/C_03_circuito_prescrito.png",
+    "sandbox/model_v0_2/compilacion/latex/A_microscopia_y_funcional_v0_2.tex",
+    "sandbox/model_v0_2/compilacion/latex/B_cinetica_energia_y_temperaturas_v0_2.tex",
+    "sandbox/model_v0_2/compilacion/latex/C_condensado_corriente_y_senal_v0_2.tex",
+    "sandbox/model_v0_2/compilacion/latex/D_sintesis_plan_y_verificaciones_v0_2.tex",
+    "sandbox/model_v0_2/compilacion/latex/header.tex",
+    "sandbox/model_v0_2/compilacion/latex/sources.json",
+    "sandbox/model_v0_2/compilacion/pdf/A_microscopia_y_funcional_v0_2.log",
+    "sandbox/model_v0_2/compilacion/pdf/A_microscopia_y_funcional_v0_2.pdf",
+    "sandbox/model_v0_2/compilacion/pdf/B_cinetica_energia_y_temperaturas_v0_2.log",
+    "sandbox/model_v0_2/compilacion/pdf/B_cinetica_energia_y_temperaturas_v0_2.pdf",
+    "sandbox/model_v0_2/compilacion/pdf/C_condensado_corriente_y_senal_v0_2.log",
+    "sandbox/model_v0_2/compilacion/pdf/C_condensado_corriente_y_senal_v0_2.pdf",
+    "sandbox/model_v0_2/compilacion/pdf/D_sintesis_plan_y_verificaciones_v0_2.log",
+    "sandbox/model_v0_2/compilacion/pdf/D_sintesis_plan_y_verificaciones_v0_2.pdf",
+    "sandbox/model_v0_3/checks_a.log",
+    "sandbox/model_v0_3/checks_b.log",
+    "sandbox/model_v0_3/checks_c.log",
+    "sandbox/model_v0_3/figures_learning.log",
+    "sandbox/model_v0_4/B_run_v04.log",
+    "sandbox/stage5_final_report/build_report.py",
+    "sandbox/stage5_photon/audit_stationary_nambu.py",
+    "sandbox/stage5_photon/export_admitted_ss.py",
+    "sandbox/stage5_photon/extend_static_photon_spectrum.py",
+    "sandbox/stage5_photon/initialize_photon_source.py",
+    "sandbox/stage5_photon/plot_hotbelt_snapshots.py",
+    "sandbox/stage5_photon/plot_photon_initialization.py",
+    "sandbox/stage5_photon/plot_stationary_nambu.py",
+    "sandbox/stage5_photon/prepare_gaussian_source.py",
+    "sandbox/stage5_photon/prepare_photon_run.py",
+    "sandbox/stage5_photon/run_initial_rhs_audit.py",
+    "sandbox/stage5_prephoton/check_continuation.py",
+    "sandbox/stage5_prephoton/verify_completed_dc.py",
+    "sandbox/stage5_rhs/audit_cached_causal_eta.py",
+    "sandbox/stage5_rhs/audit_cached_nambu_constraints.py",
+    "sandbox/stage5_rhs/audit_cached_thermal_tail.py",
+    "sandbox/stage5_rhs/audit_final_saved_campaigns.py",
+    "sandbox/stage5_rhs/audit_internal_energy.py",
+    "sandbox/stage5_rhs/build_effective_material.py",
+    "sandbox/stage5_rhs/check_matrix_rhs_query.py",
+    "sandbox/stage5_rhs/check_rhs.py",
+    "sandbox/stage5_rhs/nodal_kinetic_demo.py",
+    "sandbox/stage5_rhs/prepare_matrix_edge_audits.py",
+    "sandbox/stage5_rhs/review_saved_audits.py",
+    "sandbox/stage5_rhs/run_energy_campaign.py",
+    "sandbox/stage5_rhs/run_nodal_transport_audit.py",
+    "sandbox/stage5_rhs_report/build_payload.py",
+    "sandbox/stage5_rhs_report/build_report.py",
+    "sandbox/stage5_rhs_report_completed/Informe_revision_RHS_fotonico_completo_20261008.tex",
+    "sandbox/stage5_rhs_report_completed/build_report.py",
+    "sandbox/stage5_rhs_report_oct8/build_report.py",
+    "tests/test_conservative_euler.py",
+    "tests/test_gaussian_photon_source.py",
+    "tests/test_global_bias_direction.py",
+    "tests/test_initial_photon_rhs_audit.py",
+    "tests/test_matrix_rhs_audit_helpers.py",
+    "tests/test_matrix_rhs_observer_guard.py",
+    "tests/test_nodal_kinetics.py",
+    "tests/test_photon_preparation.py",
+    "tests/test_photon_thermalized_initializer.py",
+    "tests/test_stage5_energy_campaign.py",
+    "tests/test_stage5_nodal_transport_audit.py",
+    "tests/test_stationary_nambu_audit.py",
+    "tests/test_thermal_internal_energy_direction.py",
+    "tests/test_thermal_matsubara_tail.py",
+    "tests/test_transient_archive.py",
+    "tmp"
+  ],
+  "defer_old_math_PDFs_and_receipts_until_new_authoring_QA": [
+    "Matematica/Principal.pdf",
+    "Matematica/Auxiliar.pdf",
+    "Matematica/Precomputo.pdf",
+    "sandbox/stage5_math_documents/mathematics_document_receipt.json",
+    "sandbox/stage5_math_documents/mathematics_visual_qa_20261008.json"
+  ],
+  "future_documents_after_marker_completion_and_root_promotion": {
+    "README.md": "README.proposal.md",
+    "status.md": "status.proposal.md",
+    "docs/implementation/MODELO_VIGENTE.md": "MODELO_VIGENTE.proposal.md",
+    "docs/GEMINGA_COMMANDS_PRESENT.md": "GEMINGA_COMMANDS_PRESENT.proposal.md"
+  },
+  "future_exact_document_history_destinations": [
+    "docs/releases/history/README_before_v1.1.0_20261011.md",
+    "docs/releases/history/status_before_v1.1.0_20261011.md",
+    "docs/releases/history/MODELO_VIGENTE_before_v1.1.0_20261011.md"
+  ],
+  "future_final_PDFs_after_compilation_and_visual_QA": [
+    "Matematica/Principal.pdf",
+    "Matematica/Auxiliar.pdf",
+    "Matematica/Precomputo.pdf",
+    "output/pdf/implementation/Informe_final_etapa5_modelo_efectivo_20261011.pdf"
+  ],
+  "future_final_certificates_and_summary": "Exact destinations still pending root final admission; do not fill placeholders with invented evidence.",
+  "known_pending_final_rebind": {
+    "source_inventory_stale_entries": [
+      {
+        "path": "sandbox/stage5_effective_validation/build_final_report.py",
+        "inventory_sha256": "bbb9290022fd9aa7f703964df71b4000f57c301385bc47922f409916b2273770",
+        "current_sha256": "f5dc1d53b857ebf37434ffa3e351af1347685ac6cec0278a47e3779269e53c5f"
+      },
+      {
+        "path": "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py",
+        "inventory_sha256": "e681900a2efbc62c46d3572c8e2e97fd69cc29445fb28a7340d63cafeaab3519",
+        "current_sha256": "4f58a01c26c5afb6a29e9c749bd3e645db71e5036a8fb3a6b78e0c5b0e89262f"
+      },
+      {
+        "path": "sandbox/stage5_effective_validation/fine_resource_transition.py",
+        "inventory_sha256": "c002fac3d2a1487fbaaf7304ef211b33db3357859fbeedf8a21c62093a033312",
+        "current_sha256": "51ad9818845fb89586e7d0fac2f00798fe7d3affa528ee32f3ce1c0f4477e938"
+      },
+      {
+        "path": "sandbox/stage5_effective_validation/fine_resource_guard_adapter.py",
+        "inventory_sha256": "05d713a975f30d1550daeaf867765c16acceb81f776526a779ac2f438fa97c8e",
+        "current_sha256": "aadc8beebe91df8617ff748c954bed3e470e51cc52a8a625fe5eb3ec510e3c1c"
+      },
+      {
+        "path": "tests/test_effective_fine_resource_transition.py",
+        "inventory_sha256": "a96eed6565d3555597a986942c9ed707cfae0b386f8b3500d43b3d6bcb889340",
+        "current_sha256": "81ecf1726e0c075a0fd9ff49ac0263535db3d79b49a2d28307c738bdc828eb19"
+      },
+      {
+        "path": "sandbox/stage5_effective_validation/control_resource_transition.py",
+        "inventory_sha256": "7aaa9c4e3266c69f4b033958104b7c945a0d5e7bf1c391e2817fc7e2279394c5",
+        "current_sha256": "0458f0141d7005578d0ab98fb2e1b963f79b0c34769197a585d5651c4ebf5118"
+      }
+    ],
+    "report_builder_source_receipt_is_historical": "Currently binds6e1531/10--13pages. Current root-promoted builderf5dc1 is prose-only afterbbb929, base11pages+2vortex+1sensitivity=14; final source/authoring receipt and visual QA must bind current source.",
+    "all_69_dependency_sources_verified": true,
+    "all_69_destinations_absent": true,
+    "production_resolution54_vs80": "PENDING_ROOT_DECISION",
+    "six_drafts": "Preserve originals; single final rebind and marker completion after all controls. No promotion performed."
+  },
+  "caption_source_only_review": {
+    "base_current_matches": false,
+    "base_sha256": "bbb9290022fd9aa7f703964df71b4000f57c301385bc47922f409916b2273770",
+    "candidate_sha256": "f5dc1d53b857ebf37434ffa3e351af1347685ac6cec0278a47e3779269e53c5f",
+    "patch_sha256": "35b65e7040d5d22a1623ae40314543d4030665aebb0e959dc84e49ad1d98ea8f",
+    "changed_functions": [
+      "make_tex"
+    ],
+    "changed_AST_constant_count": 1,
+    "non_string_AST_identical": true,
+    "physical_reaudit_required": false,
+    "required_after_root_source_promotion": "Rebind only authoring provenance/inventory/selected source receipts before final generation; compile and visually inspect final report normally. Preserve historical analyses under original builder hash. Any already compiled PDF would require rebuilding under publish_report hash rule.",
+    "scope": "No runtime13, baseline, bounded audit, metrics, policy, sensitivity arrays or scientific admission changes.",
+    "current_matches_root_promoted_candidate": true,
+    "root_source_promotion_receipt": {
+      "path": "/home/jdiaz/scratch/stage5_width_preparation_caption_candidate_20261011/root_caption_promotion_receipt.json",
+      "sha256": "37fb78334bca03a5dc43f4eb8be88d7f043545912fb580982d07cf524de90a53"
+    }
+  },
+  "no_git_add_commit_push": true,
+  "documents_edited": false,
+  "RHS_simulations_or_tests_executed": false,
+  "PDFs_created": false,
+  "supersedes_static_review": {
+    "path": "/home/jdiaz/scratch/stage5_publication_static_staging_review_20261011/publication_staging_candidate_v1.json",
+    "sha256": "90e8f8425fea6317c523df928b7b5ccb5c684858f3c7ca45ee1b4455f7400853",
+    "reason": "Concurrent root-approved prose-only caption promotion; preserve prior snapshot"
+  },
+  "static_transitive_import_review": {
+    "local_source_files_read": 89,
+    "AST_parse_failures": 0,
+    "untracked_transitive_dependencies_missing_from_explicit_inventory": [],
+    "scope": "AST/path inspection only; no imports or tests of the physical model"
+  },
+  "additional_root_approved_source_receipts_pending_final_inventory": [
+    {
+      "path": "/home/jdiaz/scratch/stage5_width_preparation_caption_candidate_20261011/root_caption_promotion_receipt.json",
+      "sha256": "37fb78334bca03a5dc43f4eb8be88d7f043545912fb580982d07cf524de90a53",
+      "selected_repo_destination": "PENDING_FINAL_REBIND"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_resource_interrupted_audit_fix_candidate_20261011/root_exact_source_promotion.json",
+      "sha256": "18889349b631ac0144361d2192b5e8cf014f19603f58ea75b6adf78d422c4110",
+      "selected_repo_destination": "PENDING_FINAL_REBIND"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_resource_geometry_relocation_fix_candidate_20261011/root_exact_source_promotion.json",
+      "sha256": "c20a63e38c81c37ed021884a7b2308b28a6befab1e40de316775222b0745a586",
+      "selected_repo_destination": "PENDING_FINAL_REBIND"
+    }
+  ]
+}

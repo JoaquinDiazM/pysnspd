@@ -1,0 +1,69 @@
+{
+  "schema": "pysnspd.root_closed_temporal_domain_audit_execution.v1",
+  "created_UTC": "2026-10-12T05:57:05.663403+00:00",
+  "review_sha256": "9adad4ba9f43a642b8ee1f02ad82ec487ab85da11c25c6544fdbc3ef5c851d0e",
+  "results": {
+    "temporal": {
+      "exit_code": 0,
+      "wall_s": 11.38086671801284,
+      "log": "/home/jdiaz/scratch/stage5_closed_temporal_domain_audit_prepare_20261012/temporal_root_execution.log",
+      "log_sha256": "441ccb6dc599461c84698d173f9e1cd675e278a9c322da31cb55856ddade2223",
+      "outputs_sha256": {
+        "/home/jdiaz/scratch/stage5_closed_temporal_comparison_0_36p6_20261012/comparison_gap.csv": "3f6e9afa6d530e9c97576da9c58bbba99504dd5b7b51371b736bf1eeb9c76479",
+        "/home/jdiaz/scratch/stage5_closed_temporal_comparison_0_36p6_20261012/window.json": "7b486bc71685e3916833a8741ffb72a4309b6180df57ec386210b4bb27e0850c",
+        "/home/jdiaz/scratch/stage5_closed_temporal_comparison_0_36p6_20261012/comparison_Vout.csv": "d7a88fb089b674ebb5a27b91158987686700f6e010c8605068470549b08d7893"
+      },
+      "passed": true,
+      "checks": {
+        "reference_original_status_safe": true,
+        "candidate_original_status_safe": true,
+        "reference_physical_saved_checks_passed": true,
+        "candidate_physical_saved_checks_passed": true,
+        "reference_declared_interval_covered": true,
+        "candidate_declared_interval_covered": true,
+        "comparison_same_frozen_model_sources": true,
+        "comparison_same_nonrefined_parameters": true,
+        "comparison_actual_declared_refinement": true,
+        "comparison_voltage_waveform": true,
+        "comparison_electrical_latency_if_observed": true,
+        "comparison_temporal_refinement_at_least_two": true,
+        "comparison_gap_min_waveform": true,
+        "comparison_verified_bounded_prospective_guard_policy": true
+      }
+    },
+    "domain": {
+      "exit_code": 0,
+      "wall_s": 14.96131293301005,
+      "log": "/home/jdiaz/scratch/stage5_closed_temporal_domain_audit_prepare_20261012/domain_root_execution.log",
+      "log_sha256": "be5c6b1cb739557d2c9d17026b4837f7993a2b245a2d7c2ce42b208fc9cf0bf3",
+      "outputs_sha256": {
+        "/home/jdiaz/scratch/stage5_closed_domain_comparison_0_36p6_20261012/comparison_gap.csv": "45cabd676b84ca6af21513d58caecd90e53b9060c910f1221cfed23530bd017d",
+        "/home/jdiaz/scratch/stage5_closed_domain_comparison_0_36p6_20261012/window.json": "7b35776cc9af9ae41e7eac03e7c53f92a215094249f28e43f16a7c3c547b4136",
+        "/home/jdiaz/scratch/stage5_closed_domain_comparison_0_36p6_20261012/comparison_Vout.csv": "cd4d467400bb2e0e2accddfeef05e3188682f5c4761de69128cdd3e178b7c64b"
+      },
+      "passed": true,
+      "checks": {
+        "reference_original_status_safe": true,
+        "candidate_original_status_safe": true,
+        "reference_physical_saved_checks_passed": true,
+        "candidate_physical_saved_checks_passed": true,
+        "reference_declared_interval_covered": true,
+        "candidate_declared_interval_covered": true,
+        "comparison_same_frozen_model_sources": true,
+        "comparison_same_nonrefined_parameters": true,
+        "comparison_actual_declared_refinement": true,
+        "comparison_voltage_waveform": true,
+        "comparison_electrical_latency_if_observed": true,
+        "comparison_temporal_refinement_at_least_two": true,
+        "comparison_common_physical_ROI_available": true,
+        "comparison_central_gap_magnitude_L2": true,
+        "comparison_central_deficit_over_reference_peak": true,
+        "comparison_verified_bounded_prospective_guard_policy": true,
+        "comparison_verified_explicit_resource_only_continuation": true
+      }
+    }
+  },
+  "stage5": false,
+  "terminal_inputs_preserved": true,
+  "simulations_launched": 0
+}

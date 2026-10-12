@@ -1,0 +1,81 @@
+{
+  "schema": "pysnspd.current_effective_DC_evidence.v1",
+  "status": "DC_HOLD_COMPLETED_AND_INDEPENDENTLY_AUDITED",
+  "stage5_admission_inferred": false,
+  "path": "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011",
+  "audit": {
+    "path": "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_audit_20261011/audit.json",
+    "sha256": "ba2cb6ee065ed86ad2752bed33d0a6b9fc6b08d1339611ae214a2597330b6a7d"
+  },
+  "input_sha256": {
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/manifest.json": "2206ad1c8aad0dd83a4f7544466ea035f6f7f2605abed7984c538bf7d4f49508",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/trajectory.npz": "ff818d6b04b21171146059fb5490836ca20b811be64c700c94e1911afc6da302",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/snapshots.npz": "f034ada087474815fc9799c44dc44aa2b1ba14ec9afe580c51d401f013600337",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/checkpoint_latest.npz": "64db270e9077ca9bcce4a6b9ca76972775b71bc2d5af5c05d52c6cd1e507708c",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_20261011/dc/effective_dc.npz": "37a419975a84d677ce2a1401e4d8a99b1c19ae5ba5ef09431e03fc6eeded515d",
+    "/home/jdiaz/scratch/stage5_effective_DC_v6_10ps_audit_20261011/audit.json": "ba2cb6ee065ed86ad2752bed33d0a6b9fc6b08d1339611ae214a2597330b6a7d"
+  },
+  "source_pins_sha256": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "duration_ps": 9.999999999999979,
+  "accepted_steps": 100,
+  "elapsed_wall_s": 135.9676512320293,
+  "max_Vout_V": 0.0,
+  "max_Vdev_V": 1.4558046545474175e-17,
+  "max_gap_drift_J": 0.0,
+  "max_Te_drift_K": 0.0,
+  "max_Tph_drift_K": 0.0,
+  "max_Is_drift_A": 0.0,
+  "max_energy_defect_J": 2.3700227555395377e-41,
+  "global_reference_energy_J": 2.339453292436945e-19,
+  "source_mode": "DC",
+  "no_photon": true,
+  "photon_initial_file_absent_as_expected": true,
+  "physicalparams": {
+    "Tc_K": 8.65,
+    "bath_temperature_K": 0.9,
+    "diffusion_m2_s": 5e-05,
+    "sheet_resistance_ohm": 608.0,
+    "film_thickness_m": 7e-09,
+    "N0_single_spin_per_J_m3": 9.153297821093998e+46,
+    "energy_scale_J": 1.194261385e-22,
+    "current_A": 2.129720614489798e-05,
+    "tau_ee_Tc_s": 5e-12,
+    "tau_ep_Tc_s": 2.47e-11,
+    "tau0_s": 1.868435901588345e-09,
+    "tau_escape_s": 1.5e-11,
+    "calibrators": "Allmaras2020 nomenclature; freely adjustable, not measured NbN constants",
+    "exterior_inductance": {
+      "total_H": 1.033055069878189e-07,
+      "added_inductance_H": 9.6e-08,
+      "unresolved_bulk_inductance_H": 7.305506987818893e-09,
+      "bulk_differential_inductance_per_length_H_per_m": 0.0015610057666279686,
+      "total_active_length_m": 5e-06,
+      "resolved_length_m": 3.2e-07,
+      "unresolved_length_m": 4.68e-06,
+      "scope": "Frozen once from the chosen DC branch; never updated during a pulse"
+    },
+    "circuit": {
+      "Lk_ext_H": 1.033055069878189e-07,
+      "R_bias_ohm": 10000.0,
+      "L_bias_H": 1e-06,
+      "R_load_ohm": 50.0,
+      "C_couple_F": 1e-10,
+      "V_bias_V": 0.2129720614489798
+    }
+  },
+  "all_requested_checks_passed": true
+}

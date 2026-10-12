@@ -1,0 +1,181 @@
+{
+  "schema": "pysnspd.finite_control_coverage_review.v1",
+  "manual_scientific_review": true,
+  "status": "ADMITTED_CRITICAL_FINITE_WINDOW_ONLY",
+  "windows": [
+    {
+      "kind": "temporal",
+      "window_sha256": "e588545ac63d340495f32930db0d41124aa0bce61318f2229601479593a2387b",
+      "declared_interval_ps": [
+        0.0,
+        36.6
+      ],
+      "reviewed_utc": "2026-10-12T07:05:30.193765+00:00",
+      "reviewed_by": "root Codex: explicit scientific review of completed original trajectories and four comparisons",
+      "rationale": "The selected scope is hotbelt formation and confirmed electrical latency. Full0--36.6ps fields and signal pass the adopted observable budgets. All actual crossings and confirmations occur by32.959281ps, inside the reviewed critical end33ps; at least3.640719ps after the latest confirmation are also compared. Every original own crossing+5ps trajectory remains complete and individually audited. All tails beyond36.6ps are expressly outside four-axis convergence; no later bound, full peak or reset is claimed.",
+      "evidence": [
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/temporal_comparison/window.json",
+          "sha256": "e588545ac63d340495f32930db0d41124aa0bce61318f2229601479593a2387b"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/primary_saved_audits/audit.json",
+          "sha256": "ef5d70f1aa45d66536fd3635594b5cc40973c2e28b8c66b1b2d945f4d5f6186d"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/bounded_guard_protocol.json",
+          "sha256": "8affc2500b07c9d991e20622229a43f036bb42a04411760bb666332aca2a3038"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_fine_terminal_root_receipt_20261012.json",
+          "sha256": "d16fb99219dcd068f3278ae518e172583574a8caa1b8fabd95f0a0bb5b7e1b33"
+        }
+      ],
+      "critical_interval_end_ps": 33.0,
+      "nominal_event_confirmation_time_ps": 32.44131686164997,
+      "nominal_saved_final_time_ps": 36.94131686164998,
+      "latency_claimed": true,
+      "decision": "COVERED",
+      "later_observable_bounds": {},
+      "interval_status": "MANUALLY_ADMITTED_FOR_DECLARED_SCOPE"
+    },
+    {
+      "kind": "mesh",
+      "window_sha256": "df6b6ca5187bcf4cb848305790452c40cb5567b2d5f3ed432960d2ef72640cf6",
+      "declared_interval_ps": [
+        0.0,
+        36.6
+      ],
+      "reviewed_utc": "2026-10-12T07:05:30.193765+00:00",
+      "reviewed_by": "root Codex: explicit scientific review of completed original trajectories and four comparisons",
+      "rationale": "The selected scope is hotbelt formation and confirmed electrical latency. Full0--36.6ps fields and signal pass the adopted observable budgets. All actual crossings and confirmations occur by32.959281ps, inside the reviewed critical end33ps; at least3.640719ps after the latest confirmation are also compared. Every original own crossing+5ps trajectory remains complete and individually audited. All tails beyond36.6ps are expressly outside four-axis convergence; no later bound, full peak or reset is claimed.",
+      "evidence": [
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/mesh_comparison/window.json",
+          "sha256": "df6b6ca5187bcf4cb848305790452c40cb5567b2d5f3ed432960d2ef72640cf6"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/primary_saved_audits/audit.json",
+          "sha256": "ef5d70f1aa45d66536fd3635594b5cc40973c2e28b8c66b1b2d945f4d5f6186d"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/bounded_guard_protocol.json",
+          "sha256": "8affc2500b07c9d991e20622229a43f036bb42a04411760bb666332aca2a3038"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_fine_terminal_root_receipt_20261012.json",
+          "sha256": "d16fb99219dcd068f3278ae518e172583574a8caa1b8fabd95f0a0bb5b7e1b33"
+        }
+      ],
+      "critical_interval_end_ps": 33.0,
+      "nominal_event_confirmation_time_ps": 32.44131686164997,
+      "nominal_saved_final_time_ps": 36.94131686164998,
+      "latency_claimed": true,
+      "decision": "COVERED",
+      "later_observable_bounds": {},
+      "interval_status": "MANUALLY_ADMITTED_FOR_DECLARED_SCOPE"
+    },
+    {
+      "kind": "domain",
+      "window_sha256": "11d54168049fcb6a4a728b38a8af8f2f418aa9b1919920eba025546e46cbf3e3",
+      "declared_interval_ps": [
+        0.0,
+        36.6
+      ],
+      "reviewed_utc": "2026-10-12T07:05:30.193765+00:00",
+      "reviewed_by": "root Codex: explicit scientific review of completed original trajectories and four comparisons",
+      "rationale": "The selected scope is hotbelt formation and confirmed electrical latency. Full0--36.6ps fields and signal pass the adopted observable budgets. All actual crossings and confirmations occur by32.959281ps, inside the reviewed critical end33ps; at least3.640719ps after the latest confirmation are also compared. Every original own crossing+5ps trajectory remains complete and individually audited. All tails beyond36.6ps are expressly outside four-axis convergence; no later bound, full peak or reset is claimed.",
+      "evidence": [
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/domain_comparison/window.json",
+          "sha256": "11d54168049fcb6a4a728b38a8af8f2f418aa9b1919920eba025546e46cbf3e3"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/primary_saved_audits/audit.json",
+          "sha256": "ef5d70f1aa45d66536fd3635594b5cc40973c2e28b8c66b1b2d945f4d5f6186d"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/bounded_guard_protocol.json",
+          "sha256": "8affc2500b07c9d991e20622229a43f036bb42a04411760bb666332aca2a3038"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_fine_terminal_root_receipt_20261012.json",
+          "sha256": "d16fb99219dcd068f3278ae518e172583574a8caa1b8fabd95f0a0bb5b7e1b33"
+        }
+      ],
+      "critical_interval_end_ps": 33.0,
+      "nominal_event_confirmation_time_ps": 32.44131686164997,
+      "nominal_saved_final_time_ps": 36.94131686164998,
+      "latency_claimed": true,
+      "decision": "COVERED",
+      "later_observable_bounds": {},
+      "interval_status": "MANUALLY_ADMITTED_FOR_DECLARED_SCOPE"
+    },
+    {
+      "kind": "spectral",
+      "window_sha256": "3f8166ad1325ee6b5e9e908e254517b0b689143d9eb2ce6076dbdaee9897c84a",
+      "declared_interval_ps": [
+        0.0,
+        36.6
+      ],
+      "reviewed_utc": "2026-10-12T07:05:30.193765+00:00",
+      "reviewed_by": "root Codex: explicit scientific review of completed original trajectories and four comparisons",
+      "rationale": "The selected scope is hotbelt formation and confirmed electrical latency. Full0--36.6ps fields and signal pass the adopted observable budgets. All actual crossings and confirmations occur by32.959281ps, inside the reviewed critical end33ps; at least3.640719ps after the latest confirmation are also compared. Every original own crossing+5ps trajectory remains complete and individually audited. All tails beyond36.6ps are expressly outside four-axis convergence; no later bound, full peak or reset is claimed.",
+      "evidence": [
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/spectral_comparison/window.json",
+          "sha256": "3f8166ad1325ee6b5e9e908e254517b0b689143d9eb2ce6076dbdaee9897c84a"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/primary_saved_audits/audit.json",
+          "sha256": "ef5d70f1aa45d66536fd3635594b5cc40973c2e28b8c66b1b2d945f4d5f6186d"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/bounded_guard_protocol.json",
+          "sha256": "8affc2500b07c9d991e20622229a43f036bb42a04411760bb666332aca2a3038"
+        },
+        {
+          "path": "/home/jdiaz/scratch/stage5_fine_terminal_root_receipt_20261012.json",
+          "sha256": "d16fb99219dcd068f3278ae518e172583574a8caa1b8fabd95f0a0bb5b7e1b33"
+        }
+      ],
+      "critical_interval_end_ps": 33.0,
+      "nominal_event_confirmation_time_ps": 32.44131686164997,
+      "nominal_saved_final_time_ps": 36.94131686164998,
+      "latency_claimed": true,
+      "decision": "COVERED",
+      "later_observable_bounds": {},
+      "interval_status": "MANUALLY_ADMITTED_FOR_DECLARED_SCOPE"
+    }
+  ],
+  "reviewed_utc": "2026-10-12T07:05:30.193765+00:00",
+  "scope": "Formation and confirmed electrical latency at775nm on0--36.6ps. ALL later tails are excluded from four-axis convergence; no peak, jitter, optical absolute latency or full reset admission.",
+  "original_full_tail_scope": "Individual successful terminal, physical support, current sign and energy audits retained; no four-axis tail error bound is invented.",
+  "original_tails": {
+    "primary775": {
+      "original_final_time_ps": 36.94131686164998,
+      "uncompared_tail_ps": 0.3413168616499789,
+      "four_axis_tail_convergence": false
+    },
+    "temporal": {
+      "original_final_time_ps": 36.93375040582713,
+      "uncompared_tail_ps": 0.3337504058271321,
+      "four_axis_tail_convergence": false
+    },
+    "fine": {
+      "original_final_time_ps": 37.459280256341,
+      "uncompared_tail_ps": 0.8592802563410018,
+      "four_axis_tail_convergence": false
+    },
+    "domain": {
+      "original_final_time_ps": 36.82626372998353,
+      "uncompared_tail_ps": 0.22626372998352906,
+      "four_axis_tail_convergence": false
+    },
+    "spectral": {
+      "original_final_time_ps": 36.62778888559053,
+      "uncompared_tail_ps": 0.02778888559053172,
+      "four_axis_tail_convergence": false
+    }
+  }
+}

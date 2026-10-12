@@ -1,0 +1,80 @@
+{
+  "schema": "pysnspd.math_computational_classification_revision.v1",
+  "utc": "2026-10-11T17:47:56.478994+00:00",
+  "status": "SOURCE_ONLY_AUTHORIZED_CLASSIFICATION_MOVES",
+  "sources": [
+    {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_math_documents/Matematica_etapa5_auxiliares.tex",
+      "before_sha256": "03913d5a57d24d13063b5c752554bc03f0c5ae7b6f971275a608d3d9ec25cb95",
+      "after_sha256": "8bfc68bb7d719f42a5faaf1dde50518db9bb18495b66a70e9e4a27e22849e63f",
+      "before_copy": "/home/jdiaz/scratch/stage5_math_computational_classification_20261011/before_Matematica_etapa5_auxiliares.tex",
+      "after_copy": "/home/jdiaz/scratch/stage5_math_computational_classification_20261011/after_Matematica_etapa5_auxiliares.tex"
+    },
+    {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_math_documents/Matematica_etapa5_precomputados.tex",
+      "before_sha256": "d672167f3be289b066664f058b7c74c477e2c642c19f2d49cc82f09fb6781657",
+      "after_sha256": "01ca99fe1310f0ef91c97fc3244b6c6e4e29de44b228d36091c5787d723ad124",
+      "before_copy": "/home/jdiaz/scratch/stage5_math_computational_classification_20261011/before_Matematica_etapa5_precomputados.tex",
+      "after_copy": "/home/jdiaz/scratch/stage5_math_computational_classification_20261011/after_Matematica_etapa5_precomputados.tex"
+    }
+  ],
+  "unmodified_principal": {
+    "path": "/home/jdiaz/pysnspd/sandbox/stage5_math_documents/Matematica_etapa5_principales_2D.tex",
+    "sha256": "4228aaafa5796795ba26019e762ce44341859ee4e27d2d984df3fc29383767c8"
+  },
+  "exact_formula_moves": [
+    {
+      "expression": "\\tau_{ee}(T)=\\tau_{ee}(T_c)\\frac{T_c}{T}",
+      "exact_from_precomputed_to_runtime_auxiliary": true
+    },
+    {
+      "expression": "\\tau_{ep}(T)=\\tau_{ep}(T_c)\\left(\\frac{T_c}{T}\\right)^3",
+      "exact_from_precomputed_to_runtime_auxiliary": true
+    },
+    {
+      "expression": "\\tau_{\\rm sc}^{-1}(T)=\\tau_{ee}^{-1}(T)+\\tau_{ep}^{-1}(T)",
+      "exact_from_precomputed_to_runtime_auxiliary": true
+    },
+    {
+      "expression": "e_{\\ell,-}=\\max(e_{i0},e_{j0})",
+      "exact_from_precomputed_to_runtime_auxiliary": true
+    },
+    {
+      "expression": "e_{\\ell,+}=\\min(e_{i,K-1},e_{j,K-1})",
+      "exact_from_precomputed_to_runtime_auxiliary": true
+    },
+    {
+      "expression": "e_{\\ell a}=\\frac{e_{\\ell,-}+e_{\\ell,+}}2+\n \\frac{e_{\\ell,+}-e_{\\ell,-}}2x_a",
+      "exact_from_precomputed_to_runtime_auxiliary": true
+    },
+    {
+      "expression": "w^{face}_{\\ell a}=\\frac{e_{\\ell,+}-e_{\\ell,-}}2w_a^{GL}",
+      "exact_from_precomputed_to_runtime_auxiliary": true
+    }
+  ],
+  "removed_duplicate": {
+    "expression": "E_{ik}=E_u\\sqrt{\\bar\\xi_k^2+|d_i|^2}",
+    "remaining_in_principal": true,
+    "dimensionless_equivalent_remaining_in_auxiliary": true
+  },
+  "labels_completed": [
+    "native and face excitation energies normalized byEu",
+    "fixed Gauss reference nodes and weights",
+    "inelastic times evaluated atT*=max(TE,Tb)",
+    "precomputed calibrators atTc distinguished from time-dependent values",
+    "adjacent-node/edge/native-index/state-count names",
+    "face-weight edge subscript implicit in unchanged transport formula"
+  ],
+  "formatting_changes_only_to_math": [
+    "Final commas/periods and gather row delimiters adjusted after moving exact expressions"
+  ],
+  "symbol_and_environment_checks": "PASS",
+  "diff": {
+    "path": "/home/jdiaz/scratch/stage5_math_computational_classification_20261011/classification.patch",
+    "sha256": "004517fa5016e91b763241a3b098a9747602ebb13ac412fc0c3bd4abb5135b76"
+  },
+  "simulation_or_RHS_changed": false,
+  "new_numerical_campaign": false,
+  "PDF_compiled": false,
+  "utc_final": "2026-10-11T17:48:21.160780+00:00"
+}

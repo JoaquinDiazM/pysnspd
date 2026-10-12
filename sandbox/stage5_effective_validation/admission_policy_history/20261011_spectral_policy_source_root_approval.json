@@ -1,0 +1,15 @@
+{
+  "schema": "pysnspd.root_spectral_policy_source_review.v1",
+  "utc": "2026-10-11T17:27:18.843247+00:00",
+  "status": "APPROVED_ANALYSIS_TRANSFORM_WITH_REQUIRED_VERIFIED_CALLER_SCOPE",
+  "source_path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/spectral_observable_policy.py",
+  "source_sha256": "0ceb9ebcf48f3fc685ceb0637b75c66a91fabb677bdf4c7caa1f7970010425c1",
+  "independent_review_sha256": "17645157eb07a4965e0d0952d4a6033cd5f8556cd2aa5c8f1b9ea09d57c39d82",
+  "decision_sha256": "8c62658c36336a2e19cb0d37bef6b650cf5d44da734e586d3fe1d11b1ce6ed33",
+  "source_review": "Root read entire source; all checks except nodal comparison preserved, two added robust gates mandatory, complete original result and legacy2percent retained.",
+  "required_wiring": "Before application, dispatcher must verify actual775nm matching54/80native-state manifests and original saved comparisons/guard lineage/window coverage. An arbitrary dict is not sufficient. Wiring needs separate diff review.",
+  "baseline_auditor_unchanged": true,
+  "RHS_unchanged": true,
+  "stage5_admission": false,
+  "PDF_created": false
+}

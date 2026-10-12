@@ -1,0 +1,113 @@
+{
+  "schema": "pysnspd.editable_install_repair.v1",
+  "status": "PASS",
+  "created_utc": "2026-10-12T02:10:12.178587+00:00",
+  "elapsed_s": 1.9500217269524,
+  "before_manifest": {
+    "path": "/home/jdiaz/scratch/stage5_editable_install_repair_20261012/before_install_manifest.json",
+    "sha256": "80550884f4eead04ee9458bf60e7c5a93f0925fc9d39577d4470f3618feaece9"
+  },
+  "preserved_files": 15,
+  "preserved_bytes": 31217,
+  "argv": [
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-m",
+    "pip",
+    "install",
+    "--no-deps",
+    "--no-build-isolation",
+    "--no-cache-dir",
+    "--no-compile",
+    "--no-index",
+    "--config-settings",
+    "editable_mode=compat",
+    "-e",
+    "/home/jdiaz/pysnspd"
+  ],
+  "pip_log": {
+    "path": "/home/jdiaz/scratch/stage5_editable_install_repair_20261012/pip_install.log",
+    "sha256": "2fe763a0f50ad4ea7b59810a648f6da0a99bb1784ac9b309720570961aa81751"
+  },
+  "smoke_checks": [
+    {
+      "cwd": "/home/jdiaz/scratch/stage5_editable_install_repair_20261012",
+      "metadata_version": "1.1.0",
+      "version": "1.1.0",
+      "package_file": "/home/jdiaz/pysnspd/pysnspd/__init__.py",
+      "exports": [
+        "EffectiveBCSFunctional",
+        "EffectiveBCSBulk",
+        "bcs_count_quadrature",
+        "EffectiveBCSGeometry",
+        "EffectiveBCSDC",
+        "get_effective_geometry",
+        "prepare_effective_dc",
+        "save_effective_dc",
+        "EffectiveBCSKinetics",
+        "EffectiveBCSKineticResult",
+        "acoustic_phonon_grid",
+        "EffectiveNeutralPorts",
+        "freeze_exterior_inductance",
+        "EffectiveState",
+        "EffectiveRHS",
+        "EffectiveCoupledSystem",
+        "EffectivePhononMaterial",
+        "allmaras_acoustic_material",
+        "ThesisCircuitParameters",
+        "TriggerWindow",
+        "TriggerWindowConfig"
+      ],
+      "visual_helper": "/home/jdiaz/pysnspd/pysnspd/plotting/complex_gap.py"
+    },
+    {
+      "cwd": "/home/jdiaz",
+      "metadata_version": "1.1.0",
+      "version": "1.1.0",
+      "package_file": "/home/jdiaz/pysnspd/pysnspd/__init__.py",
+      "exports": [
+        "EffectiveBCSFunctional",
+        "EffectiveBCSBulk",
+        "bcs_count_quadrature",
+        "EffectiveBCSGeometry",
+        "EffectiveBCSDC",
+        "get_effective_geometry",
+        "prepare_effective_dc",
+        "save_effective_dc",
+        "EffectiveBCSKinetics",
+        "EffectiveBCSKineticResult",
+        "acoustic_phonon_grid",
+        "EffectiveNeutralPorts",
+        "freeze_exterior_inductance",
+        "EffectiveState",
+        "EffectiveRHS",
+        "EffectiveCoupledSystem",
+        "EffectivePhononMaterial",
+        "allmaras_acoustic_material",
+        "ThesisCircuitParameters",
+        "TriggerWindow",
+        "TriggerWindowConfig"
+      ],
+      "visual_helper": "/home/jdiaz/pysnspd/pysnspd/plotting/complex_gap.py"
+    }
+  ],
+  "runtime_source13_unchanged": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "no_entrypoints_removed": true,
+  "dependency_installation": false,
+  "network_used": false,
+  "simulations_launched": 0,
+  "stage5": false
+}

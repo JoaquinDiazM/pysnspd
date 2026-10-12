@@ -1,0 +1,22 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "8",
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_effective_report_display.py",
+    "tests/test_effective_report_DC_evidence.py",
+    "tests/test_effective_report_guard_wiring.py",
+    "tests/test_effective_vortex_diagnostics.py"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 0.6062269250396639,
+  "test_sha256": "316468249c3280b9fc02b290a68b7ef05d2e51ba8a400629b58307b0f3643636",
+  "log_sha256": "58a37d5c317b3773e2868a93dd0578b59470ed621e1c20691e445345dab91d1a"
+}

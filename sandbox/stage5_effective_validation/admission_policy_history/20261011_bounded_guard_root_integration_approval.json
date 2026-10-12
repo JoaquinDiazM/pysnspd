@@ -1,0 +1,61 @@
+{
+  "schema": "pysnspd.root_bounded_guard_integration_approval.v1",
+  "utc": "2026-10-11T17:16:53.811624+00:00",
+  "status": "APPROVED_EXPLICIT_ANALYSIS_ADDITIONS_ONLY",
+  "proposal_path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/integration_proposal.json",
+  "proposal_sha256": "125e27c6b037820304e5fff3341a467b1cab71257cf176e0b9f59d1ab276ece8",
+  "approved_source_files": [
+    {
+      "candidate": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/bounded_guard_protocol.py",
+      "target": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/bounded_guard_protocol.py",
+      "sha256": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6",
+      "target_already_exists": false
+    },
+    {
+      "candidate": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/guard_protocol_dispatcher.py",
+      "target": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/guard_protocol_dispatcher.py",
+      "sha256": "7c53d7da749d694670b86de2aeda57c936d7ff99d43c72feceb2920240f345bd",
+      "target_already_exists": false
+    },
+    {
+      "candidate": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/width_guard_window_candidate.py",
+      "target": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/width_guard_window_candidate.py",
+      "sha256": "1cb430f5e704c0c2eae05d843d88cd55ebb5cbd3ca4f9110d3821f6c5334d060",
+      "target_already_exists": false
+    },
+    {
+      "candidate": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/test_bounded_guard_protocol.py",
+      "target": "/home/jdiaz/pysnspd/tests/test_effective_bounded_guard_protocol.py",
+      "sha256": "b84af711fea51b3bd58035664770304f906fe47cb7df660bda4db305fcca0e9c",
+      "target_already_exists": false
+    },
+    {
+      "candidate": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/test_guard_protocol_dispatcher.py",
+      "target": "/home/jdiaz/pysnspd/tests/test_effective_guard_protocol_dispatcher.py",
+      "sha256": "1b3b23262616012353496c049c075ed18ef78466ab8da8d7e885bb826a17f589",
+      "target_already_exists": false
+    },
+    {
+      "candidate": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/test_width_guard_window_candidate.py",
+      "target": "/home/jdiaz/pysnspd/tests/test_effective_width_guard_window.py",
+      "sha256": "f005a8e8cf41c2038bcc82a080c0cb16c24e13cf0a5f417556130d0b4a0a44c4",
+      "target_already_exists": false
+    }
+  ],
+  "reviewed_sources": [
+    "bounded_guard_protocol.py",
+    "guard_protocol_dispatcher.py",
+    "width_guard_window_candidate.py"
+  ],
+  "independent_reviews": [
+    "independent_scientific_review_pragmatic_closure_v1.json",
+    "memory_backend_dispatcher_read_review.json"
+  ],
+  "full_original_proof_required_before_window_crop": true,
+  "baseline_auditor_unchanged": true,
+  "no_physics_or_13_runtime_pin_change": true,
+  "original_failures_preserved": true,
+  "no_stage5_admission": true,
+  "no_PDF_authorization": true,
+  "scope": "Promote only these six additions; report formatter changes require their own source review. Future actual control transitions remain subject to band and root checkpoint review."
+}

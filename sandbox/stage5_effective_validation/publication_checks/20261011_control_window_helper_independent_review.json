@@ -1,0 +1,31 @@
+{
+  "schema": "pysnspd.independent_control_window_extension_review.v1",
+  "status": "PASS",
+  "admission": false,
+  "reviewed_utc": "2026-10-11T16:26:26.230426+00:00",
+  "inputs": {
+    "/home/jdiaz/scratch/stage5_effective_controls_20261011/extend_completed_control_v6.py": "ee8a00b5972d2fcb8b93ee4214767316243ed1b50bda07709b7bec246ecd2596",
+    "/home/jdiaz/scratch/stage5_effective_controls_20261011/test_extend_completed_control_v6.py": "51eb96dc234427f42cf2a4c33a0dcd049111c015ba4cc2e0e7f07e866191190e",
+    "/home/jdiaz/scratch/stage5_control_window_helper_validation_20261011_02/validation_receipt.json": "399f3702d388748340b58f5b6d4fcda41b8060b5f55d228d65b06e8141326026"
+  },
+  "static_checks": [
+    "Only completed20ps DEVELOPMENT_DURATION_REACHED controls with ACTIVE controller and no historical/pending/confirmed event",
+    "Requested duration None removes development cutoff only; saved200ps ceiling, trigger and extra window remain unchanged",
+    "All13sourcepins,physical arrays,clock,source,circuit,ledger,guard,history,snapshots,resources preserved",
+    "Fresh lineage requires original STARTED zero/source/DC/archive evidence; inherited lineage validates recursive receipts",
+    "Verification rebuilds functional energy without RHS or temporal step; input directories preserved"
+  ],
+  "synthetic_tests": {
+    "framework": "pytest",
+    "passed": 48,
+    "elapsed_s": 1.19,
+    "physical_evolution": false,
+    "basetemp": "/home/jdiaz/scratch/stage5_control_window_independent_pytest_20261011",
+    "cpu": 4,
+    "threads": 1
+  },
+  "notes": [
+    "An initial unittest invocation discovered zero pytest functions and is not evidence; the explicit pytest run above performed all48tests.",
+    "No campaign extended or resumed by this reviewer."
+  ]
+}

@@ -1,0 +1,423 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,bm,array,geometry,color,fancyhdr,hyperref}
+\geometry{left=19mm,right=19mm,top=18mm,bottom=19mm}
+\definecolor{ink}{RGB}{20,52,72}
+\definecolor{accent}{RGB}{22,115,139}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=ink}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\small\color{ink}pysnspd / cierre efectivo BCS / 11 de octubre de 2026}
+\fancyfoot[R]{\small\thepage}
+\newcommand{\block}[1]{\par\vspace{5pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
+\newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
+\newcommand{\sourcecode}[1]{\par{\footnotesize\color{ink}\textbf{Implementación:} \texttt{#1}}\par}
+\newcommand{\origin}[1]{\par{\footnotesize\color{ink}\textbf{Campo / procedencia:} #1}\par}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\Eu}{E_u}
+\newcommand{\Tb}{T_b}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\FD}{f_{\rm FD}}
+\newcommand{\BE}{n_{\rm BE}}
+\newcommand{\Uscale}{u_i^*}
+\newcommand{\Rcut}{P_{\rm res}}
+\newcommand{\Fgap}{\mathcal F_i}
+\newcommand{\meV}{\,\mathrm{meV}}
+\begin{document}
+{\LARGE\bfseries\color{ink}Funcionales y ecuaciones auxiliares}\par
+{\large Evaluaciones durante la evolución acoplada}\par
+{\small Cierre efectivo neutral BCS. No se computa evolución microscópica Usadel/Moyal ni modo de carga \(h_T\).}
+\renewcommand{\theequation}{2.\arabic{equation}}
+\block{Energía común: BCS local y rigidez de gradiente}
+\begin{gather}
+ \rho_i=|d_i|^2,\quad e_{ik}=\sqrt{\bar\xi_k^2+\rho_i},\quad
+ u_i^*=N_0E_u^2V_i,\quad
+ C_{ij}=N_0E_u^2d_f\ell_0^2c_{ij},\\
+ U_{e+\nabla}=U_{\rm local}+U_\nabla,\\
+ U_{\rm local}=\sum_i u_i^*
+ \left[\frac{\rho_i}{g}-2\sum_kw_k(e_{ik}-\bar\xi_k)
+ +4\sum_kw_ke_{ik}p_{ik}\right],\\
+ U_\nabla=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}
+ |d_i-e^{-i\alpha_{ij}}d_j|^2,\\
+ e_{ik}-\bar\xi_k=\frac{\rho_i}{e_{ik}+\bar\xi_k},\qquad
+ \kappa_{ij}=\frac{\kappa(\rho_i)+\kappa(\rho_j)}2,\\
+ K(a;T_b)=\frac{\pi N_0\hbar D}{4a}
+ \tanh\!\frac{a}{2k_BT_b},\quad
+ \kappa(\rho)=\frac{K(E_u\sqrt\rho;T_b)}{N_0\ell_0^2},
+ \quad K(0;T_b)=\frac{\pi N_0\hbar D}{8k_BT_b},\\
+ \mathcal F_i=u_i^*
+ \left[\frac1g-\sum_k\frac{w_k(1-2p_{ik})}{e_{ik}}\right]d_i
+ +\sum_{j\sim i}C_{ij}\kappa_{ij}(d_i-e^{-i\alpha_{ij}}d_j)\\
+ \hspace{20mm}
+ +\frac{\kappa'(\rho_i)d_i}{2}
+ \sum_{j\sim i}C_{ij}|d_i-e^{-i\alpha_{ij}}d_j|^2,\notag\\
+ I^s_{ij}=-\frac{2e}{\hbar}\frac{\partial U_{e+\nabla}}{\partial\alpha_{ij}}
+ =\frac{4e}{\hbar}C_{ij}\kappa_{ij}
+ \Ima(d_i^*e^{-i\alpha_{ij}}d_j),\\
+ \alpha_{ij}=\frac{2e}{\hbar}\int_i^j\mathbf A\cdot\dd\mathbf l,\qquad
+ \alpha_{ji}=-\alpha_{ij},\quad\mathbf A=0\quad\text{(casos actuales)},\\
+ \delta U_{e+\nabla}
+ =2\Rea\sum_i\mathcal F_i^*\delta d_i
+ +4\sum_{ik}u_i^*w_ke_{ik}\delta p_{ik}
+ +\sum_{\langle ij\rangle}\frac{\partial U}{\partial\alpha_{ij}}\delta\alpha_{ij}.
+\end{gather}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{g,\rho_i,\kappa,\kappa'}{emparejamiento; módulo al cuadrado; rigidez normalizada; derivada en $\rho$}
+\labelrow{a=|\Delta|}{módulo físico del parámetro de orden [J]}
+\labelrow{K,C_{ij},c_{ij}}{rigidez [J$^{-1}$m$^{-1}$]; escala de arista [J]; conductancia dual geométrica}
+\labelrow{d_f,\ell_0,\alpha_{ij}}{espesor [m]; longitud de referencia [m]; fase gauge de arista}
+\labelrow{\mathbf A}{potencial vector magnético SI [Wb/m]}
+\labelrow{I^s_{ij},\mathcal F_i}{supercorriente orientada [A]; fuerza de Wirtinger [J]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Energía BCS renormalizada en cuadratura nativa. \textbf{Hipótesis energética propia}: rigidez radial anclada a la corriente dirty BCS de Vodolazov, ec.\ 33, y Allmaras, ec.\ 3.15, con \(T_b\) fijo. Incluye \(\kappa'\); no es el funcional Usadel fuera de equilibrio. Depairing sólo en este gradiente; \(\Gamma_{\rm DOS}=0\).}
+\sourcecode{effective\_bcs\_functional.py}
+
+\newpage
+\block{Colisiones: dispersión y recombinación compartidas}
+\begin{gather}
+ a=S:(k,l),\ k<l,\qquad
+ a=R:(k,l),\ k\leq l,\qquad
+ \omega^S_{ia}=e_{il}-e_{ik},\quad\omega^R_{ia}=e_{ik}+e_{il},\\
+ M^S_{ia}=1-\frac{|d_i|^2}{e_{ik}e_{il}},\qquad
+ M^R_{ia}=1+\frac{|d_i|^2}{e_{ik}e_{il}},\\
+ \widetilde w^S_{kl}=w_kw_l,\qquad
+ \widetilde w^R_{kl}=\frac{w_kw_l}{1+\delta_{kl}},\\
+ {\cal A}^+_{ia}=\prod_q(1+n_{iq})^{\nu^{ph}_{qa}},
+ \qquad {\cal A}^-_{ia}=\prod_qn_{iq}^{\nu^{ph}_{qa}},\\
+ b^S_{ia}=p_{il}(1-p_{ik}){\cal A}^+_{ia}
+ -p_{ik}(1-p_{il}){\cal A}^-_{ia},\\
+ b^R_{ia}=p_{ik}p_{il}{\cal A}^+_{ia}
+ -(1-p_{ik})(1-p_{il}){\cal A}^-_{ia},\\
+ \boxed{r^{S/R}_{ia}=
+ \frac{8\pi E_u}{\hbar}\,
+ \widetilde w^{S/R}_{kl}\,
+ \alpha^2F(E_u\omega^{S/R}_{ia})\,M^{S/R}_{ia}b^{S/R}_{ia}},\\
+ \nu^e_{ka}=\begin{cases}+1,&S,\ k\text{ inferior},\\
+ -1,&S,\ k\text{ superior},\\-1,&R,\text{ cada participante},\end{cases}
+ \qquad \nu^e_{ka}=-2\quad(R,\ k=l),\\
+ \omega_q\leq\omega_{ia}\leq\omega_{q+1},\qquad
+ \beta=\frac{\omega_{ia}-\omega_q}{\omega_{q+1}-\omega_q},\\
+ \nu^{ph}_{qa}=1-\beta,\quad\nu^{ph}_{q+1,a}=\beta,\qquad
+ (1-\beta)\omega_q+\beta\omega_{q+1}=\omega_{ia},\\
+ \dot U^{e-ph}_{e,i}=4u_i^*\sum_kw_ke_{ik}\dot p^{e-ph}_{ik},\quad
+ \dot U^{e-ph}_{ph,i}=u_i^*\sum_qc_q\omega_q\dot n^{e-ph}_{iq},\\
+ \dot U^{e-ph}_{e,i}+\dot U^{e-ph}_{ph,i}=0,\qquad
+ r_{ia}[\FD(T),\BE(T)]=0.
+\end{gather}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{S,R,M^{S/R}}{dispersión, recombinación; factores de coherencia BCS}
+\labelrow{\omega_{ia},\alpha^2F}{energía del evento/$E_u$; espectro Eliashberg adimensional}
+\labelrow{\widetilde w,\delta_{kl}}{peso de par sin doble conteo; delta de Kronecker}
+\labelrow{{\cal A}^{+/-},b^{S/R}}{actividades fonónicas e imbalance de Pauli}
+\labelrow{\nu^{ph},\beta}{deposición compartida en dos modos; peso baricéntrico}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Cinética cuántica electrón--fonón, coherencia BCS y balance detallado. \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)}, ecs.\ 3--4; forma discreta propia con un mismo evento para ambas energías.}
+\sourcecode{effective\_bcs\_kinetics.py}
+
+\newpage
+\block{Transporte, temperatura equivalente y calor físico}
+\begin{gather}
+ e_{\ell,-}=\max(e_{i0},e_{j0}),\quad
+ e_{\ell,+}=\min(e_{i,K-1},e_{j,K-1}),\\
+ e_{\ell a}=\frac{e_{\ell,-}+e_{\ell,+}}2+
+ \frac{e_{\ell,+}-e_{\ell,-}}2x_a,\qquad
+ w^{face}_{\ell a}=\frac{e_{\ell,+}-e_{\ell,-}}2w_a^{GL},\\
+ E_{\ell a}=E_ue_{\ell a},\quad
+ e_{\ell a}=\sum_k\beta^{(i)}_{ka}e_{ik}
+ =\sum_k\beta^{(j)}_{ka}e_{jk},\quad
+ \sum_k\beta^{(i)}_{ka}=\sum_k\beta^{(j)}_{ka}=1,\\
+ {\cal P}_{ia}=\prod_kp_{ik}^{\beta^{(i)}_{ka}},\qquad
+ {\cal Q}_{ia}=\prod_k(1-p_{ik})^{\beta^{(i)}_{ka}},\\
+ J_{\ell a}=4D\frac{A_\ell^{face}}{L_\ell}\,
+ w_a^{face}({\cal P}_{ia}{\cal Q}_{ja}-{\cal P}_{ja}{\cal Q}_{ia}),
+ \qquad {\cal D}_L=N_1^2-R_2^2=1\quad\text{(BCS local)},\\
+ \sum_i4u_i^*\sum_kw_ke_{ik}\dot p^{tr}_{ik}=0,\qquad
+ \sum_i4N_0E_uV_i\sum_kw_k\dot p^{tr}_{ik}=0,\\
+ \FD(E,T)=\frac1{\exp(E/k_BT)+1},\qquad
+ \BE(\Omega,T)=\frac1{\exp(\Omega/k_BT)-1},\\
+ \sum_kw_ke_{ik}\FD(E_{ik},T_{E,i})
+ =\sum_kw_ke_{ik}p_{ik},\qquad
+ \sum_kw_ke_{ik}\dot p^{BGK}_{ik}=0,\\
+ Q_{\Delta,i}=
+ \frac{2u_i^*}{A_i\tau_K}
+ \left[\frac{(\Rea f_i)^2}{R_i}+R_i(\Ima f_i)^2\right]\geq0,
+ \qquad Q_{\Delta,i}=0\quad(i\text{ en corte}),\\
+ P_i=Q_{\Delta,i}+P_{J,i},\quad
+ T_{*,i}=\max(T_{E,i},T_b),\\
+ \tau_{ee}(T)=\tau_{ee}(T_c)\frac{T_c}{T},\qquad
+ \tau_{ep}(T)=\tau_{ep}(T_c)\left(\frac{T_c}{T}\right)^3,\\
+ \tau_{\rm sc}^{-1}(T)=\tau_{ee}^{-1}(T)+\tau_{ep}^{-1}(T),\\
+ \boxed{\mathcal H_{ik}=
+ \frac{P_i\,e_{ik}\FD(E_{ik},T_{*,i})(1-p_{ik})}
+ {4u_i^*\sum_lw_le_{il}^2\FD(E_{il},T_{*,i})(1-p_{il})}},\\
+ 4u_i^*\sum_kw_ke_{ik}\mathcal H_{ik}=P_i,\qquad
+ U_{ph}=\sum_{iq}u_i^*c_q\omega_qn_{iq}.
+\end{gather}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{A_\ell^{face},L_\ell,D}{área de cara [m$^2$], longitud de arista [m], difusión [m$^2$/s]}
+\labelrow{e_{ik},e_{\ell,-},e_{\ell,+},e_{\ell a}}{energías de excitación; límites y nodos de cara divididos por $E_u$}
+\labelrow{x_a,w_a^{GL}}{nodos y pesos de referencia fijos de Gauss--Legendre}
+\labelrow{i,j,\ell,k,K}{nodos adyacentes; arista; índice y número de estados electrónicos}
+\labelrow{w_{\ell a}^{face},w_a^{face},\beta_{ka}}{peso transformado de la cara $\ell$ ($\ell$ implícito en el flujo); interpolación a energía común}
+\labelrow{{\cal P},{\cal Q}}{actividades de partículas y huecos, adimensionales}
+\labelrow{T_E,T_*}{funcional electrónico; temperatura de movilidad y fuente [K]}
+\labelrow{\tau_{ee}(T),\tau_{ep}(T),\tau_{\rm sc}(T)}{tiempos inelásticos evaluados con $T=T_{*,i}$ durante la evolución [s]}
+\labelrow{f_i,Q_{\Delta,i},P_{J,i}}{fuerza radial/tangencial normalizada; calor KWT y Joule [W]}
+\labelrow{P_i,U_{ph}}{calor suministrado a electrones [W]; energía fonónica [J]}
+\hline
+\end{tabular}\par
+\vfill
+{\small En el nominal de \(775\) nm, \(T_{E,\max}^0\simeq20\,\mathrm K>T_c=8.65\,\mathrm K\).
+La movilidad KWT y la rigidez radial fijada a \(T_b\) se emplean como un cierre fenomenológico calibrable durante esta evolución; no se deriva su validez microscópica para todo ese rango de temperaturas y distribuciones.}
+\origin{Volúmenes finitos a energía compartida; relajación BGK con momento energético nulo; disipación variacional KWT. \(T_E\) es un funcional de \(p_\xi\), no reemplaza su evolución. El calor nunca se obtiene del residuo del balance.}
+\sourcecode{effective\_bcs\_kinetics.py; effective\_coupled.py}
+
+\newpage
+\block{Potencial cuasineutro y cortes superconductores}
+\begin{gather}
+ G_\ell=c_\ell/R_\square,\qquad
+ I^n_\ell=G_\ell(\phi_i-\phi_j),\qquad I_\ell=I^s_\ell+I^n_\ell,\\
+ BI=\mathbf b,\qquad
+ (BGB^\mathsf T)\phi=\mathbf b-BI^s,\qquad
+ \sum_{i\in L}b_i=I_s,\quad\sum_{i\in R}b_i=-I_s,\\
+ \phi_i=\phi_L\ (i\in L),\qquad
+ \phi_i=\phi_R\ (i\in R),\qquad \phi_R=0,\\
+ P_{J,\ell}=G_\ell(\phi_i-\phi_j)^2,\qquad
+ P_{J,i}=\frac12\sum_{\ell\ni i}P_{J,\ell},\\
+ I_sV_{\rm dev}=\sum_\ell I^s_\ell(\phi_i-\phi_j)
+ +\sum_\ell P_{J,\ell},\qquad V_{\rm dev}=\phi_L-\phi_R,\\
+ d_i=|d_{{\rm DC},i}|e^{i\theta_{L/R}}\quad(i\in L/R),\qquad
+ \dot\theta_{L/R}=-2e\phi_{L/R}/\hbar,\quad D_td_i=0,\\
+ p_{ik}=\FD(E_{ik},T_b),\qquad n_{iq}=\BE(\Omega_q,T_b)
+ \qquad(i\in L\cup R),\\
+ \dot p_{ik}=\dot n_{iq}=0\quad(i\in L\cup R),\qquad
+ \hat{\mathbf n}\cdot\mathbf j_{\rm tot}
+ =\hat{\mathbf n}\cdot\boldsymbol\Phi_p=0\quad(\text{bordes laterales}),\\
+ P_{\rm res}=\sum_{i\in L\cup R}\left[
+ 4u_i^*\sum_kw_ke_{ik}\dot p_{ik}^{raw}
+ +u_i^*\sum_qc_q\omega_q\dot n_{iq}^{raw}\right],\\
+ P_{\rm esc}=\sum_{iq}\frac{u_i^*c_q\omega_q}{\tau_{{\rm esc},i}}
+ \bigl[n_{iq}-\BE(\Omega_q,T_b)\bigr].
+\end{gather}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{B,\mathbf b,G_\ell}{incidencia origen $+1$; inyección nodal [A]; conductancia [S]}
+\labelrow{L,R,\phi_{L/R}}{cortes completos equipotenciales; potencial [V]}
+\labelrow{\theta_{L/R},d_{\rm DC}}{fase Josephson; módulo del equilibrio efectivo recién preparado}
+\labelrow{\dot p^{raw},\dot n^{raw}}{RHS completo antes de fijar las distribuciones de corte}
+\labelrow{P_{\rm res},P_{\rm esc}}{potencia saliente a reservorios y sustrato [W]; signo conservado}
+\labelrow{\boldsymbol\Phi_p}{flujo espacial de cuasipartículas}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Continuidad cuasineutra y red óhmica efectiva; identidad gauge/Noether de la misma energía. Cortes rígidos de continuación superconductora, hipótesis espacial propia; no contactos normales de Allmaras. Conductancia normal fija explícita, sin evolución del modo de carga.}
+\sourcecode{effective\_bcs\_ports.py; effective\_coupled.py}
+
+\newpage
+\block{Circuito CM y balance energético completo}
+\begin{gather}
+ I_{\rm RF}=I_b-I_s,\qquad V_{\rm out}=R_l(I_b-I_s),\\
+ L_b\dot I_b=V_b-R_bI_b-v_c-R_l(I_b-I_s),\\
+ L_{k,\rm ext}\dot I_s=v_c+R_l(I_b-I_s)-V_{\rm dev},\qquad
+ C_c\dot v_c=I_b-I_s,\\
+ U_c=\tfrac12L_bI_b^2+\tfrac12L_{k,\rm ext}I_s^2+\tfrac12C_cv_c^2,\\
+ \dot U_c=V_bI_b-R_bI_b^2-R_l(I_b-I_s)^2-I_sV_{\rm dev},\\
+ U_{\rm tot}=U_{e+\nabla}+U_{ph}+U_c,\qquad
+ \dot U_{e+\nabla}+\dot U_{ph}
+ =I_sV_{\rm dev}-P_{\rm esc}-P_{\rm res},\\
+ P_{\rm ext}=V_bI_b-R_bI_b^2-R_l(I_b-I_s)^2-P_{\rm esc}-P_{\rm res},\\
+ {\cal R}_P=\dot U_{\rm tot}-P_{\rm ext},\qquad
+ {\cal R}_U(t)=U_{\rm tot}(t)-U_{\rm tot}(0)-\int_0^tP_{\rm ext}(s)\dd s .
+\end{gather}
+\block{Observable intrínseco y parada corta}
+\begin{gather}
+ t_0=0\quad\text{(transferencia efectiva postcascada)},\qquad
+ \tau_{\rm lat}=t_\times-t_0,\\
+ V_{\rm sig}=V_{\rm out}-V_{\rm basal},\qquad V_{\rm th}=0.1\,\mathrm{mV},\\
+ V_k<V_{\rm th}\leq V_{k+1},\qquad
+ t_\times=t_k+\frac{V_{\rm th}-V_k}{V_{k+1}-V_k}(t_{k+1}-t_k),\\
+ V_{\rm sig}(t)\geq0.95V_{\rm th},\quad
+ t\in[t_\times,t_\times+0.5\,\mathrm{ps}],\qquad
+ t_{\rm fin}\geq t_\times+5\,\mathrm{ps},\\
+ I_b(t)>0,\qquad I_s(t)>0 .
+\end{gather}
+{\small La referencia de \(0.57\) ps sólo determina \(\sigma_{\rm ref}\); no se suma a \(\tau_{\rm lat}\) ni resuelve la cascada óptica. Cruce confirmado o censura al techo finito declarado en cada corrida. Sin inversión de corriente global. Umbral exploratorio intrínseco, sin amplificador ni reset eléctrico completo.}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{I_b,I_s,I_{\rm RF}}{corrientes de polarización, detector y lectura [A]}
+\labelrow{V_b,v_c,V_{\rm dev}}{fuente, capacitor y dispositivo [V]}
+\labelrow{L_b,L_{k,\rm ext},C_c}{inductancias exteriores [H]; capacitor de acoplamiento [F]}
+\labelrow{R_b,R_l,U_c}{resistencias de bias y lectura [$\Omega$]; energía circuital [J]}
+\labelrow{P_{\rm ext},{\cal R}_P,{\cal R}_U}{potencia neta [W]; defectos independientes [W], [J]}
+\labelrow{t_0,\tau_{\rm lat}}{origen postcascada y latencia relativa [s]}
+\labelrow{V_{\rm basal},V_{\rm th},t_\times}{basal DC y umbral [V]; tiempo interpolado de cruce [s]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Leyes de Kirchhoff y energía de inductores/capacitor: circuito de la memoria, adenda CM.4/\allowbreak CM.7--10. Balance por regla de la cadena y estequiometría, sin fuente residual.}
+\sourcecode{electrical\_ports.py; effective\_coupled.py; trigger\_window.py}
+
+\newpage
+\block{Avance temporal conjunto y soporte nativo}
+\begin{gather}
+ {\cal X}=(d,p,n,I_b,I_s,v_c),\qquad
+ {\cal X}^{m+1}-{\cal X}^m=h\,{\cal F}_h({\cal X}^{m+1/2}),\\
+ {\cal X}^{m+1/2}=\tfrac12({\cal X}^{m+1}+{\cal X}^m)
+ \quad\text{(coordenadas cartesianas interiores y poblaciones)},\\
+ d_{L/R}^{m+1}=d_{L/R}^{m}\exp(i\delta\theta_{L/R}),\qquad
+ d_{L/R}^{m+1/2}=d_{L/R}^{m}\exp(i\delta\theta_{L/R}/2),\\
+ \gamma_h(\tau)=\frac{2}{h}\tanh\!\frac{h}{2\tau},\qquad
+ a_e=\tanh\!\frac{h}{2\tau_{\rm BGK}},\quad
+ a_{ph}=\tanh\!\frac{h}{2\tau_{\rm esc}},\\
+ p^{m+1}=\frac{(1-a_e)p^m+2a_e f^{mid}+h{\cal H}^{mid}
+ +hC^{events,mid}}{1+a_e},\\
+ n^{m+1}=\frac{(1-a_{ph})n^m+2a_{ph}n_b
+ +hC^{ph,events,mid}}{1+a_{ph}},\\
+ b^p_{ik}=\frac{4w_k}{h}
+ [(1-a_e)p^m_{ik}+2a_e f^{mid}_{ik}+h{\cal H}^{mid}_{ik}],\\
+ b^h_{ik}=\frac{4w_k}{h}
+ [(1-a_e)(1-p^m_{ik})+2a_e(1-f^{mid}_{ik})-h{\cal H}^{mid}_{ik}],\\
+ b^n_{iq}=\frac{c_q}{h}[(1-a_{ph})n^m_{iq}+2a_{ph}n_{b,q}],\\
+ f_\mu=\begin{cases}1,&L_\mu=0,\\
+ \min(1,0.95\,b_\mu/L_\mu),&L_\mu>0,\end{cases}
+ \qquad r^h_a=r_a\min_{\mu\ {\rm consumido\ por}\ a}f_\mu,\quad
+ J^h_a=J_a\min_{\mu\ {\rm consumido\ por}\ a}f_\mu .
+\end{gather}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{h,m,{\cal F}_h}{paso [s]; índice temporal; RHS con eventos compartidos limitados}
+\labelrow{f^{mid},{\cal H}^{mid}}{FD a temperatura equivalente y calor del mismo punto medio}
+\labelrow{C^{events},C^{ph,events}}{RHS de colisiones/transporte y de fonones antes de BGK/escape}
+\labelrow{b_\mu,L_\mu,f_\mu}{capacidad disponible, pérdidas agregadas [s$^{-1}$] y factor de evento}
+\labelrow{\mu=p,h,n}{partículas electrónicas, huecos y fonones; $b_\mu\geq0$ requerido}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Punto medio implícito, Newton disperso y limitación conservativa de producción/destrucción tipo Patankar. Este tratamiento finito depende de \(h\); su precisión se establece por refinamiento. No modifica la estequiometría ni añade calor para reparar energía.}
+\sourcecode{effective\_coupled.py; effective\_bcs\_kinetics.py}
+
+\newpage
+\block{Convergencia del sistema implícito: normas físicas}
+\begin{gather}
+ \mathbf y_d=(\Rea d_{\rm int},\Ima d_{\rm int},\theta_L,\theta_R),
+ \qquad
+ \mathbf y_c=(I_b/I_*,I_s/I_*,v_c/V_*),\\
+ g_a=h{\cal F}_{h,a}({\cal X}^{mid})-\delta a,\qquad
+ a\in\{\mathbf y_d,p,n,\mathbf y_c\},\\
+ {\cal E}_p=\sum_{ik}4u_i^*w_ke_{ik}^{mid}|g_{p,ik}|,\qquad
+ {\cal E}_{ph}=\sum_{iq}u_i^*c_q\omega_q|g_{n,iq}|,\\
+ E_{\rm ref}=
+ \begin{cases}
+ E_{\gamma,\rm ret},&\text{con fotón},\\
+ \sum_i u_i^*,&\text{DC},
+ \end{cases}
+ \qquad
+ r_p={\cal E}_p/E_{\rm ref},\quad r_{ph}={\cal E}_{ph}/E_{\rm ref},\\
+ \delta p^{mid}_{ik}=\tfrac12g_{p,ik},\qquad
+ \delta{\cal F}^{(p)}_i
+ =2u_i^*d_i^{mid}\sum_k\frac{w_k\delta p^{mid}_{ik}}{e_{ik}^{mid}}
+ =u_i^*d_i^{mid}\sum_k\frac{w_kg_{p,ik}}{e_{ik}^{mid}},\\
+ \mathbf v_i=(\Rea z_i,\Ima z_i)^{\mathsf T},\qquad
+ \mathbf w_i=(-\Ima z_i,\Rea z_i)^{\mathsf T},\\
+ {\sf M}_i=\frac{R_i^{-1}\mathbf v_i\mathbf v_i^{\mathsf T}
+  +R_i\mathbf w_i\mathbf w_i^{\mathsf T}}
+ {u_i^* A_i\tau_K},\qquad
+ (D_td_i)_{\rm cart}=-{\sf M}_i({\cal F}_i)_{\rm cart},\\
+ r_{p\to d}=
+ \left\|h\,{\sf M}\bigl(\delta{\cal F}^{(p)}\bigr)_{\rm cart}
+ \right\|_{\infty,\rm int},\\
+ \boxed{\max\!\left(
+ \|g_{\mathbf y_d}\|_\infty,\|g_{\mathbf y_c}\|_\infty,
+ r_p,r_{ph},r_{p\to d}\right)<\epsilon_{\rm NL}},
+ \qquad\epsilon_{\rm NL}=2\times10^{-7}\;\text{(referencia: }2\times10^{-9}\text{)},\\
+ 0\leq p^{m+1}_{ik}\leq1,\quad n^{m+1}_{iq}\geq0,\qquad
+ I_b^{m+1}>0,\quad I_s^{m+1}>0 .
+\end{gather}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{\mathbf y_d,\mathbf y_c}{coordenadas adimensionales del gap/cortes y del circuito}
+\labelrow{I_*,V_*}{escalas circuitales declaradas [A], [V]}
+\labelrow{g_a,\delta a}{defecto del punto medio e incremento del estado}
+\labelrow{{\cal E}_p,{\cal E}_{ph},E_{\rm ref}}{normas energéticas $L^1$ y referencia [J]}
+\labelrow{\delta{\cal F}^{(p)},{\sf M}_i}{fuerza de gap inducida [J]; movilidad cartesiana [J$^{-1}$s$^{-1}$]}
+\labelrow{r_{p\to d},\epsilon_{\rm NL}}{protección del acoplamiento al gap y tolerancia numérica}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Análisis numérico: defecto no lineal ponderado por energía física, más cota independiente de la respuesta del gap. Se conservan el soporte nativo y el balance energético; no se corrige ni recorta el estado para anular residuos.}
+\sourcecode{effective\_coupled.py}
+
+\newpage
+\block{Control temporal por energía}
+\allowdisplaybreaks[1]
+\begin{gather}
+ \delta W_m=h_mP_{\rm ext}^{mid},\qquad
+ \varepsilon_{E,m}
+ =U_{\rm tot}^{m+1}-U_{\rm tot}^{m}-\delta W_m,\qquad h_m=\delta t_m,\\
+ E_{\rm ref}^{guard}=
+ \begin{cases}E_{\gamma,\rm ret},&\text{fotón},\\
+ \sum_i u_i^*,&\text{DC sin fotón},\end{cases}\qquad
+ {\cal D}_{E,m+1}
+ =E_{\rm ref}^{guard}+\sum_{\ell<m}|\delta W_\ell|+|\delta W_m|,\\
+ |\varepsilon_{E,m}|\leq\epsilon_{\rm guard}^{a}(t_m){\cal D}_{E,m+1},
+ \qquad t_m\geq t_g^a,\quad a\in\{nom,ref\},\\
+ \epsilon_{\rm guard}^{a}(t_m)=
+ \begin{cases}
+ \varnothing,&0\leq t_m<t_g^a\quad\text{(sin guarda)},\\
+ \epsilon_{\rm old}^{a},&t_g^a\leq t_m<t_*^a,\\
+ \epsilon_{\rm new}^{a},&t_m\geq t_*^a,
+ \end{cases}\\
+ (\epsilon_{\rm old}^{nom},\epsilon_{\rm old}^{ref})
+ =(10^{-5},1.25\,10^{-6}),\qquad
+ (\epsilon_{\rm new}^{nom},\epsilon_{\rm new}^{ref})
+ =(2.5\,10^{-6},3.125\,10^{-7}),\\
+ (t_g^{nom},t_g^{ref})=(12.4,12.42)\,\mathrm{ps},\qquad
+ t_*^{nom}=22.435\,\mathrm{ps},\\
+ t_*^{ref}=22.2525\,\mathrm{ps}\in[22.185,22.435]\,\mathrm{ps}
+ \quad\text{(ancla temporal ejecutada)},\\
+ \begin{gathered}
+ \epsilon_{\rm guard}^{a,fresh}(t_m)=\epsilon_{\rm new}^{a}
+ \quad(t_m\geq0),\\
+ (h_{\max}^{nom},h_{\max}^{ref})=(0.02,0.01)\,\mathrm{ps},\\
+ \frac{|{\cal R}_U(t_m)|}
+ {E_{\gamma,\rm ret}+\sum_{\ell<m}|\delta W_\ell|}\leq10^{-2}
+ \quad\text{(admisión fotónica)}
+ \end{gathered},\\
+ {\cal A}_E(t_m)=\sum_{\ell<m}|\varepsilon_{E,\ell}|,\qquad
+ \text{rechazo: }h_m\leftarrow h_m/2\quad
+ \text{antes de aceptar estado y trabajo}.
+\end{gather}
+\par\noindent
+\begin{tabular}{@{}p{.30\linewidth}p{.65\linewidth}@{}}
+\hline
+\labelrow{\varepsilon_{E,m},{\cal D}_{E,m},{\cal A}_E}{defecto local, escala de energía y suma absoluta [J]}
+\labelrow{E_{\rm ref}^{guard}}{referencia energética [J]}
+\labelrow{\epsilon_{\rm guard}^a(t_m),h_{\max}}{guarda local del tramo; techo temporal [s]}
+\labelrow{a=nom,ref}{nominal de 775 nm y refinamiento temporal}
+\labelrow{t_g^a,t_*^a}{primera guarda y cambio prospectivo [s]}
+\labelrow{\epsilon_{\rm old}^a,\epsilon_{\rm new}^a,fresh}{guardas histórica y nueva; corrida nueva desde el origen}
+\labelrow{h_m=\delta t_m}{paso temporal [s]; distinto del espaciado espacial $h$ [m]}
+\hline
+\end{tabular}\par
+\vfill
+\origin{Análisis numérico: aceptación energética local previa al commit y auditoría global independiente. La campaña actual de 775 nm conserva sus tramos históricos; el nuevo umbral actúa sólo en pasos iniciados desde su ancla. Se preservan $U_{\rm tot}(0)$, el trabajo firmado y absoluto y $ {\cal A}_E$ desde el origen: sin reinicio del balance ni certificación retrospectiva. Los comandos nuevos usan la guarda nueva desde $t_0$.}
+\sourcecode{05\_effective\_photon\_run.py}
+
+\end{document}

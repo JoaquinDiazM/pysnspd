@@ -1,0 +1,29 @@
+{
+  "utc": "2026-10-11T19:00:52.656624+00:00",
+  "command": [
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/test_effective_physical_gap_interpolation.py",
+    "tests/test_effective_physical_gap_policy_integration.py",
+    "tests/test_effective_guard_protocol_dispatcher.py",
+    "tests/test_effective_spectral_policy_wiring.py"
+  ],
+  "returncode": 0,
+  "wall_s": 0.7398577479762025,
+  "log": {
+    "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/root_repository_focused_tests.console.log",
+    "sha256": "9b52856734408ddbebeedad89943d604c9ef66b99d677e958b95db26fc64f250"
+  },
+  "pragmatic_independent_review": {
+    "path": "/home/jdiaz/scratch/stage5_physical_gap_integration_candidate_20261011/pragmatic_closure_independent_math_review.json",
+    "sha256": "0e5b4b28a0c18ae7195cea0fd80f6771098fd15a52b30d83ae6ca4d367674882"
+  },
+  "promotion_sha256": "4623309e421713810950eb745c1a6c9dd3d93b7580f7962c1d062fc2934e396c",
+  "stage5": false,
+  "physical_evolution_changed": false
+}

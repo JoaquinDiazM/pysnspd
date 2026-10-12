@@ -1,0 +1,68 @@
+{
+  "schema": "pysnspd.post_data_exploratory_spectral_voltage_decision.v1",
+  "status": "ADOPTED_POST_DATA_VOLTAGE_POLICY_NOT_MODEL_ADMISSION",
+  "created_UTC": "2026-10-12T05:57:27.126119+00:00",
+  "approval_state": "ROOT_EXPLICITLY_ADOPTED_CANDIDATE_ENCODING_FOR_REVIEW",
+  "scope": "775nm_current_54_to_80_bundle_only",
+  "policy_timing": "AFTER_COMPLETED_DATA_REVIEW",
+  "voltage_relative_limit": 0.05,
+  "prior_voltage_relative_limit": 0.02,
+  "latency_relative_limit": 0.02,
+  "global_energy_relative_limit": 0.01,
+  "spatial_limits": {
+    "central_field_L2_over_DC": 0.05,
+    "central_deficit_over_actual_reference_peak": 0.05,
+    "nodal_minimum_over_DC": null
+  },
+  "normalization": "maximum absolute saved Vout difference / max(actual reference pulse peak, saved trigger threshold)",
+  "coverage_and_later_bounds_unchanged": true,
+  "all_original_rows_and_maxima_retained": true,
+  "prior_2percent_voltage_failure_retained": true,
+  "no_automatic_further_margin_increase": true,
+  "no_RHS_or_parameters_changed": true,
+  "stage5_admission": false,
+  "production": {
+    "default_electron_states": 54,
+    "optional_spectral_sensitivity_control_states": 80,
+    "control_is_not_continuum_truth": true,
+    "scope_775nm_only": true
+  },
+  "closure_statement_only_after_four_axes_admitted": "Resolución54 validada en cuatro ejes a775nm dentro de estos márgenes;80 es un control de sensibilidad, no la verdad continua.",
+  "engineering_reason": "Revision explicitly made after observing a3.7792uV difference on a145.4982uV pulse (2.5974percent). Both saved triggers confirm, latency differs0.31353ps (about0.982percent), independent field/deficit and energy checks pass.5percent is our exploratory engineering signal budget, matching mesh/domain, not a published tolerance or an estimate of asymptotic error.",
+  "limitations": [
+    "No universal accuracy or continuum-error estimate.",
+    "No transfer of four-axis775nm validation to1550nm.",
+    "No quantitative guarantee near an untested detection boundary, other bias/material or source calibrators.",
+    "Critical-window coverage and all physical, source, support, current-sign and completion checks remain mandatory."
+  ],
+  "preserved_dependencies": {
+    "baseline": {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/audit_runs.py",
+      "sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a"
+    },
+    "prior_observable_decision": {
+      "path": "/home/jdiaz/scratch/stage5_spectral_mesh_scope_review_20261011/root_prospective_spectral_policy_decision.json",
+      "sha256": "8c62658c36336a2e19cb0d37bef6b650cf5d44da734e586d3fe1d11b1ce6ed33"
+    },
+    "prior_spatial_decision": {
+      "path": "/home/jdiaz/scratch/stage5_exploratory_spatial_budget_candidate_20261011/root_prospective_exploratory_spatial_decision.json",
+      "sha256": "e683151e6e7b678d95eb6c133391b2ea84ca2ba81cd5a54b1a21cb9f16624e23"
+    }
+  },
+  "observed_closed_comparison": {
+    "window_path": "/home/jdiaz/scratch/stage5_closed_spectral_comparison_0_36p6_20261012/window.json",
+    "window_sha256": "143898ef77cd80fe77490aa4af720daccc63dfaa87939693212fcd17dc840fad",
+    "window_ps": [
+      0.0,
+      36.6
+    ],
+    "Vout_maximum_absolute_difference_uV": 3.779204888867732,
+    "Vout_reference_peak_uV": 145.49816411004997,
+    "Vout_relative_error": 0.025974244499808716,
+    "latency_difference_ps": 0.3135279760594457,
+    "latency_tolerance_ps": 0.6388263372329995,
+    "field_L2_over_DC": 0.03085254812735303,
+    "deficit_over_actual_reference_peak": 0.019712005758727242,
+    "original_voltage_2percent_passed": false
+  }
+}

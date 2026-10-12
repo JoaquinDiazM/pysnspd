@@ -1,0 +1,37 @@
+{
+  "schema": "pysnspd.report_initial_Tmax_display_source_validation.v1",
+  "status": "PASS",
+  "admission": false,
+  "tests": {
+    "passed": 153,
+    "elapsed_s": 1.603,
+    "physical_evolution": false,
+    "rendered": false
+  },
+  "source_sha256": {
+    "sandbox/stage5_effective_validation/build_final_report.py": "04de956c8fc2c7c62e6ca0e4b5d473519404d39a52ed12baad8f42784766d382",
+    "sandbox/stage5_effective_validation/physical_sensitivity.py": "0732584ee5582b7ecb6a22dda66b7050ee32dc8d38278a2c81a88875c46609dc",
+    "tests/test_effective_physical_sensitivity.py": "3380ca05a012331799dfc72cb31faabfccb020c17c971870262bbe4f8c851107"
+  },
+  "actual_initial_temperatures": {
+    "nominal": {
+      "declared_K": 20.14615007480962,
+      "saved_Te0_max_K": 20.14615007480962,
+      "only_initial_value_read": true,
+      "run_complete": false
+    },
+    "narrow": {
+      "declared_K": 24.726855928334608,
+      "saved_Te0_max_K": 24.726855928334604,
+      "only_initial_value_read": true,
+      "run_complete": false
+    },
+    "wide": {
+      "declared_K": 16.195532864746276,
+      "saved_Te0_max_K": 16.195532864746276,
+      "only_initial_value_read": true,
+      "run_complete": false
+    }
+  },
+  "scope": "Saved post-cascade equivalent temperature only; no inference of final width sensitivity or numerical admission"
+}

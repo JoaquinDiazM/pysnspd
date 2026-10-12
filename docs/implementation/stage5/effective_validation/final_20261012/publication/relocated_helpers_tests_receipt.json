@@ -1,0 +1,23 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "8",
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--import-mode=importlib",
+    "tests/test_effective_report_display.py",
+    "sandbox/stage5_effective_validation/transfer_verification/test_checkpoint_transfer_v5_v6.py",
+    "sandbox/stage5_effective_validation/transfer_verification/test_numerical_lineage_v6.py",
+    "sandbox/stage5_effective_validation/guard_transition_helpers/test_tighten_local_energy_guard_v6_guard2b.py"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 1.056285789993126,
+  "test_source_sha256": "3e5189da43242e7cb08b746a37baec72e3c2a4018d1dd29240fffeed061daa0f",
+  "note": "Explicit historical evidence helper tests, no simulation launched"
+}

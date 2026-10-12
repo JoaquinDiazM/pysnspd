@@ -1,0 +1,200 @@
+{
+  "schema": "pysnspd.saved_visual_human_qa.v1",
+  "status": "ORIGINALS_REVIEWED_PRESENTATION_CORRECTIONS_PREPARED_NOT_PROMOTED",
+  "created_utc": "2026-10-12T07:27:12.060512+00:00",
+  "reviewer": "rate_pipeline_audit",
+  "scope": "18 saved PNGs, corresponding source/captions/manifests, and four candidate trace previews; no new physical admission",
+  "checks": {
+    "all_18_png_viewed": true,
+    "voltage_mV_current_microA_time_ps": true,
+    "gap_meV_coordinates_nm": true,
+    "complex_spatial_P1_before_magnitude_not_nodal_magnitude_interpolation": true,
+    "no_temporal_snapshot_interpolation": true,
+    "common_color_limits_over_all_saved_frames": true,
+    "temperature_equivalent_K_labeled": true,
+    "energy_density_J_per_m3": true,
+    "energy_increments_eV": true,
+    "global_absolute_energy_defect_norm_and_signed_retained_norm_distinguished": true,
+    "censored_1550_not_assigned_latency": true,
+    "actual_775_crossing_and_confirmation_not_conflated": true
+  },
+  "findings": [
+    {
+      "id": "READOUT_SCALE",
+      "original": "Vdev and threshold flatten the readout in both cases",
+      "severity": "presentation",
+      "candidate_resolution": "Conditional readout-only inset:775mV and1550microV; baseline subtraction explicit; original main axes retained",
+      "resolved_in_candidate": true
+    },
+    {
+      "id": "ENERGY_YLABEL_MARGIN",
+      "original": "1550 energy left ylabel partly outside canvas",
+      "severity": "presentation",
+      "candidate_resolution": "Explicit tight bounding box at save; actual candidate preview inspected with full label",
+      "resolved_in_candidate": true
+    }
+  ],
+  "interpretation": {
+    "775": "Gap depression spans full width in late saved maps; no vortex/topology claim inferred solely from colormap.",
+    "1550": "Small pulse remains below0.1mV; corrected inset resolves0.33138368385222114microV. Equivalent-temperature and gap maps retain their physical ranges; no absence-of-event experimental validation claim."
+  },
+  "plot_sources": [
+    {
+      "wavelength_nm": 775,
+      "plot_manifest_path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/plot_manifest.json",
+      "plot_manifest_sha256": "b316511216c7ec469567e5afe72cbbdd7e8a13aab3d392123cd95a95cd22290f",
+      "products": [
+        {
+          "name": "01_pulse_and_currents",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/01_pulse_and_currents.png",
+          "sha256": "7855cdb9556cfe00f515094d94da451e60f0c509495ad2ba00c99b3d8287483d",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "02_energy_balance",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/02_energy_balance.png",
+          "sha256": "858768ec82a1a1e6053fbb692a4ff11cf23f529d21afbfa8685f533b373ac027",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "03_gap_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/03_gap_montage.png",
+          "sha256": "9aee8d31fb8e331a09696d60c7735ecb15b1f2c4557cf11d78f6b73b772cf320",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "04_gap_central_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/04_gap_central_montage.png",
+          "sha256": "ebf73d2e297c11ef48c7a8f55c7f1def38348f52517185c4c965c8cddc60e5cf",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "05_electron_temperature_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/05_electron_temperature_montage.png",
+          "sha256": "e7ea427b9fc10f3dfd6c6cbabd51242f9aeb2beccde2f26c90cd59f77c61070e",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "06_phonon_temperature_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/06_phonon_temperature_montage.png",
+          "sha256": "be750baef058f69c6fa9a41797ecb3a6ea675b6d6900f59361e880683842d227",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "07_excess_energy_density_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/07_excess_energy_density_montage.png",
+          "sha256": "ab59195f5a29697833f4b9236a9064aa461b023f413a231ad35d7bfecd347533",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "08_electron_energy_density_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/08_electron_energy_density_montage.png",
+          "sha256": "0cb706590d708e1e21e4d0831192e3faef6fdec84585b1ca80b3542e4e9bd9cc",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "09_phonon_energy_density_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal775_saved_visual_final_20261012/09_phonon_energy_density_montage.png",
+          "sha256": "672574c8710b9d00b14987db21f43a29ca67149585152ddea9e3038289708014",
+          "visual_inspection": "COMPLETED"
+        }
+      ],
+      "observation_status": "TRIGGER_MARGIN_COMPLETE",
+      "selected_saved_snapshots_ps": [
+        0.0,
+        0.1,
+        0.3,
+        0.5,
+        0.9999999999999998,
+        2.0,
+        4.999999999999979,
+        9.999999999999872,
+        19.999999999999904,
+        36.94131686164998
+      ]
+    },
+    {
+      "wavelength_nm": 1550,
+      "plot_manifest_path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/plot_manifest.json",
+      "plot_manifest_sha256": "207ec2eeac387a0da8fd550136be1c90d8b8abaab080882a70f6f98671768d05",
+      "products": [
+        {
+          "name": "01_pulse_and_currents",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/01_pulse_and_currents.png",
+          "sha256": "60ac743fe1d1aa3c53dbf903ce36df88cd7544a1cac0f8c8a8fb574089cebc36",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "02_energy_balance",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/02_energy_balance.png",
+          "sha256": "832ca2cec4baecc64e601104a22328583be41ab7e0c0ed7c7b868f64ce837f8c",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "03_gap_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/03_gap_montage.png",
+          "sha256": "be70c4acce47e345e212ce445d0329771a40cbf76b987d3cd7cd6c28910b42b6",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "04_gap_central_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/04_gap_central_montage.png",
+          "sha256": "65f8fa7172076c052f048185926191eca5ccc78d89d6a2860fccb6c981cc6f7f",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "05_electron_temperature_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/05_electron_temperature_montage.png",
+          "sha256": "1775fd4094ef35b299350b87d697274fc2909141a0c989e84c1ff04584f07b2e",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "06_phonon_temperature_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/06_phonon_temperature_montage.png",
+          "sha256": "05cd7d6bf87f20a7b56b21df654a35569ea50211588960cae7f68d7592cec16b",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "07_excess_energy_density_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/07_excess_energy_density_montage.png",
+          "sha256": "fb8ed0e14a2b2135a94b8a675850566ba63387530d363c09510b4bf5d2b5aabc",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "08_electron_energy_density_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/08_electron_energy_density_montage.png",
+          "sha256": "023bef805eb6c10d366e953cab134da6665d4643d860e442134bbaf949597816",
+          "visual_inspection": "COMPLETED"
+        },
+        {
+          "name": "09_phonon_energy_density_montage",
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_20261012/09_phonon_energy_density_montage.png",
+          "sha256": "0dba93e2bd3978cbb8326c0d332e4058273b1cb107e5ff5a22724b4d8a8575a4",
+          "visual_inspection": "COMPLETED"
+        }
+      ],
+      "observation_status": "TIME_CENSORED_NO_TRIGGER",
+      "selected_saved_snapshots_ps": [
+        0.0,
+        0.1,
+        0.3,
+        0.5,
+        0.9999999999999998,
+        2.0,
+        4.999999999999979,
+        9.999999999999872,
+        19.999999999999822,
+        49.99999999999934,
+        99.9999999999982,
+        200.0
+      ]
+    }
+  ],
+  "original_visual_pipeline_receipt_path": "/home/jdiaz/scratch/stage5_final_visual_pipeline_receipt_20261012.json",
+  "original_visual_pipeline_receipt_sha256": "cdcbc85fcc4cce82280e5bf29817a626985f6646c9865b7c58c2ec945dc6c8c2",
+  "candidate_trace_preview_receipt_sha256": "48d4cb0cd49f0d8935470ccbb175f796a8d6ff712ac6be7c9abaea9770b79660",
+  "source_repo_unchanged_sha256": "0c9bc10d067ca6be6788c1418e3e96989ebc85f700ed2338c4545cabc24738f0",
+  "simulations_launched": 0,
+  "new_physical_audits": 0,
+  "mathematical_PDF_review": "Not repeated; assigned to other reviewers"
+}

@@ -1,0 +1,17 @@
+{
+  "schema": "pysnspd.root_report_guard_wiring_review.v1",
+  "utc": "2026-10-11T17:26:01.359614+00:00",
+  "status": "APPROVED_TWO_ANALYSIS_SOURCE_CHANGES",
+  "patch_sha256": "d54b88c8399d5d4d04f43f27963fc8df813f7cf4993082b92055c0184a202919",
+  "approved_candidate_sha256": {
+    "build_final_report_guard_window_candidate.py": "75001b1766429322f5aafc26d55dfa2738bb9a766f898152aa9fc9e0f4587513",
+    "physical_sensitivity_guard_callback_candidate.py": "0eec885a391c4919a79ae5972e2d068dba43dd8eb3e03dba5444b008c29b34f0"
+  },
+  "reason": "Root read complete diff, test source and validation; actual continuous guard timelines and full original width proof precede display; default sensitivity validation remains strict.",
+  "baseline_auditor_unchanged": true,
+  "RHS_and_13pins_unchanged": true,
+  "tests": "19 focused +16 existing sensitivity passed; no repeated global suite required.",
+  "test_source_condition": "Before promotion of candidate tests, remove scratch absolute imports and run against actual repo sources. The two candidate analysis source files are approved now; any subsequent spectral wiring needs a separately reviewed diff.",
+  "stage5_admission": false,
+  "PDF_authorization": false
+}

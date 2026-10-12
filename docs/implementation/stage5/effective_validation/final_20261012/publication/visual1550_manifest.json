@@ -1,0 +1,309 @@
+{
+  "schema": "pysnspd.effective_photon_plots.v1",
+  "status": "SAVED_PHYSICAL_FIGURES_NO_NEW_MODEL_ADMISSION",
+  "run_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011",
+  "output_dir": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012",
+  "pipeline": "/home/jdiaz/pysnspd/plot_pipelines/05_plot_effective_photon_run.py",
+  "source_sha256": "0c9bc10d067ca6be6788c1418e3e96989ebc85f700ed2338c4545cabc24738f0",
+  "input_sha256": {
+    "/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011/manifest.json": "9ac12a3f1ba75b7f1302b80551805d33883a0f2da4362dc95a4e24ab065f7ffe",
+    "/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011/trajectory.npz": "3e0d317df8de922f676985694ccfb4e56b59a7215f0119204beefcdc90c886b3",
+    "/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011/snapshots.npz": "08e61b07ffcf5a5e5e9d9dac55067e3917a669a528c1ceabae87fd4a86e631df",
+    "/home/jdiaz/pysnspd/pysnspd/plotting/complex_gap.py": "76ecda97479ac5a7d368c7f601cd60cb4d757f479626e68ab2453eeedbe29b51"
+  },
+  "requested_snapshots_ps": null,
+  "selected_saved_snapshots_ps": [
+    0.0,
+    0.1,
+    0.3,
+    0.5,
+    0.9999999999999998,
+    2.0,
+    4.999999999999979,
+    9.999999999999872,
+    19.999999999999822,
+    49.99999999999934,
+    99.9999999999982,
+    200.0
+  ],
+  "observation": {
+    "schema": "pysnspd.trigger_window.v1",
+    "config": {
+      "event_time_s": 0.0,
+      "baseline_V": 0.0,
+      "baseline_reference": "fresh effective DC Ib=Is, vc=0",
+      "threshold_V": 0.0001,
+      "polarity": "positive",
+      "confirmation_s": 5e-13,
+      "hysteresis_fraction": 0.05,
+      "post_trigger_margin_s": 5e-12,
+      "no_trigger_time_ceiling_s": 2e-10
+    },
+    "observable": "Vout=Rload*(Ib-Is), positive excursion from fresh DC baseline",
+    "baseline_relative": true,
+    "status": "TIME_CENSORED_NO_TRIGGER",
+    "terminal": true,
+    "detected": false,
+    "censored": true,
+    "crossing_time_s": null,
+    "confirmation_deadline_s": null,
+    "confirmation_time_s": null,
+    "latency_s": null,
+    "censored_lower_bound_s": 2e-10,
+    "unconfirmed_crossing_s": null,
+    "stop_target_s": null,
+    "actual_stop_s": 2e-10,
+    "margin_complete": false,
+    "stop_overshoot_s": null,
+    "sample_count": 6439,
+    "maximum_observation_step_s": 9.999999999992728e-14,
+    "confirmation_interpolation": "linear between accepted observations",
+    "rejected_candidate_count": 0,
+    "failure_reason": null,
+    "requires_peak_confirmation": false,
+    "requires_full_recovery": false,
+    "checkpoint_scope": "observation_controller_only",
+    "trigger_confirmed": false,
+    "first_crossing_time_s": null,
+    "trigger_time_s": null,
+    "baseline_Vout_V": 0.0,
+    "threshold_voltage_V": 0.0001,
+    "confirmation_time_s_required": 5e-13,
+    "extra_time_s": 5e-12,
+    "no_trigger_ceiling_s": 2e-10,
+    "development_duration_s": null,
+    "full_reset_requested": false,
+    "mode": "photon"
+  },
+  "source_admission": {
+    "stage51": false,
+    "stage52": false,
+    "stage53": false,
+    "stage5": false,
+    "policy": "Execution completion does not imply physical/numerical admission"
+  },
+  "model_admission_inferred": false,
+  "retained_energy_J": 8.548125075602164e-20,
+  "snapshot_interpolation": "None in time; gap: magnitude after complex spatial P1 sampled on nearest-cell raster; scalar maps: nodal Gouraud rendering",
+  "gap_raster_max_samples_per_axis": 601,
+  "energy_defect_normalizations": [
+    "absolute defect / (Eret + cumulative absolute saved external work increments)",
+    "signed defect / Eret"
+  ],
+  "style": "pysnspd.plotting.style.apply_thesis_style",
+  "dpi": 200,
+  "resources": {
+    "processes": 1,
+    "selected_cpu": 20,
+    "numeric_array_bytes": 411284416,
+    "memory_limit_bytes": 116625729945
+  },
+  "products": [
+    {
+      "name": "01_pulse_and_currents",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/01_pulse_and_currents.png",
+          "sha256": "3e5c0078b0f3391770f6c4268f36bd4fbb954355f392d4fb4a581dc6e82648ac"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/01_pulse_and_currents.pdf",
+          "sha256": "24c3d0a133cf8a61c02a3e6d14d3129bd5beb3fc10a22f311a26afe12e8f3ead"
+        }
+      },
+      "caption": "El pulso de lectura es R_load*(Ib-Is), menos la referencia DC declarada. Vdev es la diferencia de potencial entre cortes completos. Las corrientes son estados del circuito CM completo. Las lineas de deteccion proceden del manifiesto; no se infiere latencia a partir del maximo del pulso. El tiempo comienza en la transferencia efectiva tras la cascada inicial. Si el eje principal aplana la lectura, el recuadro muestra Vout menos basal con escala propia (mV o microV), sin alterar valores, tiempos o gatillo.",
+      "quantities": [
+        "Vout-relative (mV)",
+        "Vdev (mV)",
+        "Ib (microA)",
+        "Is (microA)",
+        "time (ps)"
+      ],
+      "common_color_limits": null
+    },
+    {
+      "name": "02_energy_balance",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/02_energy_balance.png",
+          "sha256": "832ca2cec4baecc64e601104a22328583be41ab7e0c0ed7c7b868f64ce837f8c"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/02_energy_balance.pdf",
+          "sha256": "7ab41ef86c1e94fe931f7a4b8896ffad341349c8be65bb53fcd335f0272dd5e1"
+        }
+      },
+      "caption": "Las energias se restan respecto del primer estado guardado. Se muestran el valor absoluto del defecto independiente dividido por Eret + \u03a3|\u0394Wext|, como en el auditor global, y su valor firmado dividido por Eret como referencia adicional. \u0394Wext son diferencias del trabajo externo acumulado guardado, no trapecios de potencias ni el valor absoluto del trabajo neto. Las curvas no conceden admision. La potencia de escape describe transferencia hacia el sustrato. Un grafico por si solo no acredita conservacion o convergencia.",
+      "quantities": [
+        "domain energy increment (eV)",
+        "saved total energy increment (eV)",
+        "absolute independent defect / (Eret + cumulative absolute saved external work increments) (%)",
+        "signed independent defect / retained photon energy (%)",
+        "phonon escape and instantaneous power residual (nW)"
+      ],
+      "common_color_limits": null
+    },
+    {
+      "name": "03_gap_montage",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/03_gap_montage.png",
+          "sha256": "be70c4acce47e345e212ce445d0329771a40cbf76b987d3cd7cd6c28910b42b6"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/03_gap_montage.pdf",
+          "sha256": "09020713b3abb34df67c20ec33ee0260d34fc6f4f712fcb9f850ce54b455a2e5"
+        }
+      },
+      "caption": "El gap mide la integridad del condensado. Su depresion y eventual conexion transversal permiten estudiar formacion de una hotbelt y paso al estado resistivo. Limites absolutos comunes sobre TODOS los estados guardados; no se normaliza cada mapa por su maximo. Se usan los instantes realmente guardados, sin interpolacion temporal. Gap: |P1 Delta complejo| muestreado en raster de hasta 601 puntos por eje; celdas sin suavizado. La resolucion visual no resuelve un nucleo fisico ni sustituye el diagnostico de hotbelt.",
+      "quantities": [
+        "$|\\Delta|$ (meV)",
+        "coordinates (nm)",
+        "physical time (ps)"
+      ],
+      "common_color_limits": [
+        0.0,
+        1.2206253851691689
+      ]
+    },
+    {
+      "name": "04_gap_central_montage",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/04_gap_central_montage.png",
+          "sha256": "65f8fa7172076c052f048185926191eca5ccc78d89d6a2860fccb6c981cc6f7f"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/04_gap_central_montage.pdf",
+          "sha256": "8900f630883e57d15b4dbbd4c1670900406b76f307fdd03e0961985833fd259b"
+        }
+      },
+      "caption": "La ampliacion muestra el condensado alrededor del punto central de absorcion y toda la anchura de la cinta. Limites absolutos comunes sobre TODOS los estados guardados; no se normaliza cada mapa por su maximo. Se usan los instantes realmente guardados, sin interpolacion temporal. Gap: |P1 Delta complejo| muestreado en raster de hasta 601 puntos por eje; celdas sin suavizado. La resolucion visual no resuelve un nucleo fisico ni sustituye el diagnostico de hotbelt. Ampliacion central de 120 nm; no define una ventana termica ni modifica la simulacion.",
+      "quantities": [
+        "$|\\Delta|$ (meV)",
+        "coordinates (nm)",
+        "physical time (ps)"
+      ],
+      "common_color_limits": [
+        0.0,
+        1.2206253851691689
+      ]
+    },
+    {
+      "name": "05_electron_temperature_montage",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/05_electron_temperature_montage.png",
+          "sha256": "1775fd4094ef35b299350b87d697274fc2909141a0c989e84c1ff04584f07b2e"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/05_electron_temperature_montage.pdf",
+          "sha256": "ace15263f19ad62d9c59710f6db3154143383981204ab2292671bead57348ff1"
+        }
+      },
+      "caption": "Temperatura electronica equivalente asociada a la energia de poblaciones. Es un diagnostico fisico; esta etiqueta no afirma que la distribucion no termica sea Fermi-Dirac. Limites absolutos comunes sobre TODOS los estados guardados; no se normaliza cada mapa por su maximo. Se usan los instantes realmente guardados, sin interpolacion temporal.",
+      "quantities": [
+        "$T_e^{eq}$ (K)",
+        "coordinates (nm)",
+        "physical time (ps)"
+      ],
+      "common_color_limits": [
+        0.8999999999999992,
+        16.17316078301733
+      ]
+    },
+    {
+      "name": "06_phonon_temperature_montage",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/06_phonon_temperature_montage.png",
+          "sha256": "05cd7d6bf87f20a7b56b21df654a35569ea50211588960cae7f68d7592cec16b"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/06_phonon_temperature_montage.pdf",
+          "sha256": "9ccafd277cc5b228bed397d50925cff8a7e39f908b4b7a5cab3f038ea806c4a3"
+        }
+      },
+      "caption": "Temperatura fononica equivalente. Permite localizar la energia transferida al subsistema fononico antes de su escape al sustrato. Limites absolutos comunes sobre TODOS los estados guardados; no se normaliza cada mapa por su maximo. Se usan los instantes realmente guardados, sin interpolacion temporal.",
+      "quantities": [
+        "$T_{ph}^{eq}$ (K)",
+        "coordinates (nm)",
+        "physical time (ps)"
+      ],
+      "common_color_limits": [
+        0.8999999999878977,
+        16.173160783017327
+      ]
+    },
+    {
+      "name": "07_excess_energy_density_montage",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/07_excess_energy_density_montage.png",
+          "sha256": "fb8ed0e14a2b2135a94b8a675850566ba63387530d363c09510b4bf5d2b5aabc"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/07_excess_energy_density_montage.pdf",
+          "sha256": "c7788d0b532245739c39e291cba57f48b1e1116c28dd2440cf366d7300854e64"
+        }
+      },
+      "caption": "Exceso local de energia guardado respecto de la referencia declarada por la simulacion. Muestra expansion energetica espacial sin imponer una ventana de dinamica termica. Limites absolutos comunes sobre TODOS los estados guardados; no se normaliza cada mapa por su maximo. Se usan los instantes realmente guardados, sin interpolacion temporal.",
+      "quantities": [
+        "Exceso de energia (J/m3)",
+        "coordinates (nm)",
+        "physical time (ps)"
+      ],
+      "common_color_limits": [
+        -33826.43716364311,
+        33826.43716364311
+      ]
+    },
+    {
+      "name": "08_electron_energy_density_montage",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/08_electron_energy_density_montage.png",
+          "sha256": "023bef805eb6c10d366e953cab134da6665d4643d860e442134bbaf949597816"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/08_electron_energy_density_montage.pdf",
+          "sha256": "4d3529468955d6f09a42c4c5d7e665361807e755a9f34eb4f7df66a297cc31fd"
+        }
+      },
+      "caption": "Densidad electronica registrada, con la referencia y convencion del manifiesto de la corrida. Incluye solo las contribuciones definidas en ese campo. Limites absolutos comunes sobre TODOS los estados guardados; no se normaliza cada mapa por su maximo. Se usan los instantes realmente guardados, sin interpolacion temporal.",
+      "quantities": [
+        "Energia electronica (J/m3)",
+        "coordinates (nm)",
+        "physical time (ps)"
+      ],
+      "common_color_limits": [
+        0.0,
+        16120.595514131284
+      ]
+    },
+    {
+      "name": "09_phonon_energy_density_montage",
+      "files": {
+        "png": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/09_phonon_energy_density_montage.png",
+          "sha256": "0dba93e2bd3978cbb8326c0d332e4058273b1cb107e5ff5a22724b4d8a8575a4"
+        },
+        "pdf": {
+          "path": "/home/jdiaz/scratch/stage5_nominal1550_saved_visual_final_v2_20261012/09_phonon_energy_density_montage.pdf",
+          "sha256": "bc4c700cdf379a399cebff1fd25891321e53c7f5dc063a3c1385e4fd51a7f553"
+        }
+      },
+      "caption": "Densidad de energia fononica registrada. Su expansion y reduccion permiten separar redistribucion interna y escape hacia el sustrato. Limites absolutos comunes sobre TODOS los estados guardados; no se normaliza cada mapa por su maximo. Se usan los instantes realmente guardados, sin interpolacion temporal.",
+      "quantities": [
+        "Energia fononica (J/m3)",
+        "coordinates (nm)",
+        "physical time (ps)"
+      ],
+      "common_color_limits": [
+        0.0,
+        17706.011481632606
+      ]
+    }
+  ],
+  "elapsed_s": 13.170726005977485
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "pysnspd.spectral_observable_policy_candidate_receipt.v1",
+  "utc": "2026-10-11T17:27:05.149030+00:00",
+  "status": "SCRATCH_CANDIDATE_TESTED_NOT_PROMOTED",
+  "files": [
+    {
+      "path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/spectral_observable_policy.py",
+      "sha256": "0ceb9ebcf48f3fc685ceb0637b75c66a91fabb677bdf4c7caa1f7970010425c1"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/test_spectral_observable_policy.py",
+      "sha256": "5c64e79910df95c1efeb13b3d8c6bc73278388a13df40e5ac0b0e6e0de4bb753"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/new_analysis_policy.patch",
+      "sha256": "a8b01ea8f8d16b3b23c84af65e88121a1687536d1a743cb58ab65ca8ec85bfd4"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/frozen_partial_spectral_policy_result.json",
+      "sha256": "5533268228540803dd7090dc14f101c5883d7a6925c75f90c14fa96381cf630a"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_spectral_mesh_scope_review_20261011/root_prospective_spectral_policy_decision.json",
+      "sha256": "8c62658c36336a2e19cb0d37bef6b650cf5d44da734e586d3fe1d11b1ce6ed33"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_convergence_provisional_v6_20261011_1719/comparisons/audit.json",
+      "sha256": "34052805b6af8a8ea024fd44266a82061a873b342a32b4b0dcd6635e4dd25b0c"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/memory_backend_independent_read_review.json",
+      "sha256": "17645157eb07a4965e0d0952d4a6033cd5f8556cd2aa5c8f1b9ea09d57c39d82"
+    }
+  ],
+  "pinned_unchanged_dependencies": [
+    {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/audit_runs.py",
+      "sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a"
+    },
+    {
+      "path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/bounded_guard_protocol.py",
+      "sha256": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+    }
+  ],
+  "API": "apply_spectral_observable_policy(result, *, decision_path)",
+  "tests": {
+    "command": "env PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 OMP_NUM_THREADS=1 timeout 60s taskset -c 4 /home/jdiaz/.conda/envs/snspd/bin/python /home/jdiaz/scratch/stage5_spectral_policy_candidate_20261011/test_spectral_observable_policy.py",
+    "test_methods": 15,
+    "subtests_included": true,
+    "reported_test_elapsed_s": 0.012,
+    "exit_code": 0,
+    "status": "PASS"
+  },
+  "resources": {
+    "CPU_affinity": [
+      4
+    ],
+    "physical_cores_newly_reserved": 0,
+    "shared_with": "1550 nominal",
+    "BLAS_threads": 1,
+    "Numba_workers": 0,
+    "numerical_evolution": false
+  },
+  "frozen_real_evidence": {
+    "original_2percent_nodal_passed": false,
+    "prospective_3percent_nodal_passed": true,
+    "L2_2percent_passed": true,
+    "deficit_2percent_passed": true,
+    "global_result_remains_failed": true,
+    "unmodified_original_complete": true,
+    "unmodified_input": true
+  },
+  "caller_preconditions": [
+    "Verified comparison originates from pinned comparator plus approved guard/window layers",
+    "Dispatcher verifies actual775nm and existing54/80state campaign identity using manifests and arrays",
+    "Dependency immutability does not authenticate an arbitrary input dictionary"
+  ],
+  "scope": "Analysis transform only; source/runtime13pins, simulation state, energy ledger, saved completion, physical/model parameters unchanged",
+  "PDF_created": false,
+  "stage5_admission": false
+}

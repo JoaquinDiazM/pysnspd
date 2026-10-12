@@ -1,0 +1,48 @@
+{
+  "schema": "pysnspd.stage5_report_builder_source.v1",
+  "date": "2026-10-11",
+  "status": "SOURCE_PREPARED_NOT_EXECUTED_NO_FINAL_REPORT",
+  "builder_path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/build_final_report.py",
+  "builder_sha256": "6e1531d157c59b7f7e6adbb330079d12a0aad0a21b8dca8a6532298d7dcce8c7",
+  "scientific_gate": "admission JSON explicitly stage5:true; independent complete-window/checksum checks; no inferred stage5 admission",
+  "intended_pages": 10,
+  "pages": [
+    "Effective model, scope, physical parameters and free calibrators",
+    "Intrinsic readout, global currents, gap minimum and equivalent temperatures",
+    "775nm full-domain and central gap snapshots",
+    "1550nm full-domain and central gap snapshots",
+    "775nm equivalent electron/phonon temperatures and full excess energy",
+    "1550nm equivalent electron/phonon temperatures and full excess energy",
+    "Independent integrated energy and physical reservoir/substrate powers",
+    "Temporal, mesh, domain and spectral numerical convergence",
+    "Mesh spacing h versus physical film thickness",
+    "Rejected first-Moyal candidate, explicit effective-model limitations and primary sources"
+  ],
+  "storage": "All figures/builds/logs/renders/scratch PDF under /home/jdiaz/scratch; final publication to repository only after matching visual-QA approval",
+  "publication_gate": "--publish requires existing compiled receipt and QA {approved:true,pdf_sha256:...}; preserves replaced PDF",
+  "checks": {
+    "Python_AST": true,
+    "help": true,
+    "negative_admission_gate": true,
+    "negative_gate_created_output_directory": false,
+    "related_regression_suite_passed": 125,
+    "main_negative_gate_no_output": true
+  },
+  "exact_trigger_convention": "latency=t_cross-t_postcascade; confirmation=t_cross+0.5ps; stop=max(t_cross+5ps,t_confirmation); no absorption-to-transfer cascade simulated",
+  "norm_convention": "Physical electron/phonon L1 energy residuals normalized by retained photon energy, independent induced gap-force guard; strict support",
+  "simulations_launched": 0,
+  "final_PDFs_created": 0,
+  "updated_utc": "2026-10-11T16:16:01.481723+00:00",
+  "finite_window_display_validation": {
+    "path": "/home/jdiaz/scratch/stage5_report_finite_window_display_20261011/validation_receipt.json",
+    "sha256": "5addd124b09f4c756966055e4d49a00d1d63c9cd09e3d1e56b427e571423f1a1"
+  },
+  "finite_window_scope": "EXPLICIT_FINITE_COMPARISON_WINDOW table: axis,declared interval,COVERED/BOUND,latency-certified; original run_complete/status untouched; critical SHA review mandatory.",
+  "optional_vortex_pages": 2,
+  "physical_sensitivity_source_validation": {
+    "path": "/home/jdiaz/scratch/stage5_report_physical_sensitivity_source_20261011/validation_receipt.json",
+    "sha256": "2dfc58d6f79abccb95a31cef18c032bff407e98ccc29f51f4076572e446181f8"
+  },
+  "optional_physical_sensitivity_pages": 1,
+  "maximum_current_planned_pages": 13
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "pysnspd.finite_window_report_display_validation.v1",
+  "validated_utc": "2026-10-11T16:02:01.111338+00:00",
+  "status": "DISPLAY_ONLY_SOURCE_VALIDATED_NO_PDF",
+  "scope": "Page5 explicit comparison scope/interval/manual critical decision/latency certificate; original run states preserved; no numerical policy, physical RHS or admission changes.",
+  "source_sha256": {
+    "sandbox/stage5_effective_validation/build_final_report.py": "952b24ce849fa23dedfc9dce0f5616478fd6edee94a7e72ae3aa6bc95267892c",
+    "tests/test_effective_report_display.py": "55d146bc612f6bc91f16fb2457f4290041127283d6350b216c23450b0f906fd7",
+    "sandbox/stage5_effective_validation/audit_runs.py": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+    "sandbox/stage5_effective_validation/admission_policy.json": "41489e2f38644862c474faeed0e52ae98675d8dfce9e4c62852b70eb1b89da8b"
+  },
+  "tests": {
+    "related_suite": {
+      "passed": 111,
+      "wall_s": 1.042
+    },
+    "final_format_and_main_gate": {
+      "passed": 16,
+      "wall_s": 0.031
+    }
+  },
+  "scientific_gate_false_blocks_main_before_output": true,
+  "PDFs_created": 0,
+  "physical_runs_launched": 0,
+  "stage5_admission_inferred": false,
+  "preserved_before_source": "/home/jdiaz/scratch/stage5_report_finite_window_display_20261011/build_final_report.before.py",
+  "preserved_before_source_sha256": "8be26723ec55731a90c21cf5b5cd334215c0b4dc370593d3d2968316165c1e02"
+}

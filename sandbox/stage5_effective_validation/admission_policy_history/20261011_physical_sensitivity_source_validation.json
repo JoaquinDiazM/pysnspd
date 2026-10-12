@@ -1,0 +1,26 @@
+{
+  "schema": "pysnspd.physical_sensitivity_report_source_validation.v1",
+  "validated_utc": "2026-10-11T16:16:01.481723+00:00",
+  "status": "OPTIONAL_PHYSICAL_SENSITIVITY_SOURCE_PREPARED_NO_REAL_CASES_YET_NO_PDF",
+  "sources_sha256": {
+    "sandbox/stage5_effective_validation/build_final_report.py": "6e1531d157c59b7f7e6adbb330079d12a0aad0a21b8dca8a6532298d7dcce8c7",
+    "sandbox/stage5_effective_validation/physical_sensitivity.py": "efed23e0e25b1d71e5b18e4374318e5f81a080d316041556b58d9ffa6db97777",
+    "tests/test_effective_physical_sensitivity.py": "73ec078122681924e894105abe8f1494535624914af3c6c0709e7584ebe955f2"
+  },
+  "tests": {
+    "passed": 125,
+    "wall_s": 1.157,
+    "scope": "Related saved audit/spatial/window/vortex/report tests, including14physical-sensitivity tests"
+  },
+  "contract_example": {
+    "path": "/home/jdiaz/scratch/stage5_report_physical_sensitivity_source_20261011/admission_physical_sensitivity_contract.example.json",
+    "sha256": "9bfd2f70159e89300a988c601c56abc52f725683e6ae6d5f022e8d07c147d9df"
+  },
+  "required_data": "Completed narrow/wide775nm cases with full5datafile SHA pins and independent adopted audit SHA, identical13modelpins and physical/solver/source contracts except sigma; explicitcommonwindow and exactsavedmaptime.",
+  "scientific_gate_false_creates_no_output": true,
+  "physical_cases_used_as_numerical_controls": false,
+  "planned_pages": "10base+2optionalvortex+1optionalphysicalwidth=13 when both are requested",
+  "simulated_or_calibrated": false,
+  "PDFs_created": 0,
+  "stage5_admission_inferred": false
+}

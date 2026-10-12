@@ -1,0 +1,63 @@
+{
+  "schema": "pysnspd.independent_dispatcher_read_review.v1",
+  "created_utc": "2026-10-11T17:15:51.477897+00:00",
+  "status": "PASS_READING_ONLY",
+  "sources": {
+    "dispatcher": {
+      "path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/guard_protocol_dispatcher.py",
+      "sha256": "7c53d7da749d694670b86de2aeda57c936d7ff99d43c72feceb2920240f345bd"
+    },
+    "bounded_guard": {
+      "path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/bounded_guard_protocol.py",
+      "sha256": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+    },
+    "baseline": {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/audit_runs.py",
+      "sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a"
+    },
+    "comparison_window": {
+      "path": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/comparison_window.py",
+      "sha256": "12c241558703955b915076af4ff3020d6588fbd0296047b290dc129f06e3a99e"
+    }
+  },
+  "verified": {
+    "original_full_guard_and_lineage_before_crop": true,
+    "finite_views_retain_original_manifest_history_snap_identity": true,
+    "only_local_energy_tolerance_removed_after_strict_guard_proof": true,
+    "other_forbidden_changes_remain": true,
+    "full_saved_physical_failures_not_removed": true,
+    "original_completion_and_events_visible": true,
+    "finite_interval_curves_and_spatial_observables_use_same_declared_grid": true,
+    "no_new_event_or_latency_invented": true,
+    "critical_coverage_review_manual_and_stage5_not_inferred": true,
+    "input_hashes_checked_again_before_writing": true
+  },
+  "source_lines": {
+    "dispatcher_verification": [
+      22,
+      39,
+      81,
+      90
+    ],
+    "guard_verify": [
+      200,
+      248,
+      250,
+      280
+    ],
+    "window_physical_completion": [
+      53,
+      85
+    ],
+    "baseline_spatial_grid": [
+      555,
+      567
+    ]
+  },
+  "concrete_functional_defects_found": [],
+  "new_tests_run": false,
+  "note": "Candidate scratch CLI imports require running from repository/PYTHONPATH; its parents[2] root is designed for the eventual repository location. The planned wrapper must preserve repository import context. This does not affect reviewed data contract.",
+  "edits_to_sources": false,
+  "evolution": false,
+  "promoted": false
+}

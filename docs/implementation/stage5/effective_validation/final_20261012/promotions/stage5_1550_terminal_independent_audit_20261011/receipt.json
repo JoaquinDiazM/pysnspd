@@ -1,0 +1,47 @@
+{
+  "schema": "pysnspd.independent_1550_terminal_saved_data_audit_receipt.v1",
+  "started_UTC": "2026-10-11T22:21:58.802538+00:00",
+  "finished_UTC": "2026-10-11T22:22:05.600477+00:00",
+  "wall_s": 6.797935315989889,
+  "command": [
+    "/home/jdiaz/.conda/envs/snspd/bin/python",
+    "-B",
+    "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/audit_runs.py",
+    "--run",
+    "primary1550=/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011",
+    "--output-dir",
+    "/home/jdiaz/scratch/stage5_1550_terminal_independent_audit_20261011/saved_audit"
+  ],
+  "affinity": [
+    4
+  ],
+  "cpu_threads": 1,
+  "auditor_source_sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+  "run_output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011",
+  "input_sha256_before": {
+    "manifest.json": "9ac12a3f1ba75b7f1302b80551805d33883a0f2da4362dc95a4e24ab065f7ffe",
+    "trajectory.npz": "3e0d317df8de922f676985694ccfb4e56b59a7215f0119204beefcdc90c886b3",
+    "snapshots.npz": "08e61b07ffcf5a5e5e9d9dac55067e3917a669a528c1ceabae87fd4a86e631df",
+    "checkpoint_latest.npz": "531e5153a96670f412807c7e07c2d4f1e678f9e6b156b1e71970bed11844c3cd",
+    "source_initial_state.npz": "a97a479c03c4bac91d0711be5535099130e2a0fba950b6d50f426f2223546d12"
+  },
+  "input_sha256_after": {
+    "manifest.json": "9ac12a3f1ba75b7f1302b80551805d33883a0f2da4362dc95a4e24ab065f7ffe",
+    "trajectory.npz": "3e0d317df8de922f676985694ccfb4e56b59a7215f0119204beefcdc90c886b3",
+    "snapshots.npz": "08e61b07ffcf5a5e5e9d9dac55067e3917a669a528c1ceabae87fd4a86e631df",
+    "checkpoint_latest.npz": "531e5153a96670f412807c7e07c2d4f1e678f9e6b156b1e71970bed11844c3cd",
+    "source_initial_state.npz": "a97a479c03c4bac91d0711be5535099130e2a0fba950b6d50f426f2223546d12"
+  },
+  "all_saved_inputs_preserved": true,
+  "all13runtime_sources_verified": true,
+  "pid_199693_gone": true,
+  "returncode": 0,
+  "timeout": false,
+  "audit_json": {
+    "path": "/home/jdiaz/scratch/stage5_1550_terminal_independent_audit_20261011/saved_audit/audit.json",
+    "sha256": "4ca22dfc36ca910db2995bbd969a37a9d7d7c96a04552fa9da1cf4e9f9af4690"
+  },
+  "all_requested_checks_passed": true,
+  "stage5": false,
+  "no_RHS_evaluation_or_evolution": true
+}

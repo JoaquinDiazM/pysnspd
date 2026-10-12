@@ -1,0 +1,36 @@
+{
+  "schema": "pysnspd.root_spectral_wiring_review.v1",
+  "utc": "2026-10-11T17:36:01.114524+00:00",
+  "status": "APPROVED_REVIEWED_FOUR_FILE_ANALYSIS_PATCH",
+  "patch_sha256": "624f79fa7ea3385f9b09d907774bbf03abd157c7787bf28f02f23199b76ce09b",
+  "approved_files": {
+    "sandbox/stage5_effective_validation/guard_protocol_dispatcher.py": {
+      "before_sha256": "7c53d7da749d694670b86de2aeda57c936d7ff99d43c72feceb2920240f345bd",
+      "after_sha256": "e8ac183842c762291c3861a45c27ebe8c444231e60a27b10827e0234704c7005",
+      "candidate": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/guard_protocol_dispatcher.py"
+    },
+    "sandbox/stage5_effective_validation/window_evidence.py": {
+      "before_sha256": "1e3e2a41bc90da730575427c1438c42d9676ef8341cd03382ab59d0fe95a9153",
+      "after_sha256": "c7824f426a4858266f97bbac77bfd107d42d522bb2d7d5f8c462a137a9fb1826",
+      "candidate": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/window_evidence.py"
+    },
+    "sandbox/stage5_effective_validation/build_final_report.py": {
+      "before_sha256": "75001b1766429322f5aafc26d55dfa2738bb9a766f898152aa9fc9e0f4587513",
+      "after_sha256": "d4f090728bff45e6d2ed7a15fc1b7055bd8732e5a5dd1ea20a307a0a7ec04bed",
+      "candidate": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/build_final_report.py"
+    },
+    "tests/test_effective_spectral_policy_wiring.py": {
+      "before_sha256": null,
+      "after_sha256": "89e18c1ce94133da1afa0e9ec1f3a45c46e727012b8dedec285ed1f02d587a64",
+      "candidate": "/home/jdiaz/scratch/stage5_spectral_wiring_candidate_20261011/test_effective_spectral_policy_wiring.py"
+    }
+  },
+  "independent_review_sha256": "a762d2b3b5a1dad570b9f45c0be061082751fc5fa10ac4fdeb0af1c230b58450",
+  "review": "Root read full diff, tests and original window_evidence. Actual775nm54/80manifests and exact quadratures are verified; physical and critical coverage gates remain mandatory; original2percent failures and full histories remain visible. Later bounds include all four current observables with mixed3/2percent limits.",
+  "tests": "33 focused tests passed0.39s; only focused promoted-source verification needed.",
+  "baseline_auditor_unchanged": true,
+  "bounded_guard_module_unchanged": true,
+  "RHS_and_13pins_unchanged": true,
+  "stage5_admission": false,
+  "PDF_authorization": false
+}

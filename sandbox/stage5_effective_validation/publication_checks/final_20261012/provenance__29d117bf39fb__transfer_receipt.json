@@ -1,0 +1,1824 @@
+{
+  "schema": "pysnspd.explicit_checkpoint_transfer.v3",
+  "action": "EXPLICIT_DECLARED_CONTROL_RESOURCE_ONLY_TRANSITION_PREPARED_NO_EVOLUTION_NO_SIGNAL",
+  "case": "domain_2to4",
+  "helper_sha256": "0458f0141d7005578d0ab98fb2e1b963f79b0c34769197a585d5651c4ebf5118",
+  "admission": false,
+  "parent": {
+    "output_dir": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_20261011",
+    "anchor": "/home/jdiaz/scratch/stage5_domain_resources4_future_anchor_20261011",
+    "checkpoint_bytes_sha256": "422a1ff5f3591b6b694d21b869e1550c9a5bbfd465da592996badc8d3b85299f",
+    "manifest_sha256": "e577cd6ebd91f5fb9cb5f3c7a42ecd24c4b433ed52b95b4f5000fddf8ac0578c",
+    "runtime_archive_manifest_sha256": "1b9d5f2a1a797acdd8669d8c004632bdaab6a07dcf1a2151cb3e1992303a3bd9"
+  },
+  "output_dir": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_resources4_20261011",
+  "pins_before": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "pins_after": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "state_arrays_sha256_before": {
+    "delta_bar": "57afdbe2762548d2f382649a3fcc1c8149cb224bfda96a91a0a96031cc0fa68f",
+    "p": "fe98cadf06aa7fa309bda93a718f2c5c41eb2ee57653ee56e28c80b83bc8c1c0",
+    "n": "786e03a7bd243e58ffdd673fb3a85a4dfec34bf74df573c4baad25a272441e40",
+    "circuit_SI": "42e999ec928eaf95fa76aed7e4d39924d37822689ff520f0d64372532041fc9f"
+  },
+  "state_arrays_sha256_after": {
+    "delta_bar": "57afdbe2762548d2f382649a3fcc1c8149cb224bfda96a91a0a96031cc0fa68f",
+    "p": "fe98cadf06aa7fa309bda93a718f2c5c41eb2ee57653ee56e28c80b83bc8c1c0",
+    "n": "786e03a7bd243e58ffdd673fb3a85a4dfec34bf74df573c4baad25a272441e40",
+    "circuit_SI": "42e999ec928eaf95fa76aed7e4d39924d37822689ff520f0d64372532041fc9f"
+  },
+  "conserved_metadata_before": {
+    "time_ps": 26.34000000000002,
+    "initial_total_energy_J": 2.499315209748094e-16,
+    "external_energy_integral_J": -2.6788869332649835e-19,
+    "limited_event_energy_J": 1.2040598287681892e-22,
+    "totalabs_event_energy_J": 7.367543844617556e-18,
+    "accepted_steps": 3995,
+    "total_rejections": 409,
+    "source": {
+      "wavelength_nm": 775.0,
+      "photon_energy_J": 2.563155944708295e-19,
+      "retained_fraction": 0.667,
+      "retained_energy_J": 1.7096250151204327e-19,
+      "sigma_nm": 7.549834435,
+      "center_m": [
+        2.4000000000000003e-07,
+        0.0
+      ],
+      "initialization": "Common FD/BE transfer on NEW native BCS/phonon quadratures; fresh DC gap unchanged",
+      "time_origin": "t=0 is effective post-cascade transfer; no additional cascade delay simulated",
+      "cascade_reference": "Exploratory sigma=sqrt(2*D*0.57ps), freely varied; not a measured775/1550nm width",
+      "energy_deposited_J": 1.7096250151204327e-19,
+      "energy_defect_J": -1.5638733786105884e-35,
+      "maximum_nodal_energy_defect_J": 3.009265538105056e-36,
+      "relative_total_energy_defect": 9.147464296434753e-17,
+      "maximum_initial_temperature_K": 20.138334840450703,
+      "cut_deposition_J": 0.0,
+      "source_must_not_be_applied_again": true,
+      "old_prepared_photon_state_reused": false
+    },
+    "controller": {
+      "schema": "pysnspd.trigger_window.v1",
+      "config": {
+        "event_time_s": 0.0,
+        "baseline_V": 0.0,
+        "baseline_reference": "fresh effective DC Ib=Is, vc=0",
+        "threshold_V": 0.0001,
+        "polarity": "positive",
+        "confirmation_s": 5e-13,
+        "hysteresis_fraction": 0.05,
+        "post_trigger_margin_s": 5e-12,
+        "no_trigger_time_ceiling_s": 2e-10
+      },
+      "state": {
+        "last_time_s": 2.634000000000002e-11,
+        "last_excursion_V": 5.56153761181521e-05,
+        "sample_count": 3996,
+        "maximum_observation_step_s": 2.000000000000032e-14,
+        "candidate_crossing_s": null,
+        "crossing_time_s": null,
+        "confirmation_time_s": null,
+        "stop_target_s": null,
+        "actual_stop_s": null,
+        "status": "ACTIVE",
+        "failure_reason": null,
+        "rejected_candidate_count": 0
+      }
+    }
+  },
+  "conserved_metadata_after": {
+    "time_ps": 26.34000000000002,
+    "initial_total_energy_J": 2.499315209748094e-16,
+    "external_energy_integral_J": -2.6788869332649835e-19,
+    "limited_event_energy_J": 1.2040598287681892e-22,
+    "totalabs_event_energy_J": 7.367543844617556e-18,
+    "accepted_steps": 3995,
+    "total_rejections": 409,
+    "source": {
+      "wavelength_nm": 775.0,
+      "photon_energy_J": 2.563155944708295e-19,
+      "retained_fraction": 0.667,
+      "retained_energy_J": 1.7096250151204327e-19,
+      "sigma_nm": 7.549834435,
+      "center_m": [
+        2.4000000000000003e-07,
+        0.0
+      ],
+      "initialization": "Common FD/BE transfer on NEW native BCS/phonon quadratures; fresh DC gap unchanged",
+      "time_origin": "t=0 is effective post-cascade transfer; no additional cascade delay simulated",
+      "cascade_reference": "Exploratory sigma=sqrt(2*D*0.57ps), freely varied; not a measured775/1550nm width",
+      "energy_deposited_J": 1.7096250151204327e-19,
+      "energy_defect_J": -1.5638733786105884e-35,
+      "maximum_nodal_energy_defect_J": 3.009265538105056e-36,
+      "relative_total_energy_defect": 9.147464296434753e-17,
+      "maximum_initial_temperature_K": 20.138334840450703,
+      "cut_deposition_J": 0.0,
+      "source_must_not_be_applied_again": true,
+      "old_prepared_photon_state_reused": false
+    },
+    "controller": {
+      "schema": "pysnspd.trigger_window.v1",
+      "config": {
+        "event_time_s": 0.0,
+        "baseline_V": 0.0,
+        "baseline_reference": "fresh effective DC Ib=Is, vc=0",
+        "threshold_V": 0.0001,
+        "polarity": "positive",
+        "confirmation_s": 5e-13,
+        "hysteresis_fraction": 0.05,
+        "post_trigger_margin_s": 5e-12,
+        "no_trigger_time_ceiling_s": 2e-10
+      },
+      "state": {
+        "last_time_s": 2.634000000000002e-11,
+        "last_excursion_V": 5.56153761181521e-05,
+        "sample_count": 3996,
+        "maximum_observation_step_s": 2.000000000000032e-14,
+        "candidate_crossing_s": null,
+        "crossing_time_s": null,
+        "confirmation_time_s": null,
+        "stop_target_s": null,
+        "actual_stop_s": null,
+        "status": "ACTIVE",
+        "failure_reason": null,
+        "rejected_candidate_count": 0
+      }
+    }
+  },
+  "preserved_array_hashes": {
+    "delta_bar": "57afdbe2762548d2f382649a3fcc1c8149cb224bfda96a91a0a96031cc0fa68f",
+    "p": "fe98cadf06aa7fa309bda93a718f2c5c41eb2ee57653ee56e28c80b83bc8c1c0",
+    "n": "786e03a7bd243e58ffdd673fb3a85a4dfec34bf74df573c4baad25a272441e40",
+    "circuit_SI": "42e999ec928eaf95fa76aed7e4d39924d37822689ff520f0d64372532041fc9f",
+    "trajectory__time_s": "8c7b832fd33626b930d7de9783154f87cf39f2599fc810badc59c7212ce1b35d",
+    "trajectory__Vout_V": "be54a1f51cb1ed3db07ea1ba0e02c632e07de4b15283ad251d8e195887b659e2",
+    "trajectory__Vdev_V": "93764c026d68371cfdaf31b33d59e77d749eb91bef4603b1ca4fbbf7f945e7db",
+    "trajectory__Ib_A": "f5f5bf7a134525be26f51d24afbfdce5bcfc9c35ae261a6197ee0d45d405f1a4",
+    "trajectory__Is_A": "f457df4a59b80d98e961cdd480abbbe16f644ef42e45af7b9483acc3261381b7",
+    "trajectory__vc_V": "8ebe00581ab1ae4cb031ac9ee0398acaa4a8a97dbc410ef34b9f80fa361b77f4",
+    "trajectory__energy_total_J": "6e955a5c4bae1e739e6e0a009d3ce6dbd451f686aea2e6d4af59ff1ee3ad1c08",
+    "trajectory__energy_defect_J": "c3976459d9e8480c142947403c266fa644c91845ef05ccad85ab8455480b32d3",
+    "trajectory__escape_power_W": "d2b29b501ada473150d5402778286929438c5b80482647975fbd3543c4546a32",
+    "trajectory__domain_energy_J": "c338b2a1f3e11ae5b1cf899d5c77e45e00d8bd7575c18b63a2d7f59cea9c660f",
+    "trajectory__instant_power_residual_W": "6941dc9163d89b6dcc30ac952a0f9768837e6c194d2a6a16dc4280aa0544ac8e",
+    "trajectory__reservoir_power_out_W": "931991ced9626112a99b0d884fee58645ad81ef71f4d76f22cba3149a6b7869e",
+    "trajectory__external_energy_integral_J": "b1006a7693d88b4e5d64222171196ab27245b766feb105c2f4f36e51acdabef2",
+    "trajectory__limited_event_energy_J": "782810b8daa21f584e9920be09350a7f56c03533b1a04625d61defdbe315a166",
+    "trajectory__totalabs_event_energy_J": "52a0b56e00c92c1b8cc684e828aa7c2116ab844da1839583c8a1756575804240",
+    "trajectory__accepted_step_ps": "99354437d4a95ffdb4154bec0a4365477e3ef83c09b5747eeea8bd2440b6bffb",
+    "snapshots__time_s": "cf5ef425a93a097ae6f86c707936a5e25d6de16f5eb9f814f9d5ba5810d895db",
+    "snapshots__delta_J": "cb78c0158265c3c59f7cd77a08ab252797d38d535b00a0d8a02a175e0d4d46fa",
+    "snapshots__Te_K": "edc835678f0b17626a7cf4f0c627da664fe51e11b7385c5799091c167787b4e0",
+    "snapshots__Tph_K": "43edd296af6b6f4c40eaf14d56938e9134da668d0af7cbe89de4e8a22e874025",
+    "snapshots__u_excess_J_m3": "61414bf65f68df5b646a012a231b37f6c67004e41013c656975d638c2b328346",
+    "snapshots__electron_energy_J_m3": "599c87a61f9f777bcbd7430b82c3441c84402b122b69829fbf4f70cd9409a0f2",
+    "snapshots__phonon_energy_J_m3": "a16c9960c22eecfb8c7a39fc919cbb11d3ce21632dfddb0962e91db6d3856217"
+  },
+  "checkpoint_total_keys": 28,
+  "checkpoint_numeric_arrays": 27,
+  "checkpoint_namespace": [
+    "circuit_SI",
+    "delta_bar",
+    "metadata_json",
+    "n",
+    "p",
+    "snapshots__Te_K",
+    "snapshots__Tph_K",
+    "snapshots__delta_J",
+    "snapshots__electron_energy_J_m3",
+    "snapshots__phonon_energy_J_m3",
+    "snapshots__time_s",
+    "snapshots__u_excess_J_m3",
+    "trajectory__Ib_A",
+    "trajectory__Is_A",
+    "trajectory__Vdev_V",
+    "trajectory__Vout_V",
+    "trajectory__accepted_step_ps",
+    "trajectory__domain_energy_J",
+    "trajectory__energy_defect_J",
+    "trajectory__energy_total_J",
+    "trajectory__escape_power_W",
+    "trajectory__external_energy_integral_J",
+    "trajectory__instant_power_residual_W",
+    "trajectory__limited_event_energy_J",
+    "trajectory__reservoir_power_out_W",
+    "trajectory__time_s",
+    "trajectory__totalabs_event_energy_J",
+    "trajectory__vc_V"
+  ],
+  "all_metadata_except_threads_preserved": true,
+  "frontend_changes": {},
+  "implementation_changes": {},
+  "horizon_change": null,
+  "energy_guard_change": null,
+  "RHS_sources_identical": true,
+  "guard_ledger_before": {
+    "absolute_external_energy_integral_J": 2.6788869332649835e-19,
+    "sum_abs_local_energy_defect_J": 2.7201521125588936e-21,
+    "local_energy_rejections": 404,
+    "max_accepted_local_energy_fraction": 9.941337870764448e-06,
+    "max_guarded_accepted_local_energy_fraction": 1.7690092369680513e-06,
+    "guard_active_since_time_ps": 22.235,
+    "local_energy_reference_energy_J": 1.7096250151204327e-19,
+    "energy_guard_ledger_origin": "reconstructed_from_coherent_pre_guard_history; accepted_midpoint_receipts_after_anchor; tolerance_changed_at_explicit_transfer"
+  },
+  "guard_ledger_after": {
+    "absolute_external_energy_integral_J": 2.6788869332649835e-19,
+    "sum_abs_local_energy_defect_J": 2.7201521125588936e-21,
+    "local_energy_rejections": 404,
+    "max_accepted_local_energy_fraction": 9.941337870764448e-06,
+    "max_guarded_accepted_local_energy_fraction": 1.7690092369680513e-06,
+    "guard_active_since_time_ps": 22.235,
+    "local_energy_reference_energy_J": 1.7096250151204327e-19,
+    "energy_guard_ledger_origin": "reconstructed_from_coherent_pre_guard_history; accepted_midpoint_receipts_after_anchor; tolerance_changed_at_explicit_transfer"
+  },
+  "next_step_ps_before": 0.0049999999999954525,
+  "next_step_ps_after": 0.0049999999999954525,
+  "global_energy_error_before": {
+    "defect_J": 2.7127518389216095e-21,
+    "denominator_J": 4.388511948385416e-19,
+    "absolute_relative_defect": 0.006181484454929335,
+    "formula": "abs(U(t)-U(0)-Wext(t))/(Eref + sum(abs(accepted delta Wext)))",
+    "global_origin_time_ps": 0.0
+  },
+  "global_energy_error_after": {
+    "defect_J": 2.7127518389216095e-21,
+    "denominator_J": 4.388511948385416e-19,
+    "absolute_relative_defect": 0.006181484454929335,
+    "formula": "abs(U(t)-U(0)-Wext(t))/(Eref + sum(abs(accepted delta Wext)))",
+    "global_origin_time_ps": 0.0
+  },
+  "resources_before": {
+    "runtime_inventory": {
+      "logical_cpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "physical_core_groups": [
+        [
+          0,
+          16
+        ],
+        [
+          1,
+          17
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          10,
+          26
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "available_memory_bytes": 119387627520,
+      "host_available_memory_bytes": 119387627520,
+      "total_memory_bytes": 132537786368,
+      "cpu_quota_units": null,
+      "cgroup_limits": {
+        "cpu_quota_units": null,
+        "memory_headroom_bytes": null,
+        "cpu_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-3727.scope/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          }
+        ],
+        "memory_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-3727.scope/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          }
+        ],
+        "unavailable": []
+      }
+    },
+    "scheduling_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0
+      ],
+      "workers": 1,
+      "threads_per_process": 1,
+      "total_processes": 2,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 107448864768,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 4294967296,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "actual_processes": 1,
+    "actual_threads": 2,
+    "requested_threads": 2,
+    "reserved_physical_core_count": 2,
+    "actual_affinity_cpus": [
+      10,
+      11
+    ],
+    "selected_physical_core_groups": [
+      [
+        10,
+        26
+      ],
+      [
+        11,
+        27
+      ]
+    ],
+    "threading": "One Numba thread per distinct physical core; BLAS/OpenMP remain1",
+    "global_resource_ceiling_fraction": 0.9
+  },
+  "resources_after": {
+    "requested_threads": 4,
+    "target_affinity_cpus": [
+      10,
+      11,
+      12,
+      13
+    ],
+    "cpu_start": 10,
+    "preparation_only": true,
+    "execution_started": false,
+    "previous_observed_resources": {
+      "runtime_inventory": {
+        "logical_cpus": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ],
+        "physical_core_groups": [
+          [
+            0,
+            16
+          ],
+          [
+            1,
+            17
+          ],
+          [
+            2,
+            18
+          ],
+          [
+            3,
+            19
+          ],
+          [
+            4,
+            20
+          ],
+          [
+            5,
+            21
+          ],
+          [
+            6,
+            22
+          ],
+          [
+            7,
+            23
+          ],
+          [
+            8,
+            24
+          ],
+          [
+            9,
+            25
+          ],
+          [
+            10,
+            26
+          ],
+          [
+            11,
+            27
+          ],
+          [
+            12,
+            28
+          ],
+          [
+            13,
+            29
+          ],
+          [
+            14,
+            30
+          ],
+          [
+            15,
+            31
+          ]
+        ],
+        "available_memory_bytes": 119387627520,
+        "host_available_memory_bytes": 119387627520,
+        "total_memory_bytes": 132537786368,
+        "cpu_quota_units": null,
+        "cgroup_limits": {
+          "cpu_quota_units": null,
+          "memory_headroom_bytes": null,
+          "cpu_records": [
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-3727.scope/cpu.max",
+              "version": 2,
+              "cpu_units": null,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+              "version": 2,
+              "cpu_units": null,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/cpu.max",
+              "version": 2,
+              "cpu_units": null,
+              "status": "unlimited"
+            }
+          ],
+          "memory_records": [
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-3727.scope/memory.max",
+              "version": 2,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+              "version": 2,
+              "status": "unlimited"
+            },
+            {
+              "path": "/sys/fs/cgroup/user.slice/memory.max",
+              "version": 2,
+              "status": "unlimited"
+            }
+          ],
+          "unavailable": []
+        }
+      },
+      "scheduling_budget": {
+        "cpu_fraction": 0.9,
+        "memory_fraction": 0.9,
+        "selected_affinity_cpus": [
+          0,
+          16,
+          1,
+          17,
+          2,
+          18,
+          3,
+          19,
+          4,
+          20,
+          5,
+          21,
+          6,
+          22,
+          7,
+          23,
+          8,
+          24,
+          9,
+          25,
+          10,
+          26,
+          11,
+          27,
+          12,
+          28,
+          13,
+          29
+        ],
+        "coordinator_cpu": 29,
+        "worker_affinity_cpus": [
+          0
+        ],
+        "workers": 1,
+        "threads_per_process": 1,
+        "total_processes": 2,
+        "logical_budget": 28,
+        "effective_cpu_quota_units": 32,
+        "physical_cores_used": 14,
+        "physical_cores_reserved": 2,
+        "memory_limit_bytes": 107448864768,
+        "coordinator_reserve_bytes": 3221225472,
+        "worker_reserve_bytes": 1073741824,
+        "estimated_memory_reservation_bytes": 4294967296,
+        "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+      },
+      "actual_processes": 1,
+      "actual_threads": 2,
+      "requested_threads": 2,
+      "reserved_physical_core_count": 2,
+      "actual_affinity_cpus": [
+        10,
+        11
+      ],
+      "selected_physical_core_groups": [
+        [
+          10,
+          26
+        ],
+        [
+          11,
+          27
+        ]
+      ],
+      "threading": "One Numba thread per distinct physical core; BLAS/OpenMP remain1",
+      "global_resource_ceiling_fraction": 0.9
+    }
+  },
+  "numerical_segments": [
+    {
+      "start_time_ps": 0.0,
+      "end_time_ps": 7.999999999999915,
+      "origin": "v3",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "energy_guard_enabled": false,
+      "local_energy_tolerance": null
+    },
+    {
+      "start_time_ps": 7.999999999999915,
+      "end_time_ps": 12.359999999999822,
+      "origin": "v5_local_energy_guard",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 1e-05,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 7.999999999999915
+    },
+    {
+      "start_time_ps": 12.359999999999822,
+      "end_time_ps": 19.999999999999858,
+      "origin": "v6_exact_storage_implementation",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 1e-05,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 7.999999999999915
+    },
+    {
+      "start_time_ps": 20.0,
+      "end_time_ps": 22.235,
+      "origin": "explicit_control_window_only",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 1e-05,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 7.999999999999915,
+      "duration_ps": null
+    },
+    {
+      "start_time_ps": 22.235,
+      "end_time_ps": 26.34000000000002,
+      "origin": "prospective_local_energy_guard_tightening",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 2,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 2.5e-06,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 22.235,
+      "duration_ps": null
+    },
+    {
+      "start_time_ps": 26.34000000000002,
+      "end_time_ps": null,
+      "origin": "explicit_declared_control_resource_only_transition",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "threads": 4,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 2.5e-06,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 22.235,
+      "duration_ps": null,
+      "resource_case": "domain_2to4",
+      "resource_affinity_cpus": [
+        10,
+        11,
+        12,
+        13
+      ],
+      "resource_cpu_start": 10,
+      "guard_window_preserved": true
+    }
+  ],
+  "guard_policy_projection": [
+    {
+      "start_time_ps": 0.0,
+      "end_time_ps": 7.999999999999915,
+      "origin": "v3",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "energy_guard_enabled": false,
+      "local_energy_tolerance": null
+    },
+    {
+      "start_time_ps": 7.999999999999915,
+      "end_time_ps": 12.359999999999822,
+      "origin": "v5_local_energy_guard",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 1e-05,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 7.999999999999915
+    },
+    {
+      "start_time_ps": 12.359999999999822,
+      "end_time_ps": 19.999999999999858,
+      "origin": "v6_exact_storage_implementation",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 1e-05,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 7.999999999999915
+    },
+    {
+      "start_time_ps": 20.0,
+      "end_time_ps": 22.235,
+      "origin": "explicit_control_window_only",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 1e-05,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 7.999999999999915,
+      "duration_ps": null
+    },
+    {
+      "start_time_ps": 22.235,
+      "end_time_ps": null,
+      "origin": "prospective_local_energy_guard_tightening",
+      "dt_ps": 0.02,
+      "step_tolerance": 2e-07,
+      "energy_guard_enabled": true,
+      "local_energy_tolerance": 2.5e-06,
+      "local_energy_reference_energy_J": 1.7096250151204327e-19,
+      "guard_active_since_time_ps": 22.235,
+      "duration_ps": null
+    }
+  ],
+  "resource_preflight": {
+    "case": "domain_2to4",
+    "target_affinity_cpus": [
+      10,
+      11,
+      12,
+      13
+    ],
+    "cpu_start": 10,
+    "requested_threads": 4,
+    "active_pipeline_owners": [
+      {
+        "pid": 199693,
+        "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_1550_adaptive_v6_20261011",
+        "affinity": [
+          4,
+          5
+        ]
+      },
+      {
+        "pid": 238900,
+        "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_temporal_adaptive_v6_guard2b_20261011",
+        "affinity": [
+          8,
+          9
+        ]
+      },
+      {
+        "pid": 275911,
+        "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h5_775_spectral_trigger_v6_20261011",
+        "affinity": [
+          6,
+          7
+        ]
+      },
+      {
+        "pid": 279800,
+        "output_dir": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_resources4_20261011",
+        "affinity": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "physical_cores_after": 14,
+    "reserved_physical_cores": [
+      14,
+      15
+    ],
+    "scope": "Point-in-time jdiaz pipeline-owner inventory only; root must recheck ALL host workloads immediately before launch; no CPU reservation",
+    "prerequisite_manifests": {
+      "fine_moved": {
+        "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_resources4_20261011/provenance/prerequisite_fine_moved_manifest.json",
+        "sha256": "f96846cef9852822cc96b9434a4f3d3288721194f05771471cbe2a9d65582b7f"
+      }
+    },
+    "observed_prerequisite_source_paths": {
+      "fine_moved": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_resources4_20261011/manifest.json"
+    },
+    "runtime_inventory": {
+      "logical_cpus": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "physical_core_groups": [
+        [
+          0,
+          16
+        ],
+        [
+          1,
+          17
+        ],
+        [
+          2,
+          18
+        ],
+        [
+          3,
+          19
+        ],
+        [
+          4,
+          20
+        ],
+        [
+          5,
+          21
+        ],
+        [
+          6,
+          22
+        ],
+        [
+          7,
+          23
+        ],
+        [
+          8,
+          24
+        ],
+        [
+          9,
+          25
+        ],
+        [
+          10,
+          26
+        ],
+        [
+          11,
+          27
+        ],
+        [
+          12,
+          28
+        ],
+        [
+          13,
+          29
+        ],
+        [
+          14,
+          30
+        ],
+        [
+          15,
+          31
+        ]
+      ],
+      "available_memory_bytes": 120199532544,
+      "host_available_memory_bytes": 120199532544,
+      "total_memory_bytes": 132537786368,
+      "cpu_quota_units": null,
+      "cgroup_limits": {
+        "cpu_quota_units": null,
+        "memory_headroom_bytes": null,
+        "cpu_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4200.scope/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/cpu.max",
+            "version": 2,
+            "cpu_units": null,
+            "status": "unlimited"
+          }
+        ],
+        "memory_records": [
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/session-4200.scope/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/user-1011.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          },
+          {
+            "path": "/sys/fs/cgroup/user.slice/memory.max",
+            "version": 2,
+            "status": "unlimited"
+          }
+        ],
+        "unavailable": []
+      }
+    },
+    "scheduling_budget": {
+      "cpu_fraction": 0.9,
+      "memory_fraction": 0.9,
+      "selected_affinity_cpus": [
+        0,
+        16,
+        1,
+        17,
+        2,
+        18,
+        3,
+        19,
+        4,
+        20,
+        5,
+        21,
+        6,
+        22,
+        7,
+        23,
+        8,
+        24,
+        9,
+        25,
+        10,
+        26,
+        11,
+        27,
+        12,
+        28,
+        13,
+        29
+      ],
+      "coordinator_cpu": 29,
+      "worker_affinity_cpus": [
+        0
+      ],
+      "workers": 1,
+      "threads_per_process": 1,
+      "total_processes": 2,
+      "logical_budget": 28,
+      "effective_cpu_quota_units": 32,
+      "physical_cores_used": 14,
+      "physical_cores_reserved": 2,
+      "memory_limit_bytes": 108179579289,
+      "coordinator_reserve_bytes": 3221225472,
+      "worker_reserve_bytes": 1073741824,
+      "estimated_memory_reservation_bytes": 4294967296,
+      "memory_policy": "Conservative scheduling reservation, not an OS memory limit; abort budget construction if it exceeds90% available RAM"
+    },
+    "fine_resource_ancestry": [
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_dt002_tol2e7_v4_candidate_20261011/provenance/transfer_receipt.json",
+        "sha256": "285bccad5df0b9be582cf07dfd4c4690e432d43e4e0dfc36a4e92aaa344ed1c7",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_v3_anchor_20261011_A",
+        "checkpoint_sha256": "5bea086b0fc62ca963c7490017b1cb06a248573a5029f5ce33d97953aa398723",
+        "manifest_sha256": "e3694d104cf0134360d49119badbd3e2df83d0c956af3447191cc9175644992a",
+        "capture_receipt_sha256": "38c7dd80d1bcb9d0b1f25097e0794506c033872a44302a7ccd7f8de7fd13c878",
+        "runtime_archive_sha256": "29899e3905fb406bb97d0a704428256e1a1cf2edf56c41e8515cd80a36a675ca",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "36a6d56d2e9fa520057c4c5511f8c890ef06d7e3ff8ad883c35f49c5b3d5a52b",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "234629c32b71bc39e96e20454e1c80cea565fe196e1067d4980f9e88f20bad73",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "e3cd992faea25fd8cf936d56cfefd380dcc7c99922fcbfa2f4ad794c3d24667b",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 0.73,
+        "receipt_hash_references": [
+          {
+            "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_dt002_tol2e7_v4_candidate_20261011/provenance/stop_old_intent.json",
+            "sha256": "6e4b64e3cc91340bec4bfb29bd51ca21b085c26c268e9d9b6b626232d7cac702"
+          }
+        ],
+        "ancestry_kind": "original run or explicitly documented diagnostic"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_20261011_parent_anchor/provenance/parent_transfer_receipt.json",
+        "sha256": "b439f664275cb5984dd4d38aa092bab408d7b182b8cc98f7f68f609551b2f579",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_v4_to_v5_anchor_20261011",
+        "checkpoint_sha256": "ddb74e2b7d9ba33abe619a73e13b115f3d8b34fb664a5d7278ef6c5148d028aa",
+        "manifest_sha256": "520a76906af6145c1a8604d3b89b12b210663817d2090e9d2da2c32ed5f3211a",
+        "capture_receipt_sha256": "ce47ce57bfb02e88bebc6a8fd6dffdbe23f5d01627d54e64eb48088d22693d4b",
+        "runtime_archive_sha256": "27e79d729ce65ec3caf925c161891e2fb2e0eca444049ddf2e638f5ab67b7db4",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "e3cd992faea25fd8cf936d56cfefd380dcc7c99922fcbfa2f4ad794c3d24667b",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 5.41999999999997,
+        "receipt_hash_references": [],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "285bccad5df0b9be582cf07dfd4c4690e432d43e4e0dfc36a4e92aaa344ed1c7"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_anchor_20261011/provenance/parent_transfer_receipt.json",
+        "sha256": "1babb9b458e7175688cde56b4209ff50a2d1b73d2265ff7c089dddfa249c019f",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_20261011_parent_anchor",
+        "checkpoint_sha256": "484933cb421dca4266de92255850e9838421a04b11d119b9d49c2b2916d0e2b7",
+        "manifest_sha256": "372b847dff1a5d73368d2a29b138a8b093c3a4f7e0a000827e30664bdcfc7589",
+        "capture_receipt_sha256": "091a6bf1faa3a091e50a0696f267d0889c8791a2977be13c6bd74cb1d2ce7377",
+        "runtime_archive_sha256": "37f768a0e38ebd1b157a3bbda3efc74cfe4af3e617de0bd1feb45fdd9b02e2a4",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 7.859999999999918,
+        "receipt_hash_references": [
+          {
+            "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_20261011/provenance/intentional_v5_stop_preservation_receipt.json",
+            "sha256": "ee72876eca319725e3582cc8385bc2462b428c99adb0d82cfc5eda58baf420bd"
+          },
+          {
+            "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_20261011/provenance/stop_for_v6_intent.json",
+            "sha256": "e0eb4bb9852949059ac49b3e1058017130323d1d04b3deadbff8b384340d6d2b"
+          }
+        ],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "b439f664275cb5984dd4d38aa092bab408d7b182b8cc98f7f68f609551b2f579"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_fine_resources4_future_anchor_20261011/provenance/parent_transfer_receipt.json",
+        "sha256": "9d853f5bd141c3a929add611f4953f77b9a7fd1677e42d15b2533d41d2749864",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_anchor_20261011",
+        "checkpoint_sha256": "963ba2a7dc223e69e577404c16dfeed7943221af9ad992e1d241bf124c10eba8",
+        "manifest_sha256": "d001359adc414e814c1685d98f45a5a2eada8afb00d7c5b5b5048dd043824c29",
+        "capture_receipt_sha256": "f7350e6f708b67bc6eb70fdbc46277651e1c2152aa0df893a01dd38c282621ec",
+        "runtime_archive_sha256": "1ac5ffc6d3f461fe02724b6bff0e96d092e105a098e06176848711c950a586cb",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 22.2599999999998,
+        "receipt_hash_references": [],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "1babb9b458e7175688cde56b4209ff50a2d1b73d2265ff7c089dddfa249c019f"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_resources4_20261011/provenance/transfer_receipt.json",
+        "sha256": "fd8289953ef1d6a8bdeacbd60c3ee8150b541d6677d43cfd4768752cadf6dc54",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_fine_resources4_future_anchor_20261011",
+        "checkpoint_sha256": "2ddcfe1fdd3d6d0ce4339f159eb2c7174e8abe00f7df2ef08aa6081f3bef330d",
+        "manifest_sha256": "d571763a440bfb9f9fdeead026e22b97fa6cf979e8cefa1e229a4dd990785d63",
+        "capture_receipt_sha256": "f96e615f2c0390b2d1ab658afb53b151cf1ee5a52af25bc36ed62386cc4b91aa",
+        "runtime_archive_sha256": "1ac5ffc6d3f461fe02724b6bff0e96d092e105a098e06176848711c950a586cb",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 22.462499999999945,
+        "receipt_hash_references": [],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "9d853f5bd141c3a929add611f4953f77b9a7fd1677e42d15b2533d41d2749864"
+      }
+    ],
+    "fine_resource_receipt": {
+      "path": "/home/jdiaz/scratch/stage5_effective_L320_h35_775_adaptive_v6_guard2b_resources4_20261011/provenance/transfer_receipt.json",
+      "sha256": "fd8289953ef1d6a8bdeacbd60c3ee8150b541d6677d43cfd4768752cadf6dc54"
+    }
+  },
+  "parent_guard_entry": {
+    "transfer_receipt": {
+      "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_20261011/provenance/transfer_receipt.json",
+      "sha256": "2c1e3b05ce942b1921a6fde4ae0ba0b79be251b599932d7b5657c72eb5124c8d"
+    },
+    "initial_checkpoint": {
+      "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_20261011/provenance/initial_guard2b_checkpoint.npz",
+      "sha256": "6921c8033166190b866b4e2d0dedb18504525090481aa0a40f3d98372ee0e0a5"
+    },
+    "initial_manifest": {
+      "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_20261011/provenance/initial_guard2b_manifest.json",
+      "sha256": "0bfb06fa4035a4c86d2db7c4258109de1b6a5f4c685a39c922bd3a6e180d6d0f"
+    }
+  },
+  "parent_guard_verification": {
+    "role": "domain",
+    "segments": [
+      {
+        "start_time_ps": 0.0,
+        "end_time_ps": 7.999999999999915,
+        "origin": "v3",
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "energy_guard_enabled": false,
+        "local_energy_tolerance": null
+      },
+      {
+        "start_time_ps": 7.999999999999915,
+        "end_time_ps": 12.359999999999822,
+        "origin": "v5_local_energy_guard",
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "energy_guard_enabled": true,
+        "local_energy_tolerance": 1e-05,
+        "local_energy_reference_energy_J": 1.7096250151204327e-19,
+        "guard_active_since_time_ps": 7.999999999999915
+      },
+      {
+        "start_time_ps": 12.359999999999822,
+        "end_time_ps": 19.999999999999858,
+        "origin": "v6_exact_storage_implementation",
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "energy_guard_enabled": true,
+        "local_energy_tolerance": 1e-05,
+        "local_energy_reference_energy_J": 1.7096250151204327e-19,
+        "guard_active_since_time_ps": 7.999999999999915
+      },
+      {
+        "start_time_ps": 20.0,
+        "end_time_ps": 22.235,
+        "origin": "explicit_control_window_only",
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "energy_guard_enabled": true,
+        "local_energy_tolerance": 1e-05,
+        "local_energy_reference_energy_J": 1.7096250151204327e-19,
+        "guard_active_since_time_ps": 7.999999999999915,
+        "duration_ps": null
+      },
+      {
+        "start_time_ps": 22.235,
+        "end_time_ps": null,
+        "origin": "prospective_local_energy_guard_tightening",
+        "dt_ps": 0.02,
+        "step_tolerance": 2e-07,
+        "threads": 2,
+        "energy_guard_enabled": true,
+        "local_energy_tolerance": 2.5e-06,
+        "local_energy_reference_energy_J": 1.7096250151204327e-19,
+        "guard_active_since_time_ps": 22.235,
+        "duration_ps": null
+      }
+    ],
+    "anchor_time_ps": 22.235,
+    "receipt_sha256": "2c1e3b05ce942b1921a6fde4ae0ba0b79be251b599932d7b5657c72eb5124c8d",
+    "initial_checkpoint_sha256": "6921c8033166190b866b4e2d0dedb18504525090481aa0a40f3d98372ee0e0a5",
+    "initial_manifest_sha256": "0bfb06fa4035a4c86d2db7c4258109de1b6a5f4c685a39c922bd3a6e180d6d0f",
+    "current_checkpoint_sha256": "422a1ff5f3591b6b694d21b869e1550c9a5bbfd465da592996badc8d3b85299f",
+    "old_guard_independently_verified": {
+      "passed": true,
+      "checks": {
+        "strict_parameter_and_manifest_tolerance": true,
+        "reference_matches_source": true,
+        "anchor_is_saved_accepted_time": true,
+        "every_post_anchor_step_bounded": true,
+        "absolute_work_ledger": true,
+        "absolute_defect_ledger": true,
+        "maximum_all_ledger": true,
+        "maximum_guarded_ledger": true,
+        "rejection_count_valid": true,
+        "checkpoint_manifest_guard_ledger_matches": true
+      },
+      "tolerance": 1e-05,
+      "guard_active_since_time_ps": 7.999999999999915,
+      "post_anchor_accepted_steps": 1943,
+      "legacy_accepted_steps": 400,
+      "absolute_work_reconstructed_J": 1.1296519039380076e-19,
+      "sum_abs_local_defect_reconstructed_J": 1.830029542840142e-21,
+      "maximum_all_reconstructed_fraction": 9.941337870774229e-06,
+      "maximum_guarded_reconstructed_fraction": 9.941337870774229e-06,
+      "ledger_sum_roundoff_bound_J": 8.685855494788826e-31,
+      "maximum_fraction_roundoff": 1.0380748382045988e-11,
+      "maximum_guarded_fraction_roundoff": 8.788551537921425e-12,
+      "roundoff_definition": "Per step16eps*(abs(Eold)+abs(Enew)+abs(Wold)+abs(Wnew)); ledger16eps*sum(abs(Wold)+abs(Wnew)), lower arithmetic bound32eps*max(Eref,sumabsdW)",
+      "scope": "The historical guard is reconstructed before its window closes; no retrospective certification under the new tolerance."
+    },
+    "current_guard_independently_verified": {
+      "passed": true,
+      "checks": {
+        "strict_parameter_and_manifest_tolerance": true,
+        "reference_matches_source": true,
+        "anchor_is_saved_accepted_time": true,
+        "every_post_anchor_step_bounded": true,
+        "absolute_work_ledger": true,
+        "absolute_defect_ledger": true,
+        "maximum_all_ledger": true,
+        "maximum_guarded_ledger": true,
+        "rejection_count_valid": true,
+        "checkpoint_manifest_guard_ledger_matches": true
+      },
+      "tolerance": 2.5e-06,
+      "guard_active_since_time_ps": 22.235,
+      "post_anchor_accepted_steps": 1652,
+      "legacy_accepted_steps": 2343,
+      "absolute_work_reconstructed_J": 2.6788869332649835e-19,
+      "sum_abs_local_defect_reconstructed_J": 2.7201521125595203e-21,
+      "maximum_all_reconstructed_fraction": 9.941337870774229e-06,
+      "maximum_guarded_reconstructed_fraction": 1.76900923695873e-06,
+      "ledger_sum_roundoff_bound_J": 2.98466746033486e-30,
+      "maximum_fraction_roundoff": 1.0380748382045988e-11,
+      "maximum_guarded_fraction_roundoff": 6.2533940563301586e-12,
+      "roundoff_definition": "Per step16eps*(abs(Eold)+abs(Enew)+abs(Wold)+abs(Wnew)); ledger16eps*sum(abs(Wold)+abs(Wnew)), lower arithmetic bound32eps*max(Eref,sumabsdW)",
+      "scope": "The historical guard is reconstructed before its window closes; no retrospective certification under the new tolerance."
+    },
+    "ancestry": [
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_adaptive_v6_control20_20261011_parent_anchor/provenance/parent_transfer_receipt.json",
+        "sha256": "0bb03c18e56738cb00658ab9214987984156093108bc251cf01e6175d81a80a7",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_v4_to_v5_anchor_20261011",
+        "checkpoint_sha256": "b19009407efe3a5e3cdd180d342ade7ef056983beb489e4c168d6fbdad6a0e0b",
+        "manifest_sha256": "0fbd0ec4daecc8befdd1f4b795ffc6c16441508fc6f02663ec0f02a19510d752",
+        "capture_receipt_sha256": "a53f37b184e8a5efa4019b72701a3aa7fdd479ddb71d49d3246532de9dbf3f57",
+        "runtime_archive_sha256": "27e79d729ce65ec3caf925c161891e2fb2e0eca444049ddf2e638f5ab67b7db4",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "e3cd992faea25fd8cf936d56cfefd380dcc7c99922fcbfa2f4ad794c3d24667b",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 7.999999999999915,
+        "receipt_hash_references": [],
+        "ancestry_kind": "original run or explicitly documented diagnostic"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_v6_control20_completed_anchor_20261011/provenance/parent_transfer_receipt.json",
+        "sha256": "d0d720c0864f1f332f92e753b9222bf720b6ee7f0b5ce5fe344b77a1f8da723e",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_adaptive_v6_control20_20261011_parent_anchor",
+        "checkpoint_sha256": "c25299c425a636e9e0ce7f32955b31d08422ccf49148f8169a35715f820bf7a7",
+        "manifest_sha256": "6af2e3313a3cb28617eee07eb597b82d3c93c5015ab82e5b78ea1692137d2a68",
+        "capture_receipt_sha256": "1738aa16c24012c5b8a250836d0afa970ba389fd9822700c3e3e756ce61a26a3",
+        "runtime_archive_sha256": "f9ff5441adcc4bd9069fa50b1ca9681b1542f87b2a0656356ca3f93d08a59ce2",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "eac6cfe8c4438dcb47c3445c7768b600a8e9cb0757377d774a4511dbca561c59",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "80548332456753f1ebfc0d2da6e4002b1e38de86b8720551d682a02c4c42999e",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 12.359999999999822,
+        "receipt_hash_references": [
+          {
+            "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_adaptive_v6_control20_20261011/provenance/intentional_v5_stop_preservation_receipt.json",
+            "sha256": "b1874b496d608c7e9310758770471b670105c318d56bb6d3e59b37b7cf283eee"
+          },
+          {
+            "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_adaptive_v6_control20_20261011/provenance/stop_for_v6_intent.json",
+            "sha256": "93fc29736878738e180a06022437ce600046490dcdd7a819befe06be89ce044e"
+          }
+        ],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "0bb03c18e56738cb00658ab9214987984156093108bc251cf01e6175d81a80a7"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_anchor_20261011/provenance/parent_transfer_receipt.json",
+        "sha256": "d7253f8a1d4e048dd9926ee3d8c3a97122f327e8ae7f7136a2df19fc2fe5d809",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_v6_control20_completed_anchor_20261011",
+        "checkpoint_sha256": "c1f134b941a09e42c5884f1bed931aa991ad5b6b7b5541fb9e058c0e8ef53883",
+        "manifest_sha256": "81fc95529583abfb6fbaa6fda2cb9b7e98e9cc70353eb4b6428cf1286c5bec7b",
+        "capture_receipt_sha256": "cbc777af5322043c7c382be3e2398a459a69f1cae97a4760b4296a571c0f85cd",
+        "runtime_archive_sha256": "1b9d5f2a1a797acdd8669d8c004632bdaab6a07dcf1a2151cb3e1992303a3bd9",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 19.999999999999858,
+        "receipt_hash_references": [],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "d0d720c0864f1f332f92e753b9222bf720b6ee7f0b5ce5fe344b77a1f8da723e"
+      },
+      {
+        "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_20261011/provenance/transfer_receipt.json",
+        "sha256": "2c1e3b05ce942b1921a6fde4ae0ba0b79be251b599932d7b5657c72eb5124c8d",
+        "parent_anchor": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_anchor_20261011",
+        "checkpoint_sha256": "7e037a86aaf2737ce89d5d36122b6c1c81472288c203521d8102d7f80e138862",
+        "manifest_sha256": "4869fe7c8866cb7a48992f1ddf2653a6a6819dbdfeff0cf3befd5a4d7f87fd10",
+        "capture_receipt_sha256": "e2012f768c42305cd2666baed6439b03177ad0150214cc551df089170d61dfe1",
+        "runtime_archive_sha256": "1b9d5f2a1a797acdd8669d8c004632bdaab6a07dcf1a2151cb3e1992303a3bd9",
+        "pins_before": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "pins_after": {
+          "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+          "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+          "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+          "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+          "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+          "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+          "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+          "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+          "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+          "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+          "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+          "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+          "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+        },
+        "arrays_and_conserved_metadata_equal": true,
+        "activation_time_ps": 22.235,
+        "receipt_hash_references": [],
+        "ancestry_kind": "explicit ancestor receipt recovered without rewriting descendant",
+        "ancestor_receipt_sha256": "d7253f8a1d4e048dd9926ee3d8c3a97122f327e8ae7f7136a2df19fc2fe5d809"
+      }
+    ],
+    "exact_saved_prefix": true,
+    "global_origin_preserved": true,
+    "admission": false
+  },
+  "parent_guard_protocol": {
+    "path": "/home/jdiaz/scratch/stage5_guard_protocol_actual_four_roles_prepare_20261011/protocol_nominal_temporal_domain_mesh_actual_REVIEW_ONLY.json",
+    "sha256": "3f67932a892ffcec670f8e4b31273d971b63eb77b84e8277d10c76a73d9427e0"
+  },
+  "prior_resource_receipt": null,
+  "existing_thread_evidence": {
+    "certificate": {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/equivalence_certificate.json",
+      "sha256": "a7e0170f5c4b295a89ede835d7c234f4ebda8919f4271d2098b60fee638f937f"
+    },
+    "root_application": {
+      "path": "/home/jdiaz/scratch/stage5_node_fusion_candidate_20261011/root_application_receipt.json",
+      "sha256": "14390a5da13607439036268e17a6be73a0912e838374d8b1400628ecc5dcb4e2"
+    },
+    "scope": "Existing tested1/2/4-thread algebraic evidence only; future trajectories and cross-thread scalar reductions are not asserted bitwise identical"
+  },
+  "initial_checkpoint": {
+    "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_resources4_20261011/provenance/initial_resource_checkpoint.npz",
+    "sha256": "0cbfd4a3aa3ed19569076d8ef21e6c65fa2de00936e3d136c78de9f235f9ca26"
+  },
+  "initial_manifest": {
+    "path": "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_resources4_20261011/provenance/initial_resource_manifest.json",
+    "sha256": "5ebf578f4050adaeb0691dadd5c737c506b27abe20e0d186db63b7630bdb9c31"
+  },
+  "parent_audit_view_manifest": {
+    "original_manifest_sha256": "e577cd6ebd91f5fb9cb5f3c7a42ecd24c4b433ed52b95b4f5000fddf8ac0578c",
+    "derived_manifest_sha256": "2bfdcb082b1eaa09d2d14fbddc941fc85854ced94992c8660fee154673949d84",
+    "recomputed_output_sha256": {
+      "checkpoint_latest.npz": "422a1ff5f3591b6b694d21b869e1550c9a5bbfd465da592996badc8d3b85299f",
+      "snapshots.npz": "f1a7becc07423a7b2ef6402f27f93df6fdc9888540aa6249594a092d30461484",
+      "trajectory.npz": "a2630a5ecb8dea9a59e304122c0b5567c40cd6963f2be917c37ca467ad109406"
+    },
+    "output_sha256_added": true,
+    "reason": "Native INTERRUPTED runner omits output_sha256; derived audit view adds only recomputed saved-output hashes",
+    "original_manifest_bytes_unchanged": true,
+    "physical_files_modified": false
+  },
+  "parent_original_audit_files": {
+    "manifest.json": {
+      "path": "/home/jdiaz/scratch/stage5_domain_resources4_future_anchor_20261011/manifest.json",
+      "sha256": "2bfdcb082b1eaa09d2d14fbddc941fc85854ced94992c8660fee154673949d84"
+    },
+    "checkpoint_latest.npz": {
+      "path": "/home/jdiaz/scratch/stage5_domain_resources4_future_anchor_20261011/checkpoint_latest.npz",
+      "sha256": "422a1ff5f3591b6b694d21b869e1550c9a5bbfd465da592996badc8d3b85299f"
+    },
+    "trajectory.npz": {
+      "path": "/home/jdiaz/scratch/stage5_domain_resources4_future_anchor_20261011/trajectory.npz",
+      "sha256": "a2630a5ecb8dea9a59e304122c0b5567c40cd6963f2be917c37ca467ad109406"
+    },
+    "snapshots.npz": {
+      "path": "/home/jdiaz/scratch/stage5_domain_resources4_future_anchor_20261011/snapshots.npz",
+      "sha256": "f1a7becc07423a7b2ef6402f27f93df6fdc9888540aa6249594a092d30461484"
+    }
+  },
+  "parent_runtime_archive_manifest": {
+    "path": "/home/jdiaz/scratch/stage5_domain_resources4_future_anchor_20261011/runtime_sources/archive_manifest.json",
+    "sha256": "1b9d5f2a1a797acdd8669d8c004632bdaab6a07dcf1a2151cb3e1992303a3bd9"
+  },
+  "new_checkpoint_bytes_sha256": "0cbfd4a3aa3ed19569076d8ef21e6c65fa2de00936e3d136c78de9f235f9ca26",
+  "resume_argv": [
+    "--output-dir",
+    "/home/jdiaz/scratch/stage5_effective_L480_h5_775_control_trigger_v6_guard2b_resources4_20261011",
+    "--resume",
+    "--cpu-start",
+    "10",
+    "--length-nm",
+    "480.0",
+    "--spacing-nm",
+    "5.0",
+    "--xi-cutoff",
+    "32.0",
+    "--xi-order",
+    "6",
+    "--phonon-nodes",
+    "96",
+    "--transport-order",
+    "48",
+    "--wavelength-nm",
+    "775.0",
+    "--sigma-nm",
+    "7.549834435",
+    "--retained-fraction",
+    "0.667",
+    "--dt-ps",
+    "0.02",
+    "--ceiling-ps",
+    "200.0",
+    "--threshold-mV",
+    "0.1",
+    "--confirmation-ps",
+    "0.5",
+    "--extra-time-ps",
+    "5.0",
+    "--tau-ee-Tc-ps",
+    "5.0",
+    "--tau-ep-Tc-ps",
+    "24.7",
+    "--tau-escape-ps",
+    "15.0",
+    "--current-uA",
+    "21.29720614489798",
+    "--bath-K",
+    "0.9",
+    "--snapshot-every-ps",
+    "0.1",
+    "--checkpoint-every-ps",
+    "1.0",
+    "--checkpoint-wall-s",
+    "60.0",
+    "--step-tolerance",
+    "2e-07",
+    "--local-energy-tolerance",
+    "2.5e-06",
+    "--max-iterations",
+    "40",
+    "--max-rejections",
+    "50",
+    "--threads",
+    "4"
+  ],
+  "state_or_heat_correction": false,
+  "global_energy_origin_reset": false,
+  "guard_window_reset": false,
+  "future_cross_thread_bitwise_identity_claimed": false
+}

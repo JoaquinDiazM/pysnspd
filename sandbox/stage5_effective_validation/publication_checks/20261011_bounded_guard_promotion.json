@@ -1,0 +1,52 @@
+{
+  "schema": "pysnspd.bounded_guard_analysis_additions_promotion.v1",
+  "utc": "2026-10-11T17:17:49.914242+00:00",
+  "root_approval_path": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/root_integration_additions_approval.json",
+  "root_approval_sha256": "ce301b90f221634b706f367ef43c97db34ee0c138a506090f6968d1193be0b01",
+  "reviewed_proposal_sha256": "125e27c6b037820304e5fff3341a467b1cab71257cf176e0b9f59d1ab276ece8",
+  "files": [
+    {
+      "source": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/bounded_guard_protocol.py",
+      "target": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/bounded_guard_protocol.py",
+      "sha256": "b718d5a41874771e5afcd706ce4a4bd730fea44cf3f1074315b15878d9e8e5a6"
+    },
+    {
+      "source": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/guard_protocol_dispatcher.py",
+      "target": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/guard_protocol_dispatcher.py",
+      "sha256": "7c53d7da749d694670b86de2aeda57c936d7ff99d43c72feceb2920240f345bd"
+    },
+    {
+      "source": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/width_guard_window_candidate.py",
+      "target": "/home/jdiaz/pysnspd/sandbox/stage5_effective_validation/width_guard_window_candidate.py",
+      "sha256": "1cb430f5e704c0c2eae05d843d88cd55ebb5cbd3ca4f9110d3821f6c5334d060"
+    },
+    {
+      "source": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/test_bounded_guard_protocol.py",
+      "target": "/home/jdiaz/pysnspd/tests/test_effective_bounded_guard_protocol.py",
+      "sha256": "b84af711fea51b3bd58035664770304f906fe47cb7df660bda4db305fcca0e9c"
+    },
+    {
+      "source": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/test_guard_protocol_dispatcher.py",
+      "target": "/home/jdiaz/pysnspd/tests/test_effective_guard_protocol_dispatcher.py",
+      "sha256": "1b3b23262616012353496c049c075ed18ef78466ab8da8d7e885bb826a17f589"
+    },
+    {
+      "source": "/home/jdiaz/scratch/stage5_guard2_auditor_candidate_20261011/test_width_guard_window_candidate.py",
+      "target": "/home/jdiaz/pysnspd/tests/test_effective_width_guard_window.py",
+      "sha256": "f005a8e8cf41c2038bcc82a080c0cb16c24e13cf0a5f417556130d0b4a0a44c4"
+    }
+  ],
+  "AST_valid": true,
+  "dispatcher_help_returncode": 0,
+  "dispatcher_help_stdout": "usage: guard_protocol_dispatcher.py [-h] --kind\n                                    {domain,mesh,spectral,temporal}\n                                    --reference REFERENCE --candidate\n                                    CANDIDATE --guard-protocol GUARD_PROTOCOL\n                                    [--window-declaration WINDOW_DECLARATION]\n                                    --output-dir OUTPUT_DIR\n\nExplicit dispatcher for the bounded guard protocol; baseline auditor\nunchanged. The complete ORIGINAL saved runs are verified before any finite-\nwindow copy. Only saved observables are clipped; physical arrays, ledgers,\nevents and terminal status remain original and visible. This tool never infers\nstage5 admission.\n\noptions:\n  -h, --help            show this help message and exit\n  --kind {domain,mesh,spectral,temporal}\n  --reference REFERENCE\n  --candidate CANDIDATE\n  --guard-protocol GUARD_PROTOCOL\n  --window-declaration WINDOW_DECLARATION\n  --output-dir OUTPUT_DIR\n",
+  "baseline_auditor_sha256": "3c08c2534efd2ba8d5803842a9e9cf347b6befc46e68ebddc15adb716156c27a",
+  "baseline_changed": false,
+  "RHS_sources_changed": false,
+  "builder_current_sha256": "334b184b4dc9a875febc9f1c8fa43a7801070b3c021b723adaa013580a9f263e",
+  "builder_candidate_sha256": "f5c2e7e634a858dd1c16275d5566b7e0222481c19768bdf5e1ff7ab610fdceaf",
+  "builder_candidate_patch_sha256": "fb19866dbce94eb56b0c3a8733426b92c2bfa4332ec3808d1791b5def44f274e",
+  "builder_timeline_patch_applied": false,
+  "simulation_executed": false,
+  "PDF_generated": false,
+  "stage5_admission_inferred": false
+}
