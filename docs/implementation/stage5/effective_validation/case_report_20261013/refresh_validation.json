@@ -1,0 +1,467 @@
+{
+  "schema": "pysnspd.individual_effective_case_report.refresh_validation.v2",
+  "tests": {
+    "passed": 31,
+    "elapsed_s": 0.41,
+    "command": "python -m pytest -q tests/test_case_report.py"
+  },
+  "examples": [
+    {
+      "run_dir": "/home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/nominal1550",
+      "report_path": "/home/jdiaz/scratch/case_report_refresh_20261013/release/case_report_nominal1550_b38b4938.pdf",
+      "report_sha256": "92c4a0118878094f73751c4ed857d74b4375e8ffe8a9c7b921a3e8699622970c",
+      "pipeline_sha256": "e50d9528e0aee00ed8eea67882cb59978b63a261d4412208e2b1ad2ef752e78d",
+      "selected_saved_times_ps": [
+        0.0,
+        0.9999999999999998,
+        9.999999999999872,
+        50.0,
+        99.99999999999847,
+        200.0
+      ],
+      "snapshot_selection": {
+        "policy": "first six requests; pad with final request; nearest saved time; no extra endpoints",
+        "slots": [
+          {
+            "slot": 1,
+            "requested_ps": 0.0,
+            "saved_ps": 0.0,
+            "offset_ps": 0.0,
+            "saved_index": 0,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 2,
+            "requested_ps": 1.0,
+            "saved_ps": 0.9999999999999998,
+            "offset_ps": -2.220446049250313e-16,
+            "saved_index": 10,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 3,
+            "requested_ps": 10.0,
+            "saved_ps": 9.999999999999872,
+            "offset_ps": -1.2789769243681803e-13,
+            "saved_index": 100,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 4,
+            "requested_ps": 50.0,
+            "saved_ps": 50.0,
+            "offset_ps": 0.0,
+            "saved_index": 500,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 5,
+            "requested_ps": 100.0,
+            "saved_ps": 99.99999999999847,
+            "offset_ps": -1.5347723092418164e-12,
+            "saved_index": 1000,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 6,
+            "requested_ps": 200.0,
+            "saved_ps": 200.0,
+            "offset_ps": 0.0,
+            "saved_index": 2001,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          }
+        ],
+        "available_states": 2002,
+        "unique_selected_states": 6,
+        "saved_cadence_ps": {
+          "minimum": 7.077005648170598e-12,
+          "median": 0.09999999999999432,
+          "maximum": 0.10000000000108855
+        },
+        "future_visualization_queue": []
+      },
+      "vorticity_checks": [
+        {
+          "snapshot_index": 0,
+          "saved_time_ps": 0.0,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 10,
+          "saved_time_ps": 0.9999999999999998,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 100,
+          "saved_time_ps": 9.999999999999872,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 500,
+          "saved_time_ps": 50.0,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 1000,
+          "saved_time_ps": 99.99999999999847,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 2001,
+          "saved_time_ps": 200.0,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        }
+      ],
+      "energy_balance_metrics": {
+        "maximum_global_energy_defect_percent": 2.9091657923587264e-05,
+        "maximum_absolute_instant_power_residual_W": 8.401053096241687e-22
+      },
+      "electrical_metrics": {
+        "final_ps": 200.0,
+        "maps_final_ps": 200.0,
+        "confirmed": false,
+        "censored": true,
+        "provisional": false,
+        "crossing_ps": null,
+        "confirmation_ps": null,
+        "latency_ps": null,
+        "max_observed_Vout_mV": 0.000331380043442172,
+        "min_Is_uA": 21.290567849383283,
+        "local_slope_mV_ps": null,
+        "readout_identity_error_V": 0.0,
+        "positive_global_currents": true
+      },
+      "actual_cpu_affinity": [
+        11
+      ],
+      "elapsed_s": 6.0386596560128964
+    },
+    {
+      "run_dir": "/home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/nominal775",
+      "report_path": "/home/jdiaz/scratch/case_report_refresh_20261013/release/case_report_nominal775_283c7fe4.pdf",
+      "report_sha256": "1f5ae989f43fc6643d4bfce3da7e872dd06f42aea12ddf061d876f8ad55c4a3d",
+      "pipeline_sha256": "e50d9528e0aee00ed8eea67882cb59978b63a261d4412208e2b1ad2ef752e78d",
+      "selected_saved_times_ps": [
+        0.0,
+        0.9999999999999998,
+        15.299999999999963,
+        31.899999999999814,
+        32.39999999999982,
+        36.93926530191459
+      ],
+      "snapshot_selection": {
+        "policy": "first six requests; pad with final request; nearest saved time; no extra endpoints",
+        "slots": [
+          {
+            "slot": 1,
+            "requested_ps": 0.0,
+            "saved_ps": 0.0,
+            "offset_ps": 0.0,
+            "saved_index": 0,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 2,
+            "requested_ps": 1.0,
+            "saved_ps": 0.9999999999999998,
+            "offset_ps": -2.220446049250313e-16,
+            "saved_index": 10,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 3,
+            "requested_ps": 15.299999999999963,
+            "saved_ps": 15.299999999999963,
+            "offset_ps": 0.0,
+            "saved_index": 153,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 4,
+            "requested_ps": 31.93926530191459,
+            "saved_ps": 31.899999999999814,
+            "offset_ps": -0.0392653019147744,
+            "saved_index": 319,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 5,
+            "requested_ps": 32.43926530191459,
+            "saved_ps": 32.39999999999982,
+            "offset_ps": -0.03926530191476729,
+            "saved_index": 324,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          },
+          {
+            "slot": 6,
+            "requested_ps": 36.93926530191459,
+            "saved_ps": 36.93926530191459,
+            "offset_ps": 0.0,
+            "saved_index": 370,
+            "repeated_saved_state": false,
+            "outside_saved_window": false
+          }
+        ],
+        "available_states": 371,
+        "unique_selected_states": 6,
+        "saved_cadence_ps": {
+          "minimum": 0.03926530191461097,
+          "median": 0.09999999999999787,
+          "maximum": 0.1000000000005059
+        },
+        "future_visualization_queue": []
+      },
+      "vorticity_checks": [
+        {
+          "snapshot_index": 0,
+          "saved_time_ps": 0.0,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 10,
+          "saved_time_ps": 0.9999999999999998,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 153,
+          "saved_time_ps": 15.299999999999963,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 319,
+          "saved_time_ps": 31.899999999999814,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 324,
+          "saved_time_ps": 32.39999999999982,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 0,
+          "resolved_cells": 6994,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        },
+        {
+          "snapshot_index": 370,
+          "saved_time_ps": 36.93926530191459,
+          "positive": 0,
+          "negative": 0,
+          "indeterminate_cells": 122,
+          "resolved_cells": 6872,
+          "contour_floor_relative_DC": 1e-06,
+          "convention": "positive = counterclockwise phase winding in physical x,y; A=0",
+          "reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+          "core_points_nm": [],
+          "core_charge": []
+        }
+      ],
+      "energy_balance_metrics": {
+        "maximum_global_energy_defect_percent": 0.524622000884271,
+        "maximum_absolute_instant_power_residual_W": 4.182225177068108e-21
+      },
+      "electrical_metrics": {
+        "final_ps": 36.93926530191459,
+        "maps_final_ps": 36.93926530191459,
+        "confirmed": true,
+        "censored": false,
+        "provisional": false,
+        "crossing_ps": 31.93926530191459,
+        "confirmation_ps": 32.43926530191459,
+        "latency_ps": 31.93926530191459,
+        "max_observed_Vout_mV": 0.14906447218187696,
+        "min_Is_uA": 18.31466789039734,
+        "local_slope_mV_ps": 0.009055974362824008,
+        "readout_identity_error_V": 0.0,
+        "positive_global_currents": true
+      },
+      "actual_cpu_affinity": [
+        12
+      ],
+      "elapsed_s": 4.853194519993849
+    }
+  ],
+  "visual_QA": {
+    "all_38_pages_reviewed": true,
+    "renderer": "conda pdftoppm, 110 dpi",
+    "final_revisions": {
+      "case_report_nominal1550_b38b4938.pdf": {
+        "pages": 19,
+        "changed_pages": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          18
+        ],
+        "unchanged_pages_pixel_identical_to_reviewed_draft": 6
+      },
+      "case_report_nominal775_283c7fe4.pdf": {
+        "pages": 19,
+        "changed_pages": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          18
+        ],
+        "unchanged_pages_pixel_identical_to_reviewed_draft": 6
+      }
+    },
+    "no_clipping_or_overlaps": true
+  },
+  "actual_CLI_padding": {
+    "requested_ps": [
+      0,
+      1
+    ],
+    "selected_saved_times_ps": [
+      0.0,
+      0.9999999999999998,
+      0.9999999999999998,
+      0.9999999999999998,
+      0.9999999999999998,
+      0.9999999999999998
+    ],
+    "pages": 19,
+    "passed": true
+  },
+  "physical13_unchanged": true,
+  "physical13_sources": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "protected_user_edits_preserved": true,
+  "user_deletions_preserved": 129,
+  "model_simulations_launched": 0,
+  "kinetic_RHS_evaluations": 0,
+  "new_DC_solves": 0,
+  "main_equation_source": {
+    "path": "/home/jdiaz/pysnspd/Matematica/Principal.pdf",
+    "sha256": "9561176d9cdf8e7a4ccec29871c6dbe5e0f75b8d7543e8384927f6e430e1f262"
+  },
+  "vortex_primary_reference": "https://www.mcs.anl.gov/papers/P5324-0315.pdf",
+  "storage_root": "/home/jdiaz/scratch/case_report_refresh_20261013/release",
+  "new_user_command_output_already_exists": false
+}

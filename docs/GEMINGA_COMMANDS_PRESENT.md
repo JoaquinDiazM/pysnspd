@@ -468,3 +468,54 @@ Revisión visual de todas las páginas, escalas y etiquetas; cotejo de hashes
 y reconstrucción de Vdev con error máximo aproximadamente 1.4e-17 V.
 Los 13 archivos físicos del checkpoint operativo permanecen sin cambios.
 Los ejemplos están en /home/jdiaz/scratch/case_report_validation_20261013_release.
+
+
+## 2026-10-13 - Case report refresh: English, fixed six snapshots, winding and model summary
+
+Pipeline: /home/jdiaz/pysnspd/plot_pipelines/07_case_report.py
+Guide: /home/jdiaz/pysnspd/plot_pipelines/CASE_REPORT.md
+
+The current report is English, 19 pages, with larger chart labels, one PDF per
+case, quantity-specific palettes, phase-winding vorticity and section6 containing
+the coupled model equations and complete three-state circuit schematic.
+This entry supersedes the earlier snapshot-selection behavior.
+
+--snapshots-ps takes the first six requested times [ps], repeats the last if fewer
+are supplied, preserves order/repetitions and selects nearest saved states.
+No initial/final snapshots are silently added. Every panel labels requested and
+actual time. Out-of-range requests select the nearest stored endpoint.
+Omit the flag for six automatic targets. No new simulation or full reset.
+
+~~~bash
+cd /home/jdiaz/pysnspd
+CASE_RUNS=/home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/07_case_report.py \
+  --run-dir "$CASE_RUNS/nominal775" "$CASE_RUNS/bias065_775" \
+    "$CASE_RUNS/bias075_775" "$CASE_RUNS/nominal1550" \
+  --snapshots-ps 0 1 5 10 20 35 \
+  --output-dir /home/jdiaz/scratch/case_reports/english_20261013_01 \
+  --workers 2
+~~~
+
+Choose a fresh output directory for every invocation. --allow-incomplete reads
+one coherent checkpoint and labels the PDF provisional. It does not interrupt
+the solver or infer terminal censoring from a partial window.
+Resources: two independent foreground workers, one physical core each, BLAS/
+OpenMP/Numba=1, shared ceiling90%, all outputs/caches/captures under scratch.
+Two nominal reports required about six seconds per case. Larger archives can differ.
+
+Vorticity is signed condensate phase winding, with P1 zero localization.
+Gray marks undefined/insufficient-amplitude contours, with a diagnostic floor
+1e-6 of local DC amplitude. It is not curl(J), reconstructed magnetic flux or
+continuous vortex tracking. Primary method:
+https://www.mcs.anl.gov/papers/P5324-0315.pdf, Eq.(1).
+Receipt contains actual/requested times, repetitions, cadence, winding checks
+and a follow-up acquisition queue when saved time resolution is insufficient.
+No physical solver or save-rate code was modified. Vout still lacks the
+experimental filter/amplifier/noise response.
+Validation:31 quick tests, two19-page examples and an actual two-time/padded CLI run.

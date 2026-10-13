@@ -45,7 +45,7 @@ from pysnspd.experimental.trigger_window import TriggerWindow
 SCRATCH = Path("/home/jdiaz/scratch")
 EV = 1.602176634e-19
 MEV = EV*1e-3
-SCHEMA = "pysnspd.individual_effective_case_report.v1"
+SCHEMA = "pysnspd.individual_effective_case_report.v2"
 RECON_SOURCES = ("pysnspd/experimental/effective_bcs_functional.py",
     "pysnspd/experimental/effective_bcs_ports.py","pysnspd/experimental/thermal_spatial_usadel.py")
 TRACE = ("time_s","Vout_V","Vdev_V","Ib_A","Is_A","vc_V","energy_total_J",
@@ -70,9 +70,9 @@ def scratch_path(value):
 
 
 def fmt(value,scale=1.,digits=6):
-    if value is None: return "No asignado"
+    if value is None: return "Unassigned"
     v=float(value)*scale
-    return f"{v:.{digits}g}" if np.isfinite(v) else "infinito"
+    return f"{v:.{digits}g}" if np.isfinite(v) else "infinity"
 
 
 def case_id(path):
@@ -93,11 +93,11 @@ def memory_check(paths,limit):
 
 def existing_audit(run,manifest_sha):
     path=run.parent.parent/"campaign_execution.json"
-    if not path.is_file(): return {"status":"Sin auditoría terminal autenticada"}
+    if not path.is_file(): return {"status":"No authenticated terminal audit"}
     record=json.loads(path.read_text()).get("cases",{}).get(run.name,{})
     audit=record.get("audit",{}); p=Path(audit.get("path",""))
     if record.get("manifest_sha256")!=manifest_sha or not p.is_file() or sha256(p)!=audit.get("sha256"):
-        return {"status":"Auditoría ausente o de otra versión"}
+        return {"status":"Missing or stale terminal audit"}
     content=json.loads(p.read_text())
     return dict(status="PASS" if content.get("all_requested_checks_passed") is True else "NO PASS",
         path=str(p),sha256=audit["sha256"],existing_audit_only=True)
@@ -177,7 +177,7 @@ def load_case(run,build,allow_incomplete,limit):
     for k in RECON_SOURCES:
         if sha256(ROOT/k)!=m["source_pins_sha256"].get(k): raise ValueError("Saved reconstruction source differs: "+k)
     return dict(run=run,m=m,z=trace,s=maps,mesh=mesh,dc=dc,dc_receipt=dr,obs=obs,provisional=not complete,
-        inputs=inputs,memory=memory,execution=execution,audit=existing_audit(run,inputs["manifest.json"]) if complete else {"status":"Provisional; sin auditoría terminal inferida"})
+        inputs=inputs,memory=memory,execution=execution,audit=existing_audit(run,inputs["manifest.json"]) if complete else {"status":"Provisional; no terminal audit inferred"})
 
 
 def hotbelts(delta,dc,edges,xy,threshold=.2):
@@ -196,21 +196,94 @@ def hotbelts(delta,dc,edges,xy,threshold=.2):
     return np.asarray(flags,bool)
 
 
-def select_snapshots(times,obs,hotbelt,requested=None):
-    t=np.asarray(times)*1e12
+
+def snapshot_targets(times,obs,hotbelt,requested=None):
+    """Exactly six ordered target slots; explicit requests never gain endpoints."""
+    t=np.asarray(times,float)*1e12
+    if t.ndim!=1 or not len(t) or np.any(~np.isfinite(t)) or np.any(np.diff(t)<=0):
+        raise ValueError("Finite, increasing saved snapshot times required")
     if requested is not None:
-        q=np.asarray(requested,float)
-        if not len(q) or len(q)>24 or np.any(~np.isfinite(q)) or np.any(q<t[0]) or np.any(q>t[-1]+1e-9):
-            raise ValueError("At most24 requested times inside the saved snapshot window")
-        targets=[t[0],*q,t[-1]]
+        targets=np.asarray(list(requested)[:6],float)
+        if not len(targets) or np.any(~np.isfinite(targets)):
+            raise ValueError("At least one finite requested snapshot time is required")
     elif obs.get("trigger_confirmed",obs.get("detected",False)):
         cross=obs.get("first_crossing_time_s",obs.get("crossing_time_s"))
         conf=obs.get("confirmation_time_s")
         hb=t[np.flatnonzero(hotbelt)[0]] if np.any(hotbelt) else .5*t[-1]
-        targets=[t[0],min(1.,t[-1]),hb,cross*1e12,conf*1e12,t[-1]]
+        targets=np.array([t[0],min(1.,t[-1]),hb,cross*1e12,conf*1e12,t[-1]])
     else:
-        targets=[t[0],min(1.,t[-1]),min(10.,t[-1]),.25*t[-1],.5*t[-1],t[-1]]
-    return np.asarray(sorted({0,len(t)-1,*[int(np.argmin(abs(t-q))) for q in targets]}),int)
+        targets=np.array([t[0],min(1.,t[-1]),min(10.,t[-1]),.25*t[-1],.5*t[-1],t[-1]])
+    return np.pad(targets,(0,6-len(targets)),mode="edge")
+
+
+def select_snapshots(times,obs,hotbelt,requested=None):
+    targets=snapshot_targets(times,obs,hotbelt,requested)
+    saved=np.asarray(times)*1e12
+    # Preserve request order and repetitions; ties choose the earlier saved sample.
+    return np.array([int(np.argmin(abs(saved-q))) for q in targets],int)
+
+
+def snapshot_selection(times,targets,indices):
+    t=np.asarray(times)*1e12;dt=np.diff(t)
+    slots=[dict(slot=j+1,requested_ps=float(q),saved_ps=float(t[i]),
+        offset_ps=float(t[i]-q),saved_index=int(i),repeated_saved_state=int(i) in indices[:j],
+        outside_saved_window=bool(q<t[0] or q>t[-1])) for j,(q,i) in enumerate(zip(targets,indices))]
+    queue=[]
+    if len(t)<6:
+        queue.append("Future acquisition: save at least six states with a stable physical-time cadence.")
+    if len(np.unique(indices))<len(np.unique(np.clip(targets,t[0],t[-1]))):
+        queue.append("Future acquisition: use a stable snapshot cadence finer than the requested time spacing.")
+    return dict(policy="first six requests; pad with final request; nearest saved time; no extra endpoints",
+        slots=slots,available_states=len(t),unique_selected_states=len(np.unique(indices)),
+        saved_cadence_ps=dict(minimum=None if not len(dt) else float(dt.min()),
+            median=None if not len(dt) else float(np.median(dt)),maximum=None if not len(dt) else float(dt.max())),
+        future_visualization_queue=queue)
+
+
+def phase_vorticity(delta,dc,xy,triangles,relative_floor=1e-6):
+    """Signed CCW winding of complex P1 triangles with nonzero contour.
+
+    Uses the complex order parameter, not curl(J). The contour floor is a
+    diagnostic amplitude resolution relative to the local DC, not a model input.
+    Cores are zeros of the same P1 interpolant. No temporal tracking is inferred.
+    """
+    d=np.asarray(delta,complex);dc=np.asarray(dc,complex);xy=np.asarray(xy,float)
+    tri=np.asarray(triangles,int);z=d[tri];ref=np.min(abs(dc[tri]),axis=1)
+    if not 0<relative_floor<1 or np.any(ref<=0) or np.any(~np.isfinite(z)):
+        raise ValueError("Finite gap, nonzero DC reference and 0<floor<1 required")
+    points=xy[tri];a=points[:,1]-points[:,0];b=points[:,2]-points[:,0]
+    area2=a[:,0]*b[:,1]-a[:,1]*b[:,0]
+    if np.any(area2==0):raise ValueError("Nondegenerate physical triangles required")
+    # Normalize before phase products and zero finding to avoid SI underflow.
+    scale=np.maximum(np.max(abs(z),axis=1),ref)
+    v=z/scale[:,None];other=np.roll(v,-1,axis=1);edge=other-v
+    length2=abs(edge)**2
+    frac=np.divide(-np.real(np.conj(edge)*v),length2,out=np.zeros_like(length2),where=length2>0)
+    closest=v+np.clip(frac,0,1)*edge
+    minimum_contour_gap=np.min(abs(closest),axis=1)*scale
+    valid=minimum_contour_gap>relative_floor*ref
+    raw=np.angle(other*np.conj(v)).sum(axis=1)/(2*np.pi)*np.sign(area2)
+    nearest=np.rint(raw).astype(int)
+    valid &= (abs(raw-nearest)<1e-8)&(abs(nearest)<=1)
+    charge=np.where(valid,nearest,0)
+    candidates=np.flatnonzero(valid&(charge!=0));cores=[];signs=[];cells=[]
+    for j in candidates:
+        matrix=np.array([[np.real(v[j,1]-v[j,0]),np.real(v[j,2]-v[j,0])],
+                         [np.imag(v[j,1]-v[j,0]),np.imag(v[j,2]-v[j,0])]])
+        try:uv=np.linalg.solve(matrix,-np.array([v[j,0].real,v[j,0].imag]))
+        except np.linalg.LinAlgError:
+            valid[j]=False;charge[j]=0;continue
+        weights=np.r_[1-uv.sum(),uv]
+        if np.any(weights<-1e-9) or abs(weights@v[j])>1e-9:
+            valid[j]=False;charge[j]=0;continue
+        cores.append(weights@points[j]);signs.append(int(charge[j]));cells.append(int(j))
+    return dict(winding=charge,valid=valid,core_points_m=np.asarray(cores).reshape(-1,2),
+        core_charge=np.asarray(signs,int),core_cells=np.asarray(cells,int),
+        contour_floor_relative_DC=relative_floor,positive=int(np.sum(charge[valid]==1)),
+        negative=int(np.sum(charge[valid]==-1)),indeterminate_cells=int(np.sum(~valid)),
+        resolved_cells=int(np.sum(valid)),minimum_contour_gap_J=minimum_contour_gap,
+        convention="positive = counterclockwise phase winding in physical x,y; A=0",
+        reference="https://www.mcs.anl.gov/papers/P5324-0315.pdf")
 
 
 def metrics(c):
@@ -293,32 +366,32 @@ def currents(c,selected):
     return results,checks
 
 
+
 class Report:
     def __init__(self,path,c,dpi):
-        self.c=c; self.dpi=dpi; self.pages=[]
+        self.c=c;self.dpi=dpi;self.pages=[]
         self.pdf=PdfPages(path,metadata={"Title":"SNSPD - "+c["run"].name,"Author":"pysnspd",
             "Subject":"Individual effective saved case; no new evolution or inter-run comparison"})
     def page(self,title):
         fig=plt.figure(figsize=(11.69,8.27))
-        fig.text(.055,.945,title,fontsize=18,weight="bold",color=INK)
+        fig.text(.055,.945,title,fontsize=20,weight="bold",color=INK)
         a=self.c["m"]["parameter_identity"]
         subtitle=f'{self.c["run"].name} | {a["wavelength_nm"]:g} nm | I0={a["current_uA"]:.7g} µA'
-        if self.c["provisional"]: subtitle+=" | PROVISIONAL - "+self.c["m"]["status"]
-        fig.text(.055,.912,subtitle,fontsize=10,color=ACCENT)
+        if self.c["provisional"]:subtitle+=" | PROVISIONAL - "+self.c["m"]["status"]
+        fig.text(.055,.912,subtitle,fontsize=11,color=ACCENT)
         return fig
-    def save(self,fig,title,caption):
-        fig.text(.055,.065,textwrap.fill(caption,155),fontsize=8.5,color=INK,va="bottom",linespacing=1.35)
-        fig.text(.055,.025,f'pysnspd | caso individual | reloj postcascada | ventana 0–{self.c["metrics"]["final_ps"]:.7g} ps',fontsize=8,color=INK)
-        fig.text(.945,.025,str(len(self.pages)+1),fontsize=9,ha="right",color=INK)
-        with plt.rc_context({"savefig.bbox":None}):
-            self.pdf.savefig(fig,dpi=self.dpi)
-        plt.close(fig)
-        self.pages.append(dict(page=len(self.pages)+1,title=title,caption=caption))
+    def save(self,fig,title,caption,source_url=None):
+        caption_artist=fig.text(.055,.055,textwrap.fill(caption,145),fontsize=9.5,color=INK,va="bottom",linespacing=1.25)
+        if source_url:caption_artist.set_url(source_url)
+        fig.text(.055,.022,f'pysnspd | individual case | postcascade clock | window 0-{self.c["metrics"]["final_ps"]:.7g} ps',fontsize=8.5,color=INK)
+        fig.text(.945,.022,str(len(self.pages)+1),fontsize=9,ha="right",color=INK)
+        with plt.rc_context({"savefig.bbox":None}):self.pdf.savefig(fig,dpi=self.dpi)
+        plt.close(fig);self.pages.append(dict(page=len(self.pages)+1,title=title,caption=caption))
 
 
-def table(fig,bounds,title,rows,font=9):
-    ax=fig.add_axes(bounds); ax.axis("off")
-    ax.text(0,1.04,title,fontsize=12,color=ACCENT,weight="bold",transform=ax.transAxes)
+def table(fig,bounds,title,rows,font=10):
+    ax=fig.add_axes(bounds);ax.axis("off")
+    ax.text(0,1.04,title,fontsize=13,color=ACCENT,weight="bold",transform=ax.transAxes)
     chars=[max(18,int(bounds[2]*11.69*72*part/(font*.5))) for part in (.58,.42)]
     data=[[textwrap.fill(str(x),chars[j]) for j,x in enumerate(row)] for row in rows]
     tab=ax.table(cellText=data,colWidths=[.58,.42],cellLoc="left",bbox=(0,0,1,1))
@@ -331,40 +404,40 @@ def table(fig,bounds,title,rows,font=9):
 def parameters(r):
     c=r.c;m=c["m"];p=m["physicalparams"];a=m["parameter_identity"];s=m["source"];g=m["geometry"]
     circ=p["circuit"];mat=m["material"];cfg=m["observation"].get("config",{})
-    fig=r.page("1. Parámetros del caso")
-    table(fig,[.055,.525,.425,.34],"Geometría y material",[
-        ("Ancho / longitud resuelta (nm)",fmt(g["width_m"],1e9)+" / "+fmt(g["length_m"],1e9)),
-        ("Espesor físico / malla (nm)",fmt(p["film_thickness_m"],1e9)+" / "+fmt(a["spacing_nm"])),
-        ("Tc / baño (K)",fmt(p["Tc_K"])+" / "+fmt(p["bath_temperature_K"])),
-        ("Difusión D (m²/s)",fmt(p["diffusion_m2_s"])),("Resistencia por cuadrado (Ω)",fmt(p["sheet_resistance_ohm"])),
-        ("DOS N0 monoespín (1/(J m³))",fmt(p["N0_single_spin_per_J_m3"])),
-        ("Velocidad acústica / Debye (m/s; K)",fmt(mat.get("sound_speed_m_per_s"))+" / "+fmt(mat.get("Debye_temperature_K"))),
-        ("γ acústica derivada",fmt(mat.get("gamma_A20"))),("Nodos / aristas",f'{g["n_nodes"]} / {g["n_edges"]}'),
-        ("Modelo","Neutral efectivo BCS/KWT")])
-    table(fig,[.52,.525,.425,.34],"Fotón y calibradores",[
-        ("Longitud de onda (nm)",fmt(s.get("wavelength_nm",a["wavelength_nm"]))),
-        ("Energía fotónica / retenida (eV)",fmt(s.get("photon_energy_J"),1/EV)+" / "+fmt(s.get("retained_energy_J"),1/EV)),
-        ("Fracción retenida η",fmt(s.get("retained_fraction"))),("Anchura σ (nm)",fmt(s.get("sigma_nm"))),
-        ("Depósito (x,y) en nm",str([round(x*1e9,4) for x in s.get("center_m",[])])),
-        ("τee(Tc), libre (ps)",fmt(p["tau_ee_Tc_s"],1e12)),("τep(Tc), libre (ps)",fmt(p["tau_ep_Tc_s"],1e12)),
-        ("τ0 e-ph, derivado (ns)",fmt(p["tau0_s"],1e9)),("Escape fonónico (ps)",fmt(p["tau_escape_s"],1e12)),
-        ("Fuente inicial","Gap DC; FD/BE comunes")])
-    table(fig,[.055,.16,.425,.295],"Circuito y discriminador ideal",[
-        ("Corriente DC (µA)",fmt(p["current_A"],1e6)),("Rb / Rlectura (Ω)",fmt(circ["R_bias_ohm"])+" / "+fmt(circ["R_load_ohm"])),
-        ("Lb / Lext congelada (nH)",fmt(circ["L_bias_H"],1e9)+" / "+fmt(circ["Lk_ext_H"],1e9)),
-        ("Capacidad / Vbias (pF; V)",fmt(circ["C_couple_F"],1e12)+" / "+fmt(circ["V_bias_V"])),
-        ("Umbral positivo (mV)",fmt(a["threshold_mV"])),("Confirmación / extra (ps)",fmt(a["confirmation_ps"])+" / "+fmt(a["extra_time_ps"])),
-        ("Histéresis (fracción) / techo (ps)",fmt(cfg.get("hysteresis_fraction",.05))+" / "+fmt(a["ceiling_ps"])),
-        ("Origen del reloj","Transferencia postcascada")])
-    table(fig,[.52,.16,.425,.295],"Resolución de la corrida",[
-        ("Estados e / modos ph",f'{m["kinetics"]["electron_states"]} / {m["kinetics"]["phonon_modes"]}'),
-        ("Corte ξ / orden GL / transporte",f'{a["xi_cutoff"]:g} / {a["xi_order"]} / {a["transport_order"]}'),
-        ("Cap de paso (ps)",fmt(a["dt_ps"])),("Tolerancia no lineal",fmt(a["step_tolerance"])),
-        ("Guarda energética local",fmt(a["local_energy_tolerance"])),
-        ("Snapshots / checkpoint (ps)",fmt(a["snapshot_every_ps"])+" / "+fmt(a["checkpoint_every_ps"])),
-        ("Hilos de la simulación",str(a["threads"])),("Método temporal","Punto medio acoplado")])
-    r.save(fig,"Parámetros","h de malla es resolución, no espesor. η es energía retenida condicional a absorción, no eficiencia óptica/PCR. "
-        "τee y τep son calibradores libres; no constantes medidas ni rangos. La fuente postcascada y el material acústico son hipótesis exploratorias.")
+    fig=r.page("1. Case parameters")
+    table(fig,[.055,.525,.425,.34],"Geometry and material",[
+        ("Width / resolved length (nm)",fmt(g["width_m"],1e9)+" / "+fmt(g["length_m"],1e9)),
+        ("Film thickness / mesh step (nm)",fmt(p["film_thickness_m"],1e9)+" / "+fmt(a["spacing_nm"])),
+        ("Tc / bath temperature (K)",fmt(p["Tc_K"])+" / "+fmt(p["bath_temperature_K"])),
+        ("Diffusion D (m²/s)",fmt(p["diffusion_m2_s"])),("Sheet resistance (Ω)",fmt(p["sheet_resistance_ohm"])),
+        ("Single-spin DOS N0 (1/(J m³))",fmt(p["N0_single_spin_per_J_m3"])),
+        ("Sound speed / Debye (m/s; K)",fmt(mat.get("sound_speed_m_per_s"))+" / "+fmt(mat.get("Debye_temperature_K"))),
+        ("Derived acoustic γ",fmt(mat.get("gamma_A20"))),("Nodes / edges",f'{g["n_nodes"]} / {g["n_edges"]}'),
+        ("Model","Effective neutral BCS/KWT")])
+    table(fig,[.52,.525,.425,.34],"Photon and calibration parameters",[
+        ("Wavelength (nm)",fmt(s.get("wavelength_nm",a["wavelength_nm"]))),
+        ("Photon / retained energy (eV)",fmt(s.get("photon_energy_J"),1/EV)+" / "+fmt(s.get("retained_energy_J"),1/EV)),
+        ("Retained energy fraction η",fmt(s.get("retained_fraction"))),("Deposition width σ (nm)",fmt(s.get("sigma_nm"))),
+        ("Deposition (x,y) in nm",str([round(x*1e9,4) for x in s.get("center_m",[])])),
+        ("Free τee(Tc) (ps)",fmt(p["tau_ee_Tc_s"],1e12)),("Free τep(Tc) (ps)",fmt(p["tau_ep_Tc_s"],1e12)),
+        ("Derived e-ph τ0 (ns)",fmt(p["tau0_s"],1e9)),("Phonon escape time (ps)",fmt(p["tau_escape_s"],1e12)),
+        ("Initial source","DC gap; common FD/BE")])
+    table(fig,[.055,.16,.425,.295],"Circuit and ideal discriminator",[
+        ("DC current (µA)",fmt(p["current_A"],1e6)),("Rb / Rload (Ω)",fmt(circ["R_bias_ohm"])+" / "+fmt(circ["R_load_ohm"])),
+        ("Lb / fixed Lext (nH)",fmt(circ["L_bias_H"],1e9)+" / "+fmt(circ["Lk_ext_H"],1e9)),
+        ("Capacitance / Vbias (pF; V)",fmt(circ["C_couple_F"],1e12)+" / "+fmt(circ["V_bias_V"])),
+        ("Positive threshold (mV)",fmt(a["threshold_mV"])),("Confirmation / extra time (ps)",fmt(a["confirmation_ps"])+" / "+fmt(a["extra_time_ps"])),
+        ("Hysteresis fraction / ceiling (ps)",fmt(cfg.get("hysteresis_fraction",.05))+" / "+fmt(a["ceiling_ps"])),
+        ("Clock origin","Postcascade transfer")])
+    table(fig,[.52,.16,.425,.295],"Numerical resolution",[
+        ("Electronic states / phonon modes",f'{m["kinetics"]["electron_states"]} / {m["kinetics"]["phonon_modes"]}'),
+        ("ξ cutoff / GL order / transport",f'{a["xi_cutoff"]:g} / {a["xi_order"]} / {a["transport_order"]}'),
+        ("Step cap (ps)",fmt(a["dt_ps"])),("Nonlinear tolerance",fmt(a["step_tolerance"])),
+        ("Local energy guard",fmt(a["local_energy_tolerance"])),
+        ("Snapshots / checkpoints (ps)",fmt(a["snapshot_every_ps"])+" / "+fmt(a["checkpoint_every_ps"])),
+        ("Simulation threads",str(a["threads"])),("Time integrator","Coupled midpoint")])
+    r.save(fig,"Parameters","Mesh spacing is resolution, not film thickness. η is retained energy conditional on absorption, not optical efficiency/PCR. "
+        "τee and τep are free calibration parameters, not measured constants or prescribed ranges. The postcascade source and acoustic material are exploratory assumptions.")
 
 
 def observables(r):
@@ -372,34 +445,36 @@ def observables(r):
     baseline=c["obs"].get("baseline_Vout_V",c["obs"].get("config",{}).get("baseline_V",0.))
     voltage=z["Vout_V"]-baseline;threshold=m["parameter_identity"]["threshold_mV"]*1e-3
     scale,unit=(1e6,"µV") if max(abs(voltage))<.02*threshold else (1e3,"mV")
-    fig=r.page("2. Observables: lectura y detección")
-    ax=fig.add_axes([.075,.51,.39,.33]);bx=fig.add_axes([.565,.51,.37,.33])
+    fig=r.page("2. Observables: readout and detection")
+    ax=fig.add_axes([.085,.52,.38,.32]);bx=fig.add_axes([.575,.52,.36,.32])
     ax.plot(t,voltage*scale,color=ACCENT)
-    if max(abs(voltage))>=.15*threshold:ax.axhline(threshold*scale,color="black",ls=":",label="Umbral")
-    else:ax.text(.03,.92,f"Umbral={threshold*1e3:g} mV (fuera de escala)",transform=ax.transAxes,fontsize=9)
-    ax.set(xlabel="Tiempo postcascada (ps)",ylabel="Vout menos basal ("+unit+")")
+    if max(abs(voltage))>=.15*threshold:ax.axhline(threshold*scale,color="black",ls=":",label="Threshold")
+    else:ax.text(.03,.91,f"Threshold = {threshold*1e3:g} mV (off scale)",transform=ax.transAxes,fontsize=11)
+    ax.set(xlabel="Postcascade time (ps)",ylabel="Vout minus baseline ("+unit+")")
     bx.plot(t,(z["Ib_A"]-z["Is_A"])*1e6,color=ACCENT)
-    bx.set(xlabel="Tiempo postcascada (ps)",ylabel="Corriente de lectura Ib − Is (µA)")
+    bx.set(xlabel="Postcascade time (ps)",ylabel="Readout current Ib - Is (µA)")
     for a in (ax,bx):
         a.grid(alpha=.25)
         if v["confirmed"]:
-            a.axvline(v["crossing_ps"],color="tab:green",ls=":",label="Cruce")
-            a.axvline(v["confirmation_ps"],color="tab:green",ls="--",label="Confirmación")
-            a.legend(fontsize=8)
-    status=("Provisional; "+c["m"]["status"]+("; cruce confirmado" if v["confirmed"] else "")) if c["provisional"] else ("Detección confirmada" if v["confirmed"] else ("Censurado sin detección" if v["censored"] else "Ventana de desarrollo/DC"))
-    table(fig,[.075,.16,.86,.245],"Eventos y magnitudes guardadas",[
-        ("Estado de observación",status),("Latencia relativa / cruce (ps)",fmt(v["latency_ps"],digits=9)),
-        ("Confirmación aceptada (ps)",fmt(v["confirmation_ps"],digits=9)),
-        ("Final de trayectoria / mapas (ps)",fmt(v["final_ps"],digits=9)+" / "+fmt(v["maps_final_ps"],digits=9)),
-        ("Máximo Vout observado (mV)",fmt(v["max_observed_Vout_mV"],digits=8)),
-        ("Pendiente local al cruce (mV/ps)",fmt(v["local_slope_mV_ps"],digits=7)),("Corriente Is mínima (µA)",fmt(v["min_Is_uA"],digits=8))])
-    r.save(fig,"Lectura y detección","Vout=Rlectura(Ib−Is), menos basal DC: NO incluye filtro, amplificador, ruido ni ancho de banda del setup. "
-        "La pendiente usa estados aceptados en cruce ±0,25 ps, no predice jitter. Máximo observado no es pico completo. Sin cruce, latencia sin asignar; un checkpoint sin cruce no es censura a 200 ps.")
+            a.axvline(v["crossing_ps"],color="tab:green",ls=":",label="Crossing")
+            a.axvline(v["confirmation_ps"],color="tab:green",ls="--",label="Confirmation")
+            a.legend(fontsize=11)
+    status=("Provisional; "+c["m"]["status"]+("; confirmed crossing" if v["confirmed"] else "")) if c["provisional"] else (
+        "Confirmed detection" if v["confirmed"] else ("Censored without detection" if v["censored"] else "Development window"))
+    table(fig,[.075,.16,.86,.245],"Saved events and observables",[
+        ("Observation status",status),("Relative latency / crossing (ps)",fmt(v["latency_ps"],digits=9)),
+        ("Accepted confirmation (ps)",fmt(v["confirmation_ps"],digits=9)),
+        ("Trajectory / snapshot end (ps)",fmt(v["final_ps"],digits=9)+" / "+fmt(v["maps_final_ps"],digits=9)),
+        ("Maximum observed Vout (mV)",fmt(v["max_observed_Vout_mV"],digits=8)),
+        ("Local crossing slope (mV/ps)",fmt(v["local_slope_mV_ps"],digits=7)),("Minimum Is (µA)",fmt(v["min_Is_uA"],digits=8))],11)
+    r.save(fig,"Readout and detection","Vout=Rload(Ib-Is), with DC baseline removed: no filter, amplifier, noise or measurement bandwidth is included. "
+        "The slope uses accepted states within crossing ±0.25 ps; it does not predict jitter. The observed maximum is not the complete pulse peak. "
+        "Without confirmed crossing, latency is unassigned; a partial checkpoint is not terminal censoring.")
 
 
 def four_axes(r,title):
     fig=r.page(title)
-    return fig,[fig.add_axes(b) for b in ((.075,.55,.38,.29),(.565,.55,.37,.29),(.075,.18,.38,.27),(.565,.18,.37,.27))]
+    return fig,[fig.add_axes(b) for b in ((.085,.56,.37,.28),(.585,.56,.35,.28),(.085,.19,.37,.26),(.585,.19,.35,.26))]
 
 
 def voltage_units(values):
@@ -409,16 +484,17 @@ def voltage_units(values):
 
 def circuit(r):
     c=r.c;z=c["z"];t=z["time_s"]*1e12
-    fig,ax=four_axes(r,"2.1. Observables eléctricos del circuito")
-    ax[0].plot(t,z["Ib_A"]*1e6,label="Ib");ax[0].plot(t,z["Is_A"]*1e6,label="Is");ax[0].set_ylabel("Corriente (µA)");ax[0].legend();ax[0].ticklabel_format(axis="y",useOffset=False)
-    scale,unit=voltage_units(z["Vdev_V"]);ax[1].plot(t,z["Vdev_V"]*scale);ax[1].set_ylabel("Voltaje sobre la cinta Vdev ("+unit+")")
-    scale,unit=voltage_units(z["vc_V"]);ax[2].plot(t,z["vc_V"]*scale);ax[2].set_ylabel("Voltaje del acoplamiento vc ("+unit+")")
+    fig,ax=four_axes(r,"2.1. Electrical circuit observables")
+    ax[0].plot(t,z["Ib_A"]*1e6,label="Ib");ax[0].plot(t,z["Is_A"]*1e6,label="Is")
+    ax[0].set_ylabel("Current (µA)");ax[0].legend();ax[0].ticklabel_format(axis="y",useOffset=False)
+    scale,unit=voltage_units(z["Vdev_V"]);ax[1].plot(t,z["Vdev_V"]*scale);ax[1].set_ylabel("Strip voltage Vdev ("+unit+")")
+    scale,unit=voltage_units(z["vc_V"]);ax[2].plot(t,z["vc_V"]*scale);ax[2].set_ylabel("Coupling voltage vc ("+unit+")")
     power=c["m"]["physicalparams"]["circuit"]["R_load_ohm"]*(z["Ib_A"]-z["Is_A"])**2
     scale,unit=(1e9,"nW") if power.max()>=1e-9 else ((1e12,"pW") if power.max()>=1e-12 else (1e15,"fW"))
-    ax[3].plot(t,power*scale);ax[3].set_ylabel("Potencia disipada en lectura ("+unit+")")
-    for a in ax:a.set_xlabel("Tiempo postcascada (ps)");a.grid(alpha=.25)
-    r.save(fig,"Circuito","Magnitudes eléctricas del circuito completo. Vdev es la caída entre los cortes de la cinta y no es Vout. "
-        "La potencia de lectura es Rlectura(Ib−Is)². Sólo ventana guardada: no recuperación ni energía de un pulso completo.")
+    ax[3].plot(t,power*scale);ax[3].set_ylabel("Readout power ("+unit+")")
+    for a in ax:a.set_xlabel("Postcascade time (ps)");a.grid(alpha=.25)
+    r.save(fig,"Circuit","Full three-state circuit. Vdev is the voltage between the resolved strip cuts, distinct from Vout. "
+        "Readout power is Rload(Ib-Is)². Only the saved observation window is shown; neither full recovery nor complete pulse energy is inferred.")
 
 
 def internal(r):
@@ -427,125 +503,261 @@ def internal(r):
     ratio=abs(s["delta_J"])/dc
     center=np.asarray(c["m"]["source"].get("center_m",np.mean(s["coordinates_m"],axis=0)))
     j=int(np.argmin(np.sum((s["coordinates_m"]-center)**2,axis=1)))
-    fig,ax=four_axes(r,"3. Variables internas: evolución del estado")
-    ax[0].plot(t,ratio[:,j],label="Nodo cercano al depósito");ax[0].plot(t,ratio.min(axis=1),label="Mínimo nodal")
-    ax[0].set_ylabel("|Δ| / |ΔDC|");ax[0].legend(fontsize=8)
-    ax[1].plot(t,s["Te_K"][:,j],label="Te equivalente, centro");ax[1].plot(t,s["Tph_K"][:,j],label="Tph equivalente, centro")
-    ax[1].axhline(c["m"]["physicalparams"]["Tc_K"],color="black",ls=":",label="Tc");ax[1].set_ylabel("Temperatura equivalente (K)");ax[1].legend(fontsize=8)
+    fig,ax=four_axes(r,"3. Internal variables: state evolution")
+    ax[0].plot(t,ratio[:,j],label="Node nearest deposition");ax[0].plot(t,ratio.min(axis=1),label="Nodal minimum")
+    ax[0].set_ylabel("|Δ| / |ΔDC|");ax[0].legend(fontsize=11)
+    ax[1].plot(t,s["Te_K"][:,j],label="Equivalent Te, center");ax[1].plot(t,s["Tph_K"][:,j],label="Equivalent Tph, center")
+    ax[1].axhline(c["m"]["physicalparams"]["Tc_K"],color="black",ls=":",label="Tc")
+    ax[1].set_ylabel("Equivalent temperature (K)");ax[1].legend(fontsize=11)
     volumes=c["mesh"]["dual_area_m2"]*c["m"]["physicalparams"]["film_thickness_m"]
-    for key,label in (("electron_energy_J_m3","Cuasipartículas"),("phonon_energy_J_m3","Fonones")):
+    for key,label in (("electron_energy_J_m3","Quasiparticles"),("phonon_energy_J_m3","Phonons")):
         energy=s[key]@volumes;ax[2].plot(t,(energy-energy[0])/EV,label=label)
-    ax[2].set_ylabel("Cambio de energía desde t=0 (eV)");ax[2].legend(fontsize=8)
+    ax[2].set_ylabel("Energy change from t=0 (eV)");ax[2].legend(fontsize=11)
     ax[3].step(t,c["hotbelt"].astype(int),where="post")
-    ax[3].set(ylabel="Hotbelt geométrica en snapshot",yticks=[0,1],yticklabels=["No","Sí"],ylim=(-.1,1.1))
-    for a in ax:a.set_xlabel("Tiempo postcascada (ps)");a.grid(alpha=.25)
+    ax[3].set(ylabel="Saved geometric hotbelt",yticks=[0,1],yticklabels=["No","Yes"],ylim=(-.1,1.1))
+    for a in ax:a.set_xlabel("Postcascade time (ps)");a.grid(alpha=.25)
     xy=s["coordinates_m"][j]*1e9
-    r.save(fig,"Variables internas",f"Nodo próximo al depósito: ({xy[0]:.5g}, {xy[1]:.5g}) nm. Te/Tph son observadores de energía, no estados térmicos impuestos. "
-        "La energía electrónica guardada es de cuasipartículas, sin condensación/gradiente. Hotbelt: nodos con |Δ|≤0,2|ΔDC| conectan ambos bordes; no equivale al gatillo ni prueba continuidad temporal.")
+    r.save(fig,"Internal variables",f"Nearest deposition node: ({xy[0]:.5g}, {xy[1]:.5g}) nm. Te/Tph are energy-equivalent observers, not imposed thermal states. "
+        "Saved electronic energy is quasiparticle energy, excluding condensation/gradient. Hotbelt: nodes with |Δ|≤0.2|ΔDC| connect transverse edges; "
+        "this is distinct from the electrical trigger and does not establish continuity between snapshots.")
 
 
-def map_pages(r,indices,key,title,label,caption,kind="scalar",roi=False,flow=None,cmap="viridis",signed=False):
+def snapshot_axes(fig):
+    return [fig.add_axes([x,y,.25,.21]) for y in (.64,.30) for x in (.075,.385,.695)]
+
+
+def snapshot_title(c,slot,index):
+    actual=c["s"]["time_s"][index]*1e12;target=c["snapshot_targets_ps"][slot]
+    return f"t = {actual:.6g} ps\nrequested: {target:.6g} ps"
+
+
+PALETTES=dict(gap="viridis",phase="twilight",electron_temperature="inferno",
+    phonon_temperature="YlOrBr",energy="PuOr_r",signed_current="coolwarm",total_current="cividis",potential="GnBu")
+
+
+def map_pages(r,indices,key,title,label,caption,kind="scalar",roi=False,flow=None,cmap=None,signed=False):
+    if len(indices)!=6:raise ValueError("Every snapshot mosaic requires exactly six slots")
     c=r.c;s=c["s"];mesh=c["mesh"]
     center=np.asarray(c["m"]["source"].get("center_m",np.mean(s["coordinates_m"],axis=0)))
     xy=s["coordinates_m"].copy()*1e9;xy[:,0]-=center[0]*1e9
     tri=Triangulation(xy[:,0],xy[:,1],mesh["triangles"])
     bounds=(max(float(xy[:,0].min()),-60),min(float(xy[:,0].max()),60),float(xy[:,1].min()),float(xy[:,1].max())) if roi else (
         float(xy[:,0].min()),float(xy[:,0].max()),float(xy[:,1].min()),float(xy[:,1].max()))
+    cmap=cmap or PALETTES["gap"]
     if kind=="gap":
         values={int(i):s["delta_J"][i] for i in indices};lo=0.;hi=max(float(abs(v).max()/MEV) for v in values.values())
     elif kind=="phase":
         dc=c["dc"]["delta_bar"];Eu=c["m"]["physicalparams"]["energy_scale_J"]
         values={int(i):np.ma.array(np.angle(s["delta_J"][i]*np.conj(dc)),mask=abs(s["delta_J"][i])<=.2*abs(dc)*Eu) for i in indices}
-        lo,hi=-np.pi,np.pi;cmap="twilight"
+        lo,hi=-np.pi,np.pi;cmap=PALETTES["phase"]
     elif kind=="current":
         values={int(i):(np.linalg.norm(flow[int(i)][key],axis=1) if key=="total" else flow[int(i)][key][:,0])/1e10 for i in indices}
         hi=max(float(abs(v).max()) for v in values.values());lo=0. if key=="total" else -hi
-        cmap="magma" if key=="total" else "coolwarm"
+        cmap=PALETTES["total_current" if key=="total" else "signed_current"]
         arrow_reference=max(float(np.linalg.norm(flow[int(i)][key],axis=1).max()) for i in indices)
     elif kind=="phi":
         values={int(i):flow[int(i)]["phi"]*1e3 for i in indices}
-        lo=min(float(v.min()) for v in values.values());hi=max(float(v.max()) for v in values.values())
+        lo=min(float(v.min()) for v in values.values());hi=max(float(v.max()) for v in values.values());cmap=PALETTES["potential"]
     else:
         factor=1e-3 if key.endswith("J_m3") else 1.
         values={int(i):s[key][i]*factor for i in indices}
         lo=min(float(v.min()) for v in values.values());hi=max(float(v.max()) for v in values.values())
-        if signed:hi=max(abs(lo),abs(hi));lo=-hi;cmap="coolwarm"
+        if signed:hi=max(abs(lo),abs(hi));lo=-hi;cmap=PALETTES["energy"]
     if hi<=lo:hi=lo+max(abs(lo)*1e-6,1e-12)
-    for start in range(0,len(indices),6):
-        chunk=indices[start:start+6];fig=r.page(title+("" if len(indices)<=6 else f" ({start//6+1})"))
-        grid=fig.add_gridspec(2,3,left=.06,right=.93,bottom=.20,top=.85,wspace=.30,hspace=.43)
-        axes=[];image=None
-        for pos,i in enumerate(chunk):
-            ax=fig.add_subplot(grid[pos//3,pos%3]);axes.append(ax);v=values[int(i)]
-            if kind=="gap":
-                image=draw_complex_gap(ax,tri,v,unit_J=MEV,vmin=lo,vmax=hi,bounds=bounds,samples=401)
-            elif kind=="phase":
-                keep=~np.ma.getmaskarray(v)
-                image=ax.scatter(xy[keep,0],xy[keep,1],c=np.asarray(v)[keep],s=6,edgecolors="none",cmap=cmap,vmin=lo,vmax=hi,rasterized=True)
-            elif kind=="current":
-                image=ax.tripcolor(tri,facecolors=v,shading="flat",cmap=cmap,vmin=lo,vmax=hi,rasterized=True)
-                centers=xy[mesh["triangles"]].mean(axis=1);good=(centers[:,0]>=bounds[0])&(centers[:,0]<=bounds[1])
-                ids=np.flatnonzero(good)[::max(1,int(good.sum()/85))];vectors=flow[int(i)][key][ids]
-                norm=np.linalg.norm(vectors,axis=1);keep=norm>max(arrow_reference*1e-4,1e-30)
-                direction=vectors[keep]/norm[keep,None]
-                ax.quiver(centers[ids[keep],0],centers[ids[keep],1],direction[:,0]*6,direction[:,1]*6,angles="xy",scale_units="xy",scale=1,width=.003,color="black")
-            else:image=ax.tripcolor(tri,v,shading="gouraud",cmap=cmap,vmin=lo,vmax=hi,rasterized=True)
-            ax.set(xlim=bounds[:2],ylim=bounds[2:],xlabel="x − xdep (nm)",ylabel="y (nm)",title=f't={s["time_s"][i]*1e12:.6g} ps')
-            ax.set_aspect("equal");ax.tick_params(labelsize=8)
-        cb=fig.colorbar(image,ax=axes,orientation="horizontal",fraction=.045,pad=.17,shrink=.75);cb.set_label(label)
-        r.save(fig,title,caption+" Coordenadas físicas, x centrado en el depósito. Tiempos guardados sin interpolación temporal. "
-            "Escala de color común entre tiempos de esta magnitud, no necesariamente entre magnitudes distintas.")
+    fig=r.page(title);axes=snapshot_axes(fig);image=None
+    for pos,(ax,i) in enumerate(zip(axes,indices)):
+        v=values[int(i)]
+        if kind=="gap":
+            image=draw_complex_gap(ax,tri,v,unit_J=MEV,vmin=lo,vmax=hi,bounds=bounds,samples=401,cmap=cmap)
+        elif kind=="phase":
+            keep=~np.ma.getmaskarray(v)
+            image=ax.scatter(xy[keep,0],xy[keep,1],c=np.asarray(v)[keep],s=6,edgecolors="none",cmap=cmap,vmin=lo,vmax=hi,rasterized=True)
+        elif kind=="current":
+            image=ax.tripcolor(tri,facecolors=v,shading="flat",cmap=cmap,vmin=lo,vmax=hi,rasterized=True)
+            centers=xy[mesh["triangles"]].mean(axis=1);good=(centers[:,0]>=bounds[0])&(centers[:,0]<=bounds[1])
+            ids=np.flatnonzero(good)[::max(1,int(good.sum()/85))];vectors=flow[int(i)][key][ids]
+            norm=np.linalg.norm(vectors,axis=1);keep=norm>max(arrow_reference*1e-4,1e-30)
+            direction=vectors[keep]/norm[keep,None]
+            ax.quiver(centers[ids[keep],0],centers[ids[keep],1],direction[:,0]*6,direction[:,1]*6,angles="xy",scale_units="xy",scale=1,width=.003,color="black")
+        else:image=ax.tripcolor(tri,v,shading="gouraud",cmap=cmap,vmin=lo,vmax=hi,rasterized=True)
+        ax.set(xlim=bounds[:2],ylim=bounds[2:],xlabel="x - xdep (nm)",ylabel="y (nm)")
+        ax.set_title(snapshot_title(c,pos,i),fontsize=12,pad=8);ax.set_aspect("equal")
+        ax.tick_params(labelsize=12);ax.xaxis.label.set_size(13);ax.yaxis.label.set_size(13)
+        ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(5));ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(3))
+    cb=fig.colorbar(image,cax=fig.add_axes([.245,.215,.52,.02]),orientation="horizontal")
+    cb.set_label(label,fontsize=14);cb.ax.tick_params(labelsize=12)
+    r.save(fig,title,caption+" Physical coordinates; x centered on deposition. Exactly six nearest saved states, with repetitions retained; "
+        "no temporal interpolation. One color range across the six slots for this quantity.")
+
+
+def vorticity_page(r,indices):
+    c=r.c;s=c["s"];mesh=c["mesh"];xy=s["coordinates_m"].copy()*1e9
+    center=np.asarray(c["m"]["source"]["center_m"]);xy[:,0]-=center[0]*1e9
+    tri=Triangulation(xy[:,0],xy[:,1],mesh["triangles"])
+    dc=c["dc"]["delta_bar"]*c["m"]["physicalparams"]["energy_scale_J"]
+    diagnostics={int(i):phase_vorticity(s["delta_J"][i],dc,s["coordinates_m"],mesh["triangles"]) for i in np.unique(indices)}
+    fig=r.page("3.11. Vorticity: signed condensate phase winding")
+    cmap=matplotlib.colors.ListedColormap(["#008176","#ffffff","#ba287f"]);cmap.set_bad("#b9b9b9")
+    norm=matplotlib.colors.BoundaryNorm([-1.5,-.5,.5,1.5],3)
+    for pos,(ax,i) in enumerate(zip(snapshot_axes(fig),indices)):
+        d=diagnostics[int(i)];values=np.ma.array(d["winding"],mask=~d["valid"])
+        # Explicit gray geometry remains visible where masked phase is undefined.
+        ax.tripcolor(tri,facecolors=np.zeros(len(mesh["triangles"])),cmap=matplotlib.colors.ListedColormap(["#b9b9b9"]),vmin=0,vmax=1,rasterized=True)
+        image=ax.tripcolor(tri,facecolors=values,cmap=cmap,norm=norm,shading="flat",rasterized=True)
+        for charge,marker,color in [(1,"+","#ba287f"),(-1,"x","#008176")]:
+            pts=d["core_points_m"][d["core_charge"]==charge]*1e9
+            if len(pts):ax.scatter(pts[:,0]-center[0]*1e9,pts[:,1],marker=marker,s=65,c=color,linewidths=1.5)
+        ax.set(xlabel="x - xdep (nm)",ylabel="y (nm)",xlim=(xy[:,0].min(),xy[:,0].max()),ylim=(xy[:,1].min(),xy[:,1].max()))
+        ax.set_title(snapshot_title(c,pos,i),fontsize=12,pad=8);ax.set_aspect("equal")
+        ax.tick_params(labelsize=12);ax.xaxis.label.set_size(13);ax.yaxis.label.set_size(13)
+        ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(5));ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(3))
+        ax.text(.03,.03,f'+: {d["positive"]}  -: {d["negative"]}  gray: {100*(~d["valid"]).mean():.1f}%',transform=ax.transAxes,
+            fontsize=10,bbox=dict(facecolor="white",alpha=.85,edgecolor="none"))
+    cb=fig.colorbar(matplotlib.cm.ScalarMappable(norm=norm,cmap=cmap),
+        cax=fig.add_axes([.245,.215,.52,.02]),orientation="horizontal",ticks=[-1,0,1])
+    cb.set_label("Counterclockwise phase winding n (dimensionless)",fontsize=14);cb.ax.tick_params(labelsize=12)
+    r.save(fig,"Phase-winding vorticity","n = sum of wrapped phase increments / (2π), around each counterclockwise triangle; +/x mark P1 vortex/antivortex cores. "
+        "Gray: a contour gap ≤10^-6 of its local DC reference, or unresolved zero. This is phase topology, not curl(J) or magnetic flux. "
+        "Saved A=0 states only; no trajectories or missed events are inferred. Method: Guo et al. (2015), Eq. (1), linked reference.",source_url="https://www.mcs.anl.gov/papers/P5324-0315.pdf")
+    return [dict(snapshot_index=int(i),saved_time_ps=float(s["time_s"][i]*1e12),
+        **{k:d[k] for k in ("positive","negative","indeterminate_cells","resolved_cells","contour_floor_relative_DC","convention","reference")},
+        core_points_nm=(d["core_points_m"]*1e9).tolist(),core_charge=d["core_charge"].tolist())
+        for i,d in diagnostics.items()]
 
 
 def balance(r):
-    c=r.c;z=c["z"];t=z["time_s"]*1e12;fig,ax=four_axes(r,"4. Balance energético independiente")
-    ax[0].plot(t,(z["energy_total_J"]-z["energy_total_J"][0])/EV,label="ΔE total")
-    ax[0].plot(t,(z["external_energy_integral_J"]-z["external_energy_integral_J"][0])/EV,"--",label="Trabajo neto externo")
-    ax[0].set_ylabel("Energía (eV)");ax[0].legend(fontsize=8)
+    c=r.c;z=c["z"];t=z["time_s"]*1e12;fig,ax=four_axes(r,"4. Independent energy balance")
+    ax[0].plot(t,(z["energy_total_J"]-z["energy_total_J"][0])/EV,label="Total ΔE")
+    ax[0].plot(t,(z["external_energy_integral_J"]-z["external_energy_integral_J"][0])/EV,"--",label="Net external work")
+    ax[0].set_ylabel("Energy (eV)");ax[0].legend(fontsize=11)
     ref=c["m"]["source"].get("retained_energy_J",0.)
     if ref<=0:ref=c["m"]["numerical"]["kinetic_reference_energy_J"]
     work=np.r_[abs(z["external_energy_integral_J"][0]),abs(np.diff(z["external_energy_integral_J"]))].cumsum()
     defect=abs(z["energy_defect_J"])/(ref+work)*100
-    ax[1].plot(t,defect,label="|Defecto|/(Eref + Σ|ΔW|)");ax[1].axhline(1.,color="black",ls=":",label="Criterio global 1 %")
-    ax[1].set_ylabel("Defecto global (%)");ax[1].legend(fontsize=8)
+    ax[1].plot(t,defect,label="|Defect| / (Eref + Σ|ΔW|)");ax[1].axhline(1.,color="black",ls=":",label="Global criterion: 1 %")
+    ax[1].set_ylabel("Global energy defect (%)");ax[1].legend(fontsize=11)
     ax[2].plot(t,z["escape_power_W"]*1e9,label="Escape")
-    ax[2].plot(t,z["reservoir_power_out_W"]*1e9,label="Cortes, salida firmada")
-    ax[2].set_ylabel("Potencia térmica (nW)");ax[2].legend(fontsize=8)
-    ax[3].plot(t,z["instant_power_residual_W"]);ax[3].set_ylabel("Residuo instantáneo independiente (W)")
+    ax[2].plot(t,z["reservoir_power_out_W"]*1e9,label="Cuts, signed outward")
+    ax[2].set_ylabel("Thermal power (nW)");ax[2].legend(fontsize=11)
+    ax[3].plot(t,z["instant_power_residual_W"]);ax[3].set_ylabel("Power residual (W)")
     ax[3].ticklabel_format(axis="y",style="sci",scilimits=(0,0))
-    for a in ax:a.set_xlabel("Tiempo postcascada (ps)");a.grid(alpha=.25)
+    for a in ax:a.set_xlabel("Postcascade time (ps)");a.grid(alpha=.25)
     c["balance"]=dict(maximum_global_energy_defect_percent=float(defect.max()),
         maximum_absolute_instant_power_residual_W=float(abs(z["instant_power_residual_W"]).max()))
-    r.save(fig,"Balance energético","E total incluye película BCS+gradiente+fonones y circuito. Trabajo externo neto descuenta resistencias, escape y cortes. "
-        "Normalización: energía retenida (DC: referencia cinética declarada) más trabajo externo absoluto acumulado. No sustituye auditoría ni ajuste experimental.")
+    r.save(fig,"Energy balance","Total energy includes the BCS film, gradient, phonons and circuit. Net external work subtracts resistive loss, escape and cuts. "
+        "Normalization: retained energy plus accumulated absolute external work. This report does not replace numerical admission or experimental calibration.")
 
 
 def provenance(r,checks):
-    c=r.c;z=c["z"];fig=r.page("5. Precisión, trazabilidad y alcance")
-    ax=fig.add_axes([.075,.62,.38,.21]);keep=z["accepted_step_ps"]>0
+    c=r.c;z=c["z"];fig=r.page("5. Precision, provenance and scope")
+    ax=fig.add_axes([.085,.63,.37,.20]);keep=z["accepted_step_ps"]>0
     ax.plot(z["time_s"][keep]*1e12,z["accepted_step_ps"][keep])
-    ax.set(xlabel="Tiempo (ps)",ylabel="Paso aceptado (ps)",yscale="log");ax.grid(alpha=.25)
-    table(fig,[.55,.56,.39,.28],"Comprobaciones de este reporte",[
-        ("Auditoría terminal asociada",c["audit"]["status"]),("Pasos aceptados / rechazos",str(len(z["time_s"])-1)+" / "+str(c["execution"].get("total_rejections","no guardado"))),("Tiempo de pared de sesión (h)",fmt(c["execution"].get("elapsed_session_wall_s"),1/3600)),("Corrientes globales positivas",str(c["metrics"]["positive_global_currents"])),
-        ("Identidad de lectura, error (V)",fmt(c["metrics"]["readout_identity_error_V"])),
-        ("Reconstrucción Vdev, error máx. (V)",fmt(max(x["Vdev_error_V"] for x in checks))),
-        ("Defecto energético global máx. (%)",fmt(c["balance"]["maximum_global_energy_defect_percent"])),
-        ("Final trayectoria / mapas (ps)",fmt(c["metrics"]["final_ps"])+" / "+fmt(c["metrics"]["maps_final_ps"]))],8.5)
-    lines=["Datos: "+str(c["run"]),"Manifiesto SHA256: "+c["inputs"]["manifest.json"],
-        ("Checkpoint capturado SHA256: "+c["inputs"]["checkpoint_capture.npz"]) if c["provisional"] else ("Trayectoria SHA256: "+c["inputs"]["trajectory.npz"]),
-        "Malla SHA256: "+c["inputs"]["geometry_mesh"],"Pipeline SHA256: "+sha256(__file__),
-        "Corrientes: derivada gauge exacta del gradiente BCS y neutralidad del mismo modelo fijado por hashes. "
-        "Vectores J por mínimos cuadrados ponderados de flujos duales: aproximación de visualización, no nuevos grados de libertad.",
-        "No se guardaron p/n completas en cada snapshot: no se inventan mapas de tasas de colisión, DOS fuera del cierre o calor KWT.",
-        "Rigidez radial/KWT fuera del equilibrio, material acústico y fuente postcascada son hipótesis efectivas. "
-        "No se infieren jitter, eficiencia estadística, latencia óptica absoluta ni reset completo de esta ventana."]
+    ax.set(xlabel="Time (ps)",ylabel="Accepted step (ps)",yscale="log");ax.grid(alpha=.25)
+    table(fig,[.55,.56,.39,.28],"Report checks",[
+        ("Associated terminal audit",c["audit"]["status"]),("Accepted / rejected steps",str(len(z["time_s"])-1)+" / "+str(c["execution"].get("total_rejections","not saved"))),
+        ("Session wall time (h)",fmt(c["execution"].get("elapsed_session_wall_s"),1/3600)),("Positive global currents",str(c["metrics"]["positive_global_currents"])),
+        ("Readout identity error (V)",fmt(c["metrics"]["readout_identity_error_V"])),
+        ("Maximum Vdev recovery error (V)",fmt(max(x["Vdev_error_V"] for x in checks))),
+        ("Maximum global energy defect (%)",fmt(c["balance"]["maximum_global_energy_defect_percent"])),
+        ("Trajectory / snapshot end (ps)",fmt(c["metrics"]["final_ps"])+" / "+fmt(c["metrics"]["maps_final_ps"]))],10)
+    lines=["Data: "+str(c["run"]),"Manifest SHA256: "+c["inputs"]["manifest.json"],
+        ("Captured checkpoint SHA256: "+c["inputs"]["checkpoint_capture.npz"]) if c["provisional"] else ("Trajectory SHA256: "+c["inputs"]["trajectory.npz"]),
+        "Mesh SHA256: "+c["inputs"]["geometry_mesh"],"Pipeline SHA256: "+sha256(__file__),
+        "Currents: exact BCS gradient gauge derivative and algebraic neutrality from pinned sources. "
+        "Display vectors use weighted dual-flux least squares; they are not additional model degrees of freedom.",
+        "Complete p/n were not saved at every snapshot: collision-rate, nonclosure DOS and KWT-heating maps are unavailable.",
+        "Nonequilibrium radial rigidity/KWT, acoustic material and the postcascade source are effective assumptions. "
+        "This window does not establish jitter, statistical efficiency, absolute optical latency or full reset."]
     y=.50
     for line in lines:
-        text=textwrap.fill(line,145);fig.text(.075,y,text,fontsize=9,color=INK,va="top",linespacing=1.35)
-        y-=.027*len(text.splitlines())+.014
-    r.save(fig,"Trazabilidad","Reporte individual: no compara corridas ni promueve admisión. Un checkpoint provisional no es resultado terminal. "
-        "Entradas, hashes, tiempos y errores de reconstrucción se conservan en el recibo JSON acompañante.")
+        text=textwrap.fill(line,128);fig.text(.075,y,text,fontsize=10,color=INK,va="top",linespacing=1.25)
+        y-=.027*len(text.splitlines())+.012
+    r.save(fig,"Provenance","Individual case; no inter-run comparison or new model admission. A provisional checkpoint is not a terminal result. "
+        "Input hashes, requested/saved snapshot times, repetitions, winding diagnostics and reconstruction errors are retained in the JSON receipt.")
 
+
+def equation_box(fig,x,y,equation,size=14):
+    fig.text(x,y,equation,fontsize=size,ha="center",va="center",color=INK,
+        bbox=dict(boxstyle="round,pad=.6",facecolor="#f1f5f7",edgecolor=ACCENT,linewidth=.8))
+
+
+def model_summary(r):
+    fig=r.page("6. Model summary: effective neutral BCS/KWT")
+    fig.text(.075,.863,r"$X=\{d_i,p_{ik},n_{iq},I_b,I_s,v_c\},\quad d_i=\Delta_i/E_u,\quad E_u=k_BT_c,\quad E_{ik}=E_u\sqrt{\bar\xi_k^2+|d_i|^2}$",fontsize=14,color=INK)
+    fig.text(.075,.807,"Coupled evolution",fontsize=14,weight="bold",color=ACCENT)
+    equation_box(fig,.335,.744,r"$D_td_i=-\frac{z_i}{A_i\tau_K}\left[\frac{\mathrm{Re}\,f_i}{R_i}+iR_i\,\mathrm{Im}\,f_i\right]$",15)
+    equation_box(fig,.335,.617,r"$\dot p=\mathcal{C}_{e-ph}+\mathcal{T}_E+\frac{f_{\rm FD}(E,T_E)-p}{\tau_{\rm BGK}}+\mathcal{H}$",14)
+    equation_box(fig,.335,.497,r"$\dot n=\mathcal{C}_{ph-e}-\frac{n-n_{\rm BE}(\Omega,T_b)}{\tau_{\rm esc}}$",15)
+    fig.text(.65,.807,"Algebraic neutrality",fontsize=14,weight="bold",color=ACCENT)
+    equation_box(fig,.79,.746,r"$B_g[I^s+GB_g^{\mathsf{T}}\Phi]=s_g I_s$",13)
+    fig.text(.65,.68,r"$D_t=\partial_t+2ie\phi/\hbar,\quad z=d/|d|$",fontsize=12.5)
+    fig.text(.65,.625,r"$A_i=\sqrt{(1+\vartheta_i)/2},\quad \vartheta_i=\max(T_{E,i},T_b)/T_c$",fontsize=11.5)
+    fig.text(.65,.57,r"$\tau_{{\rm sc},i}^{-1}=\vartheta_i/\tau_{ee}(T_c)+\vartheta_i^3/\tau_{ep}(T_c)$",fontsize=11.5)
+    fig.text(.65,.515,r"$R_i=\sqrt{1+4E_u^2\tau_{{\rm sc},i}^2|d_i|^2/\hbar^2}$",fontsize=12.5)
+    fig.text(.65,.46,r"$\tau_K=\pi\hbar/(8k_BT_c),\quad \tau_{\rm BGK}=\tau_{ee}(T_c)/\vartheta$",fontsize=11.5)
+    fig.text(.075,.405,"Shared BCS energy and variational force",fontsize=14,weight="bold",color=ACCENT)
+    fig.text(.075,.35,r"$U_{e+\nabla}=\sum_i u_i^*\left[\frac{|d_i|^2}{g}-2\sum_k w_k(e_{ik}-\bar\xi_k)+4\sum_k w_ke_{ik}p_{ik}\right]+U_\nabla$",fontsize=14)
+    fig.text(.075,.29,r"$U_\nabla=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}|d_i-e^{-i\alpha_{ij}}d_j|^2,\quad \mathcal{F}_i=\partial_{d_i^*}U_{e+\nabla},\quad f_i=z_i^*\mathcal{F}_i/u_i^*$",fontsize=13.5)
+    fig.text(.075,.225,r"$I^s_{ij}=-\frac{2e}{\hbar}\partial_{\alpha_{ij}}U_{e+\nabla},\quad u_i^*=N_0E_u^2V_i,\quad V_i=d_f A_i^{\rm dual},\quad \alpha_{ij}=0$",fontsize=13.5)
+    fig.text(.075,.18,"p/n: quasiparticle/phonon occupations; C: shared conserving collisions; T: energy transport; H: condensate + Joule heat.",fontsize=10.5,color=INK)
+    fig.text(.075,.145,"Bg: reduced incidence; G: normal conductance; Φ: reduced potential; sg: cut injection; κ: radial stiffness; g: BCS coupling.",fontsize=10.5,color=INK)
+    r.save(fig,"Effective neutral BCS/KWT",
+        "Neutral: quasistatic current balance determines φ, without a dynamical charge mode. Effective: radial stiffness, acoustic material and hot-state mobility are calibratable closures. "
+        "BCS/KWT: a shared BCS energy drives Kramer-Watts-Tobin condensate relaxation and conservative kinetics. Te/Tph are energy-equivalent observers, not imposed thermal states. "
+        "See Principal.pdf and MODELO_VIGENTE.md; this is not an exact microscopic Usadel evolution.")
+
+
+def circuit_diagram(ax):
+    from matplotlib.patches import Ellipse,Rectangle
+    ax.set(xlim=(0,1),ylim=(0,1));ax.axis("off")
+    def wire(x,y):ax.plot(x,y,color=INK,lw=1.7)
+    def resistor(a,b,vertical=False):
+        q=np.linspace(0,1,11);amp=np.array([0,0,1,-1,1,-1,1,-1,1,0,0])*.013
+        if vertical:wire(np.full(11,a[0])+amp,a[1]+q*(b[1]-a[1]))
+        else:wire(a[0]+q*(b[0]-a[0]),np.full(11,a[1])+amp*2.3)
+    def inductor(a,b,vertical=False):
+        q=np.linspace(0,1,160);coil=.025*np.sin(np.pi*(q*4%1))
+        if vertical:wire(np.full_like(q,a[0])+coil*.5,a[1]+q*(b[1]-a[1]))
+        else:wire(a[0]+q*(b[0]-a[0]),np.full_like(q,a[1])+coil)
+    def arrow(a,b,label,offset=(0,0)):
+        ax.annotate("",xy=b,xytext=a,arrowprops=dict(arrowstyle="->",color=ACCENT,lw=1.7))
+        ax.text((a[0]+b[0])/2+offset[0],(a[1]+b[1])/2+offset[1],label,fontsize=13,ha="center",va="center",color=ACCENT)
+    wire([.10,.86],[.14,.14]);wire([.10,.10],[.14,.40]);wire([.10,.10,.22],[.58,.83,.83])
+    ax.add_patch(Ellipse((.10,.49),.064,.18,facecolor="white",edgecolor=INK,lw=1.7))
+    ax.text(.10,.53,"+",ha="center",va="center",fontsize=14);ax.text(.10,.45,"-",ha="center",va="center",fontsize=14)
+    ax.text(.045,.49,r"$V_b$",ha="right",va="center",fontsize=14)
+    resistor((.22,.83),(.32,.83));wire([.32,.38],[.83,.83]);inductor((.38,.83),(.48,.83));wire([.48,.57],[.83,.83])
+    ax.text(.27,.94,r"$R_b$",ha="center",fontsize=14);ax.text(.43,.94,r"$L_b$",ha="center",fontsize=14)
+    arrow((.13,.72),(.21,.72),r"$I_b$",(0,-.07))
+    wire([.57,.57],[.83,.70]);inductor((.57,.70),(.57,.54),True);wire([.57,.57],[.54,.43])
+    ax.text(.49,.60,r"$L_{k,\rm ext}$",ha="right",va="center",fontsize=14)
+    ax.add_patch(Rectangle((.51,.25),.12,.18,facecolor="#edf4f5",edgecolor=ACCENT,lw=1.7))
+    ax.text(.57,.34,"2D strip",ha="center",va="center",fontsize=12)
+    ax.text(.65,.34,r"$V_{\rm dev}$",ha="left",va="center",fontsize=14)
+    wire([.57,.57],[.25,.14]);arrow((.64,.72),(.64,.53),r"$I_s$",(.035,0))
+    wire([.57,.70],[.83,.83]);wire([.70,.70],[.75,.91]);wire([.74,.74],[.75,.91]);wire([.74,.86],[.83,.83])
+    ax.text(.72,.98,r"$+\,v_c\,-$",ha="center",fontsize=14)
+    ax.text(.72,.67,r"$C_c$",ha="center",fontsize=14)
+    arrow((.77,.70),(.84,.70),r"$I_{\rm read}=I_b-I_s$",(0,-.12))
+    wire([.86,.86],[.83,.62]);resistor((.86,.62),(.86,.35),True);wire([.86,.86],[.35,.14])
+    ax.text(.90,.48,r"$R_l$",ha="left",va="center",fontsize=14)
+    ax.text(.90,.80,r"$+\,V_{\rm out}$",ha="left",va="center",fontsize=14)
+    ax.text(.90,.16,"-",ha="left",va="center",fontsize=14)
+    ax.scatter([.57,.86],[.83,.83],s=20,c=INK)
+    wire([.43,.43],[.14,.08])
+    for yy,w in [(.08,.035),(.05,.023),(.02,.012)]:wire([.43-w,.43+w],[yy,yy])
+
+
+def model_circuit_summary(r):
+    fig=r.page("6.1. Circuit coupling and conservation")
+    circuit_diagram(fig.add_axes([.055,.46,.88,.40]))
+    fig.text(.075,.405,r"$R_l=R_{\rm load},\quad V_b=V_{\rm bias},\quad I_{\rm read}=I_b-I_s,\quad V_{\rm out}=R_l I_{\rm read}$",fontsize=14)
+    equation_box(fig,.50,.325,r"$L_b\dot I_b=V_b-R_bI_b-v_c-R_l(I_b-I_s)$",15)
+    equation_box(fig,.50,.245,r"$L_{k,\rm ext}\dot I_s=v_c+R_l(I_b-I_s)-V_{\rm dev},\qquad C_c\dot v_c=I_b-I_s$",15)
+    fig.text(.075,.155,r"$\dot E_{\rm total}=V_b I_b-R_bI_b^2-R_l(I_b-I_s)^2-P_{\rm esc}-P_{\rm cuts}$",fontsize=15,color=INK)
+    r.save(fig,"Circuit and conservation","The three circuit states evolve jointly with d, p and n; Vdev is obtained from the same algebraic neutrality solve. "
+        "Exterior inductance is fixed from the DC reference. The 2D strip is resolved, not a time-varying lumped resistor/inductor. "
+        "Shared condensate/Joule heating enters quasiparticles; phonon escape and superconducting cuts exchange energy explicitly. No filter/amplifier is included.")
 
 def build_report(run,output,allow_incomplete=False,requested=None,dpi=160,memory_limit=2**33):
     start=time.monotonic();run=Path(run).resolve();output=scratch_path(output)
@@ -556,31 +768,36 @@ def build_report(run,output,allow_incomplete=False,requested=None,dpi=160,memory
     dc=c["dc"]["delta_bar"]*c["m"]["physicalparams"]["energy_scale_J"]
     c["hotbelt"]=hotbelts(c["s"]["delta_J"],dc,c["mesh"]["edges"],c["mesh"]["coordinates_m"])
     indices=select_snapshots(c["s"]["time_s"],c["obs"],c["hotbelt"],requested)
+    c["snapshot_targets_ps"]=snapshot_targets(c["s"]["time_s"],c["obs"],c["hotbelt"],requested)
+    selection=snapshot_selection(c["s"]["time_s"],c["snapshot_targets_ps"],indices)
     print(json.dumps(dict(status="CASE_REPORT_STARTED",case=run.name,provisional=c["provisional"],snapshots=len(indices))),flush=True)
-    flow,checks=currents(c,indices)
-    apply_thesis_style();plt.rcParams.update({"font.size":10,"axes.labelsize":10,"axes.titlesize":10,"legend.fontsize":9})
+    flow,checks=currents(c,np.unique(indices))
+    apply_thesis_style();plt.rcParams.update({"font.size":13,"axes.labelsize":14,"axes.titlesize":13,"legend.fontsize":11,"xtick.labelsize":12,"ytick.labelsize":12})
     temporary=build/"case_report.pdf";r=Report(temporary,c,dpi)
     try:
         parameters(r);observables(r);circuit(r);internal(r)
-        map_pages(r,indices,"delta_J","3.1. Condensado: dominio completo","|Δ| (meV)","Magnitud después de interpolar espacialmente el gap complejo P1; no se interpola el módulo nodal.",kind="gap")
-        map_pages(r,indices,"delta_J","3.2. Condensado: región del depósito","|Δ| (meV)","Recorte visual central de 120 nm, ancho completo; no frontera térmica.",kind="gap",roi=True)
-        map_pages(r,indices,"delta_J","3.3. Condensado: fase relativa al DC","arg[Δ(t) ΔDC*] (rad)","Fase nodal sin interpolar ángulos. Se ocultan nodos con |Δ|≤0,2|ΔDC|. Saltos ±π de fase envuelta no prueban por sí solos un vórtice.",kind="phase",roi=True)
-        map_pages(r,indices,"Te_K","3.4. Temperatura electrónica equivalente","Te equivalente (K)","Observador de energía de ocupaciones electrónicas no térmicas; no temperatura impuesta.",cmap="inferno")
-        map_pages(r,indices,"Tph_K","3.5. Temperatura fonónica equivalente","Tph equivalente (K)","Observador de energía fonónica; el cierre es local con escape, sin difusión fonónica lateral.",cmap="inferno")
-        map_pages(r,indices,"u_excess_J_m3","3.6. Densidad energética en exceso del DC","Energía en exceso (kJ/m³)","BCS local más gradiente repartido y fonones, menos la referencia DC guardada, dividido por volumen dual.",signed=True)
-        for key,title,label in (("super","3.7. Corriente superconductora reconstruida",r"$J_{s,x}$ ($10^{10}$ A/m$^2$)"),
-            ("normal","3.8. Corriente normal reconstruida",r"$J_{n,x}$ ($10^{10}$ A/m$^2$)"),("total","3.9. Corriente total reconstruida",r"$|J_{\rm total}|$ ($10^{10}$ A/m$^2$)")):
-            map_pages(r,indices,key,title,label,"Vectores por mínimos cuadrados de flujos duales conservativos. Color físico; flechas de dirección con longitud visual fija de 6 nm; se omiten flujos menores a 0,01 % del máximo entre snapshots. "
-                "Js/Jn: componente x firmada; total: magnitud. Signo local no es inversión global.",kind="current",flow=flow)
-        map_pages(r,indices,"phi","3.10. Potencial eléctrico algebraico","φ (mV)","Neutralidad del mismo estado guardado. Gauge: corte derecho φ=0; sin nueva evolución.",kind="phi",flow=flow)
-        balance(r);provenance(r,checks)
+        map_pages(r,indices,"delta_J","3.1. Condensate: full domain","|Δ| (meV)","Magnitude of the spatial complex P1 interpolant; the nodal magnitude is not interpolated.",kind="gap")
+        map_pages(r,indices,"delta_J","3.2. Condensate: deposition region","|Δ| (meV)","Central 120 nm view, full width; not a thermal boundary.",kind="gap",roi=True)
+        map_pages(r,indices,"delta_J","3.3. Condensate: phase relative to DC","arg[Δ(t) ΔDC*] (rad)","Nodal phase without angle interpolation. Nodes with |Δ|≤0.2|ΔDC| are hidden. Wrapped ±π jumps alone do not establish a vortex.",kind="phase",roi=True)
+        map_pages(r,indices,"Te_K","3.4. Equivalent electronic temperature","Equivalent Te (K)","Energy-equivalent observer of nonthermal electronic occupations; not an imposed temperature.",cmap=PALETTES["electron_temperature"])
+        map_pages(r,indices,"Tph_K","3.5. Equivalent phonon temperature","Equivalent Tph (K)","Phonon energy-equivalent observer; local escape, without lateral phonon diffusion.",cmap=PALETTES["phonon_temperature"])
+        map_pages(r,indices,"u_excess_J_m3","3.6. Energy density relative to DC","Excess energy density (kJ/m³)","Local BCS energy, apportioned gradient and phonons, minus the saved DC reference, divided by dual volume.",signed=True)
+        for key,title,label in (("super","3.7. Reconstructed supercurrent density",r"$J_{s,x}$ ($10^{10}$ A/m$^2$)"),
+            ("normal","3.8. Reconstructed normal current density",r"$J_{n,x}$ ($10^{10}$ A/m$^2$)"),("total","3.9. Reconstructed total current density",r"$|J_{\rm total}|$ ($10^{10}$ A/m$^2$)")):
+            map_pages(r,indices,key,title,label,"Dual-flux least-squares display vectors. Arrows: direction, fixed 6 nm length; flows below 0.01 % of the selected maximum omitted. "
+                "Js/Jn color: signed x; total: magnitude. Local sign does not imply global reversal.",kind="current",flow=flow)
+        map_pages(r,indices,"phi","3.10. Algebraic electric potential","φ (mV)","Neutrality at the same saved state. Gauge: right cut φ=0; no new evolution.",kind="phi",flow=flow)
+        vortex_checks=vorticity_page(r,indices)
+        balance(r);provenance(r,checks);model_summary(r);model_circuit_summary(r)
     finally:r.pdf.close()
     receipt=dict(schema=SCHEMA,run_dir=str(run),case_name=run.name,report_path=str(target),report_sha256=sha256(temporary),
         generated_utc=datetime.now(timezone.utc).isoformat(),pages=r.pages,pipeline_sha256=sha256(__file__),
         inputs_sha256=c["inputs"],complete_input=not c["provisional"],provisional=c["provisional"],
         model_simulations_launched=0,kinetic_RHS_evaluations=0,new_DC_solves=0,cross_run_comparison=False,
         electrical_metrics=c["metrics"],energy_balance_metrics=c["balance"],existing_audit=c["audit"],
-        selected_saved_times_ps=(c["s"]["time_s"][indices]*1e12).tolist(),reconstruction_checks=checks,
+        selected_saved_times_ps=(c["s"]["time_s"][indices]*1e12).tolist(),snapshot_selection=selection,
+        requested_times_ignored_after_six=0 if requested is None else max(0,len(requested)-6),
+        palettes=PALETTES,vorticity_checks=vortex_checks,reconstruction_checks=checks,
         reconstruction_source_sha256={p:sha256(ROOT/p) for p in RECON_SOURCES},
         hotbelt=dict(threshold_DC=.2,definition="saved-node graph connectivity",
             first_saved_time_ps=None if not np.any(c["hotbelt"]) else float(c["s"]["time_s"][np.flatnonzero(c["hotbelt"])[0]]*1e12)),
@@ -609,7 +826,7 @@ def main(argv=None):
     p.add_argument("--run-dir",type=Path,nargs="+",required=True,help="One independent PDF per directory")
     p.add_argument("--output-dir",type=Path,required=True,help="NEW directory under scratch")
     p.add_argument("--allow-incomplete",action="store_true",help="Capture one atomic checkpoint, explicitly provisional")
-    p.add_argument("--snapshots-ps",type=float,nargs="+",default=None,help="Nearest saved times; initial/final included; max24")
+    p.add_argument("--snapshots-ps",type=float,nargs="+",default=None,help="Exactly six slots: first six requests, repeat last if fewer; nearest saved states")
     p.add_argument("--workers",type=int,default=1,help="Independent foreground reports; one physical core per worker")
     p.add_argument("--dpi",type=int,default=160);a=p.parse_args(argv)
     if a.workers<1 or not 80<=a.dpi<=300:raise ValueError("Positive workers and80<=dpi<=300 required")

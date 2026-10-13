@@ -93,17 +93,91 @@ def test_broken_readout_identity_fails():
     with pytest.raises(ValueError,match="identity"):report.metrics(case)
 
 
-def test_snapshot_selection_uses_real_saved_times_and_endpoints():
+
+def test_snapshot_selection_always_has_six_ordered_slots():
     t=np.array([0,.1,1,10,15,20,30,31,32])*1e-12
     obs=dict(trigger_confirmed=True,first_crossing_time_s=30.4e-12,confirmation_time_s=30.9e-12)
     hb=np.array([False]*4+[True]*5)
-    selected=report.select_snapshots(t,obs,hb)
-    assert selected[0]==0 and selected[-1]==len(t)-1
-    assert 4 in selected
-    assert len(selected)<=6
-    explicit=report.select_snapshots(t,{},hb,[.16,14.9])
-    assert set(explicit)=={0,1,4,8}
-    with pytest.raises(ValueError,match="saved snapshot"):report.select_snapshots(t,{},hb,[33])
+    auto=report.select_snapshots(t,obs,hb)
+    assert auto.tolist()==[0,2,4,6,7,8]
+    explicit=report.select_snapshots(t,{},hb,[14.9,.16])
+    assert explicit.tolist()==[4,1,1,1,1,1]
+    assert report.snapshot_targets(t,{},hb,[14.9,.16]).tolist()==[14.9,.16,.16,.16,.16,.16]
+
+
+def test_snapshot_extras_are_ignored_without_reordering_or_endpoints():
+    times=np.arange(8)*1e-12
+    requested=[5,4,3,2,1,.2,7,float("nan")]
+    indices=report.select_snapshots(times,{},np.zeros(8,bool),requested)
+    assert indices.tolist()==[5,4,3,2,1,0]
+    assert report.select_snapshots(times,{},np.zeros(8,bool),[4]*6).tolist()==[4]*6
+
+
+def test_snapshot_nearest_endpoint_and_sparse_acquisition_receipt():
+    times=np.array([0,1,2])*1e-12
+    targets=report.snapshot_targets(times,{},np.zeros(3,bool),[-2,.6,100])
+    ids=report.select_snapshots(times,{},np.zeros(3,bool),[-2,.6,100])
+    assert ids.tolist()==[0,1,2,2,2,2]
+    receipt=report.snapshot_selection(times,targets,ids)
+    assert receipt["slots"][0]["outside_saved_window"] is True
+    assert receipt["slots"][1]["saved_ps"]==1
+    assert receipt["slots"][3]["repeated_saved_state"] is True
+    assert receipt["future_visualization_queue"]
+    assert report.select_snapshots(np.array([0.]),{},np.zeros(1,bool),[5]).tolist()==[0]*6
+
+
+@pytest.mark.parametrize("requested",[[],[float("nan")],[float("inf")]])
+def test_nonfinite_or_empty_used_snapshot_requests_fail(requested):
+    with pytest.raises(ValueError,match="finite requested"):
+        report.select_snapshots(np.array([0,1e-12]),{},np.zeros(2,bool),requested)
+
+
+def vortex_triangle():
+    xy=np.array([[-1,-1],[1,-1],[0,1]],float)*1e-9
+    delta=(xy[:,0]+1j*xy[:,1])/1e-9*1e-22
+    return xy,delta,np.array([[0,1,2]])
+
+
+def test_phase_vortex_sign_core_and_global_phase_invariance():
+    xy,delta,tri=vortex_triangle();dc=np.full(3,1e-22)
+    vortex=report.phase_vorticity(delta,dc,xy,tri)
+    assert vortex["positive"]==1 and vortex["negative"]==0
+    assert vortex["valid"].tolist()==[True]
+    np.testing.assert_allclose(vortex["core_points_m"],[[0,0]],atol=1e-24)
+    anti=report.phase_vorticity(np.conj(delta),dc,xy,tri)
+    assert anti["negative"]==1 and anti["positive"]==0
+    rotated=report.phase_vorticity(delta*np.exp(2.3j),dc,xy,tri[:,::-1])
+    assert rotated["positive"]==1
+    np.testing.assert_allclose(rotated["core_points_m"],vortex["core_points_m"],atol=1e-24)
+
+
+def test_phase_gradient_is_not_vorticity_and_zero_contours_are_undefined():
+    xy,delta,tri=vortex_triangle();dc=np.full(3,1e-22)
+    smooth=report.phase_vorticity(np.exp(1j*xy[:,0]/1e-8)*1e-22,dc,xy,tri)
+    assert smooth["winding"].tolist()==[0] and smooth["valid"].all()
+    nodal_zero=delta.copy();nodal_zero[0]=0
+    ambiguous=report.phase_vorticity(nodal_zero,dc,xy,tri)
+    assert ambiguous["indeterminate_cells"]==1
+    assert not len(ambiguous["core_points_m"])
+    suppressed=report.phase_vorticity(delta*1e-10,dc,xy,tri)
+    assert suppressed["indeterminate_cells"]==1
+
+
+def test_vortex_antivortex_pair_preserves_signed_counts():
+    from scipy.spatial import Delaunay
+    x,y=np.meshgrid(np.linspace(-2,2,17),np.linspace(-2,2,17))
+    xy=np.column_stack((x.ravel(),y.ravel()))*1e-9
+    z=xy[:,0]/1e-9+1j*xy[:,1]/1e-9
+    delta=(z-(-.63+.17j))*np.conj(z-(.61-.23j))*1e-22
+    result=report.phase_vorticity(delta,np.full(len(xy),1e-22),xy,Delaunay(xy).simplices)
+    assert (result["positive"],result["negative"])==(1,1)
+    assert result["core_charge"].sum()==0
+
+
+def test_quantity_families_have_distinct_palettes():
+    assert report.PALETTES["energy"]!=report.PALETTES["signed_current"]
+    assert report.PALETTES["energy"]!=report.PALETTES["total_current"]
+    assert len(set(report.PALETTES.values()))==len(report.PALETTES)
 
 
 def test_decompression_budget_uses_uncompressed_sizes(tmp_path):
@@ -217,3 +291,20 @@ def test_photon_free_hold_is_not_labeled_as_photon(tmp_path):
     (run/"manifest.json").write_text(json.dumps(dict(schema="pysnspd.effective_photon_run.v1",closure=dict(microscopic_exact_Usadel=False),parameter_identity=dict(dc_only=True))))
     with pytest.raises(ValueError,match="Photon case required"):
         report.load_case(run,tmp_path,False,2**30)
+
+
+def test_snapshot_layout_keeps_six_axes_with_larger_labels():
+    import matplotlib.pyplot as plt
+    fig=plt.figure(figsize=(11.69,8.27))
+    axes=report.snapshot_axes(fig)
+    assert len(axes)==6
+    assert len({round(ax.get_position().y0,2) for ax in axes})==2
+    plt.close(fig)
+
+
+def test_contour_crossing_zero_is_not_a_resolved_vortex():
+    xy,delta,tri=vortex_triangle()
+    delta=np.array([-1,1,1+1j])*1e-22
+    d=report.phase_vorticity(delta,np.full(3,1e-22),xy,tri)
+    assert d["indeterminate_cells"]==1
+    assert d["positive"]==d["negative"]==0

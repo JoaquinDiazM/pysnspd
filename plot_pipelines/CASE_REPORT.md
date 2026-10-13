@@ -1,139 +1,161 @@
-# Case report individual del modelo efectivo
+# Individual case report
 
 Pipeline: /home/jdiaz/pysnspd/plot_pipelines/07_case_report.py
 
-Produce **un PDF autónomo por run** del formato efectivo de pipeline05
-(pysnspd.effective_photon_run.v1). Acepta varios directorios como comodidad de
-ejecución: nunca superpone, resta ni compara casos. Los holds sin fotón y los
-formatos históricos no se presentan con el reloj de una corrida fotónica.
+One self-contained PDF per effective photon run (pipeline05 schema).
+Multiple input directories only batch independent reports; no inter-run comparison.
+The report and all CLI/report text are in English. Current layout: **19 landscape A4 pages**.
 
-## Contenido estándar
+## Sections
 
-1. Parámetros exclusivos del caso: geometría, espesor y resolución separados;
-   material, corriente DC, absorción/deposición, energía fotónica y retenida,
-   calibradores Allmaras, circuito, discriminador y precisión numérica.
-2. Observables de laboratorio: Vout menos basal DC, corriente de lectura
-   Ib−Is, cruce, confirmación, latencia relativa, final guardado y pendiente
-   local. También Ib, Is, Vdev, vc y potencia en la carga.
-3. Estado interno: curvas de gap, energías y temperaturas equivalentes;
-   snapshots del gap completo y de la región central; fase relativa al DC;
-   Te, Tph, exceso energético, Js,x, Jn,x, |Jtotal| y potencial.
-4. Balance independiente, precisión, procedencia, hashes y límites.
+1. Case parameters: geometry, thickness versus mesh spacing, material, DC bias,
+   deposition/retained energy, free Allmaras calibration parameters, circuit,
+   discriminator and numerical settings.
+2. Laboratory-related observables: baseline-subtracted Vout, readout current
+   Ib-Is, confirmed crossing/latency, confirmation and final observation time.
+   Circuit states, Vdev, coupling voltage and readout power are shown separately.
+3. Internal fields: condensate magnitude, relative phase, equivalent electronic
+   and phonon temperatures, excess energy, reconstructed super/normal/total
+   current density, algebraic potential and **signed phase-winding vorticity**.
+4. Independent energy balance.
+5. Precision, provenance and limits.
+6. Model summary: boxed coupled evolution equations, shared BCS energy,
+   algebraic neutrality, circuit diagram, circuit equations and energy balance.
+   Explains why the closure is called effective neutral BCS/KWT.
 
-Con seis snapshots automáticos son **16 páginas A4 apaisadas**. Los mapas
-comparten escala de color entre los tiempos del mismo campo. Se muestran
-unidades físicas: nm, ps, meV, K, kJ/m³, A/m², V y A con prefijos legibles.
+Vout has no filter, amplifier, noise or measurement-bandwidth model.
+Only confirmed crossings define relative postcascade latency; censored cases
+have no assigned latency. The observed maximum is not a complete pulse peak.
+No full reset, jitter, statistical efficiency or absolute optical latency is inferred.
 
-Vout no incluye filtro, amplificador, ruido ni ancho de banda experimental.
-Su máximo es el máximo **observado**, no el pico de un pulso completo.
-La pendiente no predice jitter. El reloj empieza en la transferencia efectiva
-postcascada, no en la absorción óptica absoluta. Sólo un cruce confirmado
-produce latencia; un caso censurado queda sin latencia.
+## Exactly six snapshot slots
 
-## Comando para cuatro casos terminados
+--snapshots-ps accepts requested times in ps.
 
-Ejecutar en geminga. Cada repetición requiere un destino nuevo.
+- Keep the first six entries if more are supplied.
+- Repeat the last entry until there are six if fewer are supplied.
+- Preserve input order and repetitions. Do not add initial/final states.
+- Select the nearest actually saved state for each request; ties choose the earlier.
+- A request outside the saved interval selects its nearest endpoint, without
+  inventing data or extending the simulation.
+- Display requested and saved time in every panel; retain both in the JSON receipt.
+
+Examples: --snapshots-ps 0 1 gives [0,1,1,1,1,1] as target times.
+--snapshots-ps 0 1 5 10 20 35 100 ignores 100.
+Without the flag, six automatic targets cover the stored evolution and available
+detection/hotbelt events. Repeated nearest states are retained even in short runs.
+
+Every snapshot page remains a fixed 2-by-3 mosaic. Main axis labels are 14 pt,
+ticks 12 pt; map axes 13 pt, map titles/ticks 12 pt, colorbar labels 14 pt.
+Requested time is not substituted for saved time.
+
+The receipt records cadence min/median/max, requested/saved offsets, repeated states
+and ignored extra inputs. If too few states or too coarse a cadence prevent the
+requested distinct times, future_visualization_queue records a follow-up to
+save states with a stable, sufficiently fine physical-time cadence. No acquisition
+or simulation source is changed by this visualization task. The two nominal
+examples contain enough data for six distinct automatic states.
+
+## Run several saved cases
+
+Run on geminga. Choose a NEW output directory for each invocation.
 
 ~~~bash
 cd /home/jdiaz/pysnspd
+CASE_RUNS=/home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs
 env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
   MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
   NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
   MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
   /home/jdiaz/.conda/envs/snspd/bin/python \
   plot_pipelines/07_case_report.py \
-  --run-dir \
-    /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/nominal775 \
-    /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/bias065_775 \
-    /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/bias075_775 \
-    /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/nominal1550 \
-  --output-dir /home/jdiaz/scratch/case_reports/bias_20261013_01 \
+  --run-dir "$CASE_RUNS/nominal775" "$CASE_RUNS/bias065_775" \
+    "$CASE_RUNS/bias075_775" "$CASE_RUNS/nominal1550" \
+  --snapshots-ps 0 1 5 10 20 35 \
+  --output-dir /home/jdiaz/scratch/case_reports/english_20261013_01 \
   --workers 2
 ~~~
 
-Para otro caso, sustituir la lista de --run-dir; uno solo también funciona.
---workers 2 paraleliza dos PDFs independientes, con un núcleo físico y
-bibliotecas de un hilo por trabajador. Revisa afinidad, cuotas y memoria,
-reserva núcleos completos y respeta el techo 90 %. Los dos ejemplos nominales
-tardaron unos seis segundos por caso; no es una garantía para archivos mayores.
+Omit --snapshots-ps for six automatic targets. One input directory also works.
+--allow-incomplete captures one atomic checkpoint, without stopping or writing
+to the running solver. Every page is provisional until a successful terminal
+exists. A checkpoint without crossing is not terminal censoring at the ceiling.
+The trajectory end and last saved snapshot are recorded separately.
 
-## Caso aún en ejecución
+Two independent workers use one physical core each, one-thread numerical
+libraries and a shared resource budget capped at 90 %. No new evolution,
+kinetic RHS evaluation or DC preparation is launched.
 
-Añadir --allow-incomplete con un destino nuevo. Ejemplo:
+## Vorticity definition and limits
 
-~~~bash
-cd /home/jdiaz/pysnspd
-env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
-  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
-  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
-  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
-  /home/jdiaz/.conda/envs/snspd/bin/python \
-  plot_pipelines/07_case_report.py \
-  --run-dir /home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/bias075_1550 \
-  --output-dir /home/jdiaz/scratch/case_reports/bias075_1550_partial_20261013_01 \
-  --allow-incomplete --workers 1
-~~~
+For each physical counterclockwise triangle C:
 
-Captura una copia coherente de un checkpoint atómico; no detiene ni escribe
-en la simulación. Todas las páginas quedan PROVISIONALES si no hay terminal
-completo. El final de trayectoria y el último snapshot se indican por separado.
-No convierte ausencia de cruce hasta el checkpoint en censura a 200 ps.
-Si el caso ya terminó, usa y autentica sus productos terminales.
+$$
+n_C=\frac{1}{2\pi}\sum_{(i,j)\in C}
+\operatorname{Arg}\!\left[\Delta_j\Delta_i^*\right].
+$$
 
-## Elegir instantes
+Positive/negative winding labels vortex/antivortex chirality. The core marker
+is the zero of the same complex P1 interpolant, found by barycentric inversion.
+This is phase topology, rather than curl(J): a current curl can arise from
+inhomogeneous condensate density and is not itself a quantized vortex count.
+The present states have A=0; this diagnostic does not reconstruct magnetic flux.
 
---snapshots-ps 0 1 5 10 15 20 solicita las muestras guardadas más cercanas;
-se incluyen siempre inicial y final. Máximo 24 instantes pedidos, dentro del
-intervalo de snapshots existente. No se interpola dinámica en tiempo.
+A contour is indeterminate (gray) if its minimum P1 edge amplitude is no larger
+than 1e-6 of the minimum local DC vertex amplitude, or if its core cannot be
+resolved consistently. This diagnostic resolution is not a physical model
+parameter. White means resolved zero winding, not proof that no event occurred
+between saved states. Short events, unresolved structures, edge cores and phase
+in normal regions cannot be recovered as reliable vortex trajectories.
 
-Sin esa opción, una detección muestra inicial, 1 ps, primera hotbelt guardada,
-muestras próximas a cruce/confirmación y final. Sin detección: inicial,
-1 ps, 10 ps, cuarto, mitad y final de la ventana, eliminando duplicados.
-La hotbelt es conectividad del grafo nodal con |Delta|≤0.2|DeltaDC|
-entre bordes transversales; no es el gatillo eléctrico ni prueba continuidad
-entre muestras.
+Primary reference: [Guo et al., Extracting, Tracking and Visualizing Vortices
+in 3D Complex-Valued Superconductor Simulation Data, Eq. (1)](https://www.mcs.anl.gov/papers/P5324-0315.pdf).
+The report caption links that source. Our positive sign explicitly denotes
+counterclockwise physical phase winding; it is not a magnetic-flux sign claim.
 
-## Datos originales y reconstrucciones
+## Quantity-specific palettes
 
-Las curvas y mapas de gap/energía/temperatura se leen de trajectory.npz y
-snapshots.npz, autenticados por manifest.json, junto con el DC y la malla
-original. Se rechaza corrupción o una versión distinta de las tres fuentes
-utilizadas para reconstruir corrientes.
+| Quantity | Palette |
+|---|---|
+| Gap magnitude | viridis |
+| Relative phase | twilight |
+| Equivalent electronic temperature | inferno |
+| Equivalent phonon temperature | YlOrBr |
+| Signed excess energy density | PuOr_r |
+| Signed super/normal current components | coolwarm |
+| Total current magnitude | cividis |
+| Algebraic potential | GnBu |
+| Integer winding | discrete teal / white / magenta, gray indeterminate |
 
-El gap se interpola como campo complejo P1 antes de tomar su magnitud.
-La fase se muestra en nodos, sin interpolar ángulos y ocultando amplitudes
-menores a 0.2 del DC. Un salto de fase envuelta no prueba un vórtice.
+Color ranges are fixed across the six slots of a quantity. Energy and current
+maps use different palettes and distinct signed physical units.
 
-Los flujos superconductores se recuperan de la derivada gauge exacta del
-gradiente energético, independiente de las ocupaciones no guardadas.
-El potencial y flujos normales se recuperan de la misma neutralidad algebraica,
-con Is del estado aceptado exactamente coincidente con cada snapshot.
-Se contrasta Vdev y la conservación de corriente con los valores guardados.
+## Reconstruction and validation
 
-J por triángulo es una **aproximación de visualización**: mínimos cuadrados
-ponderados de proyecciones sobre caras duales conservativas, divididas por
-espesor físico y longitud dual. El recibo conserva residuos de ese ajuste.
-Las flechas indican dirección con longitud visual fija de 6 nm; se omiten
-magnitudes menores al 0.01 % del máximo entre los snapshots seleccionados.
-El color aporta la magnitud o componente firmada. No se interpretan cambios
-locales de signo como inversión de corriente global.
+Original terminal inputs, DC, mesh and reconstruction sources are authenticated.
+Gap magnitude is evaluated after complex P1 spatial interpolation. Phase angles
+are not interpolated. No temporal interpolation creates snapshots or events.
 
-Te y Tph son observadores de energía equivalente, no estados térmicos
-impuestos. La energía electrónica guardada representa cuasipartículas y
-excluye condensación/gradiente; el balance total sí incluye esos términos.
-No se inventan distribuciones completas ni mapas de colisiones o calor KWT
-que los snapshots no guardaron. No se evalúa el RHS cinético ni un nuevo DC,
-no se evoluciona el sistema y no se aplica un ajuste experimental.
+Supercurrent face fluxes use the exact gauge derivative of the pinned gradient,
+independent of unsaved occupations. The same algebraic neutrality recovers
+potential and normal fluxes at accepted states matching each snapshot exactly.
+Vdev and current conservation are checked against saved data.
 
-## Productos y validación
+Current vectors by triangle are weighted least-squares display approximations
+to conservative dual-face projections divided by physical face area.
+Arrows show direction with a fixed 6 nm display length, omitting magnitudes
+below 0.01 % of the selected maximum. Color shows signed x components or total
+magnitude. Local signs do not establish reversal of the global bias.
+Complete distributions, collision maps and KWT-heating maps are not invented.
 
-En el destino scratch: case_report_<caso>_<identidad>.pdf, un recibo JSON
-por PDF, case_reports_manifest.json como inventario y .build para capturas.
-Nunca reemplaza destinos existentes. No modifica datos de entrada.
+Te/Tph are energy-equivalent observers. Saved quasiparticle energy excludes
+condensation/gradient; the independent total energy balance includes them.
 
-Validación del 13 de octubre de 2026: 20 pruebas rápidas; ejemplos nominales
-775 y 1550 nm, detección y censura respectivamente, 16 páginas cada uno.
-Revisión visual de todas las páginas, escalas y etiquetas; cotejo de hashes
-y reconstrucción de Vdev con error máximo aproximadamente 1.4e-17 V.
-Los 13 archivos físicos del checkpoint operativo permanecen sin cambios.
-Los ejemplos están en /home/jdiaz/scratch/case_report_validation_20261013_release.
+The 2026-10-13 refresh passes **31 quick tests**, including analytic signed
+vortices/antivortices, global-phase/orientation invariance, zero/near-zero
+contours, ordered six-slot selection, padding, truncation and source integrity.
+The actual two-time CLI was exercised: six panels, 19 pages, repeated final
+state. Two final examples take about six seconds per case; this is not a
+guarantee for larger archives. Final PDFs and visual QA remain in
+/home/jdiaz/scratch/case_report_refresh_20261013/release.
+The 13 physical model sources remain unchanged.
