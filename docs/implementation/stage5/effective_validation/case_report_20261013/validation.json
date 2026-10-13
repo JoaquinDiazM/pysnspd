@@ -1,0 +1,418 @@
+{
+  "schema": "pysnspd.case_report_validation.v1",
+  "tests": {
+    "passed": 20,
+    "elapsed_s": 0.4,
+    "command": "python -m pytest -q tests/test_case_report.py"
+  },
+  "examples": [
+    {
+      "run_dir": "/home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/nominal1550",
+      "report_path": "/home/jdiaz/scratch/case_report_validation_20261013_release/case_report_nominal1550_b38b4938.pdf",
+      "report_sha256": "23561b4f8dc90d29abd0c0bc28766090981f3e4cfe73f6b9017c3dcecdbe8fad",
+      "pipeline_sha256": "8327de27210704459cc6a6fa8ac2b8a91ea755262060994304d1ca1b5b0173e3",
+      "electrical_metrics": {
+        "final_ps": 200.0,
+        "maps_final_ps": 200.0,
+        "confirmed": false,
+        "censored": true,
+        "provisional": false,
+        "crossing_ps": null,
+        "confirmation_ps": null,
+        "latency_ps": null,
+        "max_observed_Vout_mV": 0.000331380043442172,
+        "min_Is_uA": 21.290567849383283,
+        "local_slope_mV_ps": null,
+        "readout_identity_error_V": 0.0,
+        "positive_global_currents": true
+      },
+      "energy_balance_metrics": {
+        "maximum_global_energy_defect_percent": 2.9091657923587264e-05,
+        "maximum_absolute_instant_power_residual_W": 8.401053096241687e-22
+      },
+      "selected_saved_times_ps": [
+        0.0,
+        0.9999999999999998,
+        9.999999999999872,
+        50.0,
+        99.99999999999847,
+        200.0
+      ],
+      "reconstruction_checks": [
+        {
+          "snapshot_index": 0,
+          "time_ps": 0.0,
+          "Vdev_error_V": 9.739418077654922e-18,
+          "cut_current_error_A": 3.3881317890172014e-21,
+          "interior_current_error_A": 3.441071348220595e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 67184928.3131967,
+              "relative_projection_RMS": 0.002501676250439448
+            },
+            "normal": {
+              "projection_RMS_A_m2": 2.912952098742921e-21,
+              "relative_projection_RMS": 1.4219579772227698e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 67184928.31319669,
+              "relative_projection_RMS": 0.002501676250439447
+            }
+          }
+        },
+        {
+          "snapshot_index": 10,
+          "time_ps": 0.9999999999999998,
+          "Vdev_error_V": 1.1363794020363693e-17,
+          "cut_current_error_A": 1.0164395367051604e-20,
+          "interior_current_error_A": 5.293955920339377e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 70994780.29363899,
+              "relative_projection_RMS": 0.0026450645330199415
+            },
+            "normal": {
+              "projection_RMS_A_m2": 5.35292983588921e-09,
+              "relative_projection_RMS": 1.5381002058063269e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 70994780.293639,
+              "relative_projection_RMS": 0.002643309659072799
+            }
+          }
+        },
+        {
+          "snapshot_index": 100,
+          "time_ps": 9.999999999999872,
+          "Vdev_error_V": 1.1722935989999517e-18,
+          "cut_current_error_A": 3.3881317890172014e-21,
+          "interior_current_error_A": 3.1763735522036263e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 97317623.18162154,
+              "relative_projection_RMS": 0.003620549142661472
+            },
+            "normal": {
+              "projection_RMS_A_m2": 2.701503972563421e-09,
+              "relative_projection_RMS": 1.545581746696163e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 97317623.18162152,
+              "relative_projection_RMS": 0.0036191580228393683
+            }
+          }
+        },
+        {
+          "snapshot_index": 500,
+          "time_ps": 50.0,
+          "Vdev_error_V": 3.992913313356772e-18,
+          "cut_current_error_A": 6.776263578034403e-21,
+          "interior_current_error_A": 3.1763735522036263e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 92703284.8479353,
+              "relative_projection_RMS": 0.0034502801640363596
+            },
+            "normal": {
+              "projection_RMS_A_m2": 2.3665476862951683e-10,
+              "relative_projection_RMS": 1.5471746735647868e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 92703284.84793533,
+              "relative_projection_RMS": 0.0034501154045997514
+            }
+          }
+        },
+        {
+          "snapshot_index": 1000,
+          "time_ps": 99.99999999999847,
+          "Vdev_error_V": 8.169632776267727e-19,
+          "cut_current_error_A": 3.3881317890172014e-21,
+          "interior_current_error_A": 4.235164736271502e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 78781575.97580057,
+              "relative_projection_RMS": 0.002933744537895806
+            },
+            "normal": {
+              "projection_RMS_A_m2": 5.234107322642319e-10,
+              "relative_projection_RMS": 1.5128192882088826e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 78781575.97580059,
+              "relative_projection_RMS": 0.002933923087235895
+            }
+          }
+        },
+        {
+          "snapshot_index": 2001,
+          "time_ps": 200.0,
+          "Vdev_error_V": 1.393729187235907e-17,
+          "cut_current_error_A": 3.3881317890172014e-21,
+          "interior_current_error_A": 3.705769144237564e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 74024207.29457599,
+              "relative_projection_RMS": 0.0027566787832400343
+            },
+            "normal": {
+              "projection_RMS_A_m2": 1.5019737320562103e-10,
+              "relative_projection_RMS": 1.517449961478075e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 74024207.29457594,
+              "relative_projection_RMS": 0.002756720275741932
+            }
+          }
+        }
+      ],
+      "elapsed_s": 5.718869517964777,
+      "actual_cpu_affinity": [
+        11
+      ]
+    },
+    {
+      "run_dir": "/home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/nominal775",
+      "report_path": "/home/jdiaz/scratch/case_report_validation_20261013_release/case_report_nominal775_283c7fe4.pdf",
+      "report_sha256": "7734f4a361802cfe88bfe49aecbcb187c2b73c76596e70670a9dbafba5852f4a",
+      "pipeline_sha256": "8327de27210704459cc6a6fa8ac2b8a91ea755262060994304d1ca1b5b0173e3",
+      "electrical_metrics": {
+        "final_ps": 36.93926530191459,
+        "maps_final_ps": 36.93926530191459,
+        "confirmed": true,
+        "censored": false,
+        "provisional": false,
+        "crossing_ps": 31.93926530191459,
+        "confirmation_ps": 32.43926530191459,
+        "latency_ps": 31.93926530191459,
+        "max_observed_Vout_mV": 0.14906447218187696,
+        "min_Is_uA": 18.31466789039734,
+        "local_slope_mV_ps": 0.009055974362824008,
+        "readout_identity_error_V": 0.0,
+        "positive_global_currents": true
+      },
+      "energy_balance_metrics": {
+        "maximum_global_energy_defect_percent": 0.524622000884271,
+        "maximum_absolute_instant_power_residual_W": 4.182225177068108e-21
+      },
+      "selected_saved_times_ps": [
+        0.0,
+        0.9999999999999998,
+        15.299999999999963,
+        31.899999999999814,
+        32.39999999999982,
+        36.93926530191459
+      ],
+      "reconstruction_checks": [
+        {
+          "snapshot_index": 0,
+          "time_ps": 0.0,
+          "Vdev_error_V": 9.739418077654922e-18,
+          "cut_current_error_A": 3.3881317890172014e-21,
+          "interior_current_error_A": 3.441071348220595e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 67184928.3131967,
+              "relative_projection_RMS": 0.002501676250439448
+            },
+            "normal": {
+              "projection_RMS_A_m2": 2.912952098742921e-21,
+              "relative_projection_RMS": 1.4219579772227698e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 67184928.31319669,
+              "relative_projection_RMS": 0.002501676250439447
+            }
+          }
+        },
+        {
+          "snapshot_index": 10,
+          "time_ps": 0.9999999999999998,
+          "Vdev_error_V": 1.7076184216646695e-18,
+          "cut_current_error_A": 6.776263578034403e-21,
+          "interior_current_error_A": 4.235164736271502e-22,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 78172586.52903607,
+              "relative_projection_RMS": 0.002913667326353437
+            },
+            "normal": {
+              "projection_RMS_A_m2": 1.1730210199102207e-08,
+              "relative_projection_RMS": 1.6078532915737075e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 78172586.52903606,
+              "relative_projection_RMS": 0.0029099550409923164
+            }
+          }
+        },
+        {
+          "snapshot_index": 153,
+          "time_ps": 15.299999999999963,
+          "Vdev_error_V": 1.3877787807814457e-17,
+          "cut_current_error_A": 2.1345230270808369e-19,
+          "interior_current_error_A": 2.2658131339052534e-20,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 99504324.81596546,
+              "relative_projection_RMS": 0.00399628838824692
+            },
+            "normal": {
+              "projection_RMS_A_m2": 9.991591102368618e-07,
+              "relative_projection_RMS": 1.5357952643521489e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 99504324.81596543,
+              "relative_projection_RMS": 0.0037113322409080343
+            }
+          }
+        },
+        {
+          "snapshot_index": 319,
+          "time_ps": 31.899999999999814,
+          "Vdev_error_V": 0.0,
+          "cut_current_error_A": 6.776263578034403e-19,
+          "interior_current_error_A": 1.019615910257364e-19,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 37216400.16208354,
+              "relative_projection_RMS": 0.002046766307986402
+            },
+            "normal": {
+              "projection_RMS_A_m2": 2.2553475675547415e-06,
+              "relative_projection_RMS": 1.5583129370968058e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 37216400.16208354,
+              "relative_projection_RMS": 0.00152912933447978
+            }
+          }
+        },
+        {
+          "snapshot_index": 324,
+          "time_ps": 32.39999999999982,
+          "Vdev_error_V": 0.0,
+          "cut_current_error_A": 7.182839392716467e-19,
+          "interior_current_error_A": 7.434699345626613e-20,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 36381111.43074151,
+              "relative_projection_RMS": 0.0020272139348818073
+            },
+            "normal": {
+              "projection_RMS_A_m2": 2.1627248583174864e-06,
+              "relative_projection_RMS": 1.4820891963928353e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 36381111.430741526,
+              "relative_projection_RMS": 0.0015019198091623428
+            }
+          }
+        },
+        {
+          "snapshot_index": 370,
+          "time_ps": 36.93926530191459,
+          "Vdev_error_V": 3.469446951953614e-18,
+          "cut_current_error_A": 9.215718466126788e-19,
+          "interior_current_error_A": 1.0349352952018461e-19,
+          "display_vector_fits": {
+            "super": {
+              "projection_RMS_A_m2": 29230499.981659018,
+              "relative_projection_RMS": 0.0018542133505064454
+            },
+            "normal": {
+              "projection_RMS_A_m2": 2.280306905941278e-06,
+              "relative_projection_RMS": 1.4814272858057484e-16
+            },
+            "total": {
+              "projection_RMS_A_m2": 29230499.98165899,
+              "relative_projection_RMS": 0.0012659222688517454
+            }
+          }
+        }
+      ],
+      "elapsed_s": 4.551401548029389,
+      "actual_cpu_affinity": [
+        12
+      ]
+    }
+  ],
+  "visual_QA": {
+    "all_32_pages_reviewed": true,
+    "renderer": "conda pdftoppm, 110 dpi",
+    "fixed_A4_landscape": true,
+    "revision": {
+      "case_report_nominal1550_b38b4938.pdf": {
+        "pages": 16,
+        "changed_pages_from_reviewed_final": [
+          1,
+          2,
+          6,
+          11,
+          12,
+          13,
+          16
+        ]
+      },
+      "case_report_nominal775_283c7fe4.pdf": {
+        "pages": 16,
+        "changed_pages_from_reviewed_final": [
+          1,
+          2,
+          6,
+          11,
+          12,
+          13,
+          16
+        ]
+      }
+    }
+  },
+  "physical13_unchanged": true,
+  "physical13_sources": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219"
+  },
+  "protected_user_edits_preserved": true,
+  "model_simulations_launched": 0,
+  "kinetic_RHS_evaluations": 0,
+  "new_DC_solves": 0,
+  "provisional_checkpoint_check": {
+    "original_run_dir": "/home/jdiaz/scratch/photon_runs/sensitivity_20261012_01/runs/bias075_1550",
+    "provisional": true,
+    "metrics": {
+      "final_ps": 43.36374999999967,
+      "maps_final_ps": 43.29999999999973,
+      "confirmed": false,
+      "censored": false,
+      "provisional": true,
+      "crossing_ps": null,
+      "confirmation_ps": null,
+      "latency_ps": null,
+      "max_observed_Vout_mV": 0.06116250903333036,
+      "min_Is_uA": 21.55202756938511,
+      "local_slope_mV_ps": null,
+      "readout_identity_error_V": 0.0,
+      "positive_global_currents": true
+    },
+    "captured_inputs": {
+      "manifest.json": "2506f181b406887b5952058cf0a6a3a710965e230f88b15c91500c204ee1558f",
+      "dc/effective_dc.npz": "fb01b31500842cb1ee975ab79499744f4b43c378f1bc2fedae98da4385febeec",
+      "dc/effective_dc_receipt.json": "91053178214d19d2a58008631b6f0607e791e66304a3eb4d7401c769af7ec6eb",
+      "checkpoint_capture.npz": "958bce1ec81a361051a66478d065cc23f85286ba578e86b10e950c82c190e573",
+      "geometry_mesh": "0fee80bcb7cb83239f77d97c05e6e2f4da48b2ba7235ee7079d3288d2dd61807"
+    },
+    "no_simulations_or_RHS": true
+  }
+}
