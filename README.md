@@ -1,6 +1,10 @@
-# pySNSPD 1.0.0
+# pySNSPD 1.1.0 (preparada)
 
-**Etapa 5 completada el 12 de octubre de 2026: admisión exploratoria del modelo efectivo.** La decisión y su alcance están en [estado](status.md) y en [etapa 5](docs/implementation/stage5/README.md).
+**Referencia publicada: v1.0.0, commit 7992f6a. Revisión 1.1.0: candidata optativa, sin admisión fotónica nueva.** La API efectiva anterior y las fuentes de las corridas activas se conservan. La revisión añade rigidez evaluada a la temperatura electrónica equivalente, su energía interna y calor reversible consistentes, difusión calibrada por depareo y cinco documentos matemáticos en [Matematica](Matematica/).
+
+Los comandos nuevos usan [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py) y [campaña 10](pipelines/10_thermal_stiffness_basecases.py). Una capacidad térmica efectiva no positiva detiene el candidato: no se corrige mediante un piso. Los controles con rigidez a temperatura de baño permiten separar el efecto de D calibrada del cierre térmico. Véanse [nota 1.1.0](docs/releases/v1.1.0.md), [Supuestos](Matematica/Supuestos.pdf) y [comandos actuales](docs/GEMINGA_COMMANDS_PRESENT.md).
+
+**La etapa 5 de la referencia v1.0.0 se completó el 12 de octubre de 2026 con admisión exploratoria.** La decisión y su alcance están en [estado](status.md) y en [etapa 5](docs/implementation/stage5/README.md).
 
 Modelo efectivo de investigación para estudiar la respuesta de una cinta superconductora tras la absorción de un fotón. Evoluciona conjuntamente el gap complejo, las ocupaciones de cuasipartículas y fonones, el potencial eléctrico cuasiestático y el circuito completo de polarización/lectura de la memoria. Conserva una energía común y registra un balance independiente de potencia y energía.
 
@@ -58,7 +62,7 @@ El reloj comienza en la transferencia efectiva posterior a la cascada. Una traye
 
 ## Versiones e historia
 
-La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La siguiente revisión1.1.0 se prepara por separado. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
+La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La revisión1.1.0 se prepara como extensión optativa y mantiene separada la admisión de v1.0.0. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
 
 La [documentación anterior](docs/releases/history/README_before_v1.1.0_20261011.md) y el [historial de comandos](docs/GEMINGA_COMMANDS.md) conservan las decisiones y resultados previos. Los datos pesados permanecen en scratch y se enlazan mediante sus manifiestos.
 

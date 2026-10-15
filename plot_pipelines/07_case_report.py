@@ -174,7 +174,7 @@ def load_case(run,build,allow_incomplete,limit):
     if complete:
         for k in ("trajectory.npz","snapshots.npz"):
             if sha256(run/k)!=inputs[k]: raise ValueError("Input changed during reading")
-    for k in RECON_SOURCES:
+    for k in reconstruction_sources(m):
         if sha256(ROOT/k)!=m["source_pins_sha256"].get(k): raise ValueError("Saved reconstruction source differs: "+k)
     return dict(run=run,m=m,z=trace,s=maps,mesh=mesh,dc=dc,dc_receipt=dr,obs=obs,provisional=not complete,
         inputs=inputs,memory=memory,execution=execution,audit=existing_audit(run,inputs["manifest.json"]) if complete else {"status":"Provisional; no terminal audit inferred"})
@@ -310,10 +310,58 @@ def metrics(c):
         positive_global_currents=bool(np.all(z["Ib_A"]>0) and np.all(z["Is_A"]>0)))
 
 
-def edge_supercurrent(f,d):
-    """Exact gauge derivative of the saved gradient; independent of p and n."""
+def thermal_candidate(manifest):
+    mode=manifest.get("closure",{}).get("stiffness_temperature",
+        manifest.get("parameter_identity",{}).get("stiffness_temperature"))
+    version=manifest.get("model_version","")
+    if mode=="electron" and version!="1.1.0-candidate":
+        raise ValueError("Explicit model_version=1.1.0-candidate required for Te reconstruction")
+    return mode=="electron" and version=="1.1.0-candidate"
+
+
+def reconstruction_sources(manifest):
+    return RECON_SOURCES+(("pysnspd/experimental/thermal_stiffness.py",) if thermal_candidate(manifest) else ())
+
+
+def model_contract(manifest):
+    thermal=thermal_candidate(manifest)
+    bath_control=(manifest.get("model_version")=="1.1.0-candidate" and
+        manifest.get("closure",{}).get("stiffness_temperature")=="bath")
+    return dict(model_label=("BCS/KWT Te candidate" if thermal else
+        "BCS/KWT bath control, calibrated D" if bath_control else "Effective neutral BCS/KWT"),
+        candidate=thermal,bath_control=bath_control,
+        stiffness_temperature=("saved Te_K" if thermal else "fixed bath"),
+        stored_energy=("U_BCS+G-sum(Te*dG/dTe)+phonons+circuit" if thermal else
+            "U_BCS+fixed-bath gradient+phonons+circuit"),
+        force_current=("fixed-Te free-gradient derivatives; force=U_d-sum(Te*S_d)" if thermal else
+            "fixed-bath internal-energy derivatives"),
+        source=("condensate/Joule plus signed reversible Te*d(dG/dTe)/dt" if thermal else
+            "condensate plus Joule heat"),
+        admission=("candidate only; Ceff>0 guard, no capacity floor or global admission" if thermal else
+            "individual saved case; no admission inferred"))
+
+
+def reconstruct_functional(c):
+    m,mesh=c["m"],c["mesh"];p=m["physicalparams"]
+    graph=ThermalGraph(mesh["area_weights"],mesh["edges"],mesh["conductance"],
+        mesh["coordinates_bar"],mesh["fixed_nodes"])
+    xi,w=bcs_count_quadrature(m["parameter_identity"]["xi_cutoff"],m["parameter_identity"]["xi_order"])
+    cls=EffectiveBCSFunctional
+    if thermal_candidate(m):
+        from pysnspd.experimental.thermal_stiffness import ThermalStiffnessFunctional
+        cls=ThermalStiffnessFunctional
+    return cls(graph,energy_scale_J=p["energy_scale_J"],N0_per_J_m3=p["N0_single_spin_per_J_m3"],
+        ell0_m=m["geometry"]["ell0_m"],thickness_m=p["film_thickness_m"],count_nodes=xi,count_weights=w,
+        gradient_law="bcs_radial",bath_temperature_K=p["bath_temperature_K"],diffusion_m2_s=p["diffusion_m2_s"])
+
+
+def edge_supercurrent(f,d,temperature_K=None):
+    '''Exact gauge derivative of G; Te candidate uses the saved temperature.'''
     tail,head=f.graph.edges.T
-    kap=f.rigidity(abs(d)**2)[0]
+    if getattr(f,"closure_id",None)=="TE_free_gradient_internal_entropy_candidate_v1":
+        if temperature_K is None:raise ValueError("Saved Te_K is required for thermal-stiffness current reconstruction")
+        kap=f.rigidity(abs(d)**2,temperature_K)[0]
+    else:kap=f.rigidity(abs(d)**2)[0]
     return 4*e/hbar*f.edge_energy_scale_J*(kap[tail]+kap[head])/2*np.imag(np.conj(d[tail])*d[head])
 
 
@@ -338,19 +386,16 @@ def triangle_vectors(mesh,flux,thickness):
 
 def currents(c,selected):
     m,mesh,z=c["m"],c["mesh"],c["z"]; p=m["physicalparams"]
-    graph=ThermalGraph(mesh["area_weights"],mesh["edges"],mesh["conductance"],mesh["coordinates_bar"],mesh["fixed_nodes"])
-    xi,w=bcs_count_quadrature(m["parameter_identity"]["xi_cutoff"],m["parameter_identity"]["xi_order"])
-    f=EffectiveBCSFunctional(graph,energy_scale_J=p["energy_scale_J"],N0_per_J_m3=p["N0_single_spin_per_J_m3"],
-        ell0_m=m["geometry"]["ell0_m"],thickness_m=p["film_thickness_m"],count_nodes=xi,count_weights=w,
-        gradient_law="bcs_radial",bath_temperature_K=p["bath_temperature_K"],diffusion_m2_s=p["diffusion_m2_s"])
-    ports=EffectiveNeutralPorts(graph,p["sheet_resistance_ohm"],c["dc"]["left_nodes"],c["dc"]["right_nodes"])
+    f=reconstruct_functional(c)
+    ports=EffectiveNeutralPorts(f.graph,p["sheet_resistance_ohm"],c["dc"]["left_nodes"],c["dc"]["right_nodes"])
     results={}; checks=[]
     for i in selected:
         ts=c["s"]["time_s"][i]
         exact=np.flatnonzero(abs(z["time_s"]-ts)<=1e-23)
         if not len(exact): raise ValueError("No accepted electrical state at snapshot; temporal interpolation refused")
         j=int(exact[np.argmin(abs(z["time_s"][exact]-ts))]); Is=float(z["Is_A"][j])
-        el=ports.solve(edge_supercurrent(f,c["s"]["delta_J"][i]/f.Eu_J),Is)
+        temperature=c["s"]["Te_K"][i] if thermal_candidate(m) else None
+        el=ports.solve(edge_supercurrent(f,c["s"]["delta_J"][i]/f.Eu_J,temperature),Is)
         err=float(abs(el.Vdev_V-z["Vdev_V"][j]))
         if err>1e-11+1e-8*max(abs(el.Vdev_V),abs(z["Vdev_V"][j]),1e-8):
             raise ArithmeticError("Reconstructed Vdev differs from saved state")
@@ -362,7 +407,7 @@ def currents(c,selected):
         results[int(i)]=fields
         checks.append(dict(snapshot_index=int(i),time_ps=float(ts*1e12),Vdev_error_V=err,
             cut_current_error_A=port,interior_current_error_A=float(np.max(abs(el.interior_current_residual_A),initial=0.)),
-            display_vector_fits=fits))
+            display_vector_fits=fits,model_contract=model_contract(m)))
     return results,checks
 
 
@@ -413,7 +458,7 @@ def parameters(r):
         ("Single-spin DOS N0 (1/(J m³))",fmt(p["N0_single_spin_per_J_m3"])),
         ("Sound speed / Debye (m/s; K)",fmt(mat.get("sound_speed_m_per_s"))+" / "+fmt(mat.get("Debye_temperature_K"))),
         ("Derived acoustic γ",fmt(mat.get("gamma_A20"))),("Nodes / edges",f'{g["n_nodes"]} / {g["n_edges"]}'),
-        ("Model","Effective neutral BCS/KWT")])
+        ("Model",model_contract(m)["model_label"])])
     table(fig,[.52,.525,.425,.34],"Photon and calibration parameters",[
         ("Wavelength (nm)",fmt(s.get("wavelength_nm",a["wavelength_nm"]))),
         ("Photon / retained energy (eV)",fmt(s.get("photon_energy_J"),1/EV)+" / "+fmt(s.get("retained_energy_J"),1/EV)),
@@ -644,7 +689,8 @@ def balance(r):
     for a in ax:a.set_xlabel("Postcascade time (ps)");a.grid(alpha=.25)
     c["balance"]=dict(maximum_global_energy_defect_percent=float(defect.max()),
         maximum_absolute_instant_power_residual_W=float(abs(z["instant_power_residual_W"]).max()))
-    r.save(fig,"Energy balance","Total energy includes the BCS film, gradient, phonons and circuit. Net external work subtracts resistive loss, escape and cuts. "
+    r.save(fig,"Energy balance",("Stored energy is U_BCS+G-sum(Te*dG/dTe), phonons and circuit. Force/current use free G at fixed Te. " if thermal_candidate(c["m"]) else "Total energy includes the BCS film, fixed-bath gradient, phonons and circuit. ")+
+        "Net external work subtracts resistive loss, escape and cuts. "
         "Normalization: retained energy plus accumulated absolute external work. This report does not replace numerical admission or experimental calibration.")
 
 
@@ -663,7 +709,7 @@ def provenance(r,checks):
     lines=["Data: "+str(c["run"]),"Manifest SHA256: "+c["inputs"]["manifest.json"],
         ("Captured checkpoint SHA256: "+c["inputs"]["checkpoint_capture.npz"]) if c["provisional"] else ("Trajectory SHA256: "+c["inputs"]["trajectory.npz"]),
         "Mesh SHA256: "+c["inputs"]["geometry_mesh"],"Pipeline SHA256: "+sha256(__file__),
-        "Currents: exact BCS gradient gauge derivative and algebraic neutrality from pinned sources. "
+        ("Currents: fixed-Te free-gradient gauge derivative using saved Te_K and algebraic neutrality from pinned sources. " if thermal_candidate(c["m"]) else "Currents: exact fixed-bath BCS gradient gauge derivative and algebraic neutrality from pinned sources. ") +
         "Display vectors use weighted dual-flux least squares; they are not additional model degrees of freedom.",
         "Complete p/n were not saved at every snapshot: collision-rate, nonclosure DOS and KWT-heating maps are unavailable.",
         "Nonequilibrium radial rigidity/KWT, acoustic material and the postcascade source are effective assumptions. "
@@ -682,7 +728,8 @@ def equation_box(fig,x,y,equation,size=14):
 
 
 def model_summary(r):
-    fig=r.page("6. Model summary: effective neutral BCS/KWT")
+    contract=model_contract(r.c["m"]);thermal=contract["candidate"]
+    fig=r.page("6. Model summary: "+contract["model_label"])
     fig.text(.075,.863,r"$X=\{d_i,p_{ik},n_{iq},I_b,I_s,v_c\},\quad d_i=\Delta_i/E_u,\quad E_u=k_BT_c,\quad E_{ik}=E_u\sqrt{\bar\xi_k^2+|d_i|^2}$",fontsize=14,color=INK)
     fig.text(.075,.807,"Coupled evolution",fontsize=14,weight="bold",color=ACCENT)
     equation_box(fig,.335,.744,r"$D_td_i=-\frac{z_i}{A_i\tau_K}\left[\frac{\mathrm{Re}\,f_i}{R_i}+iR_i\,\mathrm{Im}\,f_i\right]$",15)
@@ -695,17 +742,28 @@ def model_summary(r):
     fig.text(.65,.57,r"$\tau_{{\rm sc},i}^{-1}=\vartheta_i/\tau_{ee}(T_c)+\vartheta_i^3/\tau_{ep}(T_c)$",fontsize=11.5)
     fig.text(.65,.515,r"$R_i=\sqrt{1+4E_u^2\tau_{{\rm sc},i}^2|d_i|^2/\hbar^2}$",fontsize=12.5)
     fig.text(.65,.46,r"$\tau_K=\pi\hbar/(8k_BT_c),\quad \tau_{\rm BGK}=\tau_{ee}(T_c)/\vartheta$",fontsize=11.5)
-    fig.text(.075,.405,"Shared BCS energy and variational force",fontsize=14,weight="bold",color=ACCENT)
-    fig.text(.075,.35,r"$U_{e+\nabla}=\sum_i u_i^*\left[\frac{|d_i|^2}{g}-2\sum_k w_k(e_{ik}-\bar\xi_k)+4\sum_k w_ke_{ik}p_{ik}\right]+U_\nabla$",fontsize=14)
-    fig.text(.075,.29,r"$U_\nabla=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}|d_i-e^{-i\alpha_{ij}}d_j|^2,\quad \mathcal{F}_i=\partial_{d_i^*}U_{e+\nabla},\quad f_i=z_i^*\mathcal{F}_i/u_i^*$",fontsize=13.5)
-    fig.text(.075,.225,r"$I^s_{ij}=-\frac{2e}{\hbar}\partial_{\alpha_{ij}}U_{e+\nabla},\quad u_i^*=N_0E_u^2V_i,\quad V_i=d_f A_i^{\rm dual},\quad \alpha_{ij}=0$",fontsize=13.5)
-    fig.text(.075,.18,"p/n: quasiparticle/phonon occupations; C: shared conserving collisions; T: energy transport; H: condensate + Joule heat.",fontsize=10.5,color=INK)
-    fig.text(.075,.145,"Bg: reduced incidence; G: normal conductance; Φ: reduced potential; sg: cut injection; κ: radial stiffness; g: BCS coupling.",fontsize=10.5,color=INK)
-    r.save(fig,"Effective neutral BCS/KWT",
-        "Neutral: quasistatic current balance determines φ, without a dynamical charge mode. Effective: radial stiffness, acoustic material and hot-state mobility are calibratable closures. "
-        "BCS/KWT: a shared BCS energy drives Kramer-Watts-Tobin condensate relaxation and conservative kinetics. Te/Tph are energy-equivalent observers, not imposed thermal states. "
-        "See Principal.pdf and MODELO_VIGENTE.md; this is not an exact microscopic Usadel evolution.")
-
+    if thermal:
+        fig.text(.075,.405,"Free gradient, stored energy and thermodynamic force",fontsize=14,weight="bold",color=ACCENT)
+        fig.text(.075,.35,r"$G=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}(T_E)|d_i-e^{-i\alpha_{ij}}d_j|^2,\quad U=U_{\rm BCS}+G-\sum_iT_iG_{T_i}$",fontsize=13)
+        fig.text(.075,.29,r"$S=S_{\rm qp}-\sum_iG_{T_i},\quad {\cal F}_i=\partial_{d_i^*}U-\sum_jT_j\partial_{d_i^*}S_j=\left.\partial_{d_i^*}(U_{\rm BCS}+G)\right|_T$",fontsize=12.5)
+        fig.text(.075,.225,r"$I^s_{ij}=-\frac{2e}{\hbar}\left.\partial_{\alpha_{ij}}G\right|_T,\quad C_{{\rm eff},i}=C_{{\rm FD},i}-T_iG_{T_iT_i}>0$",fontsize=13.5)
+        fig.text(.075,.18,r"$\mathcal{H}_i=h_i[Q_{\Delta,i}+P_{J,i}+T_i\dot G_{T_i}],\quad \epsilon_i\cdot h_i=1,\quad \partial_{p_i}S_{\rm qp}\cdot h_i=1/T_i$",fontsize=11.5,color=INK)
+        fig.text(.075,.145,"Te controls the free gradient; the signed reversible source is derived analytically. Ceff failure stops the candidate.",fontsize=10.5,color=INK)
+        r.save(fig,"Thermal-stiffness candidate","Energy-equivalent Te is read directly from each saved state for current reconstruction. "
+            "The stored internal energy differs from free G; force/current follow fixed-Te derivatives. "
+            "The signed reversible source closes energy and entropy. Ceff>0 is required without a floor. "
+            "This candidate has no global trajectory admission and is not exact microscopic Usadel.")
+    else:
+        fig.text(.075,.405,"Shared BCS energy and variational force",fontsize=14,weight="bold",color=ACCENT)
+        fig.text(.075,.35,r"$U_{e+\nabla}=\sum_i u_i^*\left[\frac{|d_i|^2}{g}-2\sum_k w_k(e_{ik}-\bar\xi_k)+4\sum_k w_ke_{ik}p_{ik}\right]+U_\nabla$",fontsize=14)
+        fig.text(.075,.29,r"$U_\nabla=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}|d_i-e^{-i\alpha_{ij}}d_j|^2,\quad \mathcal{F}_i=\partial_{d_i^*}U_{e+\nabla},\quad f_i=z_i^*\mathcal{F}_i/u_i^*$",fontsize=13.5)
+        fig.text(.075,.225,r"$I^s_{ij}=-\frac{2e}{\hbar}\partial_{\alpha_{ij}}U_{e+\nabla},\quad u_i^*=N_0E_u^2V_i,\quad V_i=d_f A_i^{\rm dual},\quad \alpha_{ij}=0$",fontsize=13.5)
+        fig.text(.075,.18,"p/n: quasiparticle/phonon occupations; C: shared conserving collisions; T: energy transport; H: condensate + Joule heat.",fontsize=10.5,color=INK)
+        fig.text(.075,.145,"Bg: reduced incidence; G: normal conductance; Φ: reduced potential; sg: cut injection; κ: radial stiffness; g: BCS coupling.",fontsize=10.5,color=INK)
+        r.save(fig,"Effective neutral BCS/KWT",
+            "Neutral: quasistatic current balance determines φ, without a dynamical charge mode. Effective: radial stiffness, acoustic material and hot-state mobility are calibratable closures. "
+            "BCS/KWT: a shared BCS energy drives Kramer-Watts-Tobin condensate relaxation and conservative kinetics. Te/Tph are energy-equivalent observers, not imposed thermal states. "
+            "See Principal.pdf and MODELO_VIGENTE.md; this is not an exact microscopic Usadel evolution.")
 
 def circuit_diagram(ax):
     from matplotlib.patches import Ellipse,Rectangle
@@ -756,8 +814,9 @@ def model_circuit_summary(r):
     equation_box(fig,.50,.245,r"$L_{k,\rm ext}\dot I_s=v_c+R_l(I_b-I_s)-V_{\rm dev},\qquad C_c\dot v_c=I_b-I_s$",15)
     fig.text(.075,.155,r"$\dot E_{\rm total}=V_b I_b-R_bI_b^2-R_l(I_b-I_s)^2-P_{\rm esc}-P_{\rm cuts}$",fontsize=15,color=INK)
     r.save(fig,"Circuit and conservation","The three circuit states evolve jointly with d, p and n; Vdev is obtained from the same algebraic neutrality solve. "
-        "Exterior inductance is fixed from the DC reference. The 2D strip is resolved, not a time-varying lumped resistor/inductor. "
-        "Shared condensate/Joule heating enters quasiparticles; phonon escape and superconducting cuts exchange energy explicitly. No filter/amplifier is included.")
+        "Exterior inductance is fixed from the DC reference. The 2D strip is resolved, not a time-varying lumped resistor/inductor. "+
+        ("Condensate/Joule and signed reversible Te*dG_T/dt enter quasiparticles; stored U includes -sum(Te*G_T). " if thermal_candidate(r.c["m"]) else "Shared condensate/Joule heating enters quasiparticles; ") +
+        "Phonon escape and superconducting cuts exchange energy explicitly. No filter/amplifier is included.")
 
 def build_report(run,output,allow_incomplete=False,requested=None,dpi=160,memory_limit=2**33):
     start=time.monotonic();run=Path(run).resolve();output=scratch_path(output)
@@ -798,7 +857,8 @@ def build_report(run,output,allow_incomplete=False,requested=None,dpi=160,memory
         selected_saved_times_ps=(c["s"]["time_s"][indices]*1e12).tolist(),snapshot_selection=selection,
         requested_times_ignored_after_six=0 if requested is None else max(0,len(requested)-6),
         palettes=PALETTES,vorticity_checks=vortex_checks,reconstruction_checks=checks,
-        reconstruction_source_sha256={p:sha256(ROOT/p) for p in RECON_SOURCES},
+        reconstruction_source_sha256={p:sha256(ROOT/p) for p in reconstruction_sources(c["m"])},
+        model_contract=model_contract(c["m"]),
         hotbelt=dict(threshold_DC=.2,definition="saved-node graph connectivity",
             first_saved_time_ps=None if not np.any(c["hotbelt"]) else float(c["s"]["time_s"][np.flatnonzero(c["hotbelt"])[0]]*1e12)),
         memory=c["memory"],actual_cpu_affinity=sorted(os.sched_getaffinity(0)),dpi=dpi,

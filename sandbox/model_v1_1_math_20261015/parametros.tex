@@ -1,0 +1,252 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,bm,array,geometry,color,fancyhdr,hyperref}
+\geometry{left=19mm,right=19mm,top=18mm,bottom=19mm}
+\definecolor{ink}{RGB}{20,52,72}
+\definecolor{accent}{RGB}{22,115,139}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=ink,pdfborder={0 0 0}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
+\setlength{\emergencystretch}{2em}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.0 / 15 de octubre de 2026}
+\fancyfoot[R]{\small\thepage}
+\newcommand{\block}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
+\newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Condición crítica.} #1\par}}
+\newcommand{\origin}[1]{\par{\footnotesize\raggedright\color{ink}\textbf{Procedencia:} #1\par}}
+\newcommand{\K}[1]{\href{https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf\#page=#1}{K20, PDF~#1}}
+\newcommand{\A}[1]{\href{https://thesis.caltech.edu/13748/}{A20, p.~#1}}
+\newcommand{\V}[1]{\href{https://arxiv.org/abs/1611.06060}{V17, ec.~#1}}
+\newcommand{\sref}[2]{\href{Supuestos.pdf\#nameddest=#1}{#1 (Supuestos, p.~#2)}}
+\newcommand{\pref}[2]{\href{Parametros.pdf\#nameddest=#1}{#1 (Parámetros, p.~#2)}}
+\newcommand{\principalg}{\href{Principal.pdf\#nameddest=G-final}{Principal, cierre de rigidez $G$}}
+% Resolver únicamente esta macro al ensamblar la formulación de G:
+\newcommand{\gestado}{\textbf{Cierre candidato sujeto a admisibilidad:}\ \principalg; capacidad efectiva estrictamente positiva, sin piso artificial.}
+\newcommand{\ptrow}[4]{\hypertarget{#1}{\textbf{#1}}&\( \displaystyle #2 \)& #3 & #4\\[4pt]}
+\newenvironment{ptable}{\par\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}p{.075\linewidth}p{.225\linewidth}p{.285\linewidth}p{.355\linewidth}@{}}\hline
+\textbf{ID}&\textbf{Símbolo / unidades}&\textbf{Valor / elección}&\textbf{Función / procedencia}\\\hline}
+{\hline\end{tabular}\par}
+\newcommand{\assumption}[2]{\par\vspace{6pt}\hypertarget{#1}{\textbf{\color{ink}#1. #2}}\par}
+\newcommand{\smallnote}[1]{{\small #1\par}}
+
+\hypersetup{pdftitle={Parámetros - pysnspd 1.1.0},pdfauthor={pysnspd}}
+\begin{document}
+{\LARGE\bfseries\color{ink}Parámetros del modelo 1.1.0}\par
+{\large Referencia Korzh (2020); calibración estática y preparación fotónica}\par
+\smallnote{\textbf{I}: entrada; \textbf{H}: hipótesis; \textbf{C}: calibrable; \textbf{D}: derivado; \textbf{N}: numérico; \textbf{O}: observación. Una elección nominal no constituye una medición ni un ajuste de latencia. Formulación candidata posterior al snapshot 1.0.0, commit \texttt{7992f6a}; las nuevas corridas requieren admisión propia.}
+\block{Material y caso de referencia}
+\begin{ptable}
+\ptrow{P01}{T_c\ [\mathrm K]}{8.65 \quad [I]}{Temperatura crítica; \K{10}; \sref{S01}{1}.}
+\ptrow{P02}{T_b\ [\mathrm K]}{0.9 \quad [I]}{Baño del caso K20; \K{11}.}
+\ptrow{P03}{d_f\ [\mathrm{nm}]}{7 \quad [I]}{Espesor nominal de película; \K{9}.}
+\ptrow{P04}{W,\ L_{\rm act}}{80 nm; 5 $\mu$m \quad [I]}{Cinta activa; \K{23}; \sref{S05}{2}.}
+\ptrow{P05}{R_{\square,N}\ [\Omega]}{425 principal \quad [H]}{$340/0.8$ bajo convención RRR; \K{9}--\K{10}; \sref{S01}{1}.}
+\ptrow{P06}{R_{\square,\rm hist}\ [\Omega]}{608 alternativa \quad [H]}{Entrada de simulación histórica, no medición del $R_N$; \K{33}.}
+\ptrow{P07}{I_{\rm dep}^{120}\ [\mu\mathrm A]}{38.8 objetivo \quad [I,H]}{Estimación por resonadores de misma película; \K{13}; \sref{S02}{1}.}
+\ptrow{P08}{I_{\rm dep}^{80}\ [\mu\mathrm A]}{25.8666667 objetivo \quad [D,H]}{$38.8(80/120)$; ancho eficaz proporcional; \sref{S02}{1}.}
+\ptrow{P09}{I_{\rm DC}\ [\mu\mathrm A]}{21.5 principal; 15.5 comparación [I]}{Par 775/1550 nm de 80 nm; \K{22}.}
+\end{ptable}
+\begin{gather*}
+ \frac{I_{\rm DC}}{I_{\rm dep}^{80}}=
+ 0.831185567\quad (21.5\ \mu{\rm A}),\qquad
+ 0.599226804\quad (15.5\ \mu{\rm A}),\\
+ R_{\square,N}=\frac{R_{\square,300K}}{\mathrm{RRR}}
+ =\frac{340}{0.8}=425\ \Omega .
+\end{gather*}
+\critical{K20 no especifica en ese pasaje la temperatura baja usada para definir RRR. Los 425 $\Omega$ son una inferencia condicionada; la superconductividad a 0.9 K no implica resistencia normal nula. Los 608 $\Omega$ se conservan como alternativa histórica, no se mezclan con 425 dentro del mismo material.}
+\smallnote{Los $38.8\ \mu$A no son la corriente de conmutación del detector. K20 los compara con $33\ \mu$A; el extremo de la familia de su figura 3 llega a $35\ \mu$A. No se identifica automáticamente ambas condiciones.}
+\vfill
+\origin{Fuentes principales: \href{https://doi.org/10.1038/s41566-020-0589-x}{Korzh et al. (2020)} y versión aceptada con suplemento. Páginas PDF desde 1; no páginas de revista. Incertidumbres de entradas materiales no publicadas, no iguales a cero.}
+\newpage
+
+\block{Calibración de difusión y escalas dependientes}
+\begin{ptable}
+\ptrow{P10}{D\ [\mathrm{m^2/s}]}{Resultado del solver estático [C,D]}{Imponer \pref{P08}{1} en el cierre nuevo; \sref{S03}{1}.}
+\ptrow{P11}{D_{\rm hist}\ [\mathrm{cm^2/s}]}{0.5 \quad [H]}{Referencia de Tabla suplementaria 1, no medida de transporte del caso; \K{33}.}
+\ptrow{P12}{N_0\ [\mathrm{J^{-1}m^{-3}}]}{$(2e^2DR_\square d_f)^{-1}$ [D]}{DOS normal monoespín; Einstein; \sref{S04}{1}.}
+\ptrow{P13}{\sigma_n\ [\mathrm{S/m}]}{$(R_\square d_f)^{-1}$ [D]}{Conductividad normal coherente con $R_\square$.}
+\ptrow{P14}{E_u,\ell_0,\tau_K}{Escalas físicas derivadas [D]}{Energía, longitud y tiempo KWT; no calibradores adicionales.}
+\end{ptable}
+\begin{gather*}
+ E_u=k_BT_c=0.7453993272\ {\rm meV},\qquad
+ \ell_0=\sqrt{\frac{\hbar D}{2E_u}},\qquad
+ \tau_K=\frac{\pi\hbar}{8E_u}=0.3467661180\ {\rm ps},\\
+ I_u=\frac{E_u}{2eR_\square},\qquad V_u=\frac{E_u}{2e},\qquad
+ V_i=d_f A_i^{\rm dual},\quad
+ u_i^*=N_0E_u^2V_i .
+\end{gather*}
+\smallnote{$e>0$: carga elemental; $\hbar$: Planck reducido; $k_B$: Boltzmann; $A_i^{\rm dual}$: área Voronoi física. A 425 $\Omega$, $\sigma_n=336134.454\ {\rm S/m}$; a 608 $\Omega$, $\sigma_n=234962.406\ {\rm S/m}$.}
+\block{Ecuación de calibración y condición de uso}
+\begin{gather*}
+ \max_{q\ {\rm rama\ uniforme}}
+ I_{\rm hom}(q;T_b,T_c,R_\square,D,\mathcal Q,\mathcal C)
+       =I_{\rm dep}^{80},\\
+ I_{\rm dep}(D,R_\square)=
+ \frac{\mathcal C_{\rm DC}(T_b/T_c,\mathcal Q,\mathcal C)\,W}
+      {R_\square\sqrt D},\\
+ D_{\rm cal}=D_{\rm ref}
+ \left[\frac{I_{\rm dep}(D_{\rm ref},R_{\square,\rm ref})}
+ {I_{\rm dep}^{80}}\frac{R_{\square,\rm ref}}{R_\square}\right]^2 .
+\end{gather*}
+\smallnote{$\mathcal Q$: cuadratura y renormalización de $T_c$; $\mathcal C$: cierre constitutivo; $\mathcal C_{\rm DC}$: coeficiente dimensional del solver. La última igualdad exige que este coeficiente no cambie al transformar las escalas. Si el cierre rompe esa separabilidad, resolver la primera ecuación directamente.}
+\begin{gather*}
+ \frac{D_{425}}{D_{608}}=\left(\frac{608}{425}\right)^2
+ =2.046582699,\qquad
+ \frac{N_{0,425}}{N_{0,608}}=\frac{425}{608}=0.699013158 .
+\end{gather*}
+\critical{Sólo si se conserva la rigidez DC del cierre anterior: $D_{608}\simeq0.68914$ y $D_{425}\simeq1.4104\ {\rm cm^2/s}$. Son referencias condicionales, no resultados finales del cierre con rigidez térmica. Recalcular $N_0,\ell_0$, malla adimensional y partición inductiva con el resultado admitido.}
+\vfill
+\origin{\href{https://arxiv.org/pdf/1904.08596\#page=5}{Frasca et al. (2019), ec. 5 y definición de $N(0)$}; \href{https://doi.org/10.1103/PhysRev.108.1175}{BCS (1957)}. Calibración efectiva propia; no equivale a medir $D$ mediante $B_{c2}(T)$.}
+\newpage
+
+\block{Relajación y material fonónico}
+\begin{ptable}
+\ptrow{P15}{\tau_{ee}(T_c)\ [\mathrm{ps}]}{5 nominal \quad [C]}{Calibrador libre; modifica BGK y movilidad. \sref{S09}{3}.}
+\ptrow{P16}{\tau_{ep}(T_c)\ [\mathrm{ps}]}{24.7 nominal \quad [C]}{Calibrador libre; tasas y movilidad. \K{33}; \A{95}.}
+\ptrow{P17}{\tau_{\rm esc}\ [\mathrm{ps}]}{20 nominal \quad [H,C]}{Escape al sustrato; hipótesis del caso. La pipeline histórica usa 15 por defecto.}
+\ptrow{P18}{v_{\rm avg}\ [\mathrm{m/s}]}{4912 \quad [H]}{Velocidad acústica efectiva adoptada; \A{81}; \sref{S10}{3}.}
+\ptrow{P19}{\Theta_D\ [\mathrm K]}{664 \quad [H]}{Corte Debye de referencia A20; \A{81}.}
+\ptrow{P20}{\tau_0^{e-ph}\ [\mathrm{ns}]}{$\dfrac{720\zeta(5)}{\pi^2}\tau_{ep}(T_c)$ [D]}{$\simeq1.86844$ ns con 24.7 ps; normalización vinculada.}
+\end{ptable}
+\begin{gather*}
+ \Omega_D=k_B\Theta_D=57.21909286\ {\rm meV},\\
+ g_{ph}(\Omega)=\frac{3\Omega^2}{2\pi^2\hbar^3v_{\rm avg}^3},\qquad
+ \alpha^2F(\Omega)=\frac{\hbar\Omega^2}
+ {\pi\tau_0^{e-ph}E_u^3},\quad 0<\Omega\le\Omega_D,\\
+ C_{e,N}(T_c)=\frac{2\pi^2}{3}N_0k_B^2T_c,\qquad
+ C_{ph}(T)\simeq B_{ph}T^3,\quad
+ B_{ph}=\frac{2\pi^2k_B^4}{5\hbar^3v_{\rm avg}^3},\\
+ \gamma_{\rm ac}=\frac{8\pi^2}{5}
+ \frac{C_{e,N}(T_c)}{C_{ph}(T_c)},\qquad
+ \lambda_{ep}=2\int_0^{\Omega_D}\frac{\alpha^2F(\Omega)}{\Omega}\,d\Omega .
+\end{gather*}
+\smallnote{$\Omega$: energía fonónica en J; $g_{ph}$: DOS por volumen y energía; $\alpha^2F$: ordenada de Eliashberg adimensional bajo esta convención. $\gamma_{\rm ac}$ y la retroacción $N_0\alpha^2F/g_{ph}$ se derivan del mismo material; no se ajustan aparte. No copiar los números derivados del material 608 $\Omega$, $D=0.5$ al material recalibrado.}
+\critical{Los 5 y 24.7 ps no son intervalos de confianza ni centros de rangos experimentales. El valor histórico K20 de $\tau_{ee}(T_c)$ es 6 ps: no se atribuyen a K20 los 5 ps elegidos aquí. Los 20 ps de escape permanecen hipótesis aun coincidiendo con su tabla.}
+\block{Dependencias que debe registrar cada caso}
+\begin{gather*}
+ \tau_{ee}\longrightarrow\{\tau_{\rm BGK},\ {\rm movilidad}\},\qquad
+ \tau_{ep}\longrightarrow\{\tau_0^{e-ph},\alpha^2F,\ {\rm movilidad}\},\\
+ (D,R_\square,d_f)\longrightarrow N_0,\qquad
+ v_{\rm avg}\longrightarrow g_{ph},C_{ph},
+          N_0\alpha^2F/g_{ph}.
+\end{gather*}
+\smallnote{BGK es una relajación constitutiva que conserva el momento energético elegido; los fonones son locales espacialmente y escapan al baño. No se añaden difusión fonónica lateral ni una tasa fonónica ajustada independientemente. Véanse \sref{S11}{3} y \sref{S12}{3}.}
+\vfill
+\origin{\A{81}, \A{95}, ecs. 2.6--2.8 y 3.24; \V{3}--\V{4}. Funciones acústicas y eventos compartidos: realización efectiva propia, no reconstrucción DFPT de la muestra K20.}
+\newpage
+
+\block{Fotón: energía y perfil postcascada}
+\begin{ptable}
+\ptrow{P21}{\lambda\ [\mathrm{nm}]}{775; 1550 \quad [I]}{Comparación de latencia en 80 nm; \K{22}.}
+\ptrow{P22}{\eta_{\rm ret}}{0.8 nominal \quad [H,C]}{Fracción retenida provisional; alternativas 0.667, 0.9, 1. \sref{S07}{2}.}
+\ptrow{P23}{\sigma\ [\mathrm{nm}]}{7.549834435 \quad [H,C]}{Desviación gaussiana por coordenada; independiente de $D_{\rm cal}$. \sref{S08}{2}.}
+\ptrow{P24}{\mathbf r_0,\ t_0}{Centro; 0 ps \quad [H]}{$\mathbf r_0=(L/2,0)$; reloj postcascada, no absorción óptica resuelta.}
+\end{ptable}
+\begin{gather*}
+ E_\gamma=\frac{h_{\rm P}c}{\lambda},\qquad
+ E_{\rm ret}=\eta_{\rm ret}E_\gamma,\qquad
+ a_i=\mathbf1_{i\notin{\rm cortes}}
+ \exp\!\left[-\frac{|\mathbf r_i-\mathbf r_0|^2}{2\sigma^2}\right],\\
+ E_{{\rm ret},i}=E_{\rm ret}
+ \frac{V_i a_i}{\sum_jV_ja_j},\qquad
+ \sum_iE_{{\rm ret},i}=E_{\rm ret}.
+\end{gather*}
+\begin{center}\small
+\begin{tabular}{@{}c|cc@{}}\hline
+ &775 nm&1550 nm\\\hline
+$E_\gamma$ [eV]&1.599796109&0.799898054\\
+$E_{\rm ret}$, $\eta=0.667$ [eV]&1.067064005&0.533532002\\
+$E_{\rm ret}$, $\eta=0.8$ [eV]&1.279836887&0.639918443\\
+$E_{\rm ret}$, $\eta=0.9$ [eV]&1.439816498&0.719908249\\
+$E_{\rm ret}$, $\eta=1$ [eV]&1.599796109&0.799898054\\\hline
+\end{tabular}
+\end{center}
+\block{Inicialización energética, no pulso térmico continuo}
+\begin{gather*}
+ \Delta_i(0)=\Delta_i^{DC},\qquad
+ p_{ik}(0)=f_{\rm FD}(E_{ik}^{DC},T_i^0),\qquad
+ n_{iq}(0)=n_{\rm BE}(\Omega_q,T_i^0),\\
+ [U_i(T_i^0;\Delta^{DC})-U_i(T_b;\Delta^{DC})]
+ +[U_{ph,i}(T_i^0)-U_{ph,i}(T_b)]=E_{{\rm ret},i}.
+\end{gather*}
+\smallnote{$p_{ik},n_{iq}$: ocupaciones cuasiparticulares/fonónicas; $T_i^0$: inversión energética, no entrada libre. $U_i$ incluye condensado, cuasipartículas y $G-TG_T$; $U_{ph,i}$ es la energía fonónica. Su suma debe coincidir con la energía que audita el sistema nuevo. \gestado}
+\critical{FD/BE común y gap DC retenido son una preparación efectiva posterior a la cascada inicial omitida. Durante la evolución no se impone una temperatura común ni se retermalizan continuamente los estados. Depositar energía una sola vez; no sumar un retraso de cascada inventado. \sref{S06}{2}.}
+\begin{gather*}
+ \sigma_{\rm dif}(D,\tau)=\sqrt{2D\tau},\qquad
+ 7.549834435\ {\rm nm}
+ =\sqrt{2(5\,10^{-5}\ {\rm m^2/s})(0.57\ {\rm ps})}.
+\end{gather*}
+\smallnote{La última identidad explica la referencia heredada. No fija $\tau=0.57$ ps como cascada simulada y no obliga a cambiar $\sigma$ al recalibrar $D$. Si se adopta esa relación física en otro caso, declararlo como hipótesis distinta.}
+\vfill
+\origin{Preparación propia; \A{80}, \A{101}: separación entre conversión inicial y modelo posterior; \K{33}: fracción histórica 0.667. Las alternativas de $\eta$ son puntos exploratorios, no ajuste a la latencia publicada.}
+\newpage
+
+\block{Circuito, puertos y lectura sin filtrar}
+\begin{ptable}
+\ptrow{P25}{R_b,\ L_b,\ C_c}{10 k$\Omega$; 1 $\mu$H; 100 pF [H]}{Circuito completo heredado; valores no medidos en K20. \sref{S19}{5}.}
+\ptrow{P26}{R_l,\ L_{\rm add}}{50 $\Omega$ [H]; 96 nH [I,H]}{Carga nominal; inductor exterior añadido estimado por K20.}
+\ptrow{P27}{L_{k,\rm ext}\ [\mathrm H]}{$L_{\rm add}+L_{\rm restante}^{\rm dif}$ [D]}{Congelada una vez por DC; no $L_k(t)$ lumped.}
+\ptrow{P28}{\substack{V_b,I_b(0),\\I_s(0),v_c(0)}}{$R_bI_{\rm DC}$; $I_{\rm DC}$; $I_{\rm DC}$; 0 [D]}{Fuente DC coherente con equilibrio sin disipación.}
+\ptrow{P29}{V_{\rm out},V_{\rm dev}}{$R_l(I_b-I_s)$; $\phi_L-\phi_R$ [O]}{Salida de carga y voltaje de cinta; observables distintos.}
+\end{ptable}
+\begin{gather*}
+ L_{k,\rm ext}=96\ {\rm nH}+
+ (L_{\rm act}-L)\frac{\hbar}{2e}
+ \left.\frac{dq_{\rm fis}}{dI}\right|_{DC},\qquad L\le L_{\rm act},\\
+ V_b=0.215\ {\rm V}\ (21.5\ \mu{\rm A}),\qquad
+ V_b=0.155\ {\rm V}\ (15.5\ \mu{\rm A}),\\
+ L_b\dot I_b=V_b-R_bI_b-v_c-R_l(I_b-I_s),\\
+ L_{k,\rm ext}\dot I_s=v_c+R_l(I_b-I_s)-V_{\rm dev},
+ \qquad C_c\dot v_c=I_b-I_s .
+\end{gather*}
+\smallnote{$q_{\rm fis}$: gradiente de fase en m$^{-1}$ de la rama DC estable. La derivada se vuelve a calcular al cambiar material, corriente, baño, cuadratura o cierre. El tramo resuelto ya contiene dinámica del condensado: no restarlo de los 96 nH ni contarlo dos veces.}
+\block{Energía y potencias externas}
+\begin{gather*}
+ U_{CM}=\frac12L_bI_b^2+\frac12L_{k,\rm ext}I_s^2+
+ \frac12C_cv_c^2,\\
+ \dot U_{CM}=V_bI_b-R_bI_b^2
+ -R_l(I_b-I_s)^2-V_{\rm dev}I_s.
+\end{gather*}
+\smallnote{El trabajo del puerto $V_{\rm dev}I_s$ entra con signo opuesto en la cinta. El balance total también registra reservorios y escape, además del depósito inicial.}
+\critical{K20 publica un bias-T resistivo sin especificar aquí $R_b,L_b,C_c$. Sus 96 nH corresponden a un meandro añadido de 1.5 mm, estimado con 64 pH/$\square$ de películas similares; no son toda la inductancia activa. \K{10}--\K{11}.}
+\critical{La nueva formulación conserva $V_{\rm out}$ sin filtro instrumental, amplificador ni ruido añadidos. Los datos nominales CITLF1 (50 dB, 1.5 GHz, corte bajo 1 MHz) y osciloscopio (6 GHz) describen la referencia experimental; no fijan una transferencia implementada. \sref{S20}{5}.}
+\vfill
+\origin{\K{10}--\K{12}; circuito de tres estados de la memoria y conservación eléctrica propia. Un umbral en este puerto no es automáticamente el umbral del osciloscopio de K20.}
+\newpage
+
+\block{Resolución, observación y estado de admisión}
+\begin{ptable}
+\ptrow{P30}{L,\ h_{\rm mesh}\ [\mathrm{nm}]}{320; 5 \quad [H,N]}{Dominio interior y separación objetivo; verificar extensión 480 y malla 3.5.}
+\ptrow{P31}{\Lambda/E_u,\ n_{\rm GL}}{32; 6 \quad [N]}{Corte y orden electrónico; referencia 64; 8.}
+\ptrow{P32}{N_\xi,\ N_{ph},n_{\rm tr}}{54; 96; 48 \quad [N]}{Estados y transporte; referencia 80; 144; 96.}
+\ptrow{P33}{\Delta t_{\max}\ [\mathrm{ps}]}{0.02; contraste 0.01 [N]}{Cap adaptativo heredado; comprobar cierre nuevo.}
+\ptrow{P34}{\epsilon_{\rm NL},\epsilon_{E,\rm loc}}{$2\,10^{-7}$; $2.5\,10^{-6}$ [N]}{Punto medio y guarda por paso desde $t=0$.}
+\ptrow{P35}{V_{\rm th},\delta t_{\rm conf}}{+0.1 mV; 0.5 ps [O,H]}{Primer cruce relativo a basal; histéresis 5\%.}
+\ptrow{P36}{\delta t_{\rm extra},t_{\rm techo}}{5 ps; 200 ps [O,H]}{Ventana posterior al cruce; censura sin cruce.}
+\ptrow{P37}{\delta_{\rm HB}}{0.2 \quad [O,H]}{Componente conectada con $|\Delta|\le0.2|\Delta^{DC}|$ que une bordes.}
+\ptrow{P38}{\substack{N_{\rm NL,max},\\N_{\rm rej,max}}}{40; 50 \quad [N]}{Máximo de iteraciones y rechazos por avance.}
+\ptrow{P39}{\substack{\delta t_{\rm snap},\delta t_{\rm check},\\\delta t_{\rm pared}}}{0.1 ps; 1 ps; 60 s [N]}{Cadencias de mapas y checkpoint; última en reloj de pared.}
+\ptrow{P40}{\substack{\lambda_{\rm safe},\\\epsilon_{\rm FD}}}{0.95; $256\epsilon_{\rm mach}$ [N]}{Disponibilidad de eventos y rama numérica FD del portador; no calibradores físicos.}
+\end{ptable}
+\smallnote{Es un perfil propuesto de contraste, no una garantía de convergencia. Las tolerancias y los gatillos heredados son elecciones observacionales reproducibles; revisar sólo con criterio observable documentado. \sref{S21}{6} y \sref{S22}{6}.}
+\begin{gather*}
+ \widetilde V_{\rm out}=V_{\rm out}-V_{{\rm out},DC},\qquad
+ t_{\rm lat}^{\rm post}=t_{\rm cruce}-t_0,\\
+ \Delta t_{\rm lat}=t_{\rm lat}^{1550}-t_{\rm lat}^{775},\qquad
+ I_b(0)=I_s(0)=I_{\rm DC},\quad V_{{\rm out},DC}=0 .
+\end{gather*}
+\critical{Comparación experimental: $\Delta t_{\rm lat}=4.2\pm0.4$ ps a 21.5 $\mu$A para el dispositivo de 80 nm (\K{5}); objetivo externo, no resultado del modelo. Sin conjunto de eventos ni ruido, no se predice FWHM de jitter ni IRF. Sin cruce confirmado, no asignar latencia ficticia.}
+\block{Dependencias de cierre que aún deben resolverse}
+\smallnote{La temperatura $T_E$ es observador del momento cuasiparticular, no estado térmico impuesto. El funcional $U/S$ térmico es una hipótesis mesoscópica propia; no se ha demostrado para $T_E>T_c$ ni para poblaciones no FD. La rigidez que depende de $T_E$ debe pasar guardia termodinámica, DC y balance finito antes de usarse en transientes. El candidato cuadrático original produjo capacidad efectiva no positiva en 17 de 18 casos históricos inspeccionados (13 completos y 5 provisionales al leer): un diagnóstico estático, no una nueva solución dinámica. \sref{S14}{4}--\sref{S16}{4}. \gestado}
+\block{Fuentes primarias y localizadores}
+\smallnote{\href{https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf}{K20: Korzh et al. (2020)}, Methods PDF 9--13; figura 1 PDF 22; figura 2 PDF 23; Tabla suplementaria 1 PDF 33.
+\href{https://thesis.caltech.edu/13748/}{A20: Allmaras (2020)}, páginas impresas 80--81, 95, 101 (PDF = impresa + 12).
+\href{https://arxiv.org/abs/1611.06060}{V17: Vodolazov (2017)}, ecs. 3--4.
+\href{https://arxiv.org/pdf/1904.08596}{Frasca et al. (2019)}, ec. 5 y Tabla I, PDF 5--6: NbN de 6 nm y 1.05 K; no transferir toda su ficha al caso K20 de 7 nm.
+\href{https://doi.org/10.1103/PhysRevLett.40.1041}{Kramer--Watts-Tobin (1978)}, movilidad heredada con alcance efectivo.}
+\vfill
+\origin{Registro exacto requerido por caso: fuentes/hash, cierre $G$, parámetros, solver de depairing, cuadratura, malla, DC, partición inductiva, depósito y criterios de observación. Consultar \sref{S23}{6} y \sref{S24}{6}.}
+\end{document}

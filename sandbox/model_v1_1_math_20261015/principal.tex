@@ -1,0 +1,106 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,bm,array,geometry,color,fancyhdr,hyperref}
+\geometry{left=19mm,right=19mm,top=18mm,bottom=19mm}
+\definecolor{ink}{RGB}{20,52,72}\definecolor{accent}{RGB}{22,115,139}
+\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=ink}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
+\pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[L]{\footnotesize pysnspd 1.1.0 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
+\newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
+\newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
+\newcommand{\code}[1]{\par{\footnotesize\textbf{Código:} \texttt{#1}}\par}
+\newcommand{\dd}{\,\mathrm d}\newcommand{\FD}{f_{\rm FD}}\newcommand{\BE}{n_{\rm BE}}
+\newcommand{\Rea}{\operatorname{Re}}\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\refs}{\vfill{\footnotesize\href{Supuestos.pdf}{Hipótesis y límites: Supuestos}; \href{Parametros.pdf}{entradas: Parametros}.}}
+\begin{document}
+{\LARGE\bfseries\color{ink}Ecuaciones principales en 2D}\par
+{\large Condensado, cuasipartículas y fonones: candidato 1.1.0}\par
+{\small Extensión térmica de 1.0.0. Admisibilidad \(C_{\rm eff}>0\); validación dinámica pendiente.}
+\renewcommand{\theequation}{1.\arabic{equation}}
+\hypertarget{G-final}{}\block{Condensado: evolución KWT}
+\begin{gather}
+E_u=k_BT_c,\quad d_i=\Delta_i/E_u,\quad \rho_i=|d_i|^2,\quad
+ E_{ik}=E_u e_{ik},\quad e_{ik}=\sqrt{\bar\xi_k^2+\rho_i},\\
+ D_td_i=\dot d_i+\frac{2ie}{\hbar}\phi_i d_i,\qquad
+ z_i=\begin{cases}d_i/|d_i|,&d_i\ne0,\\1,&d_i=0,\end{cases}\\
+\mathcal F_i=
+ \partial_{d_i^*}U-\sum_jT_{E,j}\partial_{d_i^*}S_j
+ =\left.\partial_{d_i^*}(U_{\rm BCS}+G)\right|_{p,\mathbf T_E,\alpha},
+ \quad f_i=z_i^*\mathcal F_i/u_i^*,\\
+\boxed{D_td_i=-\frac{z_i}{A_i\tau_K}
+ \left(\frac{\Rea f_i}{R_i}+iR_i\Ima f_i\right)},\\
+u_i^*=N_0E_u^2V_i,\quad
+ A_i=\sqrt{\frac{1+\vartheta_i}{2}},\quad
+ \vartheta_i=\frac{\max(T_{E,i},T_b)}{T_c},\quad
+ \tau_K=\frac{\pi\hbar}{8k_BT_c},\\
+\tau_{{\rm sc},i}^{-1}
+ =\frac{\vartheta_i}{\tau_{ee}(T_c)}
+ +\frac{\vartheta_i^3}{\tau_{ep}(T_c)},\quad
+ R_i=\sqrt{1+(2E_u\tau_{{\rm sc},i}|d_i|/\hbar)^2},\\
+\boxed{Q_{\Delta,i}
+ =\frac{2u_i^*}{A_i\tau_K}
+ \left[\frac{(\Rea f_i)^2}{R_i}+R_i(\Ima f_i)^2\right]\geq0}.
+\end{gather}
+\par\begin{tabular}{@{}p{.29\linewidth}p{.67\linewidth}@{}}
+\hline
+\labelrow{i,k,t,\mathbf r_i}{nodo espacial, estado nativo, tiempo [s], posición [m]}
+\labelrow{\Delta_i,d_i,\rho_i,z_i}{gap [J], gap normalizado, módulo al cuadrado, fase}
+\labelrow{E_{ik},\bar\xi_k}{excitación [J], energía normal nativa dividida por \(E_u\)}
+\labelrow{U,S_j,G,\mathcal F_i}{energía [J], entropía nodal [J/K], energía libre de gradiente [J], fuerza [J]}
+\labelrow{\phi_i,e,\hbar,k_B}{potencial [V], carga positiva [C], acción [J s], constante [J/K]}
+\labelrow{N_0,V_i,u_i^*}{DOS monoespín [J\(^{-1}\)m\(^{-3}\)], volumen [m\(^{3}\)], escala [J]}
+\labelrow{T_E,T_b,T_c}{temperaturas equivalente electrónica, baño y crítica [K]}
+\labelrow{A_i,R_i,f_i,Q_{\Delta,i}}{factores y fuerza adimensionales; calor KWT [W]}
+\labelrow{\tau_{ee}(T_c),\tau_{ep}(T_c)}{calibradores libres Allmaras [s], no constantes universales}
+\hline
+\end{tabular}\par
+{\small En la primera igualdad de $\mathcal F_i$, las derivadas de $U,S_j$ siguen $T_E(d,p)$ a $p,\alpha$ fijos, con $S_j=S_{qp,j}-G_{T_j}$. En la última se mantiene además $\mathbf T_E$ fijo; las contribuciones térmicas se cancelan por la regla de la cadena. Definición completa de $G$: \href{Auxiliar.pdf\#nameddest=G-final}{Auxiliar, p.~1}.}
+\origin{BCS + disipación KWT. \href{https://doi.org/10.1103/PhysRevLett.40.1041}{Kramer--Watts-Tobin (1978)}; \href{https://thesis.caltech.edu/13748/}{Allmaras (2020)}, ec.\ 3.24. Extensión variacional térmica propia; detalles en \href{Auxiliar.pdf}{Auxiliar}.}
+\refs
+\newpage
+\block{Poblaciones electrónicas y fonónicas}
+\begin{gather}
+\boxed{\begin{aligned}\dot p_{ik}={}&
+ \frac{1}{4w_k}\sum_a\nu^e_{ka}r_{ia}
+ -\frac{1}{4w_kV_i}\sum_{\ell,a}B_{i\ell}\beta^{(i)}_{ka}J_{\ell a}\\
+ &+\frac{\FD(E_{ik},T_{E,i})-p_{ik}}{\tau_{{\rm BGK},i}}
+ +h_{ik}P_i
+ \end{aligned}},\\
+\boxed{\dot n_{iq}=
+ \frac1{c_q}\sum_a\nu^{ph}_{qa}r_{ia}
+ -\frac{n_{iq}-\BE(\Omega_q,T_b)}{\tau_{{\rm esc},i}}},\\
+\tau_{{\rm BGK},i}=\tau_{ee}(T_c)\frac{T_c}{\max(T_{E,i},T_b)},
+ \quad c_q=\frac{g_{ph}(\Omega_q)W_q^{ph}}{N_0E_u},
+ \quad \Omega_q=E_u\omega_q,\\
+\boxed{P_i=Q_{\Delta,i}+P_{J,i}+T_{E,i}\dot G_{T_i}},\quad
+ G_{T_i}\equiv\partial_{T_{E,i}}G=L_i\kappa_{T_i},\\
+ \epsilon_{ik}=4u_i^*w_ke_{ik},\quad
+ \sigma_{ik}=\frac{\epsilon_{ik}k_B}{E_{ik}}
+       \log\frac{1-p_{ik}}{p_{ik}},\\
+ h_{ik}\geq0,\quad\sum_k\epsilon_{ik}h_{ik}=1,\quad
+ \sum_k\sigma_{ik}h_{ik}=T_{E,i}^{-1},\\
+ \sum_kw_ke_{ik}\FD(E_{ik},T_{E,i})
+ =\sum_kw_ke_{ik}p_{ik},\qquad
+ 0\leq p_{ik}\leq1,\quad n_{iq}\geq0.
+\end{gather}
+{\small \(p,n\) evolucionan fuera de equilibrio. \(T_E\) es su momento energético, no una tercera población térmica. El término reversible \(T_E\dot G_T\) puede tener ambos signos. Su cálculo algebraico y el portador \(h\) figuran en \href{Auxiliar.pdf}{Auxiliar}; nunca se obtiene del residuo de energía.}
+\par\begin{tabular}{@{}p{.29\linewidth}p{.67\linewidth}@{}}
+\hline
+\labelrow{p_{ik},n_{iq}}{ocupación de cuasipartículas por espín y de fonones}
+\labelrow{k,q,a,\ell}{estado electrónico, modo fonónico, evento, cara espacial}
+\labelrow{w_k,c_q,\omega_q}{pesos nativos y energía fonónica normalizada}
+\labelrow{r_{ia},\nu^e,\nu^{ph}}{tasa de evento [s\(^{-1}\)]; estequiometrías compartidas}
+\labelrow{B_{i\ell},\beta^{(i)}_{ka}}{incidencia orientada e interpolación a energía común}
+\labelrow{J_{\ell a}}{flujo de transporte nativo [m\(^{3}\)/s]}
+\labelrow{h_{ik},P_i,P_{J,i}}{portador [J\(^{-1}\)]; potencia electrónica y Joule [W]}
+\labelrow{L_i,\kappa,G_{T_i}}{peso de gradiente [J], rigidez adimensional, derivada [J/K]}
+\labelrow{\epsilon_{ik},\sigma_{ik}}{momentos de energía [J] y entropía [J/K]}
+\labelrow{\tau_{\rm esc},g_{ph},W_q^{ph}}{escape [s], DOS fonónica [J\(^{-1}\)m\(^{-3}\)], peso [J]}
+\hline
+\end{tabular}\par
+\origin{Cinética cuántica BCS/electrón--fonón, transporte conservativo y BGK energético. \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)}, ecs.\ 3--4; discretización nativa y extensión termoenergética propias.}
+\code{thermal\_coupled.py; thermal\_stiffness.py; effective\_bcs\_kinetics.py}
+\refs\end{document}

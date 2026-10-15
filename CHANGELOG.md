@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 - preparada, 2026-10-15
+
+- Add an opt-in electron-temperature stiffness candidate with gradient free energy, internal energy/entropy, derived signed reversible heating and a positive-effective-capacity guard.
+- Calibrate diffusion to the width-scaled Korzh depairing estimate, updating DOS and geometry normalization consistently; retain Rs425 and Rs608 scenarios.
+- Replace the four mathematical PDFs and add a cross-referenced assumptions register.
+- Prepare paired 775/1550 nm anchors and bounded mechanistic controls; extend per-case report reconstruction to the actual thermal closure.
+- Preserve the published v1.0.0 solver and active-run source hashes. Candidate completion does not confer photon or experimental admission.
+
 ## 1.0.0 - 2026-10-15
 
 - Freeze the conserving neutral effective BCS/KWT/native-kinetic/three-state-circuit implementation and its bounded photon pipelines.

@@ -628,3 +628,64 @@ env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
   --output-dir /home/jdiaz/scratch/case_reports/basecases_completed_20261015_01 \
   --workers 2
 ~~~
+
+
+## 2026-10-15 — 1.1.0: rigidez térmica candidata y difusión calibrada
+
+Estado: v1.0.0 publicada en 7992f6a; thesis-v1.0.0 preservada. Revisión 1.1.0 preparada, sin admisión fotónica nueva. Dos pruebas de 0.1 ps alcanzaron su límite de 240 s: 775 nm llegó a 0.051875 ps y 1550 nm a 0.046875 ps. Conservaron soporte, capacidad positiva y balance. No completaron la duración ni aportan latencias. No se extrapola su tasa inicial a 200 ps.
+
+Caso principal: 21.5 uA, ancho 80 nm, espesor 7 nm, longitud resuelta 320 nm, malla 5 nm, baño 0.9 K, Tc 8.65 K, escape fonónico 20 ps y sigma 7.549834435 nm independiente de D. Rs=425 ohm/square principal y 608 de control; Dcal=1.4103757147386595 y 0.689136928331325 cm2/s respectivamente, con objetivo Idep=25.8666666667 uA. N0 y ell0 se recalculan por Einstein. El cierre usa G(Delta,Te) libre, U=UBCS+G-sum(Te*GT), calor Q+PJ+Te*dotGT y Ceff>0 sin piso. Eta=0.8 es exploratoria, no ajustada al retraso experimental. Circuito completo heredado; Vout intrínseco sin filtro/amplificador.
+
+Plan: /home/jdiaz/scratch/photon_runs/thermal_basecases_20261015_01/campaign_plan.json. Hay 12 casos, seis pares 775/1550 nm: anclajes; rigidez a Tb; Rs=608 con D calibrada; eta=0.667; eta=0.9; tauEE(Tc)=2.5 ps. Los diez controles requieren ambos anclajes completos y auditados. Una censura a 200 ps no recibe latencia ficticia; un fallo numérico o de capacidad bloquea los controles. Completar el catálogo no establece convergencia ni validación experimental.
+
+Recursos: el ejecutor revisa topología, afinidad, cuotas y memoria. Usa hasta 12 núcleos físicos para workers, un coordinador y el límite global del 90%, contando procesos 05/08/09/10 activos y reservando dos núcleos completos. Las dos anclas usan entre 1 y 6 hilos por caso según disponibilidad; los controles usan hasta diez procesos de un hilo en cola. BLAS/OpenMP queda en 1. Datos, cachés y logs permanecen en scratch. Las corridas pueden tardar horas o días; cada caso informa progreso y ETA de su sesión actual. Checkpoints cada 60 s de pared o 1 ps. Ningún comando simula el reset eléctrico completo.
+
+### A. Anclajes: ejecución larga pendiente
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/10_thermal_stiffness_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_20261015_01 \
+  --stage anchors --max-worker-cores 12
+~~~
+
+### B. Controles: después de A auditada
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/10_thermal_stiffness_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_20261015_01 \
+  --stage controls --max-worker-cores 12
+~~~
+
+Para reanudar el mismo stage, añadir --resume; deben conservarse fuentes y parámetros. Un fallo de integración/capacidad requiere diagnóstico, no reinicio ciego. Si cambian las fuentes identificadas por hash, usar un directorio nuevo y preservar los resultados anteriores.
+
+### C. Reportes individuales de los anclajes
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/07_case_report.py \
+  --run-dir \
+    /home/jdiaz/scratch/photon_runs/thermal_basecases_20261015_01/runs/anchor425_eta0800_775 \
+    /home/jdiaz/scratch/photon_runs/thermal_basecases_20261015_01/runs/anchor425_eta0800_1550 \
+  --snapshots-ps 0 1 5 10 20 35 \
+  --output-dir /home/jdiaz/scratch/case_reports/thermal_basecases_20261015_01 \
+  --workers 2
+~~~
+
+El reporte 07 reconstruye las corrientes con el cierre y la Te guardada de cada caso. Produce un PDF por corrida y elige los seis tiempos guardados más próximos a los solicitados.

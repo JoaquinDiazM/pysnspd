@@ -1,0 +1,109 @@
+{
+  "schema": "pysnspd.v1_1_0_candidate_preflight.v1",
+  "published_baseline": {
+    "commit": "7992f6a30603b272812c08727026690829d967ba",
+    "tag": "v1.0.0",
+    "preserved_thesis_tag": "thesis-v1.0.0",
+    "preserved_thesis_commit": "5ea0cd6a08d2cae414c82944f8230469ca5aa7d6",
+    "unchanged_published_physical_source_count": 13
+  },
+  "candidate": {
+    "package_version": "1.1.0",
+    "physical_admission": false,
+    "photon_admission": false,
+    "status": "prepared opt-in candidate; long anchor executions pending",
+    "positive_effective_capacity_required": true,
+    "capacity_floor_used": false,
+    "full_reset_requested": false
+  },
+  "quick_regression": {
+    "passed_tests": 195,
+    "passed_subtests": 3,
+    "wall_s": 68.77,
+    "log_path": "/home/jdiaz/scratch/thermal_candidate_v1_1_20261015/pytest_final_after_fixture_fix.log",
+    "log_sha256": "d7bfa0d07d2188af86772fca03a9f68cfb074d8e919881633ac69545fa200976",
+    "earlier_fixture_isolation_failure_preserved": "/home/jdiaz/scratch/thermal_candidate_v1_1_20261015/pytest_pre_test_isolation_fix.log"
+  },
+  "current_sources": {
+    "pysnspd/experimental/thermal_stiffness.py": "889343c89da0183ae1f4bd905ae33a0d92ba633f7b333e61d52ff064e19752f4",
+    "pysnspd/experimental/thermal_coupled.py": "256bbc2e910b700211234c0fbe89988d50ad1b25676c4df87c270c21be5a942f",
+    "pysnspd/experimental/depairing_calibration.py": "c30eba6d7631f7a88e70254e871a5241d93744e6273004ef883d76ad6c1d4594",
+    "pipelines/09_thermal_stiffness_photon_run.py": "31a9b75a8acc7fb592db8666a20eba0a086c3591f32dc11b4ffd6cd409bca616",
+    "pipelines/10_thermal_stiffness_basecases.py": "d407643b1cab51c008b656672e634d32ddc8aae3f8d4c944f1235feafe5af472",
+    "plot_pipelines/07_case_report.py": "2138482f6e290959a6b97094fed556d60616d4d64ac10d88573003da3d6215ac"
+  },
+  "smoke_traces": {
+    "775": {
+      "status": "INTERRUPTED",
+      "completed_requested_duration": false,
+      "requested_duration_ps": 0.1,
+      "reached_time_ps": 0.05187499999999991,
+      "wall_limit_s": 240,
+      "accepted_steps": 79,
+      "minimum_successful_rhs_capacity_ratio": 0.9436521042506002,
+      "manifest_path": "/home/jdiaz/scratch/thermal_candidate_v1_1_20261015/smoke02_775/manifest.json",
+      "manifest_sha256": "097e64498b0405069c7a1391fa5dc56d9035fd74e4db757dd0df1146375e94f9"
+    },
+    "1550": {
+      "status": "INTERRUPTED",
+      "completed_requested_duration": false,
+      "requested_duration_ps": 0.1,
+      "reached_time_ps": 0.046874999999999965,
+      "wall_limit_s": 240,
+      "accepted_steps": 72,
+      "minimum_successful_rhs_capacity_ratio": 0.9442190207908837,
+      "manifest_path": "/home/jdiaz/scratch/thermal_candidate_v1_1_20261015/smoke02_1550/manifest.json",
+      "manifest_sha256": "02ce75fcd05728306c30d8d017b3a40509b6a0d621fd72f3850c30ac83469e90"
+    }
+  },
+  "real_source_check": {
+    "nodes": 1712,
+    "integration_steps": 0,
+    "deposited_energy_system_relative_defect": 7.901336285550073e-14,
+    "receipt_path": "/home/jdiaz/scratch/thermal_candidate_v1_1_20261015/calibration_runner_smoke_01/smoke_receipt.json"
+  },
+  "historical_capacity_diagnostic": {
+    "complete_cases": 13,
+    "provisional_cases": 5,
+    "failed_complete_cases": 13,
+    "failed_total_cases": 17,
+    "predicts_new_trajectory": false,
+    "receipts_root": "/home/jdiaz/scratch/stage5_te_revision_20261015",
+    "identity_receipt": "/home/jdiaz/scratch/stage5_te_revision_20261015/capacity_guard_inputs.json"
+  },
+  "campaign_plan": {
+    "path": "/home/jdiaz/scratch/photon_runs/thermal_basecases_20261015_01/campaign_plan.json",
+    "sha256": "31b75aeaedb054ee63cabec2b64a52d1ba76688518ee8af3183bd77c292a62ea",
+    "launched_photon_runs": false,
+    "case_count": 12,
+    "anchor_count": 2,
+    "control_count": 10
+  },
+  "mathematical_documents": {
+    "Principal": {
+      "sha256": "ee185c9fbb0b660b375bf8f14bb35767e10abb15c29eeef6575340ac8ae63b78",
+      "visually_reviewed_all_pages": true,
+      "pages": 2
+    },
+    "Auxiliar": {
+      "sha256": "354146de8254bc1e5b7dc2bdaa084ba80924b45fffd7fbeaedbef75b431b485e",
+      "visually_reviewed_all_pages": true,
+      "pages": 7
+    },
+    "Precomputo": {
+      "sha256": "ef32237ce8794b0666d807105ce93be84a5145187ccf7dad95c619a3a645c3d1",
+      "visually_reviewed_all_pages": true,
+      "pages": 4
+    },
+    "Parametros": {
+      "sha256": "09e13f12d51d916ddc8f225f00d6fb0100ec18d5d485abb0e07885c2ba438691",
+      "visually_reviewed_all_pages": true,
+      "pages": 6
+    },
+    "Supuestos": {
+      "sha256": "93f0e7c2c2674c31d3ec99d1fa0bd51b94f7ccf300376502ecc94f558df60968",
+      "visually_reviewed_all_pages": true,
+      "pages": 6
+    }
+  }
+}
