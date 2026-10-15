@@ -2579,3 +2579,111 @@ and a follow-up acquisition queue when saved time resolution is insufficient.
 No physical solver or save-rate code was modified. Vout still lacks the
 experimental filter/amplifier/noise response.
 Validation:31 quick tests, two19-page examples and an actual two-time/padded CLI run.
+
+## 2026-10-14 - Paired base cases: eta, relaxation, preparation and domain
+
+Prepared only; the physical photon campaign has NOT been executed.
+Pipeline: /home/jdiaz/pysnspd/pipelines/08_effective_basecase_sweep.py
+Plan: /home/jdiaz/scratch/photon_runs/basecases_eta_20261014_01/campaign_plan.json
+
+Purpose: compare 775/1550 nm at the same 21.5 uA and tau_escape=20 ps,
+without tuning parameters separately for each wavelength. Rs=608 ohm/square
+is retained: this closure has Idep proportional to 1/Rs at fixed D,Tc,Tb,w,
+so replacing608 by425 would increase Idep30.3674 to43.4433 uA.
+425 is a conditional340/RRR conversion, not a cryogenic measurement.
+No RHS, solver, physical source pin or default material parameter was changed.
+
+20 cases /10 wavelength pairs:
+- eta=.667 reference and requested .7,.8,.9,1.0 (10 cases).
+- at eta=.8, tau_ee(Tc)=2.5 and10 ps (4 cases).
+- at eta=.8, sigma=7.549834435/sqrt(2) and7.549834435*sqrt(2) nm (4 cases).
+- at eta=.8, length=640 nm, with the same5 um device and exterior-inductance
+  accounting (2 cases; reference length320 nm is already in the eta matrix).
+All remaining parameters use the admitted exploratory54/96/48 quadratures,
+h_mesh5 nm, tau_ep(Tc)24.7 ps, Tb.9 K, Tc8.65 K and D5e-5 m2/s.
+The source is common FD/BE at transfer with fresh DC gap unchanged.
+Eta is TOTAL film energy retention at transfer, conditional on photon absorption.
+It is not optical absorption probability or electronic-only conversion efficiency.
+Eta1 is an upper-bound source test; later20 ps phonon escape stays active.
+Sigma changes both spatial preparation and the initial electron/phonon partition.
+Tau_ee changes BGK and KWT mobility together. These points are hypotheses,
+not measured uncertainty intervals or a new experimental calibration.
+
+Foreground, up to13 independent runs, one Numba thread/distinct physical core
+per run; BLAS/OpenMP1. Inventory checked2026-10-14:16physical/32logical,
+no CPU quota, about118 GiB available RAM and945 GiB free scratch.
+Workers occupy13/16=81.25% physical cores; one admitted core is reserved for
+coordination, two complete cores stay outside the87.5% allocated core set.
+Conservative scheduling reservation55 GiB including coordinator; rechecked
+against90% available memory. This is allocation, not a utilization guarantee:
+I/O, serial setup, and the final incomplete wave can lower instantaneous usage.
+SMT logical-CPU percentages can be roughly half the physical-core percentage.
+The script rejects requests below50% of visible physical cores, over-budget
+requests and a pre-existing effective photon solver under jdiaz.
+Do not run simultaneously with another heavy campaign without a shared budget.
+Expected duration: multiple hours; no measured global ETA before executing
+this new concurrent matrix. Cases ending at200 ps can dominate the duration.
+Each running case logs its measured progress and current-horizon ETA.
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  TMPDIR=/home/jdiaz/scratch/tmp/pysnspd \
+  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 BLIS_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python -u \
+  pipelines/08_effective_basecase_sweep.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/basecases_eta_20261014_01 \
+  --workers 13
+~~~
+
+Observation: positive baseline-subtracted Vout0.1 mV, confirmation at crossing+.5 ps,
+end at crossing+5 ps. No crossing: censor at200 ps, latency unassigned.
+Never requests full reset. No PDF/report generation.
+Outputs in scratch: runs/<case>/{manifest.json,trajectory.npz,snapshots.npz,
+checkpoint_latest.npz,dc/,material.*}; logs/; audits/; campaign_execution.json;
+latency_pairs.csv (accepted-controller crossings and differences only when both
+members detect; censored times are blank). Individual audits do not establish
+new convergence or physical calibration. Failed cases remain marked failed;
+independent cases continue and the campaign exits nonzero.
+
+Resume the SAME command with --resume appended. Source/parameter/hash changes
+are rejected; completed cases are authenticated and not simulated again.
+SIGINT/SIGTERM stops new work and requests accepted-state checkpoints from
+active physical solvers. No forced kill, background service or polling daemon.
+
+Validation before handoff: all20 generated commands parse into the exact
+expected runner parameter identities; all10 pairs differ only in wavelength;
+50% minimum and global ceiling checked; synthetic foreground workers exercise
+bounded concurrent slots, nonoverlap, exact completed-case resume and rejection
+of changed source pins. Fixtures only under scratch/tmp, not scientific runs.
+The13 physical runner pins equal the existing October12 campaign.
+Static bulk derivation matches30.3674430546503 uA to floating precision;
+low-temperature closed form30.38655886 uA differs by0.063%.
+
+## 2026-10-15 - Individual reports for13 completed basecase runs
+
+Read-only inspection found13 COMPLETE_AUDITED cases,5 RUNNING and2 FAILED before photon preparation (length640 DC Newton limit). Audit receipt hashes and terminal manifest hashes were checked. This command has NOT been executed. Produces one independent PDF per completed case, with six automatically selected snapshots adapted to the case duration. It excludes live and failed cases, preserves originals and uses a fresh scratch destination. Two plotting workers use cores12 and11 under the current full-affinity topology; active photon workers were on2,4,6,8,10. Recheck global allocation if launching other jobs. No new photon simulation, model change or full reset. Expected plotting cost: order minutes for13 cases, not a measured ETA.
+
+~~~bash
+cd /home/jdiaz/pysnspd
+RUNS=/home/jdiaz/scratch/photon_runs/basecases_eta_20261014_01/runs
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/07_case_report.py \
+  --run-dir \
+    "$RUNS/eta0667_775" "$RUNS/eta0667_1550" \
+    "$RUNS/eta0700_775" "$RUNS/eta0700_1550" \
+    "$RUNS/eta0800_775" "$RUNS/eta0800_1550" \
+    "$RUNS/eta0900_775" "$RUNS/eta0900_1550" \
+    "$RUNS/eta1000_775" "$RUNS/eta1000_1550" \
+    "$RUNS/ee_half_775" "$RUNS/ee_half_1550" \
+    "$RUNS/ee_double_775" \
+  --output-dir /home/jdiaz/scratch/case_reports/basecases_completed_20261015_01 \
+  --workers 2
+~~~

@@ -30,8 +30,7 @@
 - Use a bounded timeout for lightweight checks with uncertain runtime. A timed-out
   check is incomplete; record the unrestricted user-run command instead of restarting
   it repeatedly or splitting a long calculation to evade the five-minute limit.
-- The tag `v1.0.0` freezes the thesis implementation with model 0.4 documentation.
-  Later experimental implementation belongs in subsequent commits, not in that tag.
+- By explicit user instruction on2026-10-15, thesis-v1.0.0 preserves the former thesis/model0.4 tag and v1.0.0 freezes the effective neutral BCS/KWT baseline. Never move the preserved thesis alias. Version1.1.0 is the subsequent temperature-dependent-stiffness/calibrated-diffusion revision.
 
 ## Practical numerical acceptance
 
@@ -92,3 +91,18 @@
 - A photon-free equilibrium with zero dissipated power does not establish the
   missing finite-energy heat balance, absolute NbN rates or photon preparation.
   Report that scope explicitly before admitting a photon transient.
+
+## Heavy-data storage policy (user, 2026-10-08)
+
+- Store all new heavy numerical data, temporary builds, caches, rendering images
+  and campaign logs under `/home/jdiaz/scratch`. Source code, small manifests,
+  scientific decisions and final report PDFs may remain in the repository.
+- `/home/jdiaz/pysnspd/tmp` redirects to `/home/jdiaz/scratch/tmp/pysnspd`;
+  `/home/jdiaz/tmp` redirects to `/home/jdiaz/scratch/tmp/jdiaz`. Preserve these
+  compatibility symlinks; do not recreate real temporary directories in home.
+- Preserve historical results. Relocations must verify contents and retain
+  compatible references; never use `git reset` or `git clean` as storage cleanup.
+
+## Scoped user authorization, 2026-10-11
+
+The user explicitly authorizes this task to execute runs longer than five minutes, iterate until the complete improved-model update, prepare a final PDF report and push the completed work. This supersedes the earlier handoff rule for this task only. Keep the global 90% resource limit, jdiaz-only access and scratch storage. Heavy jobs remain foreground, observable and checkpointed; no automation is needed. A conserving effective neutral BCS/KWT closure is being developed after the full first-Moyal candidate failed; it requires its own DC and photon validation and must not be called an exact microscopic Usadel evolution.

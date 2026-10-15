@@ -1,6 +1,15 @@
 # Changelog
 
-## 1.0.0 - 2026-09-11
+## 1.0.0 - 2026-10-15
+
+- Freeze the conserving neutral effective BCS/KWT/native-kinetic/three-state-circuit implementation and its bounded photon pipelines.
+- Include paired base-case sweep08, independent per-case reports07 and current Geminga command provenance.
+- Preserve exploratory admission scope, numerical limitations, failed controls, post-cascade source hypotheses and scratch-only heavy data.
+- Preserve the original thesis commit as thesis-v1.0.0 and explicitly reassign v1.0.0 at the user request.
+- Reserve the next1.1.0 for temperature-dependent stiffness and depairing-calibrated diffusion.
+
+
+## thesis-v1.0.0 - 2026-09-11
 
 - Freeze the thesis-based solver and the latest previously published diagnostics.
 - Publish model documentation 0.2, 0.3 and 0.4, including editable sources, PDFs,

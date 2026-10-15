@@ -1,4 +1,4 @@
-# pySNSPD 1.1.0
+# pySNSPD 1.0.0
 
 **Etapa 5 completada el 12 de octubre de 2026: admisión exploratoria del modelo efectivo.** La decisión y su alcance están en [estado](status.md) y en [etapa 5](docs/implementation/stage5/README.md).
 
@@ -58,7 +58,7 @@ El reloj comienza en la transferencia efectiva posterior a la cascada. Una traye
 
 ## Versiones e historia
 
-La etiqueta [v1.0.0](docs/releases/v1.0.0.md) conserva el modelo de la memoria. La entrada efectiva 1.1.0 es independiente de sus pipelines históricas. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
+La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La siguiente revisión1.1.0 se prepara por separado. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
 
 La [documentación anterior](docs/releases/history/README_before_v1.1.0_20261011.md) y el [historial de comandos](docs/GEMINGA_COMMANDS.md) conservan las decisiones y resultados previos. Los datos pesados permanecen en scratch y se enlazan mediante sus manifiestos.
 
