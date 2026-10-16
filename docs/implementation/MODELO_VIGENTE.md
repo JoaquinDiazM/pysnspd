@@ -1,8 +1,16 @@
-# Modelo vigente: cierre neutral efectivo BCS/KWT — etapa 5 completada
+# Modelo vigente: neutral efectivo BCS/KWT 1.1.1
+
+La extensión vigente usa $G(\Delta,T_E)$ como energía libre, $U=U_{\rm BCS}+G-\sum_iT_{E,i}G_{T_i}$ y $S=S_{qp}-\sum_iG_{T_i}$. Fuerza y corriente derivan de $G$ a temperatura fija. La potencia electrónica es $P_i=Q_{\Delta,i}+P_{J,i}+T_{E,i}\dot G_{T_i}$ y se exige $C_{\rm eff}>0$ sin piso. La difusión se calibra al depareo inferido para el dispositivo; no es una medida independiente del transporte.
+
+La corrección 1.1.1 distribuye $P_i$ con $h_k^+\propto E_k f_k(1-p_k)$ si $P_i\ge0$, y $h_k^-\propto E_kp_k(1-f_k)$ si $P_i<0$. Se normaliza $\sum_k\epsilon_kh_k^\pm=1$ y se obtiene $P_i(\sum_k\sigma_kh_k^\pm-1/T_{E,i})\ge0$. No se fuerza igualdad reversible fuera de FD. Esta elección constitutiva evita retirar población de estados vacíos sin introducir clipping ni un calibrador.
+
+Las fórmulas completas, parámetros y limitaciones están en [Matematica](../../Matematica/) y [nota 1.1.1](../releases/v1.1.1.md). Los ensayos nominales de 775/1550 nm alcanzaron 0.2 ps; aún se requieren nuevos anclajes completos y controles de observables antes de admitir latencias. No se hereda la convergencia 1.0 al cierre térmico.
+
+## Formulación y admisión históricas de v1.0.0
 
 **Admisión exploratoria del 12 de octubre de 2026.** Etapas 5.1, 5.2 y 5.3 completas. Certificado autoritativo: `/home/jdiaz/scratch/stage5_final_evidence_completed_20261012/admission.json`, SHA-256 `ed30c8525ecb3952e4042eca3b84e9ea0c2c78f41d7e0f17d880779b68747c4a`. [Estado y resultados](../../status.md); [alcance de etapa 5](stage5/README.md).
 
-La API pysnspd.effective evoluciona conjuntamente condensado, cuasipartículas, fonones y circuito; obtiene el potencial por neutralidad cuasiestática del mismo estado. Es una hipótesis mesoscópica útil para exploración y calibración. El legado está congelado en v1.0.0. El intento microscópico de primer orden Moyal falló sus controles fotónicos y se conserva rechazado; no integra esta física efectiva. El [contrato anterior](../releases/history/MODELO_VIGENTE_before_v1.1.0_20261011.md) conserva la historia.
+La API pysnspd.effective evoluciona conjuntamente condensado, cuasipartículas, fonones y circuito; obtiene el potencial por neutralidad cuasiestática del mismo estado. Es una hipótesis mesoscópica útil para exploración y calibración. El modelo de la memoria está congelado en thesis-v1.0.0. El intento microscópico de primer orden Moyal falló sus controles fotónicos y se conserva rechazado; no integra esta física efectiva. El [contrato anterior](../releases/history/MODELO_VIGENTE_before_v1.1.0_20261011.md) conserva la historia.
 
 ## Estado y energía
 

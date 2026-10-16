@@ -35,7 +35,7 @@ from matplotlib.tri import Triangulation
 from scipy.constants import elementary_charge as e, hbar
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
-from pysnspd.plotting.style import apply_thesis_style
+from pysnspd.plotting.style import apply_thesis_style, THESIS_DPI
 from pysnspd.plotting.complex_gap import draw_complex_gap
 from pysnspd.experimental.effective_bcs_functional import EffectiveBCSFunctional, bcs_count_quadrature
 from pysnspd.experimental.effective_bcs_ports import EffectiveNeutralPorts
@@ -314,9 +314,9 @@ def thermal_candidate(manifest):
     mode=manifest.get("closure",{}).get("stiffness_temperature",
         manifest.get("parameter_identity",{}).get("stiffness_temperature"))
     version=manifest.get("model_version","")
-    if mode=="electron" and version!="1.1.0-candidate":
-        raise ValueError("Explicit model_version=1.1.0-candidate required for Te reconstruction")
-    return mode=="electron" and version=="1.1.0-candidate"
+    if mode=="electron" and version not in ("1.1.0-candidate","1.1.1-candidate"):
+        raise ValueError("Explicit model_version from supported 1.1.x candidates required for Te reconstruction")
+    return mode=="electron" and version in ("1.1.0-candidate","1.1.1-candidate")
 
 
 def reconstruction_sources(manifest):
@@ -325,11 +325,12 @@ def reconstruction_sources(manifest):
 
 def model_contract(manifest):
     thermal=thermal_candidate(manifest)
-    bath_control=(manifest.get("model_version")=="1.1.0-candidate" and
+    bath_control=(manifest.get("model_version") in ("1.1.0-candidate","1.1.1-candidate") and
         manifest.get("closure",{}).get("stiffness_temperature")=="bath")
     return dict(model_label=("BCS/KWT Te candidate" if thermal else
         "BCS/KWT bath control, calibrated D" if bath_control else "Effective neutral BCS/KWT"),
         candidate=thermal,bath_control=bath_control,
+        pauli_signed_heat=(manifest.get("model_version")=="1.1.1-candidate"),
         stiffness_temperature=("saved Te_K" if thermal else "fixed bath"),
         stored_energy=("U_BCS+G-sum(Te*dG/dTe)+phonons+circuit" if thermal else
             "U_BCS+fixed-bath gradient+phonons+circuit"),
@@ -747,11 +748,15 @@ def model_summary(r):
         fig.text(.075,.35,r"$G=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}(T_E)|d_i-e^{-i\alpha_{ij}}d_j|^2,\quad U=U_{\rm BCS}+G-\sum_iT_iG_{T_i}$",fontsize=13)
         fig.text(.075,.29,r"$S=S_{\rm qp}-\sum_iG_{T_i},\quad {\cal F}_i=\partial_{d_i^*}U-\sum_jT_j\partial_{d_i^*}S_j=\left.\partial_{d_i^*}(U_{\rm BCS}+G)\right|_T$",fontsize=12.5)
         fig.text(.075,.225,r"$I^s_{ij}=-\frac{2e}{\hbar}\left.\partial_{\alpha_{ij}}G\right|_T,\quad C_{{\rm eff},i}=C_{{\rm FD},i}-T_iG_{T_iT_i}>0$",fontsize=13.5)
-        fig.text(.075,.18,r"$\mathcal{H}_i=h_i[Q_{\Delta,i}+P_{J,i}+T_i\dot G_{T_i}],\quad \epsilon_i\cdot h_i=1,\quad \partial_{p_i}S_{\rm qp}\cdot h_i=1/T_i$",fontsize=11.5,color=INK)
-        fig.text(.075,.145,"Te controls the free gradient; the signed reversible source is derived analytically. Ceff failure stops the candidate.",fontsize=10.5,color=INK)
+        if contract["pauli_signed_heat"]:
+            fig.text(.075,.18,r"$\mathcal{H}_i=h_iP_i,\quad P_i=Q_{\Delta,i}+P_{J,i}+T_i\dot G_{T_i},\quad \epsilon_i\cdot h_i=1,\quad P_i(\sigma_i\cdot h_i-1/T_i)\geq0$",fontsize=11.5,color=INK)
+            fig.text(.075,.145,"Pauli heat: f(1-p) for heating, p(1-f) for cooling; exact FD limit and nonnegative excess entropy.",fontsize=10.5,color=INK)
+        else:
+            fig.text(.075,.18,r"$\mathcal{H}_i=h_i[Q_{\Delta,i}+P_{J,i}+T_i\dot G_{T_i}],\quad \epsilon_i\cdot h_i=1,\quad \partial_{p_i}S_{\rm qp}\cdot h_i=1/T_i$",fontsize=11.5,color=INK)
+            fig.text(.075,.145,"Historical 1.1.0 dual-moment heat carrier; superseded after a Pauli-viability failure.",fontsize=10.5,color=INK)
         r.save(fig,"Thermal-stiffness candidate","Energy-equivalent Te is read directly from each saved state for current reconstruction. "
             "The stored internal energy differs from free G; force/current follow fixed-Te derivatives. "
-            "The signed reversible source closes energy and entropy. Ceff>0 is required without a floor. "
+            "The signed source closes energy; 1.1.1 adds Pauli-compatible excess entropy outside FD. Ceff>0 is required without a floor. "
             "This candidate has no global trajectory admission and is not exact microscopic Usadel.")
     else:
         fig.text(.075,.405,"Shared BCS energy and variational force",fontsize=14,weight="bold",color=ACCENT)
@@ -888,7 +893,7 @@ def main(argv=None):
     p.add_argument("--allow-incomplete",action="store_true",help="Capture one atomic checkpoint, explicitly provisional")
     p.add_argument("--snapshots-ps",type=float,nargs="+",default=None,help="Exactly six slots: first six requests, repeat last if fewer; nearest saved states")
     p.add_argument("--workers",type=int,default=1,help="Independent foreground reports; one physical core per worker")
-    p.add_argument("--dpi",type=int,default=160);a=p.parse_args(argv)
+    p.add_argument("--dpi",type=int,default=THESIS_DPI);a=p.parse_args(argv)
     if a.workers<1 or not 80<=a.dpi<=300:raise ValueError("Positive workers and80<=dpi<=300 required")
     runs=[x.resolve() for x in a.run_dir]
     if len(set(runs))!=len(runs):raise ValueError("Duplicate case input")

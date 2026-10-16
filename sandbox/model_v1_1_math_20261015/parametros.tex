@@ -11,7 +11,7 @@
 \setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
 \setlength{\emergencystretch}{2em}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.0 / 15 de octubre de 2026}
+\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.1 / 15 de octubre de 2026}
 \fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Condición crítica.} #1\par}}
@@ -32,9 +32,9 @@
 \newcommand{\assumption}[2]{\par\vspace{6pt}\hypertarget{#1}{\textbf{\color{ink}#1. #2}}\par}
 \newcommand{\smallnote}[1]{{\small #1\par}}
 
-\hypersetup{pdftitle={Parámetros - pysnspd 1.1.0},pdfauthor={pysnspd}}
+\hypersetup{pdftitle={Parámetros - pysnspd 1.1.1},pdfauthor={pysnspd}}
 \begin{document}
-{\LARGE\bfseries\color{ink}Parámetros del modelo 1.1.0}\par
+{\LARGE\bfseries\color{ink}Parámetros del modelo 1.1.1}\par
 {\large Referencia Korzh (2020); calibración estática y preparación fotónica}\par
 \smallnote{\textbf{I}: entrada; \textbf{H}: hipótesis; \textbf{C}: calibrable; \textbf{D}: derivado; \textbf{N}: numérico; \textbf{O}: observación. Una elección nominal no constituye una medición ni un ajuste de latencia. Formulación candidata posterior al snapshot 1.0.0, commit \texttt{7992f6a}; las nuevas corridas requieren admisión propia.}
 \block{Material y caso de referencia}
@@ -229,8 +229,9 @@ $E_{\rm ret}$, $\eta=1$ [eV]&1.599796109&0.799898054\\\hline
 \ptrow{P37}{\delta_{\rm HB}}{0.2 \quad [O,H]}{Componente conectada con $|\Delta|\le0.2|\Delta^{DC}|$ que une bordes.}
 \ptrow{P38}{\substack{N_{\rm NL,max},\\N_{\rm rej,max}}}{40; 50 \quad [N]}{Máximo de iteraciones y rechazos por avance.}
 \ptrow{P39}{\substack{\delta t_{\rm snap},\delta t_{\rm check},\\\delta t_{\rm pared}}}{0.1 ps; 1 ps; 60 s [N]}{Cadencias de mapas y checkpoint; última en reloj de pared.}
-\ptrow{P40}{\substack{\lambda_{\rm safe},\\\epsilon_{\rm FD}}}{0.95; $256\epsilon_{\rm mach}$ [N]}{Disponibilidad de eventos y rama numérica FD del portador; no calibradores físicos.}
+\ptrow{P40}{\lambda_{\rm safe}}{0.95 [N]}{Disponibilidad del limitador de eventos compartidos; no calibrador físico.}
 \end{ptable}
+\smallnote{El portador de calor 1.1.1 usa actividades $f(1-p)$ / $p(1-f)$, sin umbral artificial FD ni calibrador nuevo; \sref{S11}{3}.}
 \smallnote{Es un perfil propuesto de contraste, no una garantía de convergencia. Las tolerancias y los gatillos heredados son elecciones observacionales reproducibles; revisar sólo con criterio observable documentado. \sref{S21}{6} y \sref{S22}{6}.}
 \begin{gather*}
  \widetilde V_{\rm out}=V_{\rm out}-V_{{\rm out},DC},\qquad

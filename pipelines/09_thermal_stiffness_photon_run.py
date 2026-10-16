@@ -73,7 +73,7 @@ def source_pins():
 def write_json(path, value):
     if Path(path).name == "manifest.json" and isinstance(value, dict):
         value["schema"] = SCHEMA
-        value["model_version"] = "1.1.0-candidate"
+        value["model_version"] = "1.1.1-candidate"
         value["candidate_schema"] = "pysnspd.thermal_stiffness_photon_candidate.v1"
         value.setdefault("admission", {}).update(candidate=True, stage5=False,
             physical_admission=False, policy="Candidate execution is not numerical or physical admission")
@@ -83,7 +83,8 @@ def write_json(path, value):
             gradient_rigidity=("G(Delta,Te); Ugrad=G-sum(Te*dG/dTe); positive Ceff guard" if _MODE == "electron"
                               else "Calibrated-D bath-temperature rigidity control; fixed Tb"),
             calibrated_experimental_model=False,
-            diffusion_calibration="Homogeneous depairing-target fit; not independent experimental validation")
+            diffusion_calibration="Homogeneous depairing-target fit; not independent experimental validation",
+            signed_heat_carrier=("f*(1-p) heating / p*(1-f) cooling; energy moment and entropy inequality; no clipping" if _MODE == "electron" else "Inherited fixed-bath dissipative heat carrier; no Te reversible-gradient source"))
         value.setdefault("energy_reference", {}).update(
             u_excess=("Local internal U_BCS+G-sum(Te*G_Te)+phonons minus fresh DC per physical nodal volume"
                       if _MODE == "electron" else "Local BCS+fixed-bath gradient+phonons minus fresh DC per nodal volume"))
@@ -219,7 +220,7 @@ def build_system(args, output, *, resume=False):
         calibrators="Free effective hypotheses; depairing-target fit is not independent material measurement",
         exterior_inductance=asdict(exterior), circuit=asdict(circuit))
     physics_identity = dict(schema="pysnspd.thermal_candidate_physics_identity.v1",
-        model_version="1.1.0-candidate", source_pins_sha256=source_pins(),
+        model_version="1.1.1-candidate", source_pins_sha256=source_pins(),
         parameter_identity=BASE.parameter_identity(args), calibration=calibration,
         calibrated_mesh_sha256=geometry.receipt["mesh_sha256"],
         candidate_physical_admission=False)

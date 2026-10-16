@@ -106,3 +106,14 @@
 ## Scoped user authorization, 2026-10-11
 
 The user explicitly authorizes this task to execute runs longer than five minutes, iterate until the complete improved-model update, prepare a final PDF report and push the completed work. This supersedes the earlier handoff rule for this task only. Keep the global 90% resource limit, jdiaz-only access and scratch storage. Heavy jobs remain foreground, observable and checkpointed; no automation is needed. A conserving effective neutral BCS/KWT closure is being developed after the full first-Moyal candidate failed; it requires its own DC and photon validation and must not be called an exact microscopic Usadel evolution.
+
+
+## Active model standard (user, 2026-10-15)
+
+- Use the latest implemented model version for new normal simulations and case reports; the current standard is v1.1.1, with electron-temperature-dependent stiffness and depairing-calibrated diffusion.
+- Use older versions only for explicitly identified historical analyses or scientific controls. Keep version/closure identity visible; the current v1.1.1 photon admission remains pending.
+
+## Signed heat correction (2026-10-15, v1.1.1)
+
+- Electron-temperature runs use directional FD/Pauli heat activities, energy normalization and nonnegative excess entropy. Do not restore the former exact dual-moment heat carrier: it can cool empty states.
+- Preserve the positive-capacity guard, actual circuit, calibrated diffusion and source hashes. Never resume a v1.1.0 trajectory under the changed v1.1.1 equations; initialize fresh cases in a new scratch campaign.

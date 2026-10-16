@@ -133,16 +133,19 @@ def test_cli_and_resume_identity_capture_every_new_physical_parameter():
         runner.validate_args(base)
 
 
-def test_manifest_remains_report_compatible_and_marks_candidate(tmp_path, monkeypatch):
-    monkeypatch.setattr(runner, "_MODE", "electron")
+@pytest.mark.parametrize("mode", ["electron", "bath"])
+def test_manifest_remains_report_compatible_and_marks_candidate(tmp_path, monkeypatch, mode):
+    monkeypatch.setattr(runner, "_MODE", mode)
     manifest = dict(closure={"microscopic_exact_Usadel": False}, admission={"stage5": False})
     target = tmp_path/"manifest.json"
     runner.write_json(target, manifest)
     loaded = runner.BASE.json.loads(target.read_text())
     assert loaded["schema"] == "pysnspd.effective_photon_run.v1"
-    assert loaded["model_version"] == "1.1.0-candidate"
+    assert loaded["model_version"] == "1.1.1-candidate"
     assert loaded["admission"]["candidate"]
     assert not loaded["admission"]["physical_admission"]
+    assert ("f*(1-p)" in loaded["closure"]["signed_heat_carrier"]) == (mode == "electron")
     assert not loaded["closure"]["microscopic_exact_Usadel"]
-    assert "U_BCS" in loaded["energy_reference"]["u_excess"]
-    assert loaded["numerical"]["positive_effective_capacity_required"]
+    assert "BCS" in loaded["energy_reference"]["u_excess"]
+    assert ("sum(Te*G_Te)" in loaded["energy_reference"]["u_excess"]) == (mode == "electron")
+    assert loaded.get("numerical", {}).get("positive_effective_capacity_required", False) == (mode == "electron")

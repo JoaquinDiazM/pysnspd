@@ -1,8 +1,10 @@
-# pySNSPD 1.1.0 (preparada)
+# pySNSPD 1.1.1
 
-**Referencia publicada: v1.0.0, commit 7992f6a. Revisión 1.1.0: candidata optativa, sin admisión fotónica nueva.** La API efectiva anterior y las fuentes de las corridas activas se conservan. La revisión añade rigidez evaluada a la temperatura electrónica equivalente, su energía interna y calor reversible consistentes, difusión calibrada por depareo y cinco documentos matemáticos en [Matematica](Matematica/).
+**Versión vigente: v1.1.1, extensión térmica efectiva con difusión calibrada.** Corrige el bloqueo de los anclajes 1.1.0 causado por un portador de calor que podía enfriar estados vacíos. El reparto usa actividades FD/Pauli según el signo de la potencia: conserva energía y produce entropía adicional no negativa fuera de FD. Conserva la rigidez dependiente de Te y la guardia Ceff>0, sin clipping ni pisos.
 
-Los comandos nuevos usan [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py) y [campaña 10](pipelines/10_thermal_stiffness_basecases.py). Una capacidad térmica efectiva no positiva detiene el candidato: no se corrige mediante un piso. Los controles con rigidez a temperatura de baño permiten separar el efecto de D calibrada del cierre térmico. Véanse [nota 1.1.0](docs/releases/v1.1.0.md), [Supuestos](Matematica/Supuestos.pdf) y [comandos actuales](docs/GEMINGA_COMMANDS_PRESENT.md).
+Los casos nuevos usan [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py) y [campaña 10](pipelines/10_thermal_stiffness_basecases.py). Los dos ensayos nominales completaron 0.2 ps en menos de tres minutos por caso; esto elimina el bloqueo observado cerca de 0.05 ps y no acredita todavía latencias completas. Iniciar una campaña nueva: las trayectorias 1.1.0 se preservan y no se reanudan con ecuaciones distintas. Véanse [corrección y evidencia](docs/releases/v1.1.1.md), [matemáticas](Matematica/), [supuestos](Matematica/Supuestos.pdf) y [comandos actuales](docs/GEMINGA_COMMANDS_PRESENT.md).
+
+## Referencia histórica admitida: v1.0.0
 
 **La etapa 5 de la referencia v1.0.0 se completó el 12 de octubre de 2026 con admisión exploratoria.** La decisión y su alcance están en [estado](status.md) y en [etapa 5](docs/implementation/stage5/README.md).
 
@@ -62,7 +64,7 @@ El reloj comienza en la transferencia efectiva posterior a la cascada. Una traye
 
 ## Versiones e historia
 
-La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La revisión1.1.0 se prepara como extensión optativa y mantiene separada la admisión de v1.0.0. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
+La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La revisión1.1.1 incorpora la extensión térmica y mantiene separada su admisión de la referencia v1.0.0. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
 
 La [documentación anterior](docs/releases/history/README_before_v1.1.0_20261011.md) y el [historial de comandos](docs/GEMINGA_COMMANDS.md) conservan las decisiones y resultados previos. Los datos pesados permanecen en scratch y se enlazan mediante sus manifiestos.
 

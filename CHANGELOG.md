@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 - 2026-10-15
+
+- Fix a continuous-model Pauli violation in signed thermal heat: use FD birth/death activities selected by physical power sign, exact energy normalization and a nonnegative excess-entropy inequality.
+- Preserve the Te-dependent energy ledger, depairing-calibrated diffusion, real circuit and positive-capacity guard; add no fitted timescale, clipping or heat from a residual.
+- Add endpoint, subnormal-tail, signed entropy and full-RHS regressions; validate fresh 775/1550 nm cases through 0.2 ps on the nominal mesh.
+- Replace five mathematical PDFs in place, align report equations/version and plotting DPI, and prepare a fresh anchor/control campaign. Old checkpoints remain historical; full photon admission remains pending.
+
 ## 1.1.0 - preparada, 2026-10-15
 
 - Add an opt-in electron-temperature stiffness candidate with gradient free energy, internal energy/entropy, derived signed reversible heating and a positive-effective-capacity guard.

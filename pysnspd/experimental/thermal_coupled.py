@@ -74,7 +74,7 @@ class ThermalCoupledSystem(EffectiveCoupledSystem):
         Tdot[self.cut_nodes]=0.
         GTdot=GTdot_fixedT+thermal["L_J"]*thermal["kappa_TT_per_K2"]*Tdot
         source=q+el.nodal_joule_W+temp*GTdot
-        carrier=entropy_compatible_carrier(p,eps,temp,f.Eu_J,en,weights_bar=f.weights_bar)
+        carrier=entropy_compatible_carrier(p,eps,temp,f.Eu_J,en,weights_bar=f.weights_bar,power_W=source)
         heat=carrier*source[:,None]
         full_dp=bare.dp_dt_s+heat
         actual_heat=np.sum(eps*heat,axis=1)
@@ -115,6 +115,9 @@ class ThermalCoupledSystem(EffectiveCoupledSystem):
             maximum_abs_temperature_rate_K_ps=float(np.max(abs(Tdot))*1e-12),
             maximum_abs_heat_moment_defect_W=float(np.max(abs(heat_defect))),
             signed_population_source_allowed=True,
+            heat_carrier_mobility="FD f*(1-p) heating; p*(1-f) cooling; nonnegative excess entropy",
+            closed_Pauli_limits_supported=True,
+            occupation_floor_used=False,
             capacity_floor_used=False)
         return EffectiveRHS(coord,dp*1e-12,dn*1e-12,cmrate/self.circuit_scales*1e-12,
             dz,material,q,temp,energy+self.circuit.energy(cm),energy,external,residual,

@@ -2748,3 +2748,68 @@ env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
 ~~~
 
 El reporte 07 reconstruye las corrientes con el cierre y la Te guardada de cada caso. Produce un PDF por corrida y elige los seis tiempos guardados más próximos a los solicitados.
+
+
+## 2026-10-15 — v1.1.1: corrección Pauli y nuevos anclajes
+
+Estado: bloqueo continuo de 1.1.0 identificado y corregido. Sus dos anclajes se detuvieron con aprobación expresa y conservaron checkpoints; no reanudar con ecuaciones distintas. Las pruebas frescas a malla nominal completaron 0.2 ps: 775 nm, 50 pasos/175.14 s; 1550 nm, 48 pasos/169.81 s. Defectos energéticos máximos 4.99e-25 y 2.78e-25 J. No son latencias ni validación de toda la ventana. Guardias, tolerancias, circuito y difusión no se relajaron.
+
+El calor electrónico usa actividades f(1-p) al calentar y p(1-f) al enfriar, con normalización exacta de energía y producción entrópica adicional no negativa. Rigidez Te, Dcal y Ceff>0 permanecen. Cinco documentos matemáticos actualizados en sitio. Datos diagnósticos: /home/jdiaz/scratch/v1_1_1_debug_20261015.
+
+Plan fresco ya preparado: /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_1_20261015_02/campaign_plan.json. Doce casos en dos etapas: anclajes 775/1550 nm a 21.5 uA, tau_escape=20 ps, Rs425, eta0.8, sigma7.549834435 nm; controles de rigidez Tb, Rs608 con Dcal, eta0.667/0.9 y tauEE2.5 ps. Primero terminar y auditar ambos anclajes. Cruce positivo 0.1 mV confirmado durante 0.5 ps, extra5 ps; censura sin cruce200 ps. Sin reset total.
+
+Recursos: hasta12 núcleos físicos de workers, un coordinador y dos núcleos completos reservados; presupuesto90% global. El ejecutor vuelve a contar otras campañas. Al preparar quedaban activos el coordinador08 en CPU13 y un worker05 en CPU10; este inventario puede cambiar. Hasta6 hilos por anclaje cuando haya espacio, sin prometer escalamiento. Datos y cachés en scratch. El costo completo puede ser de horas/días; el tiempo de0.2 ps no es una ETA válida hasta detección. Se registran ETA por sesión y checkpoints. Estos comandos largos NO se lanzaron aquí.
+
+### A. Anclajes frescos v1.1.1
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env TMPDIR=/home/jdiaz/scratch/tmp/pysnspd \
+  PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/10_thermal_stiffness_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_1_20261015_02 \
+  --stage anchors --max-worker-cores 12
+~~~
+
+### B. Controles, sólo tras A completa y auditada
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env TMPDIR=/home/jdiaz/scratch/tmp/pysnspd \
+  PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/10_thermal_stiffness_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_1_20261015_02 \
+  --stage controls --max-worker-cores 12
+~~~
+
+Añadir --resume sólo para la misma campaña1.1.1 interrumpida, con fuentes y parámetros idénticos. La antigua campaña1.1.0 queda histórica.
+
+### C. Reportes individuales cuando terminen ambos anclajes
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/07_case_report.py \
+  --run-dir \
+    /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_1_20261015_02/runs/anchor425_eta0800_775 \
+    /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_1_20261015_02/runs/anchor425_eta0800_1550 \
+  --snapshots-ps 0 1 5 10 20 35 \
+  --output-dir /home/jdiaz/scratch/case_reports/thermal_basecases_v1_1_1_20261015_02 \
+  --workers 2
+~~~
+
+Diagnóstico ligero reproducible: con el mismo entorno ejecutar python -m pytest -q tests/test_thermal_pauli_heat.py tests/test_thermal_stiffness_coupled_candidate.py; sin evolución larga ni reportes adicionales.

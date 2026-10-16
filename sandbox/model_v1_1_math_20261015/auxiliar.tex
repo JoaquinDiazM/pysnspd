@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.1.0 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.1.1 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -17,7 +17,7 @@
 \newcommand{\refs}{\vfill{\footnotesize\href{Supuestos.pdf}{Hipótesis y límites: Supuestos}; \href{Parametros.pdf}{entradas: Parametros}.}}
 \begin{document}
 {\LARGE\bfseries\color{ink}Ecuaciones auxiliares durante la evolución}\par
-{\small Candidato 1.1.0. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
+{\small Candidato 1.1.1. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
 \renewcommand{\theequation}{2.\arabic{equation}}
 \block{Energía libre de gradiente y fuerza}
 \hypertarget{G-final}{}
@@ -100,51 +100,48 @@
 \end{tabular}\par
 \origin{Termodinámica y diferenciación implícita del momento energético. La sustitución directa \(T_b\to T_E\) sin \(-TG_T\) y \(T\dot G_T\) no satisface este balance.}
 \refs\newpage
-\hypertarget{carrier-exacto}{}\block{Portador positivo de energía y entropía}
-{\small Fórmula computada por \texttt{balanced\_entropy\_carrier}; nodo fijo, $T=T_E$, índice espacial omitido. $f_k=f_{\rm FD}(E_k,T)$; $\epsilon_k,\sigma_k$ son los momentos de Principal.}
+\hypertarget{carrier-exacto}{}\block{Portador de calor con actividades de Pauli}
+{\small Nodo fijo; $T=T_E$, $f_k=\FD(E_k,T)$. $P=Q_\Delta+P_J+T\dot G_T$ [W]. El signo selecciona una actividad de nacimiento o de muerte.}
 \begin{gather}
- v_k=\partial_Tf_k=\frac{E_k}{k_BT^2}f_k(1-f_k),\\
- a_k=\frac{T\sigma_k}{\epsilon_k}-1,\qquad
- \sigma_k=\frac{\epsilon_k k_B}{E_k}\log\frac{1-p_k}{p_k},\\
- A_+=\sum_k\epsilon_kv_k\max(a_k,0),\qquad
- A_-=\sum_k\epsilon_kv_k\max(-a_k,0),\\
- \chi_k=\begin{cases}
- A_-,&a_k>0,\\
- A_+,&a_k<0,\\
- (A_++A_-)/2,&a_k=0,
- \end{cases}\\
- \boxed{h_k=\frac{v_k\chi_k}{\sum_l\epsilon_lv_l\chi_l}}
- \quad\left(\max_k|a_k|\ge256\,\epsilon_{\rm mach}\right),\\
- \max_k|a_k|<256\,\epsilon_{\rm mach}
- \quad\Longrightarrow\quad
- \boxed{h_k=\frac{v_k}{C_{\rm FD}}},\qquad
- C_{\rm FD}=\sum_k\epsilon_kv_k .
+ a_k=f_k(1-p_k),\qquad b_k=p_k(1-f_k),\\
+ \boxed{h_k^+=\frac{E_ka_k}{\sum_l\epsilon_lE_la_l}},\qquad
+ \boxed{h_k^-=\frac{E_kb_k}{\sum_l\epsilon_lE_lb_l}},\\
+ \boxed{H_k=P h_k^{\operatorname{sgn}P}},\qquad
+ \sum_k\epsilon_k h_k^\pm=1,\qquad
+ h_k^+\big|_{p_k=1}=h_k^-\big|_{p_k=0}=0,\\
+ p_k=f_k\ \Longrightarrow\
+ h_k^\pm=\frac{\partial_T f_k}{C_{\rm FD}},\quad
+ \partial_T f_k=\frac{E_k}{k_BT^2}f_k(1-f_k),\quad
+ C_{\rm FD}=\sum_k\epsilon_k\partial_Tf_k .
 \end{gather}
-{\small La rama no FD exige $A_+>0,A_->0$ y normalizador positivo; en la rama FD también se exige normalizador positivo. La implementación requiere $0<p_k<1$ y $T_E>0$ por los logaritmos: el soporte Pauli físico general es $0\le p\le1$, pero aquí no se evalúan sus límites exactos ni se hace clipping. La forma de $h$ es constitutiva. La rama FD numérica conserva el momento entrópico a precisión del umbral; no es una tasa microscópica medida.}
-\block{Momentos del portador e identidades energéticas}
+{\small Se exige $T>0$, $0\le p\le1$ y normalizador finito positivo. No se evalúan logaritmos para construir $H$; no hay clipping ni piso de ocupación. $P=0$ da $H=0$ y usa la rama $+$.}
+\block{Desigualdad entrópica y energía}
 \begin{gather}
- \sum_k\epsilon_k h_k=1,\qquad
- \sum_k\sigma_k h_k=T^{-1},\\
+ \sigma_k=\frac{\epsilon_k k_B}{E_k}\log\frac{1-p_k}{p_k},\quad
+ \log(a_k/b_k)=\log\frac{1-p_k}{p_k}-\frac{E_k}{k_BT},\\
+ \sum_k\epsilon_k(a_k-b_k)=\sum_k\epsilon_k(f_k-p_k)=0,\\
+ a_k\log(a_k/b_k)\ge a_k-b_k,\qquad
+ b_k\log(a_k/b_k)\le a_k-b_k,\\
+ \boxed{\dot S_{\rm exc}=P\left(\sum_k\sigma_kh_k^{\operatorname{sgn}P}-T^{-1}\right)\ge0},\\
  \dot S_{\rm source}-\dot G_T
- =\frac{Q_\Delta+P_J+T\dot G_T}{T}-\dot G_T
- =\frac{Q_\Delta+P_J}{T}\ge0,\\
+   =\frac{Q_\Delta+P_J}{T}+\dot S_{\rm exc}\ge0,\\
  \sum_k\epsilon_{ik}C^{BGK}_{ik}=0,\qquad
- \sum_i\sum_k\epsilon_{ik}C^{tr}_{ik}=0,\\
+ \sum_{ik}\epsilon_{ik}C^{tr}_{ik}=0,\\
  \sum_k\epsilon_{ik}C^{ep}_{ik}
        +u_i^*\sum_qc_q\omega_qC^{ph,ep}_{iq}=0,\\
- 2\Rea\sum_i\mathcal F_i^*(D_td_i)=-\sum_iQ_{\Delta,i},\qquad
+ 2\Rea\sum_i\mathcal F_i^*(D_td_i)=-\sum_iQ_{\Delta,i},\quad
  \dot U+\dot U_{ph}=I_sV_{\rm dev}-P_{\rm esc}-P_{\rm cuts}.
 \end{gather}
+{\small La prueba entrópica se formula en el interior; en los extremos se toma el límite unilateral. El RHS sí se evalúa en los extremos. La igualdad entrópica se recupera en FD, no se impone fuera de equilibrio.}
 \par\begin{tabular}{@{}p{.29\linewidth}p{.67\linewidth}@{}}
 \hline
-\labelrow{v_k,a_k,\epsilon_{\rm mach}}{tangente FD [K$^{-1}$], afinidad y precisión de máquina adimensionales}
-\labelrow{A_\pm,\chi_k,C_{\rm FD}}{pesos de balance y capacidad del momento [J/K]}
-\labelrow{h_k,\epsilon_k,\sigma_k}{portador [J$^{-1}$], energía [J], entropía [J/K]}
-\labelrow{C^{ep},C^{tr},C^{BGK}}{RHS de colisiones, transporte y relajación [s$^{-1}$]}
+\labelrow{a_k,b_k}{actividades de aporte y retiro, adimensionales}
+\labelrow{h_k^\pm,H_k}{portador [J$^{-1}$], fuente de ocupación [s$^{-1}$]}
+\labelrow{\epsilon_k,\sigma_k,\dot S_{\rm exc}}{energía [J], momento entrópico [J/K], producción [W/K]}
 \hline
 \end{tabular}\par
-\origin{Tangente FD, balance algebraico de afinidades y primera/segunda leyes. Elección espectral propia; la integración del balance continuo se audita por separado.}
-\code{thermal\_stiffness.py: balanced\_entropy\_carrier}
+\origin{Exclusión de Pauli, momento energético FD y desigualdad de Gibbs. Reparto espectral constitutivo propio; no es una colisión microscópica derivada. Sustituye el portador 1.1.0, que no preservaba soporte al enfriar.}
+\code{thermal\_stiffness.py: entropy\_compatible\_carrier}
 \refs\newpage
 \block{Eventos electrón--fonón compartidos}
 \begin{gather}
@@ -309,7 +306,7 @@
 {\small $h$ [s]: paso; $h_{ik}$ [J$^{-1}$]: portador; $g_d,g_c$: residuos escalados. $\lambda$ conserva eventos; $b_\mu,L_\mu$: presupuesto/pérdida de tasa de estados consumidos $\mathcal C(a)$. Fuente electrónica firmada fuera del limitador; $\gamma_h\to1/\tau$ para BGK/escape. Sin clipping, calor residual ni piso de capacidad. Hessiano a $T_E$ fijo sólo precondiciona; defecto del RHS completo y guarda BCS interna.}
 {\small Tras converger, $\delta p=g_p/2$ es dirección: \textbf{no se forma $p+\delta p$}. Fijos $d,n,(I_b,I_s,v_c)$ del punto medio; $D_p,D_{\mathbf T}$ son derivadas analíticas; $(D_p\mathcal F)_{\mathbf T}\delta p=2u^*d\sum_kw_k\delta p_k/e_k$. $\delta\mathcal F$ [J], $\delta I^s$ [A] y $\delta\phi$ [V] incluyen la cadena de $T_E$.}
 {\small $\mathcal M$ [J$^{-1}$s$^{-1}$] es el operador KWT lineal sobre los reales de Principal; $\delta\mathcal M$ se obtiene al derivar $A,R$ con el incremento $\delta v$ del piso térmico. En cortes sólo cambia la fase Josephson. $\delta R_d,\delta R_\theta$ tienen unidades s$^{-1}$. El indicador mide sensibilidad analítica del residuo con incremento direccional del piso de movilidad. No acota rigurosamente el error temporal; $C_{\rm eff}>0$ se exige en estados físicos, sin materializar la dirección.}
-\block{Comparación mínima antes de promover 1.1.0}
+\block{Comparación mínima antes de admitir latencias}
 \[
  h_{\max}\to h_{\max}/2,\quad
  h_{\rm mesh}:5\to3.5\,\mathrm{nm},\quad

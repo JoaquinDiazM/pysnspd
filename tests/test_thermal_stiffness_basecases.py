@@ -100,7 +100,7 @@ def fake_terminal(tmp_path):
     campaign.write_json(run/"calibration.json", calibration)
     campaign.write_json(run/"candidate_physics_identity.json", physics)
     manifest = dict(parameter_identity=identity, source_pins_sha256=physics["source_pins_sha256"],
-        run_complete=True, status="TIME_CENSORED_NO_TRIGGER", model_version="1.1.0-candidate",
+        run_complete=True, status="TIME_CENSORED_NO_TRIGGER", model_version="1.1.1-candidate",
         closure=dict(stiffness_temperature=mode), physicalparams=dict(diffusion_calibration=calibration),
         observation=dict(threshold_voltage_V=.1e-3, confirmation_time_s_required=.5e-12,
             extra_time_s=5e-12, no_trigger_ceiling_s=200e-12, full_reset_requested=False,

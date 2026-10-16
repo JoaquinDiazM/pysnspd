@@ -1,7 +1,9 @@
 
-'''Independent mathematical prototype for the TE-stiffness candidate.
-No production import or trajectory admission is implied.
-G is a FREE-energy extension. Stored Ugrad=G-sum(T G_T), Sgrad=-G_T.
+'''Guarded TE-stiffness closure with Pauli-compatible signed heat.
+
+G is a free-energy extension: Ugrad=G-sum(T G_T), Sgrad=-G_T.
+The 1.1.1 signed heat uses FD/Pauli creation and destruction activities.
+This remains an effective constitutive hypothesis, not exact Usadel kinetics.
 '''
 from dataclasses import dataclass
 import numpy as np
@@ -110,33 +112,6 @@ def gradient_entropy_derivative_at_fixed_T(d,dd,T,*,edges,edge_energy_scale_J,Tc
     kr=thermal_rigidity(abs(d)**2,T,Tc_K=Tc_K,prefactor=prefactor)
     return kr.temperature*Ldot+L*kr.rho_temperature*rhodot
 
-def balanced_entropy_carrier(epsilon_J,sigma_J_per_K,fd,temperature_K,*,Eu_J,e_bar):
-    '''Positive heat carrier: epsilon.h=1 and sigma.h=1/TE.
-
-    This explicit phenomenological carrier balances positive and negative
-    entropy affinities of the thermal tangent. Exact FD uses its thermal
-    tangent. Any signed power is permitted; endpoint support requires an
-    implicit solve and step rejection, never clipping.
-    '''
-    eps=np.asarray(epsilon_J,float);sig=np.asarray(sigma_J_per_K,float)
-    T=np.asarray(temperature_K,float);fd=np.asarray(fd,float);eb=np.asarray(e_bar,float)
-    r=T[:,None]*sig/eps-1
-    v=Eu_J*eb*fd*(1-fd)/(kB*T[:,None]**2)
-    rp=np.maximum(r,0.);rm=np.maximum(-r,0.)
-    Ap=np.sum(eps*v*rp,axis=1);Am=np.sum(eps*v*rm,axis=1)
-    close=np.max(abs(r),axis=1)<256*np.finfo(float).eps
-    bad=(~close)&((Ap<=0)|(Am<=0))
-    if np.any(bad):
-        raise ArithmeticError("TE must match the native energy moment; no balanced carrier bracket")
-    factor=np.where(r>0,Am[:,None],np.where(r<0,Ap[:,None],((Ap+Am)/2)[:,None]))
-    raw=np.where(close[:,None],v,v*factor)
-    normalizer=np.sum(eps*raw,axis=1)
-    if np.any(normalizer<=0):
-        raise ArithmeticError("No finite entropy-compatible heat carrier")
-    h=raw/normalizer[:,None]
-    return h,dict(energy_moment=np.sum(eps*h,axis=1),
-        entropy_moment_T=np.sum(sig*h,axis=1)*T,
-        exact_FD_branch=close)
 
 @dataclass(frozen=True)
 class ReversibleLedger:
@@ -174,16 +149,41 @@ class ThermalStiffnessEvaluation(EffectiveBCSEvaluation):
     temperature_K:np.ndarray
     force_contract:str
 
-def entropy_compatible_carrier(p,epsilon_J,temperature_K,Eu_J,enbar,weights_bar=None):
-    '''Positive carrier: epsilon.h=1, sigma.h=1/TE. No residual argument.'''
-    p=np.asarray(p,float);epsilon=np.asarray(epsilon_J,float)
+def entropy_compatible_carrier(p,epsilon_J,temperature_K,Eu_J,enbar,weights_bar=None,*,power_W=None):
+    """Directional Pauli heat: epsilon.h=1 and P*(sigma.h-1/T)>=0.
+
+    Heating uses the FD particle/hole activity f*(1-p); cooling uses
+    p*(1-f). Both reduce to f*(1-f) at equilibrium. Empty/full states
+    are physical endpoints, not replaced by an occupation floor.
+
+    With a=f*(1-p), b=p*(1-f), the energy-equivalent temperature gives
+    sum(epsilon*(a-b))=0. The inequalities a*log(a/b)>=a-b and
+    b*log(a/b)<=a-b prove nonnegative excess entropy for either sign
+    of power. The old exact dual-entropy moment was overconstraining
+    a nonequilibrium source and could drain essentially empty modes.
+    """
+    p=np.asarray(p,float);eps=np.asarray(epsilon_J,float)
     T=np.asarray(temperature_K,float);eb=np.asarray(enbar,float)
-    if np.any(p<=0)or np.any(p>=1)or np.any(T<=0):
-        raise ValueError("Carrier requires TE>0 and interior Pauli support")
-    counts=epsilon/(Eu_J*eb)
-    sigma=kB*counts*(np.log1p(-p)-np.log(p))
+    if (p.ndim!=2 or eps.shape!=p.shape or eb.shape!=p.shape
+            or T.shape!=(len(p),) or np.any(~np.isfinite(p))
+            or np.any(p<0) or np.any(p>1)
+            or np.any(~np.isfinite(T)) or np.any(T<=0)
+            or np.any(~np.isfinite(eps)) or np.any(eps<=0)
+            or np.any(~np.isfinite(eb)) or np.any(eb<=0)
+            or not np.isfinite(Eu_J) or Eu_J<=0):
+        raise ValueError("Heat carrier requires finite energies, T>0 and closed Pauli support")
+    power=np.ones(len(p)) if power_W is None else np.broadcast_to(np.asarray(power_W,float),(len(p),))
+    if np.any(~np.isfinite(power)):
+        raise ValueError("Finite signed physical heat power required")
     fd=expit(-Eu_J*eb/(kB*T[:,None]))
-    return balanced_entropy_carrier(epsilon,sigma,fd,T,Eu_J=Eu_J,e_bar=eb)[0]
+    activities=np.where(power[:,None]>=0,fd*(1-p),p*(1-fd))
+    # E/(kB*T**2) has a common positive factor per node. Cancel it
+    # before normalization to avoid spurious underflow in cold tails.
+    raw=eb*activities
+    normalizer=np.sum(eps*raw,axis=1)
+    if np.any(~np.isfinite(normalizer)) or np.any(normalizer<=0):
+        raise ArithmeticError("No finite Pauli-mobile heat carrier at this positive temperature")
+    return raw/normalizer[:,None]
 
 class ThermalStiffnessFunctional(EffectiveBCSFunctional):
     '''Candidate K(|Delta|,TE) FREE gradient with complete internal U/S.

@@ -1,6 +1,10 @@
-# Estado de pySNSPD 1.1.0
+# Estado de pySNSPD 1.1.1
 
-**Etapa 5 completada: admisión exploratoria del modelo efectivo, 12 de octubre de 2026.** La entrada pública es `pysnspd.effective`; el modelo de la memoria permanece congelado en `v1.0.0`.
+**Versión vigente 1.1.1:** rigidez dependiente de Te, D calibrada y calor firmado compatible con Pauli. Dos pruebas nuevas de 0.2 ps completas; bloqueo eliminado, sin admisión de latencia completa. [Diagnóstico y límites](docs/releases/v1.1.1.md).
+
+## Evidencia histórica de v1.0.0
+
+**Etapa 5 completada: admisión exploratoria del modelo efectivo, 12 de octubre de 2026.** La entrada pública es `pysnspd.effective`; el modelo de la memoria permanece congelado en thesis-`v1.0.0`.
 
 | Etapa | Estado final |
 |---|---|

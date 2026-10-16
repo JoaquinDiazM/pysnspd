@@ -1,0 +1,222 @@
+{
+  "version": "1.1.1",
+  "prepared_base_commit": "837b1b6c296ae68f21122c73a6877607963da56a",
+  "published_1_0_commit": "7992f6a30603b272812c08727026690829d967ba",
+  "correction": "Signed FD/Pauli heat with energy equality and excess-entropy inequality",
+  "old_campaign_stopped_with_explicit_user_approval": true,
+  "old_1_1_checkpoints_preserved": true,
+  "old_1_1_trajectories_resumed_under_new_equations": false,
+  "fresh_nominal_validation": [
+    {
+      "wavelength_nm": 775,
+      "status": "DEVELOPMENT_DURATION_REACHED",
+      "final_time_ps": 0.19999999999999998,
+      "accepted_steps": 50,
+      "total_rejections": 7,
+      "wall_s": 175.13627894199453,
+      "max_energy_defect_J": 4.991504799603313e-25,
+      "defect_over_retained_energy": 2.4342572727131617e-06,
+      "max_instant_power_residual_W": 8.280077931655807e-22,
+      "limited_event_energy_fraction": 6.74118076694556e-06,
+      "negative_global_current": false,
+      "minimum_Is_uA": 21.497880694581138,
+      "raw_log": "/home/jdiaz/scratch/v1_1_1_debug_20261015/fresh_775_nominal.log",
+      "log_sha256": "606831f4ea170413e19b4c5366d1625461cda912f441b9168dc1ab8ab7d1f970"
+    },
+    {
+      "wavelength_nm": 1550,
+      "status": "DEVELOPMENT_DURATION_REACHED",
+      "final_time_ps": 0.19999999999999998,
+      "accepted_steps": 48,
+      "total_rejections": 7,
+      "wall_s": 169.81442466900626,
+      "max_energy_defect_J": 2.7829493711935542e-25,
+      "defect_over_retained_energy": 2.7143777351306197e-06,
+      "max_instant_power_residual_W": 7.945069783571831e-22,
+      "limited_event_energy_fraction": 8.325988085956018e-06,
+      "negative_global_current": false,
+      "minimum_Is_uA": 21.498415014980704,
+      "raw_log": "/home/jdiaz/scratch/v1_1_1_debug_20261015/fresh_1550_nominal.log",
+      "log_sha256": "fa9a24b6d479cf417c4462019650e55e0580d30062b2302f6b963e01b4f68f21"
+    }
+  ],
+  "continuous_and_refinement": {
+    "checkpoints": [
+      {
+        "case": "anchor425_eta0800_775",
+        "diagnostic_only": true,
+        "old_checkpoint_not_resumed": true,
+        "p": 1e-323,
+        "node": 3522,
+        "band": 35,
+        "old_heat_dp_s": -2616175.3102502916,
+        "new_heat_dp_s": -2.5547760867822e-310,
+        "new_full_dp_s": 168194.5525013912,
+        "minimum_continuous_depletion_ps": 2.6436632764220446e-12,
+        "instantaneous_power_residual_W": -4.218621124020441e-23,
+        "thermal_diagnostics": {
+          "minimum_capacity_ratio": 0.9405447112198079,
+          "maximum_abs_reversible_gradient_power_W": 1.0837808490573596e-10,
+          "maximum_abs_temperature_rate_K_ps": 23.260375064480186,
+          "maximum_abs_heat_moment_defect_W": 2.5849394142282115e-26,
+          "signed_population_source_allowed": true,
+          "heat_carrier_mobility": "FD f*(1-p) heating; p*(1-f) cooling; nonnegative excess entropy",
+          "closed_Pauli_limits_supported": true,
+          "occupation_floor_used": false,
+          "capacity_floor_used": false
+        }
+      },
+      {
+        "case": "anchor425_eta0800_1550",
+        "diagnostic_only": true,
+        "old_checkpoint_not_resumed": true,
+        "p": 5.8937e-320,
+        "node": 3522,
+        "band": 35,
+        "old_heat_dp_s": -218226.50913831728,
+        "new_heat_dp_s": -2.078544157162978e-306,
+        "new_full_dp_s": 26175.63212211304,
+        "minimum_continuous_depletion_ps": 1.2953758263499225e-11,
+        "instantaneous_power_residual_W": -4.673570460924606e-22,
+        "thermal_diagnostics": {
+          "minimum_capacity_ratio": 0.9413354433082319,
+          "maximum_abs_reversible_gradient_power_W": 1.3048337746602443e-10,
+          "maximum_abs_temperature_rate_K_ps": 20.688314592851633,
+          "maximum_abs_heat_moment_defect_W": 1.9387045606711586e-26,
+          "signed_population_source_allowed": true,
+          "heat_carrier_mobility": "FD f*(1-p) heating; p*(1-f) cooling; nonnegative excess entropy",
+          "closed_Pauli_limits_supported": true,
+          "occupation_floor_used": false,
+          "capacity_floor_used": false
+        }
+      }
+    ],
+    "small_system_refinement": {
+      "total_time_ps": 0.0004,
+      "coarse_vs_half": {
+        "delta": 3.5398979984022e-08,
+        "population": 7.760041081938951e-10,
+        "phonon": 2.384185791015625e-07,
+        "circuit_uA": 1.4304268896756997e-11
+      },
+      "half_vs_quarter": {
+        "delta": 8.849326972175466e-09,
+        "population": 1.9394953698625983e-10,
+        "phonon": 3.758917699672737e-10,
+        "circuit_uA": 3.5759613450708425e-12
+      },
+      "ratios": {
+        "delta": 4.000188951693772,
+        "population": 4.00106192699429,
+        "phonon": 634.2745389778552,
+        "circuit_uA": 4.000118434298573
+      },
+      "scope": "Short smooth-system consistency only, not photon latency convergence"
+    }
+  },
+  "broad_suite": {
+    "passed": 1911,
+    "failed": 8,
+    "errors": 6,
+    "skipped": 4,
+    "subtests_passed": 532,
+    "wall_s": 144.62,
+    "log": "/home/jdiaz/scratch/v1_1_1_debug_20261015/full_pytest.log",
+    "note": "Initial all-history run; contains legacy resource-affinity, exact-zero roundoff, frozen-campaign hash and case-report DPI failures. DPI corrected and retested. Not a green full-repository suite."
+  },
+  "targeted_mixed_suite": {
+    "passed": 748,
+    "failed": 5,
+    "errors": 6,
+    "skipped": 3,
+    "subtests_passed": 430,
+    "wall_s": 71.18,
+    "log": "/home/jdiaz/scratch/v1_1_1_debug_20261015/targeted_pytest.log",
+    "failure_scope": "All failures/errors in historical joint-candidate rebuild/first-step/snapshot resource diagnostics, with unchanged source files."
+  },
+  "historical_unchanged_sources": [
+    {
+      "path": "pysnspd/experimental/retarded_spatial_usadel.py",
+      "unchanged_since_prepared_1_1_0": true
+    },
+    {
+      "path": "sandbox/stage5_photon/joint_candidate_rebuild.py",
+      "unchanged_since_prepared_1_1_0": true
+    },
+    {
+      "path": "sandbox/stage4_core/parallel_runtime.py",
+      "unchanged_since_prepared_1_1_0": true
+    },
+    {
+      "path": "tests/test_joint_candidate_rebuild.py",
+      "unchanged_since_prepared_1_1_0": true
+    },
+    {
+      "path": "tests/test_joint_first_step_runner.py",
+      "unchanged_since_prepared_1_1_0": true
+    },
+    {
+      "path": "tests/test_joint_snapshot_runner.py",
+      "unchanged_since_prepared_1_1_0": true
+    },
+    {
+      "path": "tests/test_longitudinal_reciprocal.py",
+      "unchanged_since_prepared_1_1_0": true
+    },
+    {
+      "path": "tests/test_stage4_resolution_campaign.py",
+      "unchanged_since_prepared_1_1_0": true
+    }
+  ],
+  "mathematical_documents": {
+    "pages": {
+      "Principal": 2,
+      "Auxiliar": 7,
+      "Precomputo": 4,
+      "Parametros": 6,
+      "Supuestos": 6
+    },
+    "all_pages_rendered_and_visually_reviewed": true,
+    "overfull_boxes": 0
+  },
+  "long_campaign_prepared": "/home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_1_20261015_02",
+  "physical_admission": false,
+  "full_latency_convergence": false,
+  "full_reset_simulated": false,
+  "no_capacity_or_occupation_floor": true,
+  "no_tolerance_relaxation": true,
+  "no_diffusion_or_circuit_change_in_patch": true,
+  "release_suite": {
+    "passed": 698,
+    "skipped": 3,
+    "subtests_passed": 417,
+    "wall_s": 69.63,
+    "failed": 0,
+    "errors": 0,
+    "log": "/home/jdiaz/scratch/v1_1_1_debug_20261015/release_pytest.log",
+    "scope": "Effective model, thermal-stiffness coupling, Pauli source, depairing calibration, trigger, individual reports and plotting policy"
+  },
+  "runner_metadata_followup": "After nominal validation, distinguish inherited fixed-bath control heat from the new electron-temperature source in manifest; no physics change.",
+  "final_manifest_contract_suite": {
+    "passed": 14,
+    "failed": 0,
+    "wall_s": 0.29,
+    "log": "/home/jdiaz/scratch/v1_1_1_debug_20261015/metadata_final_pytest.log",
+    "scope": "Electron and bath heat/energy identity plus campaign plan/audit contracts after metadata correction"
+  },
+  "current_source_sha256": {
+    "pysnspd/experimental/thermal_stiffness.py": "5d1b05409fa61026886dd8525516c45a5dbeb8c9dec13ebd4f684f63f429b53b",
+    "pysnspd/experimental/thermal_coupled.py": "25c21db2824403ff5f5b5a76578f4d42c6b7f343205ac7152373d64074015785",
+    "pipelines/09_thermal_stiffness_photon_run.py": "019bcd24f32b9ebb823550f04a08fba6463ccf2ca3192b522f40c49f199b248b",
+    "pipelines/10_thermal_stiffness_basecases.py": "f7593f6c981b36e5c946f24877b64e2a338f9d27c8ccb50d5ddc1988868ec81a",
+    "plot_pipelines/07_case_report.py": "be50b7566d5c0b84343b171905b17f7433e6c441cad682bab7c0678b15beb2f5"
+  },
+  "final_document_sha256": {
+    "Parametros.pdf": "d2d2bb053f0a59c800f10e87d7996947bcc097f7dcd5db14441f152cd2de3878",
+    "Auxiliar.pdf": "c69c146e48073e5aa843410e8afe2e3f69274cdcabb9b37aa6c824d7c5c4f82b",
+    "Supuestos.pdf": "65bd620006fa6092c2b875b50461e026c1695b7abb98af8d39ed88a6922d24d1",
+    "Principal.pdf": "254e5c9382b2acd6816ad95937cf93fd326b7c2ea3ff2d81a20c4fb10d9441ff",
+    "Precomputo.pdf": "77a3703e18d35c74d6a8094fc1f2d3fd211f0fb8d9d348b1065fad46d2d09438"
+  },
+  "fresh_campaign_plan_sha256": "a6688a03018ab1790adffb3b320d8fc3b9a3747c4ffdd00cf28519c83891c184"
+}

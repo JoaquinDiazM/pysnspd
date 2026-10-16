@@ -74,26 +74,25 @@ def test_total_energy_finite_difference_uses_no_reported_power_observer():
     assert abs(derivatives[-1]-r.external_power_W)<2e-6*scale
     assert abs(derivatives[-1]-derivatives[0])<2e-6*scale
 
-def test_entropy_compatible_carrier_has_dual_moments_for_nonthermal_populations_and_signed_power():
+def test_entropy_compatible_carrier_respects_energy_and_entropy_for_signed_power():
     m,s=small_system();f=m.functional;k=m.kinetics
     T=k.equivalent_temperature_K(s.delta_bar,s.p)
     en=f.energies_bar(s.delta_bar);eps=4*f.node_energy_scale_J[:,None]*f.weights_bar*en
     perturb=.02*s.p[1,0]
     s.p[1,0]+=perturb;s.p[1,1]-=eps[1,0]/eps[1,1]*perturb
     T=k.equivalent_temperature_K(s.delta_bar,s.p)
-    h=entropy_compatible_carrier(s.p,eps,T,f.Eu_J,en)
     sigma=kB*eps/(f.Eu_J*en)*(np.log1p(-s.p)-np.log(s.p))
-    np.testing.assert_allclose(np.sum(eps*h,axis=1),1.,rtol=3e-15,atol=0.)
-    np.testing.assert_allclose(np.sum(sigma*h,axis=1)*T,1.,rtol=3e-15,atol=0.)
-    assert np.all(h>0)
     for power in [2e-11,-2e-11]:
+        h=entropy_compatible_carrier(s.p,eps,T,f.Eu_J,en,power_W=np.full(len(s.p),power))
         dp=h*power
         np.testing.assert_allclose(np.sum(eps*dp,axis=1),power,rtol=3e-15,atol=0.)
-        np.testing.assert_allclose(np.sum(sigma*dp,axis=1),power/T,rtol=3e-15,atol=0.)
-        # A sufficiently small signed source step preserves Pauli support.
+        excess=np.sum(sigma*dp,axis=1)-power/T
+        assert np.all(excess>=-2e-13*abs(power/T))
+        assert np.all(h>=0)
         bound=np.min(np.minimum(s.p,1-s.p)/np.maximum(abs(dp),1e-300))
         trial=s.p+.1*bound*dp
         assert np.all((trial>0)&(trial<1))
+
 
 def test_negative_capacity_is_constitutive_failure_without_floor_or_mutation():
     m,s=small_system(conductance=100.)
@@ -129,6 +128,7 @@ def test_total_entropy_rate_matches_native_production_and_bath_ledger():
     sigph=kB*phcounts*np.log1p(1/s.n)
     native_dp=r.kinetics.collision_dp_dt_s+r.kinetics.transport_dp_dt_s+r.kinetics.bgk_dp_dt_s
     native_dn=r.kinetics.collision_dn_dt_s+r.kinetics.escape_dn_dt_s
+    excess=np.sum(sigma*r.kinetics.heating_dp_dt_s)-np.sum(r.kinetics.heating_power_W/r.temperature_K)
     expected=(np.sum(sigma*native_dp)+np.sum(sigph*native_dn)+
         np.sum((r.kwt_heat_W+r.electrical.nodal_joule_W)/r.temperature_K)-
         r.reservoir_power_out_W/k.bath_temperature_K)

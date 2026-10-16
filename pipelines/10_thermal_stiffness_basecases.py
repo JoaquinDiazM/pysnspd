@@ -97,7 +97,7 @@ def command(case, campaign, *, threads, cpu_start, resume=False):
 
 def plan(campaign):
     cases = catalog()
-    return dict(schema="pysnspd.thermal_candidate_basecases.v1", model_version="1.1.0-candidate",
+    return dict(schema="pysnspd.thermal_candidate_basecases.v1", model_version="1.1.1-candidate",
         campaign_dir=str(campaign), orchestrator_sha256=sha(__file__),
         source_pins_sha256={mode: pins(mode) for mode in ("electron", "bath")},
         cases=cases, stage_order=["anchors", "controls"],
@@ -235,7 +235,7 @@ def audit_case(case, campaign, definition, *, expected_threads):
         raise ValueError("Terminal candidate identity/source mismatch: "+case["name"])
     if not manifest.get("run_complete") or manifest.get("status") not in TERMINAL:
         raise ValueError("Successful declared-window terminal required: "+case["name"])
-    if manifest.get("model_version") != "1.1.0-candidate" or manifest.get("closure", {}).get("stiffness_temperature") != mode:
+    if manifest.get("model_version") != "1.1.1-candidate" or manifest.get("closure", {}).get("stiffness_temperature") != mode:
         raise ValueError("Candidate closure metadata mismatch")
     hashes = manifest.get("output_sha256", {})
     required = {"trajectory.npz", "snapshots.npz", "checkpoint_latest.npz", "dc/effective_dc.npz", "material.npz", "material.json"}

@@ -87,3 +87,10 @@ def test_candidate_summary_equations_render_and_state_internal_energy_contract()
             box=text.get_window_extent(renderer=renderer)
             assert box.x1<=r.fig.bbox.x1+1
     finally:report.plt.close(r.fig)
+
+def test_current_1_1_1_report_uses_Pauli_heat_contract():
+    m={"model_version":"1.1.1-candidate","closure":{"stiffness_temperature":"electron"}}
+    assert report.thermal_candidate(m)
+    assert report.model_contract(m)["pauli_signed_heat"]
+    old={"model_version":"1.1.0-candidate","closure":{"stiffness_temperature":"electron"}}
+    assert not report.model_contract(old)["pauli_signed_heat"]
