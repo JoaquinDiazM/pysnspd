@@ -448,3 +448,11 @@ class HistoricalResourceReceiptOrigin(unittest.TestCase):
   self.assertIsInstance(call,ast.Expr);self.assertEqual(call.value.func.id,"verify_receipt_helper_origin")
 
 if __name__=="__main__":unittest.main()
+
+# These contracts inspect the immutable historical checkpoint producer.
+# The current 1.1.2 runner must not be substituted into an old namespace.
+import pytest
+@pytest.fixture(autouse=True)
+def historical_producer_schema(monkeypatch):
+    frozen_root=Path(__file__).resolve().parent/"fixtures/effective_v1_0_producer"
+    monkeypatch.setattr(r,"ROOT",frozen_root)

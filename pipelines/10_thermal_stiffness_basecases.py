@@ -48,10 +48,10 @@ def scratch_path(value):
     return result
 
 
-def catalog():
+def catalog(*, ceiling_ps=100.):
     defaults = vars(RUNNER.parser().parse_args(["--output-dir", str(SCRATCH/"unused_plan_placeholder")]))
     common = {k: v for k, v in defaults.items() if k not in ("output_dir", "resume", "cpu_start", "threads")}
-    common.update(length_nm=320., spacing_nm=5., current_uA=21.5, tau_escape_ps=20.,
+    common.update(ceiling_ps=float(ceiling_ps), length_nm=320., spacing_nm=5., current_uA=21.5, tau_escape_ps=20.,
                   retained_fraction=.8, sheet_resistance_ohm=425., stiffness_temperature="electron")
     cases = []
     def pair(name, stage, overrides):
@@ -95,9 +95,9 @@ def command(case, campaign, *, threads, cpu_start, resume=False):
     return result
 
 
-def plan(campaign):
-    cases = catalog()
-    return dict(schema="pysnspd.thermal_candidate_basecases.v1", model_version="1.1.1-candidate",
+def plan(campaign, *, ceiling_ps=100.):
+    cases = catalog(ceiling_ps=ceiling_ps)
+    return dict(schema="pysnspd.thermal_candidate_basecases.v1", model_version="1.1.2-candidate",
         campaign_dir=str(campaign), orchestrator_sha256=sha(__file__),
         source_pins_sha256={mode: pins(mode) for mode in ("electron", "bath")},
         cases=cases, stage_order=["anchors", "controls"],
@@ -235,7 +235,7 @@ def audit_case(case, campaign, definition, *, expected_threads):
         raise ValueError("Terminal candidate identity/source mismatch: "+case["name"])
     if not manifest.get("run_complete") or manifest.get("status") not in TERMINAL:
         raise ValueError("Successful declared-window terminal required: "+case["name"])
-    if manifest.get("model_version") != "1.1.1-candidate" or manifest.get("closure", {}).get("stiffness_temperature") != mode:
+    if manifest.get("model_version") != "1.1.2-candidate" or manifest.get("closure", {}).get("stiffness_temperature") != mode:
         raise ValueError("Candidate closure metadata mismatch")
     hashes = manifest.get("output_sha256", {})
     required = {"trajectory.npz", "snapshots.npz", "checkpoint_latest.npz", "dc/effective_dc.npz", "material.npz", "material.json"}
@@ -339,12 +339,15 @@ def main(argv=None):
     parser.add_argument("--stage", choices=("anchors", "controls"))
     parser.add_argument("--prepare-only", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--ceiling-ps", type=float, default=100.)
     parser.add_argument("--max-worker-cores", type=int, default=12)
     args = parser.parse_args(argv)
     if not 1 <= args.max_worker_cores <= 12:
         raise ValueError("max-worker-cores must lie in 1..12")
     campaign = scratch_path(args.campaign_dir)
-    definition = plan(campaign)
+    if not math.isfinite(args.ceiling_ps) or args.ceiling_ps<=0:
+        raise ValueError("Positive finite ceiling-ps required")
+    definition = plan(campaign,ceiling_ps=args.ceiling_ps)
     campaign.mkdir(parents=True, exist_ok=True)
     with (campaign/".execution.lock").open("a+") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX|fcntl.LOCK_NB)

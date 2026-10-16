@@ -1,6 +1,6 @@
-# Estado de pySNSPD 1.1.1
+# Estado de pySNSPD 1.1.2
 
-**Versión vigente 1.1.1:** rigidez dependiente de Te, D calibrada y calor firmado compatible con Pauli. Dos pruebas nuevas de 0.2 ps completas; bloqueo eliminado, sin admisión de latencia completa. [Diagnóstico y límites](docs/releases/v1.1.1.md).
+**Versión vigente 1.1.2:** corrección del reloj sin actualización, tolerancia proporcional al paso, convergencia térmica conjunta y búsqueda interna de capacidad positiva. Se mantienen Te, D calibrada y calor Pauli. Techo sin cruce100 ps y parada por resolución adaptativa insuficiente. Los anclajes1.1.1 congelados son históricos; ninguna nueva latencia está admitida. [Diagnóstico](docs/releases/v1.1.2.md).
 
 ## Evidencia histórica de v1.0.0
 

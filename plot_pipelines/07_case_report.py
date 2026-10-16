@@ -314,9 +314,9 @@ def thermal_candidate(manifest):
     mode=manifest.get("closure",{}).get("stiffness_temperature",
         manifest.get("parameter_identity",{}).get("stiffness_temperature"))
     version=manifest.get("model_version","")
-    if mode=="electron" and version not in ("1.1.0-candidate","1.1.1-candidate"):
+    if mode=="electron" and version not in ("1.1.0-candidate","1.1.1-candidate","1.1.2-candidate"):
         raise ValueError("Explicit model_version from supported 1.1.x candidates required for Te reconstruction")
-    return mode=="electron" and version in ("1.1.0-candidate","1.1.1-candidate")
+    return mode=="electron" and version in ("1.1.0-candidate","1.1.1-candidate","1.1.2-candidate")
 
 
 def reconstruction_sources(manifest):
@@ -325,12 +325,12 @@ def reconstruction_sources(manifest):
 
 def model_contract(manifest):
     thermal=thermal_candidate(manifest)
-    bath_control=(manifest.get("model_version") in ("1.1.0-candidate","1.1.1-candidate") and
+    bath_control=(manifest.get("model_version") in ("1.1.0-candidate","1.1.1-candidate","1.1.2-candidate") and
         manifest.get("closure",{}).get("stiffness_temperature")=="bath")
     return dict(model_label=("BCS/KWT Te candidate" if thermal else
         "BCS/KWT bath control, calibrated D" if bath_control else "Effective neutral BCS/KWT"),
         candidate=thermal,bath_control=bath_control,
-        pauli_signed_heat=(manifest.get("model_version")=="1.1.1-candidate"),
+        pauli_signed_heat=(manifest.get("model_version") in ("1.1.1-candidate","1.1.2-candidate")),
         stiffness_temperature=("saved Te_K" if thermal else "fixed bath"),
         stored_energy=("U_BCS+G-sum(Te*dG/dTe)+phonons+circuit" if thermal else
             "U_BCS+fixed-bath gradient+phonons+circuit"),

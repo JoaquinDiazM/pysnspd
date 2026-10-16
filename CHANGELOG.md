@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.2 - 2026-10-16
+
+- Prevent an accepted zero nonlinear predictor from advancing a nonstationary physical clock.
+- Scale the thermal nonlinear error budget with adaptive step, include the full Te-induced gap response within the convergence loop, and backtrack internal corrections to retain positive capacity.
+- Preserve all physical equations, calibrated diffusion, Te stiffness, signed Pauli heat and the independent energy guard; no physical capacity floor or tolerance relaxation.
+- Set new thermal campaigns to100 ps without trigger and add an explicit checkpointed numerical-resolution stop below the declared adaptive limit.
+- Preserve stalled1.1.1 checkpoints and record that the critical branch remains subject to fresh trajectory validation.
+
+
 ## 1.1.1 - 2026-10-15
 
 - Fix a continuous-model Pauli violation in signed thermal heat: use FD birth/death activities selected by physical power sign, exact energy normalization and a nonnegative excess-entropy inequality.

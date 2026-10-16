@@ -1,3 +1,5 @@
+Vigente desde2026-10-16: **v1.1.2**, sección final de este cuaderno. Techo sin cruce100 ps. Las entradas previas conservan historia y no son comandos actuales.
+
 # Geminga: photon-runs del modelo efectivo 1.1.0
 
 Etapa 5 completada el 12 de octubre de 2026: sistema acoplado, balance independiente y cuatro controles numéricos admitidos. No quedan simulaciones activas de esta campaña. Este cuaderno operativo contiene órdenes futuras; el historial completo, incluidos intentos fallidos y cambios de precisión, permanece en /home/jdiaz/GEMINGA_COMMANDS.md.
@@ -754,3 +756,68 @@ env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
 ~~~
 
 Diagnóstico ligero reproducible: con el mismo entorno ejecutar python -m pytest -q tests/test_thermal_pauli_heat.py tests/test_thermal_stiffness_coupled_candidate.py; sin evolución larga ni reportes adicionales.
+
+
+## 2026-10-16 — v1.1.2: reloj físico, convergencia y techo100 ps
+
+Los anclajes1.1.1 no progresaban de manera fiable:775 nm cerca de3.02 ps y1550 nm cerca de4.51 ps. Se detuvo sólo su coordinador conSIGTERM y se preservaron checkpoints. Reproducción directa: h=1.9073486328125e-8 ps, RHS máximo de población1048.6757/ps, cero iteraciones y cero cambio en todos los campos. El residuo absoluto estaba debajo de2e-7; el reloj avanzaba sobre un predictor nulo. En el estado1550, Ceff/Cfd=5.41e-7 seguía positivo y su dirección continua incrementaba Ceff; no se concluye que ese checkpoint demuestre una capacidad física negativa.
+
+1.1.2 exige al menos una corrección, usa epsilonNL(h)=2e-7*min(1,h/0.02ps), comprueba la respuesta térmica completa dentro de la convergencia y retrocede las correcciones internas para mantener Ceff>0. No cambia las ecuaciones físicas, Dcal, rigidezTe, fuente, calorPauli, circuito ni la guarda independiente de energía. El presupuesto no lineal se hace más estricto al bajar h. El límite adaptativo1e-6 ps produce parada diagnóstica con checkpoint; no se impone piso a h/Ceff ni se cuenta como detección. Los estados1.1.1 quedan históricos; no reanudarlos como1.1.2.
+
+Caso nuevo:21.5 uA, ancho80 nm, espesor7 nm, longitud320 nm, malla5 nm, Rs425, D calibrada, escape20 ps, eta0.8 y sigma7.549834435 nm. Techo sin cruce100 ps; cruce positivo0.1 mV, confirmación0.5 ps, margen5 ps. Sin reset total. El plan12 casos ya está preparado; controles sólo tras ambos anclajes auditados. Resolver el bug no acredita convergencia de latencia ni validez global del cierre térmico.
+
+Recursos: hasta12 núcleos físicos para workers, un coordinador y al menos2 núcleos completos reservados; presupuesto90% compartido. El ejecutor cuenta otros procesos antes de asignar1–6 hilos por anclaje. BLAS/OpenMP1, datos/cachés/logs en scratch. El costo puede ser de horas o días; no hay ETA completa validada. Las pruebas internas de6 ps usan dos procesos de3 hilos, primer plano, checkpoints y límite de30 min por proceso; su estado final se registra en docs/releases/v1.1.2_checks.json. No extrapolar el rendimiento inicial a100 ps.
+
+### A. Nuevos anclajes — comando largo para el usuario
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env TMPDIR=/home/jdiaz/scratch/tmp/pysnspd \
+  PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/10_thermal_stiffness_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_2_20261016_01 \
+  --stage anchors --ceiling-ps 100 --max-worker-cores 12
+~~~
+
+### B. Controles — sólo después de A completa y auditada
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env TMPDIR=/home/jdiaz/scratch/tmp/pysnspd \
+  PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/10_thermal_stiffness_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_2_20261016_01 \
+  --stage controls --ceiling-ps 100 --max-worker-cores 12
+~~~
+
+Para reanudar sólo una interrupción1.1.2 con fuentes, parámetros, horizonte y hilos idénticos, añadir --resume. Una parada NUMERICAL_RESOLUTION_LIMIT requiere revisión del solver/cierre, no un reinicio ciego ni cambiar el límite para ocultar el fallo.
+
+### C. Reportes individuales de los nuevos anclajes completos
+
+~~~bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/07_case_report.py \
+  --run-dir \
+    /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_2_20261016_01/runs/anchor425_eta0800_775 \
+    /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_2_20261016_01/runs/anchor425_eta0800_1550 \
+  --snapshots-ps 0 1 5 10 20 35 \
+  --output-dir /home/jdiaz/scratch/case_reports/thermal_basecases_v1_1_2_20261016_01 \
+  --workers 2
+~~~
+
+Diagnóstico ligero: con el entorno anterior ejecutar python -m pytest -q tests/test_midpoint_clock_progress.py tests/test_thermal_stiffness_coupled_candidate.py. Evidencia causal y checkpoints internos: /home/jdiaz/scratch/v1_1_2_debug_20261016.

@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.1.1 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.1.2 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -17,7 +17,7 @@
 \newcommand{\refs}{\vfill{\footnotesize\href{Supuestos.pdf}{Hipótesis y límites: Supuestos}; \href{Parametros.pdf}{entradas: Parametros}.}}
 \begin{document}
 {\LARGE\bfseries\color{ink}Ecuaciones auxiliares durante la evolución}\par
-{\small Candidato 1.1.1. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
+{\small Candidato 1.1.2. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
 \renewcommand{\theequation}{2.\arabic{equation}}
 \block{Energía libre de gradiente y fuerza}
 \hypertarget{G-final}{}
@@ -247,7 +247,7 @@
  t_{\rm end}\geq t_\times+5\,\mathrm{ps},\\
  t_0=0\ (\text{postcascada}),\quad\tau_{\rm lat}=t_\times-t_0,\quad
  \Delta\tau=\tau_{\rm lat}(1550)-\tau_{\rm lat}(775),\\
- I_b>0,\ I_s>0,\qquad t_{\max}^{\rm sin\ cruce}=200\,\mathrm{ps}.
+ I_b>0,\ I_s>0,\qquad t_{\max}^{\rm sin\ cruce}=100\,\mathrm{ps}.
 \end{gather}
 {\small \(V_{\rm out}\) no incluye amplificador, filtro ni ruido; no equivale al voltaje de osciloscopio de Korzh. No cruce al techo: censura. Fallo de capacidad/integración: fallo del candidato, no censura física. Sin reset eléctrico completo.}
 \par\begin{tabular}{@{}p{.29\linewidth}p{.67\linewidth}@{}}
@@ -260,7 +260,7 @@
 \end{tabular}\par
 \origin{Kirchhoff y energía electromagnética; circuito de la memoria, parámetros heredados explícitos en \href{Parametros.pdf}{Parametros}, no setup completo publicado de Korzh.}
 \refs\newpage
-\block{Integración conjunta y admisión numérica}
+\block{Integración conjunta y admisión numérica}\small
 \begin{gather}
  {\cal X}=(d,p,n,I_b,I_s,v_c),\quad
  \delta{\cal X}=h{\cal F}_h({\cal X}^{mid}),\quad
@@ -284,7 +284,7 @@
  (E_{\rm ref}+\sum_{\ell<m}|\delta W_\ell|+|\delta W_m|),\\
  0\leq p^{m+1}\leq1,\quad n^{m+1}\geq0,\quad
  C_{\rm eff}({\cal X}^{mid}),C_{\rm eff}({\cal X}^{m+1})>0,\\
- \epsilon_{\rm NL}=2\,10^{-7},\quad
+ \epsilon_{\rm NL}(h)=2\,10^{-7}\min(1,h/(0.02\,{\rm ps})),\quad
  \epsilon_{\rm guard}=2.5\,10^{-6},\quad h_{\max}=0.02\,\mathrm{ps},\\
  \delta p_{ik}=\tfrac12g_{p,ik},\qquad
  \delta T_i=\frac{\sum_k\epsilon_{ik}\delta p_{ik}}{C_{{\rm FD},i}},\\
@@ -306,6 +306,7 @@
 {\small $h$ [s]: paso; $h_{ik}$ [J$^{-1}$]: portador; $g_d,g_c$: residuos escalados. $\lambda$ conserva eventos; $b_\mu,L_\mu$: presupuesto/pérdida de tasa de estados consumidos $\mathcal C(a)$. Fuente electrónica firmada fuera del limitador; $\gamma_h\to1/\tau$ para BGK/escape. Sin clipping, calor residual ni piso de capacidad. Hessiano a $T_E$ fijo sólo precondiciona; defecto del RHS completo y guarda BCS interna.}
 {\small Tras converger, $\delta p=g_p/2$ es dirección: \textbf{no se forma $p+\delta p$}. Fijos $d,n,(I_b,I_s,v_c)$ del punto medio; $D_p,D_{\mathbf T}$ son derivadas analíticas; $(D_p\mathcal F)_{\mathbf T}\delta p=2u^*d\sum_kw_k\delta p_k/e_k$. $\delta\mathcal F$ [J], $\delta I^s$ [A] y $\delta\phi$ [V] incluyen la cadena de $T_E$.}
 {\small $\mathcal M$ [J$^{-1}$s$^{-1}$] es el operador KWT lineal sobre los reales de Principal; $\delta\mathcal M$ se obtiene al derivar $A,R$ con el incremento $\delta v$ del piso térmico. En cortes sólo cambia la fase Josephson. $\delta R_d,\delta R_\theta$ tienen unidades s$^{-1}$. El indicador mide sensibilidad analítica del residuo con incremento direccional del piso de movilidad. No acota rigurosamente el error temporal; $C_{\rm eff}>0$ se exige en estados físicos, sin materializar la dirección.}
+{\small Aceptar sólo tras al menos una corrección conjunta. El defecto térmico completo entra en cada prueba de convergencia. Búsqueda interna sobre correcciones: mantener $C_{\rm eff}>0$ sin piso. Si un rechazo exige $\Delta t_{\rm adapt}<10^{-6}$ ps, guardar checkpoint y detener por límite numérico; nunca aumentar el paso artificialmente ni asignar detección.}
 \block{Comparación mínima antes de admitir latencias}
 \[
  h_{\max}\to h_{\max}/2,\quad

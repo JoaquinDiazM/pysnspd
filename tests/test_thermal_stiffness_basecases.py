@@ -93,17 +93,17 @@ def fake_terminal(tmp_path):
     files = ["snapshots.npz", "checkpoint_latest.npz", "dc/effective_dc.npz", "material.npz", "material.json", "source_initial_state.npz"]
     for name in files:
         (run/name).write_bytes(b"authenticated fixture")
-    np.savez(run/"trajectory.npz", time_s=np.array([0., 200e-12]), energy_total_J=np.array([2., 2.]), external_energy_integral_J=np.array([0., 0.]))
+    np.savez(run/"trajectory.npz", time_s=np.array([0., 100e-12]), energy_total_J=np.array([2., 2.]), external_energy_integral_J=np.array([0., 0.]))
     calibration = {"diffusion_m2_s": 1.4103757147e-4}
     identity = dict(case["parameters"], threads=threads)
     physics = dict(calibration=calibration, parameter_identity=identity, source_pins_sha256=definition["source_pins_sha256"][mode])
     campaign.write_json(run/"calibration.json", calibration)
     campaign.write_json(run/"candidate_physics_identity.json", physics)
     manifest = dict(parameter_identity=identity, source_pins_sha256=physics["source_pins_sha256"],
-        run_complete=True, status="TIME_CENSORED_NO_TRIGGER", model_version="1.1.1-candidate",
+        run_complete=True, status="TIME_CENSORED_NO_TRIGGER", model_version="1.1.2-candidate",
         closure=dict(stiffness_temperature=mode), physicalparams=dict(diffusion_calibration=calibration),
         observation=dict(threshold_voltage_V=.1e-3, confirmation_time_s_required=.5e-12,
-            extra_time_s=5e-12, no_trigger_ceiling_s=200e-12, full_reset_requested=False,
+            extra_time_s=5e-12, no_trigger_ceiling_s=100e-12, full_reset_requested=False,
             trigger_confirmed=False, first_crossing_time_s=None),
         output_sha256={name: campaign.sha(run/name) for name in files+["trajectory.npz"]},
         source=dict(retained_energy_J=1., relative_total_energy_defect=0., maximum_nodal_energy_defect_J=0.,
@@ -184,3 +184,8 @@ def test_foreground_workers_use_distinct_slots_and_completed_resume_is_exact(tmp
     receipt = json.loads((tmp_path/"campaign_execution.json").read_text())
     assert all(item["status"] == "COMPLETE_AUDITED" for item in receipt["cases"].values())
     assert all(item["threads"] == 6 for item in receipt["cases"].values())
+def test_observation_ceiling_is_explicit_in_every_case_and_plan_identity(tmp_path):
+    nominal=campaign.plan(tmp_path/"nominal")
+    short=campaign.plan(tmp_path/"short",ceiling_ps=50.)
+    assert all(c["parameters"]["ceiling_ps"]==100. for c in nominal["cases"])
+    assert all(c["parameters"]["ceiling_ps"]==50. for c in short["cases"])

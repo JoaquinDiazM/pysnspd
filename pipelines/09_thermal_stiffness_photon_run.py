@@ -1,7 +1,7 @@
 """Candidate electron-temperature rigidity runner; calibrated bath control available.
 
 Reuses the frozen runner's transaction, implicit-midpoint and trigger machinery
-through a private imported module. The published 05/08 files remain unchanged.
+through a private imported module. The shared runner retains its transaction and explicit resolution-stop hook.
 All numerical products stay in a new scratch run directory. Completion is not
 physical admission; positive effective capacity is a required candidate guard.
 """
@@ -40,7 +40,9 @@ def parser():
     result.add_argument("--sheet-resistance-ohm", type=float, default=425.)
     result.add_argument("--target-depairing-uA", type=float, default=38.8*80/120)
     result.add_argument("--stiffness-temperature", choices=("electron", "bath"), default="electron")
-    result.set_defaults(tau_escape_ps=20., current_uA=21.5, local_energy_tolerance=2.5e-6)
+    result.add_argument("--minimum-adaptive-step-ps", type=float, default=1e-6,
+        help="Stop and preserve checkpoint below this adaptive resolution; never floor a timestep")
+    result.set_defaults(tau_escape_ps=20., current_uA=21.5, local_energy_tolerance=2.5e-6, ceiling_ps=100.)
     return result
 
 
@@ -50,6 +52,8 @@ def validate_args(args):
         value = float(getattr(args, name))
         if not math.isfinite(value) or value <= 0:
             raise ValueError(name+" must be finite and positive")
+    if not math.isfinite(args.minimum_adaptive_step_ps) or not 0<args.minimum_adaptive_step_ps<=args.dt_ps:
+        raise ValueError("minimum_adaptive_step_ps must be positive and no larger than dt_ps")
     if args.current_uA >= args.target_depairing_uA:
         raise ValueError("current_uA must remain below target_depairing_uA")
     if args.bath_K >= 8.65:
@@ -73,7 +77,10 @@ def source_pins():
 def write_json(path, value):
     if Path(path).name == "manifest.json" and isinstance(value, dict):
         value["schema"] = SCHEMA
-        value["model_version"] = "1.1.1-candidate"
+        value["model_version"] = "1.1.2-candidate"
+        if value.get("status")=="INTEGRATION_FAILURE" and "Declared adaptive-step resolution reached" in value.get("error",""):
+            value["status"]="NUMERICAL_RESOLUTION_LIMIT"
+            value["resolution_limit_is_detection"]=False
         value["candidate_schema"] = "pysnspd.thermal_stiffness_photon_candidate.v1"
         value.setdefault("admission", {}).update(candidate=True, stage5=False,
             physical_admission=False, policy="Candidate execution is not numerical or physical admission")
@@ -91,7 +98,10 @@ def write_json(path, value):
         if _MODE == "electron":
             value.setdefault("numerical", {}).update(positive_effective_capacity_required=True,
                 capacity_floor_used=False, signed_reversible_gradient_source=True,
-                thermal_induced_gap_guard="Full force/current/potential/mobility response to midpoint population residual must stay below step_tolerance; checked after inherited solve")
+                thermal_induced_gap_guard="Full thermal response checked inside every nonlinear convergence test and at returned endpoint",
+                nonlinear_tolerance_policy="nominal tolerance * min(1, h_ps/0.02); at least one coupled correction",
+                internal_capacity_line_search=True,
+                adaptive_resolution_stop_ps=value.get("parameter_identity",{}).get("minimum_adaptive_step_ps",1e-6))
             if _LAST_SYSTEM is not None and hasattr(_LAST_SYSTEM, "last_thermal_diagnostics"):
                 value["thermal_candidate_diagnostics"] = dict(_LAST_SYSTEM.last_thermal_diagnostics)
                 if hasattr(_LAST_SYSTEM, "minimum_evaluated_capacity_ratio"):
@@ -220,7 +230,7 @@ def build_system(args, output, *, resume=False):
         calibrators="Free effective hypotheses; depairing-target fit is not independent material measurement",
         exterior_inductance=asdict(exterior), circuit=asdict(circuit))
     physics_identity = dict(schema="pysnspd.thermal_candidate_physics_identity.v1",
-        model_version="1.1.1-candidate", source_pins_sha256=source_pins(),
+        model_version="1.1.2-candidate", source_pins_sha256=source_pins(),
         parameter_identity=BASE.parameter_identity(args), calibration=calibration,
         calibrated_mesh_sha256=geometry.receipt["mesh_sha256"],
         candidate_physical_admission=False)

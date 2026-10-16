@@ -1,8 +1,8 @@
-# pySNSPD 1.1.1
+# pySNSPD 1.1.2
 
-**Versión vigente: v1.1.1, extensión térmica efectiva con difusión calibrada.** Corrige el bloqueo de los anclajes 1.1.0 causado por un portador de calor que podía enfriar estados vacíos. El reparto usa actividades FD/Pauli según el signo de la potencia: conserva energía y produce entropía adicional no negativa fuera de FD. Conserva la rigidez dependiente de Te y la guardia Ceff>0, sin clipping ni pisos.
+**Versión vigente: v1.1.2, extensión térmica efectiva con difusión calibrada.** Corrige la aceptación de pasos sin actualización y la reutilización de la tolerancia absoluta nominal en pasos adaptativos diminutos. Exige al menos una corrección conjunta, escala el presupuesto no lineal con h/0.02 ps, incluye la respuesta térmica completa en la convergencia y mantiene capacidad positiva durante las iteraciones internas. Las ecuaciones físicas, la rigidez dependiente de Te, D calibrada y el calor Pauli de 1.1.1 se conservan.
 
-Los casos nuevos usan [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py) y [campaña 10](pipelines/10_thermal_stiffness_basecases.py). Los dos ensayos nominales completaron 0.2 ps en menos de tres minutos por caso; esto elimina el bloqueo observado cerca de 0.05 ps y no acredita todavía latencias completas. Iniciar una campaña nueva: las trayectorias 1.1.0 se preservan y no se reanudan con ecuaciones distintas. Véanse [corrección y evidencia](docs/releases/v1.1.1.md), [matemáticas](Matematica/), [supuestos](Matematica/Supuestos.pdf) y [comandos actuales](docs/GEMINGA_COMMANDS_PRESENT.md).
+Los anclajes 1.1.1 se bloquearon cerca de 3.02 y 4.51 ps; sus checkpoints quedan históricos. La nueva ejecución usa [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py) y [campaña 10](pipelines/10_thermal_stiffness_basecases.py), con techo sin gatillo de 100 ps. Si el paso adaptativo exigido cae bajo 1e-6 ps, se guarda checkpoint y se detiene por resolución insuficiente: no se impone un piso al paso ni a Ceff. La corrección de software no establece recuperación de toda la trayectoria ni admisión fotónica. Véanse [diagnóstico y alcance](docs/releases/v1.1.2.md), [matemáticas](Matematica/) y [comandos actuales](docs/GEMINGA_COMMANDS_PRESENT.md).
 
 ## Referencia histórica admitida: v1.0.0
 
@@ -64,7 +64,7 @@ El reloj comienza en la transferencia efectiva posterior a la cascada. Una traye
 
 ## Versiones e historia
 
-La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La revisión1.1.1 incorpora la extensión térmica y mantiene separada su admisión de la referencia v1.0.0. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
+La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La revisión1.1.2 incorpora la extensión térmica y mantiene separada su admisión de la referencia v1.0.0. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
 
 La [documentación anterior](docs/releases/history/README_before_v1.1.0_20261011.md) y el [historial de comandos](docs/GEMINGA_COMMANDS.md) conservan las decisiones y resultados previos. Los datos pesados permanecen en scratch y se enlazan mediante sus manifiestos.
 

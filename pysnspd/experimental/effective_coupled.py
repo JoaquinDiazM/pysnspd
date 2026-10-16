@@ -269,6 +269,9 @@ class EffectiveCoupledSystem:
             force_cart=np.column_stack((delta_force.real,delta_force.imag)).ravel()
             induced_gap=h*(self.mobility_blocks(mid.delta_bar,rhs.temperature_K)@force_cart)
             induced_gap_defect=float(np.max(abs(induced_gap[self._free_cart]),initial=0.))
+            if hasattr(self,"thermal_population_gap_defect"):
+                induced_gap_defect=max(induced_gap_defect,
+                    self.thermal_population_gap_defect(mid,rhs,gp,h))
             defect=max(float(np.max(abs(gu))),float(np.max(abs(gc))),
                 p_energy_defect/self.kinetic_residual_energy_scale_J,
                 n_energy_defect/self.kinetic_residual_energy_scale_J,induced_gap_defect)
@@ -280,7 +283,10 @@ class EffectiveCoupledSystem:
                     induced_gap_defect=induced_gap_defect,
                     n_defect=float(np.max(abs(gn)/(1+mid.n))),cm_defect=float(np.max(abs(gc))),
                     p_min=float(mid.p.min()),n_min=float(mid.n.min()))),flush=True)
-            if defect<tolerance:
+            # A small h scales every residual below an absolute tolerance.
+            # Accepting the untouched predictor then advances time with zero
+            # dynamics. Always perform a coupled correction before acceptance.
+            if iteration > 0 and defect<tolerance:
                 result=self.shifted(state,du,dp,dn,dc)
                 if (np.any(result.p<0) or np.any(result.p>1) or np.any(result.n<0)
                         or np.any(~np.isfinite(result.delta_bar)) or min(result.circuit_SI[:2])<=0):
@@ -332,8 +338,11 @@ class EffectiveCoupledSystem:
             cn=kinetic_correction[split:].reshape(state.n.shape)*nscale
             ap=feasible_fraction(state.p+dp,cp,1.)
             an=feasible_fraction(state.n+dn,cn)
-            du+=correction[:ng];dp+=ap*cp;dn+=an*cn
-            dc+=correction[ng+nphi:]
+            cu=correction[:ng];cp=ap*cp;cn=an*cn;cc=correction[ng+nphi:]
+            damping=(self.coupled_iteration_damping(state,du,dp,dn,dc,cu,cp,cn,cc)
+                if hasattr(self,"coupled_iteration_damping") else 1.)
+            du+=damping*cu;dp+=damping*cp;dn+=damping*cn
+            dc+=damping*cc
             if min((state.circuit_SI+dc*self.circuit_scales)[:2])<=0:
                 raise ArithmeticError("Newton current step would reverse global current")
             previous=defect

@@ -122,6 +122,8 @@ def test_cli_and_resume_identity_capture_every_new_physical_parameter():
     assert base.tau_escape_ps == 20.
     assert base.sigma_nm == 7.549834435
     assert base.stiffness_temperature == "electron"
+    assert base.ceiling_ps == 100.
+    assert base.minimum_adaptive_step_ps == 1e-6
     original = runner.BASE.parameter_identity(base)
     for name, value in (("sheet_resistance_ohm", 608.), ("target_depairing_uA", 25.),
                         ("stiffness_temperature", "bath")):
@@ -141,7 +143,7 @@ def test_manifest_remains_report_compatible_and_marks_candidate(tmp_path, monkey
     runner.write_json(target, manifest)
     loaded = runner.BASE.json.loads(target.read_text())
     assert loaded["schema"] == "pysnspd.effective_photon_run.v1"
-    assert loaded["model_version"] == "1.1.1-candidate"
+    assert loaded["model_version"] == "1.1.2-candidate"
     assert loaded["admission"]["candidate"]
     assert not loaded["admission"]["physical_admission"]
     assert ("f*(1-p)" in loaded["closure"]["signed_heat_carrier"]) == (mode == "electron")

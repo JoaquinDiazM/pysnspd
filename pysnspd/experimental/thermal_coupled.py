@@ -123,6 +123,29 @@ class ThermalCoupledSystem(EffectiveCoupledSystem):
             dz,material,q,temp,energy+self.circuit.energy(cm),energy,external,residual,
             domainrate-expectedfilm,reservoir,escape,limit,ev,el,kin)
 
+    def coupled_iteration_damping(self,state,du,dp,dn,dc,cu,cp,cn,cc):
+        """Keep internal nonlinear iterates in the positive-capacity domain."""
+        f=self.functional;fraction=1.
+        for _ in range(40):
+            valid=True
+            for scale in (.5,1.):
+                trial=self.shifted(state,du+fraction*cu,dp+fraction*cp,
+                    dn+fraction*cn,dc+fraction*cc,scale)
+                if (np.any(~np.isfinite(trial.delta_bar)) or
+                        np.any(trial.p<0) or np.any(trial.p>1) or
+                        np.any(trial.n<0) or min(trial.circuit_SI[:2])<=0):
+                    valid=False;break
+                try:
+                    td=f.thermal_data(trial.delta_bar,trial.p)
+                except (ValueError,ArithmeticError):
+                    valid=False;break
+                ce=td["capacity_effective_J_K"]
+                if np.any(~np.isfinite(ce)) or np.any(ce<=0):
+                    valid=False;break
+            if valid:return fraction
+            fraction*=.5
+        raise ArithmeticError("No admissible internal thermal Newton correction")
+
     def population_gap_response(self,state,rhs,p_direction):
         '''Analytic RHS response to a signed population residual direction.
 
@@ -167,9 +190,19 @@ class ThermalCoupledSystem(EffectiveCoupledSystem):
             raise ArithmeticError("Nonfinite full thermal gap-response indicator")
         return response,dphi,dtemp
 
+    def thermal_population_gap_defect(self,state,rhs,p_residual,h_ps):
+        response,dphi,_=self.population_gap_response(state,rhs,.5*p_residual)
+        induced=float(h_ps*np.max(abs(response[self.free]),initial=0.))
+        for nodes in self.cuts:
+            induced=max(induced,float(h_ps*self.kappa_per_ps_V*abs(dphi[nodes[0]])))
+        return induced
+
     def midpoint_step(self,state,h_ps,*,tolerance=2e-9,max_iterations=40):
         """Also check the full thermal gap response to population residual."""
-        result,receipt=super().midpoint_step(state,h_ps,tolerance=tolerance,
+        # Bound accumulated nonlinear error per unit physical time. A tiny
+        # adaptive step must not receive the whole nominal-step error budget.
+        solve_tolerance=tolerance*min(1.,float(h_ps)/.02)
+        result,receipt=super().midpoint_step(state,h_ps,tolerance=solve_tolerance,
             max_iterations=max_iterations)
         mid=state.copy()
         mid.delta_bar=(state.delta_bar+result.delta_bar)/2
@@ -184,8 +217,11 @@ class ThermalCoupledSystem(EffectiveCoupledSystem):
         induced=float(h_ps*np.max(abs(response[self.free]),initial=0.))
         for nodes in self.cuts:
             induced=max(induced,float(h_ps*self.kappa_per_ps_V*abs(dphi[nodes[0]])))
-        if induced>=tolerance:
+        if induced>=solve_tolerance:
             raise ArithmeticError("Full thermal gap response to population residual exceeds tolerance: "+str(induced))
+        receipt["nonlinear_nominal_tolerance"]=float(tolerance)
+        receipt["nonlinear_actual_tolerance"]=float(solve_tolerance)
+        receipt["nonlinear_reference_step_ps"]=.02
         receipt["thermal_induced_gap_defect"]=induced
         receipt["thermal_response_method"]="analytic signed population direction; no unsupported trial"
         receipt["thermal_population_direction_max_temperature_K"]=float(np.max(abs(dtemp),initial=0.))

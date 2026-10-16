@@ -463,6 +463,11 @@ def run(a, *, stop_requested=None):
     consecutive+=1;rejections+=1;stable=0;next_h=h_ps/2
     if isinstance(error,_LocalEnergyStepRejected):guard["local_energy_rejections"]+=1
     committed=capture_committed()
+    minimum_adaptive_step=getattr(a,"minimum_adaptive_step_ps",0.)
+    if minimum_adaptive_step and next_h<minimum_adaptive_step:
+     raise ArithmeticError("Declared adaptive-step resolution reached: time_ps="+str(t_ps)+
+      ", next_step_ps="+str(next_h)+", minimum_adaptive_step_ps="+str(minimum_adaptive_step)+
+      "; last rejected step: "+str(error)) from error
     if consecutive>=a.max_rejections:raise ArithmeticError("Repeated coupled step rejection: "+str(error)) from error
     if time.monotonic()-last_progress>=60:
      print(json.dumps(dict(status="STEP_REJECTED",time_ps=t_ps,next_step_ps=next_h,

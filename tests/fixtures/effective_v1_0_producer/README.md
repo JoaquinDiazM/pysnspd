@@ -1,0 +1,1 @@
+Immutable v1.0.0 producer fixture, commit7992f6a. SHA25670b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa. Used only to inspect historical checkpoint schemas in unit tests. Never executed as the current solver; production legacy source-hash gates remain unchanged.

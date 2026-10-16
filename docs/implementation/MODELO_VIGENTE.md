@@ -1,4 +1,6 @@
-# Modelo vigente: neutral efectivo BCS/KWT 1.1.1
+# Modelo vigente: neutral efectivo BCS/KWT 1.1.2
+
+La revisión1.1.2 conserva las ecuaciones físicas1.1.1 y modifica su resolución: una corrección conjunta obligatoria, tolerancia no lineal proporcional al paso por debajo de0.02 ps, respuesta térmica completa dentro del criterio y búsqueda interna de capacidad positiva. La observación sin cruce termina a100 ps. Una resolución adaptativa inferior a1e-6 ps detiene y guarda el estado; no modifica la física ni acredita detección. [Alcance y comprobaciones](../releases/v1.1.2.md).
 
 La extensión vigente usa $G(\Delta,T_E)$ como energía libre, $U=U_{\rm BCS}+G-\sum_iT_{E,i}G_{T_i}$ y $S=S_{qp}-\sum_iG_{T_i}$. Fuerza y corriente derivan de $G$ a temperatura fija. La potencia electrónica es $P_i=Q_{\Delta,i}+P_{J,i}+T_{E,i}\dot G_{T_i}$ y se exige $C_{\rm eff}>0$ sin piso. La difusión se calibra al depareo inferido para el dispositivo; no es una medida independiente del transporte.
 

@@ -110,10 +110,18 @@ The user explicitly authorizes this task to execute runs longer than five minute
 
 ## Active model standard (user, 2026-10-15)
 
-- Use the latest implemented model version for new normal simulations and case reports; the current standard is v1.1.1, with electron-temperature-dependent stiffness and depairing-calibrated diffusion.
-- Use older versions only for explicitly identified historical analyses or scientific controls. Keep version/closure identity visible; the current v1.1.1 photon admission remains pending.
+- Use the latest implemented model version for new normal simulations and case reports; the current standard is v1.1.2, with electron-temperature-dependent stiffness and depairing-calibrated diffusion.
+- Use older versions only for explicitly identified historical analyses or scientific controls. Keep version/closure identity visible; the current v1.1.2 photon admission remains pending.
 
 ## Signed heat correction (2026-10-15, v1.1.1)
 
 - Electron-temperature runs use directional FD/Pauli heat activities, energy normalization and nonnegative excess entropy. Do not restore the former exact dual-moment heat carrier: it can cool empty states.
 - Preserve the positive-capacity guard, actual circuit, calibrated diffusion and source hashes. Never resume a v1.1.0 trajectory under the changed v1.1.1 equations; initialize fresh cases in a new scratch campaign.
+
+## Numerical clock and observation policy (user task, 2026-10-16)
+
+- New thermal campaigns use v1.1.2 and a 100 ps no-trigger ceiling; retain crossing confirmation and 5 ps extra time. This is observation censoring, not full reset.
+- Never accept an untouched nonlinear predictor merely because h times the RHS fits an absolute tolerance. Require at least one coupled correction and scale thermal nonlinear tolerance by min(1,h/0.02 ps).
+- Test the complete thermal population-to-gap response within convergence, not solely after returning from the solver. Internal iterates require Ceff>0 without a floor.
+- The declared minimum adaptive step is 1e-6 ps by default. Stop with checkpoint below that resolution; never replace the required step with the limit or count it as detection. Retain numerical-resolution failures as failed/incomplete model evidence.
+- Preserve 1.1.1 frozen trajectories; restart new cases from fresh DC/source under the changed numerical acceptance policy.

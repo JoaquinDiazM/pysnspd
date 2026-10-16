@@ -1,0 +1,257 @@
+{
+  "version": "1.1.2",
+  "base_commit": "bf34716b58818fcb3363cb37ca132986ded23b05",
+  "causal_before": {
+    "h_ps": 1.9073486328125e-08,
+    "iterations": 0,
+    "defect": 1.354637654735307e-07,
+    "max_rhs_dp_per_ps": 1048.6757251422919,
+    "max_delta_change": 0.0,
+    "max_p_change": 0.0,
+    "max_n_change": 0.0,
+    "max_circuit_change": 0.0
+  },
+  "continuous_physics_unchanged": {
+    "pysnspd/experimental/effective_coupled.py:evaluate": true,
+    "pysnspd/experimental/thermal_coupled.py:evaluate": true,
+    "pysnspd/experimental/thermal_stiffness.py": true,
+    "pysnspd/experimental/depairing_calibration.py": true,
+    "pysnspd/experimental/effective_bcs_kinetics.py": true,
+    "pysnspd/experimental/electrical_ports.py": true
+  },
+  "capacity_checkpoints": [
+    {
+      "wavelength_nm": 775,
+      "time_ps": 3.0194140625003745,
+      "node": 2181,
+      "xy_nm": [
+        156.93175055016178,
+        -27.21436549787157
+      ],
+      "Te_K": 8.035428336236146,
+      "gap_bar": 0.9988996780651315,
+      "Cfd_J_K": 3.204278772048999e-23,
+      "Ceff_J_K": 9.716028234299205e-27,
+      "minimum_capacity_ratio": 0.00030322044133776233,
+      "gradient_free_J": 2.105923135184688e-22,
+      "radial_gradient_fraction": 0.03914498601904277,
+      "minimum_phase_only_capacity_ratio": 0.0394363369004439,
+      "instantaneous_power_residual_W": -3.523789409475898e-22,
+      "max_Tdot_K_ps": 49.91336883631757,
+      "source_pins_sha256": {
+        "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+        "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+        "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+        "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+        "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+        "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+        "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+        "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+        "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+        "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+        "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+        "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+        "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+        "pipelines/09_thermal_stiffness_photon_run.py": "019bcd24f32b9ebb823550f04a08fba6463ccf2ca3192b522f40c49f199b248b",
+        "pysnspd/experimental/depairing_calibration.py": "c30eba6d7631f7a88e70254e871a5241d93744e6273004ef883d76ad6c1d4594",
+        "pysnspd/experimental/thermal_stiffness.py": "5d1b05409fa61026886dd8525516c45a5dbeb8c9dec13ebd4f684f63f429b53b",
+        "pysnspd/experimental/thermal_coupled.py": "25c21db2824403ff5f5b5a76578f4d42c6b7f343205ac7152373d64074015785"
+      }
+    },
+    {
+      "wavelength_nm": 1550,
+      "time_ps": 4.5071265602105886,
+      "node": 1601,
+      "xy_nm": [
+        160.72415723770064,
+        -22.611879936153834
+      ],
+      "Te_K": 6.591901430904672,
+      "gap_bar": 0.932332870519552,
+      "Cfd_J_K": 2.5960903556388603e-23,
+      "Ceff_J_K": 1.4053291994736462e-29,
+      "minimum_capacity_ratio": 5.413252263817354e-07,
+      "gradient_free_J": 1.6291142802294918e-22,
+      "radial_gradient_fraction": 0.07378101768439552,
+      "minimum_phase_only_capacity_ratio": 0.073781519070096,
+      "instantaneous_power_residual_W": 5.831623318498845e-22,
+      "max_Tdot_K_ps": 27533.14068244873,
+      "source_pins_sha256": {
+        "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+        "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+        "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+        "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+        "pysnspd/experimental/effective_coupled.py": "c986c055c7c47c02d17d6d6173045779b5823e673f111eb403e53525b5246f63",
+        "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+        "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+        "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+        "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+        "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+        "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+        "pipelines/05_effective_photon_run.py": "70b7c5b5d39c74f19a35ad816f413ecc47451c46651817708549b8e9fc8e97aa",
+        "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+        "pipelines/09_thermal_stiffness_photon_run.py": "019bcd24f32b9ebb823550f04a08fba6463ccf2ca3192b522f40c49f199b248b",
+        "pysnspd/experimental/depairing_calibration.py": "c30eba6d7631f7a88e70254e871a5241d93744e6273004ef883d76ad6c1d4594",
+        "pysnspd/experimental/thermal_stiffness.py": "5d1b05409fa61026886dd8525516c45a5dbeb8c9dec13ebd4f684f63f429b53b",
+        "pysnspd/experimental/thermal_coupled.py": "25c21db2824403ff5f5b5a76578f4d42c6b7f343205ac7152373d64074015785"
+      }
+    }
+  ],
+  "resolution_stop_test": {
+    "status": "NUMERICAL_RESOLUTION_LIMIT",
+    "physical_time_ps": 0.0,
+    "checkpoint_preserved": true,
+    "detected": false,
+    "test_scope": "Transaction deliberately forces one-iteration failure, not a physical transient acceptance test",
+    "error": "ArithmeticError('Declared adaptive-step resolution reached: time_ps=0.0, next_step_ps=0.01, minimum_adaptive_step_ps=0.02; last rejected step: Coupled midpoint did not converge')"
+  },
+  "smooth_step_refinement": {
+    "total_time_ps": 0.0004,
+    "coarse_vs_half": {
+      "gap": 3.539464342889492e-08,
+      "electron": 7.755128761388619e-10,
+      "circuit_uA": 1.4304268896756997e-11
+    },
+    "half_vs_quarter": {
+      "gap": 8.849326972175466e-09,
+      "electron": 1.9394953698625983e-10,
+      "circuit_uA": 3.5759613450708425e-12
+    },
+    "ratios": {
+      "gap": 3.999698908197728,
+      "electron": 3.998529144175283,
+      "circuit_uA": 4.000118434298573
+    },
+    "wall_s": 0.12466341399704106,
+    "scope": "Smooth small-system order check only; no nominal photon-latency convergence"
+  },
+  "actual_old_checkpoint_after": {
+    "h_ps": 1.9073486328125e-08,
+    "wall_s": 17.462935271003516,
+    "success": true,
+    "iterations": 16,
+    "energy_defect_J": -3.958213928768336e-32,
+    "endpoint_capacity_ratio": 8.985355446987495e-06,
+    "max_p_change": 1.624138231459682e-06
+  },
+  "larger_step_at_old_checkpoint": {
+    "h_ps": 1e-05,
+    "wall_s": 46.42661619599676,
+    "success": false,
+    "error": "ArithmeticError: Coupled midpoint did not converge"
+  },
+  "release_suite": {
+    "passed": 704,
+    "failed": 0,
+    "skipped": 3,
+    "subtests_passed": 417,
+    "wall_s": 78.31,
+    "log": "/home/jdiaz/scratch/v1_1_2_debug_20261016/release_pytest_final.log",
+    "log_sha256": "3cebd98c6d3a62ed08aae6e9b34b901896a5fc9bf3010f2ff24b0a49e46c527b"
+  },
+  "nominal_fresh_validation": [
+    {
+      "wavelength_nm": 775,
+      "requested_target_ps": 6.0,
+      "target_completed": false,
+      "status": "INTERRUPTED",
+      "stop_reason": "Declared30-minute foreground budget; SIGTERM saved accepted checkpoint",
+      "progress": {
+        "time_ps": 2.559999999999988,
+        "accepted_steps": 214,
+        "total_rejections": 20,
+        "elapsed_wall_s": 1803.2721488569805,
+        "elapsed_session_wall_s": 1803.2721488569805,
+        "session_start_time_ps": 0.0,
+        "elapsed_wall_scope": "current_process_session; elapsed_wall_s is a compatibility alias"
+      },
+      "endpoint_capacity_ratio": 0.40970834229327335,
+      "minimum_successful_rhs_capacity_ratio": 0.23688991584583163,
+      "maximum_energy_defect_J": 2.1746643277378998e-24,
+      "finite_support_positive_global_currents_verified": true,
+      "checkpoint_sha256": "8c73314c7d9a50de610c82021faf6e6b801591d320bf0407022d048313455ad1",
+      "run_directory": "/home/jdiaz/scratch/v1_1_2_debug_20261016/fresh_775_6ps",
+      "old_stall_crossing_verified": false
+    },
+    {
+      "wavelength_nm": 1550,
+      "requested_target_ps": 6.0,
+      "target_completed": false,
+      "status": "INTERRUPTED",
+      "stop_reason": "Declared30-minute foreground budget; SIGTERM saved accepted checkpoint",
+      "progress": {
+        "time_ps": 3.4999999999999853,
+        "accepted_steps": 268,
+        "total_rejections": 18,
+        "elapsed_wall_s": 1801.312346944993,
+        "elapsed_session_wall_s": 1801.312346944993,
+        "session_start_time_ps": 0.0,
+        "elapsed_wall_scope": "current_process_session; elapsed_wall_s is a compatibility alias"
+      },
+      "endpoint_capacity_ratio": 0.6640629839252808,
+      "minimum_successful_rhs_capacity_ratio": 0.5982140612344364,
+      "maximum_energy_defect_J": 6.368613245556248e-25,
+      "finite_support_positive_global_currents_verified": true,
+      "checkpoint_sha256": "3e4a20491deb847830cba04884231e997a73d8feb6e2993a3f1ebe4d3dea800f",
+      "run_directory": "/home/jdiaz/scratch/v1_1_2_debug_20261016/fresh_1550_6ps",
+      "old_stall_crossing_verified": false
+    }
+  ],
+  "observation_ceiling_ps": 100.0,
+  "adaptive_resolution_ps": 1e-06,
+  "no_capacity_floor": true,
+  "no_occupation_clipping": true,
+  "no_tolerance_relaxation": true,
+  "physical_admission": false,
+  "full_window_recovery_verified": false,
+  "full_reset_simulated": false,
+  "old_campaign_stopped_with_checkpoints": true,
+  "new_campaign": "/home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_2_20261016_01",
+  "mathematical_documents": [
+    {
+      "document": "Principal",
+      "pages": 2,
+      "sha256": "b526fd75f78b3bdc66aa5392f7c536c82254f7e5304b6be68f70f3502522cbb5",
+      "all_pages_visually_reviewed": true
+    },
+    {
+      "document": "Auxiliar",
+      "pages": 7,
+      "sha256": "ad242a928a230bbe57ccd3afab4e14612938b5ef99ac03b27a8b45a5c7481593",
+      "all_pages_visually_reviewed": true
+    },
+    {
+      "document": "Precomputo",
+      "pages": 4,
+      "sha256": "d715c76601d057d4352fdd6396e280e17230621c5949241d6f2eba19d623d6ad",
+      "all_pages_visually_reviewed": true
+    },
+    {
+      "document": "Parametros",
+      "pages": 6,
+      "sha256": "296d4b643890ccd34dbec902a61851ccffed6659d45298763b4073bcaf0ec9a1",
+      "all_pages_visually_reviewed": true
+    },
+    {
+      "document": "Supuestos",
+      "pages": 6,
+      "sha256": "ffc15e3bbb9a2c5ca58164de55d5fad5456de46f8119b474e5c1bb6c1ab8ce5c",
+      "all_pages_visually_reviewed": true
+    }
+  ],
+  "current_source_sha256": {
+    "pysnspd/experimental/effective_coupled.py": "98924c672d515590de222d19912ab09c34140c557630445e29a598a75dc67f72",
+    "pysnspd/experimental/thermal_coupled.py": "349a2323bacf3487dfd6a17944ebedd08963b3abc8d39aaacc633b941ece50c6",
+    "pipelines/05_effective_photon_run.py": "505c46a6f4f7a90d5a3887759ad26f6bc7017f92da58027b67d5fe9d007afbe4",
+    "pipelines/09_thermal_stiffness_photon_run.py": "971d4882d9c4a4573b7a7003c9949f818f1176c38076b75dc83837d91bf98a7c",
+    "pipelines/10_thermal_stiffness_basecases.py": "07da13d2b3f3b610048930bcb7dcfdfca25af1e6b6808847f9839b167d495d58",
+    "plot_pipelines/07_case_report.py": "1967e98c745a91a250b5ad7511d8d375297092c8db6f1c7a1304c9f26d6ba495"
+  },
+  "new_plan_sha256": "41e0a861dfa38c641cd40643556f8f94225295930360b2d655b085582c86b6df",
+  "final_report_version_suite": {
+    "passed": 9,
+    "wall_s": 0.58,
+    "log": "/home/jdiaz/scratch/v1_1_2_debug_20261016/report_versions_pytest.log",
+    "scope": "Render equations and authenticate model contracts for1.1.0,1.1.1 and1.1.2"
+  }
+}

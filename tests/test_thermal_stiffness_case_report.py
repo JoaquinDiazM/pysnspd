@@ -68,9 +68,11 @@ def test_thermal_identity_cannot_be_inferred_from_an_ambiguous_version():
     with pytest.raises(ValueError,match="Explicit model_version"):
         report.reconstruct_functional(c)
 
-def test_candidate_summary_equations_render_and_state_internal_energy_contract():
+@pytest.mark.parametrize("version",["1.1.0-candidate","1.1.1-candidate","1.1.2-candidate"])
+def test_candidate_summary_equations_render_and_state_internal_energy_contract(version):
     class Capture:
-        def __init__(self):self.c=case();self.caption=None;self.fig=None
+        def __init__(self):
+            self.c=case();self.c["m"]["model_version"]=version;self.caption=None;self.fig=None
         def page(self,title):
             self.title=title;self.fig=report.plt.figure(figsize=(11.69,8.27));return self.fig
         def save(self,fig,title,caption):
@@ -88,8 +90,9 @@ def test_candidate_summary_equations_render_and_state_internal_energy_contract()
             assert box.x1<=r.fig.bbox.x1+1
     finally:report.plt.close(r.fig)
 
-def test_current_1_1_1_report_uses_Pauli_heat_contract():
-    m={"model_version":"1.1.1-candidate","closure":{"stiffness_temperature":"electron"}}
+@pytest.mark.parametrize("version",["1.1.1-candidate","1.1.2-candidate"])
+def test_current_reports_use_Pauli_heat_contract(version):
+    m={"model_version":version,"closure":{"stiffness_temperature":"electron"}}
     assert report.thermal_candidate(m)
     assert report.model_contract(m)["pauli_signed_heat"]
     old={"model_version":"1.1.0-candidate","closure":{"stiffness_temperature":"electron"}}
