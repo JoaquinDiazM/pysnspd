@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.1.2 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.1.3 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -17,33 +17,38 @@
 \newcommand{\refs}{\vfill{\footnotesize\href{Supuestos.pdf}{Hipótesis y límites: Supuestos}; \href{Parametros.pdf}{entradas: Parametros}.}}
 \begin{document}
 {\LARGE\bfseries\color{ink}Ecuaciones auxiliares durante la evolución}\par
-{\small Candidato 1.1.2. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
+{\small Candidato 1.1.3. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
 \renewcommand{\theequation}{2.\arabic{equation}}
-\block{Energía libre de gradiente y fuerza}
+\block{Funcional térmico anclado a DC y fuerza variacional}\small
 \hypertarget{G-final}{}
 \begin{gather}
  U_{\rm BCS}=\sum_i u_i^*\left[
- \frac{\rho_i}{g}-2\sum_kw_k(e_{ik}-\bar\xi_k)
-       +4\sum_kw_ke_{ik}p_{ik}\right],\\
+ \frac{\rho_i}{g}-2\sum_kw_k(e_{ik}-\bar\xi_k)+4\sum_kw_ke_{ik}p_{ik}\right],\\
  b_{ij}=d_i-e^{-i\alpha_{ij}}d_j,\quad
  C_{ij}=N_0E_u^2d_f\ell_0^2c_{ij},\quad
  L_i=\tfrac12\sum_{j\sim i}C_{ij}|b_{ij}|^2,\\
  \kappa(\rho,T)=\frac{\pi}{2\sqrt\rho}
        \tanh\frac{\sqrt\rho}{2T/T_c},\quad
- K(|\Delta|,T)=N_0\ell_0^2\kappa
- =\frac{\pi N_0\hbar D}{4|\Delta|}
-       \tanh\frac{|\Delta|}{2k_BT},\\
- \kappa_{ij}=\tfrac12(\kappa_i+\kappa_j),\quad
- G=\sum_iL_i\kappa_i=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}|b_{ij}|^2,\\
+ \theta_i=T_{E,i}/T_c,\quad b=T_{\rm ref}/T_c,\quad T_{\rm ref}=T_b,\\
+ \mathcal Q_i=\frac{L_i}{u_i^*\rho_i},\quad
+ Q_{{\rm dep},i}=E_u\mathcal Q_i
+ \quad(\rho_i>0),\\
+ \boxed{\mathcal G_i=\kappa(\rho_i,T_{\rm ref})L_i+
+ u_i^*[\varphi(\rho_i,\theta_i,\mathcal Q_i)
+       -\varphi(\rho_i,b,\mathcal Q_i)]},\quad G=\sum_i\mathcal G_i,\\
+ G(T_E=T_{\rm ref})=\sum_i\kappa(\rho_i,T_{\rm ref})L_i,\quad
+ \mathcal G_i=\kappa(\rho_i,T_{E,i})L_i+O(L_i^2),\\
  \boxed{U=U_{\rm BCS}+G-\sum_i T_{E,i}G_{T_i}},\qquad
  \boxed{S=\sum_iS_{qp,i}-\sum_iG_{T_i}},\\
  S_{qp,i}=-4N_0E_uV_ik_B\sum_kw_k[p_{ik}\log p_{ik}
                     +(1-p_{ik})\log(1-p_{ik})],\\
- \mathcal F_i=u_i^*\left[\frac1g-\sum_k\frac{w_k(1-2p_{ik})}{e_{ik}}\right]d_i
- +\sum_{j\sim i}C_{ij}\kappa_{ij}b_{ij}
- +L_i\kappa_{\rho_i}d_i,\\
+ K^L_{ij}=\tfrac12(G_{L_i}+G_{L_j}),\qquad
+ G_{L_i}=\partial_{L_i}\mathcal G_i,\quad G_{\rho_i}=\partial_{\rho_i}\mathcal G_i,\\
+ \boxed{\mathcal F_i=u_i^*\left[\frac1g-\sum_k
+ \frac{w_k(1-2p_{ik})}{e_{ik}}\right]d_i
+ +G_{\rho_i}d_i+\sum_{j\sim i}C_{ij}K^L_{ij}b_{ij}},\\
  I^s_{ij}=-\frac{2e}{\hbar}\partial_{\alpha_{ij}}G
- =\frac{4e}{\hbar}C_{ij}\kappa_{ij}
+ =\frac{4e}{\hbar}C_{ij}K^L_{ij}
         \Ima(d_i^*e^{-i\alpha_{ij}}d_j),\\
  \dd U=2\Rea\sum_i\mathcal F_i^*\dd d_i+
       \sum_{ik}\epsilon_{ik}\dd p_{ik}-\sum_iT_{E,i}\dd G_{T_i}
@@ -51,55 +56,127 @@
 \end{gather}
 \par\begin{tabular}{@{}p{.29\linewidth}p{.67\linewidth}@{}}
 \hline
-\labelrow{g,\rho_i,\kappa_\rho}{emparejamiento; \(|d_i|^2\); derivada respecto a \(\rho\)}
+\labelrow{g,\mathcal G_i,G_{\rho_i},G_{L_i}}{emparejamiento; energía libre nodal [J]; derivadas [J], [1]}
 \labelrow{C_{ij},c_{ij},L_i}{coeficiente [J], conductancia geométrica, peso nodal [J]}
+\labelrow{T_{\rm ref},\varphi,\mathcal Q_i}{referencia DC congelada [K]; corrección y depareo adimensionales}
 \labelrow{\alpha_{ij}}{\((2e/\hbar)\int_i^j\mathbf A\cdot\dd\mathbf l\); cero en los casos actuales}
-\labelrow{K,G,U,S}{rigidez [J\(^{-1}\)m\(^{-1}\)], energía libre y energía [J], entropía [J/K]}
 \hline
 \end{tabular}\par
-\origin{BCS, corriente dirty de equilibrio y termodinámica de una energía libre dependiente de \(T\). \(G\) fuera de equilibrio es una hipótesis propia; no es el funcional exacto Usadel.}
-\refs\newpage
-\block{Derivadas térmicas y cierre algebraico}
+\origin{BCS/KWT efectivo. El matching propio \(H_i^{\mathrm{match}}=\kappa_bL_i-u_i^*\varphi_b\ge0\) conserva DC, pero \(\mathcal G_i\to H_i^{\mathrm{match}}\) a \(T_E\to\infty\): rigidez residual no pequeña en hotspots. Hipótesis exploratoria y límites: \href{Supuestos.pdf\#nameddest=S15}{S15}; no Usadel exacto ni admisión cuantitativa de latencia.}
+\refs\newpage\normalsize
+\hypertarget{matsu-runtime}{}\block{Corrección de depareo: cálculo durante cada evaluación}\small
 \begin{gather}
- a=\sqrt\rho,\quad\theta=T/T_c,\quad z=a/(2\theta),\quad
- t=\tanh z,\ s=\operatorname{sech}^2z,\ c=\pi/2,\\
- \kappa_\rho=c(zs-t)/(2a^3),\quad
- \kappa_T=-cs/(2T_c\theta^2),\\
- \kappa_{TT}=\frac{cs(1-zt)}{T_c^2\theta^3},\qquad
- \kappa_{\rho T}=\frac{cst}{4T_c\theta^3a},\\
- \kappa(0,T)=c/(2\theta),\quad \kappa_\rho(0,T)=-c/(24\theta^3),\\
- \kappa_T(0,T)=-c/(2T_c\theta^2),\quad
- \kappa_{TT}(0,T)=c/(T_c^2\theta^3),\quad
- \kappa_{\rho T}(0,T)=c/(8T_c\theta^4),\\
- f_{ik}=\FD(E_{ik},T_i),\quad
- f_{e,ik}=-\frac{E_u}{k_BT_i}f_{ik}(1-f_{ik}),\\
- C_{{\rm FD},i}=\sum_k\epsilon_{ik}\frac{E_{ik}}{k_BT_i^2}
-                         f_{ik}(1-f_{ik}),\\
- B_i=4u_i^*\sum_k\frac{w_k}{2e_{ik}}
-                  [p_{ik}-f_{ik}-e_{ik}f_{e,ik}],\\
+ a=\sqrt\rho,\quad\theta=T/T_c,\quad
+ \varpi_\nu=(2\nu+1)\pi\theta,\quad \nu=0,1,\ldots,\\
+ f_\nu(\chi;\mathcal Q)=-2a\sin\chi+2\varpi_\nu(1-\cos\chi)
+                                      +\mathcal Q\sin^2\chi,\\
+ \mathcal W(\rho,\theta,\mathcal Q;\boldsymbol\chi)
+ =\rho\log\theta+2\pi\theta\sum_{\nu\ge0}
+           [\rho/\varpi_\nu+f_\nu(\chi_\nu;\mathcal Q)],\\
+ \partial_{\chi_\nu}\mathcal W=0
+ \ \Longleftrightarrow\
+ \varpi_\nu\sin\chi_\nu+\mathcal Q\sin\chi_\nu\cos\chi_\nu-a\cos\chi_\nu=0,\\
+ v_\nu=\tan\chi_\nu/a,\quad
+ \boxed{\varpi_\nu v_\nu+\frac{\mathcal Qv_\nu}{\sqrt{1+\rho v_\nu^2}}=1},\quad
+ \frac1{\varpi_\nu+\mathcal Q}\le v_\nu\le\frac1{\varpi_\nu},\\
+ c_\nu=(1+\rho v_\nu^2)^{-1/2},\quad r_\nu=v_\nu c_\nu,\quad
+ H_\nu=\varpi_\nu+\mathcal Qc_\nu^3>0,\quad
+ E_\nu^M=\sqrt{\varpi_\nu^2+\rho},\\
+ r_{\nu0}=1/E_\nu^M,\quad c_{\nu0}=\varpi_\nu/E_\nu^M,\quad
+ B_\nu=E_\nu^M\rho(r_\nu-r_{\nu0})^2
+ \left[1+\frac{\rho(r_\nu+r_{\nu0})^2}{(c_\nu+c_{\nu0})^2}\right]
+ +\mathcal Q\rho r_\nu^2,\\
+ \boxed{\varphi(\rho,\theta,\mathcal Q)=
+ \mathcal W|_{\boldsymbol\chi_{\mathcal Q}}-\mathcal W|_{\boldsymbol\chi_0}
+ =2\pi\theta\sum_{\nu\ge0}B_\nu},\quad
+ \varphi(\rho,\theta,0)=0,\\
+ \varphi_\rho=2\pi\theta\sum_\nu(r_{\nu0}-r_\nu),\quad
+ \varphi_{\mathcal Q}=2\pi\theta\sum_\nu\rho r_\nu^2,\\
+ \partial_\rho v_\nu=\frac{\mathcal Qv_\nu^3c_\nu^3}{2H_\nu},\quad
+ \partial_{\mathcal Q}v_\nu=-v_\nu c_\nu/H_\nu,\quad
+ \partial_{\varpi_\nu}v_\nu=-v_\nu/H_\nu,\\
+ \mathbf D_{\le2}\varphi=
+ (\varphi,\varphi_\rho,\varphi_{\mathcal Q},\varphi_\theta,
+ \varphi_{\rho\rho},\varphi_{\rho\mathcal Q},\varphi_{\mathcal Q\mathcal Q},
+ \varphi_{\rho\theta},\varphi_{\mathcal Q\theta},\varphi_{\theta\theta}),\\
+ \varphi_{\theta\theta}=\frac{2\pi}{\theta}\sum_\nu
+ \left[4\varpi_\nu(c_{\nu0}-c_\nu)
+ -2\varpi_\nu^2\rho\left(\frac{r_\nu^2c_\nu}{H_\nu}-r_{\nu0}^3\right)\right].
+\end{gather}
+{\small \(\rho\) permanece independiente: se estacionariza el ángulo espectral, no el gap KWT.
+Todas las derivadas de \(\mathbf D_{\le2}\varphi\) se obtienen analíticamente con la raíz implícita. La suma depende del estado: no es una tabla precomputada.}
+\begin{gather}
+ N_M=\max\!\left(64,\left\lceil\frac{32\sqrt\rho}{2\pi\theta}\right\rceil\right),
+ \quad q_M=\mathcal Q/(2\pi\theta),\\
+ \varphi=\rho[\psi(\tfrac12+q_M)-\psi(\tfrac12)]
+ +2\pi\theta\!\sum_{\nu<N_M}\!
+ [B_\nu-\rho(\varpi_\nu^{-1}-(\varpi_\nu+\mathcal Q)^{-1})]+\mathcal T_5,\\
+ \mathcal T_5=2\pi\theta\sum_{\nu\ge N_M}\sum_{m=2}^{5}
+ \rho^m[\mathcal B_m(\varpi_\nu,\mathcal Q)-\mathcal B_m(\varpi_\nu,0)],\\
+ \mathcal B_m(\omega,Q):=
+ [x^m]\,\min_\chi\{-2\sqrt x\sin\chi+
+                  2\omega(1-\cos\chi)+Q\sin^2\chi\},\\
+ 2\pi\theta\sum_{\nu\ge N_M}(\varpi_\nu+\mathcal Q)^{-p}
+ =(2\pi\theta)^{1-p}\zeta(p,N_M+\tfrac12+q_M).
+\end{gather}
+{\small \(\psi,\zeta\): digamma y zeta de Hurwitz; \([x^m]\): coeficiente de la serie en \(x\). Cola hasta \(\rho^5\), Euler--Maclaurin de seis términos; sin expansión en \(\mathcal Q/\varpi\).}
+\origin{\href{https://arxiv.org/html/1207.6421}{Clem--Kogan (2012)}, ecs.~7--14 y apéndice D: forma variacional reconstruida del problema espectral. No se usa la energía ya auto-consistente de su ec.~116 como potencial fuera de equilibrio.}
+\code{finite\_depairing\_sums.py}
+\refs\newpage\normalsize
+\block{Derivadas del cierre y calor reversible}\small
+{\small Nodo fijo; \(u=u_i^*,\,\rho=\rho_i,\,L=L_i,\,T=T_{E,i}\),
+ \(\Delta\varphi=\varphi(\rho,T/T_c,\mathcal Q)-\varphi(\rho,b,\mathcal Q)\),
+ \(\mathcal Q=L/(u\rho)\); \(\kappa_b=\kappa(\rho,T_{\rm ref})\).
+ Subíndices: derivadas parciales a las otras variables explícitas fijas.}
+\begin{gather}
+ G_L=\kappa_b+\Delta\varphi_{\mathcal Q}/\rho,\quad
+ G_\rho=L\kappa_{b,\rho}+u(\Delta\varphi_\rho-\mathcal Q\Delta\varphi_{\mathcal Q}/\rho),\\
+ G_{LL}=\Delta\varphi_{\mathcal Q\mathcal Q}/(u\rho^2),\quad
+ G_{\rho L}=\kappa_{b,\rho}+\Delta\varphi_{\rho\mathcal Q}/\rho
+       -(\Delta\varphi_{\mathcal Q}+\mathcal Q\Delta\varphi_{\mathcal Q\mathcal Q})/\rho^2,\\
+ G_{\rho\rho}=L\kappa_{b,\rho\rho}+u\!\left[
+ \Delta\varphi_{\rho\rho}-\frac{2\mathcal Q}{\rho}\Delta\varphi_{\rho\mathcal Q}
+ +\frac{\mathcal Q^2\Delta\varphi_{\mathcal Q\mathcal Q}
+              +2\mathcal Q\Delta\varphi_{\mathcal Q}}{\rho^2}\right],\\
+ G_T=\frac{u}{T_c}\varphi_\theta,\quad G_{TT}=\frac{u}{T_c^2}\varphi_{\theta\theta},\quad
+ G_{LT}=\frac{\varphi_{\mathcal Q\theta}}{\rho T_c},\quad
+ G_{\rho T}=\frac{u}{T_c}\left(\varphi_{\rho\theta}
+                    -\frac{\mathcal Q}{\rho}\varphi_{\mathcal Q\theta}\right),\\
+ f_{ik}=\FD(E_{ik},T_i),\quad f_{e,ik}=-\frac{E_u}{k_BT_i}f_{ik}(1-f_{ik}),\\
+ C_{{\rm FD},i}=\sum_k\epsilon_{ik}\frac{E_{ik}}{k_BT_i^2}f_{ik}(1-f_{ik}),\quad
+ B_i=4u_i^*\sum_k\frac{w_k}{2e_{ik}}[p_{ik}-f_{ik}-e_{ik}f_{e,ik}],\\
  C_{{\rm FD},i}\dot T_i=\sum_k\epsilon_{ik}\dot p_{ik}+B_i\dot\rho_i,\quad
  \dot\rho_i=2\Rea(d_i^*\dot d_i),\\
  \dot L_i=\sum_{j\sim i}C_{ij}\Rea[
  b_{ij}^*(\dot d_i-e^{-i\alpha_{ij}}\dot d_j)]\quad(\dot\alpha=0),\\
- A_i^{G}=\kappa_{T_i}\dot L_i+L_i\kappa_{\rho_iT_i}\dot\rho_i,\quad
- \dot G_{T_i}=A_i^{G}+L_i\kappa_{T_iT_i}\dot T_i,\\
+ A_i^{G}=G_{L_iT_i}\dot L_i+G_{\rho_iT_i}\dot\rho_i,\quad
+ \boxed{\dot G_{T_i}=A_i^{G}+G_{T_iT_i}\dot T_i},\\
  P_i^{bare}=\sum_k\epsilon_{ik}
         (C^{ep}_{ik}+C^{tr}_{ik}+C^{BGK}_{ik}),\\
- \boxed{(C_{{\rm FD},i}-T_iL_i\kappa_{T_iT_i})\dot T_i
+ \boxed{C_{{\rm eff},i}\dot T_i
  =P_i^{bare}+Q_{\Delta,i}+P_{J,i}+B_i\dot\rho_i+T_iA_i^G},\\
- \boxed{C_{{\rm eff},i}=C_{{\rm FD},i}-T_iL_i\kappa_{T_iT_i}>0}.
+ \boxed{C_{{\rm eff},i}=C_{{\rm FD},i}-T_iG_{T_iT_i}>0},\quad
+ \boxed{G_{L_i}>0,\quad G_{L_i}+2L_iG_{L_iL_i}>0}.
 \end{gather}
-{\small \(T_i=T_{E,i}\). \(\dot T_E\) se obtiene por regla de la cadena, no se integra como estado independiente. \(A^G\) no es el factor de movilidad KWT. Una capacidad no positiva detiene el candidato sin piso, cambio de signo ni ajuste de tolerancia.}
+\block{Límites normales, sin piso de gap}
+\begin{gather}
+ \rho=0,\ L>0:\quad
+ G=L\kappa(0,T_{\rm ref}),\quad
+ G_\rho=L\kappa_\rho(0,T_{\rm ref})+u\log(T_{\rm ref}/T),\\
+ G_T=G_{TT}=G_{LT}=0,\quad G_{\rho T}=-u/T,\quad
+ \rho=L=0:\quad \mathcal F^{grad}=0,\ I^s=0.
+\end{gather}
+{\small El nodo normal aislado tiene curvatura finita. En el origen homogéneo la curvatura depende de la dirección; el Hessiano de gradiente pequeño sólo precondiciona. \(\dot T_E\) es algebraica, no un estado independiente. Rechazar capacidad o rigidez principal no positivas; no recortar \(T_E\), \(G_L\) ni \(C_{\rm eff}\).}
 \par\begin{tabular}{@{}p{.29\linewidth}p{.67\linewidth}@{}}
 \hline
-\labelrow{C_{{\rm FD},i},C_{{\rm eff},i}}{capacidad del momento FD y capacidad térmica efectiva [J/K]}
-\labelrow{B_i}{coeficiente de cambio de gap en el momento energético [J]}
-\labelrow{A_i^G}{parte de $\dot G_{T_i}$ independiente de $\dot T_i$ [J/(K s)]}
-\labelrow{\dot L_i}{tasa del peso geométrico/de amplitud del gradiente [J/s]}
+\labelrow{C_{{\rm FD},i},C_{{\rm eff},i}}{capacidades del momento FD y efectiva [J/K]}
+\labelrow{B_i,A_i^G,\dot L_i}{coeficientes [J], [W/K], tasa geométrica [J/s]}
+\labelrow{G_{\rho\rho},G_{\rho L},G_{LL}}{derivadas [J], [1], [J\(^{-1}\)]}
+\labelrow{G_T,G_{TT},G_{LT},G_{\rho T}}{derivadas [J/K], [J/K\(^{2}\)], [K\(^{-1}\)], [J/K]}
 \hline
 \end{tabular}\par
-\origin{Termodinámica y diferenciación implícita del momento energético. La sustitución directa \(T_b\to T_E\) sin \(-TG_T\) y \(T\dot G_T\) no satisface este balance.}
-\refs\newpage
+\origin{Regla de la cadena de \(G(\rho,L,T_E)\), momento energético nativo y guardia de ellipticidad del cierre efectivo.}
+\refs\newpage\normalsize
 \hypertarget{carrier-exacto}{}\block{Portador de calor con actividades de Pauli}
 {\small Nodo fijo; $T=T_E$, $f_k=\FD(E_k,T)$. $P=Q_\Delta+P_J+T\dot G_T$ [W]. El signo selecciona una actividad de nacimiento o de muerte.}
 \begin{gather}
@@ -276,14 +353,14 @@
  E_{\rm ref}=\begin{cases}\eta E_\gamma,&\text{fotón},\\
                          \sum_i u_i^*,&\text{DC},\end{cases}\\
  \max(\|g_d\|_\infty,\|g_c\|_\infty,
-       {\cal E}_p/E_{\rm ref},{\cal E}_{ph}/E_{\rm ref},r_{p\to d}^{BCS})
-          <\epsilon_{\rm NL},\\
+       {\cal E}_p/E_{\rm ref},{\cal E}_{ph}/E_{\rm ref},r_{p\to d}^{full})
+          <\epsilon_{\rm NL}(h),\\
  \delta W_m=h_mP_{\rm ext}^{mid},\quad
  \varepsilon_{E,m}=U_{\rm tot}^{m+1}-U_{\rm tot}^{m}-\delta W_m,\\
  |\varepsilon_{E,m}|\leq\epsilon_{\rm guard}
  (E_{\rm ref}+\sum_{\ell<m}|\delta W_\ell|+|\delta W_m|),\\
  0\leq p^{m+1}\leq1,\quad n^{m+1}\geq0,\quad
- C_{\rm eff}({\cal X}^{mid}),C_{\rm eff}({\cal X}^{m+1})>0,\\
+ C_{\rm eff}({\cal X}^{mid}),C_{\rm eff}({\cal X}^{m+1})>0,\quad G_L>0,\quad G_L+2LG_{LL}>0,\\
  \epsilon_{\rm NL}(h)=2\,10^{-7}\min(1,h/(0.02\,{\rm ps})),\quad
  \epsilon_{\rm guard}=2.5\,10^{-6},\quad h_{\max}=0.02\,\mathrm{ps},\\
  \delta p_{ik}=\tfrac12g_{p,ik},\qquad
@@ -301,12 +378,25 @@
  \boxed{r_{p\to d}^{full}:=h\max\!
  \left(\|\delta R_{d,\rm int}\|_\infty,
        \|\delta R_{\theta,\rm cuts}\|_\infty\right)
- <\epsilon_{\rm NL}}.
+ <\epsilon_{\rm NL}(h)}.
 \end{gather}
-{\small $h$ [s]: paso; $h_{ik}$ [J$^{-1}$]: portador; $g_d,g_c$: residuos escalados. $\lambda$ conserva eventos; $b_\mu,L_\mu$: presupuesto/pérdida de tasa de estados consumidos $\mathcal C(a)$. Fuente electrónica firmada fuera del limitador; $\gamma_h\to1/\tau$ para BGK/escape. Sin clipping, calor residual ni piso de capacidad. Hessiano a $T_E$ fijo sólo precondiciona; defecto del RHS completo y guarda BCS interna.}
-{\small Tras converger, $\delta p=g_p/2$ es dirección: \textbf{no se forma $p+\delta p$}. Fijos $d,n,(I_b,I_s,v_c)$ del punto medio; $D_p,D_{\mathbf T}$ son derivadas analíticas; $(D_p\mathcal F)_{\mathbf T}\delta p=2u^*d\sum_kw_k\delta p_k/e_k$. $\delta\mathcal F$ [J], $\delta I^s$ [A] y $\delta\phi$ [V] incluyen la cadena de $T_E$.}
-{\small $\mathcal M$ [J$^{-1}$s$^{-1}$] es el operador KWT lineal sobre los reales de Principal; $\delta\mathcal M$ se obtiene al derivar $A,R$ con el incremento $\delta v$ del piso térmico. En cortes sólo cambia la fase Josephson. $\delta R_d,\delta R_\theta$ tienen unidades s$^{-1}$. El indicador mide sensibilidad analítica del residuo con incremento direccional del piso de movilidad. No acota rigurosamente el error temporal; $C_{\rm eff}>0$ se exige en estados físicos, sin materializar la dirección.}
-{\small Aceptar sólo tras al menos una corrección conjunta. El defecto térmico completo entra en cada prueba de convergencia. Búsqueda interna sobre correcciones: mantener $C_{\rm eff}>0$ sin piso. Si un rechazo exige $\Delta t_{\rm adapt}<10^{-6}$ ps, guardar checkpoint y detener por límite numérico; nunca aumentar el paso artificialmente ni asignar detección.}
+{\small $h$ [s]: paso; $h_{ik}$ [J$^{-1}$]: portador; $g_d,g_c$: residuos escalados.
+$b_\mu,L_\mu$: presupuesto/pérdida de tasa de estados consumidos $\mathcal C(a)$; $\lambda$ conserva su estequiometría.
+La fuente electrónica firmada queda fuera del limitador. Hessiano a $T_E$ fijo: sólo precondicionador.}
+{\small $D_p,D_{\mathbf T}$: derivadas analíticas; $(D_p\mathcal F)_{\mathbf T}\delta p=2u^*d\sum_kw_k\delta p_k/e_k$.
+$\mathcal M$ [J$^{-1}$s$^{-1}$]: operador KWT; $\delta\mathcal M$ usa el incremento $\delta v$ definido arriba.
+$\delta\mathcal F,\delta I^s,\delta\phi,\delta R_d,\delta R_\theta$ tienen unidades J, A, V, s$^{-1}$, s$^{-1}$.
+$\delta p=g_p/2$ es dirección: no se evalúa $p+\delta p$. El indicador no acota el error temporal.}
+{\small Exigir al menos una corrección conjunta y el RHS completo convergido.
+La búsqueda interna mantiene soporte, $C_{\rm eff}>0$ y ambas rigideces positivas, sin pisos.
+Si $\Delta t_{\rm adapt}<10^{-6}$ ps: checkpoint y parada numérica; nunca aumentar el paso ni asignar detección.}
+\begin{gather}
+ x_k=(\delta d_k,\delta p_k,\delta n_k/(1+n^m),\delta c_k),\\
+ \gamma_k=\arg\min_\gamma\|\Delta R_k\gamma-r_k\|_2,\qquad
+ \delta x_k=r_k-(\Delta X_k+\Delta R_k)\gamma_k,\quad m_{\rm AA}\le10.
+\end{gather}
+{\small \(r_k\): mapa conjunto precondicionado de gap/circuito y residuos de poblaciones;
+\(\Delta X_k,\Delta R_k\): diferencias de iteraciones. Anderson acelera las incógnitas conjuntas, no modifica el RHS, tolerancias ni ecuación aceptada. Soporte y guardias se comprueban antes de aplicar la corrección.}
 \block{Comparación mínima antes de admitir latencias}
 \[
  h_{\max}\to h_{\max}/2,\quad
@@ -314,7 +404,7 @@
  (K,Q,N_{\rm face})\ \text{refinados};\qquad
  \{\tau_{\rm lat},V_{\rm out},\Delta_{\min},C_{\rm eff},{\cal R}_U\}.
 \]
-{\small Las trayectorias antiguas con \(\kappa(T_b)\) dan \(C_{\rm eff}\leq0\) al evaluar el nuevo cierre en 17/18 casos guardados (13 completos y 5 provisionales al leer). Es un diagnóstico de dominio, no una predicción de las trayectorias nuevas. Ejecutar no admite el modelo.}
+{\small El cierre cuadrático térmico anterior desarrolló una frontera de capacidad en los anclajes. El candidato 1.1.3 cambia el funcional mediante el ajuste DC declarado; no se admiten trayectorias históricas bajo la energía nueva. Validación fotónica y convergencia de observables pendientes.}
 \origin{Punto medio implícito, Newton disperso y limitación de producción/destrucción. Conservación continua no garantiza convergencia temporal ni validez de la hipótesis mesoscópica.}
-\code{thermal\_coupled.py; effective\_coupled.py; 09\_thermal\_stiffness\_photon\_run.py}
+\code{general\_thermal\_gradient.py; resummed\_thermal.py; effective\_coupled.py}
 \refs\end{document}

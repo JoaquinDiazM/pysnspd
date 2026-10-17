@@ -11,7 +11,7 @@
 \setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
 \setlength{\emergencystretch}{2em}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.2 / 16 de octubre de 2026}
+\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.3 candidata / 16 de octubre de 2026}
 \fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Condición crítica.} #1\par}}
@@ -23,7 +23,7 @@
 \newcommand{\pref}[2]{\href{Parametros.pdf\#nameddest=#1}{#1 (Parámetros, p.~#2)}}
 \newcommand{\principalg}{\href{Principal.pdf\#nameddest=G-final}{Principal, cierre de rigidez $G$}}
 % Resolver únicamente esta macro al ensamblar la formulación de G:
-\newcommand{\gestado}{\textbf{Cierre candidato sujeto a admisibilidad:}\ \principalg; capacidad efectiva estrictamente positiva, sin piso artificial.}
+\newcommand{\gestado}{\textbf{Cierre candidato sujeto a admisibilidad:}\ \principalg; capacidad y rigidez principal positivas, sin pisos artificiales.}
 \newcommand{\ptrow}[4]{\hypertarget{#1}{\textbf{#1}}&\( \displaystyle #2 \)& #3 & #4\\[4pt]}
 \newenvironment{ptable}{\par\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
 \begin{tabular}{@{}p{.075\linewidth}p{.225\linewidth}p{.285\linewidth}p{.355\linewidth}@{}}\hline
@@ -32,15 +32,15 @@
 \newcommand{\assumption}[2]{\par\vspace{6pt}\hypertarget{#1}{\textbf{\color{ink}#1. #2}}\par}
 \newcommand{\smallnote}[1]{{\small #1\par}}
 
-\hypersetup{pdftitle={Parámetros - pysnspd 1.1.2},pdfauthor={pysnspd}}
+\hypersetup{pdftitle={Parámetros - pysnspd 1.1.3},pdfauthor={pysnspd}}
 \begin{document}
-{\LARGE\bfseries\color{ink}Parámetros del modelo 1.1.2}\par
+{\LARGE\bfseries\color{ink}Parámetros del modelo 1.1.3}\par
 {\large Referencia Korzh (2020); calibración estática y preparación fotónica}\par
 \smallnote{\textbf{I}: entrada; \textbf{H}: hipótesis; \textbf{C}: calibrable; \textbf{D}: derivado; \textbf{N}: numérico; \textbf{O}: observación. Una elección nominal no constituye una medición ni un ajuste de latencia. Formulación candidata posterior al snapshot 1.0.0, commit \texttt{7992f6a}; las nuevas corridas requieren admisión propia.}
 \block{Material y caso de referencia}
 \begin{ptable}
 \ptrow{P01}{T_c\ [\mathrm K]}{8.65 \quad [I]}{Temperatura crítica; \K{10}; \sref{S01}{1}.}
-\ptrow{P02}{T_b\ [\mathrm K]}{0.9 \quad [I]}{Baño del caso K20; \K{11}.}
+\ptrow{P02}{T_b,T_{\rm ref}\ [\mathrm K]}{0.9; $T_{\rm ref}=T_b$ [I,H]}{Baño y referencia DC congelada; \K{11}; \sref{S15}{4}.}
 \ptrow{P03}{d_f\ [\mathrm{nm}]}{7 \quad [I]}{Espesor nominal de película; \K{9}.}
 \ptrow{P04}{W,\ L_{\rm act}}{80 nm; 5 $\mu$m \quad [I]}{Cinta activa; \K{23}; \sref{S05}{2}.}
 \ptrow{P05}{R_{\square,N}\ [\Omega]}{425 principal \quad [H]}{$340/0.8$ bajo convención RRR; \K{9}--\K{10}; \sref{S01}{1}.}
@@ -64,7 +64,7 @@
 
 \block{Calibración de difusión y escalas dependientes}
 \begin{ptable}
-\ptrow{P10}{D\ [\mathrm{m^2/s}]}{Resultado del solver estático [C,D]}{Imponer \pref{P08}{1} en el cierre nuevo; \sref{S03}{1}.}
+\ptrow{P10}{D\ [\mathrm{m^2/s}]}{$1.41037571474\,10^{-4}$ [C,D]}{425 $\Omega$; DC conservado y verificado; \sref{S03}{1}.}
 \ptrow{P11}{D_{\rm hist}\ [\mathrm{cm^2/s}]}{0.5 \quad [H]}{Referencia de Tabla suplementaria 1, no medida de transporte del caso; \K{33}.}
 \ptrow{P12}{N_0\ [\mathrm{J^{-1}m^{-3}}]}{$(2e^2DR_\square d_f)^{-1}$ [D]}{DOS normal monoespín; Einstein; \sref{S04}{1}.}
 \ptrow{P13}{\sigma_n\ [\mathrm{S/m}]}{$(R_\square d_f)^{-1}$ [D]}{Conductividad normal coherente con $R_\square$.}
@@ -97,7 +97,7 @@
  =2.046582699,\qquad
  \frac{N_{0,425}}{N_{0,608}}=\frac{425}{608}=0.699013158 .
 \end{gather*}
-\critical{Sólo si se conserva la rigidez DC del cierre anterior: $D_{608}\simeq0.68914$ y $D_{425}\simeq1.4104\ {\rm cm^2/s}$. Son referencias condicionales, no resultados finales del cierre con rigidez térmica. Recalcular $N_0,\ell_0$, malla adimensional y partición inductiva con el resultado admitido.}
+\critical{El ajuste DC de 1.1.3 conserva y verifica la rigidez estática: $D_{425}=1.4103757147386595$ y $D_{608}\simeq0.6891369283\ {\rm cm^2/s}$. Son resultados de calibración condicionados a S01--S04, no mediciones de transporte. $N_0,\ell_0$, malla adimensional y partición inductiva usan coherentemente esos valores.}
 \vfill
 \origin{\href{https://arxiv.org/pdf/1904.08596\#page=5}{Frasca et al. (2019), ec. 5 y definición de $N(0)$}; \href{https://doi.org/10.1103/PhysRev.108.1175}{BCS (1957)}. Calibración efectiva propia; no equivale a medir $D$ mediante $B_{c2}(T)$.}
 \newpage
@@ -217,7 +217,7 @@ $E_{\rm ret}$, $\eta=1$ [eV]&1.599796109&0.799898054\\\hline
 \origin{\K{10}--\K{12}; circuito de tres estados de la memoria y conservación eléctrica propia. Un umbral en este puerto no es automáticamente el umbral del osciloscopio de K20.}
 \newpage
 
-\block{Resolución, observación y estado de admisión}
+\block{Resolución, observación y estado de admisión}\small
 \begin{ptable}
 \ptrow{P30}{L,\ h_{\rm mesh}\ [\mathrm{nm}]}{320; 5 \quad [H,N]}{Dominio interior y separación objetivo; verificar extensión 480 y malla 3.5.}
 \ptrow{P31}{\Lambda/E_u,\ n_{\rm GL}}{32; 6 \quad [N]}{Corte y orden electrónico; referencia 64; 8.}
@@ -227,12 +227,12 @@ $E_{\rm ret}$, $\eta=1$ [eV]&1.599796109&0.799898054\\\hline
 \ptrow{P35}{V_{\rm th},\delta t_{\rm conf}}{+0.1 mV; 0.5 ps [O,H]}{Primer cruce relativo a basal; histéresis 5\%.}
 \ptrow{P36}{\delta t_{\rm extra},t_{\rm techo}}{5 ps; 100 ps [O,H]}{Ventana posterior al cruce; censura sin cruce.}
 \ptrow{P37}{\delta_{\rm HB}}{0.2 \quad [O,H]}{Componente conectada con $|\Delta|\le0.2|\Delta^{DC}|$ que une bordes.}
-\ptrow{P38}{\substack{N_{\rm NL,max},\\N_{\rm rej,max}}}{40; 50 \quad [N]}{Máximo de iteraciones y rechazos por avance.}
+\ptrow{P38}{\substack{N_{\rm NL,max},\\N_{\rm rej,max}}}{60; 50 \quad [N]}{Máximo de iteraciones y rechazos por avance.}
 \ptrow{P39}{\substack{\delta t_{\rm snap},\delta t_{\rm check},\\\delta t_{\rm pared}}}{0.1 ps; 1 ps; 60 s [N]}{Cadencias de mapas y checkpoint; última en reloj de pared.}
 \ptrow{P40}{\lambda_{\rm safe}}{0.95 [N]}{Disponibilidad del limitador de eventos compartidos; no calibrador físico.}
 \end{ptable}
-\smallnote{El criterio no lineal efectivo es $\epsilon_{\rm NL}(h)=2\,10^{-7}\min(1,h/(0.02\,{\rm ps}))$, con al menos una corrección conjunta; resolución adaptativa mínima $10^{-6}$ ps: parada diagnóstica, no piso del paso. El portador de calor 1.1.2 usa actividades $f(1-p)$ / $p(1-f)$, sin umbral artificial FD ni calibrador nuevo; \sref{S11}{3}.}
-\smallnote{Es un perfil propuesto de contraste, no una garantía de convergencia. Las tolerancias y los gatillos heredados son elecciones observacionales reproducibles; revisar sólo con criterio observable documentado. \sref{S21}{6} y \sref{S22}{6}.}
+\smallnote{El criterio no lineal efectivo es $\epsilon_{\rm NL}(h)=2\,10^{-7}\min(1,h/(0.02\,{\rm ps}))$, con al menos una corrección conjunta; resolución adaptativa mínima $10^{-6}$ ps: parada diagnóstica, no piso del paso. El portador de calor conservado desde 1.1.1 usa actividades $f(1-p)$ / $p(1-f)$, sin umbral artificial FD ni calibrador nuevo; \sref{S11}{3}.}
+\smallnote{Perfil de contraste; no acredita convergencia. Observación y cobertura: \sref{S21}{6}, \sref{S22}{6}.}
 \begin{gather*}
  \widetilde V_{\rm out}=V_{\rm out}-V_{{\rm out},DC},\qquad
  t_{\rm lat}^{\rm post}=t_{\rm cruce}-t_0,\\
@@ -240,14 +240,16 @@ $E_{\rm ret}$, $\eta=1$ [eV]&1.599796109&0.799898054\\\hline
  I_b(0)=I_s(0)=I_{\rm DC},\quad V_{{\rm out},DC}=0 .
 \end{gather*}
 \critical{Comparación experimental: $\Delta t_{\rm lat}=4.2\pm0.4$ ps a 21.5 $\mu$A para el dispositivo de 80 nm (\K{5}); objetivo externo, no resultado del modelo. Sin conjunto de eventos ni ruido, no se predice FWHM de jitter ni IRF. Sin cruce confirmado, no asignar latencia ficticia.}
-\block{Dependencias de cierre que aún deben resolverse}
-\smallnote{La temperatura $T_E$ es observador del momento cuasiparticular, no estado térmico impuesto. El funcional $U/S$ térmico es una hipótesis mesoscópica propia; no se ha demostrado para $T_E>T_c$ ni para poblaciones no FD. La rigidez que depende de $T_E$ debe pasar guardia termodinámica, DC y balance finito antes de usarse en transientes. El candidato cuadrático original produjo capacidad efectiva no positiva en 17 de 18 casos históricos inspeccionados (13 completos y 5 provisionales al leer): un diagnóstico estático, no una nueva solución dinámica. \sref{S14}{4}--\sref{S16}{4}. \gestado}
+\block{Cierre térmico y dominio de admisión}
+\smallnote{Matching DC propio, \(T_{\rm ref}=T_b\) congelado: deja \(H_i^{\mathrm{match}}\ge0\) persistente a \(T_E\to\infty\), importante en el hotspot. Hipótesis fuerte sin calibrador nuevo ni admisión de latencia: \sref{S15}{4}, \href{Auxiliar.pdf\#nameddest=G-final}{Auxiliar}.}
+\smallnote{\hypertarget{P41}{\textbf{P41 [N]}}: suma de Matsubara durante la evolución: \(N_M=\max(64,\lceil32\sqrt\rho/(2\pi\theta)\rceil)\), cola en \(\rho\) hasta orden 5 y Euler--Maclaurin con 6 términos. Evaluación dinámica con derivadas analíticas; \href{Auxiliar.pdf\#nameddest=matsu-runtime}{Auxiliar}.}
+\smallnote{Admisión: \(C_{\rm eff}>0\), \(G_L>0\), \(G_L+2LG_{LL}>0\). No se impone \(T_E\ge T_b\), piso de capacidad ni piso de rigidez. Validación fotónica pendiente; estos guards no son calibración experimental.}
 \block{Fuentes primarias y localizadores}
 \smallnote{\href{https://eprints.lancs.ac.uk/id/eprint/140252/3/Binder1.pdf}{K20: Korzh et al. (2020)}, Methods PDF 9--13; figura 1 PDF 22; figura 2 PDF 23; Tabla suplementaria 1 PDF 33.
 \href{https://thesis.caltech.edu/13748/}{A20: Allmaras (2020)}, páginas impresas 80--81, 95, 101 (PDF = impresa + 12).
 \href{https://arxiv.org/abs/1611.06060}{V17: Vodolazov (2017)}, ecs. 3--4.
-\href{https://arxiv.org/pdf/1904.08596}{Frasca et al. (2019)}, ec. 5 y Tabla I, PDF 5--6: NbN de 6 nm y 1.05 K; no transferir toda su ficha al caso K20 de 7 nm.
-\href{https://doi.org/10.1103/PhysRevLett.40.1041}{Kramer--Watts-Tobin (1978)}, movilidad heredada con alcance efectivo.}
+\href{https://arxiv.org/pdf/1904.08596}{Frasca et al. (2019)}, ec. 5 y Tabla I, PDF 5--6; condiciones distintas: \sref{S02}{1}.
+\href{https://doi.org/10.1103/PhysRevLett.40.1041}{Kramer--Watts-Tobin (1978)}, movilidad heredada; \href{https://arxiv.org/html/1207.6421}{Clem--Kogan (2012)}, ecs.~7--14 y apéndice D.}
 \vfill
 \origin{Registro exacto requerido por caso: fuentes/hash, cierre $G$, parámetros, solver de depairing, cuadratura, malla, DC, partición inductiva, depósito y criterios de observación. Consultar \sref{S23}{6} y \sref{S24}{6}.}
 \end{document}

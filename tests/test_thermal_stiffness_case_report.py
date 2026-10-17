@@ -39,8 +39,9 @@ def test_candidate_gauge_reconstruction_uses_actual_saved_Te_and_free_G():
     assert "no capacity floor" in contract["admission"]
     assert "pysnspd/experimental/thermal_stiffness.py" in report.reconstruction_sources(c["m"])
 
-def test_calibrated_D_bath_control_keeps_fixed_bath_reconstruction():
-    c=case("bath");c["m"]["physicalparams"]["diffusion_m2_s"]=1.4e-4
+@pytest.mark.parametrize("version",report.THERMAL_CANDIDATE_VERSIONS)
+def test_calibrated_D_bath_control_keeps_fixed_bath_reconstruction(version):
+    c=case("bath");c["m"]["model_version"]=version;c["m"]["physicalparams"]["diffusion_m2_s"]=1.4e-4
     f=report.reconstruct_functional(c)
     d=np.array([.8,1.2,.6])*np.exp(1j*np.array([.1,.7,-.4]))
     np.testing.assert_array_equal(report.edge_supercurrent(f,d),report.edge_supercurrent(f,d,np.full(3,20.)))
@@ -48,8 +49,9 @@ def test_calibrated_D_bath_control_keeps_fixed_bath_reconstruction():
     assert not report.model_contract(c["m"])["candidate"]
     assert report.reconstruction_sources(c["m"])==report.RECON_SOURCES
 
-def test_saved_snapshot_Te_recovers_Vdev_and_current_maps():
-    c=case();f=report.reconstruct_functional(c);d=np.array([.8,1.2,.6])*np.exp(1j*np.array([.1,.7,-.4]))
+@pytest.mark.parametrize("version",["1.1.0-candidate","1.1.3-candidate"])
+def test_saved_snapshot_Te_recovers_Vdev_and_current_maps(version):
+    c=case();c["m"]["model_version"]=version;f=report.reconstruct_functional(c);d=np.array([.8,1.2,.6])*np.exp(1j*np.array([.1,.7,-.4]))
     T=np.array([7.,12.,6.]);Is=2e-6
     ports=report.EffectiveNeutralPorts(f.graph,608.,c["dc"]["left_nodes"],c["dc"]["right_nodes"])
     el=ports.solve(f.evaluate(d,f.fermi_dirac(d,T),temperature_K=T).edge_current_A,Is)
@@ -68,7 +70,7 @@ def test_thermal_identity_cannot_be_inferred_from_an_ambiguous_version():
     with pytest.raises(ValueError,match="Explicit model_version"):
         report.reconstruct_functional(c)
 
-@pytest.mark.parametrize("version",["1.1.0-candidate","1.1.1-candidate","1.1.2-candidate"])
+@pytest.mark.parametrize("version",report.THERMAL_CANDIDATE_VERSIONS)
 def test_candidate_summary_equations_render_and_state_internal_energy_contract(version):
     class Capture:
         def __init__(self):
@@ -90,10 +92,69 @@ def test_candidate_summary_equations_render_and_state_internal_energy_contract(v
             assert box.x1<=r.fig.bbox.x1+1
     finally:report.plt.close(r.fig)
 
-@pytest.mark.parametrize("version",["1.1.1-candidate","1.1.2-candidate"])
+@pytest.mark.parametrize("version",["1.1.1-candidate","1.1.2-candidate","1.1.3-candidate"])
 def test_current_reports_use_Pauli_heat_contract(version):
     m={"model_version":version,"closure":{"stiffness_temperature":"electron"}}
     assert report.thermal_candidate(m)
     assert report.model_contract(m)["pauli_signed_heat"]
     old={"model_version":"1.1.0-candidate","closure":{"stiffness_temperature":"electron"}}
     assert not report.model_contract(old)["pauli_signed_heat"]
+
+
+@pytest.mark.parametrize("version",["1.1.0-candidate","1.1.1-candidate","1.1.2-candidate"])
+def test_historical_thermal_versions_retain_the_quadratic_gradient(version):
+    c=case();c["m"]["model_version"]=version
+    f=report.reconstruct_functional(c)
+    assert f.closure_id=="TE_free_gradient_internal_entropy_candidate_v1"
+    assert not report.model_contract(c["m"])["thermal_depairing"]
+    assert "pysnspd/experimental/resummed_thermal.py" not in report.reconstruction_sources(c["m"])
+
+
+def test_113_reconstructs_DC_matched_gradient_and_saved_temperature_gauge_current():
+    c=case();c["m"]["model_version"]="1.1.3-candidate"
+    f=report.reconstruct_functional(c)
+    assert f.closure_id=="TE_DC_matched_finite_depairing_thermal_gradient_v1"
+    physical=c["m"]["physicalparams"];ell=c["m"]["geometry"]["ell0_m"]
+    expected_prefactor=np.pi*hbar*physical["diffusion_m2_s"]/(4*physical["energy_scale_J"]*ell**2)
+    assert f.radial_prefactor==expected_prefactor
+    assert f.ell0_m==ell
+    d=np.array([.8,1.2,.6])*np.exp(1j*np.array([.1,.7,-.4]))
+    temperature=np.array([7.,12.,6.])
+    p=f.fermi_dirac(d,temperature)
+    exact=f.evaluate(d,p,temperature_K=temperature).edge_current_A
+    np.testing.assert_allclose(report.edge_supercurrent(f,d,temperature),exact,rtol=3e-15,atol=1e-30)
+    with pytest.raises(ValueError,match="Saved Te_K"):
+        report.edge_supercurrent(f,d)
+    historical=case();historical["m"]["model_version"]="1.1.2-candidate"
+    old=report.reconstruct_functional(historical)
+    bath=np.full(3,.9)
+    np.testing.assert_allclose(report.edge_supercurrent(f,d,bath),report.edge_supercurrent(old,d,bath),
+        rtol=5e-14,atol=1e-30)
+    contract=report.model_contract(c["m"])
+    assert contract["model_label"]=="Effective neutral BCS/KWT with DC-matched thermal depairing correction"
+    assert "phi(rho_i,Te_i/Tc,Q_i)-phi(rho_i,Tb/Tc,Q_i)" in contract["gradient_free_energy"]
+    assert "q=0" in contract["native_kinetics_limit"]
+    sources=report.reconstruction_sources(c["m"])
+    assert len(sources)==len(set(sources))
+    for source in ("general_thermal_gradient.py","finite_depairing_sums.py","resummed_thermal.py"):
+        assert "pysnspd/experimental/"+source in sources
+
+
+def test_113_summary_names_the_actual_closure_and_native_spectrum_approximation():
+    class Capture:
+        def __init__(self):
+            self.c=case();self.c["m"]["model_version"]="1.1.3-candidate";self.caption=None;self.fig=None
+        def page(self,title):
+            self.title=title;self.fig=report.plt.figure(figsize=(11.69,8.27));return self.fig
+        def save(self,fig,title,caption):
+            self.caption=caption;fig.canvas.draw()
+    r=Capture()
+    try:
+        report.model_summary(r)
+        texts=[text.get_text()for text in r.fig.texts]
+        assert report.model_contract(r.c["m"])["model_label"] in texts
+        assert any("varphi" in text and "theta_b" in text for text in texts)
+        assert "native collision/transport spectra retain q=0" in r.caption
+        assert "DC is matched at Tb" in r.caption
+        assert "stored internal energy differs from free G" in r.caption
+    finally:report.plt.close(r.fig)

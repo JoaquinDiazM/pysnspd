@@ -1,12 +1,77 @@
-# Modelo vigente: neutral efectivo BCS/KWT 1.1.2
+# Modelo vigente: neutral efectivo BCS/KWT 1.1.3
 
-La revisión1.1.2 conserva las ecuaciones físicas1.1.1 y modifica su resolución: una corrección conjunta obligatoria, tolerancia no lineal proporcional al paso por debajo de0.02 ps, respuesta térmica completa dentro del criterio y búsqueda interna de capacidad positiva. La observación sin cruce termina a100 ps. Una resolución adaptativa inferior a1e-6 ps detiene y guarda el estado; no modifica la física ni acredita detección. [Alcance y comprobaciones](../releases/v1.1.2.md).
+El cierre conserva el DC calibrado y evalúa sólo su corrección térmica de gradiente a depareo finito. Su cinética nativa sigue siendo BCS local q=0. No se atribuye Usadel microscópico exacto ni validación cuantitativa de latencia. [Evidencia y diagnóstico](../releases/v1.1.3.md).
 
-La extensión vigente usa $G(\Delta,T_E)$ como energía libre, $U=U_{\rm BCS}+G-\sum_iT_{E,i}G_{T_i}$ y $S=S_{qp}-\sum_iG_{T_i}$. Fuerza y corriente derivan de $G$ a temperatura fija. La potencia electrónica es $P_i=Q_{\Delta,i}+P_{J,i}+T_{E,i}\dot G_{T_i}$ y se exige $C_{\rm eff}>0$ sin piso. La difusión se calibra al depareo inferido para el dispositivo; no es una medida independiente del transporte.
+## Cierre actual
 
-La corrección 1.1.1 distribuye $P_i$ con $h_k^+\propto E_k f_k(1-p_k)$ si $P_i\ge0$, y $h_k^-\propto E_kp_k(1-f_k)$ si $P_i<0$. Se normaliza $\sum_k\epsilon_kh_k^\pm=1$ y se obtiene $P_i(\sum_k\sigma_kh_k^\pm-1/T_{E,i})\ge0$. No se fuerza igualdad reversible fuera de FD. Esta elección constitutiva evita retirar población de estados vacíos sin introducir clipping ni un calibrador.
+$$
+\rho_i=|d_i|^2,\quad u_i^*=N_0E_u^2V_i,\quad
+L_i=\frac12\sum_{e\ni i}C_e|d_{t(e)}-e^{-i\alpha_e}d_{h(e)}|^2,\quad
+Q_i=L_i/(u_i^*\rho_i),\quad E_u=k_BT_c.
+$$
 
-Las fórmulas completas, parámetros y limitaciones están en [Matematica](../../Matematica/) y [nota 1.1.1](../releases/v1.1.1.md). Los ensayos nominales de 775/1550 nm alcanzaron 0.2 ps; aún se requieren nuevos anclajes completos y controles de observables antes de admitir latencias. No se hereda la convergencia 1.0 al cierre térmico.
+L_i [J] mide gradiente nodal y Q_i es adimensional. Qeff reúne fase y amplitud como aproximación efectiva.
+
+$$
+G_i=\kappa(\rho_i,T_b)L_i+
+u_i^*[\varphi(\rho_i,T_i/T_c,Q_i)-\varphi(\rho_i,T_b/T_c,Q_i)].
+$$
+
+Definiendo $t=T/T_c$, $a=\sqrt\rho$, $\omega_n=(2n+1)\pi t$ y $v_n=\tan\theta_n$ (el helper almacena $v_n/a$), la raíz positiva satisface:
+
+$$
+a=\omega_nv_n+Qv_n/\sqrt{1+v_n^2},\quad
+s_n=v_n/\sqrt{1+v_n^2},\quad g_n=1/\sqrt{1+v_n^2},
+$$
+$$
+\varphi=2\pi t\sum_{n\ge0}
+[-2a(s_{n,Q}-s_{n,0})+2\omega_n(g_{n,0}-g_{n,Q})+Qs_{n,Q}^2].
+$$
+
+Se calculan diez derivadas analíticas en rho,Q,t con parte lineal exacta y cola controlada. Se mantiene exactamente phi(rho,t,0)=0 y sus derivadas puras rho/t. El funcional BCS nativo conserva su cuadratura finita.
+
+A Te=Tb se recupera G_i=kappa(rho_i,Tb)L_i. En gradiente débil se recupera G_i=kappa(rho_i,Te)L_i+O(L_i²), para ell0²=hbar*D/(2Eu), cuya consistencia exige el constructor.
+
+$$
+U=U_{\rm BCS}+\sum_i(G_i-T_iG_{T_i}),\quad
+S=S_{\rm qp}-\sum_iG_{T_i},\quad
+C_{{\rm eff},i}=C_{{\rm FD},i}-T_iG_{T_iT_i}>0,
+$$
+$$
+\mathcal F=\left.\partial_{d^*}(U_{\rm BCS}+G)\right|_T,\quad
+I_e^s=-\frac{2e}{\hbar}\left.\partial_{\alpha_e}G\right|_T,\quad
+P_i=Q_{\Delta,i}+P_{J,i}+T_i\dot G_{T_i}.
+$$
+
+El calor usa las actividades FD/Pauli con signo físico, normalización energética y desigualdad de entropía fuera de FD. No se añade calor igual a un residuo del balance.
+
+## Matching DC y temperatura alta
+
+$$
+H_i^{\rm match}=\kappa(\rho_i,T_b)L_i-u_i^*\varphi(\rho_i,T_b/T_c,Q_i),\quad
+G_i=H_i^{\rm match}+u_i^*\varphi(\rho_i,T_i/T_c,Q_i),
+$$
+$$
+\lim_{T_i\to\infty}G_i=H_i^{\rm match}\quad\text{a rho y L fijos}.
+$$
+
+Hmatch es el término conservativo de matching, no un Hessiano ni el calor de ocupaciones. Preserva la elasticidad DC y puede dominar localmente el núcleo caliente. Su elasticidad residual es una hipótesis propia, no una medida ni una consecuencia atribuida a Clem; no añade un calibrador de latencia.
+
+Colisiones y transporte usan E_ik=Eu*sqrt(xi_k²+rho_i), DOS BCS local q=0. No hay DOS cinética depareada dependiente de corriente. Capacidad positiva y conservación no prueban tasas experimentales ni un modelo microscópico único.
+
+## Dominio y aceptación
+
+Se exige G_L>0 y G_L+2L*G_LL>0 junto con Ceff>0, sin pisos. En el origen homogéneo rho=L=0 se declara una convención de curvatura débil para el precondicionador; no se afirma un Hessiano cartesiano único.
+
+Anderson acelera el sistema completo, pero la aceptación usa el residuo físico original, respuesta térmica inducida y una corrección obligatoria:
+$$
+\epsilon_{\rm solve}(h)=2\times10^{-7}\min(1,h/0.02~{\rm ps}).
+$$
+Se mantiene la guarda local2,5e−6 y el ledger externo independiente. Exigir un paso inferior a1e−6 ps detiene por resolución insuficiente; no avanza el reloj artificialmente.
+
+Los anclajes usan21,5 µA, ancho80 nm, espesor7 nm, Rs425 Ω, Tb0,9 K, escape20 ps y retención0,8. El depareo objetivo25,8667 µA es inferido por escalado de ancho. D=1,4103757147 cm²/s, N0=4,6422382491e46 J−1m−3 y ell0=7,891159075 nm conservan el DC; calibrar D no equivale a medirlo.
+
+Tau_ee(Tc)=5 ps y tau_ep(Tc)=24,7 ps son nominales libres. Sigma7,549834435 nm es una referencia postcascada independiente, no recalculada al ajustar D. La fuente se deposita una vez. Gatillo0,1 mV, confirmación0,5 ps, margen5 ps y censura100 ps preservan el circuito físico y no piden reset completo. Vout no incluye filtro/amplificador; el reloj postcascada no da jitter estadístico ni latencia óptica absoluta.
 
 ## Formulación y admisión históricas de v1.0.0
 

@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.1.2 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.1.3 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -17,8 +17,8 @@
 \newcommand{\refs}{\vfill{\footnotesize\href{Supuestos.pdf}{Hipótesis y límites: Supuestos}; \href{Parametros.pdf}{entradas: Parametros}.}}
 \begin{document}
 {\LARGE\bfseries\color{ink}Ecuaciones principales en 2D}\par
-{\large Condensado, cuasipartículas y fonones: candidato 1.1.2}\par
-{\small Extensión térmica de 1.0.0. Admisibilidad \(C_{\rm eff}>0\); validación dinámica pendiente.}
+{\large Condensado, cuasipartículas y fonones: candidato 1.1.3}\par
+{\small BCS/KWT efectivo con corrección térmica de depareo anclada a DC. Candidato: validación dinámica pendiente.}
 \renewcommand{\theequation}{1.\arabic{equation}}
 \hypertarget{G-final}{}\block{Condensado: evolución KWT}
 \begin{gather}
@@ -58,7 +58,7 @@ u_i^*=N_0E_u^2V_i,\quad
 \hline
 \end{tabular}\par
 {\small En la primera igualdad de $\mathcal F_i$, las derivadas de $U,S_j$ siguen $T_E(d,p)$ a $p,\alpha$ fijos, con $S_j=S_{qp,j}-G_{T_j}$. En la última se mantiene además $\mathbf T_E$ fijo; las contribuciones térmicas se cancelan por la regla de la cadena. Definición completa de $G$: \href{Auxiliar.pdf\#nameddest=G-final}{Auxiliar, p.~1}.}
-\origin{BCS + disipación KWT. \href{https://doi.org/10.1103/PhysRevLett.40.1041}{Kramer--Watts-Tobin (1978)}; \href{https://thesis.caltech.edu/13748/}{Allmaras (2020)}, ec.\ 3.24. Extensión variacional térmica propia; detalles en \href{Auxiliar.pdf}{Auxiliar}.}
+\origin{BCS + disipación KWT. \href{https://doi.org/10.1103/PhysRevLett.40.1041}{Kramer--Watts-Tobin (1978)}; \href{https://thesis.caltech.edu/13748/}{Allmaras (2020)}, ec.\ 3.24. Matching propio: \(H_i^{\mathrm{match}}\ge0\) persiste al elevar \(T_E\), es importante en el hotspot y limita la predicción de latencia; \href{Supuestos.pdf\#nameddest=S15}{S15}, \href{Auxiliar.pdf}{Auxiliar}.}
 \refs
 \newpage
 \block{Poblaciones electrónicas y fonónicas}
@@ -76,7 +76,7 @@ u_i^*=N_0E_u^2V_i,\quad
  \quad c_q=\frac{g_{ph}(\Omega_q)W_q^{ph}}{N_0E_u},
  \quad \Omega_q=E_u\omega_q,\\
 \boxed{P_i=Q_{\Delta,i}+P_{J,i}+T_{E,i}\dot G_{T_i}},\quad
- G_{T_i}\equiv\partial_{T_{E,i}}G=L_i\kappa_{T_i},\\
+ G_{T_i}\equiv\partial_{T_{E,i}}G=\frac{u_i^*}{T_c}\varphi_\theta(\rho_i,\theta_i,\mathcal Q_i),\\
  \epsilon_{ik}=4u_i^*w_ke_{ik},\quad
  \sigma_{ik}=\frac{\epsilon_{ik}k_B}{E_{ik}}
        \log\frac{1-p_{ik}}{p_{ik}},\\
@@ -96,11 +96,11 @@ u_i^*=N_0E_u^2V_i,\quad
 \labelrow{B_{i\ell},\beta^{(i)}_{ka}}{incidencia orientada e interpolación a energía común}
 \labelrow{J_{\ell a}}{flujo de transporte nativo [m\(^{3}\)/s]}
 \labelrow{h_{ik},P_i,P_{J,i}}{portador [J\(^{-1}\)]; potencia electrónica y Joule [W]}
-\labelrow{L_i,\kappa,G_{T_i}}{peso de gradiente [J], rigidez adimensional, derivada [J/K]}
+\labelrow{L_i,\theta_i,\mathcal Q_i,G_{T_i}}{peso [J], \(T_{E,i}/T_c\), depareo efectivo/\(E_u\), derivada [J/K]}
 \labelrow{\epsilon_{ik},\sigma_{ik}}{momentos de energía [J] y entropía [J/K]}
 \labelrow{\tau_{\rm esc},g_{ph},W_q^{ph}}{escape [s], DOS fonónica [J\(^{-1}\)m\(^{-3}\)], peso [J]}
 \hline
 \end{tabular}\par
 \origin{Cinética cuántica BCS/electrón--fonón, transporte conservativo y BGK energético. \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)}, ecs.\ 3--4; discretización nativa y extensión termoenergética propias.}
-\code{thermal\_coupled.py; thermal\_stiffness.py; effective\_bcs\_kinetics.py}
+\code{thermal\_coupled.py; resummed\_thermal.py; effective\_bcs\_kinetics.py}
 \refs\end{document}

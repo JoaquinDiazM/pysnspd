@@ -97,7 +97,7 @@ def command(case, campaign, *, threads, cpu_start, resume=False):
 
 def plan(campaign, *, ceiling_ps=100.):
     cases = catalog(ceiling_ps=ceiling_ps)
-    return dict(schema="pysnspd.thermal_candidate_basecases.v1", model_version="1.1.2-candidate",
+    return dict(schema="pysnspd.thermal_candidate_basecases.v1", model_version="1.1.3-candidate",
         campaign_dir=str(campaign), orchestrator_sha256=sha(__file__),
         source_pins_sha256={mode: pins(mode) for mode in ("electron", "bath")},
         cases=cases, stage_order=["anchors", "controls"],
@@ -112,6 +112,7 @@ def plan(campaign, *, ceiling_ps=100.):
             accepted_local_energy_guard_required=True, original_outputs_authenticated=True,
             censored_anchor="Permitted only at declared finite ceiling; latency remains unassigned"),
         scope=dict(length_nm=320., width_nm=80., spacing_nm=5., current_uA=21.5,
+            thermal_gradient="DC-matched finite-depairing thermal correction; native q=0 BCS kinetics",
             tau_escape_ps=20., fixed_sigma_nm=7.549834435, target_depairing_uA=38.8*80/120,
             retention_eta0800="Exploratory assumed retained fraction; not fitted to a four-ps latency",
             time_origin="effective post-cascade transfer", no_full_reset=True, no_statistical_jitter=True,
@@ -235,7 +236,7 @@ def audit_case(case, campaign, definition, *, expected_threads):
         raise ValueError("Terminal candidate identity/source mismatch: "+case["name"])
     if not manifest.get("run_complete") or manifest.get("status") not in TERMINAL:
         raise ValueError("Successful declared-window terminal required: "+case["name"])
-    if manifest.get("model_version") != "1.1.2-candidate" or manifest.get("closure", {}).get("stiffness_temperature") != mode:
+    if manifest.get("model_version") != "1.1.3-candidate" or manifest.get("closure", {}).get("stiffness_temperature") != mode:
         raise ValueError("Candidate closure metadata mismatch")
     hashes = manifest.get("output_sha256", {})
     required = {"trajectory.npz", "snapshots.npz", "checkpoint_latest.npz", "dc/effective_dc.npz", "material.npz", "material.json"}
@@ -278,6 +279,14 @@ def audit_case(case, campaign, definition, *, expected_threads):
             raise ValueError("Positive effective-capacity receipts missing or failed")
         if source["minimum_preparation_effective_capacity_ratio"] <= 0:
             raise ValueError("Initial positive effective-capacity guard failed")
+        if identity.get("gradient_closure")=="thermal-depairing":
+            diagnostics=manifest["thermal_candidate_diagnostics"]
+            for name in ("minimum_gradient_stiffness","minimum_principal_stiffness"):
+                value=float(diagnostics.get(name,float("nan")))
+                if not math.isfinite(value) or value<=0:
+                    raise ValueError("Positive gradient ellipticity receipt missing or failed")
+            if manifest["numerical"].get("elliptic_gradient_required") is not True:
+                raise ValueError("Gradient ellipticity guard identity missing")
     guard = manifest["local_energy_control"]
     maximum_local = float(guard["max_guarded_accepted_local_energy_fraction"])
     if not math.isfinite(maximum_local) or maximum_local > manifest["numerical"]["local_energy_tolerance"]*(1+1e-8):
@@ -308,6 +317,7 @@ def audit_case(case, campaign, definition, *, expected_threads):
         source_initial_state_sha256=sha(run/"source_initial_state.npz"),
         maximum_global_energy_record_fraction=fraction, maximum_accepted_local_energy_fraction=maximum_local,
         minimum_successful_rhs_capacity_ratio=capacity,
+        gradient_ellipticity_checked=mode=="electron" and identity.get("gradient_closure")=="thermal-depairing",
         scope="Authenticated terminal, source, capacity and stored energy/work records; no new convergence or independent microscopic validation")
     target = campaign/"audits"/(case["name"]+".json")
     target.parent.mkdir(exist_ok=True)

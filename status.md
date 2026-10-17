@@ -1,6 +1,25 @@
-# Estado de pySNSPD 1.1.2
+# Estado de pySNSPD 1.1.3
 
-**Versión vigente 1.1.2:** corrección del reloj sin actualización, tolerancia proporcional al paso, convergencia térmica conjunta y búsqueda interna de capacidad positiva. Se mantienen Te, D calibrada y calor Pauli. Techo sin cruce100 ps y parada por resolución adaptativa insuficiente. Los anclajes1.1.1 congelados son históricos; ninguna nueva latencia está admitida. [Diagnóstico](docs/releases/v1.1.2.md).
+**Implementación térmica efectiva actual; admisión cuantitativa de latencia pendiente.** Usa matching DC, corrección térmica de depareo finito, difusión calibrada, calor Pauli y punto medio con Anderson conjunto. [Diagnóstico](docs/releases/v1.1.3.md).
+
+## Evidencia nueva
+
+| Anclaje | Cobertura | Aceptados/rechazados totales | Mínimo Ceff/Cfd en RHS exitosos | Vout final [mV] |
+|---|---:|---:|---:|---:|
+| 775 nm | 0–12 ps | 1897/187 | 0,86406 | 0,01545177 |
+| 1550 nm | 0–12 ps | 732/30 | 0,85254 | 0,000871292 |
+
+Ambos completaron ventanas diagnósticas, **sin gatillo y sin censura a100 ps**. El máximo defecto global absoluto fue2,71220e−22/1,42600e−24 J:0,13227 %/0,0013909 % de la energía retenida, una normalización más estricta que incluir trabajo externo. Se conservaron soporte Pauli/Bose, capacidad/rigidez positivas y corrientes globales positivas.
+
+La auditoría independiente verificó20fuentes congeladas, DC, material, malla, checkpoint y ledger. Las continuaciones8–12 ps no redepositaron el fotón. Los cambios finales de fuentes se limitan a default60iteraciones (ya usado), controlquadratic, documentación/metadata y fallback opcional sinNumba; las fórmulas compiladas no cambiaron. La evidencia se conserva junto a su código original.
+
+## Limitaciones y pendientes
+
+El término conservativo de matching DC deja elasticidad residual a Te→∞, a gap/gradiente fijos. En el nodo más caliente supone70,55 % de G para775 nm a4,54 ps y46,17 % para1550 nm a4,16 ps. Son diagnósticos locales y temporales, no porcentajes universales ni mediciones. La cinética mantiene DOS BCS q=0.
+
+Las sesiones0–8 ps proyectan11,18/12,43 h por100 ps, incluyendo DC/JIT; no garantizan coste futuro. El benchmark2/4/6/2 hilos favorece seis:7,77/5,74/5,09 s por paso, con repetición de dos hilos estable al0,062 % y resultados idénticos bit a bit. La propuesta de afinidad L3 no se promovió. No se demostró aún ≲10 h después del DC.
+
+La primera suite amplia dio1996 PASS,7 FAIL,6 ERROR,4 SKIP. Los15 tests de los archivos afectados por afinidad pasan con núcleos completos y hermanos SMT. Dos fallos restantes se reproducen en HEAD ab6df49: SHA histórico y cero exacto ante redondeo. No se cambiaron hashes ni tolerancias para ocultarlos. La suite final dio2027PASS,4FAIL,3SKIP y532subtestsPASS. Se corrigieron dos textos del reporte y aprobaron38tests de reporte/control; quedan sólo los dos fallos históricos reproducidos en el baseline. El exit1 original se conserva. El paquete se construyó e importó desde una copia limpia. Véanse nota de versión y recibo.
 
 ## Evidencia histórica de v1.0.0
 

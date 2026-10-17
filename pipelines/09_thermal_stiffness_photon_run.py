@@ -37,12 +37,14 @@ SCHEMA = "pysnspd.effective_photon_run.v1"
 def parser():
     result = _ORIGINAL_PARSER()
     result.description = __doc__
+    result.add_argument("--gradient-closure", choices=("thermal-depairing","quadratic"), default="thermal-depairing",
+        help="DC-matched finite-depairing thermal gradient; quadratic is a historical control")
     result.add_argument("--sheet-resistance-ohm", type=float, default=425.)
     result.add_argument("--target-depairing-uA", type=float, default=38.8*80/120)
     result.add_argument("--stiffness-temperature", choices=("electron", "bath"), default="electron")
     result.add_argument("--minimum-adaptive-step-ps", type=float, default=1e-6,
         help="Stop and preserve checkpoint below this adaptive resolution; never floor a timestep")
-    result.set_defaults(tau_escape_ps=20., current_uA=21.5, local_energy_tolerance=2.5e-6, ceiling_ps=100.)
+    result.set_defaults(tau_escape_ps=20., current_uA=21.5, local_energy_tolerance=2.5e-6, ceiling_ps=100., max_iterations=60)
     return result
 
 
@@ -66,7 +68,15 @@ def source_pins():
     paths = [Path(__file__), ROOT/"pysnspd/experimental/depairing_calibration.py"]
     if _MODE == "electron":
         paths += [ROOT/"pysnspd/experimental/thermal_stiffness.py",
-                  ROOT/"pysnspd/experimental/thermal_coupled.py"]
+                  ROOT/"pysnspd/experimental/thermal_coupled.py",
+                  ROOT/"pysnspd/experimental/general_thermal_gradient.py",
+                  ROOT/"pysnspd/experimental/finite_depairing_sums.py",
+                  ROOT/"pysnspd/experimental/resummed_thermal.py"]
+    if _MODE=="bath":
+        paths += [ROOT/"pysnspd/experimental/general_thermal_gradient.py",
+                  ROOT/"pysnspd/experimental/finite_depairing_sums.py",
+                  ROOT/"pysnspd/experimental/resummed_thermal.py",
+                  ROOT/"pysnspd/experimental/thermal_stiffness.py"]
     for path in paths:
         if not path.is_file():
             raise FileNotFoundError("Candidate implementation is incomplete: "+str(path))
@@ -77,7 +87,7 @@ def source_pins():
 def write_json(path, value):
     if Path(path).name == "manifest.json" and isinstance(value, dict):
         value["schema"] = SCHEMA
-        value["model_version"] = "1.1.2-candidate"
+        value["model_version"] = "1.1.3-candidate"
         if value.get("status")=="INTEGRATION_FAILURE" and "Declared adaptive-step resolution reached" in value.get("error",""):
             value["status"]="NUMERICAL_RESOLUTION_LIMIT"
             value["resolution_limit_is_detection"]=False
@@ -95,12 +105,28 @@ def write_json(path, value):
         value.setdefault("energy_reference", {}).update(
             u_excess=("Local internal U_BCS+G-sum(Te*G_Te)+phonons minus fresh DC per physical nodal volume"
                       if _MODE == "electron" else "Local BCS+fixed-bath gradient+phonons minus fresh DC per nodal volume"))
+        selected=value.get("parameter_identity",{}).get("gradient_closure","thermal-depairing")
+        closure.update(gradient_closure=selected,
+            finite_depairing_thermal_completion=selected=="thermal-depairing",
+            matching_reference="Frozen bath/DC reference; no free latency parameter",
+            free_gradient=("G=sum[kappa(rho,Tb)*L+u*(phi(rho,Te/Tc,Qbar)-phi(rho,Tb/Tc,Qbar))], Qbar=L/(u*rho)"
+                           if selected=="thermal-depairing" and _MODE=="electron" else
+                           "Frozen validated bath gradient G=sum kappa(rho,Tb)*L" if _MODE=="bath" else
+                           "Historical quadratic G=sum L*kappa(rho,Te)"),
+            native_kinetic_spectrum="Local q=0 BCS; not a microscopic finite-q Usadel kinetic evolution",
+            effective_Q_includes_amplitude_gradients=selected=="thermal-depairing",
+            persistent_elastic_matching_background=(selected=="thermal-depairing" and _MODE=="electron"),
+            matching_background_limitation=("H=kappa(rho,Tb)*L-u*phi(rho,Tb/Tc,Q) is independent of evolved Te and persists at fixed rho,L as Te grows; this is a strong mesoscopic hypothesis, not exact microscopic high-temperature stiffness"
+                if selected=="thermal-depairing" and _MODE=="electron" else None))
         if _MODE == "electron":
             value.setdefault("numerical", {}).update(positive_effective_capacity_required=True,
                 capacity_floor_used=False, signed_reversible_gradient_source=True,
                 thermal_induced_gap_guard="Full thermal response checked inside every nonlinear convergence test and at returned endpoint",
                 nonlinear_tolerance_policy="nominal tolerance * min(1, h_ps/0.02); at least one coupled correction",
                 internal_capacity_line_search=True,
+                full_coupled_anderson=True,
+                elliptic_gradient_required=selected=="thermal-depairing",
+                stiffness_floor_used=False,
                 adaptive_resolution_stop_ps=value.get("parameter_identity",{}).get("minimum_adaptive_step_ps",1e-6))
             if _LAST_SYSTEM is not None and hasattr(_LAST_SYSTEM, "last_thermal_diagnostics"):
                 value["thermal_candidate_diagnostics"] = dict(_LAST_SYSTEM.last_thermal_diagnostics)
@@ -148,11 +174,18 @@ def calibrated_geometry(args, output, ell0_m):
 def build_system(args, output, *, resume=False):
     global _LAST_SYSTEM
     Tc, thickness = 8.65, 7e-9
-    calibration = calibration_result(sheet_resistance_ohm=args.sheet_resistance_ohm,
+    from pysnspd.experimental.resummed_thermal import ResummedThermalFunctional
+    finite_depairing=getattr(args,"gradient_closure","thermal-depairing")=="thermal-depairing"
+    calibration = calibration_result(bulk_factory=ResummedThermalFunctional if finite_depairing else None,
+        sheet_resistance_ohm=args.sheet_resistance_ohm,
         target_depairing_current_A=(None if math.isclose(args.target_depairing_uA, 38.8*80/120, rel_tol=8*np.finfo(float).eps) else args.target_depairing_uA*1e-6),
         width_m=80e-9, requested_current_A=args.current_uA*1e-6,
         bath_temperature_K=args.bath_K, critical_temperature_K=Tc,
         count_cutoff_bar=args.xi_cutoff, count_order=args.xi_order)
+    if finite_depairing:
+        calibration["sources"]["closure"]="pysnspd.experimental.resummed_thermal.ResummedThermalFunctional; finite native BCS plus DC-matched equilibrium finite-depairing thermal correction"
+        calibration["sources"]["finite_depairing"]="https://arxiv.org/html/1207.6421"
+        calibration["assumptions"]["future_closure"]="Actual finite-depairing bulk callback rebuilt and re-evaluated; no old-closure D reused"
     D, N0, ell = (calibration[name] for name in ("diffusion_m2_s", "N0_per_J_m3", "ell0_m"))
     Eu, Rs = kB*Tc, args.sheet_resistance_ohm
     geometry = calibrated_geometry(args, output, ell)
@@ -164,7 +197,7 @@ def build_system(args, output, *, resume=False):
     if args.stiffness_temperature == "electron":
         from pysnspd.experimental.thermal_stiffness import ThermalStiffnessFunctional
         from pysnspd.experimental.thermal_coupled import ThermalCoupledSystem
-        functional = ThermalStiffnessFunctional(**kwargs)
+        functional = (ResummedThermalFunctional(**kwargs) if finite_depairing else ThermalStiffnessFunctional(**kwargs))
         System = ThermalCoupledSystem
         # Check the actual new closure at the calibrated parameters; inheritance
         # or a shared name is not sufficient evidence of the same DC functional.
@@ -227,10 +260,15 @@ def build_system(args, output, *, resume=False):
         tau_ee_Tc_s=args.tau_ee_Tc_ps*1e-12, tau_ep_Tc_s=args.tau_ep_Tc_ps*1e-12,
         tau0_s=tau0, tau_escape_s=args.tau_escape_ps*1e-12,
         stiffness_temperature=args.stiffness_temperature, diffusion_calibration=calibration,
+        gradient_closure="thermal-depairing" if finite_depairing else "quadratic",
+        gradient_hypothesis=("Qbar=L/(u*rho) dimensionless; Qeff_J=Eu*Qbar; theta=Te/Tc; G=kappa(rho,Tb)*L+u*(phi(rho,theta,Qbar)-phi(rho,Tb/Tc,Qbar)); native q=0 kinetics retained" if finite_depairing else "Historical quadratic small-gradient free energy"),
+        persistent_elastic_matching_background=(finite_depairing and args.stiffness_temperature=="electron"),
+        matching_background_limitation=("Own temperature-independent H hypothesis can dominate hot strong-gradient states; no quantitative latency admission"
+            if finite_depairing and args.stiffness_temperature=="electron" else None),
         calibrators="Free effective hypotheses; depairing-target fit is not independent material measurement",
         exterior_inductance=asdict(exterior), circuit=asdict(circuit))
     physics_identity = dict(schema="pysnspd.thermal_candidate_physics_identity.v1",
-        model_version="1.1.2-candidate", source_pins_sha256=source_pins(),
+        model_version="1.1.3-candidate", source_pins_sha256=source_pins(),
         parameter_identity=BASE.parameter_identity(args), calibration=calibration,
         calibrated_mesh_sha256=geometry.receipt["mesh_sha256"],
         candidate_physical_admission=False)

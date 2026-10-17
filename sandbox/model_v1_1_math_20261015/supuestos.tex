@@ -11,7 +11,7 @@
 \setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
 \setlength{\emergencystretch}{2em}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.2 / 16 de octubre de 2026}
+\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.3 candidata / 16 de octubre de 2026}
 \fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Condición crítica.} #1\par}}
@@ -23,7 +23,7 @@
 \newcommand{\pref}[2]{\href{Parametros.pdf\#nameddest=#1}{#1 (Parámetros, p.~#2)}}
 \newcommand{\principalg}{\href{Principal.pdf\#nameddest=G-final}{Principal, cierre de rigidez $G$}}
 % Resolver únicamente esta macro al ensamblar la formulación de G:
-\newcommand{\gestado}{\textbf{Cierre candidato sujeto a admisibilidad:}\ \principalg; capacidad efectiva estrictamente positiva, sin piso artificial.}
+\newcommand{\gestado}{\textbf{Cierre candidato sujeto a admisibilidad:}\ \principalg; capacidad y rigidez principal positivas, sin pisos artificiales.}
 \newcommand{\ptrow}[4]{\hypertarget{#1}{\textbf{#1}}&\( \displaystyle #2 \)& #3 & #4\\[4pt]}
 \newenvironment{ptable}{\par\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
 \begin{tabular}{@{}p{.075\linewidth}p{.225\linewidth}p{.285\linewidth}p{.355\linewidth}@{}}\hline
@@ -32,9 +32,9 @@
 \newcommand{\assumption}[2]{\par\vspace{6pt}\hypertarget{#1}{\textbf{\color{ink}#1. #2}}\par}
 \newcommand{\smallnote}[1]{{\small #1\par}}
 
-\hypersetup{pdftitle={Supuestos - pysnspd 1.1.2},pdfauthor={pysnspd}}
+\hypersetup{pdftitle={Supuestos - pysnspd 1.1.3},pdfauthor={pysnspd}}
 \begin{document}
-{\LARGE\bfseries\color{ink}Supuestos y límites del modelo 1.1.2}\par
+{\LARGE\bfseries\color{ink}Supuestos y límites del modelo 1.1.3}\par
 {\large Registro explícito de hipótesis, dependencias y admisión}\par
 \smallnote{Companion de \href{Parametros.pdf}{Parámetros}, \href{Principal.pdf}{Principal}, \href{Auxiliar.pdf}{Auxiliar} y \href{Precomputo.pdf}{Precomputo}. Las entradas experimentales motivan el caso; los cierres propios requieren validación propia. No se presenta una evolución microscópica exacta de Usadel.}
 \block{Material y calibración estática}
@@ -52,7 +52,7 @@
 \end{gather*}
 \smallnote{K20 obtiene 38.8 $\mu$A de resonadores fabricados con la misma película. El escalado supone espesor, material y densidad crítica uniformes; ignora un offset de ancho eficaz y constricciones. La referencia se adopta al baño de 0.9 K del caso, sin inventar barras de error. El antecedente Frasca usa 1.05 K y NbN nominal de 6 nm: no demuestra identidad completa de muestra. Depairing y conmutación son observables distintos. \pref{P07}{1}--\pref{P09}{1}; \K{13}; \href{https://arxiv.org/pdf/1904.08596\#page=6}{Frasca, Tabla I}.}
 \assumption{S03}{Difusión efectiva calibrada, no medida de transporte}
-\smallnote{Se ajusta $D$ para que el máximo homogéneo del cierre y cuadratura nuevos coincida con \pref{P08}{1}. La relación $I_{\rm dep}\propto(R_\square\sqrt D)^{-1}$ permite reescalado sólo si el coeficiente constitutivo DC permanece fijo. Cambiar rigidez, cuadratura o renormalización de $T_c$ exige verificar esa condición o repetir el solver. Los 0.68914/1.4104 cm$^2$/s son referencias condicionales del cierre anterior; no resultados finales. \pref{P10}{2}.}
+\smallnote{Se ajusta $D$ para que el máximo homogéneo del cierre y cuadratura nuevos coincida con \pref{P08}{1}. La relación $I_{\rm dep}\propto(R_\square\sqrt D)^{-1}$ permite reescalado sólo si el coeficiente constitutivo DC permanece fijo. Cambiar rigidez, cuadratura o renormalización de $T_c$ exige verificar esa condición o repetir el solver. El ajuste DC de 1.1.3 conserva el funcional estático anterior: se verificaron $D_{425}=1.4103757147386595$ y $D_{608}=0.6891369283$ cm$^2$/s bajo esas hipótesis. \pref{P10}{2}.}
 \assumption{S04}{BCS débil y relación de Einstein}
 \begin{gather*}
  N_0=(2e^2DR_\square d_f)^{-1},\qquad
@@ -109,7 +109,7 @@
 \end{gather*}
 \smallnote{Es un material exploratorio de película, construido con funciones acústicas; no recupera una DOS DFPT propia ni espectros ópticos exactos de NbN. $N_0\alpha^2F/g_{ph}$ determina la retroacción fonónica conservativa. $v_{\rm avg}$ modifica capacidad y retroacción, además de una escala temporal. $\gamma_{\rm ac}$ se deriva de las mismas capacidades. \pref{P18}{3}--\pref{P20}{3}; \A{81}; \V{3}--\V{4}.}
 \assumption{S11}{BGK energético y portador de calor constitutivos}
-\smallnote{BGK relaja la forma electrónica hacia FD con el mismo momento energético a gap dado; no fuerza el estado electrónico al baño ni resuelve colisiones e-e microscópicas completas. La escala heredada usa $\tau_{\rm BGK}=\tau_{ee}(T_c)T_c/\max(T_E,T_b)$, donde el piso de baño modifica la tasa y no el objetivo energético. El reparto del calor eléctrico/condensado entre estados electrónicos es una elección constitutiva con restricciones de conservación y soporte. La fórmula computada figura en \href{Auxiliar.pdf\#nameddest=carrier-exacto}{Auxiliar, p.~3}; no se deduce sólo de una temperatura equivalente. La versión 1.1.2 usa $f(1-p)$ al aportar calor y $p(1-f)$ al retirarlo; admite $0\le p\le1$ y $T_E>0$, sin logaritmos en el RHS ni clipping. Conserva el momento energético y exige $P(\sum_k\sigma_kh_k-1/T_E)\ge0$: igualdad sólo en FD. El portador anterior podía enfriar estados vacíos y se descartó por falta de viabilidad continua. BGK conserva energía y no duplica esta fuente.}
+\smallnote{BGK relaja la forma electrónica hacia FD con el mismo momento energético a gap dado; no fuerza el estado electrónico al baño ni resuelve colisiones e-e microscópicas completas. La escala heredada usa $\tau_{\rm BGK}=\tau_{ee}(T_c)T_c/\max(T_E,T_b)$, donde el piso de baño modifica la tasa y no el objetivo energético. El reparto del calor eléctrico/condensado entre estados electrónicos es una elección constitutiva con restricciones de conservación y soporte. La fórmula computada figura en \href{Auxiliar.pdf\#nameddest=carrier-exacto}{Auxiliar, p.~4}; no se deduce sólo de una temperatura equivalente. La fuente de calor conservada desde 1.1.1 usa $f(1-p)$ al aportar calor y $p(1-f)$ al retirarlo; admite $0\le p\le1$ y $T_E>0$, sin logaritmos en el RHS ni clipping. Conserva el momento energético y exige $P(\sum_k\sigma_kh_k-1/T_E)\ge0$: igualdad sólo en FD. El portador anterior podía enfriar estados vacíos y se descartó por falta de viabilidad continua. BGK conserva energía y no duplica esta fuente.}
 \smallnote{Referencia del operador de relajación: \href{https://doi.org/10.1103/PhysRev.94.511}{Bhatnagar, Gross y Krook (1954)}; su realización superconductora energética aquí es propia, con alcance efectivo. \sref{S16}{4}.}
 \assumption{S12}{Transporte electrónico local; fonones sin difusión lateral}
 \smallnote{Transporte electrónico sobre la malla Delaunay--Voronoi con conductancias y flujo conservativos; coeficiente espectral heredado $D_L=1$ sobre el gap local. Los fonones son poblaciones locales por nodo con escape al baño, sin término de transporte espacial lateral. El escape puede enfriar o calentar según la diferencia con BE del baño y se registra con signo. No se resuelve transporte balístico de fonones, acústica del sustrato ni propagación en interfaces.}
@@ -131,20 +131,30 @@
  U_{qp,i}(\Delta_i,f_{\rm FD}(E_i,T_{E,i})) .
 \end{gather*}
 \smallnote{$w_k$ integra $\xi/E_u$ y $e_{ik}=E_{ik}/E_u$, como en Principal. La inversión a gap dado define $T_E$ sin modificar $p$ ni garantizar FD. Excluye energía fonónica, de circuito y de rigidez. $T_{ph}$ es otro observador energético; ninguno constituye un estado térmico impuesto o calibrador adicional.}
-\assumption{S15}{Potencial de rigidez térmica: candidato condicionado}
-\smallnote{$G_{T_i}=\left.\partial G/\partial T_{E,i}\right|_\Delta$. Fuerza y corriente provienen del potencial libre $G$ a $\mathbf T_E$ fijo, con:}
+\assumption{S15}{Corrección térmica de depareo anclada al DC}
 \begin{gather*}
+ \mathcal G_i=\kappa(\rho_i,T_{\rm ref})L_i+
+ u_i^*[\varphi(\rho_i,T_{E,i}/T_c,\mathcal Q_i)
+       -\varphi(\rho_i,T_{\rm ref}/T_c,\mathcal Q_i)],\\
+ \mathcal Q_i=L_i/(u_i^*\rho_i),\quad T_{\rm ref}=T_b\ {\rm congelado},\quad b=T_{\rm ref}/T_c,\\
  U=U_{\rm BCS}+G-\sum_iT_{E,i}G_{T_i},\qquad
- S=S_{qp}-\sum_iG_{T_i},\\
- Q_{{\rm rev},i}=T_{E,i}\dot G_{T_i},\qquad
- C_{\rm eff}=C_{\rm FD}-T_E\mathcal L\kappa_{TT}>0 .
+ S=S_{qp}-\sum_iG_{T_i},\qquad Q_{{\rm rev},i}=T_{E,i}\dot G_{T_i},\\
+ C_{{\rm eff},i}=C_{{\rm FD},i}-T_{E,i}G_{T_iT_i}>0,\quad
+ G_{L_i}>0,\quad G_{L_i}+2L_iG_{L_iL_i}>0 .
 \end{gather*}
-\smallnote{$U_{\rm BCS}$ incluye condensado/cuasipartículas; $\mathcal L$ multiplica la rigidez local $\kappa$ según \principalg. $Q_{\rm rev}$ es transferencia reversible firmada, no disipación positiva. Es una hipótesis mesoscópica propia, no demostrada para $T_E>T_c$ o poblaciones no FD.}
-\critical{El candidato cuadrático encontró capacidad efectiva no positiva en 17 de 18 casos históricos (13 completos y 5 provisionales al leer): guardia estática fallida, no nuevas soluciones dinámicas. Exigir cierre estable o dominio restringido antes de transientes; no ocultar el fallo mediante clipping, piso de capacidad o cambio de tolerancia.}
+\smallnote{Raíz espectral de Matsubara a gap independiente. El matching propio conserva el DC y recupera \(\kappa(\rho,T_E)L\) a gradiente pequeño; no calibra latencia.}
+\begin{gather*}
+ H_i^{\mathrm{match}}=\kappa(\rho_i,T_{\rm ref})L_i
+ -u_i^*\varphi(\rho_i,b,\mathcal Q_i)\ge0,\qquad
+ \lim_{T_{E,i}\to\infty}\mathcal G_i=H_i^{\mathrm{match}} .
+\end{gather*}
+\smallnote{A \(\rho_i,L_i\) fijos persiste elasticidad independiente de \(T_E\): no se recupera rigidez microscópica nula a temperatura infinita. Este matching no se deriva de Clem--Kogan. No es pequeño: en hotspots auditados aporta 46--71\% de \(\mathcal G_i\) y 67--83\% de \(G_{L_i}\). Es una hipótesis mesoscópica exploratoria, sin admisión cuantitativa de latencia.}
+\smallnote{El mapeo mezcla gradientes de amplitud y fase y omite \(\nabla\chi_\nu\); la cinética conserva \(q=0\), \sref{S13}{4}. La corriente no FD no se reconstruye con \(T_E\). \(T_{\rm ref}\) queda congelado; cambiarlo exige revalidar. No es Usadel exacto.}
+\critical{La frontera de capacidad del cierre anterior motivó la revisión. Rechazar pérdida de capacidad o ellipticidad: sin pisos ni relajación de tolerancias. Pruebas finitas no demuestran validez global.}
 \assumption{S16}{Energía finita y portador electrónico conservativo}
-\smallnote{Contabilizar trabajo eléctrico, condensado, cuasipartículas, rigidez, fonones, escape y reservorios con la misma energía usada en la preparación. El calor reversible y la disipación son distintos. El portador electrónico es constitutivo, no una colisión microscópica recuperada; exigir soporte y conservación. Balance energético, estabilidad térmica, producción entrópica y consistencia DC son pruebas independientes.}
+\smallnote{Contabilizar trabajo eléctrico, condensado, cuasipartículas, rigidez, fonones, escape y reservorios con la misma energía usada en la preparación. El calor reversible y la disipación son distintos. El portador electrónico es constitutivo, no una colisión microscópica recuperada; exigir soporte y conservación. Balance energético, estabilidad térmica, producción entrópica y consistencia DC son pruebas independientes. En \(\rho=0,L>0\) el ajuste cancela la singularidad logarítmica; en \(\rho=L=0\) la curvatura es direccional y la convención homogénea sólo precondiciona.}
 \vfill
-\origin{Definición completa de $G$, derivadas y guardias: \principalg\ y \href{Auxiliar.pdf\#nameddest=G-final}{Auxiliar, p.~1}. Diagnóstico interno: \texttt{capacity\_guard.json}, campaña \texttt{stage5\_te\_revision\_20261015}.}
+\origin{Definición completa de $G$, derivadas y guardias: \principalg\ y \href{Auxiliar.pdf\#nameddest=G-final}{Auxiliar, p.~1}. \href{https://arxiv.org/html/1207.6421}{Clem--Kogan (2012)}, ecs.~7--14 y apéndice D; extensión anclada y diagnóstico independientes propios.}
 \newpage
 
 \block{Electricidad, bordes y lectura}
@@ -180,7 +190,7 @@
 \smallnote{Primer cruce positivo de $V_{\rm out}-V_{{\rm out},DC}$ por 0.1 mV; confirmar durante 0.5 ps sobre piso de histéresis $0.95V_{\rm th}$. Integrar hasta cruce + 5 ps. Sin cruce confirmado a 100 ps, registrar censura, no una latencia inventada. Extraer desde estados aceptados e indicar interpolación. El hotbelt es diagnóstico espacial separado: componente conectada con $|\Delta|\le0.2|\Delta^{DC}|$ que une bordes. \pref{P35}{6}--\pref{P37}{6}.}
 \smallnote{La ventana corta cambia sólo el horizonte de observación; no acortar constantes del circuito ni eliminar estados lentos. La latencia postcascada no es latencia óptica absoluta. Comparar 775/1550 bajo la misma regla y reloj; K20 usa desplazamiento del pico ajustado de IRF, por lo que la equivalencia entre ambos observables requiere justificación. \K{12}.}
 \assumption{S22}{Modelo discretizado y cobertura espectral finita}
-\smallnote{El perfil nominal $\Lambda/E_u=32$, $N_\xi=54$, $N_{ph}=96$, orden de transporte 48, $h=5$ nm y $\Delta t_{\max}=0.02$ ps es propuesta heredada de contraste. No acredita automáticamente el cierre nuevo ni el límite continuo. Refinar espectro, malla, dominio y tiempo sobre energía, corriente, señal y cruce. Recalcular el acoplamiento BCS con la misma cuadratura usada en energía/fuerza para conservar $T_c$. No compensar error de resolución mediante calibración física. Una parada por resolución adaptativa insuficiente no es detección ni censura temporal. Los estados aceptados conservan soporte sin clipping; la limitación por disponibilidad debe conservar cada evento. El camino heredado restringe $I_b,I_s>0$ y requiere fallo controlado si se invierte corriente, sin interpretarlo como ley física universal. \pref{P30}{6}--\pref{P34}{6}.}
+\smallnote{El perfil nominal $\Lambda/E_u=32$, $N_\xi=54$, $N_{ph}=96$, orden de transporte 48, $h=5$ nm y $\Delta t_{\max}=0.02$ ps es propuesta heredada de contraste. No acredita automáticamente el cierre nuevo ni el límite continuo. Refinar espectro, malla, dominio y tiempo sobre energía, corriente, señal y cruce. Recalcular el acoplamiento BCS con la misma cuadratura usada en energía/fuerza para conservar $T_c$. No compensar error de resolución mediante calibración física. Anderson acelera el mapa conjunto de gap/poblaciones/circuito sin cambiar el RHS. Una parada por resolución adaptativa insuficiente no es detección ni censura temporal. Los estados aceptados conservan soporte sin clipping; la limitación por disponibilidad debe conservar cada evento. El camino heredado restringe $I_b,I_s>0$ y requiere fallo controlado si se invierte corriente, sin interpretarlo como ley física universal. \pref{P30}{6}--\pref{P34}{6}.}
 \assumption{S23}{Conservación, estabilidad y reproducción son pruebas distintas}
 \smallnote{Antes de un transiente: DC nuevo, guardia térmica de rigidez, energía inicial conservada y puertos coherentes. Durante: soporte $0\le p\le1,n\ge0$, finitud, conservación de eventos y balance del sistema completo. Después: convergencia de observables y comparación experimental identificable. Una prueba DC no valida calor finito; las guardias energéticas local/global no promueven validación física del espectro, entropía, rigidez o latencia.}
 \smallnote{Los parámetros elegidos aquí son hipótesis que preparan una campaña, no un ajuste ya realizado a 4.2 ps o al récord 2.6 ps. El valor experimental 4.2 $\pm$ 0.4 ps a 21.5 $\mu$A corresponde a latencia relativa 1550 menos 775 nm; los récords de jitter pertenecen a otros observables/casos. \K{5}, \K{22}.}
@@ -191,7 +201,7 @@
 \href{https://thesis.caltech.edu/13748/}{Allmaras, A20}: tesis, páginas impresas (PDF = impresa + 12).
 \href{https://arxiv.org/abs/1611.06060}{Vodolazov, V17}: ecs. 3--4.
 \href{https://arxiv.org/pdf/1904.08596}{Frasca et al.}: ec. 5, Tabla I.
-\href{https://doi.org/10.1103/PhysRev.108.1175}{BCS (1957)};
+\href{https://arxiv.org/html/1207.6421}{Clem--Kogan (2012), depareo dirty y energía libre}; \href{https://doi.org/10.1103/PhysRev.108.1175}{BCS (1957)};
 \href{https://doi.org/10.1103/PhysRevLett.40.1041}{KWT (1978)};
 \href{https://doi.org/10.1103/PhysRev.94.511}{BGK (1954)}.
 Referencias inspiran componentes; no validan por atribución el ensamblado efectivo propio.}

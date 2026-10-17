@@ -48,6 +48,8 @@ MEV = EV*1e-3
 SCHEMA = "pysnspd.individual_effective_case_report.v2"
 RECON_SOURCES = ("pysnspd/experimental/effective_bcs_functional.py",
     "pysnspd/experimental/effective_bcs_ports.py","pysnspd/experimental/thermal_spatial_usadel.py")
+THERMAL_CANDIDATE_VERSIONS = ("1.1.0-candidate","1.1.1-candidate","1.1.2-candidate","1.1.3-candidate")
+DC_MATCHED_THERMAL_VERSION = "1.1.3-candidate"
 TRACE = ("time_s","Vout_V","Vdev_V","Ib_A","Is_A","vc_V","energy_total_J",
     "energy_defect_J","escape_power_W","domain_energy_J","instant_power_residual_W",
     "reservoir_power_out_W","external_energy_integral_J","accepted_step_ps")
@@ -314,28 +316,54 @@ def thermal_candidate(manifest):
     mode=manifest.get("closure",{}).get("stiffness_temperature",
         manifest.get("parameter_identity",{}).get("stiffness_temperature"))
     version=manifest.get("model_version","")
-    if mode=="electron" and version not in ("1.1.0-candidate","1.1.1-candidate","1.1.2-candidate"):
+    if mode=="electron" and version not in THERMAL_CANDIDATE_VERSIONS:
         raise ValueError("Explicit model_version from supported 1.1.x candidates required for Te reconstruction")
-    return mode=="electron" and version in ("1.1.0-candidate","1.1.1-candidate","1.1.2-candidate")
+    return mode=="electron" and version in THERMAL_CANDIDATE_VERSIONS
+
+
+def thermal_depairing_candidate(manifest):
+    if not thermal_candidate(manifest) or manifest.get("model_version")!=DC_MATCHED_THERMAL_VERSION:
+        return False
+    # Explicit identity fields must agree. Early 1.1.3 manifests predate this
+    # selectable control and identify the new closure by version alone.
+    selections=[family["gradient_closure"] for family in
+        (manifest.get("closure",{}),manifest.get("physicalparams",{}),
+         manifest.get("parameter_identity",{})) if "gradient_closure" in family]
+    if any(value not in ("thermal-depairing","quadratic") for value in selections):
+        raise ValueError("Unsupported gradient_closure in saved model identity")
+    if len(set(selections))>1:
+        raise ValueError("Saved gradient_closure identity fields disagree")
+    return not selections or selections[0]=="thermal-depairing"
 
 
 def reconstruction_sources(manifest):
-    return RECON_SOURCES+(("pysnspd/experimental/thermal_stiffness.py",) if thermal_candidate(manifest) else ())
+    if not thermal_candidate(manifest):return RECON_SOURCES
+    sources=RECON_SOURCES+("pysnspd/experimental/thermal_stiffness.py",)
+    if thermal_depairing_candidate(manifest):
+        sources+=("pysnspd/experimental/general_thermal_gradient.py",
+            "pysnspd/experimental/finite_depairing_sums.py","pysnspd/experimental/resummed_thermal.py")
+    return sources
 
 
 def model_contract(manifest):
-    thermal=thermal_candidate(manifest)
-    bath_control=(manifest.get("model_version") in ("1.1.0-candidate","1.1.1-candidate","1.1.2-candidate") and
-        manifest.get("closure",{}).get("stiffness_temperature")=="bath")
-    return dict(model_label=("BCS/KWT Te candidate" if thermal else
+    thermal=thermal_candidate(manifest);depairing=thermal_depairing_candidate(manifest)
+    mode=manifest.get("closure",{}).get("stiffness_temperature",
+        manifest.get("parameter_identity",{}).get("stiffness_temperature"))
+    bath_control=(manifest.get("model_version") in THERMAL_CANDIDATE_VERSIONS and mode=="bath")
+    return dict(model_label=("Effective neutral BCS/KWT with DC-matched thermal depairing correction" if depairing else
+        "BCS/KWT Te candidate" if thermal else
         "BCS/KWT bath control, calibrated D" if bath_control else "Effective neutral BCS/KWT"),
-        candidate=thermal,bath_control=bath_control,
-        pauli_signed_heat=(manifest.get("model_version") in ("1.1.1-candidate","1.1.2-candidate")),
+        candidate=thermal,bath_control=bath_control,thermal_depairing=depairing,
+        pauli_signed_heat=(manifest.get("model_version") in THERMAL_CANDIDATE_VERSIONS[1:]),
         stiffness_temperature=("saved Te_K" if thermal else "fixed bath"),
         stored_energy=("U_BCS+G-sum(Te*dG/dTe)+phonons+circuit" if thermal else
             "U_BCS+fixed-bath gradient+phonons+circuit"),
         force_current=("fixed-Te free-gradient derivatives; force=U_d-sum(Te*S_d)" if thermal else
             "fixed-bath internal-energy derivatives"),
+        gradient_free_energy=("G_i=kappa(rho_i,Tb)*L_i+u_i*(phi(rho_i,Te_i/Tc,Q_i)-phi(rho_i,Tb/Tc,Q_i)); Q_i=L_i/(u_i*rho_i)"
+            if depairing else "quadratic thermal gradient" if thermal else "fixed-bath gradient"),
+        native_kinetics_limit=("Native quasiparticle spectra in collisions and transport use q=0; no dynamic pair-breaking DOS"
+            if depairing else None),
         source=("condensate/Joule plus signed reversible Te*d(dG/dTe)/dt" if thermal else
             "condensate plus Joule heat"),
         admission=("candidate only; Ceff>0 guard, no capacity floor or global admission" if thermal else
@@ -348,7 +376,10 @@ def reconstruct_functional(c):
         mesh["coordinates_bar"],mesh["fixed_nodes"])
     xi,w=bcs_count_quadrature(m["parameter_identity"]["xi_cutoff"],m["parameter_identity"]["xi_order"])
     cls=EffectiveBCSFunctional
-    if thermal_candidate(m):
+    if thermal_depairing_candidate(m):
+        from pysnspd.experimental.resummed_thermal import ResummedThermalFunctional
+        cls=ResummedThermalFunctional
+    elif thermal_candidate(m):
         from pysnspd.experimental.thermal_stiffness import ThermalStiffnessFunctional
         cls=ThermalStiffnessFunctional
     return cls(graph,energy_scale_J=p["energy_scale_J"],N0_per_J_m3=p["N0_single_spin_per_J_m3"],
@@ -357,9 +388,13 @@ def reconstruct_functional(c):
 
 
 def edge_supercurrent(f,d,temperature_K=None):
-    '''Exact gauge derivative of G; Te candidate uses the saved temperature.'''
+    """Exact gauge derivative of the identified closure at saved temperature."""
+    closure=getattr(f,"closure_id",None)
+    if closure=="TE_DC_matched_finite_depairing_thermal_gradient_v1":
+        if temperature_K is None:raise ValueError("Saved Te_K is required for thermal-depairing current reconstruction")
+        return f.gradient_evaluation(d,np.asarray(temperature_K,float)).edge_current_A
     tail,head=f.graph.edges.T
-    if getattr(f,"closure_id",None)=="TE_free_gradient_internal_entropy_candidate_v1":
+    if closure=="TE_free_gradient_internal_entropy_candidate_v1":
         if temperature_K is None:raise ValueError("Saved Te_K is required for thermal-stiffness current reconstruction")
         kap=f.rigidity(abs(d)**2,temperature_K)[0]
     else:kap=f.rigidity(abs(d)**2)[0]
@@ -713,7 +748,9 @@ def provenance(r,checks):
         ("Currents: fixed-Te free-gradient gauge derivative using saved Te_K and algebraic neutrality from pinned sources. " if thermal_candidate(c["m"]) else "Currents: exact fixed-bath BCS gradient gauge derivative and algebraic neutrality from pinned sources. ") +
         "Display vectors use weighted dual-flux least squares; they are not additional model degrees of freedom.",
         "Complete p/n were not saved at every snapshot: collision-rate, nonclosure DOS and KWT-heating maps are unavailable.",
-        "Nonequilibrium radial rigidity/KWT, acoustic material and the postcascade source are effective assumptions. "
+        ("Thermal depairing modifies G; native collision/transport spectra retain q=0. Acoustic material, KWT mobility and the postcascade source remain effective assumptions. "
+         if thermal_depairing_candidate(c["m"]) else
+         "Nonequilibrium radial rigidity/KWT, acoustic material and the postcascade source are effective assumptions. ")+
         "This window does not establish jitter, statistical efficiency, absolute optical latency or full reset."]
     y=.50
     for line in lines:
@@ -729,9 +766,10 @@ def equation_box(fig,x,y,equation,size=14):
 
 
 def model_summary(r):
-    contract=model_contract(r.c["m"]);thermal=contract["candidate"]
-    fig=r.page("6. Model summary: "+contract["model_label"])
-    fig.text(.075,.863,r"$X=\{d_i,p_{ik},n_{iq},I_b,I_s,v_c\},\quad d_i=\Delta_i/E_u,\quad E_u=k_BT_c,\quad E_{ik}=E_u\sqrt{\bar\xi_k^2+|d_i|^2}$",fontsize=14,color=INK)
+    contract=model_contract(r.c["m"]);thermal=contract["candidate"];depairing=contract["thermal_depairing"]
+    fig=r.page("6. Model summary: thermal-depairing candidate" if depairing else "6. Model summary: "+contract["model_label"])
+    if depairing:fig.text(.075,.883,contract["model_label"],fontsize=12.5,color=ACCENT)
+    fig.text(.075,.85 if depairing else .863,r"$X=\{d_i,p_{ik},n_{iq},I_b,I_s,v_c\},\quad d_i=\Delta_i/E_u,\quad E_u=k_BT_c,\quad E_{ik}=E_u\sqrt{\bar\xi_k^2+|d_i|^2}$",fontsize=14,color=INK)
     fig.text(.075,.807,"Coupled evolution",fontsize=14,weight="bold",color=ACCENT)
     equation_box(fig,.335,.744,r"$D_td_i=-\frac{z_i}{A_i\tau_K}\left[\frac{\mathrm{Re}\,f_i}{R_i}+iR_i\,\mathrm{Im}\,f_i\right]$",15)
     equation_box(fig,.335,.617,r"$\dot p=\mathcal{C}_{e-ph}+\mathcal{T}_E+\frac{f_{\rm FD}(E,T_E)-p}{\tau_{\rm BGK}}+\mathcal{H}$",14)
@@ -745,8 +783,12 @@ def model_summary(r):
     fig.text(.65,.46,r"$\tau_K=\pi\hbar/(8k_BT_c),\quad \tau_{\rm BGK}=\tau_{ee}(T_c)/\vartheta$",fontsize=11.5)
     if thermal:
         fig.text(.075,.405,"Free gradient, stored energy and thermodynamic force",fontsize=14,weight="bold",color=ACCENT)
-        fig.text(.075,.35,r"$G=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}(T_E)|d_i-e^{-i\alpha_{ij}}d_j|^2,\quad U=U_{\rm BCS}+G-\sum_iT_iG_{T_i}$",fontsize=13)
-        fig.text(.075,.29,r"$S=S_{\rm qp}-\sum_iG_{T_i},\quad {\cal F}_i=\partial_{d_i^*}U-\sum_jT_j\partial_{d_i^*}S_j=\left.\partial_{d_i^*}(U_{\rm BCS}+G)\right|_T$",fontsize=12.5)
+        if depairing:
+            fig.text(.075,.355,r"$G=\sum_i\{\kappa(\rho_i,T_b)L_i+u_i[\varphi(\rho_i,\theta_i,Q_i)-\varphi(\rho_i,\theta_b,Q_i)]\}$",fontsize=13)
+            fig.text(.075,.315,r"$\rho_i=|d_i|^2,\quad \theta_i=T_i/T_c,\quad \theta_b=T_b/T_c,\quad Q_i=L_i/(u_i\rho_i),\quad U=U_{\rm BCS}+G-\sum_iT_iG_{T_i}$",fontsize=12)
+        else:
+            fig.text(.075,.35,r"$G=\sum_{\langle ij\rangle}C_{ij}\kappa_{ij}(T_E)|d_i-e^{-i\alpha_{ij}}d_j|^2,\quad U=U_{\rm BCS}+G-\sum_iT_iG_{T_i}$",fontsize=13)
+        fig.text(.075,.267 if depairing else .29,r"$S=S_{\rm qp}-\sum_iG_{T_i},\quad {\cal F}_i=\partial_{d_i^*}U-\sum_jT_j\partial_{d_i^*}S_j=\left.\partial_{d_i^*}(U_{\rm BCS}+G)\right|_T$",fontsize=12.5)
         fig.text(.075,.225,r"$I^s_{ij}=-\frac{2e}{\hbar}\left.\partial_{\alpha_{ij}}G\right|_T,\quad C_{{\rm eff},i}=C_{{\rm FD},i}-T_iG_{T_iT_i}>0$",fontsize=13.5)
         if contract["pauli_signed_heat"]:
             fig.text(.075,.18,r"$\mathcal{H}_i=h_iP_i,\quad P_i=Q_{\Delta,i}+P_{J,i}+T_i\dot G_{T_i},\quad \epsilon_i\cdot h_i=1,\quad P_i(\sigma_i\cdot h_i-1/T_i)\geq0$",fontsize=11.5,color=INK)
@@ -754,10 +796,16 @@ def model_summary(r):
         else:
             fig.text(.075,.18,r"$\mathcal{H}_i=h_i[Q_{\Delta,i}+P_{J,i}+T_i\dot G_{T_i}],\quad \epsilon_i\cdot h_i=1,\quad \partial_{p_i}S_{\rm qp}\cdot h_i=1/T_i$",fontsize=11.5,color=INK)
             fig.text(.075,.145,"Historical 1.1.0 dual-moment heat carrier; superseded after a Pauli-viability failure.",fontsize=10.5,color=INK)
-        r.save(fig,"Thermal-stiffness candidate","Energy-equivalent Te is read directly from each saved state for current reconstruction. "
+        caption=("The stored internal energy differs from free G; force/current use fixed-Te derivatives; native collision/transport spectra retain q=0. "
+            "L is the nodal gradient measure; varphi is an equilibrium finite-depairing correction. "
+            "Matching adds T-independent H=kappa(Tb)L-u*varphi(Tb,Q): it may dominate strong gradients and persist at fixed gap as Te increases. "
+            "Ceff>0 is required without a floor; DC is matched at Tb. This does not establish microscopic accuracy or quantitative latency."
+            if depairing else
+            "Energy-equivalent Te is read directly from each saved state for current reconstruction. "
             "The stored internal energy differs from free G; force/current follow fixed-Te derivatives. "
             "The signed source closes energy; 1.1.1 adds Pauli-compatible excess entropy outside FD. Ceff>0 is required without a floor. "
             "This candidate has no global trajectory admission and is not exact microscopic Usadel.")
+        r.save(fig,"Thermal-depairing candidate" if depairing else "Thermal-stiffness candidate",caption)
     else:
         fig.text(.075,.405,"Shared BCS energy and variational force",fontsize=14,weight="bold",color=ACCENT)
         fig.text(.075,.35,r"$U_{e+\nabla}=\sum_i u_i^*\left[\frac{|d_i|^2}{g}-2\sum_k w_k(e_{ik}-\bar\xi_k)+4\sum_k w_ke_{ik}p_{ik}\right]+U_\nabla$",fontsize=14)

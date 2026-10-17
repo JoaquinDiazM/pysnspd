@@ -2878,3 +2878,8 @@ env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
 ~~~
 
 Diagnóstico ligero: con el entorno anterior ejecutar python -m pytest -q tests/test_midpoint_clock_progress.py tests/test_thermal_stiffness_coupled_candidate.py. Evidencia causal y checkpoints internos: /home/jdiaz/scratch/v1_1_2_debug_20261016.
+
+
+## 2026-10-17 v1.1.3
+
+Current normal, visual and exact-resume commands: [GEMINGA_COMMANDS_PRESENT.md](GEMINGA_COMMANDS_PRESENT.md). Previous present commands preserved at [history](releases/history/GEMINGA_COMMANDS_PRESENT_before_v1.1.3_20261017.md). See the final release scope before interpreting latency.

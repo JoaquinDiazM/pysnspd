@@ -110,8 +110,8 @@ The user explicitly authorizes this task to execute runs longer than five minute
 
 ## Active model standard (user, 2026-10-15)
 
-- Use the latest implemented model version for new normal simulations and case reports; the current standard is v1.1.2, with electron-temperature-dependent stiffness and depairing-calibrated diffusion.
-- Use older versions only for explicitly identified historical analyses or scientific controls. Keep version/closure identity visible; the current v1.1.2 photon admission remains pending.
+- Use the latest implemented model version for new normal simulations and case reports; the current standard is v1.1.3, with DC-matched finite-depairing thermal correction and depairing-calibrated diffusion.
+- Use older versions only for explicitly identified historical analyses or scientific controls. Keep version/closure identity visible; the current v1.1.3 quantitative photon-latency admission remains pending.
 
 ## Signed heat correction (2026-10-15, v1.1.1)
 
@@ -120,8 +120,18 @@ The user explicitly authorizes this task to execute runs longer than five minute
 
 ## Numerical clock and observation policy (user task, 2026-10-16)
 
-- New thermal campaigns use v1.1.2 and a 100 ps no-trigger ceiling; retain crossing confirmation and 5 ps extra time. This is observation censoring, not full reset.
+- New thermal campaigns use v1.1.3 and a 100 ps no-trigger ceiling; retain crossing confirmation and 5 ps extra time. This is observation censoring, not full reset.
 - Never accept an untouched nonlinear predictor merely because h times the RHS fits an absolute tolerance. Require at least one coupled correction and scale thermal nonlinear tolerance by min(1,h/0.02 ps).
 - Test the complete thermal population-to-gap response within convergence, not solely after returning from the solver. Internal iterates require Ceff>0 without a floor.
 - The declared minimum adaptive step is 1e-6 ps by default. Stop with checkpoint below that resolution; never replace the required step with the limit or count it as detection. Retain numerical-resolution failures as failed/incomplete model evidence.
 - Preserve 1.1.1 frozen trajectories; restart new cases from fresh DC/source under the changed numerical acceptance policy.
+
+
+## Active closure and performance scope (2026-10-16, v1.1.3)
+
+- Use the DC-matched finite-depairing electron-temperature correction for new normal photon cases; quadratic and fixed-bath rigidity are explicit scientific controls.
+- State the temperature-independent matching elasticity and nonzero fixed-field high-Te limit. Native kinetic DOS remains q=0 BCS; Qeff includes amplitude gradients and does not imply microscopic Usadel evolution.
+- Keep physical residual,tolerances,support,positive capacity/principal stiffness and independent work/energy ledgers when optimizing. Conservation alone does not establish latency validation.
+- Changed physics requires fresh cases with exact sources. Independent diagnostic segments identify their scope and never redeposit the photon.
+- Set NUMBA_CACHE_DIR and all heavy outputs/caches under scratch.
+- Approximately ten wall-clock hours per100 ps after DC is a performance objective. Report measured horizon,setup/JIT inclusion,affinity and hardware; a linear projection is not a guarantee.

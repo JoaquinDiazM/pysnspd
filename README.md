@@ -1,71 +1,37 @@
-# pySNSPD 1.1.2
+# pySNSPD 1.1.3
 
-**Versión vigente: v1.1.2, extensión térmica efectiva con difusión calibrada.** Corrige la aceptación de pasos sin actualización y la reutilización de la tolerancia absoluta nominal en pasos adaptativos diminutos. Exige al menos una corrección conjunta, escala el presupuesto no lineal con h/0.02 ps, incluye la respuesta térmica completa en la convergencia y mantiene capacidad positiva durante las iteraciones internas. Las ecuaciones físicas, la rigidez dependiente de Te, D calibrada y el calor Pauli de 1.1.1 se conservan.
+**Neutral efectivo BCS/KWT con corrección térmica de depareo y referencia DC conservada.** La revisión sustituye la extrapolación cuadrática del gradiente térmico a gradientes grandes, mantiene la difusión calibrada al depareo y resuelve conjuntamente condensado, distribuciones electrónicas/fonónicas y circuito.
 
-Los anclajes 1.1.1 se bloquearon cerca de 3.02 y 4.51 ps; sus checkpoints quedan históricos. La nueva ejecución usa [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py) y [campaña 10](pipelines/10_thermal_stiffness_basecases.py), con techo sin gatillo de 100 ps. Si el paso adaptativo exigido cae bajo 1e-6 ps, se guarda checkpoint y se detiene por resolución insuficiente: no se impone un piso al paso ni a Ceff. La corrección de software no establece recuperación de toda la trayectoria ni admisión fotónica. Véanse [diagnóstico y alcance](docs/releases/v1.1.2.md), [matemáticas](Matematica/) y [comandos actuales](docs/GEMINGA_COMMANDS_PRESENT.md).
+El bloqueo 1.1.2 tenía una componente constitutiva: Ceff podía acercarse a cero y cambiar de signo a gradiente fijo. La nueva energía libre evalúa la corrección térmica mediante Matsubara de depareo finito. Un término conservativo independiente de temperatura preserva el DC anterior y deja elasticidad residual a Te alta: es una hipótesis explícita. [Diagnóstico](docs/releases/v1.1.3.md), [modelo vigente](docs/implementation/MODELO_VIGENTE.md) y [estado](status.md).
 
-## Referencia histórica admitida: v1.0.0
+Los anclajes nuevos de 775/1550 nm completaron **0–12 ps** con capacidad positiva, soporte físico y balance independiente. La continuación 8–12 ps conserva los estados, las fuentes y el trabajo externo, sin redepositar el fotón. Esa cobertura no certifica detección, latencia experimental ni jitter.
 
-**La etapa 5 de la referencia v1.0.0 se completó el 12 de octubre de 2026 con admisión exploratoria.** La decisión y su alcance están en [estado](status.md) y en [etapa 5](docs/implementation/stage5/README.md).
+## Ejecución
 
-Modelo efectivo de investigación para estudiar la respuesta de una cinta superconductora tras la absorción de un fotón. Evoluciona conjuntamente el gap complejo, las ocupaciones de cuasipartículas y fonones, el potencial eléctrico cuasiestático y el circuito completo de polarización/lectura de la memoria. Conserva una energía común y registra un balance independiente de potencia y energía.
-
-La referencia actual es una cinta de ancho 80 nm y espesor 7 nm. La separación de malla, h_mesh, es una resolución numérica y no el espesor. El método usa volúmenes Delaunay–Voronoi y punto medio implícito acoplado. Los campos y observables se guardan en unidades físicas; las coordenadas internas normalizadas se identifican explícitamente.
-
-## Uso
-
-Instalación desde el repositorio con Python ≥3.10:
+La entrada operativa actual es [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py), con [campaña 10](pipelines/10_thermal_stiffness_basecases.py) y [reporte 07](plot_pipelines/07_case_report.py). [Comandos presentes](docs/GEMINGA_COMMANDS_PRESENT.md) reúne las órdenes normales y visuales. Las clases térmicas especializadas permanecen en pysnspd.experimental; la API pysnspd.effective ofrece piezas compartidas y la referencia al baño, por lo que el cierre térmico debe seleccionarse explícitamente.
 
 ~~~bash
 python -m pip install -e '.[performance]'
 ~~~
 
-Numba es una dependencia opcional de aceleración; la campaña de referencia utiliza su backend paralelo. NumPy, SciPy, Matplotlib y las dependencias de geometría están declaradas en pyproject.toml.
+La referencia usa ancho80 nm, espesor7 nm, baño0,9 K, corriente21,5 µA y escape20 ps. Rs=425 Ω y D calibrada son hipótesis documentadas. El depareo25,8667 µA resulta de escalar una estimación para120 nm: no es una medida independiente de la cinta80 nm.
 
-La API pública es pysnspd.effective:
+La observación termina con Vout positivo0,1 mV, confirmación0,5 ps y margen5 ps desde el primer cruce; sin gatillo se censura a100 ps. Vout no incluye filtro/amplificador experimental. No se pide reset completo.
 
-~~~python
-from pysnspd.effective import (
-    EffectiveState, EffectiveCoupledSystem,
-    EffectiveBCSFunctional, EffectiveBCSKinetics,
-    EffectiveNeutralPorts, prepare_effective_dc,
-)
-~~~
+Todos los datos pesados, logs, cachés JIT y renders van a /home/jdiaz/scratch; NUMBA_CACHE_DIR debe apuntar allí. Se conserva el presupuesto global90 % y los checkpoints antiguos con sus fuentes. La nueva física inicia casos fresh.
 
-EffectiveState contiene delta_bar = Δ/(k_B T_c), p, n y circuit_SI = (I_b, I_s, v_c). Las ocupaciones p y n son distribuciones que evolucionan; las temperaturas equivalentes son observadores de energía.
+## Alcance
 
-Para una ejecución reproducible:
+La cinética conserva espectros BCS locales q=0: la corrección de gradiente no introduce una DOS cinética depareada. Qeff reúne gradientes de fase y amplitud como hipótesis efectiva. El material fonónico es acústico; la tabla NbN/QNN-MIT no tiene normalización absoluta resuelta. No es Usadel microscópico exacto.
 
-- [Pipeline física 05](pipelines/05_effective_photon_run.py): prepara su propio DC efectivo, deposita una vez la energía retenida y sigue hasta el cruce positivo de 0,1 mV más 5 ps, con confirmación a cruce+0,5 ps; sin cruce, queda censurado a 200 ps.
-- [Pipeline visual 05](plot_pipelines/05_plot_effective_photon_run.py): mapas del gap en meV, temperaturas equivalentes en K, energías en J/m³ y señales en mV/µA.
-- [Comandos presentes](docs/GEMINGA_COMMANDS_PRESENT.md): ejemplos normales, visuales y de reanudación.
-- [Contrato del modelo](docs/implementation/MODELO_VIGENTE.md) y [estado](status.md): ecuaciones, hipótesis y evidencia de admisión.
+Tau_ee(Tc) y tau_ep(Tc), nominales libres5 y24,7 ps de nomenclatura Allmaras, siguen siendo calibradores. El reloj comienza postcascada; la cascada ultrarrápida no se evoluciona. Una trayectoria determinista no determina jitter estadístico ni latencia óptica absoluta.
 
-En Geminga todos los resultados, cachés y figuras intermedias van a /home/jdiaz/scratch. Cada ejecución guarda parámetros, fuentes identificadas por SHA-256, estado completo reanudable y trazas de balance. Las ejecuciones simultáneas comparten un máximo global del 90 % de recursos.
+Se mantienen las tolerancias físicas y las guardas de capacidad/rigidez, soporte y energía. Las sesiones0–8 ps proyectan11,18/12,43 h por100 ps para775/1550 nm, incluyendo preparación/JIT; no es garantía ni medida exclusiva posterior al DC. El benchmark del mismo estado a12 ps favorece seis hilos:1,53× frente a dos, con RHS y endpoints idénticos bit a bit. La afinidad L3 propuesta no se promovió sin una comparación específica.
 
-## Resultado admitido
+## Historia
 
-Se completaron un único sistema de evolución (5.1), su balance independiente (5.2) y cuatro controles numéricos de 775 nm (5.3). La resolución por defecto tiene **54 estados electrónicos**; 80 estados constituyen un control opcional de sensibilidad, no una verdad continua.
-
-| Caso nominal | Resultado guardado |
-|---|---|
-| 775 nm | Hotbelt transversal observada a 15,3 ps; cruce eléctrico a 31,9413 ps; final a 36,9413 ps |
-| 1550 nm | Sin cruce de 0,1 mV durante 200 ps; latencia no asignada |
-
-Los cuatro ejes de 775 nm pasan sus márgenes declarados en **0–36,6 ps**, con cobertura crítica hasta 33 ps. Todas las colas posteriores a 36,6 ps quedan fuera de esa comparación, aunque cada trayectoria completa conserva su auditoría individual. El margen espectral de Vout del 5 % se adoptó explícitamente después de los datos; el FAIL anterior al 2 % se conserva. Esta admisión permite exploración del modelo y calibración posterior, sin equivalencia experimental automática.
-
-## Alcance físico
-
-Es un cierre mesoscópico neutral BCS/KWT, con rigidez radial y cinética conservativa. El material fonónico es acústico efectivo. La tabla externa NbN/QNN-MIT se conserva como referencia documental; no proporciona las tasas de esta versión ni tiene su normalización absoluta resuelta.
-
-τ_ee(T_c) y τ_ep(T_c) son calibradores libres con nomenclatura de Allmaras (2020). Sus nominales 5 ps y 24,7 ps no fijan el centro ni los límites de un rango. La anchura gaussiana 7,5498 nm y la retención 0,667 son referencias exploratorias ajustables.
-
-El reloj comienza en la transferencia efectiva posterior a la cascada. Una trayectoria determinista permite estudiar respuesta y latencia relativa bajo esas hipótesis; no calcula por sí sola jitter estadístico, retraso óptico absoluto ni reset eléctrico total.
-
-## Versiones e historia
-
-La etiqueta [thesis-v1.0.0](docs/releases/thesis-v1.0.0.md) conserva el modelo de la memoria. Por instrucción explícita del usuario del15 de octubre de2026, [v1.0.0](docs/releases/v1.0.0.md) congela ahora esta implementación efectiva. La revisión1.1.2 incorpora la extensión térmica y mantiene separada su admisión de la referencia v1.0.0. El intento de evolución microscópica de primer orden Moyal falló sus controles y se preserva como antecedente rechazado; no forma parte de la física efectiva publicada.
-
-La [documentación anterior](docs/releases/history/README_before_v1.1.0_20261011.md) y el [historial de comandos](docs/GEMINGA_COMMANDS.md) conservan las decisiones y resultados previos. Los datos pesados permanecen en scratch y se enlazan mediante sus manifiestos.
+thesis-v1.0.0 conserva la memoria; v1.0.0 conserva la referencia efectiva admitida exploratoriamente en0–36,6 ps de775 nm. Esa admisión no se transfiere a1.1.3. [Changelog](CHANGELOG.md), [releases](docs/releases/) e [historial de comandos](docs/GEMINGA_COMMANDS.md) preservan decisiones anteriores.
 
 [Licencia](LICENSE). Mantenedor: Joaquin Andres Diaz Monge.
+
+La región crítica775 nm exigió pasos más pequeños: el tramo8–12 ps tomó71,7min, frente a28,2min en1550 nm. No extrapolar un intervalo suave al pulso entero. La ampliación diagnóstica a25ps quedó aplazada al cerrar esta entrega; no se ejecutó ni se declara completa.

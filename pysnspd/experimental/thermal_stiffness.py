@@ -207,9 +207,16 @@ class ThermalStiffnessFunctional(EffectiveBCSFunctional):
         return r.kappa,r.rho,r.rho_rho
 
     def equivalent_temperature_K(self,gapbar,p):
-        d,p,_=self._state(gapbar,p,None);en=self.energies_bar(d);w=self.weights_bar
+        """Invert the native FD energy moment with a bracketed Newton solve.
+
+        The cached value is only an initial guess. Every call brackets the new
+        physical moment; unconverged nodes retain the 64-step bisection oracle.
+        No temperature or occupation floor is introduced.
+        """
+        d,p,_=self._state(gapbar,p,None)
+        en=self.energies_bar(d);w=self.weights_bar
         target=np.sum(w*en*p,axis=1);upper=.5*np.sum(w*en,axis=1)
-        if np.any(target<=0)or np.any(target>=upper):
+        if np.any(target<=0) or np.any(target>=upper):
             raise ValueError("Finite positive energy-equivalent temperature required")
         lo=np.zeros(len(d));hi=np.ones(len(d))
         for _ in range(128):
@@ -217,11 +224,37 @@ class ThermalStiffnessFunctional(EffectiveBCSFunctional):
             if not np.any(bad):break
             hi=np.where(bad,2*hi,hi)
         else:raise ArithmeticError("No finite TE bracket")
-        for _ in range(64):
-            mid=(lo+hi)/2
-            bad=np.sum(w*en*expit(-en/mid[:,None]),axis=1)<target
-            lo=np.where(bad,mid,lo);hi=np.where(bad,hi,mid)
-        return (lo+hi)/2*self.Tc_K
+        previous=getattr(self,"_thermal_temperature_guess",np.full(len(d),self.bath_temperature_K/self.Tc_K))
+        theta=np.minimum(previous,hi)
+        theta=np.where(theta>0,theta,hi/2)
+        tolerance=8*np.finfo(float).eps*target
+        active=np.ones(len(d),bool)
+        for _ in range(16):
+            if not np.any(active):break
+            index=np.flatnonzero(active);e=en[index];t=theta[index]
+            fd=expit(-e/t[:,None])
+            value=np.sum(w*e*fd,axis=1)
+            derivative=np.sum(w*e*e*fd*(1-fd),axis=1)/t**2
+            converged=abs(value-target[index])<=tolerance[index]
+            active[index[converged]]=False
+            index=index[~converged]
+            if not len(index):break
+            value=value[~converged];derivative=derivative[~converged];t=t[~converged]
+            below=value<target[index]
+            lo[index]=np.where(below,t,lo[index]);hi[index]=np.where(below,hi[index],t)
+            correction=np.divide(value-target[index],derivative,out=np.full(len(index),np.inf),where=derivative>0)
+            candidate=t-correction
+            safe=np.isfinite(candidate)&(candidate>lo[index])&(candidate<hi[index])
+            theta[index]=np.where(safe,candidate,(lo[index]+hi[index])/2)
+        if np.any(active):
+            index=np.flatnonzero(active);e=en[index]
+            for _ in range(64):
+                mid=(lo[index]+hi[index])/2
+                bad=np.sum(w*e*expit(-e/mid[:,None]),axis=1)<target[index]
+                lo[index]=np.where(bad,mid,lo[index]);hi[index]=np.where(bad,hi[index],mid)
+            theta[index]=(lo[index]+hi[index])/2
+        self._thermal_temperature_guess=theta.copy()
+        return theta*self.Tc_K
 
     def _temperature(self,d,p,temperature_K):
         if temperature_K is None:return self.equivalent_temperature_K(d,p)
@@ -268,7 +301,8 @@ class ThermalStiffnessFunctional(EffectiveBCSFunctional):
             capacity_effective_J_K=C-T*L*r.temperature_temperature,
             epsilon_J=4*u[:,None]*w*en,temperature_K=T,
             G_T_J_per_K=L*r.temperature,G_TT_J_per_K2=L*r.temperature_temperature,
-            G_Trho_J_per_K=L*r.rho_temperature,fd=fd)
+            G_Trho_J_per_K=L*r.rho_temperature,G_TL_per_K=r.temperature,
+            G_rho_T_J_K=L*r.rho_temperature,G_T_T_J_K2=L*r.temperature_temperature,fd=fd)
 
     def evaluate(self,gapbar,p,alpha=None,*,temperature_K=None):
         d,p,alpha=self._state(gapbar,p,alpha);T=self._temperature(d,p,temperature_K)

@@ -143,7 +143,7 @@ def test_manifest_remains_report_compatible_and_marks_candidate(tmp_path, monkey
     runner.write_json(target, manifest)
     loaded = runner.BASE.json.loads(target.read_text())
     assert loaded["schema"] == "pysnspd.effective_photon_run.v1"
-    assert loaded["model_version"] == "1.1.2-candidate"
+    assert loaded["model_version"] == "1.1.3-candidate"
     assert loaded["admission"]["candidate"]
     assert not loaded["admission"]["physical_admission"]
     assert ("f*(1-p)" in loaded["closure"]["signed_heat_carrier"]) == (mode == "electron")

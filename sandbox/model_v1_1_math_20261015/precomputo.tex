@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.1.2 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.1.3 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -18,7 +18,7 @@
 \begin{document}
 {\LARGE\bfseries\color{ink}Cantidades precomputadas}\par
 {\large Geometría, calibración DC, material y estado inicial}\par
-{\small Candidato 1.1.2. Las tasas dependientes del estado se evalúan durante la evolución.}
+{\small Candidato 1.1.3. Las tasas dependientes del estado se evalúan durante la evolución.}
 \renewcommand{\theequation}{3.\arabic{equation}}
 \block{Escalas físicas y relación de Einstein}
 \begin{gather}
@@ -28,9 +28,9 @@
  m_i=A_i^{dual}/\ell_0^2,\quad c_{ij}=L_{ij}^{dual}/L_{ij},\quad
  V_i=d_fA_i^{dual},\quad A_{ij}^{face}=d_fL_{ij}^{dual}.
 \end{gather}
-\block{Corriente de depareo del modelo, no de Usadel}
+\block{Depareo del funcional DC conservado}
 \begin{gather}
- d(x)=\sqrt\rho\,e^{iqx},\quad \bar q=q\ell_0,\quad\theta_b=T_b/T_c,\\
+ d(x)=\sqrt\rho\,e^{iqx},\quad \bar q=q\ell_0,\quad\theta_b=T_{\rm ref}/T_c,\quad T_{\rm ref}=T_b,\\
  {\cal A}(\rho,\theta_b)=\frac1g-\sum_k
        \frac{w_k\tanh(\sqrt{\bar\xi_k^2+\rho}/2\theta_b)}
             {\sqrt{\bar\xi_k^2+\rho}},\\
@@ -49,7 +49,7 @@
  I_{\rm dep}\propto\frac{W T_c^{3/2}}{R_\square\sqrt D}
                  {\cal M}(T_b/T_c).
 \end{gather}
-{\small Se conserva \(T_c,T_b\), la cuadratura y la misma rama homogénea. \(d_f\) cancela sólo si \(R_\square\) es una entrada fija y \(N_0\) se actualiza por Einstein; no implica independencia física del espesor a DOS fija. Calibrar \(D\) también cambia \(N_0,\ell_0\), difusión de energía y capacidades.}
+{\small En 1.1.3, \(G(T_E=T_{\rm ref})=\sum_iL_i\kappa(\rho_i,T_{\rm ref})\): el DC se conserva exactamente. Se conserva \(T_c,T_b\), la cuadratura y la misma rama homogénea. \(d_f\) cancela sólo si \(R_\square\) es una entrada fija y \(N_0\) se actualiza por Einstein; no implica independencia física del espesor a DOS fija. Calibrar \(D\) también cambia \(N_0,\ell_0\), difusión de energía y capacidades.}
 \par\begin{tabular}{@{}p{.29\linewidth}p{.67\linewidth}@{}}
 \hline
 \labelrow{A_i^{dual},L_{ij}^{dual},L_{ij}}{área Voronoi [m\(^{2}\)], cara y arista [m]}
@@ -68,9 +68,9 @@
  I_{\rm dep}^{target}(80\,\mathrm{nm})=25.8666667\,\mathrm{\mu A},\\
  R_\square^{principal}=340/0.8=425\,\Omega,\qquad
  R_\square^{control}=608\,\Omega,\\
- D_{\rm cal}(608\,\Omega)\simeq0.68913693\,\mathrm{cm^2/s},\qquad
+ D_{\rm cal}(608\,\Omega)\simeq0.6891369283\,\mathrm{cm^2/s},\\
  D_{\rm cal}(425\,\Omega)=D_{\rm cal}(608)(608/425)^2
- \simeq1.41037571\,\mathrm{cm^2/s},\\
+ =1.4103757147386595\,\mathrm{cm^2/s},\\
  I_b/I_{\rm dep}^{target}\simeq0.83119,\qquad
  L_{\square}^{BCS}(T\ll T_c)\simeq\frac{\hbar R_\square}{\pi(1.764k_BT_c)},\\
  L_\square^{BCS}(425)\simeq67.72\,\mathrm{pH},\quad
@@ -162,7 +162,7 @@
  \sigma_{\rm ref}=\sqrt{2D_{\text{histórico}}(0.57\,\mathrm{ps})},
  \quad D_{\text{histórico}}=0.5\,\mathrm{cm^2/s},\\
  U_i(T)=U_{{\rm BCS},i}[d_{\rm DC},\FD(T)]
-       +L_{{\rm DC},i}[\kappa(\rho_{{\rm DC},i},T)-T\kappa_T(\rho_{{\rm DC},i},T)],\\
+       +\mathcal G_i(\rho_{{\rm DC},i},L_{{\rm DC},i},T)-T G_{T_i}(\rho_{{\rm DC},i},L_{{\rm DC},i},T),\\
  U_{ph,i}(T)=u_i^*\sum_qc_q\omega_q\BE(\Omega_q,T),\\
  \boxed{U_i(T_i^0)-U_i(T_b)+U_{ph,i}(T_i^0)-U_{ph,i}(T_b)
             =E_{{\rm dep},i}},\\
@@ -182,5 +182,6 @@
 \hline
 \end{tabular}\par
 \origin{Preparación variacional DC y circuito de la memoria. Fuente postcascada propia, referencia de anchura extrapolada de \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)} a 1.3 eV.}
+{\small \(\varphi(\rho,T/T_c,\mathcal Q)\), sus raíces y sus diez derivadas se calculan durante la evolución y durante la inversión fotónica; no se precomputan como una tabla de material. \href{Auxiliar.pdf\#nameddest=matsu-runtime}{Auxiliar: suma de Matsubara}. El matching propio deja \(H_i^{\mathrm{match}}\ge0\) persistente a \(T_E\to\infty\), importante en el hotspot; hipótesis fuerte, no admisión de latencia: \href{Supuestos.pdf\#nameddest=S15}{S15}.}
 \code{depairing\_calibration.py; 09\_thermal\_stiffness\_photon\_run.py}
 \refs\end{document}

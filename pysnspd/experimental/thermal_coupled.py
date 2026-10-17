@@ -15,6 +15,7 @@ class ThermalCapacityError(ArithmeticError):
     """The gradient free-energy closure left its positive-capacity domain."""
 
 class ThermalCoupledSystem(EffectiveCoupledSystem):
+    coupled_anderson=True
     def evaluate(self, state, *, kinetic_budget=None, kinetic_dt_ps=None):
         f,k=self.functional,self.kinetics
         d,p,n,cm=state.delta_bar,state.p,state.n,state.circuit_SI
@@ -65,14 +66,14 @@ class ThermalCoupledSystem(EffectiveCoupledSystem):
         eps=4*f.node_energy_scale_J[:,None]*f.weights_bar*en
         rhodot=2*np.real(np.conj(d)*dz)*1e12
         Ldot=f.gradient_rate_geometry(d,dz*1e12)
-        GTdot_fixedT=(thermal["kappa_T_per_K"]*Ldot+
-            thermal["L_J"]*thermal["kappa_rho_T_per_K"]*rhodot)
+        GTdot_fixedT=(thermal["G_TL_per_K"]*Ldot+
+            thermal["G_Trho_J_per_K"]*rhodot)
         barepower=np.sum(eps*bare.dp_dt_s,axis=1)
         Tdot=(barepower+q+el.nodal_joule_W+thermal["B_J"]*rhodot+
             temp*GTdot_fixedT)/ce
         # Thermal reservoirs hold both native populations and |Delta| fixed.
         Tdot[self.cut_nodes]=0.
-        GTdot=GTdot_fixedT+thermal["L_J"]*thermal["kappa_TT_per_K2"]*Tdot
+        GTdot=GTdot_fixedT+thermal["G_TT_J_per_K2"]*Tdot
         source=q+el.nodal_joule_W+temp*GTdot
         carrier=entropy_compatible_carrier(p,eps,temp,f.Eu_J,en,weights_bar=f.weights_bar,power_W=source)
         heat=carrier*source[:,None]
@@ -119,6 +120,8 @@ class ThermalCoupledSystem(EffectiveCoupledSystem):
             closed_Pauli_limits_supported=True,
             occupation_floor_used=False,
             capacity_floor_used=False)
+        if hasattr(f,"last_gradient_diagnostics"):
+            self.last_thermal_diagnostics.update(f.last_gradient_diagnostics)
         return EffectiveRHS(coord,dp*1e-12,dn*1e-12,cmrate/self.circuit_scales*1e-12,
             dz,material,q,temp,energy+self.circuit.energy(cm),energy,external,residual,
             domainrate-expectedfilm,reservoir,escape,limit,ev,el,kin)

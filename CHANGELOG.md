@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.3 - 2026-10-17
+
+- Replace the strong-gradient quadratic thermal extrapolation with a DC-matched finite-depairing thermal correction and explicitly document residual high-temperature matching elasticity.
+- Derive force,current,entropy,capacity and reversible heat from one G; retain local q=0 native kinetic spectra as an approximation.
+- Accelerate the complete coupled midpoint with Anderson and safeguarded temperature inversion, preserving physical residuals,tolerances,support/positivity guards and independent energy ledger.
+- Add analytic partials,controlled Matsubara tails,exact Q=0 identities,normal limits and parallel-worker failure propagation.
+- Preserve historical case-report reconstruction and explicit quadratic/bath controls.
+- Verify fresh775/1550 nm cases through12 ps without claiming full-window latency,experimental calibration,jitter or reset.
+- Record11.18/12.43 h per100 ps session projections without guarantee;complete0–12 ps diagnostics and same-state2/4/6-thread measurements are recorded; full100 ps performance remains unproven.
+
+
 ## 1.1.2 - 2026-10-16
 
 - Prevent an accepted zero nonlinear predictor from advancing a nonstationary physical clock.

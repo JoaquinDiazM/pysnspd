@@ -245,9 +245,11 @@ class EffectiveCoupledSystem:
         h=float(h_ps);ng=self.ngap
         du=np.zeros(ng);dp=np.zeros_like(state.p);dn=np.zeros_like(state.n);dc=np.zeros(3)
         factor=None;previous=np.inf
-        # Anderson acceleration applies only to the nonlinear population solve.
-        # Its iterates are constrained; acceptance always checks the full defect.
+        # Legacy models accelerate populations; thermal models accelerate the full
+        # preconditioned gap/population/circuit map. Acceptance checks the same
+        # unpreconditioned physical defect and constrained internal iterates.
         history_x=[];history_r=[]
+        coupled_anderson=bool(getattr(self,"coupled_anderson",False))
         nscale=1+state.n
         for iteration in range(max_iterations):
             mid=self.shifted(state,du,dp,dn,dc,.5)
@@ -292,6 +294,7 @@ class EffectiveCoupledSystem:
                         or np.any(~np.isfinite(result.delta_bar)) or min(result.circuit_SI[:2])<=0):
                     raise ArithmeticError("Midpoint endpoint outside physical support")
                 return result,dict(iterations=iteration,defect=defect,
+                    anderson_scope="gap,p,n,circuit" if coupled_anderson else "p,n",
                     electron_residual_L1_energy_J=p_energy_defect,
                     phonon_residual_L1_energy_J=n_energy_defect,
                     kinetic_reference_energy_J=self.kinetic_residual_energy_scale_J,
@@ -318,8 +321,12 @@ class EffectiveCoupledSystem:
                 if np.any(alpha<0):
                     raise ArithmeticError("Internal iterate already outside physical support")
                 return alpha
-            kinetic_x=np.r_[dp.ravel(),(dn/nscale).ravel()]
-            kinetic_r=np.r_[gp.ravel(),(gn/nscale).ravel()]
+            if coupled_anderson:
+                kinetic_x=np.r_[du,dp.ravel(),(dn/nscale).ravel(),dc]
+                kinetic_r=np.r_[correction[:ng],gp.ravel(),(gn/nscale).ravel(),correction[ng+nphi:]]
+            else:
+                kinetic_x=np.r_[dp.ravel(),(dn/nscale).ravel()]
+                kinetic_r=np.r_[gp.ravel(),(gn/nscale).ravel()]
             kinetic_correction=kinetic_r.copy()
             if defect>previous*2:
                 history_x.clear();history_r.clear()
@@ -332,13 +339,19 @@ class EffectiveCoupledSystem:
                 if np.all(np.isfinite(accelerated)):
                     kinetic_correction=accelerated
             history_x.append(kinetic_x);history_r.append(kinetic_r)
-            if len(history_x)>5:history_x.pop(0);history_r.pop(0)
+            if len(history_x)>(10 if coupled_anderson else 5):history_x.pop(0);history_r.pop(0)
             split=state.p.size
-            cp=kinetic_correction[:split].reshape(state.p.shape)
-            cn=kinetic_correction[split:].reshape(state.n.shape)*nscale
+            if coupled_anderson:
+                cu=kinetic_correction[:ng];cc=kinetic_correction[-3:]
+                cp=kinetic_correction[ng:ng+split].reshape(state.p.shape)
+                cn=kinetic_correction[ng+split:-3].reshape(state.n.shape)*nscale
+            else:
+                cu=correction[:ng];cc=correction[ng+nphi:]
+                cp=kinetic_correction[:split].reshape(state.p.shape)
+                cn=kinetic_correction[split:].reshape(state.n.shape)*nscale
             ap=feasible_fraction(state.p+dp,cp,1.)
             an=feasible_fraction(state.n+dn,cn)
-            cu=correction[:ng];cp=ap*cp;cn=an*cn;cc=correction[ng+nphi:]
+            cp=ap*cp;cn=an*cn
             damping=(self.coupled_iteration_damping(state,du,dp,dn,dc,cu,cp,cn,cc)
                 if hasattr(self,"coupled_iteration_damping") else 1.)
             du+=damping*cu;dp+=damping*cp;dn+=damping*cn

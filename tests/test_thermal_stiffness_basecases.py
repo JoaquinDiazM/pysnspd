@@ -100,7 +100,7 @@ def fake_terminal(tmp_path):
     campaign.write_json(run/"calibration.json", calibration)
     campaign.write_json(run/"candidate_physics_identity.json", physics)
     manifest = dict(parameter_identity=identity, source_pins_sha256=physics["source_pins_sha256"],
-        run_complete=True, status="TIME_CENSORED_NO_TRIGGER", model_version="1.1.2-candidate",
+        run_complete=True, status="TIME_CENSORED_NO_TRIGGER", model_version="1.1.3-candidate",
         closure=dict(stiffness_temperature=mode), physicalparams=dict(diffusion_calibration=calibration),
         observation=dict(threshold_voltage_V=.1e-3, confirmation_time_s_required=.5e-12,
             extra_time_s=5e-12, no_trigger_ceiling_s=100e-12, full_reset_requested=False,
@@ -108,9 +108,10 @@ def fake_terminal(tmp_path):
         output_sha256={name: campaign.sha(run/name) for name in files+["trajectory.npz"]},
         source=dict(retained_energy_J=1., relative_total_energy_defect=0., maximum_nodal_energy_defect_J=0.,
             positive_capacity_checked_throughout_preparation=True, minimum_preparation_effective_capacity_ratio=.9),
-        thermal_candidate_diagnostics=dict(min_successful_rhs_evaluations=.8),
+        thermal_candidate_diagnostics=dict(min_successful_rhs_evaluations=.8,
+            minimum_gradient_stiffness=.5, minimum_principal_stiffness=.6),
         local_energy_control=dict(max_guarded_accepted_local_energy_fraction=1e-7),
-        numerical=dict(local_energy_tolerance=2.5e-6))
+        numerical=dict(local_energy_tolerance=2.5e-6,elliptic_gradient_required=True))
     campaign.write_json(run/"manifest.json", manifest)
     return case, definition, run, manifest, threads
 
@@ -189,3 +190,11 @@ def test_observation_ceiling_is_explicit_in_every_case_and_plan_identity(tmp_pat
     short=campaign.plan(tmp_path/"short",ceiling_ps=50.)
     assert all(c["parameters"]["ceiling_ps"]==100. for c in nominal["cases"])
     assert all(c["parameters"]["ceiling_ps"]==50. for c in short["cases"])
+
+
+def test_terminal_gate_refuses_nonelliptic_gradient_receipt(tmp_path):
+    case, definition, run, manifest, threads = fake_terminal(tmp_path)
+    manifest["thermal_candidate_diagnostics"]["minimum_principal_stiffness"]=-.1
+    campaign.write_json(run/"manifest.json",manifest)
+    with pytest.raises(ValueError,match="ellipticity"):
+        campaign.audit_case(case,tmp_path,definition,expected_threads=threads)
