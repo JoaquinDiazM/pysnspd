@@ -1,31 +1,33 @@
-# pysnspd v1.2.0: dimensional evolution
+# pysnspd v1.2.1: longer full1D and physical stop monitors
 
-The effective physical closure from v1.1.3 is unchanged. New code restricts its own functional, collision distributions, electroquasineutral solve and complete three-state circuit to the transverse constant mode. It does not import the Allmaras hotbelt constitutive equations.
+The default full1D domain is1000nm (201nodes), centered on the300nm2D lens with350nm added on each side. The new --length-1d-nm input can extend up to the5um active wire. This supersedes the same-domain300nm scope of1.2.0; its historical source/validation remains in that tag.
 
-- 300nm 2D strip; 0.1mV positive threshold,0.5ps confirmation,2ps total margin from crossing.
-- Independent1D shadow during the final2ps, with finite accepted-state crossing lag recorded. All overlap checks and final restriction must pass.
-- Conservative volume remap of the DC-relative complex gap and native electron/phonon populations. Copy circuit exactly. A bounded scalar activity shift reconciles excess energy between discrete DC references; no FD/BE reset or repeated photon.
-- After admission, reproject the final official2D state and switch off2D entirely. The1D chain has61nodes over the same300nm. The exterior inductance is unchanged.15ns is an absolute final-time target, not a promise of complete reset.
-- Integrate absolute left/right cut energy independently. Its2% activity-normalized margin is an explicit truncation indicator, not a theorem about the unobserved exterior. Significant cut flow stops either phase with POSSIBLE_DOMAIN_ERROR.
-- Projection/independent-overlap errors or resolved vortex winding retain the native2D checkpoint and terminate POSSIBLE_DIMENSIONAL_ERROR. No failed criterion is silently waived.
-- Coupled implicit midpoint is retained.1D adds full-step/two-half-step temporal error control, support/capacity/stiffness guards and the independent energy ledger with the inherited1% global envelope; no physical state is discarded for speed.
-- Append-only phase-specific HDF5 stores native states and actual times. Atomic accepted-state checkpoints authenticate sources, parameters and the discrete DC.1D visualization cadence does not force a short integration step.
-- A deterministic convex Voronoi reconstruction repairs the malformed300nm boundary cell while retaining Delaunay sites and triangles. Areas and common faces are recomputed geometrically, never globally renormalized.
+## Evolution and initial state
 
-Starting margins are engineering assumptions and CLI inputs: gap RMS3%, current-pattern residual3%, unsigned population energy5%, raw projection energy0.5%, reconciliation1%, shadow voltage2uV,current0.5%,film energy1%,cut activity2%. Reference is retained photon energy plus absolute device work except for temporal/local solver residuals, which keep the inherited photon-based normalization.
+Keep the effective neutral thermal BCS/KWT/native-kinetic closure and actual three-state circuit. An independent1D shadow begins at the first accepted threshold crossing. Only initially unobserved tails use a cold instantaneous-current stable-branch hypothesis, with phase matched to the core and the prepared DC profile. The core retains its nonequilibrium native populations. This is a declared adiabatic exterior hypothesis, not recovery of an unobserved history.
 
-## Verification scope
+At admitted crossing+2ps, reproject the last official2D core and inherit the already evolved native shadow tails; do not reset them to a cold FD/BE state. Conservative partial-volume weights account for cells straddling both interfaces. Bound the small native activity reconciliation by the same energy margins. Compare gap fields modulo a global U(1) phase, since domains fix potential at different right cuts; preserve all relative gradients.
 
-Short regressions cover the exact uniform transverse operator, positive conservative remap, nonthermal occupation and relative-phase inheritance, winding of both signs, independent energy acceptance, archive commit/truncation, synthetic-probe control-flow handoff and exact resume/hash rejection, and shared-resource refusal. A synthetic voltage probe verifies wiring only, not photon detection.
+Seed1D DC with exact finite-link bulk dispersion to avoid accumulated phase error across a long chain. Bath/DC force/current/nV tolerances remain unchanged.
 
-Read-only projection of the saved775nm v1.1.3 crossing+5ps state (320nm) gave gap RMS0.0034852, population-energy error0.0046328 and raw projection-energy error0.00041949, with no resolved winding. A0.1ps65-node hot-state evolution on one physical core used80accepted steps,4rejections,29.25s and an independent energy defect9.34e-24J. This is not the300nm crossing+2ps admission test or a15ns benchmark. Production validation belongs to the new six-case campaign.
+## Inductance and energy
 
-## Sources and assumptions
+Freeze Lext2=96nH+Lprime_DC*(5um-L2) and Lext1=96nH+Lprime_DC*(5um-L1) from the same original continuous DC. Never reduce the added96nH. Copy Ib,Is,vc exactly. Resolved-film excess energy receives deltaEfilm2+0.5*(Lext2-Lext1)*(Is^2-IDC^2), keeping total excess film+circuit energy continuous. Record only the constant total-DC reference shift; no duplicated inductance or invented ongoing heat correction.
 
-The derivation and tolerances are in the five stable Matematica PDFs, with editable sources in sandbox/model_v1_1_math_20261015. The former unimplemented spatial-tail proposal is replaced by the requested temporal whole-domain switch. No thermal tails are implemented in this release.
+## Stop monitors
 
-Primary context: [Allmaras et al.,1D hotbelt geometry](https://arxiv.org/pdf/1805.00130), [Allmaras2020 thesis](https://thesis.caltech.edu/13748/), [Vodolazov2017](https://arxiv.org/pdf/1611.06060), [Annunziata et al.,reset/latching](https://arxiv.org/abs/1008.0895). Their different closures, initial states and circuit assumptions are not silently substituted.
+- Retain2% absolute cut-energy/activity and1% independent global-energy guards.
+- Watch free25nm outer collars:0.5K electron/phonon moment rise or gap below90%DC for2ps gives POSSIBLE_DOMAIN_ERROR.
+- Accepted current limits derive from1.1Idep; voltage limits from Rnormal, the actual bias and load. They are explicit engineering ceilings, not measured hardware ratings.
+- Global branch reversal is guarded; moderate bipolar Vout is allowed for capacitive undershoot.
+- POSSIBLE_LATCHING requires a>=20nm resistive segment and1ns electrical/thermal plateau after5ns. It is a possible physical state, not proof of a numerical defect.
+- RECOVERY_CONFIRMED can stop before15ns only after1ns of jointly close full-circuit, gap, native population and electron/phonon-moment diagnostics, after2ns.
+- Store accepted native state and explicit monitor reason at termination. Default15ns remains an upper target, not a validated reset or runtime promise.
 
-## Execution
+Primary context: [Kerman et al.2013,Fig.1](https://arxiv.org/pdf/1302.2852), [Annunziata et al.2010](https://arxiv.org/abs/1008.0895). The own restricted functional is not replaced by the Allmaras hotbelt equations.
 
-Use docs/GEMINGA_COMMANDS_PRESENT.md. Six simultaneous cases use24Numba SMT threads on12physical worker cores plus a separate coordinator. Current v1.1.3 workers and their20pinned sources are preserved. Actual throughput and long-time dimensional/domain admissibility remain to be measured.
+## Validation and execution
+
+Short tests include conservative core volume and total-energy transfer, cold-tail initialization, finite-link DC, inherited nonthermal shadow-tail populations, gauge-invariant overlap, support/capacity/temporal energy acceptance, exact restart, physical stop distinctions and shared-resource refusal. Read-only saved-hot-state projection to201nodes and one short coupled1D advance are controls, not a15ns photon validation.
+
+The five stable Matematica PDFs and their sources describe the implementation, new P50-P56 monitors and S33-S35 assumptions. Use docs/GEMINGA_COMMANDS_PRESENT.md. Six cases use24SMT threads on12physical worker cores, preserving current jobs and at least2whole cores. Fresh1.2.1 cases are required.

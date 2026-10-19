@@ -95,12 +95,75 @@ class DimensionalProjection:
     def __init__(self,system2,geometry2,dc2,system1,geometry1,dc1):
         self.s2,self.g2,self.dc2=system2,geometry2,dc2
         self.s1,self.g1,self.dc1=system1,geometry1,dc1
-        self.R=volume_restriction(geometry2.coordinates_m[:,0],
-            system2.functional.volumes_m3,system1.functional.volumes_m3)
+        if geometry1.length_m<geometry2.length_m-1e-18:
+            raise ValueError("1D domain cannot be shorter than the original 2D strip")
+        self.shift_m=(geometry1.length_m-geometry2.length_m)/2
+        self.extended=self.shift_m>1e-18
+        x=geometry1.coordinates_m[:,0]
+        faces=np.r_[x[0],(x[:-1]+x[1:])/2,x[-1]]
+        core_dx=np.maximum(0.,np.minimum(faces[1:],self.shift_m+geometry2.length_m)-
+                           np.maximum(faces[:-1],self.shift_m))
+        full_dx=np.diff(faces)
+        self.core_fraction=core_dx/full_dx
+        active=core_dx>1e-18
+        target_core_volume=system1.functional.volumes_m3[active]*self.core_fraction[active]
+        self.R=np.zeros((len(x),len(geometry2.coordinates_m)))
+        self.R[active]=volume_restriction(geometry2.coordinates_m[:,0],
+            system2.functional.volumes_m3,target_core_volume)*self.core_fraction[active,None]
+        if not np.allclose(system1.functional.volumes_m3@self.R,
+                           system2.functional.volumes_m3,rtol=1e-9,atol=1e-40):
+            raise ArithmeticError("Extended restriction lost central-domain volume")
         self.Edc2=film_energy(system2,dc2);self.Edc1=film_energy(system1,dc1)
+        self.removed_inductance_H=system2.circuit.Lk_ext_H-system1.circuit.Lk_ext_H
+        if self.removed_inductance_H< -1e-20:
+            raise ValueError("Longer resolved film must not increase exterior inductance")
+        self.reference_total_offset_J=(self.Edc2+system2.circuit.energy(dc2.circuit_SI)-
+                                       self.Edc1-system1.circuit.energy(dc1.circuit_SI))
+        geometry1.receipt.update(core_begin_m=self.shift_m,
+                                core_end_m=self.shift_m+geometry2.length_m)
+
+    def inductive_excess_transfer_J(self,state):
+        return .5*self.removed_inductance_H*(state.circuit_SI[1]**2-self.dc2.circuit_SI[1]**2)
+
+    def cold_extension(self,state):
+        """Unobserved tails: cold stable branch at the instantaneous Is.
+
+        This is an explicit adiabatic initialization hypothesis, not an
+        inferred past trajectory. It must pass cut, overlap and energy gates.
+        Rigid outer-cut amplitudes/populations keep the inherited reservoir law.
+        """
+        f,k=self.s1.functional,self.s1.kinetics
+        dx=float(np.median(self.g1.edge_lengths_m))
+        key=float(state.circuit_SI[1])
+        cache=getattr(self,"_cold_bulk_cache",{})
+        if key not in cache:
+            cache[key]=f.bulk(temperature_K=k.bath_temperature_K,current_A=key,
+                             width_m=self.g1.width_m,phase_step_m=dx)
+            self._cold_bulk_cache={key:cache[key]}
+        bulk=cache[key];x=self.g1.coordinates_m[:,0]
+        phase_dc=np.unwrap(np.angle(self.dc1.delta_bar))
+        bounds=(self.shift_m,self.shift_m+self.g2.length_m)
+        phases=[]
+        for nodes,at in zip(self.s2.cuts,bounds):
+            phases.append(float(np.interp(at,x,phase_dc))+
+                float(np.angle(np.mean(state.delta_bar[nodes]/self.dc2.delta_bar[nodes]))))
+        reference=getattr(self,"_cold_reference_bulk",None)
+        if reference is None:
+            reference=f.bulk(temperature_K=k.bath_temperature_K,current_A=self.dc2.circuit_SI[1],
+                             width_m=self.g1.width_m,phase_step_m=dx)
+            self._cold_reference_bulk=reference
+        left=x<=np.mean(bounds)
+        relative=[phases[j]-float(np.interp(at,x,phase_dc)) for j,at in enumerate(bounds)]
+        dq=bulk.q_m_inv-reference.q_m_inv
+        phase=phase_dc+np.where(left,relative[0]+dq*(x-bounds[0]),
+                                    relative[1]+dq*(x-bounds[1]))
+        d=abs(self.dc1.delta_bar)*(bulk.amplitude_bar/reference.amplitude_bar)*np.exp(1j*phase)
+        p=f.fermi_dirac(d,k.bath_temperature_K)
+        n=np.broadcast_to(k.bath_phonons,(len(x),k.phonon_size)).copy()
+        return EffectiveState(d,p,n,state.circuit_SI.copy())
 
     def lift(self,state):
-        x=self.g2.coordinates_m[:,0];xx=self.g1.coordinates_m[:,0]
+        x=self.g2.coordinates_m[:,0]+self.shift_m;xx=self.g1.coordinates_m[:,0]
         ratio=state.delta_bar/self.dc1.delta_bar
         d=self.dc2.delta_bar*(np.interp(x,xx,ratio.real)+1j*np.interp(x,xx,ratio.imag))
         p=np.column_stack([np.interp(x,xx,state.p[:,i]) for i in range(state.p.shape[1])])
@@ -124,32 +187,57 @@ class DimensionalProjection:
 
     def errors(self,original,reduced,scale):
         lifted=self.lift(reduced);v=self.s2.functional.volumes_m3
-        dg=abs(lifted.delta_bar-original.delta_bar)
+        # Each domain fixes phi at a different right cut. Compare modulo its
+        # unobservable global U(1) phase, never erase relative phase gradients.
+        correlation=np.dot(v,np.conj(lifted.delta_bar)*original.delta_bar)
+        align=correlation/abs(correlation) if abs(correlation)>0 else 1.+0j
+        dg=abs(align*lifted.delta_bar-original.delta_bar)
         return dict(gap_relative=float(np.sqrt(np.dot(v,dg*dg)/
             np.dot(v,abs(self.dc2.delta_bar)**2))),
             populations_energy_relative=population_distance(self.s2,original,lifted,scale),
             film_energy_relative=abs((film_energy(self.s2,original)-self.Edc2)-
-                (film_energy(self.s1,reduced)-self.Edc1))/scale,
-            current_pattern_relative=self.current_pattern_error(original),
+                (film_energy(self.s1,reduced)-self.Edc1)+self.inductive_excess_transfer_J(original))/scale,
+            gauge_alignment_rad=float(np.angle(align)),current_pattern_relative=self.current_pattern_error(original),
             winding_count=resolved_winding(original.delta_bar,self.g2.triangles,self.dc2.delta_bar))
 
-    def project(self,state,scale,tolerances):
+    def project(self,state,scale,tolerances,*,exterior_state=None):
         # Exact DC maps to exact DC: protect the matched discrete references.
         if (np.array_equal(state.delta_bar,self.dc2.delta_bar) and
-            np.array_equal(state.p,self.dc2.p) and np.array_equal(state.n,self.dc2.n)):
+            np.array_equal(state.p,self.dc2.p) and np.array_equal(state.n,self.dc2.n) and
+            (not self.extended or (state.circuit_SI[1]==self.dc2.circuit_SI[1] and exterior_state is None))):
             result=self.dc1.copy();result.circuit_SI=state.circuit_SI.copy()
             return result,dict(raw_energy_relative=0.,reconciliation_energy_relative=0.,
                                activity_shift=0.,**self.errors(state,result,scale))
         f,k=self.s1.functional,self.s1.kinetics
         d=self.dc1.delta_bar*(self.R@(state.delta_bar/self.dc2.delta_bar))
         p=self.R@state.p;n=self.R@state.n
-        # Same rigid superconducting cuts; preserve their phases, never reset CM.
-        for old,new in zip(self.s2.cuts,self.s1.cuts):
-            relative_phase=np.angle(np.mean(state.delta_bar[old]/self.dc2.delta_bar[old]))
-            d[new]=self.dc1.delta_bar[new]*np.exp(1j*relative_phase)
-            p[new]=self.dc1.p[new];n[new]=self.dc1.n[new]
+        initialization="same-domain native projection"
+        if self.extended:
+            if exterior_state is None:
+                cold=self.cold_extension(state)
+                initialization="cold stable-branch hypothesis at first crossing"
+            else:
+                cold=exterior_state.copy()
+                core=self.core_fraction>0
+                target_core=d[core]/self.core_fraction[core]
+                correlation=np.dot(f.volumes_m3[core]*self.core_fraction[core],
+                                   np.conj(cold.delta_bar[core])*target_core)
+                phase=correlation/abs(correlation) if abs(correlation)>0 else 1.+0j
+                cold.delta_bar*=phase
+                initialization="independently evolved native shadow tails"
+            outside=1-self.core_fraction
+            d+=outside*cold.delta_bar
+            p+=outside[:,None]*cold.p;n+=outside[:,None]*cold.n
+            for nodes in self.s1.cuts:
+                d[nodes]=abs(self.dc1.delta_bar[nodes])*np.exp(1j*np.angle(cold.delta_bar[nodes]))
+                p[nodes]=self.dc1.p[nodes];n[nodes]=self.dc1.n[nodes]
+        else:
+            for old,new in zip(self.s2.cuts,self.s1.cuts):
+                relative_phase=np.angle(np.mean(state.delta_bar[old]/self.dc2.delta_bar[old]))
+                d[new]=self.dc1.delta_bar[new]*np.exp(1j*relative_phase)
+                p[new]=self.dc1.p[new];n[new]=self.dc1.n[new]
         raw=EffectiveState(d,p,n,state.circuit_SI.copy())
-        target=film_energy(self.s2,state)-self.Edc2+self.Edc1
+        target=film_energy(self.s2,state)-self.Edc2+self.Edc1+self.inductive_excess_transfer_J(state)
         before=film_energy(self.s1,raw)
         raw_error=abs(before-target)/scale
         if raw_error>tolerances.projection_energy_relative:
@@ -191,7 +279,7 @@ class DimensionalProjection:
         if abs(film_energy(self.s1,result)-target)/scale>2e-9:
             raise ArithmeticError("Projection energy was not conserved")
         return result,dict(raw_energy_relative=raw_error,
-            reconciliation_energy_relative=correction,activity_shift=float(shift),
+            reconciliation_energy_relative=correction,activity_shift=float(shift),exterior_initialization=initialization,
             **self.errors(state,result,scale))
 
 

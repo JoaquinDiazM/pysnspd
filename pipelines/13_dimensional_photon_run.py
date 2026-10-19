@@ -1,7 +1,7 @@
 """v1.2: guarded full 2D -> full 1D evolution, native kinetic states retained."""
 from __future__ import annotations
 import argparse,importlib.util,json,math,os,signal,sys,time
-from dataclasses import asdict
+from dataclasses import asdict,replace
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 for key in ("OPENBLAS_NUM_THREADS","OMP_NUM_THREADS","MKL_NUM_THREADS","NUMEXPR_NUM_THREADS"):
@@ -18,6 +18,7 @@ import numpy as np
 from pysnspd.experimental.dimensional_transition import (
     TransitionTolerances,chain_geometry,DimensionalProjection,observed,
     checked_step,doubled_step,film_energy)
+from pysnspd.experimental.dimensional_monitors import MonitorConfig,metrics as monitor_metrics,observe as monitor_observe
 from pysnspd.experimental.dimensional_archive import PhaseArchive
 from pysnspd.experimental.dimensional_geometry import verified_geometry
 _LEGACY_GEOMETRY=OLD.calibrated_geometry
@@ -35,6 +36,7 @@ def parser():
     p.set_defaults(length_nm=300.,extra_time_ps=2.,confirmation_ps=.5,threads=4,
                    retained_fraction=.8,tau_escape_ps=20.,tau_ee_Tc_ps=4.)
     p.add_argument("--final-time-ns",type=float,default=15.)
+    p.add_argument("--length-1d-nm",type=float,default=1000.)
     p.add_argument("--spacing-1d-nm",type=float,default=5.)
     p.add_argument("--maximum-1d-step-ps",type=float,default=10.)
     p.add_argument("--global-energy-tolerance",type=float,default=.01)
@@ -45,6 +47,10 @@ def parser():
     p.add_argument("--checkpoint-1d-every-ps",type=float,default=100.)
     p.add_argument("--shadow-check-every-ps",type=float,default=.1)
     p.add_argument("--physical-cores",type=int,default=2)
+    limits={"current_limit_uA","device_voltage_limit_mV","readout_voltage_limit_mV","capacitor_voltage_limit_mV"}
+    for key,value in asdict(MonitorConfig()).items():
+        p.add_argument("--monitor-"+key.replace("_","-"),type=float,
+                       default=None if key in limits else value)
     for key,value in asdict(TransitionTolerances()).items():
         p.add_argument("--guard-"+key.replace("_","-"),type=float,default=value)
     return p
@@ -53,7 +59,7 @@ def parser():
 def source_pins():
     pins=OLD.source_pins()
     for rel in ("pipelines/13_dimensional_photon_run.py",
-        "pysnspd/experimental/dimensional_transition.py","pysnspd/experimental/dimensional_archive.py","pysnspd/experimental/dimensional_geometry.py"):
+        "pysnspd/experimental/dimensional_transition.py","pysnspd/experimental/dimensional_archive.py","pysnspd/experimental/dimensional_geometry.py","pysnspd/experimental/dimensional_monitors.py"):
         pins[rel]=B.sha256(ROOT/rel)
     return pins
 
@@ -65,7 +71,7 @@ def identity(a):
 
 def build_1d(a,s2,g2,output,resume):
     f2,k2=s2.functional,s2.kinetics
-    g=chain_geometry(g2.length_m,g2.width_m,a.spacing_1d_nm*1e-9,f2.ell0_m)
+    g=chain_geometry(a.length_1d_nm*1e-9,g2.width_m,a.spacing_1d_nm*1e-9,f2.ell0_m)
     kwargs=dict(graph=g.graph,energy_scale_J=f2.Eu_J,N0_per_J_m3=f2.N0_per_J_m3,
         ell0_m=f2.ell0_m,thickness_m=f2.thickness_m,count_nodes=f2.xi_bar,
         count_weights=f2.weights_bar,gradient_law="bcs_radial",
@@ -79,7 +85,9 @@ def build_1d(a,s2,g2,output,resume):
         bath=B.EffectiveBCSFunctional(**kwargs)
         dc=B.prepare_effective_dc(bath,left_nodes=g.left_nodes,right_nodes=g.right_nodes,
             temperature_K=a.bath_K,current_A=a.current_uA*1e-6,width_m=g.width_m,
-            sheet_resistance_ohm=a.sheet_resistance_ohm)
+            sheet_resistance_ohm=a.sheet_resistance_ohm,
+            bulk_reference=bath.bulk(temperature_K=a.bath_K,current_A=a.current_uA*1e-6,
+                width_m=g.width_m,phase_step_m=float(np.median(g.edge_lengths_m))))
         dc_d,dc_p=dc.delta_bar,dc.p
         B.atomic_npz(path,dict(delta_bar=dc_d,p=dc_p))
     k=B.EffectiveBCSKinetics(xi_bar=f.xi_bar,weights_bar=f.weights_bar,
@@ -90,26 +98,54 @@ def build_1d(a,s2,g2,output,resume):
         tau_escape_s=a.tau_escape_ps*1e-12,transport_order=a.transport_order,numba_threads=a.threads)
     ports=B.EffectiveNeutralPorts(g.graph,sheet_resistance_ohm=a.sheet_resistance_ohm,
         left_nodes=g.left_nodes,right_nodes=g.right_nodes)
-    s=observed(ThermalCoupledSystem(f,k,ports,s2.circuit,tau_ee_Tc_ps=a.tau_ee_Tc_ps,
+    from scipy.constants import hbar,elementary_charge
+    bulk_ref=f2.bulk(temperature_K=a.bath_K,current_A=a.current_uA*1e-6,width_m=g.width_m)
+    per_length=hbar/(2*elementary_charge)*bulk_ref.q_derivative_m_inv_per_A
+    removed=per_length*(g.length_m-g2.length_m)
+    circuit=replace(s2.circuit,Lk_ext_H=s2.circuit.Lk_ext_H-removed)
+    s=observed(ThermalCoupledSystem(f,k,ports,circuit,tau_ee_Tc_ps=a.tau_ee_Tc_ps,
         tau_ep_Tc_ps=a.tau_ep_Tc_ps,current_scale_A=a.current_uA*1e-6,
         kinetic_residual_energy_scale_J=s2.kinetic_residual_energy_scale_J))
     state=EffectiveState(dc_d,dc_p,np.broadcast_to(k.bath_phonons,
         (g.graph.n_nodes,k.phonon_size)).copy(),np.array([a.current_uA*1e-6,a.current_uA*1e-6,0.]))
+    s.dimensional_partition=dict(length_2d_m=g2.length_m,length_1d_m=g.length_m,
+        exterior_2d_H=s2.circuit.Lk_ext_H,exterior_1d_H=circuit.Lk_ext_H,
+        removed_lumped_H=removed,bulk_differential_H_per_m=per_length,
+        cold_electrical_relaxation_ps=per_length*g.width_m/a.sheet_resistance_ohm*1e12,
+        added_96nH_preserved=True,partition_frozen_from_DC=True)
     s.evaluate(state)  # capacity, ellipticity, current and native support guards
     return s,g,state
 
 
 def run(a):
     OLD.validate_args(a)
-    for key in ("final_time_ns","spacing_1d_nm","maximum_1d_step_ps","time_rtol",
+    for key in ("length_1d_nm","final_time_ns","spacing_1d_nm","maximum_1d_step_ps","time_rtol",
                 "time_atol","snapshot_1d_every_ps","checkpoint_1d_every_ps","shadow_check_every_ps","global_energy_tolerance"):
         if not np.isfinite(getattr(a,key)) or getattr(a,key)<=0:raise ValueError(key+" must be positive")
+    if not a.length_nm<=a.length_1d_nm<=5000:
+        raise ValueError("Require length_2D <= length_1D <= 5000 nm active wire")
+    half_tail=(a.length_1d_nm-a.length_nm)/2
+    if not np.isclose(half_tail/a.spacing_1d_nm,round(half_tail/a.spacing_1d_nm),atol=1e-8,rtol=0):
+        raise ValueError("Central interfaces must align with the 1D grid")
     if a.extra_time_ps<=a.confirmation_ps:
         raise ValueError("The overlap requires extra time greater than confirmation time")
     if a.final_time_ns*1e3<=a.ceiling_ps+a.extra_time_ps:
         raise ValueError("Final time must follow the complete detection search")
     tol=TransitionTolerances(**{k:getattr(a,"guard_"+k) for k in asdict(TransitionTolerances())})
     if any(not np.isfinite(x) or x<=0 for x in asdict(tol).values()):raise ValueError("Positive finite guards required")
+    monitor_values={key:getattr(a,"monitor_"+key) for key in asdict(MonitorConfig())}
+    if monitor_values["current_limit_uA"] is None:monitor_values["current_limit_uA"]=1.1*a.target_depairing_uA
+    if monitor_values["device_voltage_limit_mV"] is None:
+        monitor_values["device_voltage_limit_mV"]=2*a.sheet_resistance_ohm*a.length_1d_nm/80*monitor_values["current_limit_uA"]*1e-3
+    if monitor_values["readout_voltage_limit_mV"] is None:
+        monitor_values["readout_voltage_limit_mV"]=50*monitor_values["current_limit_uA"]*1e-3
+    if monitor_values["capacitor_voltage_limit_mV"] is None:
+        monitor_values["capacitor_voltage_limit_mV"]=2*1e4*a.current_uA*1e-3
+    if any(not np.isfinite(x) or x<=0 for x in monitor_values.values()):
+        raise ValueError("Monitor margins must be finite and positive")
+    if monitor_values["collar_nm"]<a.spacing_1d_nm or monitor_values["collar_nm"]>=a.length_1d_nm/2:
+        raise ValueError("Outer collar must contain free nodes and leave an interior")
+    monitor=MonitorConfig(**monitor_values)
     from sandbox.stage4_core.parallel_runtime import linux_resources,resource_budget
     resources=linux_resources();budget=resource_budget(resources,.9,.9,max_workers=1)
     groups=[g for g in resources["physical_core_groups"] if set(g)<=set(budget["selected_affinity_cpus"])]
@@ -142,13 +178,13 @@ def run(a):
     def request(sig,frame):requested["stop"]=True
     signal.signal(signal.SIGTERM,request);signal.signal(signal.SIGINT,request)
     started=time.monotonic()
-    manifest=dict(schema="pysnspd.dimensional_run.v1",model_version="1.2.0",
+    manifest=dict(schema="pysnspd.dimensional_run.v1",model_version="1.2.1",
         physical_kernel_version="1.1.3",run_complete=False,status="PREPARATION",
         source_pins_sha256=pins,parameter_identity=ident,
         resources=dict(threads=a.threads,physical_cores=a.physical_cores,affinity_cpus=cpus,
                        runtime_inventory=resources),
         admission=dict(implemented=True,physical_validation=False),
-        scope="Same finite strip, dy=0 after admitted overlap; no 1D tails or amplifier",
+        scope="Central 2D strip embedded in longer full 1D; cold-current-carrying tails and frozen DC inductance repartition; no amplifier",
         snapshot_policy="2D fixed targets; 1D accepted states at target cadence without capping dt; actual timestamps stored")
     write_json(out/"manifest.json",manifest)
     setup_args=argparse.Namespace(**dict(vars(a),duration_ps=None))
@@ -178,7 +214,7 @@ def run(a):
             accepted_steps=0,rejections=0,consecutive_rejections=0,stable_steps=0,next_step_ps=a.dt_ps,next_snapshot_ps=a.snapshot_every_ps,next_checkpoint_ps=a.checkpoint_every_ps,
             next_shadow_check_ps=0.,shadow_time_ps=None,shadow_crossing_ps=None,
             shadow_next_step_ps=a.dt_ps,shadow_checks=[],shadow_error=None,projection=None,
-            source=source,terminal_diagnostic=False)
+            source=source,terminal_diagnostic=False,monitor_tracker={},latest_monitor={},monitor_reason=None)
     else:controller=B.TriggerWindow.from_checkpoint(m["controller"])
     systems={"2d":s2,"shadow1d":s1,"1d":s1}
     geoms={"2d":g2,"shadow1d":g1,"1d":g1};dcs={"2d":dc2,"shadow1d":dc1,"1d":dc1}
@@ -213,14 +249,15 @@ def run(a):
         arrays["metadata_json"]=np.array(json.dumps(B.safe_json(m),allow_nan=False))
         B.atomic_npz(out/"checkpoint_latest.npz",arrays)
         manifest.update(status=status,error=error,time_ps=m["time_ps"],phase=m["phase"],
-            physicalparams=params,source=m["source"],observation=controller.summary(),
+            physicalparams=params,circuit_by_phase={"2d":asdict(s2.circuit),"shadow1d":asdict(s1.circuit),"1d":asdict(s1.circuit)},
+            inductance_partition=s1.dimensional_partition,source=m["source"],observation=controller.summary(),
             domain_fraction=domain_fraction(),projection=m["projection"],
             shadow_checks=m["shadow_checks"],shadow_error=m["shadow_error"],
             archive_counts=m["archive_counts"],checkpoint_sha256=B.sha256(out/"checkpoint_latest.npz"),
             accepted_steps=m["accepted_steps"],rejections=m["rejections"],
             energy_defect_J=rhs.energy_J+offset-initial_total-m["external_J"],max_local_energy_fraction=m["max_local_energy_fraction"],max_global_energy_fraction=m["max_global_energy_fraction"],
             elapsed_session_wall_s=time.monotonic()-started,
-            dc1d_sha256=B.sha256(out/"dc1d.npz"))
+            dc1d_sha256=B.sha256(out/"dc1d.npz"),monitor_config=asdict(monitor),latest_monitor=m["latest_monitor"],monitor_reason=m["monitor_reason"])
         write_json(out/"manifest.json",manifest);last_checkpoint=time.monotonic()
     save()
     try:
@@ -240,7 +277,7 @@ def run(a):
                     if m["shadow_error"] is not None:raise ArithmeticError(m["shadow_error"])
                     if shadow is None or len(m["shadow_checks"])<2:
                         raise ArithmeticError("Insufficient independent overlap")
-                    reduced,report=project.project(state,reference+m["device_absolute_J"],tol)
+                    reduced,report=project.project(state,reference+m["device_absolute_J"],tol,exterior_state=shadow)
                     report["time_ps"]=t;m["projection"]=report
                     checks=m["shadow_checks"]+[report]
                     for c in checks:
@@ -248,7 +285,7 @@ def run(a):
                             raise ArithmeticError("Unresolved transverse/projection structure: "+str(c))
                         if c.get("voltage_error_V",0)>tol.shadow_voltage_V or c.get("current_relative",0)>tol.shadow_current_relative or c["film_energy_relative"]>tol.shadow_energy_relative:
                             raise ArithmeticError("Independent 1D overlap mismatch: "+str(c))
-                    offset+=film_energy(s2,state)-film_energy(s1,reduced)
+                    offset+=project.reference_total_offset_J
                     state=reduced;shadow=None;m["phase"]="1d";system=s1;rhs=s1.evaluate(state)
                     m["next_step_ps"]=a.dt_ps;m["next_snapshot_ps"]=t+a.snapshot_1d_every_ps;m["next_checkpoint_ps"]=t+a.checkpoint_1d_every_ps
                     archive.append("1d",row(rhs,state,t,0.,{}));archive.snapshot("1d",s1,state,rhs,t)
@@ -286,7 +323,16 @@ def run(a):
             m["cut_absolute_J"]+=receipt["absolute_cut_energy_increment_J"]
             m["device_absolute_J"]+=receipt["absolute_device_work_increment_J"]
             t=m["time_ps"]
+            m["latest_monitor"]=monitor_metrics(system,geoms[m["phase"]],state,rhs,dcs[m["phase"]],
+                monitor,reference,extended=m["phase"]=="1d")
+            monitor_status,monitor_reason=monitor_observe(t,m["phase"],m["latest_monitor"],monitor,
+                m["monitor_tracker"],a.current_uA,a.sheet_resistance_ohm,g2.width_m*1e9)
             archive.append(m["phase"],row(rhs,state,t,h,receipt))
+            if monitor_status:
+                status=monitor_status;m["monitor_reason"]=monitor_reason
+                m["terminal_diagnostic"]=status!="RECOVERY_CONFIRMED"
+                manifest["run_complete"]=status=="RECOVERY_CONFIRMED"
+                break
             cap=a.dt_ps if m["phase"]=="2d" else a.maximum_1d_step_ps
             factor=((2. if m["stable_steps"]>=8 else 1.) if m["phase"]=="2d" else min(2.,max(1.,.8/max(receipt["temporal_error"],1e-12)**(1/3))))
             if m["phase"]=="2d" and m["stable_steps"]>=8:m["stable_steps"]=0
@@ -341,12 +387,13 @@ def run(a):
                     domain_fraction=domain_fraction())),flush=True);last_progress=time.monotonic()
     except Exception as exc:
         error=type(exc).__name__+": "+str(exc)
-        status="NUMERICAL_RESOLUTION_LIMIT" if "Declared adaptive resolution" in str(exc) else "INTEGRATION_FAILURE"
+        status=("CIRCUIT_POLARITY_GUARD" if "Global current reversal" in str(exc) else
+            "NUMERICAL_RESOLUTION_LIMIT" if "Declared adaptive resolution" in str(exc) else "INTEGRATION_FAILURE")
         m["terminal_diagnostic"]=True
     finally:
         archive.snapshot(m["phase"],system,state,rhs,m["time_ps"]);save();archive.close()
     print(json.dumps(dict(status=status,time_ps=m["time_ps"],phase=m["phase"],error=error)),flush=True)
-    return 0 if status in ("FINAL_TIME_REACHED","TIME_CENSORED_NO_TRIGGER","DEVELOPMENT_DURATION_REACHED","INTERRUPTED_CHECKPOINTED") else 2
+    return 0 if status in ("FINAL_TIME_REACHED","RECOVERY_CONFIRMED","TIME_CENSORED_NO_TRIGGER","DEVELOPMENT_DURATION_REACHED","INTERRUPTED_CHECKPOINTED") else 2
 
 
 if __name__=="__main__":

@@ -146,3 +146,13 @@ The user explicitly authorizes this task to execute runs longer than five minute
 - Integrate absolute left/right cut energies separately and monitor their fraction of retained photon energy plus absolute device work; the default 2% bound is an engineering truncation indicator, not a rigorous exterior-state error bound.
 - Use temporal step doubling in 1D with independent local energy acceptance. Save actual 1D snapshot times without forcing tiny time steps for plotting. Preserve diagnostic states rather than loosening a failed guard.
 - Six-case campaigns admit 24 Numba threads on twelve whole physical cores (four SMT threads / two cores per case), plus a separate coordinator and at least two fully reserved cores. Inventory quotas/RAM and known active runs before admission; the legacy global campaign lock prevents overlapping campaigns. Do not claim a measured 70% use or an untested speedup.
+
+
+## Extended 1D scope (user task, 2026-10-19, v1.2.1)
+
+- The default 1D domain is 1000 nm, centered on the 300 nm 2D lens (350 nm per added side); spacing remains 5 nm /201nodes. Keep the full native central state. Added regions use an explicit cold, instantaneous-current stable-branch hypothesis with matched DC-relative phase; initial exterior history is unknown and must pass overlap/domain/energy checks.
+- Freeze both exterior-inductance representations from the same original DC. Subtract only L'_DC times added resolved length from the lumped circuit at representation change; preserve all added96nH. Transfer the corresponding excess inductive energy to the resolved film; never hide it in arbitrary reference work.
+- Seed the 1D DC with its exact finite-link bulk dispersion, not a continuum phase guess across a long chain; keep force/current/nV tolerances unchanged.
+- Check free25nm outer collars, accepted current/voltage ceilings, native support/capacity, independent energy and global branch polarity. Moderate negative readout voltage is allowed for capacitive undershoot.
+- Preserve state and explicit stop reason for domain escape, electrical guard or possible latching. Latching is a possible physical outcome, not proof of a numerical error. Early recovery requires1ns of jointly stable gap/native populations/electron and phonon moments/full circuit after2ns; otherwise the15ns target remains subject to all guards.
+- Never resume a v1.2.0 checkpoint under v1.2.1. Use a fresh campaign directory and record all geometry, initialization, partition and monitor inputs.

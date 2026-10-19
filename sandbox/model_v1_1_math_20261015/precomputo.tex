@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.2.0 / efectivo / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.2.1 / efectivo / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -18,7 +18,7 @@
 \begin{document}
 {\LARGE\bfseries\color{ink}Cantidades precomputadas}\par
 {\large Geometría, calibración DC, material y estado inicial}\par
-{\small Versión 1.2.0. Las tasas dependientes del estado se evalúan durante la evolución.}
+{\small Versión 1.2.1. Las tasas dependientes del estado se evalúan durante la evolución.}
 \renewcommand{\theequation}{3.\arabic{equation}}
 \block{Escalas físicas y relación de Einstein}
 \begin{gather}
@@ -190,12 +190,12 @@
 \hypertarget{dimensional-1d}{}\hypertarget{hybrid-1d}{}
 {\LARGE\bfseries\color{ink}Geometrías y referencias del relevo}\par
 \renewcommand{\theequation}{D3.\arabic{equation}}\renewcommand{\theHequation}{D3.\arabic{equation}}\setcounter{equation}{0}
-\block{Malla 1D del mismo intervalo físico}
+\block{Malla 1D del intervalo ampliado}
 \begin{gather}
- x_j=j\Delta x,\quad j=0,\ldots,60,\quad \Delta x=5\ {\rm nm},\\
- \delta x_j=\begin{cases}\Delta x/2,&j=0,60,\\\Delta x,&1\leq j\leq59,\end{cases}
+ x_j=j\Delta x,\quad j=0,\ldots,200,\quad \Delta x=5\ {\rm nm},\\
+ \delta x_j=\begin{cases}\Delta x/2,&j=0,200,\\\Delta x,&1\leq j\leq199,\end{cases}
  \quad V_j=Wd_f\delta x_j,\quad c_{j,j+1}=W/\Delta x,\\
- \sum_jV_j=WLd_f=\sum_iV_i^{(2)},\quad A_{j+1/2}=Wd_f,\quad \ell_{j,j+1}=\Delta x.
+ \sum_jV_j=WL_1d_f,\quad \sum_jf_jV_j=\sum_iV_i^{(2)}=WL_2d_f,\quad A_{j+1/2}=Wd_f,\quad \ell_{j,j+1}=\Delta x.
 \end{gather}
 
 \block{Volúmenes de borde verificados}
@@ -212,20 +212,20 @@ mismos sitios y triangulación. Caras comunes recalculadas; sin renormalizar
  F_q(X_q^{\rm DC})\simeq0,\quad I_q^{\rm DC}=I_{\rm DC},\quad T_q^{\rm DC}=T_b,\quad q=1,2,\\
  E_q^{\rm DC}={\cal E}_q(X_q^{\rm DC}),\quad
  {\cal R}_{ji}=|[a_{i-1},a_i]\cap[b_{j-1},b_j]|/V_j^{(1)},\\
- L_{\rm ext}=96\ {\rm nH}
+ L_{{\rm ext},2}=96\ {\rm nH}
  +{\hbar\over2e}\left.{\partial q_{\rm bulk}\over\partial I}\right|_{\rm DC}
- (5\ \mu{\rm m}-300\ {\rm nm}).
+ (5\ \mu{\rm m}-300\ {\rm nm}),\\
+ L_{{\rm ext},1}=96\ {\rm nH}+L'_{\rm DC}(5\ \mu{\rm m}-1000\ {\rm nm}).
 \end{gather}
 \block{Identidad y coste}
 \begin{gather}
  (\bar\xi_k,w_k,\bar\Omega_a,c_a,D,N_0,\alpha^2F,\tau_{ee},\tau_{\rm esc})_1\\
  =(\bar\xi_k,w_k,\bar\Omega_a,c_a,D,N_0,\alpha^2F,\tau_{ee},\tau_{\rm esc})_2,\\
- N_1=61,\quad N_{\rm cin,1}=61(N_\xi+N_\Omega),\quad h_{1,\max}=10\ {\rm ps}.
+ N_1=201,\quad N_{\rm cin,1}=201(N_\xi+N_\Omega),\quad h_{1,\max}=10\ {\rm ps}.
 \end{gather}
 {\small El ahorro espacial no garantiza aceleración temporal:
 las colisiones y el circuito siguen acoplados y pueden limitar \(h_1\).
-No se prolonga la zona térmica hasta 5 \(\mu\)m ni se añaden colas:
-se conserva el dominio de 300 nm y su control de cortes.}
+Se añaden 350 nm por lado. La referencia DC 1D usa la dispersión exacta del enlace, \(q\Delta x\), para evitar errores de fase acumulados al alargar la cinta. Ambas particiones inductivas se fijan con el mismo DC continuo.}
 \origin{Volúmenes finitos y restricción modal propios. Material y calibración
 \(I_{\rm dep}\) anteriores sin cambios.
 \href{Supuestos.pdf\#nameddest=S25}{S25--S32};

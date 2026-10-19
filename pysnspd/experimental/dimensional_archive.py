@@ -16,7 +16,7 @@ class PhaseArchive:
         self.file=h5py.File(self.path,"r+" if resume else "w",libver="latest")
         if not resume:
             self.file.attrs["schema"]="pysnspd.dimensional_run.v1"
-            self.file.attrs["model_version"]="1.2.0"
+            self.file.attrs["model_version"]="1.2.1"
             self.file.attrs["voltage_scope"]="Intrinsic Rload*(Ib-Is); no amplifier/filter"
             self.file.attrs["phase_policy"]="2d official before handoff; shadow1d independent; 1d official after handoff"
             for name,system in systems.items():
@@ -27,6 +27,10 @@ class PhaseArchive:
                     dc_p=dc.p,dc_n=dc.n,xi_bar=f.xi_bar,xi_weights=f.weights_bar,
                     phonon_energies_bar=k.phonons.energies).items():q.create_dataset(key,data=val)
                 q.attrs["energy_scale_J"]=f.Eu_J
+                for field in ("Lk_ext_H","R_bias_ohm","L_bias_H","R_load_ohm","C_couple_F","V_bias_V"):
+                    q.attrs[field]=getattr(system.circuit,field)
+                for field in ("core_begin_m","core_end_m"):
+                    if field in g.receipt:q.attrs[field]=g.receipt[field]
                 q.create_dataset("trace",shape=(0,),maxshape=(None,),
                     dtype=[(key,"f8") for key in TRACE],chunks=(256,))
                 n=g.graph.n_nodes

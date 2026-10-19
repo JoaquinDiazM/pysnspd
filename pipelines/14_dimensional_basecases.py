@@ -58,7 +58,7 @@ def command(case,out,slot,a,resume=False):
          "--wavelength-nm",str(case["wavelength_nm"]),"--length-nm","300",
          "--tau-escape-ps","20","--retained-fraction","0.8","--sheet-resistance-ohm","425",
          "--confirmation-ps","0.5","--extra-time-ps","2","--ceiling-ps",str(a.ceiling_ps),
-         "--final-time-ns",str(a.final_time_ns)]
+         "--final-time-ns",str(a.final_time_ns),"--length-1d-nm",str(a.length_1d_nm)]
     if resume:cmd.append("--resume")
     return cmd
 
@@ -69,17 +69,18 @@ def main(argv=None):
     p.add_argument("--prepare-only",action="store_true");p.add_argument("--resume",action="store_true")
     p.add_argument("--threads-per-case",type=int,choices=(4,),default=4)
     p.add_argument("--physical-cores-per-case",type=int,choices=(2,),default=2)
+    p.add_argument("--length-1d-nm",type=float,default=1000.)
     p.add_argument("--ceiling-ps",type=float,default=100.);p.add_argument("--final-time-ns",type=float,default=15.)
     a=p.parse_args(argv);out=RUN.B.scratch_path(a.campaign_dir)
     if (out/"campaign_execution.json").exists() and not (a.resume or a.prepare_only):raise FileExistsError("Executed campaign exists: choose --resume")
     out.mkdir(parents=True,exist_ok=True)
     pins=RUN.source_pins();pins["pipelines/14_dimensional_basecases.py"]=RUN.B.sha256(__file__)
     pins["pipelines/10_thermal_stiffness_basecases.py"]=RUN.B.sha256(ROOT/"pipelines/10_thermal_stiffness_basecases.py")
-    definition=dict(schema="pysnspd.dimensional_campaign.v1",model_version="1.2.0",cases=cases(),
-        source_pins_sha256=pins,ceiling_ps=a.ceiling_ps,final_time_ns=a.final_time_ns,
+    definition=dict(schema="pysnspd.dimensional_campaign.v1",model_version="1.2.1",cases=cases(),
+        source_pins_sha256=pins,ceiling_ps=a.ceiling_ps,final_time_ns=a.final_time_ns,length_1d_nm=a.length_1d_nm,
         scheduling=dict(simultaneous_cases=6,threads_per_case=4,physical_cores_per_case=2,
             worker_threads=24,worker_physical_cores=12,SMT=True,minimum_reserved_physical_cores=2),
-        scope="300nm same strip; guarded overlap; no amplifier; native kinetics/full circuit; no quantitative admission")
+        scope="300nm central 2D / configurable full 1D default1000nm; cold added tails; frozen DC inductance repartition; guarded overlap and circuit/domain monitors; no quantitative admission")
     plan=out/"campaign_plan.json"
     if plan.exists() and json.loads(plan.read_text())!=definition:raise ValueError("Existing campaign sources/parameters differ")
     RUN.write_json(plan,definition)
@@ -123,7 +124,7 @@ def main(argv=None):
                 code=proc.wait()
             path=dest/"manifest.json";m=json.loads(path.read_text()) if path.exists() else {}
             return dict(case=case["name"],exit_code=code,status=m.get("status","FAILED_BEFORE_MANIFEST"),
-                        time_ps=m.get("time_ps"),phase=m.get("phase"),run_complete=m.get("run_complete",False))
+                        time_ps=m.get("time_ps"),phase=m.get("phase"),run_complete=m.get("run_complete",False),reason=m.get("monitor_reason") or m.get("error"))
         results=[]
         with ThreadPoolExecutor(max_workers=6) as pool:
             jobs=[pool.submit(worker,c,s) for c,s in zip(cases(),resources["slots"])]

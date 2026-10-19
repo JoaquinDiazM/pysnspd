@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.2.0 / efectivo / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.2.1 / efectivo / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -17,7 +17,7 @@
 \newcommand{\refs}{\vfill{\footnotesize\href{Supuestos.pdf}{Hipótesis y límites: Supuestos}; \href{Parametros.pdf}{entradas: Parametros}.}}
 \begin{document}
 {\LARGE\bfseries\color{ink}Ecuaciones auxiliares durante la evolución}\par
-{\small Versión 1.2.0. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
+{\small Versión 1.2.1. Funcionales, calor reversible, eventos, potencial, circuito e integrador.}
 \renewcommand{\theequation}{2.\arabic{equation}}
 \block{Funcional térmico anclado a DC y fuerza variacional}\small
 \hypertarget{G-final}{}
@@ -404,7 +404,7 @@ Si $\Delta t_{\rm adapt}<10^{-6}$ ps: checkpoint y parada numérica; nunca aumen
  (K,Q,N_{\rm face})\ \text{refinados};\qquad
  \{\tau_{\rm lat},V_{\rm out},\Delta_{\min},C_{\rm eff},{\cal R}_U\}.
 \]
-{\small El cierre cuadrático térmico anterior desarrolló una frontera de capacidad en los anclajes. El modelo 1.2.0 cambia el funcional mediante el ajuste DC declarado; no se admiten trayectorias históricas bajo la energía nueva. Validación fotónica y convergencia de observables pendientes.}
+{\small El cierre cuadrático térmico anterior desarrolló una frontera de capacidad en los anclajes. El modelo 1.2.1 cambia el funcional mediante el ajuste DC declarado; no se admiten trayectorias históricas bajo la energía nueva. Validación fotónica y convergencia de observables pendientes.}
 \origin{Punto medio implícito, Newton disperso y limitación de producción/destrucción. Conservación continua no garantiza convergencia temporal ni validez de la hipótesis mesoscópica.}
 \code{general\_thermal\_gradient.py; resummed\_thermal.py; effective\_coupled.py}
 \refs
@@ -415,28 +415,39 @@ Si $\Delta t_{\rm adapt}<10^{-6}$ ps: checkpoint y parada numérica; nunca aumen
 \renewcommand{\theequation}{D2.\arabic{equation}}\renewcommand{\theHequation}{D2.\arabic{equation}}\setcounter{equation}{0}
 \block{Remapeo positivo por volúmenes ordenados en \(x\)}
 \begin{gather}
- a_i=\sum_{r\leq i}V_r^{(2)},\quad b_j=\sum_{r\leq j}V_r^{(1)},\\
- B_{ji}=\big|[a_{i-1},a_i]\cap[b_{j-1},b_j]\big|,\quad {\cal R}_{ji}=B_{ji}/V_j^{(1)},\\
- {\cal R}_{ji}\geq0,\quad \sum_i{\cal R}_{ji}=1,\quad
+ a_i=\sum_{r\leq i}V_r^{(2)},\quad b_j=\sum_{r\leq j}V_{r,C},\\
+ B_{ji}=\big|[a_{i-1},a_i]\cap[b_{j-1},b_j]\big|,\quad {\cal R}_{ji}=B_{ji}/V_j^{(1)},\quad V_{j,C}=Wd_f|{\rm celda}_j\cap C|,\\
+ {\cal R}_{ji}\geq0,\quad \sum_i{\cal R}_{ji}=f_j=V_{j,C}/V_j^{(1)},\quad
  \sum_jV_j^{(1)}{\cal R}_{ji}=V_i^{(2)},\\
  d_j^0=d_j^{{\rm DC},1}
-     \sum_i{\cal R}_{ji}{d_i^{(2)}\over d_i^{{\rm DC},2}},\quad
- p_{jk}^0=\sum_i{\cal R}_{ji}p_{ik}^{(2)},\quad n_{ja}^0=\sum_i{\cal R}_{ji}n_{ia}^{(2)},\\
+     \sum_i{\cal R}_{ji}{d_i^{(2)}\over d_i^{{\rm DC},2}}+(1-f_j)d_j^{\rm ext},\quad
+ p_{jk}^0=\sum_i{\cal R}_{ji}p_{ik}^{(2)}+(1-f_j)p_{jk}^{\rm ext},\\
+ n_{ja}^0=\sum_i{\cal R}_{ji}n_{ia}^{(2)}+(1-f_j)n_{ja}^{\rm ext},\\
  (I_b,I_s,v_c)_1=(I_b,I_s,v_c)_2.
 \end{gather}
 {\small Remapeo longitudinal de volumen, no promedio puntual exacto en malla
 irregular. Se heredan fases relativas a DC y poblaciones rígidas de los cortes.
-El cociente por DC evita promediar destructivamente la fase de corriente.}
+El núcleo \(C=[350,650]\) nm se remapea por volumen; las colas se suponen frías, en la rama estable al \(I_s\) de transferencia. El perfil relativo a DC conserva fase y evita cambiar el núcleo a FD/BE. Ext significa cola fría al iniciar la réplica y su estado nativo evolucionado al relevo.}
+\[
+ p^{\rm cold}=\FD(d^{\rm cold},T_b),\quad n^{\rm cold}=\BE(T_b),\quad
+ \delta q=q_{\rm grid}(I_s)-q_{\rm grid}(I_{\rm DC}).
+\]
+{\small Fase de cada cola: fase DC más el incremento del corte central y
+\(\delta q(x-x_{\rm interfaz})\); módulo DC multiplicado por
+\(a_{\rm grid}(I_s)/a_{\rm grid}(I_{\rm DC})\). Cortes exteriores rígidos
+conservan módulo y poblaciones de su DC. La memoria de las colas no se conoce.}
 \block{Reconciliación energética sólo durante el cambio de malla}
 \begin{gather}
  {\cal E}_q=U_{{\rm BCS},q}+G_q-\sum_jT_{E,j}G_{T,j}+U_{{\rm ph},q},\\
  \delta{\cal E}_q={\cal E}_q(X)-{\cal E}_q(X_q^{\rm DC}),\quad
- \delta{\cal E}_1(X_1^+) =\delta{\cal E}_2(X_2^-),\\
+ \delta{\cal E}_1(X_1^+) =\delta{\cal E}_2(X_2^-)+\tfrac12\Delta L(I_s^2-I_{\rm DC}^2),\\
+ \Delta L=L'_{\rm DC}(L_1-L_2),\quad
+ L_{{\rm ext},1}=L_{{\rm ext},2}-\Delta L,\\
  {\rm logit}\,p_{jk}^{+}={\rm logit}\,p_{jk}^{0}+\lambda e_{jk},\quad
  \log(1+1/n_{ja}^{+})=\log(1+1/n_{ja}^{0})-\lambda\bar\Omega_a,\\
  p^0\in\{0,1\}\Rightarrow p^+=p^0,\quad n^0=0\Rightarrow n^+=0,\\
  \epsilon_{\rm raw}=
- {|\delta{\cal E}_1(X_1^0)-\delta{\cal E}_2(X_2^-)|\over E_*}\leq0.005,\\
+ {|\delta{\cal E}_1(X_1^0)-\delta{\cal E}_2(X_2^-)-\tfrac12\Delta L(I_s^2-I_{\rm DC}^2)|\over E_*}\leq0.005,\\
  \epsilon_{\rm rec}=
  {4\sum_{jk}C_jw_ke_{jk}|p^+_{jk}-p^0_{jk}|
    +\sum_{ja}C_jc_a\bar\Omega_a|n^+_{ja}-n^0_{ja}|\over E_*}\leq0.01 .
@@ -454,19 +465,18 @@ equilibrio forzado ni una segunda absorción del fotón.}
  t_s=t_c+2\ {\rm ps},\quad \delta t_{\rm conf}=0.5\ {\rm ps},\\
  X^{\rm sh}_1(t_a)={\cal P}X_2(t_a),\quad 0\leq t_a-t_c\leq h_2,\quad h_2\leq0.02\ {\rm ps},\\
  \dot X^{\rm sh}_1=F_1(X^{\rm sh}_1),\quad t_a\leq t\leq t_s,\quad
- X_1(t_s^+)={\cal P}X_2(t_s^-),\\
+ X_1(t_s^+)={\cal P}[X_2(t_s^-),X_1^{\rm sh}(t_s^-)],\\
  X_{\rm oficial}(t)=
  \begin{cases}X_2(t),&0\leq t\leq t_s,\\X_1(t),&t_s<t\leq15\ {\rm ns}.\end{cases}
 \end{gather}
-{\small Se reproyecta el último 2D para la condición inicial oficial.
-La réplica valida el operador; su estado no reemplaza la historia 2D.}
+{\small Se reproyecta el último núcleo 2D y se conservan las colas nativas ya evolucionadas de la réplica. No se reinicializan frías al relevo. La fase global se alinea entre gauges con cortes derechos distintos; sus gradientes relativos no se eliminan.}
 \block{Control longitudinal y errores del solapamiento}
 \begin{gather}
  E_*(t)=E_{\rm ret}+\int_0^t|I_sV_{\rm dev}|\,{\rm d}t',\\
  \epsilon_{\rm cut}={\int_0^t(|P_L|+|P_R|)\,{\rm d}t'\over E_*(t)}\leq0.02,\quad
  P_\ell=\sum_{i\in\ell}\left(4C_i\sum_kw_ke_{ik}\dot p^{\rm raw}_{ik}
                     +\dot U^{\rm raw}_{{\rm ph},i}\right),\\
- \epsilon_d^2={\sum_iV_i|d_i^{(2)}-({\cal L}d_1)_i|^2
+ \epsilon_d^2={\min_\theta\sum_iV_i|d_i^{(2)}-e^{i\theta}({\cal L}d_1)_i|^2
                     \over\sum_iV_i|d_i^{{\rm DC},2}|^2}\leq0.03^2,\\
  \epsilon_{\rm pop}={\|p_2-{\cal L}p_1,n_2-{\cal L}n_1\|_{E,1}\over E_*}\leq0.05,\\
  \epsilon_J^2={\sum_e (R_\square/c_e)(I_e-I_e^{1D})^2\over I_{\rm DC}^2R_n}
@@ -474,7 +484,7 @@ La réplica valida el operador; su estado no reemplaza la historia 2D.}
  I_e^{1D}={I_s\over W}L_e^{dual}{\Delta x_e\over\ell_e},\quad R_n=R_\square L/W,\\
  |V^{(2)}_{\rm out}-V^{\rm sh}_{\rm out}|\leq2\ \mu{\rm V},\quad
  {\max(|I_b^{(2)}-I_b^{\rm sh}|,|I_s^{(2)}-I_s^{\rm sh}|)\over I_{\rm DC}}\leq0.005,\\
- {|\delta{\cal E}_2-\delta{\cal E}^{\rm sh}_1|\over E_*}\leq0.01,\quad
+ {|\delta{\cal E}_2+\tfrac12\Delta L(I_s^2-I_{\rm DC}^2)-\delta{\cal E}^{\rm sh}_1|\over E_*}\leq0.01,\quad
  N_+=N_-=0\quad(\text{contornos: }|d|>10^{-3}|d_{\rm DC}|).
 \end{gather}
 {\small \({\cal L}\): interpolación del campo relativo a DC y poblaciones.

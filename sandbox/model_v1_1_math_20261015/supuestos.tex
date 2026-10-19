@@ -11,7 +11,7 @@
 \setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
 \setlength{\emergencystretch}{2em}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.2.0 / 19 de octubre de 2026}
+\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.2.1 / 19 de octubre de 2026}
 \fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Condición crítica.} #1\par}}
@@ -32,9 +32,9 @@
 \newcommand{\assumption}[2]{\par\vspace{6pt}\hypertarget{#1}{\textbf{\color{ink}#1. #2}}\par}
 \newcommand{\smallnote}[1]{{\small #1\par}}
 
-\hypersetup{pdftitle={Supuestos - pysnspd 1.2.0},pdfauthor={pysnspd}}
+\hypersetup{pdftitle={Supuestos - pysnspd 1.2.1},pdfauthor={pysnspd}}
 \begin{document}
-{\LARGE\bfseries\color{ink}Supuestos y límites del modelo 1.2.0}\par
+{\LARGE\bfseries\color{ink}Supuestos y límites del modelo 1.2.1}\par
 {\large Registro explícito de hipótesis, dependencias y admisión}\par
 \smallnote{Companion de \href{Parametros.pdf}{Parámetros}, \href{Principal.pdf}{Principal}, \href{Auxiliar.pdf}{Auxiliar} y \href{Precomputo.pdf}{Precomputo}. Las entradas experimentales motivan el caso; los cierres propios requieren validación propia. No se presenta una evolución microscópica exacta de Usadel.}
 \block{Material y calibración estática}
@@ -211,7 +211,7 @@ Referencias inspiran componentes; no validan por atribución el ensamblado efect
 \hypertarget{dimensional-1d}{}\hypertarget{hybrid-1d}{}
 {\LARGE\bfseries\color{ink}Hipótesis del relevo completo 2D a 1D}\par
 \assumption{S25}{Dominio conservado; observación exterior limitada}
-\smallnote{Misma cinta interior de 300 nm antes y después del cambio.
+\smallnote{Núcleo 2D de 300 nm; después del relevo, 1D de 1000 nm con 350 nm añadidos por lado.
 La energía que cruza los reservorios figura en el balance; su evolución
 fuera del dominio no se resuelve. El indicador de cortes no es cota rigurosa
 del error exterior. Conservación no demuestra suficiencia de longitud.
@@ -225,10 +225,10 @@ estados. No se importa la cinética térmica hotbelt de Allmaras.
 \href{Principal.pdf\#nameddest=dimensional-1d}{Principal}, \pref{P43}{7}.}
 \assumption{S27}{Condición inicial con memoria del evento}
 \smallnote{Se remapean \(d/d_{\rm DC}\) complejo y poblaciones nativas.
-El circuito se copia exactamente. El exceso de energía respecto del DC de cada
-malla se iguala por una actividad escalar pequeña y acotada, sin clipping
+Las tres variables del circuito se copian exactamente. El exceso de energía respecto del DC de cada
+malla se iguala, incluyendo la energía inductiva que abandona el circuito lumped, por una actividad escalar pequeña y acotada, sin clipping
 ni sustitución por FD/BE. Es reconciliación de discretización, no calor añadido
-durante la evolución. Si excede el margen, se rechaza el relevo.
+durante la evolución. Las colas no observadas se inicializan frías, en la rama estable al \(I_s\) instantáneo, con fases empalmadas y el perfil de borde relativo al DC. Esa inicialización se hace una vez al comenzar la réplica; el relevo hereda su evolución posterior. Es una hipótesis adiabática, no una reconstrucción de su historia. Si excede el margen, se rechaza el relevo.
 \pref{P45}{7}; \href{Auxiliar.pdf\#nameddest=dimensional-1d}{Auxiliar}.}
 \assumption{S28}{Ausencia resuelta de dinámica transversal}
 \smallnote{Error pequeño de reconstrucción del campo complejo, poblaciones y patrón de corriente total respecto de flujo longitudinal uniforme;
@@ -249,7 +249,7 @@ La réplica 1D comienza en el primer estado aceptado que registra el cruce;
 su desfase, como máximo un paso 2D, queda registrado.
 Hasta \(t_s=t_c+2\) ps el resultado oficial es 2D.
 Comparación cada 0.1 ps, incluidos inicio y final.
-El estado oficial 1D se obtiene reproyectando el último 2D.
+El núcleo oficial 1D se obtiene reproyectando el último 2D; las colas conservan su estado nativo ya evolucionado en la réplica. Se compara el gap módulo una fase global, porque los cortes de referencia del potencial difieren; no se borran gradientes relativos.
 Un fallo conserva datos y declara posible error dimensional.
 \pref{P44}{7}, \pref{P47}{7}.}
 \assumption{S30}{Indicador de truncamiento longitudinal}
@@ -281,4 +281,38 @@ El cambio no valida por sí mismo jitter ni latencia experimental.
 El cierre efectivo previo y sus límites siguen vigentes:
 \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)}
 es referencia, no identificación con una teoría exacta.}
+
+\clearpage
+\assumption{S33}{Cambio de representación de energía e inductancia}
+\smallnote{Los 700 nm añadidos dejan de estar representados por inductancia
+lumped y pasan al funcional 1D. Se conserva el inductor añadido de 96 nH.
+Las dos particiones se fijan con el mismo DC, no se ajustan dinámicamente:
+\(\Delta L=L'_{\rm DC}(L_1-L_2)\).
+La película 1D recibe el exceso
+\(\delta E_{\rm film,2}+\frac12\Delta L(I_s^2-I_{\rm DC}^2)\);
+las tres variables del circuito se copian.
+El cambio constante de referencia DC incluye película y circuito.
+No se crea calor para compensar una inductancia contada dos veces.
+\href{Auxiliar.pdf\#nameddest=dimensional-1d}{Auxiliar};
+\pref{P43}{7}.}
+\assumption{S34}{Dominio finito y diagnóstico de latching}
+\smallnote{1 \(\mu\)m es punto de partida, no longitud suficiente garantizada
+para 15 ns. Se mantienen el balance independiente y el indicador de cortes;
+se vigilan 25 nm de nodos libres junto a ambos extremos 1D.
+Un frente térmico o de supresión persistente termina con posible error de
+dominio. Desde 5 ns, un segmento resistivo de al menos 20 nm con plateau
+eléctrico y térmico durante 1 ns se guarda como posible latching.
+No identifica de forma exclusiva una fase microscópica ni demuestra una avería
+numérica. \pref{P50}{8}, \pref{P53}{8};
+\href{https://arxiv.org/abs/1008.0895}{Annunziata et al.}.}
+\assumption{S35}{Polaridad, límites eléctricos y recuperación}
+\smallnote{Se vigilan corrientes globales positivas y techos declarados de
+corriente/voltaje; ante incumplimiento se guardan estado y motivo.
+Una lectura negativa por el condensador no implica que la corriente global
+haya invertido su sentido: no se rechaza automáticamente.
+La recuperación anticipada exige un intervalo estable de 1 ns con corriente,
+gap, ocupaciones y las tres variables circuitales dentro de márgenes.
+15 ns permanece como límite temporal superior, no como recuperación garantizada.
+\pref{P51}{8}--\pref{P56}{8};
+\href{https://arxiv.org/pdf/1302.2852}{Kerman et al. (2013), fig. 1 y circuito AC}.}
 \end{document}

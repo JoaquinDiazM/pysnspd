@@ -162,7 +162,7 @@ class DimensionalTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir="/home/jdiaz/scratch/tmp/pysnspd") as directory:
             out=Path(directory)/"run"
             words=["--output-dir",str(out),"--threads","1","--physical-cores","1","--cpu-start","12",
-                "--dc-only","--duration-ps",".006","--dt-ps",".001",
+                "--length-nm","80","--length-1d-nm","160","--dc-only","--duration-ps",".006","--dt-ps",".001",
                 "--confirmation-ps",".0005","--extra-time-ps",".002",
                 "--snapshot-every-ps",".001","--shadow-check-every-ps",".0005",
                 "--xi-cutoff","12","--xi-order","3","--phonon-nodes","24","--transport-order","8",
@@ -174,6 +174,7 @@ class DimensionalTests(unittest.TestCase):
                 self.assertEqual(code,0)
                 m=json.loads((out/"manifest.json").read_text())
                 self.assertEqual(m["phase"],"1d");self.assertGreaterEqual(len(m["shadow_checks"]),2)
+                self.assertLess(m["circuit_by_phase"]["1d"]["Lk_ext_H"],m["circuit_by_phase"]["2d"]["Lk_ext_H"])
                 words[words.index(".006")]=".009";words.append("--resume")
                 code=runner.run(runner.parser().parse_args(words))
                 self.assertEqual(code,0)
@@ -200,6 +201,85 @@ class DimensionalTests(unittest.TestCase):
         self.assertEqual(len(used),len(set(used)))
         with self.assertRaises(ValueError):module.allocation(inventory,[dict(affinity_cpus=list(range(12)))])
         with self.assertRaises(ValueError):module.allocation(dict(inventory,available_memory_bytes=8*1024**3),[])
+
+    def test_extended_core_conservation_inductance_and_native_initial_state(self):
+        import importlib.util
+        spec=importlib.util.spec_from_file_location("_extended_projection_runner",
+            "/home/jdiaz/pysnspd/pipelines/13_dimensional_photon_run.py")
+        runner=importlib.util.module_from_spec(spec);spec.loader.exec_module(runner)
+        with tempfile.TemporaryDirectory(dir="/home/jdiaz/scratch/tmp/pysnspd") as directory:
+            args=runner.parser().parse_args(["--output-dir",directory,"--threads","1",
+                "--length-nm","80","--length-1d-nm","160","--spacing-1d-nm","10","--current-uA","15.5",
+                "--xi-cutoff","12","--xi-order","3","--phonon-nodes","24","--transport-order","8"])
+            ss,gg,dd=runner.build_1d(args,self.s2,self.g2,Path(directory),False)
+            pr=DimensionalProjection(self.s2,self.g2,self.dc2,ss,gg,dd)
+            self.assertLess(ss.circuit.Lk_ext_H,self.s2.circuit.Lk_ext_H)
+            np.testing.assert_allclose(ss.functional.volumes_m3@pr.R,
+                                       self.s2.functional.volumes_m3,rtol=1e-10)
+            st=self.dc2.copy()
+            st.circuit_SI[1]*=.98
+            st.p[self.s2.free,0]+=1e-6
+            result,report=pr.project(st,1e-18,self.tol)
+            np.testing.assert_array_equal(result.circuit_SI,st.circuit_SI)
+            self.assertLess(report["film_energy_relative"],2e-9)
+            total2=film_energy(self.s2,st)+self.s2.circuit.energy(st.circuit_SI)
+            total1=film_energy(ss,result)+ss.circuit.energy(result.circuit_SI)
+            self.assertLess(abs(total1+pr.reference_total_offset_J-total2),2e-27)
+            self.assertAlmostEqual(gg.length_m*1e9,160)
+            self.assertAlmostEqual(pr.shift_m*1e9,40)
+            cold=pr.cold_extension(st)
+            tail=(gg.coordinates_m[:,0]<pr.shift_m-1e-12)
+            np.testing.assert_allclose(abs(cold.delta_bar[tail])/abs(dd.delta_bar[tail]),np.full(np.count_nonzero(tail),abs(cold.delta_bar[tail][0])/abs(dd.delta_bar[tail][0])))
+            self.assertTrue(np.all(result.n>=0))
+            self.assertTrue(np.all((result.p>=0)&(result.p<=1)))
+            donor=result.copy();donor.p[1,0]+=1e-7
+            repeated,again=pr.project(st,1e-18,self.tol,exterior_state=donor)
+            self.assertEqual(again["exterior_initialization"],"independently evolved native shadow tails")
+            self.assertGreater(repeated.p[1,0]-result.p[1,0],.5e-7)
+            rotated=repeated.copy();rotated.delta_bar*=np.exp(.8j)
+            e1=pr.errors(st,repeated,1e-18);e2=pr.errors(st,rotated,1e-18)
+            self.assertAlmostEqual(e1["gap_relative"],e2["gap_relative"],places=10)
+            rhs=ss.evaluate(result)
+            kw=dict(tolerance=2e-7,max_iterations=60,energy_tolerance=2.5e-6,
+                    reference=1e-19,absolute_work=0.)
+            step,rr,rec=doubled_step(ss,result,rhs,1e-4,time_rtol=2e-4,time_atol=2e-6,**kw)
+            self.assertLessEqual(rec["temporal_error"],1)
+
+    def test_monitor_distinguishes_polarity_undershoot_latching_and_boundary(self):
+        from pysnspd.experimental.dimensional_monitors import MonitorConfig,observe
+        from dataclasses import replace
+        c=MonitorConfig()
+        base=dict(Ib_uA=21.5,Is_uA=21.6,vc_mV=0.,Vout_mV=-.005,Vdev_mV=-.01,
+            max_temperature_K=.9,hot_length_nm=0.,boundary_alarm=False,recovered=False)
+        self.assertEqual(observe(0.,"1d",base,c,{},21.5,425,80),(None,None))
+        code,why=observe(0.,"1d",dict(base,Is_uA=-1.),c,{},21.5,425,80)
+        self.assertEqual(code,"CIRCUIT_POLARITY_GUARD")
+        code,why=observe(0.,"1d",dict(base,Vdev_mV=1000.),c,{},21.5,425,80)
+        self.assertEqual(code,"CIRCUIT_OVERVOLTAGE_GUARD")
+        tracker={}
+        alarm=dict(base,boundary_alarm=True)
+        self.assertEqual(observe(0.,"1d",alarm,c,tracker,21.5,425,80),(None,None))
+        self.assertEqual(observe(2.1,"1d",alarm,c,tracker,21.5,425,80)[0],"POSSIBLE_DOMAIN_ERROR")
+        tracker={};latched=dict(base,Is_uA=10.,Ib_uA=10.,Vdev_mV=5.,Vout_mV=0.,
+                              max_temperature_K=12.,hot_length_nm=40.)
+        for t in range(4000,5011,10):code,why=observe(float(t),"1d",latched,c,tracker,21.5,425,80)
+        self.assertEqual(code,"POSSIBLE_LATCHING")
+        tracker={};recovered=dict(base,recovered=True)
+        self.assertEqual(observe(2000.,"1d",recovered,c,tracker,21.5,425,80),(None,None))
+        self.assertEqual(observe(3001.,"1d",recovered,c,tracker,21.5,425,80)[0],"RECOVERY_CONFIRMED")
+
+    def test_recovery_checks_phonon_moment_independently(self):
+        from pysnspd.experimental.dimensional_monitors import MonitorConfig,metrics
+        dc=self.dc1.copy();rhs=self.s1.evaluate(dc)
+        c=MonitorConfig(collar_nm=20)
+        base=metrics(self.s1,self.g1,dc,rhs,self.dc1,c,1e-19,extended=True)
+        self.assertTrue(base["recovered"])
+        hot=dc.copy()
+        hot.n[:]=self.s1.kinetics.bose(1.5)
+        rhs=self.s1.evaluate(hot)
+        observed=metrics(self.s1,self.g1,hot,rhs,self.dc1,c,1.,extended=True)
+        self.assertFalse(observed["phonon_recovery_moment_ok"])
+        self.assertFalse(observed["recovered"])
 
     def test_vortex_pair_does_not_cancel(self):
         z=np.array([1,np.exp(2j*np.pi/3),np.exp(4j*np.pi/3),

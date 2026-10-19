@@ -11,7 +11,7 @@
 \setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
 \setlength{\emergencystretch}{2em}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.2.0 / 19 de octubre de 2026}
+\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.2.1 / 19 de octubre de 2026}
 \fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Condición crítica.} #1\par}}
@@ -32,9 +32,9 @@
 \newcommand{\assumption}[2]{\par\vspace{6pt}\hypertarget{#1}{\textbf{\color{ink}#1. #2}}\par}
 \newcommand{\smallnote}[1]{{\small #1\par}}
 
-\hypersetup{pdftitle={Parámetros - pysnspd 1.2.0},pdfauthor={pysnspd}}
+\hypersetup{pdftitle={Parámetros - pysnspd 1.2.1},pdfauthor={pysnspd}}
 \begin{document}
-{\LARGE\bfseries\color{ink}Parámetros del modelo 1.2.0}\par
+{\LARGE\bfseries\color{ink}Parámetros del modelo 1.2.1}\par
 {\large Referencia Korzh (2020); calibración estática y preparación fotónica}\par
 \smallnote{\textbf{I}: entrada; \textbf{H}: hipótesis; \textbf{C}: calibrable; \textbf{D}: derivado; \textbf{N}: numérico; \textbf{O}: observación. Una elección nominal no constituye una medición ni un ajuste de latencia. Formulación candidata posterior al snapshot 1.0.0, commit \texttt{7992f6a}; las nuevas corridas requieren admisión propia.}
 \block{Material y caso de referencia}
@@ -256,11 +256,11 @@ $E_{\rm ret}$, $\eta=1$ [eV]&1.599796109&0.799898054\\\hline
 
 \clearpage
 \hypertarget{dimensional-1d}{}\hypertarget{hybrid-1d}{}
-{\LARGE\bfseries\color{ink}Entradas nuevas de la versión 1.2.0}\par
+{\LARGE\bfseries\color{ink}Entradas nuevas de la versión 1.2.1}\par
 {\small Márgenes explícitos de ingeniería, no parámetros experimentales ajustados.}
 \begin{ptable}
-\ptrow{P42}{L,W,d_f}{300; 80; 7 nm [N,H]}{Mismo dominio antes y después del relevo. \sref{S25}{7}.}
-\ptrow{P43}{\Delta x_1,N_1}{5 nm; 61 nodos [N]}{Volúmenes terminales de media celda; sin colas. \sref{S26}{7}.}
+\ptrow{P42}{L_2,W,d_f}{300; 80; 7 nm [N,H]}{Núcleo 2D; colas 1D simétricas. \sref{S25}{7}.}
+\ptrow{P43}{L_1,\Delta x_1,N_1}{1000 nm; 5 nm; 201 [N,H]}{350 nm por lado; volúmenes terminales de media celda. \sref{S26}{7}.}
 \ptrow{P44}{t_s,t_f}{\(t_c+2\) ps; 15 ns [O,H]}{Confirmación 0.5 ps incluida; techo sin detección 100 ps. \sref{S29}{8}.}
 \ptrow{P45}{\epsilon_{\rm raw},\epsilon_{\rm rec}}{0.005; 0.01 [N,H]}{Energía previa y corrección en remapeo. \sref{S27}{7}.}
 \ptrow{P46}{\epsilon_d,\epsilon_{\rm pop},\epsilon_J}{0.03; 0.05; 0.03 [N,H]}{Gap/DC, poblaciones energéticas y patrón de corriente. \sref{S28}{7}.}
@@ -269,7 +269,7 @@ $E_{\rm ret}$, $\eta=1$ [eV]&1.599796109&0.799898054\\\hline
 \ptrow{P49}{h_{1,\max},r_t,a_t}{10 ps; \(2\,10^{-4}\); \(2\,10^{-6}\) [N]}{Duplicación temporal; balance y tolerancia no lineal heredados. \sref{S31}{8}.}
 \end{ptable}
 \critical{Ausencia de estructura transversal no implica dominio longitudinal
-suficiente. Si la fracción de energía cortada excede 2\%, el caso se guarda como
+suficiente. En 1D los cortes pasan a los extremos de 1 \(\mu\)m. Si la fracción de energía cortada excede 2\%, el caso se guarda como
 posible error de dominio; no se certifica recuperación de 15 ns. El denominador
 incluye energía retenida y trabajo absoluto del dispositivo.}
 \block{Muestreo y recursos}
@@ -286,4 +286,24 @@ Mapas 1D: cadencia objetivo sin limitar el paso, con tiempos reales guardados. 7
 \origin{Relevo propio:
 \href{Auxiliar.pdf\#nameddest=dimensional-1d}{Auxiliar};
 \href{Supuestos.pdf\#nameddest=S25}{Supuestos S25--S32}.}
+
+\clearpage
+\block{Monitores de dominio, circuito y terminación anticipada}
+\begin{ptable}
+\ptrow{P50}{\ell_C,\delta T_C,r_C,\delta t_C}{25 nm; 0.5 K; 0.9; 2 ps [N,H]}{Collar libre en ambos extremos 1D: temperatura equivalente electrónica/fonónica o supresión persistente.}
+\ptrow{P51}{I_{\max}}{\(1.1I_{\rm dep}=28.453\ \mu\)A [N,H]}{Techo de diagnóstico de ambas ramas; no corriente crítica medida.}
+\ptrow{P52}{|V_{\rm dev}|,|V_{\rm out}|,|v_c|}{\(2R_nI_{\max}\); \(R_LI_{\max}\); \(2V_b\) [N,H]}{Para 1 \(\mu\)m: 302.32 mV; 1.423 mV; \(v_c\): 430/310 mV según bias.}
+\ptrow{P53}{t_{\rm latch},\delta t_{\rm plateau}}{5 ns; 1 ns [O,H]}{Segmento normal \(\geq20\) nm, resistencia positiva y plateau eléctrico/térmico dentro de 1\%: posible latching.}
+\ptrow{P54}{t_{\rm rec},\delta t_{\rm conf,rec}}{2 ns; 1 ns [O,H]}{Admitir recuperación antes de 15 ns sólo con todos los criterios P55.}
+\ptrow{P55}{\epsilon_I,\epsilon_d,\epsilon_{p,n}}{0.01; 0.01; 0.01 [O,H]}{Corrientes/DC, módulo de gap/DC y energía nativa/\(E_{\rm ret}\). Además \(|T_{E,ph}-T_b|\leq0.02\) K y voltajes \(\leq1\ \mu\)V.}
+\ptrow{P56}{I_{\min},R_n}{\(10^{-6}I_{\rm bias}\); \(R_\square L_1/W\) [N,H]}{Parada antes de inversión global. Vout negativo moderado se permite por acoplamiento capacitivo.}
+\end{ptable}
+\critical{Los límites de circuito y los tiempos de plateau son criterios de
+diagnóstico, no especificaciones medidas de una electrónica experimental.
+Un plateau resistivo se guarda como posible latching físico, no como error
+numérico confirmado. La inicialización fría de los tramos no observados y la
+repartición inductiva son hipótesis explícitas de S27 y S33--S35.}
+\origin{\href{Supuestos.pdf\#nameddest=S33}{S33--S35};
+\href{https://arxiv.org/pdf/1302.2852}{Kerman et al. (2013), fig. 1};
+\href{https://arxiv.org/abs/1008.0895}{Annunziata et al. (2010)}.}
 \end{document}

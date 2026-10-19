@@ -17,7 +17,7 @@ plt.rcParams.update({"font.size":12,"axes.labelsize":13,"axes.titlesize":13,
 def report(job):
     run,out,times=job
     run=Path(run);out=Path(out);m=json.loads((run/"manifest.json").read_text())
-    if m.get("model_version")!="1.2.0":raise ValueError("This report requires the v1.2 phase-aware archive")
+    if m.get("model_version")!="1.2.1":raise ValueError("This report requires the v1.2 phase-aware archive")
     target=out/("case_report_"+run.name+".pdf")
     if target.exists():raise FileExistsError("Existing report preserved: "+str(target))
     counts=m["archive_counts"];p=m["parameter_identity"]
@@ -25,11 +25,11 @@ def report(job):
         def done(fig):
             fig.tight_layout();pdf.savefig(fig);plt.close(fig)
         fig=plt.figure(figsize=(11.69,8.27))
-        fig.text(.06,.92,"Individual case / neutral effective BCS-KWT / v1.2.0",fontsize=18)
+        fig.text(.06,.92,"Individual case / neutral effective BCS-KWT / v1.2.1",fontsize=18)
         lines=[f"Case: {run.name}",f"Status: {m['status']} / official phase: {m['phase']}",
             f"Bias {p['current_uA']:g} uA; wavelength {p['wavelength_nm']:g} nm; retained fraction {p['retained_fraction']:g}",
             f"Escape {p['tau_escape_ps']:g} ps; tau_ee(Tc) {p['tau_ee_Tc_ps']:g} ps; Rs {p['sheet_resistance_ohm']:g} ohm",
-            f"Domain {p['length_nm']:g} x 80 nm; 1D spacing {p['spacing_1d_nm']:g} nm",
+            f"2D: {p['length_nm']:g} x 80 nm; 1D: {p.get('length_1d_nm',p['length_nm']):g} nm; spacing {p['spacing_1d_nm']:g} nm",
             f"Threshold {p['threshold_mV']:g} mV; confirmation {p['confirmation_ps']:g} ps; extra {p['extra_time_ps']:g} ps",
             f"No-trigger ceiling {p['ceiling_ps']:g} ps; final target {p['final_time_ns']:g} ns",
             "Vout = Rload (Ib - Is): intrinsic circuit signal, without amplifier or filter.",
