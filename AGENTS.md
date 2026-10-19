@@ -135,3 +135,14 @@ The user explicitly authorizes this task to execute runs longer than five minute
 - Changed physics requires fresh cases with exact sources. Independent diagnostic segments identify their scope and never redeposit the photon.
 - Set NUMBA_CACHE_DIR and all heavy outputs/caches under scratch.
 - Approximately ten wall-clock hours per100 ps after DC is a performance objective. Report measured horizon,setup/JIT inclusion,affinity and hardware; a linear projection is not a guarantee.
+
+
+## Dimensional evolution standard (user task, 2026-10-19, v1.2.0)
+
+- New normal cases use pipelines/13_dimensional_photon_run.py and the v1.2 phase-aware archive. The v1.1.3 physical kernel remains source-frozen for its running historical campaign.
+- Default interior length is 300 nm. Confirm the first positive 0.1 mV crossing for 0.5 ps; official 2D ends at crossing + 2 ps, including confirmation.
+- A native-state 1D shadow overlaps the final 2D interval. Require projection/reconstruction, independent voltage/current/energy and resolved-winding checks. Initialize official 1D by conservatively reprojecting the last 2D, including all native occupations and the actual circuit; never redeposit or force FD/BE.
+- The same 300 nm strip and frozen exterior inductance remain after reduction. No tails or new hotbelt constitutive law are implied. Full-1D evolution to 15 ns is explicitly authorized, subject to dimensional/domain/physical guards; it is not a certified full reset.
+- Integrate absolute left/right cut energies separately and monitor their fraction of retained photon energy plus absolute device work; the default 2% bound is an engineering truncation indicator, not a rigorous exterior-state error bound.
+- Use temporal step doubling in 1D with independent local energy acceptance. Save actual 1D snapshot times without forcing tiny time steps for plotting. Preserve diagnostic states rather than loosening a failed guard.
+- Six-case campaigns admit 24 Numba threads on twelve whole physical cores (four SMT threads / two cores per case), plus a separate coordinator and at least two fully reserved cores. Inventory quotas/RAM and known active runs before admission; the legacy global campaign lock prevents overlapping campaigns. Do not claim a measured 70% use or an untested speedup.

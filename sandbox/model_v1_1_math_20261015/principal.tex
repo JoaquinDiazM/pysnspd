@@ -7,7 +7,7 @@
 \setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
 \setlength{\abovedisplayskip}{6pt}\setlength{\belowdisplayskip}{6pt}\setlength{\jot}{3pt}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\footnotesize pysnspd 1.1.3 / candidato / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
+\fancyfoot[L]{\footnotesize pysnspd 1.2.0 / efectivo / \href{Supuestos.pdf}{Supuestos}}\fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{4pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\labelrow}[2]{\(\displaystyle #1\)& #2\\}
 \newcommand{\origin}[1]{\par{\footnotesize\textbf{Campo / procedencia:} #1}\par}
@@ -17,7 +17,7 @@
 \newcommand{\refs}{\vfill{\footnotesize\href{Supuestos.pdf}{Hipótesis y límites: Supuestos}; \href{Parametros.pdf}{entradas: Parametros}.}}
 \begin{document}
 {\LARGE\bfseries\color{ink}Ecuaciones principales en 2D}\par
-{\large Condensado, cuasipartículas y fonones: candidato 1.1.3}\par
+{\large Condensado, cuasipartículas y fonones: modelo 1.2.0}\par
 {\small BCS/KWT efectivo con corrección térmica de depareo anclada a DC. Candidato: validación dinámica pendiente.}
 \renewcommand{\theequation}{1.\arabic{equation}}
 \hypertarget{G-final}{}\block{Condensado: evolución KWT}
@@ -103,4 +103,42 @@ u_i^*=N_0E_u^2V_i,\quad
 \end{tabular}\par
 \origin{Cinética cuántica BCS/electrón--fonón, transporte conservativo y BGK energético. \href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)}, ecs.\ 3--4; discretización nativa y extensión termoenergética propias.}
 \code{thermal\_coupled.py; resummed\_thermal.py; effective\_bcs\_kinetics.py}
-\refs\end{document}
+\refs
+
+\clearpage
+\hypertarget{dimensional-1d}{}\hypertarget{hybrid-1d}{}
+{\LARGE\bfseries\color{ink}Restricción completa 2D a 1D}\par
+{\small Versión 1.2.0: mismo modelo efectivo, nuevo espacio de evolución.}
+\renewcommand{\theequation}{D1.\arabic{equation}}\renewcommand{\theHequation}{D1.\arabic{equation}}\setcounter{equation}{0}
+\block{Transformación espacial: modo transversal constante}
+\begin{gather}
+ \partial_y(d,p_k,n_a,\phi)=0,\quad {\rm d}V_1=Wd_f\,{\rm d}x,\quad A_{\rm face}=Wd_f,\\
+ U_1[d,p,n]=U_2[d(x),p(x),n(x)],\quad
+ G_1=G_2|_{\partial_y=0},\quad S_1=S_2|_{\partial_y=0},\\
+ C_j=N_0E_u^2Wd_f\,\delta x_j,\quad
+ C_{j,j+1}=N_0E_u^2\ell_0^2Wd_f/(x_{j+1}-x_j),\\
+ L_j=\tfrac12\sum_{l\sim j}C_{jl}|d_j-d_l|^2,\quad
+ {\cal Q}_j=L_j/(C_j|d_j|^2).
+\end{gather}
+\block{Mismo RHS y cuadratura nativa}
+\begin{gather}
+ {\cal F}_{1,j}=\left.\partial_{d_j^*}(U_{{\rm BCS},1}+G_1)\right|_{p,\mathbf T_E},\\
+ \boxed{D_td_j=-{z_j\over A_j\tau_K}
+ [R_j^{-1}\Rea(z_j^*{\cal F}_{1,j}/C_j)+i\Ima(z_j^*{\cal F}_{1,j}/C_j)]},\\
+ \boxed{\dot p_{jk}=C_{ep,jk}+C_{ee,jk}
+       -V_j^{-1}\sum_l {\cal J}_{jl,k}+h_{jk}Q_j},\\
+ \boxed{\dot n_{ja}=C_{pe,ja}-(n_{ja}-n^b_a)/\tau_{\rm esc}}.
+\end{gather}
+\begin{tabular}{@{}p{.27\linewidth}p{.68\linewidth}@{}}
+\(d,p_k,n_a,\phi\) & gap complejo normalizado, ocupaciones y potencial\\
+\(C_j,C_{jl},L_j\) & escala nodal, coeficiente de enlace y energía de gradiente\\
+\(A_j,R_j,z_j,\tau_K\) & movilidad, factor KWT, fase y escala temporal heredados\\
+\({\cal J}_{jl,k},h_{jk}Q_j\) & flujo espectral conservativo y calor firmado\\
+\end{tabular}
+\origin{Restricción propia del funcional y la cinética existentes.
+No se sustituye \(p,n\) por dos temperaturas. Circuito y cortes: Auxiliar.
+Antecedente geométrico, no cierre importado:
+\href{https://arxiv.org/pdf/1805.00130}{Allmaras et al., sec. III.A}.
+\href{Supuestos.pdf\#nameddest=S25}{S25--S32};
+\href{Parametros.pdf\#nameddest=P42}{P42--P49}.}
+\end{document}

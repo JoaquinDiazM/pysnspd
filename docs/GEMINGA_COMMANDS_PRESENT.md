@@ -1,95 +1,46 @@
-# Geminga: comandos presentes de pysnspd 1.1.3
+# Current commands: pysnspd v1.2.0
 
-Sólo los comandos de esta versión son operativos. Conservar el historial anterior en /home/jdiaz/GEMINGA_COMMANDS.md y docs/GEMINGA_COMMANDS.md. No reanudar checkpoints1.1.2 bajo física1.1.3. Todos los destinos deben ser nuevos; si existen, cambiar el sufijo de forma coherente y conservar los anteriores.
+The previous v1.1.3 commands/results remain historical. Do not interrupt their active campaign.
 
-## Preparación
+## 2026-10-19 | v1.2.0 guarded full 2D-to-1D campaign
 
-Usar jdiaz, verificar que finalizaron las continuaciones diagnósticas y comprobar la carga de todos los usuarios. El asignador cuenta los runners registrados05/08/09/10; su detección no garantiza que trabajos ajenos o scripts diagnósticos estén libres. Nunca ejecutar otra campaña sobre sus núcleos activos.
+Purpose: test dimensional admission and post-detection recovery of the SAME effective neutral BCS/KWT/native-kinetic/circuit model. Six cases: (15.5 uA, tau_ee(Tc)=5 ps), (15.5 uA, 4 ps), (21.5 uA, 4 ps), each at 775/1550 nm. Shared Rs=425 ohm, eta=.8, escape=20 ps, width=80 nm, length=300 nm, D rechecked from the inherited depairing calibration.
 
-~~~bash
+Official 2D through positive 0.1 mV crossing +2 ps (0.5 ps confirmation included). Independent native 1D shadow over the final interval. Only admitted cases switch to 61-node full 1D, with final target 15 ns from photon. Same finite strip and frozen exterior inductance; no tails. Domain-cut fraction >2%, failed transverse/overlap guards, physical support/capacity/stiffness or current reversal preserve a diagnostic checkpoint and stop. Final-time completion is not physical or reset certification.
+
+Resources: six concurrent processes, four Numba SMT threads on two physical cores each (24 worker threads / 12 cores), one separate coordinator, at least two whole physical cores reserved. BLAS/OpenMP=1. Conservative RAM reservation27 GiB. Runtime lock and active-affinity inventory prevent overlap with the still-running v1.1.3 campaign. Wait for that campaign to finish. Around70% CPU use is an aim, not a measured speedup.
+
+Outputs: campaign plan/resources/execution/logs in scratch; each run has phase-aware data.h5, native accepted-state checkpoint_latest.npz, manifest, DC/source/mesh/material identity. Exact --resume only, same sources/parameters/DC/mesh. A stopped diagnostic is preserved and cannot be resumed as if validated.
+
+Estimate: long; 2D detection may still take hours. Short hot-state 1D control only covered0.1 ps on one core; it cannot establish total15ns runtime. A 150 s DC hold benchmark was intentionally bounded and incomplete. Do not extrapolate it as photon performance.
+
+Execution (foreground, user-run; not launched by preparation):
+```bash
 cd /home/jdiaz/pysnspd
-set -o pipefail
-export PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache
-export NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache
-export MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib
-export TMPDIR=/home/jdiaz/scratch/tmp/pysnspd
-export NUMBA_NUM_THREADS=6
-export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1
-mkdir -p "$PYTHONPYCACHEPREFIX" "$NUMBA_CACHE_DIR" "$MPLCONFIGDIR" "$TMPDIR"
-~~~
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  NUMBA_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/14_dimensional_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/dimensional_v1_2_20261019_01 \
+  --threads-per-case 4 --physical-cores-per-case 2 \
+  --ceiling-ps 100 --final-time-ns 15
+```
 
-Normal vigente: electron temperature y thermal-depairing; quadratic y bath son controles identificados. El coste no está garantizado:0–8 ps proyectó11,18/12,43 h por100 ps incluyendo preparación/JIT; pasos posteriores pueden ser más costosos. No hay promesa de100 ps en diez horas.
+To prepare without computing, append --prepare-only. To resume an interrupted campaign, append --resume. A prepared plan may be executed without --resume if no execution exists.
 
-## Campaña normal: anclajes primero
-
-Plan nuevo de12 casos, sin evolucionar todavía:
-
-~~~bash
-/home/jdiaz/.conda/envs/snspd/bin/python -u pipelines/10_thermal_stiffness_basecases.py \
-  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_3_20261017_01 \
-  --ceiling-ps 100 --max-worker-cores 12 --prepare-only
-~~~
-
-Dos anclajes simultáneos775/1550 nm,21,5 µA, ancho80 nm, escape20 ps, eta0,8:
-
-~~~bash
-/home/jdiaz/.conda/envs/snspd/bin/python -u pipelines/10_thermal_stiffness_basecases.py \
-  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_3_20261017_01 \
-  --ceiling-ps 100 --max-worker-cores 12 --stage anchors
-~~~
-
-El asignador conserva la asignación verificada de hasta seis hilos por anclaje,12 núcleos de trabajo más coordinador y al menos dos núcleos físicos completos reservados. No se promovió el cambio de afinidad L3. Parámetros, fuentes y asignación efectiva quedan en el plan/recibo.
-
-Los controles sólo se habilitan después de ambos anclajes completos y auditados:
-
-~~~bash
-/home/jdiaz/.conda/envs/snspd/bin/python -u pipelines/10_thermal_stiffness_basecases.py \
-  --campaign-dir /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_3_20261017_01 \
-  --ceiling-ps 100 --max-worker-cores 12 --stage controls
-~~~
-
-## Un caso explícito, alternativa a la campaña
-
-Ejecutar este caso sólo cuando haya terminado la campaña o no esté usando sus recursos. Todos los parámetros esenciales se hacen explícitos; length160 nm y eta0,667 siguen siendo defaults heredados de pipeline09 hasta cualquier decisión final diferente.
-
-~~~bash
-/home/jdiaz/.conda/envs/snspd/bin/python -u pipelines/09_thermal_stiffness_photon_run.py \
-  --output-dir /home/jdiaz/scratch/photon_runs/thermal_v1_1_3_775_eta0800_20261017_01 \
-  --wavelength-nm 775 --length-nm 320 --spacing-nm 5 \
-  --gradient-closure thermal-depairing --stiffness-temperature electron \
-  --current-uA 21.5 --sheet-resistance-ohm 425 --target-depairing-uA 25.866666666666667 \
-  --bath-K 0.9 --tau-escape-ps 20 \
-  --tau-ee-Tc-ps 5 --tau-ep-Tc-ps 24.7 \
-  --sigma-nm 7.549834435 --retained-fraction 0.8 \
-  --xi-cutoff 32 --xi-order 6 --phonon-nodes 96 --transport-order 48 \
-  --dt-ps 0.02 --step-tolerance 2e-7 --local-energy-tolerance 2.5e-6 \
-  --minimum-adaptive-step-ps 1e-6 --max-iterations 60 --max-rejections 50 \
-  --threshold-mV 0.1 --confirmation-ps 0.5 --extra-time-ps 5 --ceiling-ps 100 \
-  --snapshot-every-ps 0.1 --checkpoint-every-ps 1 --checkpoint-wall-s 60 \
-  --threads 6 --cpu-start 0
-~~~
-
-Para1550 nm, cambiar únicamente wavelength a1550 y el nombre del directorio a1550. Si se quieren ejecutar ambos simultáneamente, usar la campaña10 para compartir presupuesto; no lanzar dos procesos independientes con el mismo cpu-start.
-
-La parada es primer cruce positivo0,1 mV, confirmación0,5 ps y cruce+5 ps; sin cruce queda censurado a100 ps. Si exige un paso inferior a1e−6 ps, termina por resolución insuficiente, sin asignar una latencia. El reloj comienza postcascada. Ni pico completo ni reset eléctrico total forman parte de esta orden.
-
-## Visualización: un PDF por caso
-
-Sólo con fuentes de reconstrucción compatibles con los manifiestos. Un hash diferente exige el productor archivado correcto; no desactivar la verificación. Este comando produce reportes individuales, no compara corridas:
-
-~~~bash
-env NUMBA_NUM_THREADS=1 taskset -c 0,1,2,3,16,17,18,19 \
-  /home/jdiaz/.conda/envs/snspd/bin/python plot_pipelines/07_case_report.py \
-  --run-dir \
-    /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_3_20261017_01/runs/anchor425_eta0800_775 \
-    /home/jdiaz/scratch/photon_runs/thermal_basecases_v1_1_3_20261017_01/runs/anchor425_eta0800_1550 \
-  --snapshots-ps 1 3 5 10 20 40 \
-  --output-dir /home/jdiaz/scratch/case_reports/thermal_v1_1_3_20261017_01 \
+Phase-aware individual-case visualization (intrinsic Vout without amplifier/filter; requires committed manifests, no comparison of distinct cases):
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/08_dimensional_case_report.py \
+  --run-dir /home/jdiaz/scratch/photon_runs/dimensional_v1_2_20261019_01/runs/* \
+  --snapshots-ps 1 11 20 30 50 70 \
+  --output-dir /home/jdiaz/scratch/case_reports/dimensional_v1_2_20261019_01 \
   --workers 2
-~~~
-
-Exactamente seis slots: tiempos guardados más cercanos; se truncan extras y se repite el último solicitado si faltan. Para un caso todavía RUNNING añadir --allow-incomplete; el PDF será provisional y capturará un checkpoint atómico. Los terminales diagnósticos especiales deben tener un productor compatible, no reclasificarse como una detección normal. Vout se muestra como señal intrínseca sin filtro/amplificador.
-
-## Reanudación
-
-Tras una interrupción controlada, repetir el mismo comando, directorio y parámetros añadiendo --resume. Exige fuentes, DC, geometría y parámetros idénticos; no redeposita el fotón. No editar fuentes físicas de procesos activos, no reabrir casos completos y no mezclar versiones.
+```

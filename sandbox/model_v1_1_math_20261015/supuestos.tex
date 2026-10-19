@@ -11,7 +11,7 @@
 \setlength{\abovedisplayskip}{7pt}\setlength{\belowdisplayskip}{7pt}\setlength{\jot}{4pt}
 \setlength{\emergencystretch}{2em}
 \pagestyle{fancy}\fancyhf{}\renewcommand{\headrulewidth}{0pt}
-\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.1.3 candidata / 16 de octubre de 2026}
+\fancyfoot[L]{\small\color{ink}pysnspd / formulación 1.2.0 / 19 de octubre de 2026}
 \fancyfoot[R]{\small\thepage}
 \newcommand{\block}[1]{\par\vspace{6pt}{\large\bfseries\color{ink}#1}\par\vspace{3pt}}
 \newcommand{\critical}[1]{\par{\small\raggedright\textbf{\color{accent}Condición crítica.} #1\par}}
@@ -32,9 +32,9 @@
 \newcommand{\assumption}[2]{\par\vspace{6pt}\hypertarget{#1}{\textbf{\color{ink}#1. #2}}\par}
 \newcommand{\smallnote}[1]{{\small #1\par}}
 
-\hypersetup{pdftitle={Supuestos - pysnspd 1.1.3},pdfauthor={pysnspd}}
+\hypersetup{pdftitle={Supuestos - pysnspd 1.2.0},pdfauthor={pysnspd}}
 \begin{document}
-{\LARGE\bfseries\color{ink}Supuestos y límites del modelo 1.1.3}\par
+{\LARGE\bfseries\color{ink}Supuestos y límites del modelo 1.2.0}\par
 {\large Registro explícito de hipótesis, dependencias y admisión}\par
 \smallnote{Companion de \href{Parametros.pdf}{Parámetros}, \href{Principal.pdf}{Principal}, \href{Auxiliar.pdf}{Auxiliar} y \href{Precomputo.pdf}{Precomputo}. Las entradas experimentales motivan el caso; los cierres propios requieren validación propia. No se presenta una evolución microscópica exacta de Usadel.}
 \block{Material y calibración estática}
@@ -65,7 +65,7 @@
 
 \block{Geometría y preparación fotónica}
 \assumption{S05}{Sección interior de una cinta uniforme}
-\smallnote{Cinta de 80 nm, película nominal de 7 nm y longitud activa total de 5 $\mu$m; dominio 2D interior de referencia $L=320$ nm. Sus cortes continúan el mismo superconductor con corriente, no son contactos metálicos ni reservorios BCS sin fase. Mantener $I_{\rm DC}$ físico al comparar longitudes, no la fase total. Absorción longitudinal fija; no añadir jitter geométrico longitudinal. \pref{P03}{1}, \pref{P04}{1}, \pref{P30}{6}; \K{9}, \K{23}.}
+\smallnote{Cinta de 80 nm, película nominal de 7 nm y longitud activa total de 5 $\mu$m; dominio 2D interior de referencia $L=300$ nm. Sus cortes continúan el mismo superconductor con corriente, no son contactos metálicos ni reservorios BCS sin fase. Mantener $I_{\rm DC}$ físico al comparar longitudes, no la fase total. Absorción longitudinal fija; no añadir jitter geométrico longitudinal. \pref{P03}{1}, \pref{P04}{1}, \pref{P30}{6}; \K{9}, \K{23}.}
 \assumption{S06}{Cascada inicial omitida y preparación FD/BE común}
 \begin{gather*}
  \Delta_i(0)=\Delta_i^{DC},\qquad
@@ -98,7 +98,7 @@
  \tau_{ep}(T_c)=24.7\ {\rm ps},\qquad
  \tau_{\rm esc}=20\ {\rm ps}.
 \end{gather*}
-\smallnote{Los dos primeros son calibradores libres con nomenclatura Allmaras; 5 ps es elección actual y K20 usa 6 ps. Los 24.7 ps coinciden con su tabla, sin convertirse en medición del film. Los 20 ps de escape son hipótesis de interfaz; el default histórico de la pipeline es 15 ps y debe sobrescribirse explícitamente. $\tau_{ee}$ afecta BGK y movilidad; $\tau_{ep}$ afecta $\alpha^2F$ y movilidad; variar un tiempo exige conservar dichas dependencias. \pref{P15}{3}--\pref{P17}{3}; \A{95}, \K{33}.}
+\smallnote{Los dos primeros son calibradores libres con nomenclatura Allmaras; 4 y 5 ps son controles actuales y K20 usa 6 ps. Los 24.7 ps coinciden con su tabla, sin convertirse en medición del film. Los 20 ps de escape son hipótesis de interfaz; el default histórico de la pipeline es 15 ps y debe sobrescribirse explícitamente. $\tau_{ee}$ afecta BGK y movilidad; $\tau_{ep}$ afecta $\alpha^2F$ y movilidad; variar un tiempo exige conservar dichas dependencias. \pref{P15}{3}--\pref{P17}{3}; \A{95}, \K{33}.}
 \assumption{S10}{Aproximación acústica tridimensional hasta Debye}
 \begin{gather*}
  g_{ph}(\Omega)=\frac{3\Omega^2}{2\pi^2\hbar^3v_{\rm avg}^3},\qquad
@@ -187,7 +187,7 @@
 
 \block{Observación, cobertura numérica y trazabilidad}
 \assumption{S21}{Gatillo y ventana de observación declarados}
-\smallnote{Primer cruce positivo de $V_{\rm out}-V_{{\rm out},DC}$ por 0.1 mV; confirmar durante 0.5 ps sobre piso de histéresis $0.95V_{\rm th}$. Integrar hasta cruce + 5 ps. Sin cruce confirmado a 100 ps, registrar censura, no una latencia inventada. Extraer desde estados aceptados e indicar interpolación. El hotbelt es diagnóstico espacial separado: componente conectada con $|\Delta|\le0.2|\Delta^{DC}|$ que une bordes. \pref{P35}{6}--\pref{P37}{6}.}
+\smallnote{Primer cruce positivo de $V_{\rm out}-V_{{\rm out},DC}$ por 0.1 mV; confirmar durante 0.5 ps sobre piso de histéresis $0.95V_{\rm th}$. Integrar en 2D hasta cruce + 2 ps; relevo según S25--S32. Sin cruce confirmado a 100 ps, registrar censura, no una latencia inventada. Extraer desde estados aceptados e indicar interpolación. El hotbelt es diagnóstico espacial separado: componente conectada con $|\Delta|\le0.2|\Delta^{DC}|$ que une bordes. \pref{P35}{6}--\pref{P37}{6}.}
 \smallnote{La ventana corta cambia sólo el horizonte de observación; no acortar constantes del circuito ni eliminar estados lentos. La latencia postcascada no es latencia óptica absoluta. Comparar 775/1550 bajo la misma regla y reloj; K20 usa desplazamiento del pico ajustado de IRF, por lo que la equivalencia entre ambos observables requiere justificación. \K{12}.}
 \assumption{S22}{Modelo discretizado y cobertura espectral finita}
 \smallnote{El perfil nominal $\Lambda/E_u=32$, $N_\xi=54$, $N_{ph}=96$, orden de transporte 48, $h=5$ nm y $\Delta t_{\max}=0.02$ ps es propuesta heredada de contraste. No acredita automáticamente el cierre nuevo ni el límite continuo. Refinar espectro, malla, dominio y tiempo sobre energía, corriente, señal y cruce. Recalcular el acoplamiento BCS con la misma cuadratura usada en energía/fuerza para conservar $T_c$. No compensar error de resolución mediante calibración física. Anderson acelera el mapa conjunto de gap/poblaciones/circuito sin cambiar el RHS. Una parada por resolución adaptativa insuficiente no es detección ni censura temporal. Los estados aceptados conservan soporte sin clipping; la limitación por disponibilidad debe conservar cada evento. El camino heredado restringe $I_b,I_s>0$ y requiere fallo controlado si se invierte corriente, sin interpretarlo como ley física universal. \pref{P30}{6}--\pref{P34}{6}.}
@@ -205,4 +205,80 @@
 \href{https://doi.org/10.1103/PhysRevLett.40.1041}{KWT (1978)};
 \href{https://doi.org/10.1103/PhysRev.94.511}{BGK (1954)}.
 Referencias inspiran componentes; no validan por atribución el ensamblado efectivo propio.}
+
+
+\clearpage
+\hypertarget{dimensional-1d}{}\hypertarget{hybrid-1d}{}
+{\LARGE\bfseries\color{ink}Hipótesis del relevo completo 2D a 1D}\par
+\assumption{S25}{Dominio conservado; observación exterior limitada}
+\smallnote{Misma cinta interior de 300 nm antes y después del cambio.
+La energía que cruza los reservorios figura en el balance; su evolución
+fuera del dominio no se resuelve. El indicador de cortes no es cota rigurosa
+del error exterior. Conservación no demuestra suficiencia de longitud.
+\pref{P42}{7}, \pref{P48}{7}.}
+\assumption{S26}{Restricción espacial, no reemplazo constitutivo}
+\smallnote{Para \(t>t_s\) se impone \(\partial_y=0\) en gap complejo,
+ocupaciones y potencial. Mismo funcional integrado sobre ancho y espesor:
+\(V_j=Wd_f\delta x_j\), caras \(Wd_f\). Se conservan energías nativas,
+colisiones, capacidad efectiva, rigidez, fases de cortes y circuito de tres
+estados. No se importa la cinética térmica hotbelt de Allmaras.
+\href{Principal.pdf\#nameddest=dimensional-1d}{Principal}, \pref{P43}{7}.}
+\assumption{S27}{Condición inicial con memoria del evento}
+\smallnote{Se remapean \(d/d_{\rm DC}\) complejo y poblaciones nativas.
+El circuito se copia exactamente. El exceso de energía respecto del DC de cada
+malla se iguala por una actividad escalar pequeña y acotada, sin clipping
+ni sustitución por FD/BE. Es reconciliación de discretización, no calor añadido
+durante la evolución. Si excede el margen, se rechaza el relevo.
+\pref{P45}{7}; \href{Auxiliar.pdf\#nameddest=dimensional-1d}{Auxiliar}.}
+\assumption{S28}{Ausencia resuelta de dinámica transversal}
+\smallnote{Error pequeño de reconstrucción del campo complejo, poblaciones y patrón de corriente total respecto de flujo longitudinal uniforme;
+ningún contorno válido con enrollamiento positivo o negativo.
+No basta vorticidad neta cero. En una región normal no se define fase:
+el gap usa coordenadas cartesianas. La reconstrucción mezcla error transversal
+y de remapeo. \pref{P46}{7}.}
+\origin{Modo transversal constante y volúmenes finitos propios.
+Antecedente geométrico:
+\href{https://thesis.caltech.edu/13748/}{Allmaras (2020)};
+\href{https://arxiv.org/pdf/1805.00130}{Allmaras et al., sec. III.A}.
+Diferentes condiciones iniciales, cierre cinético y circuito impiden
+identificar ambos modelos.}
+\clearpage
+\assumption{S29}{Solapamiento independiente y reloj}
+\smallnote{\(t_c\): cruce positivo confirmado durante 0.5 ps.
+La réplica 1D comienza en el primer estado aceptado que registra el cruce;
+su desfase, como máximo un paso 2D, queda registrado.
+Hasta \(t_s=t_c+2\) ps el resultado oficial es 2D.
+Comparación cada 0.1 ps, incluidos inicio y final.
+El estado oficial 1D se obtiene reproyectando el último 2D.
+Un fallo conserva datos y declara posible error dimensional.
+\pref{P44}{7}, \pref{P47}{7}.}
+\assumption{S30}{Indicador de truncamiento longitudinal}
+\smallnote{Se integra \(|P_L|+|P_R|\) en puntos medios aceptados sin
+cancelación entre cortes. Normalización:
+\(E_{\rm ret}+\int|I_sV_{\rm dev}|\,{\rm d}t\).
+Cociente máximo 0.02 en ambas fases.
+Margen práctico inicial, no propiedad universal de NbN ni prueba de exterior
+frío. \pref{P48}{7}.}
+\assumption{S31}{Aceleración con aceptación física}
+\smallnote{El 2D conserva punto medio implícito y guardias. En 1D se compara
+un paso completo con dos medios pasos y se acepta la segunda solución sólo
+si pasan error escalado y balances independientes.
+No se suprimen estados lentos ni se fuerza equilibrio.
+Las celdas de borde inválidas se reconstruyen por intersección convexa de Voronoi, sin cambiar sitios ni triangulación. Se conservan capacidad y rigidez positivas, soporte de Pauli/Bose,
+tolerancia no lineal y prohibición vigente de inversión de corriente.
+\pref{P49}{7}.}
+\assumption{S32}{Alcance temporal y validación pendiente}
+\smallnote{15 ns es tiempo final solicitado, separado del techo de 100 ps
+sin detección. No certifica reset: el circuito puede requerir más tiempo
+y el dominio fallar antes. Dos ps de concordancia no demuestran estabilidad
+de todos los modos transversales durante 15 ns; su ausencia posterior es
+hipótesis explícita. Pruebas cortas verifican operadores, proyección, reinicio
+y balance. La campaña física debe validar admisibilidad.
+El cambio no valida por sí mismo jitter ni latencia experimental.
+\pref{P44}{7}, \pref{P46}{7}--\pref{P49}{7}.}
+\origin{Reset y realimentación electro-térmica:
+\href{https://arxiv.org/abs/1008.0895}{Annunziata et al. (2010)}.
+El cierre efectivo previo y sus límites siguen vigentes:
+\href{https://arxiv.org/pdf/1611.06060}{Vodolazov (2017)}
+es referencia, no identificación con una teoría exacta.}
 \end{document}
