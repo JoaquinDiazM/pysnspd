@@ -192,8 +192,26 @@ class DimensionalProjection:
         correlation=np.dot(v,np.conj(lifted.delta_bar)*original.delta_bar)
         align=correlation/abs(correlation) if abs(correlation)>0 else 1.+0j
         dg=abs(align*lifted.delta_bar-original.delta_bar)
+        da=abs(lifted.delta_bar)-abs(original.delta_bar)
+        # Across a strongly suppressed belt, the phases of the superconducting
+        # banks are poor pointwise observables. Retain the complex norm as a
+        # diagnostic, and independently gate amplitude AND physical superflow.
+        currents=[]
+        for st in (original,lifted):
+            temperature=self.s2.kinetics.equivalent_temperature_K(st.delta_bar,st.p)
+            currents.append(self.s2.functional.evaluate(st.delta_bar,st.p,
+                temperature_K=temperature).edge_current_A)
+        conductance=self.g2.graph.conductance
+        weights=np.zeros_like(conductance);active=conductance>0
+        weights[active]=self.s2.ports.sheet_resistance_ohm/conductance[active]
+        normalization=(self.s2.circuit_scales[1]**2*self.s2.ports.sheet_resistance_ohm*
+                       self.g2.length_m/self.g2.width_m)
+        superflow=float(np.sqrt(np.dot(weights,(currents[0]-currents[1])**2)/normalization))
         return dict(gap_relative=float(np.sqrt(np.dot(v,dg*dg)/
             np.dot(v,abs(self.dc2.delta_bar)**2))),
+            gap_amplitude_relative=float(np.sqrt(np.dot(v,da*da)/
+                np.dot(v,abs(self.dc2.delta_bar)**2))),
+            supercurrent_relative=superflow,
             populations_energy_relative=population_distance(self.s2,original,lifted,scale),
             film_energy_relative=abs((film_energy(self.s2,original)-self.Edc2)-
                 (film_energy(self.s1,reduced)-self.Edc1)+self.inductive_excess_transfer_J(original))/scale,
@@ -209,7 +227,23 @@ class DimensionalProjection:
             return result,dict(raw_energy_relative=0.,reconciliation_energy_relative=0.,
                                activity_shift=0.,**self.errors(state,result,scale))
         f,k=self.s1.functional,self.s1.kinetics
-        d=self.dc1.delta_bar*(self.R@(state.delta_bar/self.dc2.delta_bar))
+        ratio=self.R@(state.delta_bar/self.dc2.delta_bar)
+        # Occupations are FV cell averages; the complex order parameter lives
+        # at sites. Reconstruct its ratio at physical sites from remap centroids,
+        # including the exact cut values. Treating partial-cell averages as
+        # interface point values injects spurious phase gradients.
+        core=self.core_fraction>0
+        centroid=(self.R@self.g2.coordinates_m[:,0])[core]/self.core_fraction[core]
+        average=ratio[core]/self.core_fraction[core]
+        cuts=[np.average(state.delta_bar[n]/self.dc2.delta_bar[n],
+                         weights=self.s2.functional.volumes_m3[n]) for n in self.s2.cuts]
+        xx=np.r_[0.,centroid,self.g2.length_m]
+        zz=np.r_[cuts[0],average,cuts[1]]
+        order=np.argsort(xx);xx=xx[order];zz=zz[order]
+        sites=self.g1.coordinates_m[core,0]-self.shift_m
+        ratio[core]=self.core_fraction[core]*(np.interp(sites,xx,zz.real)+
+                                              1j*np.interp(sites,xx,zz.imag))
+        d=self.dc1.delta_bar*ratio
         p=self.R@state.p;n=self.R@state.n
         initialization="same-domain native projection"
         if self.extended:
@@ -218,13 +252,21 @@ class DimensionalProjection:
                 initialization="cold stable-branch hypothesis at first crossing"
             else:
                 cold=exterior_state.copy()
-                core=self.core_fraction>0
-                target_core=d[core]/self.core_fraction[core]
-                correlation=np.dot(f.volumes_m3[core]*self.core_fraction[core],
-                                   np.conj(cold.delta_bar[core])*target_core)
-                phase=correlation/abs(correlation) if abs(correlation)>0 else 1.+0j
-                cold.delta_bar*=phase
-                initialization="independently evolved native shadow tails"
+                # The two exterior components are disconnected before gluing.
+                # Match EACH interface separately; a single global fit creates
+                # artificial gradient energy at both joins. Constant rotations
+                # leave each exterior's internal gradients and native p,n intact.
+                x=self.g1.coordinates_m[:,0]
+                for at,is_left in ((self.shift_m,True),
+                                   (self.shift_m+self.g2.length_m,False)):
+                    j=int(np.argmin(abs(x-at)))
+                    target_core=d[j]/self.core_fraction[j]
+                    if abs(cold.delta_bar[j])<1e-12 or abs(target_core)<1e-12:
+                        raise ArithmeticError("Unresolved superconducting tail interface")
+                    phase=target_core/cold.delta_bar[j];phase/=abs(phase)
+                    component=np.arange(len(x))<=j if is_left else np.arange(len(x))>=j
+                    cold.delta_bar[component]*=phase
+                initialization="evolved native tails; separate phase-continuous interface matching"
             outside=1-self.core_fraction
             d+=outside*cold.delta_bar
             p+=outside[:,None]*cold.p;n+=outside[:,None]*cold.n
@@ -281,6 +323,21 @@ class DimensionalProjection:
         return result,dict(raw_energy_relative=raw_error,
             reconciliation_energy_relative=correction,activity_shift=float(shift),exterior_initialization=initialization,
             **self.errors(state,result,scale))
+
+
+def require_overlap(check,tolerances,*,projection=False):
+    """Physical equivalence gates; never discard phase-gradient/current errors."""
+    t=tolerances;c=check
+    if (c["winding_count"] or c["gap_amplitude_relative"]>t.gap_relative or
+        c["supercurrent_relative"]>t.current_pattern_relative or
+        c["populations_energy_relative"]>t.populations_energy_relative or
+        c["current_pattern_relative"]>t.current_pattern_relative or
+        (projection and c["gap_relative"]>t.gap_relative)):
+        raise ArithmeticError("Unresolved transverse/projection structure: "+str(c))
+    if (c.get("voltage_error_V",0)>t.shadow_voltage_V or
+        c.get("current_relative",0)>t.shadow_current_relative or
+        c["film_energy_relative"]>t.shadow_energy_relative):
+        raise ArithmeticError("Independent 1D overlap mismatch: "+str(c))
 
 
 class ObservedThermalSystem(ThermalCoupledSystem):

@@ -1,0 +1,147 @@
+"""Authenticated, provenance-preserving continuation of the known v1.2.1 join defect.
+
+Only the runner and dimensional projection may differ from the original
+release. Every material/kinetic/circuit/geometry source and parameter stays
+identical. Original run directories are never edited.
+"""
+import hashlib,json,os,shutil
+from pathlib import Path
+import h5py
+import numpy as np
+from .effective_coupled import EffectiveState
+from .dimensional_transition import require_overlap
+
+LEGACY={
+    "pipelines/13_dimensional_photon_run.py":
+        "dd0c138cee8f191b540f5d77cb987279c736301b35162e0fb2c8fe8a51b80cb8",
+    "pysnspd/experimental/dimensional_transition.py":
+        "e99ee319d0828b93d68177926d9004ada3abfa6d55623f3d5daebfea77cb978b",
+}
+RECOVERY_SOURCE="pysnspd/experimental/dimensional_recovery.py"
+
+def sha(path):
+    h=hashlib.sha256()
+    with Path(path).open("rb") as f:
+        for chunk in iter(lambda:f.read(1024*1024),b""):h.update(chunk)
+    return h.hexdigest()
+
+def prepare_continuation(source,destination,pins,identity):
+    source=Path(source).resolve();destination=Path(destination).resolve()
+    scratch=Path("/home/jdiaz/scratch").resolve()
+    if not source.is_relative_to(scratch) or not destination.is_relative_to(scratch):
+        raise ValueError("Continuation data must stay in scratch")
+    if destination.exists():raise FileExistsError("Continuation destination already exists")
+    manifest=json.loads((source/"manifest.json").read_text())
+    old=manifest["source_pins_sha256"]
+    if set(old)!=set(pins)-{RECOVERY_SOURCE}:
+        raise ValueError("Unsupported checkpoint source catalog")
+    for key,value in old.items():
+        if value!=(LEGACY[key] if key in LEGACY else pins[key]):
+            raise ValueError("Unapproved source change: "+key)
+    if manifest["parameter_identity"]!=identity:
+        raise ValueError("Continuation physical/numerical parameters differ")
+    if (manifest.get("model_version")!="1.2.1" or manifest.get("phase")!="2d" or
+        manifest.get("status")!="POSSIBLE_DIMENSIONAL_ERROR" or
+        not str(manifest.get("error","")).startswith("Projection energy tolerance exceeded:") or
+        not manifest.get("observation",{}).get("margin_complete")):
+        raise ValueError("Not the supported pre-handoff join failure")
+    checkpoint=source/"checkpoint_latest.npz"
+    if sha(checkpoint)!=manifest["checkpoint_sha256"] or sha(source/"dc1d.npz")!=manifest["dc1d_sha256"]:
+        raise ValueError("Source checkpoint or DC hash mismatch")
+    with np.load(checkpoint,allow_pickle=False) as z:
+        arrays={k:z[k].copy() for k in z.files}
+    meta=json.loads(str(arrays["metadata_json"]))
+    if meta["source_pins_sha256"]!=old or meta["parameter_identity"]!=identity:
+        raise ValueError("Manifest/checkpoint identity mismatch")
+    if meta["phase"]!="2d" or not meta.get("shadow_active") or abs(meta["shadow_time_ps"]-meta["time_ps"])>1e-8:
+        raise ValueError("A synchronized native shadow is required")
+    # Refuse a live writer; no interruption or advisory-lock bypass.
+    for proc in Path("/proc").iterdir():
+        if not proc.name.isdigit() or int(proc.name)==os.getpid():continue
+        try:
+            words=[w.decode() for w in (proc/"cmdline").read_bytes().split(bytes([0])) if w]
+            if any(Path(w).name=="13_dimensional_photon_run.py" for w in words):
+                if "--output-dir" in words and Path(words[words.index("--output-dir")+1]).resolve()==source:
+                    raise ValueError("Source case is still active")
+        except (OSError,UnicodeError):pass
+    shutil.copytree(source,destination)
+    provenance=dict(schema="pysnspd.v121_join_continuation.v1",source_run=str(source),
+        source_checkpoint_sha256=manifest["checkpoint_sha256"],source_dc1d_sha256=manifest["dc1d_sha256"],
+        source_pins_sha256=old,reused_until_ps=meta["time_ps"],reused_phase="2d",
+        source_archive_sha256=sha(source/"data.h5"),
+        photon_redeposited=False,physical_kernel_changed=False,
+        shadow_policy="retain native shadow and re-audit stored overlap conservatively")
+    if sha(destination/"data.h5")!=provenance["source_archive_sha256"]:
+        raise ValueError("Archive copy hash mismatch")
+    (destination/"pre_update_manifest.json").write_text(json.dumps(manifest,indent=2))
+    (destination/"pre_update_checkpoint.npz").write_bytes(checkpoint.read_bytes())
+    meta.update(source_pins_sha256=pins,terminal_diagnostic=False,reaudit_saved_overlap=True,
+        continuation=provenance)
+    arrays["metadata_json"]=np.array(json.dumps(meta,allow_nan=False))
+    temp=destination/"checkpoint_recovery.tmp"
+    with temp.open("wb") as f:np.savez_compressed(f,**arrays)
+    os.replace(temp,destination/"checkpoint_latest.npz")
+    manifest.update(source_pins_sha256=pins,checkpoint_sha256=sha(destination/"checkpoint_latest.npz"),
+        status="RECOVERY_PREPARED",error=None,continuation=provenance)
+    (destination/"manifest.json").write_text(json.dumps(manifest,indent=2))
+    print(json.dumps(dict(status="RECOVERY_PREPARED",source_run=str(source),
+        output_run=str(destination),reused_until_ps=meta["time_ps"],photon_redeposited=False)),flush=True)
+
+def reaudit_overlap(directory,project,scale,tolerances):
+    """Use exact 2D snapshots, bounding shadow-time mismatch by BOTH brackets.
+
+    No interpolation of a rapidly rotating complex condensate or evolution
+    history is invented. Require each bracketing saved shadow to pass every
+    physical gate against the exact saved 2D state. Record their time offsets.
+    """
+    results=[]
+    with np.load(Path(directory)/"checkpoint_latest.npz",allow_pickle=False) as z:
+        saved_checks=json.loads(str(z["metadata_json"]))["shadow_checks"]
+    saved_times=np.array([c["time_ps"] for c in saved_checks])
+    with h5py.File(Path(directory)/"data.h5","r",swmr=True) as f:
+        original=f["2d"];shadow=f["shadow1d"]
+        ts=shadow["snapshot_time_ps"][:];to=original["snapshot_time_ps"][:]
+        if len(ts)<2:raise ValueError("Insufficient saved native overlap")
+        def state(group,index):
+            t=float(group["snapshot_time_ps"][index]);trace=group["trace"][:]
+            j=int(np.argmin(abs(trace["time_ps"]-t)))
+            if abs(float(trace["time_ps"][j])-t)>1e-8:
+                raise ValueError("Snapshot has no accepted circuit state")
+            cm=np.array([trace["Ib_A"][j],trace["Is_A"][j],trace["vc_V"][j]])
+            return EffectiveState(*(group[k][index] for k in ("delta_bar","p","n")),cm)
+        for i,t in enumerate(to):
+            if t<ts[0]-1e-9 or t>ts[-1]+1e-9:continue
+            j=int(np.searchsorted(ts,t))
+            indices=sorted({max(0,min(len(ts)-1,j-1)),min(len(ts)-1,j)})
+            if min(abs(ts[indices]-t))<1e-9:
+                indices=[indices[int(np.argmin(abs(ts[indices]-t)))]]
+            elif ts[indices[-1]]-ts[indices[0]]>.11:
+                raise ValueError("Saved shadow bracket too wide")
+            st=state(original,i)
+            checks=[]
+            for k in indices:
+                sh=state(shadow,k)
+                c=project.errors(st,sh,scale)
+                # Work/energy and circuit comparisons MUST use simultaneous
+                # states. The old checkpoint already contains these exact-time
+                # scalars. Taking energies from different times confuses real
+                # Joule work with projection error.
+                n=int(np.searchsorted(saved_times,t))
+                same_time_indices=sorted({max(0,min(len(saved_checks)-1,n-1)),
+                                         min(len(saved_checks)-1,n)})
+                if min(abs(saved_times[same_time_indices]-t))>.11:
+                    raise ValueError("Missing simultaneous scalar overlap checks")
+                c.update(time_ps=float(t),shadow_sample_time_ps=float(ts[k]),
+                    simultaneous_scalar_bracket_ps=[float(saved_times[q]) for q in same_time_indices])
+                for key in ("film_energy_relative","voltage_error_V","current_relative"):
+                    c[key]=max(saved_checks[q][key] for q in same_time_indices)
+                require_overlap(c,tolerances)
+                checks.append(c)
+            worst={key:max(c[key] for c in checks) for key in checks[0]
+                   if key not in ("time_ps","shadow_sample_time_ps","gauge_alignment_rad","simultaneous_scalar_bracket_ps")}
+            worst.update(time_ps=float(t),shadow_bracket_ps=[float(ts[k]) for k in indices],
+                simultaneous_scalar_bracket_ps=checks[0]["simultaneous_scalar_bracket_ps"],
+                comparison="exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks")
+            results.append(worst)
+    if len(results)<2:raise ArithmeticError("Insufficient re-audited overlap")
+    return results

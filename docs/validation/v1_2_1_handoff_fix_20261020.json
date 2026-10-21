@@ -1,0 +1,1040 @@
+{
+  "model_version": "1.2.1",
+  "scope": "handoff correction; no physical material/kinetic/circuit change",
+  "short_tests": {
+    "passed": 16,
+    "log": "/home/jdiaz/scratch/handoff_debug_20261020/tests_final.log"
+  },
+  "actual_checkpoint_handoffs": [
+    {
+      "case": "bias21p5_ee4_775",
+      "exit": 0,
+      "wall_s": 20.97916902299039,
+      "status": "DEVELOPMENT_DURATION_REACHED",
+      "phase": "1d",
+      "time_ps": 23.082989759090243,
+      "original_time_ps": 23.080989759090244,
+      "projection": {
+        "raw_energy_relative": 0.0023779827187094846,
+        "reconciliation_energy_relative": 0.002378656435091627,
+        "activity_shift": -0.00033537441572074656,
+        "exterior_initialization": "evolved native tails; separate phase-continuous interface matching",
+        "gap_relative": 0.003706321492682452,
+        "gap_amplitude_relative": 0.0023302327824781285,
+        "supercurrent_relative": 0.01073627224036901,
+        "populations_energy_relative": 0.008338142969288921,
+        "film_energy_relative": 1.4328383117879195e-16,
+        "gauge_alignment_rad": 0.00013737443171767225,
+        "current_pattern_relative": 0.0035435383791780784,
+        "winding_count": 0,
+        "time_ps": 23.080989759090244
+      },
+      "energy_defect_J": 3.9748811054179375e-21,
+      "source_hash_verified": true
+    },
+    {
+      "case": "bias21p5_ee4_1550",
+      "exit": 0,
+      "wall_s": 21.15654185996391,
+      "status": "DEVELOPMENT_DURATION_REACHED",
+      "phase": "1d",
+      "time_ps": 26.97296345875557,
+      "original_time_ps": 26.97096345875557,
+      "projection": {
+        "raw_energy_relative": 0.0023699209851106885,
+        "reconciliation_energy_relative": 0.0023706041979404857,
+        "activity_shift": -0.00033239197065256854,
+        "exterior_initialization": "evolved native tails; separate phase-continuous interface matching",
+        "gap_relative": 0.003693972892324875,
+        "gap_amplitude_relative": 0.0023267470272258827,
+        "supercurrent_relative": 0.010674777542842382,
+        "populations_energy_relative": 0.005723135462329946,
+        "film_energy_relative": 6.099457543162815e-17,
+        "gauge_alignment_rad": 9.423638187328355e-05,
+        "current_pattern_relative": 0.003522462252689622,
+        "winding_count": 0,
+        "time_ps": 26.97096345875557
+      },
+      "energy_defect_J": 2.927996850861686e-21,
+      "source_hash_verified": true
+    }
+  ],
+  "actual_1d_continuation": [
+    {
+      "case": "bias21p5_ee4_775",
+      "exit": 0,
+      "wall_s": 40.87112685199827,
+      "original_time_ps": 23.080989759090244,
+      "status": "DEVELOPMENT_DURATION_REACHED",
+      "phase": "1d",
+      "time_ps": 23.182989759090244,
+      "accepted_steps": 10020,
+      "rejections": 956,
+      "energy_defect_J": 3.9907750002995155e-21,
+      "max_global_energy_fraction": 0.004018355623730679,
+      "monitor_reason": null
+    },
+    {
+      "case": "bias21p5_ee4_1550",
+      "exit": 0,
+      "wall_s": 40.94764499296434,
+      "original_time_ps": 26.97096345875557,
+      "status": "DEVELOPMENT_DURATION_REACHED",
+      "phase": "1d",
+      "time_ps": 27.07296345875557,
+      "accepted_steps": 11549,
+      "rejections": 1144,
+      "energy_defect_J": 2.9437837863264333e-21,
+      "max_global_energy_fraction": 0.0036254728971939843,
+      "monitor_reason": null
+    }
+  ],
+  "projection_and_overlap": {
+    "bias21p5_ee4_775": {
+      "projection": {
+        "raw_energy_relative": 0.0023779827187094846,
+        "reconciliation_energy_relative": 0.002378656435091627,
+        "activity_shift": -0.00033537441572074656,
+        "exterior_initialization": "evolved native tails; separate phase-continuous interface matching",
+        "gap_relative": 0.003706321492682452,
+        "gap_amplitude_relative": 0.0023302327824781285,
+        "supercurrent_relative": 0.01073627224036901,
+        "populations_energy_relative": 0.008338142969288921,
+        "film_energy_relative": 1.4328383117879195e-16,
+        "gauge_alignment_rad": 0.00013737443171767225,
+        "current_pattern_relative": 0.0035435383791780784,
+        "winding_count": 0
+      },
+      "checks": [
+        {
+          "gap_relative": 0.28958138440341513,
+          "gap_amplitude_relative": 0.007090561832905505,
+          "supercurrent_relative": 0.020171431879669903,
+          "populations_energy_relative": 0.011738541258988405,
+          "film_energy_relative": 0.00029518961530056165,
+          "current_pattern_relative": 0.003796990573040893,
+          "winding_count": 0,
+          "voltage_error_V": 1.8189754773416454e-08,
+          "current_relative": 1.6920744487097334e-05,
+          "time_ps": 21.09999999999963,
+          "shadow_bracket_ps": [
+            21.081949121517784,
+            21.182433710222345
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.081949121517784,
+            21.182433710222345
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.2533353028697074,
+          "gap_amplitude_relative": 0.007364761446655162,
+          "supercurrent_relative": 0.02202953020975805,
+          "populations_energy_relative": 0.011838397836639989,
+          "film_energy_relative": 0.0005817454938682324,
+          "current_pattern_relative": 0.0037911423818212,
+          "winding_count": 0,
+          "voltage_error_V": 3.520940181698086e-08,
+          "current_relative": 3.2753101151918794e-05,
+          "time_ps": 21.19999999999963,
+          "shadow_bracket_ps": [
+            21.182433710222345,
+            21.283908380925613
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.182433710222345,
+            21.283908380925613
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.21490126713032146,
+          "gap_amplitude_relative": 0.007660989292353189,
+          "supercurrent_relative": 0.024262747984069008,
+          "populations_energy_relative": 0.0119332697809196,
+          "film_energy_relative": 0.0008565690149418427,
+          "current_pattern_relative": 0.003783138271803813,
+          "winding_count": 0,
+          "voltage_error_V": 5.0148538835489e-08,
+          "current_relative": 4.6650173205353145e-05,
+          "time_ps": 21.29999999999963,
+          "shadow_bracket_ps": [
+            21.283908380925613,
+            21.38456929747635
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.283908380925613,
+            21.38456929747635
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.19475133123133218,
+          "gap_amplitude_relative": 0.0080527828617975,
+          "supercurrent_relative": 0.0261693464505969,
+          "populations_energy_relative": 0.012111739944012477,
+          "film_energy_relative": 0.0011185767430569764,
+          "current_pattern_relative": 0.0037704560104068327,
+          "winding_count": 0,
+          "voltage_error_V": 6.340591638513568e-08,
+          "current_relative": 5.898288479301345e-05,
+          "time_ps": 21.399999999999633,
+          "shadow_bracket_ps": [
+            21.38456929747635,
+            21.48578289031664
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.38456929747635,
+            21.48578289031664
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.16815378272369363,
+          "gap_amplitude_relative": 0.008453599794880027,
+          "supercurrent_relative": 0.027124527414758678,
+          "populations_energy_relative": 0.012285544913558377,
+          "film_energy_relative": 0.0013664495131432222,
+          "current_pattern_relative": 0.0037574394118780924,
+          "winding_count": 0,
+          "voltage_error_V": 7.549525634989587e-08,
+          "current_relative": 7.022910667854787e-05,
+          "time_ps": 21.499999999999634,
+          "shadow_bracket_ps": [
+            21.48578289031664,
+            21.586307164024024
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.48578289031664,
+            21.586307164024024
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.1530252272672234,
+          "gap_amplitude_relative": 0.008936499073549493,
+          "supercurrent_relative": 0.02748993293720633,
+          "populations_energy_relative": 0.012515736355687914,
+          "film_energy_relative": 0.0016173183508106496,
+          "current_pattern_relative": 0.0037456817247991086,
+          "winding_count": 0,
+          "voltage_error_V": 8.74397503931713e-08,
+          "current_relative": 8.134064641855893e-05,
+          "time_ps": 21.599999999999635,
+          "shadow_bracket_ps": [
+            21.586307164024024,
+            21.687536613323342
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.586307164024024,
+            21.687536613323342
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.12757808940396378,
+          "gap_amplitude_relative": 0.009372257357536225,
+          "supercurrent_relative": 0.027799295387189508,
+          "populations_energy_relative": 0.012676249067529441,
+          "film_energy_relative": 0.0018656070573575701,
+          "current_pattern_relative": 0.0037330163697561125,
+          "winding_count": 0,
+          "voltage_error_V": 9.915448889097269e-08,
+          "current_relative": 9.223851026043814e-05,
+          "time_ps": 21.699999999999637,
+          "shadow_bracket_ps": [
+            21.687536613323342,
+            21.787595706525035
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.687536613323342,
+            21.787595706525035
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.1200957421955393,
+          "gap_amplitude_relative": 0.009893966188076888,
+          "supercurrent_relative": 0.028044482198396805,
+          "populations_energy_relative": 0.01286399186245451,
+          "film_energy_relative": 0.002120699517552131,
+          "current_pattern_relative": 0.0037164043147692584,
+          "winding_count": 0,
+          "voltage_error_V": 1.1109194411756148e-07,
+          "current_relative": 0.0001033436110567507,
+          "time_ps": 21.79999999999964,
+          "shadow_bracket_ps": [
+            21.787595706525035,
+            21.888485956856773
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.787595706525035,
+            21.888485956856773
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.12800982211830023,
+          "gap_amplitude_relative": 0.010407244662206622,
+          "supercurrent_relative": 0.028349744450407225,
+          "populations_energy_relative": 0.01298559571980416,
+          "film_energy_relative": 0.0023690200273141586,
+          "current_pattern_relative": 0.003700134658387798,
+          "winding_count": 0,
+          "voltage_error_V": 1.2316449215033425e-07,
+          "current_relative": 0.00011457443198311365,
+          "time_ps": 21.89999999999964,
+          "shadow_bracket_ps": [
+            21.888485956856773,
+            21.988771534493853
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.888485956856773,
+            21.988771534493853
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.1564191308724761,
+          "gap_amplitude_relative": 0.011023466142329796,
+          "supercurrent_relative": 0.027928936980254247,
+          "populations_energy_relative": 0.013143986999017315,
+          "film_energy_relative": 0.002631423121589958,
+          "current_pattern_relative": 0.0036905533982013673,
+          "winding_count": 0,
+          "voltage_error_V": 1.3611791452165946e-07,
+          "current_relative": 0.00012662473351954012,
+          "time_ps": 21.99999999999964,
+          "shadow_bracket_ps": [
+            21.988771534493853,
+            22.08987446133104
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            21.988771534493853,
+            22.08987446133104
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.169752430500777,
+          "gap_amplitude_relative": 0.011607669172232426,
+          "supercurrent_relative": 0.028107625801418134,
+          "populations_energy_relative": 0.013274572714191335,
+          "film_energy_relative": 0.0028997134386200907,
+          "current_pattern_relative": 0.003680804981217657,
+          "winding_count": 0,
+          "voltage_error_V": 1.4948480587839334e-07,
+          "current_relative": 0.00013905971207259297,
+          "time_ps": 22.099999999999643,
+          "shadow_bracket_ps": [
+            22.08987446133104,
+            22.18997994025783
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.08987446133104,
+            22.18997994025783
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.19609934299464818,
+          "gap_amplitude_relative": 0.012287412255244984,
+          "supercurrent_relative": 0.028375957595558724,
+          "populations_energy_relative": 0.01346700515381497,
+          "film_energy_relative": 0.003167611587085355,
+          "current_pattern_relative": 0.003669089591704957,
+          "winding_count": 0,
+          "voltage_error_V": 1.6342367365317908e-07,
+          "current_relative": 0.00015202683083939182,
+          "time_ps": 22.199999999999644,
+          "shadow_bracket_ps": [
+            22.18997994025783,
+            22.290963848723056
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.18997994025783,
+            22.290963848723056
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.2111649786243119,
+          "gap_amplitude_relative": 0.012957301789710994,
+          "supercurrent_relative": 0.0279030535450465,
+          "populations_energy_relative": 0.013617243821579427,
+          "film_energy_relative": 0.003445341949315474,
+          "current_pattern_relative": 0.0036574605292477498,
+          "winding_count": 0,
+          "voltage_error_V": 1.7816520209196663e-07,
+          "current_relative": 0.0001657406707652873,
+          "time_ps": 22.299999999999645,
+          "shadow_bracket_ps": [
+            22.290963848723056,
+            22.391120308155738
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.290963848723056,
+            22.391120308155738
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.23813608455443924,
+          "gap_amplitude_relative": 0.013708313256662514,
+          "supercurrent_relative": 0.02803305413533114,
+          "populations_energy_relative": 0.013819449053054874,
+          "film_energy_relative": 0.003728896619175737,
+          "current_pattern_relative": 0.003644895410553888,
+          "winding_count": 0,
+          "voltage_error_V": 1.936869623415138e-07,
+          "current_relative": 0.00018018038474676873,
+          "time_ps": 22.399999999999647,
+          "shadow_bracket_ps": [
+            22.391120308155738,
+            22.49212362291905
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.391120308155738,
+            22.49212362291905
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.26934446396431,
+          "gap_amplitude_relative": 0.014514635190154062,
+          "supercurrent_relative": 0.027837235542833627,
+          "populations_energy_relative": 0.014036925887555153,
+          "film_energy_relative": 0.004023699030098491,
+          "current_pattern_relative": 0.0036331434060787138,
+          "winding_count": 0,
+          "voltage_error_V": 2.1013817032501425e-07,
+          "current_relative": 0.0001954847780823012,
+          "time_ps": 22.49999999999965,
+          "shadow_bracket_ps": [
+            22.49212362291905,
+            22.593415735814165
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.49212362291905,
+            22.593415735814165
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.3038674423529888,
+          "gap_amplitude_relative": 0.01536815031161233,
+          "supercurrent_relative": 0.027923462247315456,
+          "populations_energy_relative": 0.014263696720182586,
+          "film_energy_relative": 0.0043271058978827685,
+          "current_pattern_relative": 0.003620051937179556,
+          "winding_count": 0,
+          "voltage_error_V": 2.2740525652761867e-07,
+          "current_relative": 0.00021154820925118364,
+          "time_ps": 22.59999999999965,
+          "shadow_bracket_ps": [
+            22.593415735814165,
+            22.694994043551137
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.593415735814165,
+            22.694994043551137
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.32760129313404146,
+          "gap_amplitude_relative": 0.016205906896265766,
+          "supercurrent_relative": 0.02791697851703534,
+          "populations_energy_relative": 0.014435485309845791,
+          "film_energy_relative": 0.004633340821945688,
+          "current_pattern_relative": 0.00360492732707258,
+          "winding_count": 0,
+          "voltage_error_V": 2.4544905704913615e-07,
+          "current_relative": 0.00022833423930070993,
+          "time_ps": 22.69999999999965,
+          "shadow_bracket_ps": [
+            22.694994043551137,
+            22.795803514581
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.694994043551137,
+            22.795803514581
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.3553682145690502,
+          "gap_amplitude_relative": 0.017111418094775926,
+          "supercurrent_relative": 0.027658459971774536,
+          "populations_energy_relative": 0.01462192127267802,
+          "film_energy_relative": 0.004953519653561762,
+          "current_pattern_relative": 0.0035916456790411567,
+          "winding_count": 0,
+          "voltage_error_V": 2.6470951426073514e-07,
+          "current_relative": 0.00024625213286127675,
+          "time_ps": 22.799999999999653,
+          "shadow_bracket_ps": [
+            22.795803514581,
+            22.89691837509717
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.795803514581,
+            22.89691837509717
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.37879395721877107,
+          "gap_amplitude_relative": 0.018038429403380424,
+          "supercurrent_relative": 0.027739494872748825,
+          "populations_energy_relative": 0.01481244930297565,
+          "film_energy_relative": 0.005280296315767089,
+          "current_pattern_relative": 0.0035751700457990845,
+          "winding_count": 0,
+          "voltage_error_V": 2.8489451509592577e-07,
+          "current_relative": 0.0002650301549691763,
+          "time_ps": 22.899999999999654,
+          "shadow_bracket_ps": [
+            22.89691837509717,
+            22.997749272091387
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.89691837509717,
+            22.997749272091387
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.173321755219736,
+          "gap_amplitude_relative": 0.017806313125215547,
+          "supercurrent_relative": 0.027668094631844657,
+          "populations_energy_relative": 0.014014228702821577,
+          "film_energy_relative": 0.005560529029541802,
+          "current_pattern_relative": 0.0035597706179005028,
+          "winding_count": 0,
+          "voltage_error_V": 3.0230669838917013e-07,
+          "current_relative": 0.00028122866111823737,
+          "time_ps": 22.999999999999655,
+          "shadow_bracket_ps": [
+            22.997749272091387,
+            23.080989759090244
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.997749272091387,
+            23.080989759090244
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.2030190762978869,
+          "gap_amplitude_relative": 0.013162203825689903,
+          "supercurrent_relative": 0.027865899096170692,
+          "populations_energy_relative": 0.010166022664412211,
+          "film_energy_relative": 0.005560529029541802,
+          "current_pattern_relative": 0.0035435383791780762,
+          "winding_count": 0,
+          "voltage_error_V": 3.0230669838917013e-07,
+          "current_relative": 0.00028122866111823737,
+          "time_ps": 23.080989759090244,
+          "shadow_bracket_ps": [
+            23.080989759090244
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            22.997749272091387,
+            23.080989759090244
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        }
+      ]
+    },
+    "bias21p5_ee4_1550": {
+      "projection": {
+        "raw_energy_relative": 0.0023699209851106885,
+        "reconciliation_energy_relative": 0.0023706041979404857,
+        "activity_shift": -0.00033239197065256854,
+        "exterior_initialization": "evolved native tails; separate phase-continuous interface matching",
+        "gap_relative": 0.003693972892324875,
+        "gap_amplitude_relative": 0.0023267470272258827,
+        "supercurrent_relative": 0.01067477754284238,
+        "populations_energy_relative": 0.005723135462329946,
+        "film_energy_relative": 6.099457543162815e-17,
+        "gauge_alignment_rad": 9.423638187328355e-05,
+        "current_pattern_relative": 0.003522462252689622,
+        "winding_count": 0
+      },
+      "checks": [
+        {
+          "gap_relative": 0.442721829868814,
+          "gap_amplitude_relative": 0.0064975849765314215,
+          "supercurrent_relative": 0.020558233975133774,
+          "populations_energy_relative": 0.007794578390821695,
+          "film_energy_relative": 0.00030602601588617707,
+          "current_pattern_relative": 0.0037846933593097968,
+          "winding_count": 0,
+          "voltage_error_V": 1.815852805271722e-08,
+          "current_relative": 1.6891696730336434e-05,
+          "time_ps": 24.999999999825246,
+          "shadow_bracket_ps": [
+            24.971794294934963,
+            25.072717264327448
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            24.971794294934963,
+            25.072717264327448
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.4016785371991075,
+          "gap_amplitude_relative": 0.006692799291028921,
+          "supercurrent_relative": 0.022428368395074012,
+          "populations_energy_relative": 0.007857263409678775,
+          "film_energy_relative": 0.0005927010129475661,
+          "current_pattern_relative": 0.003774963756083778,
+          "winding_count": 0,
+          "voltage_error_V": 3.4636587261013525e-08,
+          "current_relative": 3.2220247558672434e-05,
+          "time_ps": 25.099999999825247,
+          "shadow_bracket_ps": [
+            25.072717264327448,
+            25.17280183748535
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.072717264327448,
+            25.17280183748535
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.38538405768990763,
+          "gap_amplitude_relative": 0.006993749060978557,
+          "supercurrent_relative": 0.024742307877299193,
+          "populations_energy_relative": 0.007975776809145936,
+          "film_energy_relative": 0.0008657729778401578,
+          "current_pattern_relative": 0.003767486870419889,
+          "winding_count": 0,
+          "voltage_error_V": 4.9195522855656536e-08,
+          "current_relative": 4.576364041087578e-05,
+          "time_ps": 25.19999999982525,
+          "shadow_bracket_ps": [
+            25.17280183748535,
+            25.273531612116297
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.17280183748535,
+            25.273531612116297
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.36422559108266184,
+          "gap_amplitude_relative": 0.007365989356155748,
+          "supercurrent_relative": 0.026409362114301338,
+          "populations_energy_relative": 0.008163351049118837,
+          "film_energy_relative": 0.0011240971036336554,
+          "current_pattern_relative": 0.0037564740946289268,
+          "winding_count": 0,
+          "voltage_error_V": 6.214353312572007e-08,
+          "current_relative": 5.780856250913207e-05,
+          "time_ps": 25.29999999982525,
+          "shadow_bracket_ps": [
+            25.273531612116297,
+            25.37448794322523
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.273531612116297,
+            25.37448794322523
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.3415116431330975,
+          "gap_amplitude_relative": 0.007755848851981396,
+          "supercurrent_relative": 0.027159937052781444,
+          "populations_energy_relative": 0.008360110774036422,
+          "film_energy_relative": 0.0013762345512450954,
+          "current_pattern_relative": 0.003745188625402719,
+          "winding_count": 0,
+          "voltage_error_V": 7.415487884320274e-08,
+          "current_relative": 6.898222515518325e-05,
+          "time_ps": 25.39999999982525,
+          "shadow_bracket_ps": [
+            25.37448794322523,
+            25.474889216562136
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.37448794322523,
+            25.474889216562136
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.3280352294682097,
+          "gap_amplitude_relative": 0.008163123126103488,
+          "supercurrent_relative": 0.02771772444940451,
+          "populations_energy_relative": 0.008558045897830085,
+          "film_energy_relative": 0.0016213320486823835,
+          "current_pattern_relative": 0.0037331847430167107,
+          "winding_count": 0,
+          "voltage_error_V": 8.56918907145247e-08,
+          "current_relative": 7.971470038994846e-05,
+          "time_ps": 25.499999999825253,
+          "shadow_bracket_ps": [
+            25.474889216562136,
+            25.5750369489375
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.474889216562136,
+            25.5750369489375
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.3182162332493253,
+          "gap_amplitude_relative": 0.008614174847068721,
+          "supercurrent_relative": 0.0278929502170441,
+          "populations_energy_relative": 0.008771623626774604,
+          "film_energy_relative": 0.001868389130594592,
+          "current_pattern_relative": 0.0037218274313956506,
+          "winding_count": 0,
+          "voltage_error_V": 9.729180705196074e-08,
+          "current_relative": 9.050574580809249e-05,
+          "time_ps": 25.599999999825254,
+          "shadow_bracket_ps": [
+            25.5750369489375,
+            25.67539321437735
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.5750369489375,
+            25.67539321437735
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.30519830582866697,
+          "gap_amplitude_relative": 0.0091348118348116,
+          "supercurrent_relative": 0.02803376068317751,
+          "populations_energy_relative": 0.009005927780093997,
+          "film_energy_relative": 0.002119732791967178,
+          "current_pattern_relative": 0.0037083601598896913,
+          "winding_count": 0,
+          "voltage_error_V": 1.091412284372312e-07,
+          "current_relative": 0.00010152894610262035,
+          "time_ps": 25.699999999825256,
+          "shadow_bracket_ps": [
+            25.67539321437735,
+            25.77636149846389
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.67539321437735,
+            25.77636149846389
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.2828702513753094,
+          "gap_amplitude_relative": 0.009645163175477965,
+          "supercurrent_relative": 0.028131357114920808,
+          "populations_energy_relative": 0.009172568461547738,
+          "film_energy_relative": 0.002374340370715839,
+          "current_pattern_relative": 0.0036925064058703646,
+          "winding_count": 0,
+          "voltage_error_V": 1.2123851758902212e-07,
+          "current_relative": 0.0001127827731985174,
+          "time_ps": 25.799999999825257,
+          "shadow_bracket_ps": [
+            25.77636149846389,
+            25.876655435652008
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.77636149846389,
+            25.876655435652008
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.2701695439189571,
+          "gap_amplitude_relative": 0.010253039113335017,
+          "supercurrent_relative": 0.028283160098282738,
+          "populations_energy_relative": 0.009374012451648607,
+          "film_energy_relative": 0.002636633129550169,
+          "current_pattern_relative": 0.003679837198670021,
+          "winding_count": 0,
+          "voltage_error_V": 1.3388180696552096e-07,
+          "current_relative": 0.00012454457018505342,
+          "time_ps": 25.89999999982526,
+          "shadow_bracket_ps": [
+            25.876655435652008,
+            25.97792259813946
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.876655435652008,
+            25.97792259813946
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.24271244236410827,
+          "gap_amplitude_relative": 0.010897027579274068,
+          "supercurrent_relative": 0.028367650028400065,
+          "populations_energy_relative": 0.009576510571809917,
+          "film_energy_relative": 0.00290238935908557,
+          "current_pattern_relative": 0.0036690587809459813,
+          "winding_count": 0,
+          "voltage_error_V": 1.4700123469209417e-07,
+          "current_relative": 0.00013674934603644212,
+          "time_ps": 25.99999999982526,
+          "shadow_bracket_ps": [
+            25.97792259813946,
+            26.079099094021128
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            25.97792259813946,
+            26.079099094021128
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.21586492829557208,
+          "gap_amplitude_relative": 0.011509019767137524,
+          "supercurrent_relative": 0.02823320137577055,
+          "populations_energy_relative": 0.00973874780959632,
+          "film_energy_relative": 0.0031762011429157236,
+          "current_pattern_relative": 0.00365938698049644,
+          "winding_count": 0,
+          "voltage_error_V": 1.6069825081437835e-07,
+          "current_relative": 0.000149491467500242,
+          "time_ps": 26.09999999982526,
+          "shadow_bracket_ps": [
+            26.079099094021128,
+            26.179105240200496
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.079099094021128,
+            26.179105240200496
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.2062620549235333,
+          "gap_amplitude_relative": 0.012151755137450046,
+          "supercurrent_relative": 0.028598796212504794,
+          "populations_energy_relative": 0.00990263531124331,
+          "film_energy_relative": 0.0034568549598797222,
+          "current_pattern_relative": 0.003647469881091452,
+          "winding_count": 0,
+          "voltage_error_V": 1.7488305599554986e-07,
+          "current_relative": 0.00016268741038720491,
+          "time_ps": 26.199999999825263,
+          "shadow_bracket_ps": [
+            26.179105240200496,
+            26.279110639470343
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.179105240200496,
+            26.279110639470343
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.19608986429798128,
+          "gap_amplitude_relative": 0.012892658390719182,
+          "supercurrent_relative": 0.028826905109180095,
+          "populations_energy_relative": 0.010129583430929939,
+          "film_energy_relative": 0.003747198062382103,
+          "current_pattern_relative": 0.003633119876369721,
+          "winding_count": 0,
+          "voltage_error_V": 1.8977376459139542e-07,
+          "current_relative": 0.00017654008261623654,
+          "time_ps": 26.299999999825264,
+          "shadow_bracket_ps": [
+            26.279110639470343,
+            26.380095909020863
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.279110639470343,
+            26.380095909020863
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.17136139203441575,
+          "gap_amplitude_relative": 0.013643069094516954,
+          "supercurrent_relative": 0.02904806978335754,
+          "populations_energy_relative": 0.010338313998451294,
+          "film_energy_relative": 0.004042786722534534,
+          "current_pattern_relative": 0.0036187905418798147,
+          "winding_count": 0,
+          "voltage_error_V": 2.0519164379177382e-07,
+          "current_relative": 0.00019088321346608631,
+          "time_ps": 26.399999999825265,
+          "shadow_bracket_ps": [
+            26.380095909020863,
+            26.480758817002236
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.380095909020863,
+            26.480758817002236
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.15087469575026927,
+          "gap_amplitude_relative": 0.014454203787786826,
+          "supercurrent_relative": 0.02914514289214272,
+          "populations_energy_relative": 0.010570188077732374,
+          "film_energy_relative": 0.004344991755065288,
+          "current_pattern_relative": 0.00360450004038901,
+          "winding_count": 0,
+          "voltage_error_V": 2.2133954682924863e-07,
+          "current_relative": 0.00020590551303217232,
+          "time_ps": 26.499999999825267,
+          "shadow_bracket_ps": [
+            26.480758817002236,
+            26.58181503586537
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.480758817002236,
+            26.58181503586537
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.13231955089869882,
+          "gap_amplitude_relative": 0.015254864379017824,
+          "supercurrent_relative": 0.029075880371602972,
+          "populations_energy_relative": 0.010752491368044981,
+          "film_energy_relative": 0.0046563236357219425,
+          "current_pattern_relative": 0.0035877774503374755,
+          "winding_count": 0,
+          "voltage_error_V": 2.382791007468407e-07,
+          "current_relative": 0.0002216643014411342,
+          "time_ps": 26.59999999982527,
+          "shadow_bracket_ps": [
+            26.58181503586537,
+            26.682178602359993
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.58181503586537,
+            26.682178602359993
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.1500071094459186,
+          "gap_amplitude_relative": 0.01608043458404507,
+          "supercurrent_relative": 0.029308280096187585,
+          "populations_energy_relative": 0.01091312509112679,
+          "film_energy_relative": 0.004972071020256262,
+          "current_pattern_relative": 0.003571222525325612,
+          "winding_count": 0,
+          "voltage_error_V": 2.559960083537994e-07,
+          "current_relative": 0.00023814628748265038,
+          "time_ps": 26.69999999982527,
+          "shadow_bracket_ps": [
+            26.682178602359993,
+            26.782388158225782
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.682178602359993,
+            26.782388158225782
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.1688923074980504,
+          "gap_amplitude_relative": 0.016959714213354543,
+          "supercurrent_relative": 0.029018430854675016,
+          "populations_energy_relative": 0.011084190462025082,
+          "film_energy_relative": 0.005300155850614119,
+          "current_pattern_relative": 0.0035537419099278674,
+          "winding_count": 0,
+          "voltage_error_V": 2.7484075301841134e-07,
+          "current_relative": 0.00025567750861993984,
+          "time_ps": 26.79999999982527,
+          "shadow_bracket_ps": [
+            26.782388158225782,
+            26.882619002439295
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.782388158225782,
+            26.882619002439295
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.07670919636854412,
+          "gap_amplitude_relative": 0.017067993313208418,
+          "supercurrent_relative": 0.029238565039334318,
+          "populations_energy_relative": 0.01056408816026314,
+          "film_energy_relative": 0.005593629701918994,
+          "current_pattern_relative": 0.0035346321168934444,
+          "winding_count": 0,
+          "voltage_error_V": 2.922076987795042e-07,
+          "current_relative": 0.00027183396117700997,
+          "time_ps": 26.899999999825273,
+          "shadow_bracket_ps": [
+            26.882619002439295,
+            26.97096345875557
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.882619002439295,
+            26.97096345875557
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        },
+        {
+          "gap_relative": 0.1934598475670194,
+          "gap_amplitude_relative": 0.013008498493392376,
+          "supercurrent_relative": 0.028587959462454543,
+          "populations_energy_relative": 0.007068069204087995,
+          "film_energy_relative": 0.005593629701918994,
+          "current_pattern_relative": 0.0035224622526896223,
+          "winding_count": 0,
+          "voltage_error_V": 2.922076987795042e-07,
+          "current_relative": 0.00027183396117700997,
+          "time_ps": 26.97096345875557,
+          "shadow_bracket_ps": [
+            26.97096345875557
+          ],
+          "simultaneous_scalar_bracket_ps": [
+            26.882619002439295,
+            26.97096345875557
+          ],
+          "comparison": "exact 2D, bracketing native shadow fields; stored simultaneous energy/circuit checks"
+        }
+      ]
+    }
+  },
+  "original_data_preserved": true,
+  "protected_physical_sha256": {
+    "pysnspd/experimental/effective_bcs_functional.py": "fa2579353734033a9536e63e5d4f6187855d65b52fe16cb1115dfc8d7f15e5ba",
+    "pysnspd/experimental/effective_bcs_preparation.py": "a3c614baff8a6bdd80e89639e0b3ad53f963346373c6bc4da7a33e014c06f41c",
+    "pysnspd/experimental/effective_bcs_kinetics.py": "0276dc6b8ca343c54c9239c14fba1575befff28a60dc9886bbafe0aee4843110",
+    "pysnspd/experimental/effective_bcs_ports.py": "2a5996848ba1bdae9105d48028e34138aac658810023b2e5c6c77adeafee5100",
+    "pysnspd/experimental/effective_coupled.py": "5b5a08af2cd0bde78058c06a338436ee50101cbb503eb63585b42aedd8784f38",
+    "pysnspd/experimental/effective_material.py": "6aa3ed0c9a564763dbe3fb0aa3680732e01f0c3f72413fb7d9d18042794886bb",
+    "pysnspd/experimental/electrical_ports.py": "8f5cb7138c100a84d05db16737046d1ef6bb02430c7b1806b8a7c06fdf461530",
+    "pysnspd/experimental/thermal_spatial_usadel.py": "218108a958842cfc5ae5b1eb51287cdd2cfc446e825266c67060604af8b6daa8",
+    "pysnspd/experimental/kinetic_events.py": "85eef96608d3db434079c72487f5077d1e4323f1e93818541f58e7f0a488b07f",
+    "pysnspd/experimental/trigger_window.py": "73e76582afe35d5881cde9e87f1c2ad19c3b82164878161c90dc2baff7b9478c",
+    "pysnspd/experimental/effective_bcs_kinetics_numba.py": "355e40848ce38ee1b738fa6470932a9b07594e3bb95e9b14578ab2231a0b9dd3",
+    "pipelines/05_effective_photon_run.py": "505c46a6f4f7a90d5a3887759ad26f6bc7017f92da58027b67d5fe9d007afbe4",
+    "sandbox/stage4_core/parallel_runtime.py": "f05221826d49e0839042a8d73003ba980583f1417b2918007433c8fe23fce219",
+    "pipelines/09_thermal_stiffness_photon_run.py": "055f5ea8f561ba1bb709bdcaa1de38ab37d070c142624d2b36ecb94d95d9b983",
+    "pysnspd/experimental/depairing_calibration.py": "c30eba6d7631f7a88e70254e871a5241d93744e6273004ef883d76ad6c1d4594",
+    "pysnspd/experimental/thermal_stiffness.py": "592f00d2dcf6066a9ada6f1cf9d62713bb78eb98a119af1dd8a6296fd7ef5515",
+    "pysnspd/experimental/thermal_coupled.py": "be2ea2135bdcfe744658459089d72a5ab6d88a1734b433a354503ee1000b1e67",
+    "pysnspd/experimental/general_thermal_gradient.py": "f719c6fcdb241f75d052c576a250485e369980de581270c389ed97cce34dd32c",
+    "pysnspd/experimental/finite_depairing_sums.py": "ddcf026946b466232fcf651a47788e5cfd025e8259979b3e143f240378c99ae5",
+    "pysnspd/experimental/resummed_thermal.py": "d597f268024b4030a48a1799047ddf3ad458db4075797516d4faf9e6c1d3edc1"
+  },
+  "limitations": [
+    "Only 0.102ps of real 1D continuation tested per case",
+    "15ns and full recovery remain unvalidated",
+    "Independent overlap admits amplitude and physical supercurrent; complex bank-phase discrepancy remains diagnostic",
+    "Reused native shadow histories were prepared under the original projection and independently re-audited"
+  ],
+  "proposed_campaign": "/home/jdiaz/scratch/photon_runs/dimensional_v1_2_1_recovered_20261020_01"
+}

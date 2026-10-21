@@ -234,7 +234,18 @@ class DimensionalTests(unittest.TestCase):
             self.assertTrue(np.all((result.p>=0)&(result.p<=1)))
             donor=result.copy();donor.p[1,0]+=1e-7
             repeated,again=pr.project(st,1e-18,self.tol,exterior_state=donor)
-            self.assertEqual(again["exterior_initialization"],"independently evolved native shadow tails")
+            self.assertIn("separate phase-continuous",again["exterior_initialization"])
+            # Each exterior has its own arbitrary phase before attachment.
+            # Changing those constants must not create interface gradient energy.
+            shifted=donor.copy();x=gg.coordinates_m[:,0]
+            il=int(np.argmin(abs(x-pr.shift_m)))
+            ir=int(np.argmin(abs(x-pr.shift_m-self.g2.length_m)))
+            shifted.delta_bar[:il+1]*=np.exp(.9j)
+            shifted.delta_bar[ir:]*=np.exp(-.7j)
+            invariant,matched=pr.project(st,1e-18,self.tol,exterior_state=shifted)
+            np.testing.assert_allclose(invariant.delta_bar,repeated.delta_bar,atol=1e-12)
+            np.testing.assert_allclose(invariant.p,repeated.p,atol=1e-12)
+            self.assertAlmostEqual(matched["raw_energy_relative"],again["raw_energy_relative"],places=10)
             self.assertGreater(repeated.p[1,0]-result.p[1,0],.5e-7)
             rotated=repeated.copy();rotated.delta_bar*=np.exp(.8j)
             e1=pr.errors(st,repeated,1e-18);e2=pr.errors(st,rotated,1e-18)
@@ -244,6 +255,52 @@ class DimensionalTests(unittest.TestCase):
                     reference=1e-19,absolute_work=0.)
             step,rr,rec=doubled_step(ss,result,rhs,1e-4,time_rtol=2e-4,time_atol=2e-6,**kw)
             self.assertLessEqual(rec["temporal_error"],1)
+
+
+    def test_overlap_keeps_phase_current_and_energy_guards(self):
+        c=dict(gap_relative=.2,gap_amplitude_relative=.01,supercurrent_relative=.01,
+            populations_energy_relative=.01,current_pattern_relative=.01,winding_count=0,
+            voltage_error_V=1e-7,current_relative=.001,film_energy_relative=.005)
+        require_overlap(c,self.tol)  # complex bank phases remain diagnostic
+        with self.assertRaises(ArithmeticError):require_overlap(c,self.tol,projection=True)
+        for key,value in (("supercurrent_relative",.04),("gap_amplitude_relative",.04),
+                          ("film_energy_relative",.02),("winding_count",2)):
+            with self.assertRaises(ArithmeticError):require_overlap(dict(c,**{key:value}),self.tol)
+
+    def test_authenticated_recovery_preserves_original_and_rejects_changed_physics(self):
+        import json,hashlib
+        from pysnspd.experimental.dimensional_recovery import prepare_continuation,sha,LEGACY,RECOVERY_SOURCE
+        with tempfile.TemporaryDirectory(dir="/home/jdiaz/scratch/tmp/pysnspd") as d:
+            src=Path(d)/"source";src.mkdir()
+            pins=dict(LEGACY,physical="same",**{RECOVERY_SOURCE:"new"})
+            for key in LEGACY:pins[key]="updated"
+            old=dict(LEGACY,physical="same")
+            identity=dict(length_nm=300.)
+            meta=dict(source_pins_sha256=old,parameter_identity=identity,phase="2d",
+                shadow_active=True,shadow_time_ps=23.,time_ps=23.,terminal_diagnostic=True)
+            np.savez(src/"checkpoint_latest.npz",metadata_json=np.array(json.dumps(meta)))
+            np.savez(src/"dc1d.npz",delta_bar=np.array([1.+0j]))
+            (src/"data.h5").write_bytes(b"preserved test archive")
+            manifest=dict(source_pins_sha256=old,parameter_identity=identity,model_version="1.2.1",
+                phase="2d",status="POSSIBLE_DIMENSIONAL_ERROR",
+                error="Projection energy tolerance exceeded: 0.0052",observation=dict(margin_complete=True),
+                checkpoint_sha256=sha(src/"checkpoint_latest.npz"),dc1d_sha256=sha(src/"dc1d.npz"))
+            (src/"manifest.json").write_text(json.dumps(manifest))
+            before={p.name:sha(p) for p in src.iterdir()}
+            with self.assertRaisesRegex(ValueError,"Unapproved source"):
+                prepare_continuation(src,Path(d)/"bad",dict(pins,physical="changed"),identity)
+            with self.assertRaisesRegex(ValueError,"parameters differ"):
+                prepare_continuation(src,Path(d)/"bad",pins,dict(length_nm=320.))
+            dst=Path(d)/"continuation"
+            prepare_continuation(src,dst,pins,identity)
+            self.assertEqual(before,{p.name:sha(p) for p in src.iterdir()})
+            with np.load(dst/"checkpoint_latest.npz",allow_pickle=False) as z:
+                updated=json.loads(str(z["metadata_json"]))
+            self.assertTrue(updated["reaudit_saved_overlap"])
+            self.assertFalse(updated["terminal_diagnostic"])
+            self.assertFalse(updated["continuation"]["photon_redeposited"])
+            self.assertEqual(updated["time_ps"],23.)
+            self.assertEqual(sha(dst/"data.h5"),sha(src/"data.h5"))
 
     def test_monitor_distinguishes_polarity_undershoot_latching_and_boundary(self):
         from pysnspd.experimental.dimensional_monitors import MonitorConfig,observe

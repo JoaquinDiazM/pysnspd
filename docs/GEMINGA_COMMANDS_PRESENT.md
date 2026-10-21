@@ -1,3 +1,35 @@
+# Current commands: pysnspd v1.2.1 handoff correction
+
+
+## 2026-10-20 | v1.2.1 handoff repair and authenticated checkpoint reuse
+
+Purpose: continue the 775/1550nm pair at21.5uA from its valid pre-handoff2D checkpoints (23.0809897591ps /26.9709634588ps). Preserve original run directories, DC states, trajectories, energy ledgers and native shadow histories. Never redeposit the photon or re-run the valid2D interval.
+
+Repair: reconstruct the nodal complex gap at physical sites rather than treating FV partial-cell averages as site values; match each disconnected exterior phase at its own interface, selecting interface nodes by index to avoid floating-coordinate exclusion. Keep native p,n volume restriction and small bounded energy reconciliation. Energy and projection gates remain0.5% raw/1% reconciliation/3% complex projected gap. Independent overlap uses3% gap-amplitude and3% actual supercurrent norms, with full complex bank-phase discrepancy explicitly retained as a diagnostic. The actual phase-dependent current, native populations, energy, circuit and vortex checks remain active. No material parameter, circuit or kinetic kernel changed.
+
+The continuation authenticates the known original runner/projection hashes, every unchanged physical-source hash, parameters, checkpoint andDC. It copies and hashes the archive; the originals remain untouched. Stored overlap is re-audited using exact2D snapshots and BOTH bracketing native1D snapshots. Work/energy and circuit errors use stored simultaneous comparisons, never different-time energies. No missing state history is invented. Rejection remains a diagnostic outcome.
+
+Resources: same4Numba SMT threads on2exclusive physical cores per case (8threads/4worker cores plus coordinator); two full cores reserved, conservative11GiB RAM, all heavy files/caches under scratch. Global lock/budget remain. Live progress now reaches the terminal as well as per-case logs. This command starts no old1.1.3 cases. Full15ns validation and throughput remain pending.
+
+Outputs: fresh scratch campaign, full reused2D archive and new1D evolution; continuation provenance, pre_update_manifest.json and pre_update_checkpoint.npz, native HDF5/checkpoints, projection/overlap/energy/monitor records. Use the new directory below. Add --prepare-only to check the plan without starting simulations. For an interrupted NEW continuation campaign, add --resume to this same command; the original-source flag is retained in its plan and no second copy occurs.
+
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  NUMBA_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python -u \
+  pipelines/14_dimensional_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/dimensional_v1_2_1_recovered_20261020_01 \
+  --recover-from-campaign /home/jdiaz/scratch/photon_runs/dimensional_v1_2_1_pair_20261019_01 \
+  --cases bias21p5_ee4_775 bias21p5_ee4_1550 \
+  --length-1d-nm 1000 \
+  --threads-per-case 4 --physical-cores-per-case 2 \
+  --ceiling-ps 100 --final-time-ns 15
+```
+
 # Current commands: pysnspd v1.2.1
 
 ## 2026-10-19 | v1.2.1: 300nm 2D to 1000nm full1D
@@ -44,4 +76,27 @@ env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
   --snapshots-ps 1 11 20 30 50 70 \
   --output-dir /home/jdiaz/scratch/case_reports/dimensional_v1_2_1_20261019_01 \
   --workers 2
+```
+
+
+## 2026-10-19 | Two priority v1.2.1 cases, exclusive cores
+
+Selected 775/1550nm at21.5uA, tau_ee(Tc)4ps, escape20ps, eta0.8, Rs425ohm; 300nm2D/1000nm1D, 0.5ps confirmation included in2ps extra, no-trigger ceiling100ps, guarded1D target15ns. Same4Numba SMT threads /2physical cores per case, eight threads/four worker cores total plus a separate coordinator; reserve two complete cores and estimate11GiB RAM. Outputs: per-case logs, manifests, phase-aware HDF5/checkpoints and resources under the scratch campaign.
+
+The user chose exclusive cores and waiting over shared SMT. The existing global campaign lock still refuses concurrent campaigns, even if individual workers finish first. Run after the old coordinator exits. This command does not wait automatically or interrupt current jobs. --prepare-only checks planning/capacity without a simulation. Added --cases selection changes orchestration only; physical source hashes and v1.2.1 equations are unchanged. Short allocation checks pass for two and six cases, partial occupancy and busy refusal; no heavy run launched. Wall-time unmeasured.
+
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  NUMBA_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  pipelines/14_dimensional_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/dimensional_v1_2_1_pair_20261019_01 \
+  --cases bias21p5_ee4_775 bias21p5_ee4_1550 \
+  --length-1d-nm 1000 \
+  --threads-per-case 4 --physical-cores-per-case 2 \
+  --ceiling-ps 100 --final-time-ns 15
 ```

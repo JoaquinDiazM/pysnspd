@@ -17,7 +17,7 @@ B=OLD.BASE
 import numpy as np
 from pysnspd.experimental.dimensional_transition import (
     TransitionTolerances,chain_geometry,DimensionalProjection,observed,
-    checked_step,doubled_step,film_energy)
+    checked_step,doubled_step,film_energy,require_overlap)
 from pysnspd.experimental.dimensional_monitors import MonitorConfig,metrics as monitor_metrics,observe as monitor_observe
 from pysnspd.experimental.dimensional_archive import PhaseArchive
 from pysnspd.experimental.dimensional_geometry import verified_geometry
@@ -47,6 +47,8 @@ def parser():
     p.add_argument("--checkpoint-1d-every-ps",type=float,default=100.)
     p.add_argument("--shadow-check-every-ps",type=float,default=.1)
     p.add_argument("--physical-cores",type=int,default=2)
+    p.add_argument("--recover-from-run",type=Path,
+                   help="Authenticated fork of a stopped pre-handoff v1.2.1 case")
     limits={"current_limit_uA","device_voltage_limit_mV","readout_voltage_limit_mV","capacitor_voltage_limit_mV"}
     for key,value in asdict(MonitorConfig()).items():
         p.add_argument("--monitor-"+key.replace("_","-"),type=float,
@@ -59,14 +61,15 @@ def parser():
 def source_pins():
     pins=OLD.source_pins()
     for rel in ("pipelines/13_dimensional_photon_run.py",
-        "pysnspd/experimental/dimensional_transition.py","pysnspd/experimental/dimensional_archive.py","pysnspd/experimental/dimensional_geometry.py","pysnspd/experimental/dimensional_monitors.py"):
+        "pysnspd/experimental/dimensional_transition.py","pysnspd/experimental/dimensional_archive.py","pysnspd/experimental/dimensional_geometry.py","pysnspd/experimental/dimensional_monitors.py",
+        "pysnspd/experimental/dimensional_recovery.py"):
         pins[rel]=B.sha256(ROOT/rel)
     return pins
 
 
 def identity(a):
     return B.safe_json({k:v for k,v in vars(a).items() if k not in
-        ("output_dir","resume","cpu_start","duration_ps")})
+        ("output_dir","resume","cpu_start","duration_ps","recover_from_run")})
 
 
 def build_1d(a,s2,g2,output,resume):
@@ -154,6 +157,11 @@ def run(a):
     if len(selected)!=a.physical_cores or a.threads>len(cpus):raise ValueError("Threads/whole cores exceed admitted budget")
     os.sched_setaffinity(0,set(cpus))
     out=B.scratch_path(a.output_dir);pins=source_pins();ident=identity(a)
+    if a.recover_from_run is not None:
+        if a.resume:raise ValueError("Use --resume OR --recover-from-run")
+        from pysnspd.experimental.dimensional_recovery import prepare_continuation
+        prepare_continuation(a.recover_from_run,out,pins,ident)
+        a.resume=True
     if a.resume:
         manifest=json.loads((out/"manifest.json").read_text())
         if manifest["run_complete"]:raise ValueError("Completed run is preserved")
@@ -187,7 +195,8 @@ def run(a):
         scope="Central 2D strip embedded in longer full 1D; cold-current-carrying tails and frozen DC inductance repartition; no amplifier",
         snapshot_policy="2D fixed targets; 1D accepted states at target cadence without capping dt; actual timestamps stored")
     write_json(out/"manifest.json",manifest)
-    setup_args=argparse.Namespace(**dict(vars(a),duration_ps=None))
+    setup_values=dict(vars(a),duration_ps=None);setup_values.pop("recover_from_run",None)
+    setup_args=argparse.Namespace(**setup_values)
     s2,dc,g2,material,params=OLD.build_system(setup_args,out/"setup2d",resume=a.resume);observed(s2)
     dc2=EffectiveState(dc.delta_bar.copy(),dc.p.copy(),
         np.broadcast_to(s2.kinetics.bath_phonons,(g2.graph.n_nodes,s2.kinetics.phonon_size)).copy(),
@@ -218,6 +227,10 @@ def run(a):
     else:controller=B.TriggerWindow.from_checkpoint(m["controller"])
     systems={"2d":s2,"shadow1d":s1,"1d":s1}
     geoms={"2d":g2,"shadow1d":g1,"1d":g1};dcs={"2d":dc2,"shadow1d":dc1,"1d":dc1}
+    if m.pop("reaudit_saved_overlap",False):
+        from pysnspd.experimental.dimensional_recovery import reaudit_overlap
+        m["shadow_checks"]=reaudit_overlap(out,project,reference+m["device_absolute_J"],tol)
+        m["shadow_error"]=None
     archive=PhaseArchive(out/"data.h5",systems,geoms,dcs,resume=a.resume,counts=m.get("archive_counts"))
     system=systems[m["phase"]];rhs=system.evaluate(state)
     initial_total=m["initial_energy_J"]
@@ -249,6 +262,7 @@ def run(a):
         arrays["metadata_json"]=np.array(json.dumps(B.safe_json(m),allow_nan=False))
         B.atomic_npz(out/"checkpoint_latest.npz",arrays)
         manifest.update(status=status,error=error,time_ps=m["time_ps"],phase=m["phase"],
+            continuation=m.get("continuation"),
             physicalparams=params,circuit_by_phase={"2d":asdict(s2.circuit),"shadow1d":asdict(s1.circuit),"1d":asdict(s1.circuit)},
             inductance_partition=s1.dimensional_partition,source=m["source"],observation=controller.summary(),
             domain_fraction=domain_fraction(),projection=m["projection"],
@@ -281,10 +295,7 @@ def run(a):
                     report["time_ps"]=t;m["projection"]=report
                     checks=m["shadow_checks"]+[report]
                     for c in checks:
-                        if c["winding_count"] or c["gap_relative"]>tol.gap_relative or c["populations_energy_relative"]>tol.populations_energy_relative or c["current_pattern_relative"]>tol.current_pattern_relative:
-                            raise ArithmeticError("Unresolved transverse/projection structure: "+str(c))
-                        if c.get("voltage_error_V",0)>tol.shadow_voltage_V or c.get("current_relative",0)>tol.shadow_current_relative or c["film_energy_relative"]>tol.shadow_energy_relative:
-                            raise ArithmeticError("Independent 1D overlap mismatch: "+str(c))
+                        require_overlap(c,tol,projection=c is report)
                     offset+=project.reference_total_offset_J
                     state=reduced;shadow=None;m["phase"]="1d";system=s1;rhs=s1.evaluate(state)
                     m["next_step_ps"]=a.dt_ps;m["next_snapshot_ps"]=t+a.snapshot_1d_every_ps;m["next_checkpoint_ps"]=t+a.checkpoint_1d_every_ps
@@ -296,7 +307,8 @@ def run(a):
                 status="FINAL_TIME_REACHED";manifest["run_complete"]=True;break
             horizon=(controller.next_required_time_s()*1e12 if m["phase"]=="2d" else a.final_time_ns*1e3)
             if a.duration_ps is not None:horizon=min(horizon,a.duration_ps)
-            h=min(m["next_step_ps"],horizon-t)
+            planned_step=m["next_step_ps"]
+            h=min(planned_step,horizon-t)
             if m["phase"]=="2d":h=min(h,m["next_snapshot_ps"]-t)
             if h<=0 or t+h==t:raise ArithmeticError("No representable positive physical step")
             kwargs=dict(tolerance=a.step_tolerance,max_iterations=a.max_iterations,
@@ -336,7 +348,7 @@ def run(a):
             cap=a.dt_ps if m["phase"]=="2d" else a.maximum_1d_step_ps
             factor=((2. if m["stable_steps"]>=8 else 1.) if m["phase"]=="2d" else min(2.,max(1.,.8/max(receipt["temporal_error"],1e-12)**(1/3))))
             if m["phase"]=="2d" and m["stable_steps"]>=8:m["stable_steps"]=0
-            m["next_step_ps"]=min(cap,h*factor)
+            m["next_step_ps"]=min(cap,max(h*factor,planned_step) if h<planned_step else h*factor)
             if m["phase"]=="2d":
                 controller.observe_accepted(t*1e-12,float(s2.circuit.R_load_ohm*(state.circuit_SI[0]-state.circuit_SI[1])))
                 cross=(controller.crossing_time_s if controller.crossing_time_s is not None else controller.candidate_crossing_s)
