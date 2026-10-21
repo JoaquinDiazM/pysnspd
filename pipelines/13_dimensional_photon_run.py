@@ -52,7 +52,7 @@ def parser():
     p.add_argument("--no-cold-recovery",action="store_true",
         help="Keep full native 1D even after the film qualifies for the late cold branch")
     p.add_argument("--recover-from-run",type=Path,
-                   help="Authenticated fork of a stopped pre-handoff v1.2.1 case")
+                   help="Authenticated fork of a supported v1.2.1 join stop or intact v1.2.2 monitor stop")
     limits={"current_limit_uA","device_voltage_limit_mV","readout_voltage_limit_mV","capacitor_voltage_limit_mV"}
     for key,value in asdict(MonitorConfig()).items():
         p.add_argument("--monitor-"+key.replace("_","-"),type=float,
@@ -195,7 +195,7 @@ def run(a):
     def request(sig,frame):requested["stop"]=True
     signal.signal(signal.SIGTERM,request);signal.signal(signal.SIGINT,request)
     started=time.monotonic()
-    manifest=dict(schema="pysnspd.dimensional_run.v1",model_version="1.2.2",
+    manifest=dict(schema="pysnspd.dimensional_run.v1",model_version="1.2.3",
         physical_kernel_version="1.1.3",run_complete=False,status="PREPARATION",
         source_pins_sha256=pins,parameter_identity=ident,
         resources=dict(threads=a.threads,physical_cores=a.physical_cores,affinity_cpus=cpus,
@@ -287,6 +287,7 @@ def run(a):
             runtime_1d_session_wall_s=0. if one_d_started is None else time.monotonic()-one_d_started,
             runtime_1d_wall_budget_hours=a.max_1d_wall_hours,
             approximation_policy=cold.receipt,
+            collar_energy_reference="retained photon + cumulative absolute device work",
             physicalparams=params,circuit_by_phase={"2d":asdict(s2.circuit),"shadow1d":asdict(s1.circuit),"1d":asdict(s1.circuit)},
             inductance_partition=s1.dimensional_partition,solver_1d=s1.solver_receipt,source=m["source"],observation=controller.summary(),
             domain_fraction=domain_fraction(),projection=m["projection"],
@@ -299,6 +300,17 @@ def run(a):
         write_json(out/"manifest.json",manifest);last_checkpoint=time.monotonic()
     save()
     try:
+        if m.pop("reaudit_monitor_before_step",False):
+            values=monitor_metrics(system,geoms[m["phase"]],state,rhs,dcs[m["phase"]],
+                monitor,reference,extended=True,activity_J=reference+m["device_absolute_J"])
+            code,reason=monitor_observe(m["time_ps"],m["phase"],values,monitor,
+                m["monitor_tracker"],a.current_uA,a.sheet_resistance_ohm,g2.width_m*1e9)
+            if values["boundary_alarm"] or code:
+                raise ArithmeticError("Recovered state fails the new monitor: "+str(reason or values))
+            m.update(latest_monitor=values,monitor_reason=None,
+                monitor_reaudit=dict(time_ps=m["time_ps"],passed=True,values=values))
+            print(json.dumps(dict(status="SAVED_1D_MONITOR_READMITTED",time_ps=m["time_ps"],
+                reused_2d_and_1d=True,values=values)),flush=True)
         while True:
             t=m["time_ps"]
             if requested["stop"]:status="INTERRUPTED_CHECKPOINTED";break
@@ -383,7 +395,7 @@ def run(a):
                     archive.file.attrs.modify("cold_recovery_start_ps",t)
                     archive.file["1d"].attrs.modify("cold_recovery_start_ps",t)
             m["latest_monitor"]=monitor_metrics(system,geoms[m["phase"]],state,rhs,dcs[m["phase"]],
-                monitor,reference,extended=m["phase"]=="1d")
+                monitor,reference,extended=m["phase"]=="1d",activity_J=reference+m["device_absolute_J"])
             monitor_status,monitor_reason=monitor_observe(t,m["phase"],m["latest_monitor"],monitor,
                 m["monitor_tracker"],a.current_uA,a.sheet_resistance_ohm,g2.width_m*1e9)
             archive.append(m["phase"],row(rhs,state,t,h,receipt))

@@ -41,7 +41,7 @@ def longest_hot_length_nm(mask,volumes,width,thickness):
     return largest
 
 
-def metrics(system,geometry,state,rhs,dc,config,reference_J,extended=False):
+def metrics(system,geometry,state,rhs,dc,config,reference_J,extended=False,activity_J=None):
     f,k=system.functional,system.kinetics
     Ib,Is,vc=state.circuit_SI;IDC=system.circuit_scales[1]
     vout=system.circuit.R_load_ohm*(Ib-Is)
@@ -69,16 +69,33 @@ def metrics(system,geometry,state,rhs,dc,config,reference_J,extended=False):
         cold_p=f.fermi_dirac(state.delta_bar,k.bath_temperature_K)
         collar_energy=(np.sum(eps[collar]*abs(state.p[collar]-cold_p[collar]))+
             np.sum(k.phonon_energy_weights_J[collar]*abs(state.n[collar]-k.bath_phonons)))
+        # Temperature can rise in a still-superconducting lead during current
+        # unloading. Keep the photon-only diagnostic, but use the SAME driven
+        # activity reference as the independent truncation/work ledger.
+        activity=float(reference_J if activity_J is None else activity_J)
+        if not np.isfinite(activity) or activity<reference_J:
+            raise ValueError("Collar activity must include retained photon energy")
         out["collar_native_energy_fraction"]=float(collar_energy/reference_J)
+        out["collar_activity_energy_fraction"]=float(collar_energy/activity)
+        out["collar_activity_reference_J"]=activity
+        out["collar_energy_reference"]="retained photon + cumulative absolute device work"
+        if hasattr(system,"lead_curve"):
+            amplitude,_=system.lead_curve.amplitude(Is)
+            cold_amplitude=abs(dc.delta_bar)*(amplitude/system.lead_curve.reference_amplitude)
+        else:
+            cold_amplitude=abs(dc.delta_bar)
+        out["collar_min_gap_ratio_to_current_bulk"]=float(
+            np.min(abs(state.delta_bar[collar])/cold_amplitude[collar]))
         out["collar_thermal_warning"]=bool(
             out["collar_max_Te_K"]>k.bath_temperature_K+config.collar_temperature_rise_K or
             out["collar_phonon_hot"])
         # A sub-Tc temperature rise in a nearly empty gapped spectrum is not
         # alone evidence that a significant hot front escaped the domain.
         # Keep it visible, and require a declared native-energy significance.
-        out["boundary_alarm"]=bool(out["collar_min_gap_ratio"]<config.collar_gap_fraction or
+        out["boundary_alarm"]=bool(
+            out["collar_min_gap_ratio_to_current_bulk"]<config.collar_gap_fraction or
             (out["collar_thermal_warning"] and
-             out["collar_native_energy_fraction"]>config.collar_energy_fraction))
+             out["collar_activity_energy_fraction"]>config.collar_energy_fraction))
     small_voltage=max(abs(out["Vout_mV"]),abs(out["Vdev_mV"]),abs(out["vc_mV"]))<=config.recovery_voltage_uV*1e-3
     if (small_voltage and out["current_error_fraction"]<=config.recovery_current_fraction and
         out["max_temperature_K"]<=k.bath_temperature_K+config.recovery_temperature_rise_K and
@@ -111,7 +128,7 @@ def observe(t_ps,phase,values,config,tracker,bias_uA,sheet_resistance_ohm,width_
     if values["boundary_alarm"]:
         if tracker.get("boundary_since_ps") is None:tracker["boundary_since_ps"]=t_ps
         if t_ps-tracker["boundary_since_ps"]>=config.collar_confirmation_ps:
-            return "POSSIBLE_DOMAIN_ERROR","Thermal/suppression front persisted in the free outer collar"
+            return "POSSIBLE_DOMAIN_ERROR","Significant driven collar energy or current-relative gap suppression persisted"
     else:tracker["boundary_since_ps"]=None
     if t_ps>=config.recovery_earliest_ns*1e3 and values["recovered"]:
         if tracker.get("recovery_since_ps") is None:tracker["recovery_since_ps"]=t_ps

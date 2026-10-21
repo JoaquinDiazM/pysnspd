@@ -450,6 +450,71 @@ class DimensionalTests(unittest.TestCase):
         values=metrics(ss,gg,st,rhs,dc,MonitorConfig(),1e-19,extended=True)
         self.assertTrue(values["boundary_alarm"])
 
+
+    def test_driven_collar_uses_activity_and_current_bulk_without_hiding_suppression(self):
+        from pysnspd.experimental.dimensional_monitors import metrics,MonitorConfig
+        ss,gg,dc=self._polar_fixture()
+        st=dc.copy();x=gg.coordinates_m[:,0];collar=(x>0)&(x<25e-9)
+        temp=np.full(len(x),.9);temp[collar]=2.5
+        st.p=ss.functional.fermi_dirac(st.delta_bar,temp)
+        rhs=ss.evaluate(st);cfg=MonitorConfig()
+        photon=metrics(ss,gg,st,rhs,dc,cfg,1e-19,extended=True)
+        activity=metrics(ss,gg,st,rhs,dc,cfg,1e-19,extended=True,activity_J=1e-16)
+        self.assertTrue(photon["collar_thermal_warning"])
+        self.assertGreater(photon["collar_native_energy_fraction"],cfg.collar_energy_fraction)
+        self.assertTrue(photon["boundary_alarm"])
+        self.assertFalse(activity["boundary_alarm"])
+        self.assertAlmostEqual(activity["collar_activity_energy_fraction"]*1000,
+                               photon["collar_native_energy_fraction"])
+        # A genuine current-relative suppression must stop even when the
+        # drive makes its energy fraction small.
+        st.circuit_SI[:2]=.5*dc.circuit_SI[:2]
+        a,_=ss.lead_curve.amplitude(st.circuit_SI[1])
+        relative=a/ss.lead_curve.reference_amplitude
+        st.delta_bar[collar]=.89*relative*dc.delta_bar[collar]
+        st.p=ss.functional.fermi_dirac(st.delta_bar,temp)
+        rhs=ss.evaluate(st)
+        value=metrics(ss,gg,st,rhs,dc,cfg,1e-19,extended=True,activity_J=1e-16)
+        self.assertAlmostEqual(value["collar_min_gap_ratio_to_current_bulk"],.89,places=12)
+        self.assertTrue(value["boundary_alarm"])
+        with self.assertRaises(ValueError):
+            metrics(ss,gg,st,rhs,dc,cfg,1e-19,extended=True,activity_J=0.)
+
+    def test_v122_monitor_recovery_preserves_exact_state_and_rejects_rhs_change(self):
+        import json
+        from pysnspd.experimental.dimensional_recovery import prepare_continuation,sha,V122_REVISIONS
+        with tempfile.TemporaryDirectory(dir="/home/jdiaz/scratch/tmp/pysnspd") as directory:
+            root=Path(directory);src=root/"source";src.mkdir()
+            old=dict(V122_REVISIONS,physical="same")
+            pins={key:"new" if key in V122_REVISIONS else value for key,value in old.items()}
+            ident=dict(guard_cut_energy_relative=.02)
+            meta=dict(source_pins_sha256=old,parameter_identity=ident,phase="1d",time_ps=55.,
+                monitor_tracker=dict(boundary_since_ps=53.),terminal_diagnostic=True)
+            values=dict(delta_bar=np.array([1.+2j]),p=np.array([[.2]]),n=np.array([[.3]]),
+                circuit_SI=np.array([2e-5,1e-5,1e-6]))
+            np.savez(src/"checkpoint_latest.npz",**values,metadata_json=np.array(json.dumps(meta)))
+            np.savez(src/"dc1d.npz",delta_bar=np.ones(1))
+            (src/"data.h5").write_bytes(b"unchanged archived past")
+            manifest=dict(model_version="1.2.2",source_pins_sha256=old,parameter_identity=ident,
+                phase="1d",time_ps=55.,status="POSSIBLE_DOMAIN_ERROR",error=None,
+                monitor_reason="Thermal/suppression front persisted in the free outer collar",
+                latest_monitor=dict(collar_min_gap_ratio=1.07),domain_fraction=.0019,cold_recovery=dict(active=False),
+                checkpoint_sha256=sha(src/"checkpoint_latest.npz"),dc1d_sha256=sha(src/"dc1d.npz"))
+            (src/"manifest.json").write_text(json.dumps(manifest))
+            before={p.name:sha(p) for p in src.iterdir()}
+            with self.assertRaisesRegex(ValueError,"evolution-source"):
+                prepare_continuation(src,root/"bad",dict(pins,physical="changed"),ident)
+            dst=root/"continued";prepare_continuation(src,dst,pins,ident)
+            self.assertEqual(before,{p.name:sha(p) for p in src.iterdir()})
+            with np.load(dst/"checkpoint_latest.npz",allow_pickle=False) as z:
+                for key,val in values.items():np.testing.assert_array_equal(z[key],val)
+                updated=json.loads(str(z["metadata_json"]))
+            self.assertTrue(updated["reaudit_monitor_before_step"])
+            self.assertFalse(updated["replay_saved_overlap"])
+            self.assertFalse(updated["terminal_diagnostic"])
+            self.assertIsNone(updated["monitor_tracker"]["boundary_since_ps"])
+            self.assertFalse(updated["continuation"]["photon_redeposited"])
+
     def test_monitor_distinguishes_polarity_undershoot_latching_and_boundary(self):
         from pysnspd.experimental.dimensional_monitors import MonitorConfig,observe
         from dataclasses import replace

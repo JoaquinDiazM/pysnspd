@@ -1,3 +1,97 @@
+# Current commands: pysnspd v1.2.3
+
+## 2026-10-21 | v1.2.3 exact-state continuation after monitor audit
+
+Purpose: keep every valid2D/1D accepted state and continue the stopped v1.2.2
+775/1550nm pair from62.2983964514/54.8984934464ps. Same21.5uA, escape20ps,
+eta0.8, Rs425ohm, tau_ee(Tc)4ps,300nm2D/1000nm1D,4threads/2exclusive physical
+cores per case. No photon redeposition, freshDC, shadow replay or bath reset.
+The new source directory must be the v1.2.2 campaign below.
+
+Diagnosis: unloading increases the exterior gap; Te rise outside the hotbelt
+can include transport and KWT/normal dissipation. The old collar criterion
+used photon energy alone in a strongly driven circuit. New active native
+collar normalization uses retained photon plus cumulative absolute device
+work (same activity ledger as cuts), retaining photon-only values visibly.
+Gap suppression uses instantaneous-current cold bulk rather than initialDC.
+Margins0.1%,90%,2ps and all physical/numerical/cut/electrical guards remain.
+This is a declared engineering diagnostic revision, not an RHS repair or
+proof of finite-domain convergence. See docs/V1_2_DIMENSIONAL_EVOLUTION.md.
+
+Reauthentication requires exact published v1.2.2 source pins, unchanged RHS,
+identical inputs, checkpoint/DC/archive hashes and NEW monitor readmission
+before stepping. Original folders/failure records remain unchanged.
+Validated:27tests, both saved photon states +3.2ps, and .04/.02ps refinement.
+No full15ns runtime/temperature/domain admission is inferred.
+
+Resources:8worker SMT threads/4whole physical cores for this pair, plus
+separate coordinator; at least2whole cores reserved; conservative11GiB RAM.
+All heavy data/caches/logs in scratch.3h1Dsession cap saves a resumable
+WALL_BUDGET_CHECKPOINTED. Add --resume to continue the NEW campaign later;
+add --prepare-only to inspect its plan without simulations.
+
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  NUMBA_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python -u \
+  pipelines/14_dimensional_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/dimensional_v1_2_3_recovered_20261021_01 \
+  --recover-from-campaign /home/jdiaz/scratch/photon_runs/dimensional_v1_2_2_recovered_20261021_01 \
+  --cases bias21p5_ee4_775 bias21p5_ee4_1550 \
+  --length-1d-nm 1000 \
+  --threads-per-case 4 --physical-cores-per-case 2 \
+  --ceiling-ps 100 --final-time-ns 15 \
+  --max-1d-wall-hours 3
+```
+
+# Current report command: stopped v1.2.2 pair
+
+## 2026-10-21 | Report-only diagnostic template for both stopped v1.2.2 cases
+
+Saved data only; no simulation, no kinetic RHS, no DC solve and no model/version update.
+Use phase-aware pipeline08 for 2D + official1D. One independent English PDF per
+case,16pages with observables, phase-relative energy/power, numerical resolution,
+six2D gap/Te/Tph/energy/total-current/winding mosaics,1D space-time fields and
+longitudinal profiles, separate free left/right collar temperatures/gaps/native
+energy with the actual stop thresholds, last native spectra, independent overlap
+and circuit/model scope. Remove normal and supercurrent snapshot pages from
+both templates07/08; retain total current. Zero-area Voronoi faces are excluded
+only from display-vector fitting, not altered in the simulation mesh.
+
+Default2D slots follow the saved detection/handoff times; default1D profiles
+span handoff through the terminal state. --snapshots-ps sets six2D slots;
+--snapshots-1d-ps independently sets six1D profile slots. Each selects nearest
+stored states; extra requests are ignored and the last request is repeated when
+fewer than six are supplied. No temporal interpolation.
+Collar curves use stored snapshots; the report does not recreate accepted-step
+persistence. A JSON receipt stores exact chosen frames and reconstruction checks.
+No amplifier/filter is added. Outputs do not overwrite prior reports.
+
+Resources:2workers,1Numba and1BLAS thread each; no numerical evolution.
+Internal validation: both actual cases rendered successfully,16pages each;
+last reconstructed collar metrics agree with the simulator; visual QA performed.
+The original simulation sources/checkpoints/archives remain unchanged.
+
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  NUMBA_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python -u \
+  plot_pipelines/08_dimensional_case_report.py \
+  --run-dir \
+    /home/jdiaz/scratch/photon_runs/dimensional_v1_2_2_recovered_20261021_01/runs/bias21p5_ee4_775 \
+    /home/jdiaz/scratch/photon_runs/dimensional_v1_2_2_recovered_20261021_01/runs/bias21p5_ee4_1550 \
+  --output-dir /home/jdiaz/scratch/case_reports/dimensional_v1_2_2_diagnostics_20261021_01 \
+  --workers 2
+```
+
 # Current commands: pysnspd v1.2.2
 
 

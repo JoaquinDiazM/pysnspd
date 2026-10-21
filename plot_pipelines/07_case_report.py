@@ -677,7 +677,7 @@ def vorticity_page(r,indices):
     tri=Triangulation(xy[:,0],xy[:,1],mesh["triangles"])
     dc=c["dc"]["delta_bar"]*c["m"]["physicalparams"]["energy_scale_J"]
     diagnostics={int(i):phase_vorticity(s["delta_J"][i],dc,s["coordinates_m"],mesh["triangles"]) for i in np.unique(indices)}
-    fig=r.page("3.11. Vorticity: signed condensate phase winding")
+    fig=r.page("3.9. Vorticity: signed condensate phase winding")
     cmap=matplotlib.colors.ListedColormap(["#008176","#ffffff","#ba287f"]);cmap.set_bad("#b9b9b9")
     norm=matplotlib.colors.BoundaryNorm([-1.5,-.5,.5,1.5],3)
     for pos,(ax,i) in enumerate(zip(snapshot_axes(fig),indices)):
@@ -894,11 +894,10 @@ def build_report(run,output,allow_incomplete=False,requested=None,dpi=160,memory
         map_pages(r,indices,"Te_K","3.4. Equivalent electronic temperature","Equivalent Te (K)","Energy-equivalent observer of nonthermal electronic occupations; not an imposed temperature.",cmap=PALETTES["electron_temperature"])
         map_pages(r,indices,"Tph_K","3.5. Equivalent phonon temperature","Equivalent Tph (K)","Phonon energy-equivalent observer; local escape, without lateral phonon diffusion.",cmap=PALETTES["phonon_temperature"])
         map_pages(r,indices,"u_excess_J_m3","3.6. Energy density relative to DC","Excess energy density (kJ/m³)","Local BCS energy, apportioned gradient and phonons, minus the saved DC reference, divided by dual volume.",signed=True)
-        for key,title,label in (("super","3.7. Reconstructed supercurrent density",r"$J_{s,x}$ ($10^{10}$ A/m$^2$)"),
-            ("normal","3.8. Reconstructed normal current density",r"$J_{n,x}$ ($10^{10}$ A/m$^2$)"),("total","3.9. Reconstructed total current density",r"$|J_{\rm total}|$ ($10^{10}$ A/m$^2$)")):
+        for key,title,label in (("total","3.7. Reconstructed total current density",r"$|J_{\rm total}|$ ($10^{10}$ A/m$^2$)"),):
             map_pages(r,indices,key,title,label,"Dual-flux least-squares display vectors. Arrows: direction, fixed 6 nm length; flows below 0.01 % of the selected maximum omitted. "
-                "Js/Jn color: signed x; total: magnitude. Local sign does not imply global reversal.",kind="current",flow=flow)
-        map_pages(r,indices,"phi","3.10. Algebraic electric potential","φ (mV)","Neutrality at the same saved state. Gauge: right cut φ=0; no new evolution.",kind="phi",flow=flow)
+                "Total-current magnitude is shown; no separate normal/supercurrent snapshot pages.",kind="current",flow=flow)
+        map_pages(r,indices,"phi","3.8. Algebraic electric potential","φ (mV)","Neutrality at the same saved state. Gauge: right cut φ=0; no new evolution.",kind="phi",flow=flow)
         vortex_checks=vorticity_page(r,indices)
         balance(r);provenance(r,checks);model_summary(r);model_circuit_summary(r)
     finally:r.pdf.close()

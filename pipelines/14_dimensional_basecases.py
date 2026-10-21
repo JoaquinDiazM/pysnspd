@@ -74,7 +74,7 @@ def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--campaign-dir",type=Path,required=True)
     p.add_argument("--recover-from-campaign",type=Path,
-                   help="Fork authenticated v1.2.2 join-failure checkpoints; preserve originals")
+                   help="Fork authenticated v1.2.3 join-failure checkpoints; preserve originals")
     p.add_argument("--cases",nargs="+",choices=[c["name"] for c in cases()],
                    help="Run only these catalog cases; default is all six")
     p.add_argument("--prepare-only",action="store_true");p.add_argument("--resume",action="store_true")
@@ -96,7 +96,7 @@ def main(argv=None):
     out.mkdir(parents=True,exist_ok=True)
     pins=RUN.source_pins();pins["pipelines/14_dimensional_basecases.py"]=RUN.B.sha256(__file__)
     pins["pipelines/10_thermal_stiffness_basecases.py"]=RUN.B.sha256(ROOT/"pipelines/10_thermal_stiffness_basecases.py")
-    definition=dict(schema="pysnspd.dimensional_campaign.v1",model_version="1.2.2",cases=selected,
+    definition=dict(schema="pysnspd.dimensional_campaign.v1",model_version="1.2.3",cases=selected,
         source_pins_sha256=pins,no_cold_recovery=a.no_cold_recovery,max_1d_wall_hours=a.max_1d_wall_hours,ceiling_ps=a.ceiling_ps,final_time_ns=a.final_time_ns,length_1d_nm=a.length_1d_nm,
         scheduling=dict(simultaneous_cases=count,threads_per_case=4,physical_cores_per_case=2,
             worker_threads=4*count,worker_physical_cores=2*count,SMT=True,minimum_reserved_physical_cores=2),

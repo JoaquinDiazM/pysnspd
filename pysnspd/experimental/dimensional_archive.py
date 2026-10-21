@@ -16,7 +16,7 @@ class PhaseArchive:
         self.file=h5py.File(self.path,"r+" if resume else "w",libver="latest")
         if not resume:
             self.file.attrs["schema"]="pysnspd.dimensional_run.v1"
-            self.file.attrs["model_version"]="1.2.2"
+            self.file.attrs["model_version"]="1.2.3"
             self.file.attrs["voltage_scope"]="Intrinsic Rload*(Ib-Is); no amplifier/filter"
             self.file.attrs["phase_policy"]="2d official before handoff; shadow1d independent; 1d official after handoff"
             for name,system in systems.items():
@@ -62,6 +62,7 @@ class PhaseArchive:
             self.file.attrs["cold_recovery_scope"]="native evolution until admission; late equilibrium spatial reconstruction afterwards"
         if "cold_recovery_start_ps" not in self.file["1d"].attrs:
             self.file["1d"].attrs["cold_recovery_start_ps"]=-1.
+        self.file.attrs.modify("model_version","1.2.3")
         self.file.flush();self.file.swmr_mode=True
         self.reference={}
         for name,system in systems.items():

@@ -1,8 +1,8 @@
-"""Authenticated, provenance-preserving continuation of the known v1.2.1 join defect.
+"""Authenticated continuation of known dimensional/monitor diagnostic stops.
 
-Only the runner and dimensional projection may differ from the original
-release. Every material/kinetic/circuit/geometry source and parameter stays
-identical. Original run directories are never edited.
+The v1.2.1 route replays only the invalid 1D overlap. The v1.2.2 route keeps
+the exact 1D state and all history under an unchanged evolution RHS, then
+requires new monitor readmission. Every original directory is preserved.
 """
 import hashlib,json,os,shutil
 from pathlib import Path
@@ -29,6 +29,78 @@ def sha(path):
         for chunk in iter(lambda:f.read(1024*1024),b""):h.update(chunk)
     return h.hexdigest()
 
+
+# Exact published v1.2.2 source revisions. Only monitors/version/recovery differ.
+V122_REVISIONS={'pipelines/13_dimensional_photon_run.py': '67023163d9def52c7aae61de774078f1e64932686e5c36265608f61d71201415', 'pysnspd/experimental/dimensional_archive.py': '174fae133b303f8c7cc5d3d4dddd76b2ed5df12835393abcdff80c64359a3b37', 'pysnspd/experimental/dimensional_monitors.py': '526eea8df4cbf8337cb47aa4212591f5e3725845f3f2895d691953c5ddfbcfae', 'pysnspd/experimental/dimensional_recovery.py': 'd822eabbf64a00cddc3938c84288b4172b8278da353e83723ac15217fa1f6843'}
+
+def prepare_v122_continuation(source,destination,pins,identity,manifest):
+    """Fork an intact 1D state after a conservative monitor-only stop.
+
+    No physics or representation changes. Never clear an actual current-relative
+    gap escape, numerical failure or large cut-work loss through this route.
+    """
+    old=manifest["source_pins_sha256"]
+    if set(old)!=set(pins):raise ValueError("Unsupported v1.2.2 source catalog")
+    for key,value in old.items():
+        if value!=V122_REVISIONS.get(key,pins[key]):
+            raise ValueError("Unapproved v1.2.2 evolution-source change: "+key)
+    if manifest["parameter_identity"]!=identity:
+        raise ValueError("Same-state recovery requires identical physical/numerical inputs")
+    last=manifest.get("latest_monitor") or {}
+    if (manifest.get("phase")!="1d" or manifest.get("status")!="POSSIBLE_DOMAIN_ERROR" or
+        manifest.get("error") is not None or
+        manifest.get("monitor_reason")!="Thermal/suppression front persisted in the free outer collar" or
+        last.get("collar_min_gap_ratio",0)<=1 or
+        manifest.get("domain_fraction",1)>=identity["guard_cut_energy_relative"] or
+        (manifest.get("cold_recovery") or {}).get("active")):
+        raise ValueError("Not a supported intact v1.2.2 thermal-monitor stop")
+    checkpoint=source/"checkpoint_latest.npz"
+    if sha(checkpoint)!=manifest["checkpoint_sha256"] or sha(source/"dc1d.npz")!=manifest["dc1d_sha256"]:
+        raise ValueError("v1.2.2 checkpoint/DC hash mismatch")
+    with np.load(checkpoint,allow_pickle=False) as z:arrays={k:z[k].copy() for k in z.files}
+    meta=json.loads(str(arrays["metadata_json"]))
+    if (meta["source_pins_sha256"]!=old or meta["parameter_identity"]!=identity or
+        meta["phase"]!="1d" or abs(meta["time_ps"]-manifest["time_ps"])>1e-9):
+        raise ValueError("v1.2.2 checkpoint identity mismatch")
+    # Authentication above proves an unchanged evolution RHS; the runner must
+    # still apply all NEW guards immediately, before it advances this state.
+    _refuse_live_source(source)
+    source_archive=sha(source/"data.h5")
+    shutil.copytree(source,destination)
+    if sha(destination/"data.h5")!=source_archive:raise ValueError("Archive fork hash mismatch")
+    (destination/"pre_update_manifest.json").write_text(json.dumps(manifest,indent=2))
+    (destination/"pre_update_checkpoint.npz").write_bytes(checkpoint.read_bytes())
+    provenance=dict(schema="pysnspd.v123_monitor_continuation.v1",source_run=str(source),
+        source_checkpoint_sha256=manifest["checkpoint_sha256"],source_archive_sha256=source_archive,
+        source_pins_sha256=old,reused_until_ps=meta["time_ps"],reused_phase="1d",
+        physical_kernel_changed=False,boundary_condition_changed_1d=False,photon_redeposited=False,
+        old_monitor=last,monitor_policy_changed=True,all_prior_states_preserved=True)
+    meta.update(source_pins_sha256=pins,parameter_identity=identity,terminal_diagnostic=False,
+        continuation=provenance,replay_saved_overlap=False,reaudit_saved_overlap=False,
+        reaudit_monitor_before_step=True)
+    meta.get("monitor_tracker",{})["boundary_since_ps"]=None
+    arrays["metadata_json"]=np.array(json.dumps(meta,allow_nan=False))
+    temp=destination/"checkpoint_recovery.tmp"
+    with temp.open("wb") as stream:np.savez_compressed(stream,**arrays)
+    os.replace(temp,destination/"checkpoint_latest.npz")
+    manifest.update(model_version="1.2.3",status="RECOVERY_PREPARED",error=None,
+        source_pins_sha256=pins,parameter_identity=identity,continuation=provenance,
+        checkpoint_sha256=sha(destination/"checkpoint_latest.npz"))
+    (destination/"manifest.json").write_text(json.dumps(manifest,indent=2))
+    print(json.dumps(dict(status="RECOVERY_PREPARED",source_run=str(source),
+        reused_phase="1d",reused_until_ps=meta["time_ps"],photon_redeposited=False)),flush=True)
+
+def _refuse_live_source(source):
+    for proc in Path("/proc").iterdir():
+        if not proc.name.isdigit() or int(proc.name)==os.getpid():continue
+        try:
+            words=[w.decode() for w in (proc/"cmdline").read_bytes().split(bytes([0])) if w]
+            if any(Path(w).name=="13_dimensional_photon_run.py" for w in words):
+                if "--output-dir" in words and Path(words[words.index("--output-dir")+1]).resolve()==source:
+                    raise ValueError("Source case is still active")
+        except (OSError,UnicodeError):pass
+
+
 def prepare_continuation(source,destination,pins,identity):
     source=Path(source).resolve();destination=Path(destination).resolve()
     scratch=Path("/home/jdiaz/scratch").resolve()
@@ -36,6 +108,8 @@ def prepare_continuation(source,destination,pins,identity):
         raise ValueError("Continuation data must stay in scratch")
     if destination.exists():raise FileExistsError("Continuation destination already exists")
     manifest=json.loads((source/"manifest.json").read_text())
+    if manifest.get("model_version")=="1.2.2":
+        return prepare_v122_continuation(source,destination,pins,identity,manifest)
     old=manifest["source_pins_sha256"]
     if set(old)!=set(pins)-{RECOVERY_SOURCE,"pysnspd/experimental/dimensional_1d.py","pysnspd/experimental/dimensional_cold.py"}:
         raise ValueError("Unsupported checkpoint source catalog")
@@ -190,7 +264,7 @@ def replay_overlap(directory,project,reference,m,args):
     ar=PhaseArchive(path,{"2d":project.s2,"shadow1d":s,"1d":s},
         {"2d":project.g2,"shadow1d":project.g1,"1d":project.g1},
         {"2d":project.dc2,"shadow1d":project.dc1,"1d":project.dc1},resume=True,counts=counts)
-    ar.file.attrs["model_version"]="1.2.2"
+    ar.file.attrs["model_version"]="1.2.3"
     checks=[];accepted=rejected=0;start=time.monotonic();last=start
     try:
         for target,original,device_work,absolute_work in originals:

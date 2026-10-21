@@ -166,3 +166,21 @@ The user explicitly authorizes this task to execute runs longer than five minute
 - Late cold recovery is an additional physical approximation, never a preset-time substitution. Require full-domain admission and independent10ps circuit overlap. Preserve the actual circuit, derive cold inductance/energy/bath work from the native functional, and bound omitted normal Joule heat. Label reconstructed fields and do not claim late quasiparticle/retrigger validation. --no-cold-recovery is the full-native control.
 - Pair commands use a3h1Dsession budget. WALL_BUDGET_CHECKPOINTED is resumable, not physical failure or completed15ns. Report actual warm/cold validation horizons and wall times; a fast cold control is not proof of a full-photon runtime.
 - The old1.2.1 rigid-cut shadow is invalid for the new exterior condition. Recover authenticated2D/DC data into a new directory and replay only1D overlap; never redeposit a photon.
+
+## Active v1.2.3 standard (user task, 2026-10-21)
+
+- Normal cases now use v1.2.3. This is a diagnostic/continuation correction:
+  do not describe it as a repaired evolution RHS. The native20-source kernel,
+  1Dpolar/cold solvers, physical inputs and numerical energy tolerances are unchanged.
+- Distinguish Te rise, gap suppression relative to instantaneous-current bulk,
+  and signed energy relative to initialDC. A current unload can increase the
+  exterior gap while releasing current-carrying internal energy.
+- Keep photon-only collar energy visible, but compare thermal significance with
+  retained photon plus accumulated absolute device work, matching the existing
+  cut/activity ledger. Use the same0.1% margin; gap<90% current bulk and2ps
+  persistence remain independent safety criteria. This is an engineering guard,
+  not finite-domain convergence or quantitative late-temperature validation.
+- Authenticated intact v1.2.2 thermal-monitor stops may be forked at the exact1D
+  state only when all evolution sources/inputs match and the new guards pass
+  before advancement. Preserve original data and all energy/work ledgers;
+  never discard or reinterpret an actual numerical or current-relative gap failure.

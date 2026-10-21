@@ -1,3 +1,91 @@
+# pysnspd v1.2.3: driven lead diagnostics and exact-state continuation
+
+The v1.2.2 evolution RHS, geometry, native kinetic/material/circuit kernels and
+all nonlinear/local/global energy tolerances remain unchanged. This revision
+corrects a domain-monitor interpretation, not an identified evolution-solver bug.
+The archived2D and1D histories can be retained when the authenticated current
+state independently passes the new monitor. A new folder preserves the source.
+
+## Continuous physics and measured diagnosis
+
+A hotbelt is not an insulated material boundary. Electronic transport and
+normal-current/KWT dissipation can change native occupations outside it.
+Furthermore unloading the current reduces depairing: the cold stable bulk gap
+increases. An exterior gap above its original DC value is not a global
+suppression. Negative excess internal-energy density relative to the initial
+biased DC can include release of its current-carrying energy.
+
+For the two v1.2.2 terminal states the free collar gap/initialDC was1.0711
+(1550nm) and1.0934(775nm), while Te reached2.1743/2.3671K and Tph stayed
+near the bath. Static native-RHS decomposition finds positive condensate
+relaxation power and transport, rather than a uniform injected photon source.
+At x-x0=475nm(1550nm), native power densities in W/m3 were approximately
+KWT2.40e11, transport5.36e10, normal Joule1.73e10 and reversible1.43e10.
+The independent instantaneous total-power residual was below7e-21W.
+This is evidence inside our effective closure, not microscopic validation of
+low-temperature KWT/constant-normal-conductivity heating.
+
+Primary context: Vodolazov2017, equations30-32 and the discussion of diffusion,
+Joule heating and normal-domain growth:
+https://arxiv.org/pdf/1611.06060 .
+Neither that reference nor a small energy residual certifies our closure's
+late quantitative temperature, decay time or finite-domain independence.
+
+## Explicit diagnostic correction
+
+For retained energy Eret, use the already-existing driven activity ledger
+$$
+A(t)=E_{\rm ret}+\int_0^t|I_s V_{\rm dev}|\,dt,\qquad
+E_{\rm col}^{\rm abs}=\sum_{i\in{\rm col}}
+\left[\sum_k\epsilon_{ik}|p_{ik}-f_{\rm FD}(E_{ik},T_b)|
++\sum_l c_{il}\Omega_l|n_{il}-n_{B,l}|\right].
+$$
+Here f_FD denotes the electronic Fermi occupation at bath temperature;
+epsilon is the actual node spectral energy weight, and c Omega is the native
+phonon energy weight. This finite-volume definition is the same unsigned
+native collar metric as1.2.2. The new active normalization is
+$$
+\varepsilon_{\rm col}=E_{\rm col}^{\rm abs}/A(t),\qquad
+r_{\Delta,\rm col}
+=\min_{i\in{\rm col}}\frac{|\Delta_i|}
+{s_i a_b(I_s,T_b)} .
+$$
+The fixed matching s_i reproduces the discrete initialDC and a_b is the same
+finite-link stable bulk branch already used at the exterior cuts.
+
+Keep the0.5K warning,0.1% energy margin,90% gap margin and2ps persistence.
+A stop requires current-relative gap suppression below90%, OR a thermal
+warning AND collar energy above0.1% of the driven activity. The old
+photon-only ratio and initial-DC gap ratio remain visible diagnostics.
+At the old stops, epsilon_col was6.6883e-6/1.1027e-5 and rDelta was
+0.96484/0.97385(1550/775nm). The photon-only ratios were0.11637/0.11179%.
+
+This normalization is an explicit engineering choice, changed because the
+system is driven far beyond the original photon energy. It is not a rigorous
+exterior error bound. The independent2% integrated absolute-cut/activity
+guard, current-relative gap guard, support/capacity/voltage/polarity/energy
+guards remain active. Real front escape can still stop a subsequent run;
+domain-length convergence through15ns is NOT established by this patch.
+
+## Data integrity and scope
+
+A source-frozen v1.2.2 thermal-only diagnostic stop may be forked byte-for-byte
+into a new scratch directory. Authenticate the published revisions, unchanged
+RHS/material/circuit hashes, exact inputs, checkpoint/DC and copied HDF5.
+Retain every prior state and energy ledger, preserve source provenance and
+apply the new monitor BEFORE advancing. Do not replay overlap, reset a bath,
+redeposit a photon, replace a spectrum, modify Is or remove recorded failures.
+Only the old monitor persistence timer is reset for the changed criterion.
+Actual equations,1um domain and15ns conditional target remain unchanged.
+
+The late cold approximation and its independent10ps qualification are unchanged.
+A3h1Dsession budget remains a resumable runtime checkpoint, not completed reset.
+No full15ns validation or<3h end-to-end claim is made.
+The report labels both collar normalizations and the instantaneous-current
+bulk reference; old reports continue to show their historical active basis.
+
+---
+
 # pysnspd v1.2.2: cold continuation cuts and gated late recovery
 
 The hot-stage equations remain the neutral effective thermal BCS/KWT functional,
