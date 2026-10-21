@@ -167,6 +167,8 @@ class DimensionalTests(unittest.TestCase):
                 "--snapshot-every-ps",".001","--shadow-check-every-ps",".0005",
                 "--xi-cutoff","12","--xi-order","3","--phonon-nodes","24","--transport-order","8",
                 "--current-uA","15.5","--spacing-1d-nm","10"]
+            if getattr(self,"_expect_wall",False):
+                words.extend(("--max-1d-wall-hours","1e-12"))
             build=lambda *args,**kw:(self.s2,dc,self.g2,SimpleNamespace(manifest={}),{})
             # 1D DC cache/resume follows the real implementation.
             with patch.object(runner.OLD,"build_system",side_effect=build),patch.object(runner.B,"TriggerWindow",ArtificialVoltageProbe),patch("sandbox.stage4_core.parallel_runtime.linux_resources",return_value=inventory):
@@ -174,6 +176,15 @@ class DimensionalTests(unittest.TestCase):
                 self.assertEqual(code,0)
                 m=json.loads((out/"manifest.json").read_text())
                 self.assertEqual(m["phase"],"1d");self.assertGreaterEqual(len(m["shadow_checks"]),2)
+                if getattr(self,"_expect_cold",False):
+                    self.assertTrue(m["cold_recovery"]["active"])
+                    import h5py
+                    with h5py.File(out/"data.h5","r") as archive:
+                        self.assertTrue(np.any(archive["1d/trace"]["regime_id"][:]==1))
+                        self.assertGreaterEqual(archive.attrs["cold_recovery_start_ps"],0.)
+                if getattr(self,"_expect_wall",False):
+                    self.assertEqual(m["status"],"WALL_BUDGET_CHECKPOINTED")
+                    j=words.index("--max-1d-wall-hours");del words[j:j+2]
                 self.assertLess(m["circuit_by_phase"]["1d"]["Lk_ext_H"],m["circuit_by_phase"]["2d"]["Lk_ext_H"])
                 words[words.index(".006")]=".009";words.append("--resume")
                 code=runner.run(runner.parser().parse_args(words))
@@ -296,11 +307,148 @@ class DimensionalTests(unittest.TestCase):
             self.assertEqual(before,{p.name:sha(p) for p in src.iterdir()})
             with np.load(dst/"checkpoint_latest.npz",allow_pickle=False) as z:
                 updated=json.loads(str(z["metadata_json"]))
-            self.assertTrue(updated["reaudit_saved_overlap"])
+            self.assertTrue(updated["replay_saved_overlap"])
+            self.assertFalse(updated["reaudit_saved_overlap"])
             self.assertFalse(updated["terminal_diagnostic"])
             self.assertFalse(updated["continuation"]["photon_redeposited"])
             self.assertEqual(updated["time_ps"],23.)
             self.assertEqual(sha(dst/"data.h5"),sha(src/"data.h5"))
+
+
+    def _polar_fixture(self):
+        import importlib.util
+        spec=importlib.util.spec_from_file_location("_v122_fixture_runner",
+            "/home/jdiaz/pysnspd/pipelines/13_dimensional_photon_run.py")
+        r=importlib.util.module_from_spec(spec);spec.loader.exec_module(r)
+        with tempfile.TemporaryDirectory(dir="/home/jdiaz/scratch/tmp/pysnspd") as d:
+            args=r.parser().parse_args(["--output-dir",d,"--threads","1","--length-nm","80",
+                "--length-1d-nm","160","--spacing-1d-nm","10","--current-uA","15.5",
+                "--xi-cutoff","12","--xi-order","3","--phonon-nodes","24","--transport-order","8"])
+            return r.build_1d(args,self.s2,self.g2,Path(d),False)
+
+    def test_wall_budget_checkpoint_resumes_without_physics_change(self):
+        self._expect_wall=True
+        try:self.test_runner_handoff_and_exact_resume()
+        finally:self._expect_wall=False
+
+    def test_cold_runner_exact_resume_and_archive_label(self):
+        from unittest.mock import patch
+        from pysnspd.experimental.dimensional_cold import ColdRecovery
+        self._expect_cold=True
+        try:
+            with patch.object(ColdRecovery,"minimum_time_ps",0.),patch.object(ColdRecovery,"qualification_ps",.0001):
+                self.test_runner_handoff_and_exact_resume()
+        finally:self._expect_cold=False
+
+    def test_exactly_normal_node_keeps_finite_cartesian_bootstrap_rate(self):
+        ss,gg,dc=self._polar_fixture()
+        d=dc.delta_bar.copy();j=len(ss.free)//2;i=ss.free[j];d[i]=0.
+        dz=np.full(len(d),.2+.3j)
+        coord=np.zeros(ss.ngap)
+        coord[:2*len(ss.free)]=np.column_stack((dz[ss.free].real,dz[ss.free].imag)).ravel()
+        result=ss.coordinates_rate(d,dz,coord)
+        self.assertTrue(np.all(np.isfinite(result)))
+        np.testing.assert_array_equal(result[2*j:2*j+2],[.2,.3])
+
+    def test_native_1d_rhs_matches_thermal_model_up_to_global_gauge(self):
+        import copy
+        ss,gg,dc=self._polar_fixture()
+        legacy=copy.copy(ss);legacy.__class__=ObservedThermalSystem
+        st=dc.copy();x=gg.coordinates_m[:,0]/gg.length_m
+        profile=np.sin(np.pi*x)**2
+        st.p+=profile[:,None]*np.exp(-ss.functional.xi_bar[None,:])*1e-6
+        st.n+=profile[:,None]*np.exp(-ss.kinetics.phonons.energies[None,:])*1e-7
+        before=legacy.evaluate(st)
+        # Hold Isdot=0 to isolate the unchanged native bulk equations from
+        # the separately tested prescribed-current boundary work.
+        st.circuit_SI[2]=before.electrical.Vdev_V
+        a=legacy.evaluate(st);b=ss.evaluate(st)
+        self.assertLess(abs(b.circuit_scaled_per_ps[1]),1e-12)
+        mean=float(np.dot(ss.gauge_weights,a.electrical.phi_V))
+        np.testing.assert_allclose(b.delta_per_ps,
+            a.delta_per_ps+1j*ss.kappa_per_ps_V*mean*st.delta_bar,rtol=1e-9,atol=1e-12)
+        np.testing.assert_allclose(b.dp_per_ps,a.dp_per_ps,rtol=1e-8,atol=1e-14)
+        np.testing.assert_allclose(b.dn_per_ps,a.dn_per_ps,rtol=1e-12,atol=1e-16)
+        self.assertAlmostEqual(a.energy_J,b.energy_J,places=28)
+        self.assertLess(abs(a.external_power_W-b.external_power_W),1e-20)
+
+    def test_exact_gradient_cache_has_no_approximation(self):
+        ss,gg,dc=self._polar_fixture()
+        st=dc.copy();st.p[ss.free,0]+=1e-6
+        T=ss.kinetics.equivalent_temperature_K(st.delta_bar,st.p)
+        cached=ss.functional.gradient_evaluation(st.delta_bar,T)
+        direct=ss.functional._uncached_gradient_evaluation(st.delta_bar,T)
+        np.testing.assert_array_equal(cached.force_J,direct.force_J)
+        np.testing.assert_array_equal(cached.node_internal_energy_J,direct.node_internal_energy_J)
+        changed=st.delta_bar.copy();changed[ss.free[0]]*=1+1e-10
+        updated=ss.functional.gradient_evaluation(changed,T)
+        self.assertFalse(np.array_equal(updated.force_J,cached.force_J))
+
+    def test_polar_midpoint_integrates_pure_gauge_rotation(self):
+        from dataclasses import replace
+        from unittest.mock import patch
+        ss,gg,dc=self._polar_fixture()
+        solve=ss.ports.solve;voltage=.01;h=.1
+        def offset(*args,**kwargs):
+            el=solve(*args,**kwargs)
+            return replace(el,phi_V=el.phi_V+voltage)
+        with patch.object(ss.ports,"solve",side_effect=offset):
+            new,receipt=ss.midpoint_step(dc,h,tolerance=2e-7,max_iterations=60)
+        expected=dc.delta_bar  # the zero-mean temporal gauge removes a uniform scalar offset
+        np.testing.assert_allclose(new.delta_bar,expected,atol=2e-7,rtol=2e-7)
+        np.testing.assert_allclose(new.circuit_SI,dc.circuit_SI,atol=1e-12)
+        self.assertLess(receipt["thermal_induced_gap_defect"],2e-7)
+
+    def test_current_following_cuts_and_boundary_work_balance(self):
+        ss,gg,dc=self._polar_fixture()
+        st=dc.copy();st.circuit_SI[1]*=.9
+        st=ss.impose_cold_cuts(st)
+        self.assertTrue(np.all(abs(st.delta_bar[ss.cut_nodes])>abs(dc.delta_bar[ss.cut_nodes])))
+        np.testing.assert_allclose(st.p[ss.cut_nodes],
+            ss.functional.fermi_dirac(st.delta_bar,.9)[ss.cut_nodes],rtol=1e-13)
+        rhs=ss.evaluate(st)
+        self.assertLess(abs(rhs.instant_power_residual_W),1e-17)
+        curve=ss.lead_curve
+        for current in np.linspace(.05,.9,7)*ss.current_scale_A:
+            q=float(curve.wave(current))*ss.functional.ell0_m
+            measured,a=ss.functional.bulk_current(.9,q,gg.width_m,
+                float(np.median(gg.edge_lengths_m)))
+            self.assertLess(abs(measured-current)/ss.current_scale_A,2e-6)
+            self.assertLess(abs(float(curve.amp(current))-a),2e-6)
+
+    def test_cold_recovery_rejects_hot_state_and_conserves_circuit_energy(self):
+        from pysnspd.experimental.dimensional_cold import ColdRecovery
+        ss,gg,dc=self._polar_fixture()
+        cold=ColdRecovery(ss,gg,dc,1e-19)
+        hot=dc.copy();hot.delta_bar[ss.free]*=.1
+        rhs=ss.evaluate(hot)
+        self.assertIsNone(cold.eligibility(hot,rhs,200.))
+        st=cold.state(np.array([15.5e-6,.9*15.5e-6,0.]))
+        rr=ss.evaluate(st)
+        result,after,receipt=cold.step(st,rr,50.,energy_tolerance=2.5e-6,
+            reference=1e-19,absolute_work=0.)
+        self.assertLess(receipt["accepted_local_energy_fraction"],2.5e-6)
+        self.assertGreater(result.circuit_SI[1],st.circuit_SI[1])
+        self.assertGreater(min(result.circuit_SI[:2]),0.)
+        np.testing.assert_allclose(after.temperature_K,.9,atol=.01)
+
+    def test_collar_temperature_requires_significant_native_energy(self):
+        from dataclasses import replace
+        from pysnspd.experimental.dimensional_monitors import metrics,MonitorConfig
+        ss,gg,dc=self._polar_fixture()
+        st=dc.copy();x=gg.coordinates_m[:,0]
+        collar=(x>0)&(x<25e-9)
+        temperature=np.full(len(x),.9);temperature[collar]=1.6
+        st.p=ss.functional.fermi_dirac(st.delta_bar,temperature)
+        rhs=ss.evaluate(st)
+        values=metrics(ss,gg,st,rhs,dc,MonitorConfig(),1e-19,extended=True)
+        self.assertTrue(values["collar_thermal_warning"])
+        self.assertLess(values["collar_native_energy_fraction"],.001)
+        self.assertFalse(values["boundary_alarm"])
+        st.delta_bar[collar]*=.5
+        rhs=ss.evaluate(st)
+        values=metrics(ss,gg,st,rhs,dc,MonitorConfig(),1e-19,extended=True)
+        self.assertTrue(values["boundary_alarm"])
 
     def test_monitor_distinguishes_polarity_undershoot_latching_and_boundary(self):
         from pysnspd.experimental.dimensional_monitors import MonitorConfig,observe

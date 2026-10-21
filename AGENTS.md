@@ -156,3 +156,13 @@ The user explicitly authorizes this task to execute runs longer than five minute
 - Check free25nm outer collars, accepted current/voltage ceilings, native support/capacity, independent energy and global branch polarity. Moderate negative readout voltage is allowed for capacitive undershoot.
 - Preserve state and explicit stop reason for domain escape, electrical guard or possible latching. Latching is a possible physical outcome, not proof of a numerical error. Early recovery requires1ns of jointly stable gap/native populations/electron and phonon moments/full circuit after2ns; otherwise the15ns target remains subject to all guards.
 - Never resume a v1.2.0 checkpoint under v1.2.1. Use a fresh campaign directory and record all geometry, initialization, partition and monitor inputs.
+
+
+## Active v1.2.2 standard (user task, 2026-10-21)
+
+- New normal cases use v1.2.2. Preserve the20-source native material/kinetic/circuit kernel and historical data. The1D outer condition is an explicitly declared isothermal stable bulk continuation at instantaneous Is, including prescribed boundary work.
+- Native1D uses mixed polar/Cartesian midpoint coordinates, a zero-mean temporal gauge and physical-current/voltage/amplitude/native-energy temporal checks, with unchanged nonlinear/capacity/local/global energy gates. Exact gradient reuse must never round states.
+- A0.5K collar rise is a visible warning; thermal truncation additionally requires significant native collar energy (default0.1% retained photon). Gap and integrated cut-energy guards remain independent.
+- Late cold recovery is an additional physical approximation, never a preset-time substitution. Require full-domain admission and independent10ps circuit overlap. Preserve the actual circuit, derive cold inductance/energy/bath work from the native functional, and bound omitted normal Joule heat. Label reconstructed fields and do not claim late quasiparticle/retrigger validation. --no-cold-recovery is the full-native control.
+- Pair commands use a3h1Dsession budget. WALL_BUDGET_CHECKPOINTED is resumable, not physical failure or completed15ns. Report actual warm/cold validation horizons and wall times; a fast cold control is not proof of a full-photon runtime.
+- The old1.2.1 rigid-cut shadow is invalid for the new exterior condition. Recover authenticated2D/DC data into a new directory and replay only1D overlap; never redeposit a photon.

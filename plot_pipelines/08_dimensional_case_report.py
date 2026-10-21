@@ -17,7 +17,7 @@ plt.rcParams.update({"font.size":12,"axes.labelsize":13,"axes.titlesize":13,
 def report(job):
     run,out,times=job
     run=Path(run);out=Path(out);m=json.loads((run/"manifest.json").read_text())
-    if m.get("model_version")!="1.2.1":raise ValueError("This report requires the v1.2 phase-aware archive")
+    if m.get("model_version") not in ("1.2.0","1.2.1","1.2.2"):raise ValueError("This report requires the v1.2 phase-aware archive")
     target=out/("case_report_"+run.name+".pdf")
     if target.exists():raise FileExistsError("Existing report preserved: "+str(target))
     counts=m["archive_counts"];p=m["parameter_identity"]
@@ -25,7 +25,7 @@ def report(job):
         def done(fig):
             fig.tight_layout();pdf.savefig(fig);plt.close(fig)
         fig=plt.figure(figsize=(11.69,8.27))
-        fig.text(.06,.92,"Individual case / neutral effective BCS-KWT / v1.2.1",fontsize=18)
+        fig.text(.06,.92,"Individual case / neutral effective BCS-KWT / v"+m["model_version"],fontsize=18)
         lines=[f"Case: {run.name}",f"Status: {m['status']} / official phase: {m['phase']}",
             f"Bias {p['current_uA']:g} uA; wavelength {p['wavelength_nm']:g} nm; retained fraction {p['retained_fraction']:g}",
             f"Escape {p['tau_escape_ps']:g} ps; tau_ee(Tc) {p['tau_ee_Tc_ps']:g} ps; Rs {p['sheet_resistance_ohm']:g} ohm",
@@ -36,6 +36,10 @@ def report(job):
             f"Cut-energy / device-activity fraction: {m['domain_fraction']:.5g}",
             f"Independent energy defect: {m['energy_defect_J']:.5g} J",
             "A completed trajectory does not by itself establish physical or statistical validation."]
+        cold=m.get("cold_recovery") or {}
+        if cold.get("active"):
+            lines.append(f"Late cold approximation from {cold['activation_time_ps']*1e-3:.5g} ns: spectra/maps reconstructed at the bath.")
+            lines.append("The hot stage evolved native populations; late quasiparticle tails are outside this approximation.")
         for i,line in enumerate(lines):fig.text(.06,.83-.057*i,line,fontsize=12)
         pdf.savefig(fig);plt.close(fig)
         official=[]
@@ -82,6 +86,9 @@ def report(job):
                 fig,ax=plt.subplots(figsize=(11.69,8.27))
                 im=ax.pcolormesh(x,tt,values,shading="nearest",cmap=cmap)
                 ax.set(xlabel="x (nm)",ylabel="Time after photon (ns)",title="Official 1D evolution")
+                if cold.get("active"):
+                    ax.axhline(cold["activation_time_ps"]*1e-3,color="white",ls="--",lw=1.3)
+                    ax.set_title("1D evolution; dashed line starts the late cold reconstruction")
                 fig.colorbar(im,ax=ax,label=label);done(fig)
         checks=m.get("shadow_checks",[])
         if checks:

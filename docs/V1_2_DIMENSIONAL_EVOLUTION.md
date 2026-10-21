@@ -1,53 +1,136 @@
-# pysnspd v1.2.1: longer full1D and physical stop monitors
+# pysnspd v1.2.2: cold continuation cuts and gated late recovery
 
-The default full1D domain is1000nm (201nodes), centered on the300nm2D lens with350nm added on each side. The new --length-1d-nm input can extend up to the5um active wire. This supersedes the same-domain300nm scope of1.2.0; its historical source/validation remains in that tag.
+The hot-stage equations remain the neutral effective thermal BCS/KWT functional,
+native electron/phonon populations and actual three-state circuit. Keep300nm2D,
+1000nm/201nodes1D, the material/photon inputs, positive0.1mV trigger,0.5ps
+confirmation and crossing+2ps handoff. The final target is15ns;100ps is ONLY
+the no-trigger censoring ceiling. No absorbed photon is deposited twice.
 
-## Evolution and initial state
+## Diagnosis and exterior assumption
 
-Keep the effective neutral thermal BCS/KWT/native-kinetic closure and actual three-state circuit. An independent1D shadow begins at the first accepted threshold crossing. Only initially unobserved tails use a cold instantaneous-current stable-branch hypothesis, with phase matched to the core and the prepared DC profile. The core retains its nonequilibrium native populations. This is a declared adiabatic exterior hypothesis, not recovery of an unobserved history.
+The v1.2.1 handoff was admitted. Its two continuations stopped after about2ps
+when their outer collars reached1.62K, despite a gap above the original DC gap.
+The235nm suppressed segment did not establish escape from the1000nm domain.
+The added tails followed the instantaneous lower current but terminal gap and
+populations remained fixed to the original higher-current DC, creating a
+terminal relaxation/heating layer.
 
-At admitted crossing+2ps, reproject the last official2D core and inherit the already evolved native shadow tails; do not reset them to a cold FD/BE state. Conservative partial-volume weights account for cells straddling both interfaces. Bound the small native activity reconciliation by the same energy margins. Compare the final projected complex gap modulo one global U(1) phase. For independent long/short-domain overlap, retain that complex norm diagnostically and gate amplitude plus the actual phase-dependent supercurrent, populations, energy and circuit. Bank-phase evolution across a near-normal belt and different exterior cuts must not be mislabeled as a transverse-amplitude discrepancy; phase-gradient errors remain guarded through the closure's supercurrent and energy.
+The new explicit exterior hypothesis is an isothermal stable superconducting
+continuation at the instantaneous detector current. For $d=\Delta/(k_BT_c)$,
+bulk amplitude $a_b(I_s,T_b)$ and a discrete DC matching factor $s_\partial$,
+$$
+d_\partial=s_\partial a_b(I_s,T_b)e^{i\theta_\partial},\qquad
+p_\partial=f_{\rm FD}(|d_\partial|,T_b),\qquad n_\partial=n_B(T_b).
+$$
+The prescribed radial rate is $s_\partial a'_b(I_s)\dot I_s$; the FD rate uses
+the chain rule. Its work is explicitly included, not hidden in an energy offset:
+$$
+P_\partial^{\rm prescribed}
+=2\operatorname{Re}\sum_\partial F_d^*\dot d_\partial^{\rm radial}
++\sum_{\partial,k}\epsilon_k\dot p_{\partial,k},\qquad
+P_{\rm res,out}=P_{\rm raw,cuts}-P_\partial^{\rm prescribed}.
+$$
+The full thermal chain rule, signed fluxes, support, capacity and independent
+energy audits remain. The monotone finite-link bulk table is computed from
+our functional, not fitted to pulse timing, and never extrapolated.
 
-Seed1D DC with exact finite-link bulk dispersion to avoid accumulated phase error across a long chain. Bath/DC force/current/nV tolerances remain unchanged.
+A0.5K collar excursion remains a visible warning. Its thermal truncation stop
+also requires unsigned native collar excess energy above0.1% retained photon
+energy. Gap suppression below90%DC and cumulative2% absolute-cut exchange
+remain independent stops. The margins are declared engineering choices,
+not experimental material constants.
 
-## Inductance and energy
+## Native solver
 
-Freeze Lext2=96nH+Lprime_DC*(5um-L2) and Lext1=96nH+Lprime_DC*(5um-L1) from the same original continuous DC. Never reduce the added96nH. Copy Ib,Is,vc exactly. Resolved-film excess energy receives deltaEfilm2+0.5*(Lext2-Lext1)*(Is^2-IDC^2), keeping total excess film+circuit energy continuous. Record only the constant total-DC reference shift; no duplicated inductance or invented ongoing heat correction.
+Solve midpoint equations in amplitude/phase above $|d|=10^{-3}$; smaller
+condensates retain Cartesian coordinates. This is not a gap/population floor.
+A zero-mean temporal gauge removes only an unobservable common phase:
+$$
+\widetilde\phi_i=\phi_i-\frac{\sum_jV_j\phi_j}{\sum_jV_j},\qquad
+\dot a_i=\operatorname{Re}(e^{-i\theta_i}\dot d_i^{\rm material}),\qquad
+\dot\theta_i=\operatorname{Im}(\dot d_i^{\rm material}/d_i)
+-\frac{2e}{\hbar}\widetilde\phi_i .
+$$
+Newton and population-response tests contain the same rank-one gauge
+response. Electrostatic output stays right-cut referenced. Use the actual
+converged polar midpoint, not the Cartesian endpoint average.
 
-## Stop monitors
+Step doubling controls amplitude, physical superconducting face currents,
+device voltage, unsigned native population energy and every circuit state.
+The complex-gap error remains diagnostic. Keep rtol/atol, full nonlinear
+thermal-response acceptance, local energy2.5e-6, global energy1%, support and
+positive capacity. Repeated gradients use exact full d,T,alpha byte keys,
+with eight cache entries and no rounded or approximate state substitution.
 
-- Retain2% absolute cut-energy/activity and1% independent global-energy guards.
-- Watch free25nm outer collars:0.5K electron/phonon moment rise or gap below90%DC for2ps gives POSSIBLE_DOMAIN_ERROR.
-- Accepted current limits derive from1.1Idep; voltage limits from Rnormal, the actual bias and load. They are explicit engineering ceilings, not measured hardware ratings.
-- Global branch reversal is guarded; moderate bipolar Vout is allowed for capacitive undershoot.
-- POSSIBLE_LATCHING requires a>=20nm resistive segment and1ns electrical/thermal plateau after5ns. It is a possible physical state, not proof of a numerical defect.
-- RECOVERY_CONFIRMED can stop before15ns only after1ns of jointly close full-circuit, gap, native population and electron/phonon-moment diagnostics, after2ns.
-- Store accepted native state and explicit monitor reason at termination. Default15ns remains an upper target, not a validated reset or runtime promise.
+## Additional late cold approximation
 
-Primary context: [Kerman et al.2013,Fig.1](https://arxiv.org/pdf/1302.2852), [Annunziata et al.2010](https://arxiv.org/abs/1008.0895). The own restricted functional is not replaced by the Allmaras hotbelt equations.
+Native1D remains official while the film is hot or significantly nonequilibrium.
+Only after100ps can the following full-domain bounds qualify a cold candidate:
 
-## Validation and execution
+- gap amplitude within1% of the instantaneous-current cold branch;
+- unsigned native energy and film projection exchange each<=1% retained photon;
+- superconducting face-current discrepancy<=0.5% DC bias;
+- full device-voltage agreement<=1uV;
+- omitted normal-current fraction<=1e-3.
 
-Short tests include conservative core volume and total-energy transfer, cold-tail initialization, finite-link DC, inherited nonthermal shadow-tail populations, gauge-invariant overlap, support/capacity/temporal energy acceptance, exact restart, physical stop distinctions and shared-resource refusal. Read-only saved-hot-state projection to201nodes and one short coupled1D advance are controls, not a15ns photon validation.
+An independent actual-circuit cold shadow must additionally agree with native1D
+for10ps, within1uV Vout and0.5% branch currents. A failed qualification leaves
+native1D running. A hot/latched wire cannot qualify; no preset-time replacement
+is allowed.
 
-The five stable Matematica PDFs and their sources describe the implementation, new P50-P56 monitors and S33-S35 assumptions. Use docs/GEMINGA_COMMANDS_PRESENT.md. Six cases use24SMT threads on12physical worker cores, preserving current jobs and at least2whole cores. Changes of physical parameters or geometry require fresh cases. The known1.2.1 join failure has the authenticated same-physics continuation described below.
+After admission, the approximation neglects the small native residual and
+reconstructs the isothermal BCS film at the bath. The signed projection bath
+exchange is recorded. The actual circuit at activation is preserved. Late
+quasiparticle-tail spectroscopy and quantitative retrigger claims are outside
+this approximation.
 
+With resolved length $L_1$, bulk phase gradient $q_b(I_s)$ and native cold-film
+energy $U_b(I_s)$,
+$$
+L_f(I_s)=\frac{\hbar L_1}{2e}\frac{dq_b}{dI_s},\qquad
+\dot I_s=\frac{v_c+R_L(I_b-I_s)}{L_{\rm ext}+L_f(I_s)}.
+$$
+The other two CM equations and physical circuit parameters stay unchanged.
+The frozen exterior retains all added96nH. The resolved film is replaced
+by its cold constitutive branch; it is not also evolved or counted twice.
+For $L_U=(1/I_s)dU_b/dI_s$,
+$$
+P_{b,\rm out}=(L_f-L_U)I_s\dot I_s,\qquad
+\frac{d}{dt}(U_b+E_{\rm CM})
+=V_bI_b-R_bI_b^2-R_L(I_b-I_s)^2-P_{b,\rm out}.
+$$
+This power is independently integrated and compared against actual
+film+circuit energy, not inferred from its observed residual.
+DOP853 uses scaled rtol2e-9/atol2e-11, accepted steps<=50ps and internal
+steps<=10ps. The omitted normal Joule estimate
+$\int V_f^2/R_n\,dt$ is independently accumulated and bounded by1% retained
+photon energy.
 
-## 2026-10-20 handoff correction (same package version1.2.1)
+This conditional separation of film cooling and electrical recovery has
+primary physical context in [Kerman et al.](https://arxiv.org/pdf/1302.2852)
+and [Annunziata et al.](https://arxiv.org/pdf/1008.0895).
+Neither supplies our admission margins or validates this particular NbN closure.
+HDF5/manifest data label the activation time and regime_id=1 for reconstructed
+late fields; native data have regime_id=0. Reports label the transition.
+Use --no-cold-recovery for a fresh full-native control.
 
-The failed775/1550nm pair completed its official2D detection windows. Its raw final projection errors were0.51986%/0.50980%, but a single exterior phase alignment also created artificial join gradients. Each disconnected exterior component must instead be attached to its own interface phase. These constant component rotations preserve each tail's internal phase differences and native p,n; this is an explicit initial-state joining operation, not a space-dependent gauge transformation of an already connected wire. Choose interface nodes by grid index: floating coordinate inequalities can exclude a nominally coincident boundary node.
+## Data reuse and measured performance
 
-The conservative occupation matrix R still satisfies V1 R=V2. A nodal condensate must instead be reconstructed at its physical sites from the remap's physical longitudinal centroids and actual cut values. Cell averages at a partial interface are not nodal values. The small existing activity correction then conserves total film+circuit excess energy within its original envelope.
+Recover the original valid v1.2.1 2D pair, not its later contaminated fixed-cut
+1D outer layer. Preserve the20 native material/kinetic/circuit source hashes,
+DC, checkpoint and complete original archive. In a new scratch directory replay
+only1D overlap from the stored2D snapshot immediately before crossing (at most
+0.1ps earlier), record every comparison and never rerun the accepted2D history.
 
-For the actual long/short independent overlap, let d2 be the2D gap and Ld1 the lifted1D gap. In addition to the recorded globally aligned complex norm, admission uses
+Each case retains4SMT threads on2exclusive physical cores, BLAS/OpenMP1; a pair
+uses8worker threads/4cores plus coordinator and reserves>=2whole cores globally.
+The optional --max-1d-wall-hours budget saves a resumable
+WALL_BUDGET_CHECKPOINTED, not physical completion. A later --resume starts a
+new wall session without resetting physical time.
 
-    eps_amp^2 = sum_i V_i (|d2_i|-|Ld1_i|)^2 / sum_i V_i |dDC_i|^2
-    eps_Is^2 = sum_e (Rs/g_e) (Is2_e-IsLift1_e)^2 / [IDC^2 Rs L2/W].
-
-Is_e is the superconducting FACE CURRENT in amperes, from the same functional variation; g_e is the dimensionless positive face conductance factor. Both thresholds are3%. Zero-conductance faces have zero weight. The final instantaneous projection still requires the3% complex norm as well. Resolved vortices, native population discrepancy, current pattern,2uV readout,0.5% circuit current,1% shadow energy,0.5% raw energy and1% reconciliation gates remain. This changes the interpretation of the independent phase comparison; it does not claim the old complex20% discrepancy was small.
-
-The fixed saved-state projections give raw energy0.23780%/0.23699%, complex gap0.37063%/0.36940%, and supercurrent1.07363%/1.06748% (775/1550). Conservative saved-shadow time brackets pass with amplitude<=1.804%, supercurrent<=2.931%, and stored simultaneous film-energy<=0.560%. No tolerance was widened. These figures are implementation/finite-overlap controls, not15ns physical validation.
-
-Recovery is a new-directory, source-hash-authenticated fork of the specific original1.2.1 pre-handoff failure. Every material/kinetic/circuit/geometry source stays identical. Preserve the full original archive/DC/checkpoint and re-audit saved native overlap; never redeposit the photon. Exact2D snapshots are compared against both neighboring saved shadow states for spatial norms; recorded simultaneous scalars audit energy/work/circuit, avoiding a false defect from real Joule work between different times.
-
-The runner also preserves its pre-existing proposed physical step after a successful step shortened solely to land on a snapshot target. A plotting remainder must not seed a long sequence of microscopic future steps. Rejected steps still halve and retain all physical/energy tolerances. Campaign progress is now mirrored to the terminal.
+Actual saved-photon controls advanced3.2ps beyond handoff and passed the old2ps
+stop. A nontrivial15ns cold-circuit recovery control took about4s after system
+preparation, with relative energy defect<2e-10. This is not a full15ns photon
+validation or a guarantee of3h end-to-end: admission can dominate. Persistent
+hot states stay native and can reach wall/domain/latching guards. Exact scopes
+and commands are in the machine validation record and command notebook.

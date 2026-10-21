@@ -47,6 +47,10 @@ def parser():
     p.add_argument("--checkpoint-1d-every-ps",type=float,default=100.)
     p.add_argument("--shadow-check-every-ps",type=float,default=.1)
     p.add_argument("--physical-cores",type=int,default=2)
+    p.add_argument("--max-1d-wall-hours",type=float,
+        help="Optional per-session 1D wall budget; save an exactly resumable checkpoint on expiry")
+    p.add_argument("--no-cold-recovery",action="store_true",
+        help="Keep full native 1D even after the film qualifies for the late cold branch")
     p.add_argument("--recover-from-run",type=Path,
                    help="Authenticated fork of a stopped pre-handoff v1.2.1 case")
     limits={"current_limit_uA","device_voltage_limit_mV","readout_voltage_limit_mV","capacitor_voltage_limit_mV"}
@@ -62,14 +66,15 @@ def source_pins():
     pins=OLD.source_pins()
     for rel in ("pipelines/13_dimensional_photon_run.py",
         "pysnspd/experimental/dimensional_transition.py","pysnspd/experimental/dimensional_archive.py","pysnspd/experimental/dimensional_geometry.py","pysnspd/experimental/dimensional_monitors.py",
-        "pysnspd/experimental/dimensional_recovery.py"):
+        "pysnspd/experimental/dimensional_recovery.py","pysnspd/experimental/dimensional_1d.py",
+        "pysnspd/experimental/dimensional_cold.py"):
         pins[rel]=B.sha256(ROOT/rel)
     return pins
 
 
 def identity(a):
     return B.safe_json({k:v for k,v in vars(a).items() if k not in
-        ("output_dir","resume","cpu_start","duration_ps","recover_from_run")})
+        ("output_dir","resume","cpu_start","duration_ps","recover_from_run","max_1d_wall_hours")})
 
 
 def build_1d(a,s2,g2,output,resume):
@@ -106,11 +111,13 @@ def build_1d(a,s2,g2,output,resume):
     per_length=hbar/(2*elementary_charge)*bulk_ref.q_derivative_m_inv_per_A
     removed=per_length*(g.length_m-g2.length_m)
     circuit=replace(s2.circuit,Lk_ext_H=s2.circuit.Lk_ext_H-removed)
-    s=observed(ThermalCoupledSystem(f,k,ports,circuit,tau_ee_Tc_ps=a.tau_ee_Tc_ps,
+    from pysnspd.experimental.dimensional_1d import ColdPolar1DSystem
+    s=ColdPolar1DSystem(f,k,ports,circuit,tau_ee_Tc_ps=a.tau_ee_Tc_ps,
         tau_ep_Tc_ps=a.tau_ep_Tc_ps,current_scale_A=a.current_uA*1e-6,
-        kinetic_residual_energy_scale_J=s2.kinetic_residual_energy_scale_J))
+        kinetic_residual_energy_scale_J=s2.kinetic_residual_energy_scale_J)
     state=EffectiveState(dc_d,dc_p,np.broadcast_to(k.bath_phonons,
         (g.graph.n_nodes,k.phonon_size)).copy(),np.array([a.current_uA*1e-6,a.current_uA*1e-6,0.]))
+    s.configure(g,state)
     s.dimensional_partition=dict(length_2d_m=g2.length_m,length_1d_m=g.length_m,
         exterior_2d_H=s2.circuit.Lk_ext_H,exterior_1d_H=circuit.Lk_ext_H,
         removed_lumped_H=removed,bulk_differential_H_per_m=per_length,
@@ -134,6 +141,8 @@ def run(a):
         raise ValueError("The overlap requires extra time greater than confirmation time")
     if a.final_time_ns*1e3<=a.ceiling_ps+a.extra_time_ps:
         raise ValueError("Final time must follow the complete detection search")
+    if a.max_1d_wall_hours is not None and (not np.isfinite(a.max_1d_wall_hours) or a.max_1d_wall_hours<=0):
+        raise ValueError("Positive finite 1D wall budget required")
     tol=TransitionTolerances(**{k:getattr(a,"guard_"+k) for k in asdict(TransitionTolerances())})
     if any(not np.isfinite(x) or x<=0 for x in asdict(tol).values()):raise ValueError("Positive finite guards required")
     monitor_values={key:getattr(a,"monitor_"+key) for key in asdict(MonitorConfig())}
@@ -186,7 +195,7 @@ def run(a):
     def request(sig,frame):requested["stop"]=True
     signal.signal(signal.SIGTERM,request);signal.signal(signal.SIGINT,request)
     started=time.monotonic()
-    manifest=dict(schema="pysnspd.dimensional_run.v1",model_version="1.2.1",
+    manifest=dict(schema="pysnspd.dimensional_run.v1",model_version="1.2.2",
         physical_kernel_version="1.1.3",run_complete=False,status="PREPARATION",
         source_pins_sha256=pins,parameter_identity=ident,
         resources=dict(threads=a.threads,physical_cores=a.physical_cores,affinity_cpus=cpus,
@@ -196,6 +205,9 @@ def run(a):
         snapshot_policy="2D fixed targets; 1D accepted states at target cadence without capping dt; actual timestamps stored")
     write_json(out/"manifest.json",manifest)
     setup_values=dict(vars(a),duration_ps=None);setup_values.pop("recover_from_run",None)
+    setup_values.pop("monitor_collar_energy_fraction",None)
+    setup_values.pop("no_cold_recovery",None)
+    setup_values.pop("max_1d_wall_hours",None)
     setup_args=argparse.Namespace(**setup_values)
     s2,dc,g2,material,params=OLD.build_system(setup_args,out/"setup2d",resume=a.resume);observed(s2)
     dc2=EffectiveState(dc.delta_bar.copy(),dc.p.copy(),
@@ -203,6 +215,8 @@ def run(a):
         np.array([a.current_uA*1e-6,a.current_uA*1e-6,0.]))
     s1,g1,dc1=build_1d(a,s2,g2,out,a.resume)
     project=DimensionalProjection(s2,g2,dc2,s1,g1,dc1)
+    from pysnspd.experimental.dimensional_cold import ColdRecovery,advance_qualification
+    cold=ColdRecovery(s1,g1,dc1,s2.kinetic_residual_energy_scale_J)
     reference=float(s2.kinetic_residual_energy_scale_J)
     if not a.resume:
         state=dc2.copy()
@@ -227,6 +241,11 @@ def run(a):
     else:controller=B.TriggerWindow.from_checkpoint(m["controller"])
     systems={"2d":s2,"shadow1d":s1,"1d":s1}
     geoms={"2d":g2,"shadow1d":g1,"1d":g1};dcs={"2d":dc2,"shadow1d":dc1,"1d":dc1}
+    if m.pop("replay_saved_overlap",False):
+        from pysnspd.experimental.dimensional_recovery import replay_overlap
+        shadow,checks=replay_overlap(out,project,reference,m,a)
+        m.update(shadow_checks=checks,shadow_error=None,shadow_time_ps=m["time_ps"],
+                 shadow_active=True,next_step_ps=a.dt_ps)
     if m.pop("reaudit_saved_overlap",False):
         from pysnspd.experimental.dimensional_recovery import reaudit_overlap
         m["shadow_checks"]=reaudit_overlap(out,project,reference+m["device_absolute_J"],tol)
@@ -246,10 +265,12 @@ def run(a):
             cut_absolute_J=m["cut_absolute_J"],device_absolute_J=m["device_absolute_J"],
             domain_fraction=domain_fraction(),escape_power_W=rr.escape_power_W,
             cuts_power_W=rr.reservoir_power_out_W,step_ps=h,
-            iterations=receipt.get("iterations",0),temporal_error=receipt.get("temporal_error",0.))
+            iterations=receipt.get("iterations",0),temporal_error=receipt.get("temporal_error",0.),
+            regime_id=1. if m.get("cold_recovery",{}).get("active") else 0.)
     if not a.resume:
         archive.append("2d",row(rhs,state,0.,0.,{}));archive.snapshot("2d",s2,state,rhs,0.)
     status="RUNNING";error=None;last_checkpoint=time.monotonic();last_progress=last_checkpoint
+    one_d_started=last_checkpoint if m["phase"]=="1d" else None
     def save():
         nonlocal last_checkpoint
         archive.file.flush()
@@ -262,9 +283,12 @@ def run(a):
         arrays["metadata_json"]=np.array(json.dumps(B.safe_json(m),allow_nan=False))
         B.atomic_npz(out/"checkpoint_latest.npz",arrays)
         manifest.update(status=status,error=error,time_ps=m["time_ps"],phase=m["phase"],
-            continuation=m.get("continuation"),
+            continuation=m.get("continuation"),cold_recovery=m.get("cold_recovery"),
+            runtime_1d_session_wall_s=0. if one_d_started is None else time.monotonic()-one_d_started,
+            runtime_1d_wall_budget_hours=a.max_1d_wall_hours,
+            approximation_policy=cold.receipt,
             physicalparams=params,circuit_by_phase={"2d":asdict(s2.circuit),"shadow1d":asdict(s1.circuit),"1d":asdict(s1.circuit)},
-            inductance_partition=s1.dimensional_partition,source=m["source"],observation=controller.summary(),
+            inductance_partition=s1.dimensional_partition,solver_1d=s1.solver_receipt,source=m["source"],observation=controller.summary(),
             domain_fraction=domain_fraction(),projection=m["projection"],
             shadow_checks=m["shadow_checks"],shadow_error=m["shadow_error"],
             archive_counts=m["archive_counts"],checkpoint_sha256=B.sha256(out/"checkpoint_latest.npz"),
@@ -278,6 +302,11 @@ def run(a):
         while True:
             t=m["time_ps"]
             if requested["stop"]:status="INTERRUPTED_CHECKPOINTED";break
+            if m["phase"]=="1d":
+                if one_d_started is None:one_d_started=time.monotonic()
+                if (a.max_1d_wall_hours is not None and
+                    time.monotonic()-one_d_started>=a.max_1d_wall_hours*3600):
+                    status="WALL_BUDGET_CHECKPOINTED";break
             if a.duration_ps is not None and t>=a.duration_ps-1e-10:
                 status="DEVELOPMENT_DURATION_REACHED";break
             if m["max_global_energy_fraction"]>a.global_energy_tolerance:
@@ -309,6 +338,7 @@ def run(a):
             if a.duration_ps is not None:horizon=min(horizon,a.duration_ps)
             planned_step=m["next_step_ps"]
             h=min(planned_step,horizon-t)
+            if m.get("cold_recovery",{}).get("active"):h=min(h,cold.maximum_step_ps)
             if m["phase"]=="2d":h=min(h,m["next_snapshot_ps"]-t)
             if h<=0 or t+h==t:raise ArithmeticError("No representable positive physical step")
             kwargs=dict(tolerance=a.step_tolerance,max_iterations=a.max_iterations,
@@ -316,6 +346,8 @@ def run(a):
                 absolute_work=m["absolute_external_J"])
             try:
                 if m["phase"]=="2d":new,newrhs,receipt=checked_step(system,state,rhs,h,**kwargs)
+                elif m.get("cold_recovery",{}).get("active"):
+                    new,newrhs,receipt=cold.step(state,rhs,h,**kwargs)
                 else:new,newrhs,receipt=doubled_step(system,state,rhs,h,
                     time_rtol=a.time_rtol,time_atol=a.time_atol,**kwargs)
             except (ArithmeticError,ValueError,FloatingPointError) as exc:
@@ -329,23 +361,41 @@ def run(a):
             state=new;rhs=newrhs;m["time_ps"]=t+h;m["accepted_steps"]+=1;m["consecutive_rejections"]=0;m["stable_steps"]+=1
             m["external_J"]+=receipt["external_energy_increment_J"]
             m["absolute_external_J"]+=receipt["absolute_external_energy_increment_J"]
+            if m.get("cold_recovery",{}).get("active"):
+                info=m["cold_recovery"]
+                info["omitted_normal_joule_J"]=info.get("omitted_normal_joule_J",0.)+receipt.get("omitted_normal_joule_J",0.)
+                if info["omitted_normal_joule_J"]>cold.native_margin*reference:
+                    status="COLD_APPROXIMATION_BUDGET_EXCEEDED"
+                    error="Integrated omitted normal Joule heat exceeds 1% retained photon energy"
+                    m["terminal_diagnostic"]=True
+                    # Commit/archive this last accepted state before stopping below.
+                    m["cold_stop_requested"]=True
             m["max_local_energy_fraction"]=max(m["max_local_energy_fraction"],receipt["accepted_local_energy_fraction"])
             m["max_global_energy_fraction"]=max(m["max_global_energy_fraction"],
                 abs(rhs.energy_J+offset-initial_total-m["external_J"])/(reference+m["absolute_external_J"]))
             m["cut_absolute_J"]+=receipt["absolute_cut_energy_increment_J"]
             m["device_absolute_J"]+=receipt["absolute_device_work_increment_J"]
             t=m["time_ps"]
+            if m["phase"]=="1d" and not a.no_cold_recovery and not m.get("cold_recovery",{}).get("active"):
+                activation=advance_qualification(cold,state,rhs,t,m,a)
+                if activation is not None:
+                    state,rhs=activation
+                    archive.file.attrs.modify("cold_recovery_start_ps",t)
+                    archive.file["1d"].attrs.modify("cold_recovery_start_ps",t)
             m["latest_monitor"]=monitor_metrics(system,geoms[m["phase"]],state,rhs,dcs[m["phase"]],
                 monitor,reference,extended=m["phase"]=="1d")
             monitor_status,monitor_reason=monitor_observe(t,m["phase"],m["latest_monitor"],monitor,
                 m["monitor_tracker"],a.current_uA,a.sheet_resistance_ohm,g2.width_m*1e9)
             archive.append(m["phase"],row(rhs,state,t,h,receipt))
+            if m.get("cold_stop_requested"):
+                break
             if monitor_status:
                 status=monitor_status;m["monitor_reason"]=monitor_reason
                 m["terminal_diagnostic"]=status!="RECOVERY_CONFIRMED"
                 manifest["run_complete"]=status=="RECOVERY_CONFIRMED"
                 break
-            cap=a.dt_ps if m["phase"]=="2d" else a.maximum_1d_step_ps
+            cap=(a.dt_ps if m["phase"]=="2d" else
+                 cold.maximum_step_ps if m.get("cold_recovery",{}).get("active") else a.maximum_1d_step_ps)
             factor=((2. if m["stable_steps"]>=8 else 1.) if m["phase"]=="2d" else min(2.,max(1.,.8/max(receipt["temporal_error"],1e-12)**(1/3))))
             if m["phase"]=="2d" and m["stable_steps"]>=8:m["stable_steps"]=0
             m["next_step_ps"]=min(cap,max(h*factor,planned_step) if h<planned_step else h*factor)
@@ -405,7 +455,7 @@ def run(a):
     finally:
         archive.snapshot(m["phase"],system,state,rhs,m["time_ps"]);save();archive.close()
     print(json.dumps(dict(status=status,time_ps=m["time_ps"],phase=m["phase"],error=error)),flush=True)
-    return 0 if status in ("FINAL_TIME_REACHED","RECOVERY_CONFIRMED","TIME_CENSORED_NO_TRIGGER","DEVELOPMENT_DURATION_REACHED","INTERRUPTED_CHECKPOINTED") else 2
+    return 0 if status in ("FINAL_TIME_REACHED","RECOVERY_CONFIRMED","TIME_CENSORED_NO_TRIGGER","DEVELOPMENT_DURATION_REACHED","INTERRUPTED_CHECKPOINTED","WALL_BUDGET_CHECKPOINTED") else 2
 
 
 if __name__=="__main__":

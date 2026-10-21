@@ -62,6 +62,8 @@ def command(case,out,slot,a,resume=False):
          "--tau-escape-ps","20","--retained-fraction","0.8","--sheet-resistance-ohm","425",
          "--confirmation-ps","0.5","--extra-time-ps","2","--ceiling-ps",str(a.ceiling_ps),
          "--final-time-ns",str(a.final_time_ns),"--length-1d-nm",str(a.length_1d_nm)]
+    if a.no_cold_recovery:cmd.append("--no-cold-recovery")
+    if a.max_1d_wall_hours is not None:cmd.extend(("--max-1d-wall-hours",str(a.max_1d_wall_hours)))
     if resume:cmd.append("--resume")
     elif a.recover_from_campaign is not None:
         cmd.extend(("--recover-from-run",str(a.recover_from_campaign/"runs"/case["name"])))
@@ -72,15 +74,19 @@ def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--campaign-dir",type=Path,required=True)
     p.add_argument("--recover-from-campaign",type=Path,
-                   help="Fork authenticated v1.2.1 join-failure checkpoints; preserve originals")
+                   help="Fork authenticated v1.2.2 join-failure checkpoints; preserve originals")
     p.add_argument("--cases",nargs="+",choices=[c["name"] for c in cases()],
                    help="Run only these catalog cases; default is all six")
     p.add_argument("--prepare-only",action="store_true");p.add_argument("--resume",action="store_true")
+    p.add_argument("--no-cold-recovery",action="store_true")
+    p.add_argument("--max-1d-wall-hours",type=float,default=3.)
     p.add_argument("--threads-per-case",type=int,choices=(4,),default=4)
     p.add_argument("--physical-cores-per-case",type=int,choices=(2,),default=2)
     p.add_argument("--length-1d-nm",type=float,default=1000.)
     p.add_argument("--ceiling-ps",type=float,default=100.);p.add_argument("--final-time-ns",type=float,default=15.)
     a=p.parse_args(argv)
+    if a.max_1d_wall_hours is not None and not (0<a.max_1d_wall_hours<float("inf")):
+        p.error("--max-1d-wall-hours must be positive and finite")
     if a.cases is not None and len(a.cases)!=len(set(a.cases)):
         p.error("--cases contains duplicate names")
     selected=[c for c in cases() if a.cases is None or c["name"] in a.cases]
@@ -90,8 +96,8 @@ def main(argv=None):
     out.mkdir(parents=True,exist_ok=True)
     pins=RUN.source_pins();pins["pipelines/14_dimensional_basecases.py"]=RUN.B.sha256(__file__)
     pins["pipelines/10_thermal_stiffness_basecases.py"]=RUN.B.sha256(ROOT/"pipelines/10_thermal_stiffness_basecases.py")
-    definition=dict(schema="pysnspd.dimensional_campaign.v1",model_version="1.2.1",cases=selected,
-        source_pins_sha256=pins,ceiling_ps=a.ceiling_ps,final_time_ns=a.final_time_ns,length_1d_nm=a.length_1d_nm,
+    definition=dict(schema="pysnspd.dimensional_campaign.v1",model_version="1.2.2",cases=selected,
+        source_pins_sha256=pins,no_cold_recovery=a.no_cold_recovery,max_1d_wall_hours=a.max_1d_wall_hours,ceiling_ps=a.ceiling_ps,final_time_ns=a.final_time_ns,length_1d_nm=a.length_1d_nm,
         scheduling=dict(simultaneous_cases=count,threads_per_case=4,physical_cores_per_case=2,
             worker_threads=4*count,worker_physical_cores=2*count,SMT=True,minimum_reserved_physical_cores=2),
         scope="300nm central 2D / configurable full 1D default1000nm; cold added tails; frozen DC inductance repartition; guarded overlap and circuit/domain monitors; no quantitative admission")
@@ -158,8 +164,10 @@ def main(argv=None):
                 RUN.write_json(out/"campaign_execution.json",dict(results=results,total=count,complete=len(results)))
                 print(json.dumps(result),flush=True)
         good=all(x.get("run_complete") for x in results)
-        print(json.dumps(dict(status="COMPLETE" if good else "COMPLETE_WITH_DIAGNOSTICS_OR_FAILURES",results=results)),flush=True)
-        return 0 if good else 2
+        paused=all(x.get("run_complete") or x.get("status")=="WALL_BUDGET_CHECKPOINTED" for x in results)
+        status="COMPLETE" if good else "CHECKPOINTED_WALL_BUDGET" if paused else "COMPLETE_WITH_DIAGNOSTICS_OR_FAILURES"
+        print(json.dumps(dict(status=status,results=results)),flush=True)
+        return 0 if good or paused else 2
 
 
 if __name__=="__main__":raise SystemExit(main())

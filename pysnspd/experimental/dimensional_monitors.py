@@ -15,6 +15,7 @@ class MonitorConfig:
     collar_temperature_rise_K: float = .5
     collar_gap_fraction: float = .9
     collar_confirmation_ps: float = 2.
+    collar_energy_fraction: float = .001
     current_limit_uA: float = 28.453333333333333
     device_voltage_limit_mV: float = 302.31666666666666
     readout_voltage_limit_mV: float = 1.4226666666666667
@@ -64,8 +65,20 @@ def metrics(system,geometry,state,rhs,dc,config,reference_J,extended=False):
         limit=np.sum(k.phonon_energy_weights_J[collar]*k.bose(
             k.bath_temperature_K+config.collar_temperature_rise_K),axis=1)
         out["collar_phonon_hot"]=bool(np.any(actual>limit))
-        out["boundary_alarm"]=bool(out["collar_max_Te_K"]>k.bath_temperature_K+config.collar_temperature_rise_K or
-            out["collar_min_gap_ratio"]<config.collar_gap_fraction or out["collar_phonon_hot"])
+        eps=4*f.node_energy_scale_J[:,None]*f.weights_bar*f.energies_bar(state.delta_bar)
+        cold_p=f.fermi_dirac(state.delta_bar,k.bath_temperature_K)
+        collar_energy=(np.sum(eps[collar]*abs(state.p[collar]-cold_p[collar]))+
+            np.sum(k.phonon_energy_weights_J[collar]*abs(state.n[collar]-k.bath_phonons)))
+        out["collar_native_energy_fraction"]=float(collar_energy/reference_J)
+        out["collar_thermal_warning"]=bool(
+            out["collar_max_Te_K"]>k.bath_temperature_K+config.collar_temperature_rise_K or
+            out["collar_phonon_hot"])
+        # A sub-Tc temperature rise in a nearly empty gapped spectrum is not
+        # alone evidence that a significant hot front escaped the domain.
+        # Keep it visible, and require a declared native-energy significance.
+        out["boundary_alarm"]=bool(out["collar_min_gap_ratio"]<config.collar_gap_fraction or
+            (out["collar_thermal_warning"] and
+             out["collar_native_energy_fraction"]>config.collar_energy_fraction))
     small_voltage=max(abs(out["Vout_mV"]),abs(out["Vdev_mV"]),abs(out["vc_mV"]))<=config.recovery_voltage_uV*1e-3
     if (small_voltage and out["current_error_fraction"]<=config.recovery_current_fraction and
         out["max_temperature_K"]<=k.bath_temperature_K+config.recovery_temperature_rise_K and

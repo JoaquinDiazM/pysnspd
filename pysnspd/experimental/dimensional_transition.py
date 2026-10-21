@@ -279,6 +279,8 @@ class DimensionalProjection:
                 d[new]=self.dc1.delta_bar[new]*np.exp(1j*relative_phase)
                 p[new]=self.dc1.p[new];n[new]=self.dc1.n[new]
         raw=EffectiveState(d,p,n,state.circuit_SI.copy())
+        if hasattr(self.s1,"impose_cold_cuts"):
+            raw=self.s1.impose_cold_cuts(raw);d,p,n=raw.delta_bar,raw.p,raw.n
         target=film_energy(self.s2,state)-self.Edc2+self.Edc1+self.inductive_excess_transfer_J(state)
         before=film_energy(self.s1,raw)
         raw_error=abs(before-target)/scale
@@ -391,7 +393,7 @@ def checked_step(system,state,rhs,h,*,tolerance,max_iterations,energy_tolerance,
 
 
 def doubled_step(system,state,rhs,h,*,time_rtol,time_atol,**kwargs):
-    full,_,_=checked_step(system,state,rhs,h,**kwargs)
+    full,rfull,_=checked_step(system,state,rhs,h,**kwargs)
     half,rhalf,a=checked_step(system,state,rhs,h/2,**kwargs)
     second,rsecond,b=checked_step(system,half,rhalf,h/2,**kwargs)
     f=system.functional;reference=kwargs["reference"]
@@ -401,8 +403,26 @@ def doubled_step(system,state,rhs,h,*,time_rtol,time_atol,**kwargs):
         (time_atol*system.circuit_scales+time_rtol*np.maximum(
             abs(second.circuit_SI),system.circuit_scales))))
     native=population_distance(system,second,full,reference)/(time_atol+time_rtol)
-    error=max(gap,cm,native)/3.
+    if getattr(system,"physical_temporal_norm",False):
+        amplitude=float(np.max(abs(abs(second.delta_bar)-abs(full.delta_bar)))/
+            (time_atol+time_rtol*np.max(abs(state.delta_bar))))
+        conductance=system.functional.graph.conductance
+        w=np.zeros_like(conductance);valid=conductance>0
+        w[valid]=system.ports.sheet_resistance_ohm/conductance[valid]
+        resistance=float(np.sum(system.ports.sheet_resistance_ohm/conductance[valid]))
+        flow=float(np.sqrt(np.dot(w,(rsecond.evaluation.edge_current_A-
+            rfull.evaluation.edge_current_A)**2)/(resistance*system.current_scale_A**2)))/(time_atol+time_rtol)
+        voltage=abs(rsecond.electrical.Vdev_V-rfull.electrical.Vdev_V)/(
+            time_atol*system.voltage_scale_V+time_rtol*max(
+                abs(rsecond.electrical.Vdev_V),system.voltage_scale_V))
+        error=max(amplitude,flow,voltage,cm,native)/3.
+    else:error=max(gap,cm,native)/3.
     if not np.isfinite(error) or error>1:
         raise ArithmeticError("1D step-doubling temporal error: "+str(error))
     receipt=combine_receipts(a,b);receipt["temporal_error"]=error
+    receipt["temporal_complex_gap_error"]=gap/3.
+    if getattr(system,"physical_temporal_norm",False):
+        receipt["temporal_gap_amplitude_error"]=amplitude/3.
+        receipt["temporal_supercurrent_error"]=flow/3.
+        receipt["temporal_device_voltage_error"]=voltage/3.
     return second,rsecond,receipt

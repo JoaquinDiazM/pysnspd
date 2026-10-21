@@ -7,7 +7,7 @@ import numpy as np
 TRACE=("time_ps","Vout_V","Vdev_V","Ib_A","Is_A","vc_V","energy_J",
        "energy_defect_J","external_J","absolute_external_J","cut_absolute_J",
        "device_absolute_J","domain_fraction","escape_power_W","cuts_power_W",
-       "step_ps","iterations","temporal_error")
+       "step_ps","iterations","temporal_error","regime_id")
 
 
 class PhaseArchive:
@@ -16,7 +16,7 @@ class PhaseArchive:
         self.file=h5py.File(self.path,"r+" if resume else "w",libver="latest")
         if not resume:
             self.file.attrs["schema"]="pysnspd.dimensional_run.v1"
-            self.file.attrs["model_version"]="1.2.1"
+            self.file.attrs["model_version"]="1.2.2"
             self.file.attrs["voltage_scope"]="Intrinsic Rload*(Ib-Is); no amplifier/filter"
             self.file.attrs["phase_policy"]="2d official before handoff; shadow1d independent; 1d official after handoff"
             for name,system in systems.items():
@@ -41,12 +41,27 @@ class PhaseArchive:
                     q.create_dataset(key,shape=(0,)+shape,maxshape=(None,)+shape,
                         chunks=(1,)+shape,dtype=dtype,compression="lzf")
         elif counts is not None:
+            for name in systems:
+                q=self.file[name]
+                if "regime_id" not in q["trace"].dtype.names:
+                    old=q["trace"][:];del q["trace"]
+                    ds=q.create_dataset("trace",shape=(len(old),),maxshape=(None,),
+                        dtype=[(key,"f8") for key in TRACE],chunks=(256,))
+                    upgraded=np.zeros(len(old),dtype=ds.dtype)
+                    for key in old.dtype.names:upgraded[key]=old[key]
+                    ds[:]=upgraded
             for name,sizes in counts.items():
                 q=self.file[name]
                 for key,size in sizes.items():
                     ds=q[key]
                     if len(ds)<size:raise ValueError("Archive is shorter than committed checkpoint")
                     ds.resize(size,axis=0)
+        if "cold_recovery_start_ps" not in self.file.attrs:
+            self.file.attrs["cold_recovery_start_ps"]=-1.
+        if "cold_recovery_scope" not in self.file.attrs:
+            self.file.attrs["cold_recovery_scope"]="native evolution until admission; late equilibrium spatial reconstruction afterwards"
+        if "cold_recovery_start_ps" not in self.file["1d"].attrs:
+            self.file["1d"].attrs["cold_recovery_start_ps"]=-1.
         self.file.flush();self.file.swmr_mode=True
         self.reference={}
         for name,system in systems.items():

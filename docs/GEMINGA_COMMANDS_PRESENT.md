@@ -1,3 +1,69 @@
+# Current commands: pysnspd v1.2.2
+
+
+## 2026-10-21 | v1.2.2: cold cuts, native polar solver and gated late recovery
+
+Purpose: reuse valid2D775/1550nm at21.5uA, escape20ps, eta0.8, Rs425ohm,
+tau_ee(Tc)4ps. Keep300nm2D/1000nm1D. Replay only1D overlap with current-following
+cold cuts; the old fixed-cut1D heating is not a valid new exterior history.
+Preserve every original directory and never redeposit the photon.
+
+Hot1D remains native. Polar coordinates, zero-mean temporal gauge and exact
+gradient reuse accelerate it. A late cold approximation additionally requires
+full-domain gap/native-energy/current/voltage bounds AND10ps independent overlap.
+It is never forced at100ps. The actual3-state circuit, cold differential
+inductance, bath/energy accounting and omitted-Joule budget remain explicit.
+Read docs/V1_2_DIMENSIONAL_EVOLUTION.md. --no-cold-recovery selects a full-native
+control in a fresh campaign directory.
+
+Resources:4SMT threads/2exclusive physical cores per case;8threads/4worker cores
+plus coordinator for this pair; BLAS/OpenMP1;>=2whole cores reserved,11GiB
+conservative RAM reservation. Heavy files/logs/caches stay in scratch.
+The3h1Dsession budget saves WALL_BUDGET_CHECKPOINTED rather than claiming
+physical completion. Same command + --resume continues the NEW campaign.
+
+Validated scopes: actual checkpoints beyond the old2ps stop; gauge invariance,
+boundary work, exact cache, cold admission/restart/labels and guards; a
+nontrivial15ns cold-circuit control in about4s after preparation. Full15ns
+photon recovery and<3h end-to-end remain pending. COLD_RECOVERY_ADMITTED
+identifies entry into the fast regime.
+
+Simulation (user-run):
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  NUMBA_CACHE_DIR=/home/jdiaz/scratch/tmp/pysnspd/numba_cache \
+  NUMBA_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python -u \
+  pipelines/14_dimensional_basecases.py \
+  --campaign-dir /home/jdiaz/scratch/photon_runs/dimensional_v1_2_2_recovered_20261021_01 \
+  --recover-from-campaign /home/jdiaz/scratch/photon_runs/dimensional_v1_2_1_pair_20261019_01 \
+  --cases bias21p5_ee4_775 bias21p5_ee4_1550 \
+  --length-1d-nm 1000 \
+  --threads-per-case 4 --physical-cores-per-case 2 \
+  --ceiling-ps 100 --final-time-ns 15 \
+  --max-1d-wall-hours 3
+```
+
+Add --prepare-only for the exact plan/capacity check without simulation.
+The100ps no-trigger ceiling does not truncate admitted1D evolution.
+
+Individual phase-aware visualization:
+```bash
+cd /home/jdiaz/pysnspd
+env PYTHONPYCACHEPREFIX=/home/jdiaz/scratch/tmp/pysnspd/pycache \
+  MPLCONFIGDIR=/home/jdiaz/scratch/tmp/pysnspd/matplotlib \
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+  /home/jdiaz/.conda/envs/snspd/bin/python \
+  plot_pipelines/08_dimensional_case_report.py \
+  --run-dir /home/jdiaz/scratch/photon_runs/dimensional_v1_2_2_recovered_20261021_01/runs/* \
+  --snapshots-ps 1 11 20 25 30 40 \
+  --output-dir /home/jdiaz/scratch/case_reports/dimensional_v1_2_2_recovered_20261021_01 \
+  --workers 2
+```
+
 # Current commands: pysnspd v1.2.1 handoff correction
 
 
