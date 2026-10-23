@@ -47,6 +47,10 @@ def parser():
     p.add_argument("--checkpoint-1d-every-ps",type=float,default=100.)
     p.add_argument("--shadow-check-every-ps",type=float,default=.1)
     p.add_argument("--physical-cores",type=int,default=2)
+    p.add_argument("--cpu-list",type=str,
+        help="Explicit disjoint logical CPUs assigned by a budgeted campaign; SMT sharing must be declared")
+    p.add_argument("--latency-only",action="store_true",
+        help="Stop after confirmed detection plus extra time, without shadow or official 1D evolution")
     p.add_argument("--max-1d-wall-hours",type=float,
         help="Optional per-session 1D wall budget; save an exactly resumable checkpoint on expiry")
     p.add_argument("--no-cold-recovery",action="store_true",
@@ -74,7 +78,8 @@ def source_pins():
 
 def identity(a):
     return B.safe_json({k:v for k,v in vars(a).items() if k not in
-        ("output_dir","resume","cpu_start","duration_ps","recover_from_run","max_1d_wall_hours")})
+        ("output_dir","resume","cpu_start","duration_ps","recover_from_run","max_1d_wall_hours","cpu_list")
+        and not (k=="latency_only" and not v)})
 
 
 def build_1d(a,s2,g2,output,resume):
@@ -161,9 +166,16 @@ def run(a):
     from sandbox.stage4_core.parallel_runtime import linux_resources,resource_budget
     resources=linux_resources();budget=resource_budget(resources,.9,.9,max_workers=1)
     groups=[g for g in resources["physical_core_groups"] if set(g)<=set(budget["selected_affinity_cpus"])]
-    selected=groups[a.cpu_start:a.cpu_start+a.physical_cores]
-    cpus=[c for g in selected for c in g]
-    if len(selected)!=a.physical_cores or a.threads>len(cpus):raise ValueError("Threads/whole cores exceed admitted budget")
+    if a.cpu_list is None:
+        selected=groups[a.cpu_start:a.cpu_start+a.physical_cores]
+        cpus=[c for g in selected for c in g]
+        if len(selected)!=a.physical_cores or a.threads>len(cpus):raise ValueError("Threads/whole cores exceed admitted budget")
+    else:
+        cpus=[int(v) for v in a.cpu_list.split(",")]
+        if (not cpus or len(cpus)!=len(set(cpus)) or
+            not set(cpus)<=set(budget["selected_affinity_cpus"]) or a.threads>len(cpus)):
+            raise ValueError("Explicit CPU list exceeds the shared resource ceiling or contains duplicates")
+        selected=[g for g in groups if set(g)&set(cpus)]
     os.sched_setaffinity(0,set(cpus))
     out=B.scratch_path(a.output_dir);pins=source_pins();ident=identity(a)
     if a.recover_from_run is not None:
@@ -198,13 +210,21 @@ def run(a):
     manifest=dict(schema="pysnspd.dimensional_run.v1",model_version="1.2.3",
         physical_kernel_version="1.1.3",run_complete=False,status="PREPARATION",
         source_pins_sha256=pins,parameter_identity=ident,
-        resources=dict(threads=a.threads,physical_cores=a.physical_cores,affinity_cpus=cpus,
+        resources=dict(threads=a.threads,physical_cores=len(selected),affinity_cpus=cpus,
+                       physical_core_groups_touched=selected,
+                       whole_core_exclusivity_requested=a.cpu_list is None,
+                       allocation_mode="whole-core" if a.cpu_list is None else "campaign explicit logical CPUs; possible SMT sharing",
                        runtime_inventory=resources),
         admission=dict(implemented=True,physical_validation=False),
         scope="Central 2D strip embedded in longer full 1D; cold-current-carrying tails and frozen DC inductance repartition; no amplifier",
         snapshot_policy="2D fixed targets; 1D accepted states at target cadence without capping dt; actual timestamps stored")
+    if a.latency_only:
+        manifest.update(scope="Current v1.2.3 native 2D detection plus margin only; no 1D time evolution or full reset",
+            observation_scope=dict(mode="latency-only",one_d_evolution_requested=False,
+                full_reset_requested=False,official_target="confirmed crossing + extra_time_ps"))
     write_json(out/"manifest.json",manifest)
     setup_values=dict(vars(a),duration_ps=None);setup_values.pop("recover_from_run",None)
+    setup_values.pop("cpu_list",None);setup_values.pop("latency_only",None)
     setup_values.pop("monitor_collar_energy_fraction",None)
     setup_values.pop("no_cold_recovery",None)
     setup_values.pop("max_1d_wall_hours",None)
@@ -328,6 +348,8 @@ def run(a):
             if m["phase"]=="2d" and controller.terminal:
                 if controller.status!="TRIGGER_MARGIN_COMPLETE":
                     status=controller.status;manifest["run_complete"]=(status=="TIME_CENSORED_NO_TRIGGER");break
+                if a.latency_only:
+                    status="TRIGGER_MARGIN_COMPLETE";manifest["run_complete"]=True;break
                 try:
                     if m["shadow_error"] is not None:raise ArithmeticError(m["shadow_error"])
                     if shadow is None or len(m["shadow_checks"])<2:
@@ -416,7 +438,7 @@ def run(a):
                 cross=(controller.crossing_time_s if controller.crossing_time_s is not None else controller.candidate_crossing_s)
                 if cross is None:
                     shadow=None;m["shadow_crossing_ps"]=None;m["shadow_error"]=None;m["shadow_checks"]=[]
-                elif m["shadow_error"] is None:
+                elif not a.latency_only and m["shadow_error"] is None:
                     try:
                         crossing_ps=cross*1e12
                         scale=reference+m["device_absolute_J"]
@@ -467,7 +489,7 @@ def run(a):
     finally:
         archive.snapshot(m["phase"],system,state,rhs,m["time_ps"]);save();archive.close()
     print(json.dumps(dict(status=status,time_ps=m["time_ps"],phase=m["phase"],error=error)),flush=True)
-    return 0 if status in ("FINAL_TIME_REACHED","RECOVERY_CONFIRMED","TIME_CENSORED_NO_TRIGGER","DEVELOPMENT_DURATION_REACHED","INTERRUPTED_CHECKPOINTED","WALL_BUDGET_CHECKPOINTED") else 2
+    return 0 if status in ("TRIGGER_MARGIN_COMPLETE","FINAL_TIME_REACHED","RECOVERY_CONFIRMED","TIME_CENSORED_NO_TRIGGER","DEVELOPMENT_DURATION_REACHED","INTERRUPTED_CHECKPOINTED","WALL_BUDGET_CHECKPOINTED") else 2
 
 
 if __name__=="__main__":

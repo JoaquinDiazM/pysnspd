@@ -1,37 +1,44 @@
-# pySNSPD 1.1.3
+# pySNSPD 1.2.4
 
-**Neutral efectivo BCS/KWT con corrección térmica de depareo y referencia DC conservada.** La revisión sustituye la extrapolación cuadrática del gradiente térmico a gradientes grandes, mantiene la difusión calibrada al depareo y resuelve conjuntamente condensado, distribuciones electrónicas/fonónicas y circuito.
+Conserving effective neutral BCS/KWT simulations of photon detection in SNSPDs,
+with native electron/phonon populations, temperature-dependent stiffness,
+depairing-calibrated diffusion and the thesis bias/readout circuit.
 
-El bloqueo 1.1.2 tenía una componente constitutiva: Ceff podía acercarse a cero y cambiar de signo a gradiente fijo. La nueva energía libre evalúa la corrección térmica mediante Matsubara de depareo finito. Un término conservativo independiente de temperatura preserva el DC anterior y deja elasticidad residual a Te alta: es una hipótesis explícita. [Diagnóstico](docs/releases/v1.1.3.md), [modelo vigente](docs/implementation/MODELO_VIGENTE.md) y [estado](status.md).
+The publication reference is the80nm Rs608ohm/square case family at0.9K,
+eta0.9,tau_ee(Tc)5ps and phonon escape20ps. The completed central775/1550nm
+pairs give deterministic relative delays of3.4521ps at21.5uA and13.6161ps
+at15.5uA. These are finite-window intrinsic readout results, not a full
+experimental IRF, exact experimental fit or certified reset.
 
-Los anclajes nuevos de 775/1550 nm completaron **0–12 ps** con capacidad positiva, soporte físico y balance independiente. La continuación 8–12 ps conserva los estados, las fuentes y el trabajo externo, sin redepositar el fotón. Esa cobertura no certifica detección, latencia experimental ni jitter.
+## Run and inspect
 
-## Ejecución
+- [Current single-case entry](pipelines/18_spatial_photon_run.py): reflecting
+  transverse Gaussian preparation with explicit retained energy/impact position,
+  or authenticated continuation of completed1.2.3 latency cases.
+- [Current campaign entry](pipelines/19_v124_campaign.py): four spatial latency
+  probes or four baseline1D continuations;3threads/case; independent screens
+  coordinate atomic CPU leases and print readable progress tables.
+- [Individual case reports](plot_pipelines/08_dimensional_case_report.py):
+  nine per-case event-based2D snapshots and six longitudinal slots.
+- [Exact commands](docs/GEMINGA_COMMANDS_PRESENT.md);
+  [command history](docs/GEMINGA_COMMANDS.md).
+- [Release physics, assumptions and continuation protocol](docs/releases/v1.2.4.md).
+- [Mathematical documents](Matematica/) describe the underlying native equations;
+  the reflecting PREPARATION formula and its limitations are in the release note.
 
-La entrada operativa actual es [pipeline 09](pipelines/09_thermal_stiffness_photon_run.py), con [campaña 10](pipelines/10_thermal_stiffness_basecases.py) y [reporte 07](plot_pipelines/07_case_report.py). [Comandos presentes](docs/GEMINGA_COMMANDS_PRESENT.md) reúne las órdenes normales y visuales. Las clases térmicas especializadas permanecen en pysnspd.experimental; la API pysnspd.effective ofrece piezas compartidas y la referencia al baño, por lo que el cierre térmico debe seleccionarse explícitamente.
+All heavy data and caches belong under /home/jdiaz/scratch. New latency cases
+stop at confirmed positive0.1mV crossing+2ps, with a100ps no-trigger ceiling.
+The separate recovery campaign reuses all2D data and validated1D overlap,
+retains a1000nm1D domain/15ns physical target and an8h1Dsession wall budget.
+Physical/domain guards may stop it earlier. A wall-budget stop is checkpointed.
 
-~~~bash
-python -m pip install -e '.[performance]'
-~~~
+## Scope and reproducibility
 
-La referencia usa ancho80 nm, espesor7 nm, baño0,9 K, corriente21,5 µA y escape20 ps. Rs=425 Ω y D calibrada son hipótesis documentadas. El depareo25,8667 µA resulta de escalar una estimación para120 nm: no es una medida independiente de la cinta80 nm.
+The native evolution kernel is unchanged from1.2.3. The frozen pipeline13 is
+retained under its historical identity for source-authenticated reuse; use18/19
+for new1.2.4 work. No population/capacity floors, tolerance relaxation, new
+latency fit, statistical emulator or promised full-reset runtime are introduced.
+Historical Allmaras/Korzh input controls remain explicitly isolated in16/17.
 
-La observación termina con Vout positivo0,1 mV, confirmación0,5 ps y margen5 ps desde el primer cruce; sin gatillo se censura a100 ps. Vout no incluye filtro/amplificador experimental. No se pide reset completo.
-
-Todos los datos pesados, logs, cachés JIT y renders van a /home/jdiaz/scratch; NUMBA_CACHE_DIR debe apuntar allí. Se conserva el presupuesto global90 % y los checkpoints antiguos con sus fuentes. La nueva física inicia casos fresh.
-
-## Alcance
-
-La cinética conserva espectros BCS locales q=0: la corrección de gradiente no introduce una DOS cinética depareada. Qeff reúne gradientes de fase y amplitud como hipótesis efectiva. El material fonónico es acústico; la tabla NbN/QNN-MIT no tiene normalización absoluta resuelta. No es Usadel microscópico exacto.
-
-Tau_ee(Tc) y tau_ep(Tc), nominales libres5 y24,7 ps de nomenclatura Allmaras, siguen siendo calibradores. El reloj comienza postcascada; la cascada ultrarrápida no se evoluciona. Una trayectoria determinista no determina jitter estadístico ni latencia óptica absoluta.
-
-Se mantienen las tolerancias físicas y las guardas de capacidad/rigidez, soporte y energía. Las sesiones0–8 ps proyectan11,18/12,43 h por100 ps para775/1550 nm, incluyendo preparación/JIT; no es garantía ni medida exclusiva posterior al DC. El benchmark del mismo estado a12 ps favorece seis hilos:1,53× frente a dos, con RHS y endpoints idénticos bit a bit. La afinidad L3 propuesta no se promovió sin una comparación específica.
-
-## Historia
-
-thesis-v1.0.0 conserva la memoria; v1.0.0 conserva la referencia efectiva admitida exploratoriamente en0–36,6 ps de775 nm. Esa admisión no se transfiere a1.1.3. [Changelog](CHANGELOG.md), [releases](docs/releases/) e [historial de comandos](docs/GEMINGA_COMMANDS.md) preservan decisiones anteriores.
-
-[Licencia](LICENSE). Mantenedor: Joaquin Andres Diaz Monge.
-
-La región crítica775 nm exigió pasos más pequeños: el tramo8–12 ps tomó71,7min, frente a28,2min en1550 nm. No extrapolar un intervalo suave al pulso entero. La ampliación diagnóstica a25ps quedó aplazada al cerrar esta entrega; no se ejecutó ni se declara completa.
+See [changelog](CHANGELOG.md), [earlier constitutive revision](docs/releases/v1.1.3.md),
+and the source-hashed manifests stored alongside every run.

@@ -184,3 +184,27 @@ The user explicitly authorizes this task to execute runs longer than five minute
   state only when all evolution sources/inputs match and the new guards pass
   before advancement. Preserve original data and all energy/work ledgers;
   never discard or reinterpret an actual numerical or current-relative gap failure.
+
+
+## Active standard and user-authorized campaigns (2026-10-23, v1.2.4)
+
+- New normal single/campaign entries are18_spatial_photon_run.py and19_v124_campaign.py.
+  Native pipeline13/evolution sources stay source-frozen for authenticated historical reuse.
+- The fixed publication reference is the Rs608 family, eta0.9,tau_ee(Tc)5ps,
+  escape20ps,bath0.9K. Exploratory cases may vary only retained energy,bias and
+  transverse impact; explicit retained energy changes eta consistently.
+- The reflecting Neumann image profile is a stated postcascade sidewall hypothesis;
+  sum image shapes BEFORE the single native energy inversion, conserve the declared
+  retained photon, and keep substrate escape. No second photon or delayed source.
+- Completed1.2.3 latency cases may be independently copied/authenticated; never
+  overwrite originals or redeposit the photon. Replay only native1D overlap against
+  exact saved2D states, then enforce all unchanged handoff/physical/domain guards.
+- Recovery commands retain15ns and1000nm1D;8h native1D wall budget per case/session
+  saves a resumable checkpoint. Passing overlap is not proof of reset completion.
+- Two independent four-case campaigns use3Numba threads/case, six worker SMT2 cores
+  and a coordinator each. Atomic live-PID/start-time leases protect combined28CPU/
+  two-whole-core reservation. Preserve other jobs and refuse insufficient capacity.
+- Reporting default is nine per-case2D event slots (0,1,VS,VS+.1,VS+.2,HB,HB+2,
+  Trigger,final2D), nearest saved fields and visible missing/truncation/repetition
+  provenance; six1D slots remain. VS/HB are first saved detections, not exact onset.
+- No statistical/analytic latency fit or emulator is implemented by1.2.4.

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.4 - 2026-10-23
+
+- Add explicit retained-energy/transverse-position inputs and a conserving reflecting Gaussian preparation; sum Neumann images before a single native internal-energy inversion with positive-capacity guards.
+- Adopt the completed Rs608 family as the publication reference and document deterministic relative delays and model scope.
+- Authenticate completed v1.2.3 latency-only cases, preserve original2D/source/DC/checkpoints, replay only the saved1D overlap and continue admitted1000nm native1D states toward15ns with an8h per-session wall budget.
+- Add concurrent four-case/three-thread campaigns with atomic live-PID CPU leases, two-whole-core reservation, readable phase-aware progress and exact own-checkpoint resume.
+- Collect post1.2.3 latency/historical controls and nine-event-snapshot individual reports, including current1.2.4 source profiles and diagnostics.
+- Preserve native evolution sources, tolerances and all support/capacity/energy/current/domain guards. Statistical emulation proposals remain unimplemented.
+- Validate91tests, all four real spatial preparations, all four baseline overlap/handoffs plus brief1D advancement, exact wall-checkpoint resume and concurrent28CPU admission.
+
 ## 1.1.3 - 2026-10-17
 
 - Replace the strong-gradient quadratic thermal extrapolation with a DC-matched finite-depairing thermal correction and explicitly document residual high-temperature matching elasticity.

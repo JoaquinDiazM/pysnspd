@@ -169,12 +169,25 @@ class DimensionalTests(unittest.TestCase):
                 "--current-uA","15.5","--spacing-1d-nm","10"]
             if getattr(self,"_expect_wall",False):
                 words.extend(("--max-1d-wall-hours","1e-12"))
+            if getattr(self,"_expect_latency",False):
+                words.extend(("--latency-only","--cpu-list",str(inventory["physical_core_groups"][12][0])))
             build=lambda *args,**kw:(self.s2,dc,self.g2,SimpleNamespace(manifest={}),{})
             # 1D DC cache/resume follows the real implementation.
             with patch.object(runner.OLD,"build_system",side_effect=build),patch.object(runner.B,"TriggerWindow",ArtificialVoltageProbe),patch("sandbox.stage4_core.parallel_runtime.linux_resources",return_value=inventory):
                 code=runner.run(runner.parser().parse_args(words))
                 self.assertEqual(code,0)
                 m=json.loads((out/"manifest.json").read_text())
+                if getattr(self,"_expect_latency",False):
+                    self.assertEqual(m["status"],"TRIGGER_MARGIN_COMPLETE")
+                    self.assertTrue(m["run_complete"]);self.assertEqual(m["phase"],"2d")
+                    self.assertEqual(m["shadow_checks"],[])
+                    self.assertEqual(m["archive_counts"]["1d"]["trace"],0)
+                    self.assertEqual(m["archive_counts"]["shadow1d"]["trace"],0)
+                    self.assertAlmostEqual(m["time_ps"],.003)
+                    self.assertFalse(m["observation_scope"]["one_d_evolution_requested"])
+                    self.assertEqual(m["resources"]["affinity_cpus"],[inventory["physical_core_groups"][12][0]])
+                    self.assertLess(abs(m["energy_defect_J"]),1e-25)
+                    return
                 self.assertEqual(m["phase"],"1d");self.assertGreaterEqual(len(m["shadow_checks"]),2)
                 if getattr(self,"_expect_cold",False):
                     self.assertTrue(m["cold_recovery"]["active"])
@@ -196,6 +209,11 @@ class DimensionalTests(unittest.TestCase):
                 with (out/"dc1d.npz").open("ab") as f:f.write(b"changed")
                 with self.assertRaisesRegex(ValueError,"1D DC reference changed"):
                     runner.run(runner.parser().parse_args(words))
+
+    def test_latency_horizon_stops_without_1d_and_respects_explicit_affinity(self):
+        self._expect_latency=True
+        try:self.test_runner_handoff_and_exact_resume()
+        finally:self._expect_latency=False
 
     def test_campaign_shared_budget_and_busy_refusal(self):
         import importlib.util
