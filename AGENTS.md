@@ -208,3 +208,27 @@ The user explicitly authorizes this task to execute runs longer than five minute
   Trigger,final2D), nearest saved fields and visible missing/truncation/repetition
   provenance; six1D slots remain. VS/HB are first saved detections, not exact onset.
 - No statistical/analytic latency fit or emulator is implemented by1.2.4.
+
+
+## Active electrical continuation standard (user, 2026-10-29, v1.2.5)
+
+- Version1.2.5 adds an explicit electrical-only0D phase. Preserve frozen native
+  producers13/18/19 and all authenticated1.2.3/1.2.4 data; never relabel their
+  physical evolution or change source hashes to force compatibility.
+- Use25_v125_electrical_phase.py or26_v125_recovery_pair.py for the additional
+  phase. Inherit the exact current native1D state/time; restore only its resolved
+  frozen DC inductance, retaining Vfilm=Lfilm*dIs/dt and the three actual circuit
+  states. No photon redeposition, rewind, new fit or imposed electrical reset.
+- Require the declared SC/electrical overlap monitor and native physical/domain/
+  energy integrity. A time threshold alone cannot admit0D; rejected checkpoints
+  remain native. Keep independent reduced-phase work/energy acceptance and inherited
+  ledger defects visible; reduced conservation is not native thermal validation.
+- Store separate0D outputs, immutable native references, exact checkpoint copies
+  and source provenance. No fictitious gap/p/n/temperature evolution after handoff.
+  Inspect combined phase history with plot_pipelines/10_v125_phase_history.py.
+- The non-bath native temperature is a deferred user-authorized audit, archived in
+  docs/audits/v125_thermal_recovery_pending.md. It is not silently repaired, ignored
+  as a reset certificate or extended by a fabricated temperature curve.
+- Pair0D work uses one numerical thread per case and the same atomic shared CPU
+  registry,90% ceiling and at least two whole reserved physical cores. Production
+  continuation is launched by the user from the supplied exact command.

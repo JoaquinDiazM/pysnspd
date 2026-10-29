@@ -1,0 +1,261 @@
+{
+  "model_version": "1.2.5",
+  "date": "2026-10-29",
+  "tests": {
+    "result": "82 passed",
+    "wall_s": 172.51,
+    "files": [
+      "tests/test_electrical_0d.py",
+      "tests/test_experimental_electrical_ports.py",
+      "tests/test_dimensional_transition.py",
+      "tests/test_dimensional_report_events.py"
+    ]
+  },
+  "real_cases": [
+    {
+      "case": "rs608_bias15p5_775",
+      "status": "ELECTRICAL_HORIZON_COMPLETE",
+      "start_ps": 16066.646941749794,
+      "end_ps": 100000.0,
+      "admission": {
+        "admitted": true,
+        "reasons": [],
+        "config": {
+          "earliest_ns": 12.0,
+          "overlap_ns": 1.0,
+          "voltage_error_uV": 1.0,
+          "current_error_fraction": 0.005,
+          "gap_error_fraction": 0.03,
+          "normal_current_fraction": 0.001,
+          "maximum_snapshot_gap_ps": 10.0
+        },
+        "overlap_start_ps": 15066.646941749794,
+        "overlap_end_ps": 16066.646941749794,
+        "checks": 8518,
+        "maximum_gap_error_fraction": 0.005321431625457951,
+        "errors": {
+          "voltage_error_V": 1.7028386410640153e-08,
+          "capacitor_error_V": 1.956908847116386e-09,
+          "current_relative": 2.2085281808794246e-05,
+          "film_voltage_residual_V": 5.270020277635756e-08,
+          "normal_current_fraction": 2.983305411091332e-06
+        },
+        "thermal_admission": false,
+        "thermal_audit_pending": true,
+        "last_native_temperature_K": 2.277898209488907,
+        "interpretation": "Electrical surrogate only; no thermal reset or retrigger certification"
+      },
+      "max_phase_energy_fraction": 9.096705599289059e-17,
+      "native_hashes_unchanged": true,
+      "trace_rows": 8395,
+      "wall_s": 5.128713661018992,
+      "last_electrical": {
+        "Ib_A": 1.549999999999812e-05,
+        "Is_A": 1.549999999997233e-05,
+        "vc_V": 1.6655201796538262e-14,
+        "Vout_V": 1.2894847263614127e-15,
+        "Vdev_V": 2.4856469807841365e-16,
+        "time_ps": 100000.0,
+        "delta_Ib_A": -1.8808055942797686e-18,
+        "delta_Is_A": -2.7670500121508024e-17,
+        "delta_vc_V": 1.6655201796538262e-14,
+        "energy_J": 1.3168902645889496e-16,
+        "external_J": -2.234168576063837e-19,
+        "energy_defect_J": 2.7749237313382813e-21,
+        "phase_work_J": -6.020153117271706e-19,
+        "phase_energy_defect_J": 1.0592614694129797e-33,
+        "electrical_distance": 1.6655201796538263e-08,
+        "thermal_evolved": 0.0
+      }
+    },
+    {
+      "case": "rs608_bias15p5_1550",
+      "status": "ELECTRICAL_HORIZON_COMPLETE",
+      "start_ps": 15540.47788384909,
+      "end_ps": 100000.0,
+      "admission": {
+        "admitted": true,
+        "reasons": [],
+        "config": {
+          "earliest_ns": 12.0,
+          "overlap_ns": 1.0,
+          "voltage_error_uV": 1.0,
+          "current_error_fraction": 0.005,
+          "gap_error_fraction": 0.03,
+          "normal_current_fraction": 0.001,
+          "maximum_snapshot_gap_ps": 10.0
+        },
+        "overlap_start_ps": 14540.47788384909,
+        "overlap_end_ps": 15540.47788384909,
+        "checks": 9195,
+        "maximum_gap_error_fraction": 0.005737907986698265,
+        "errors": {
+          "voltage_error_V": 1.9743054843140517e-08,
+          "capacitor_error_V": 2.2687848406334174e-09,
+          "current_relative": 2.56061234096732e-05,
+          "film_voltage_residual_V": 6.119896525564476e-08,
+          "normal_current_fraction": 3.3631656518364877e-06
+        },
+        "thermal_admission": false,
+        "thermal_audit_pending": true,
+        "last_native_temperature_K": 2.2978768800280758,
+        "interpretation": "Electrical surrogate only; no thermal reset or retrigger certification"
+      },
+      "max_phase_energy_fraction": 1.0920775282726872e-16,
+      "native_hashes_unchanged": true,
+      "trace_rows": 8447,
+      "wall_s": 5.074439212010475,
+      "last_electrical": {
+        "Ib_A": 1.549999999999811e-05,
+        "Is_A": 1.549999999996992e-05,
+        "vc_V": 1.664053972392472e-14,
+        "Vout_V": 1.4094553338279462e-15,
+        "Vdev_V": 2.5002340197593845e-16,
+        "time_ps": 100000.0,
+        "delta_Ib_A": -1.8916083643076198e-18,
+        "delta_Is_A": -3.0080715040866546e-17,
+        "delta_vc_V": 1.664053972392472e-14,
+        "energy_J": 1.3168989953890799e-16,
+        "external_J": -1.0698099917258103e-19,
+        "energy_defect_J": 2.5541628224355394e-21,
+        "phase_work_J": -7.668709777754814e-19,
+        "phase_energy_defect_J": 8.666684749742561e-34,
+        "electrical_distance": 1.664053972392472e-08,
+        "thermal_evolved": 0.0
+      }
+    }
+  ],
+  "production_campaign_prepared_not_executed": true,
+  "thermal_audit_pending": true,
+  "frozen_native_sources_changed": false,
+  "combined_pair_launcher": {
+    "total": 2,
+    "finished": 2,
+    "results": [
+      {
+        "case": "rs608_bias15p5_775",
+        "exit_code": 0,
+        "status": "ELECTRICAL_HORIZON_COMPLETE",
+        "time_ps": 100000.0,
+        "run_complete": true
+      },
+      {
+        "case": "rs608_bias15p5_1550",
+        "exit_code": 0,
+        "status": "ELECTRICAL_HORIZON_COMPLETE",
+        "time_ps": 100000.0,
+        "run_complete": true
+      }
+    ]
+  },
+  "phase_history_reader_verified": true,
+  "final_electrical_suite": {
+    "result": "16 passed",
+    "wall_s": 0.56
+  },
+  "final_pair_launcher": {
+    "total": 2,
+    "finished": 2,
+    "results": [
+      {
+        "case": "rs608_bias15p5_775",
+        "exit_code": 0,
+        "status": "ELECTRICAL_HORIZON_COMPLETE",
+        "time_ps": 100000.0,
+        "run_complete": true
+      },
+      {
+        "case": "rs608_bias15p5_1550",
+        "exit_code": 0,
+        "status": "ELECTRICAL_HORIZON_COMPLETE",
+        "time_ps": 100000.0,
+        "run_complete": true
+      }
+    ]
+  },
+  "final_real_cases": [
+    {
+      "case": "rs608_bias15p5_775",
+      "admission": {
+        "admitted": true,
+        "reasons": [],
+        "config": {
+          "earliest_ns": 12.0,
+          "overlap_ns": 1.0,
+          "voltage_error_uV": 1.0,
+          "current_error_fraction": 0.005,
+          "gap_error_fraction": 0.03,
+          "normal_current_fraction": 0.001,
+          "maximum_snapshot_gap_ps": 10.0
+        },
+        "overlap_start_ps": 15066.646941749794,
+        "overlap_end_ps": 16066.646941749794,
+        "checks": 8518,
+        "maximum_gap_error_fraction": 0.005321431625457951,
+        "errors": {
+          "voltage_error_V": 1.7028386410640153e-08,
+          "capacitor_error_V": 1.956908847116386e-09,
+          "current_relative": 2.2085281808794246e-05,
+          "film_voltage_residual_V": 5.270020277635756e-08,
+          "normal_current_fraction": 2.983305411091332e-06
+        },
+        "thermal_admission": false,
+        "thermal_audit_pending": true,
+        "last_native_temperature_K": 2.277898209488907,
+        "interpretation": "Electrical surrogate only; no thermal reset or retrigger certification"
+      },
+      "start_ps": 16066.646941749794,
+      "end_ps": 100000.0,
+      "source_pins_sha256": {
+        "pysnspd/experimental/electrical_0d.py": "009c48b767efec9e33d2ff691bfed140aecbabb933b5e3fdd88f067ff85fc8ea",
+        "pysnspd/experimental/electrical_continuation.py": "46947dc7127956834bbd3cc37ad644019e19fd468ca4287b7790a0320035b6ca",
+        "pipelines/25_v125_electrical_phase.py": "29bb972f6eed69c4cdb6bc9ede244595957505b071ca7f0d40d4db5e7e33a55f"
+      },
+      "max_phase_energy_fraction": 9.096705599289059e-17,
+      "trace_rows": 8395,
+      "native_hashes_unchanged": true
+    },
+    {
+      "case": "rs608_bias15p5_1550",
+      "admission": {
+        "admitted": true,
+        "reasons": [],
+        "config": {
+          "earliest_ns": 12.0,
+          "overlap_ns": 1.0,
+          "voltage_error_uV": 1.0,
+          "current_error_fraction": 0.005,
+          "gap_error_fraction": 0.03,
+          "normal_current_fraction": 0.001,
+          "maximum_snapshot_gap_ps": 10.0
+        },
+        "overlap_start_ps": 14540.47788384909,
+        "overlap_end_ps": 15540.47788384909,
+        "checks": 9195,
+        "maximum_gap_error_fraction": 0.005737907986698265,
+        "errors": {
+          "voltage_error_V": 1.9743054843140517e-08,
+          "capacitor_error_V": 2.2687848406334174e-09,
+          "current_relative": 2.56061234096732e-05,
+          "film_voltage_residual_V": 6.119896525564476e-08,
+          "normal_current_fraction": 3.3631656518364877e-06
+        },
+        "thermal_admission": false,
+        "thermal_audit_pending": true,
+        "last_native_temperature_K": 2.2978768800280758,
+        "interpretation": "Electrical surrogate only; no thermal reset or retrigger certification"
+      },
+      "start_ps": 15540.47788384909,
+      "end_ps": 100000.0,
+      "source_pins_sha256": {
+        "pysnspd/experimental/electrical_0d.py": "009c48b767efec9e33d2ff691bfed140aecbabb933b5e3fdd88f067ff85fc8ea",
+        "pysnspd/experimental/electrical_continuation.py": "46947dc7127956834bbd3cc37ad644019e19fd468ca4287b7790a0320035b6ca",
+        "pipelines/25_v125_electrical_phase.py": "29bb972f6eed69c4cdb6bc9ede244595957505b071ca7f0d40d4db5e7e33a55f"
+      },
+      "max_phase_energy_fraction": 1.0920775282726872e-16,
+      "trace_rows": 8447,
+      "native_hashes_unchanged": true
+    }
+  ],
+  "final_production_plans_match_release_sources": true
+}

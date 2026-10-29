@@ -1,4 +1,4 @@
-# pySNSPD 1.2.4
+# pySNSPD 1.2.5
 
 Conserving effective neutral BCS/KWT simulations of photon detection in SNSPDs,
 with native electron/phonon populations, temperature-dependent stiffness,
@@ -12,10 +12,20 @@ experimental IRF, exact experimental fit or certified reset.
 
 ## Run and inspect
 
-- [Current single-case entry](pipelines/18_spatial_photon_run.py): reflecting
+- [New electrical 0D phase](pipelines/25_v125_electrical_phase.py) and
+  [low-bias recovery pair](pipelines/26_v125_recovery_pair.py): authenticate a
+  native1D checkpoint, require independent electrical overlap and append a
+  distinct electrical-only phase with the resolved DC film inductance restored.
+  Historical1.2.3/1.2.4 native data stay unchanged; bath recovery is not implied.
+- [Three-phase history report](plot_pipelines/10_v125_phase_history.py): read
+  native2D/1D and the separate0D trace, without inventing thermal/spatial fields.
+- [1.2.5 scope and checkpoint protocol](docs/releases/v1.2.5.md);
+  [deferred thermal audit](docs/audits/v125_thermal_recovery_pending.md).
+
+- [Source-frozen native single-case entry](pipelines/18_spatial_photon_run.py): reflecting
   transverse Gaussian preparation with explicit retained energy/impact position,
   or authenticated continuation of completed1.2.3 latency cases.
-- [Current campaign entry](pipelines/19_v124_campaign.py): four spatial latency
+- [Source-frozen native campaign entry](pipelines/19_v124_campaign.py): four spatial latency
   probes or four baseline1D continuations;3threads/case; independent screens
   coordinate atomic CPU leases and print readable progress tables.
 - [Individual case reports](plot_pipelines/08_dimensional_case_report.py):
@@ -32,11 +42,19 @@ The separate recovery campaign reuses all2D data and validated1D overlap,
 retains a1000nm1D domain/15ns physical target and an8h1Dsession wall budget.
 Physical/domain guards may stop it earlier. A wall-budget stop is checkpointed.
 
+The new electrical phase defaults to a100ns global horizon, using the exact
+current1D checkpoint rather than rewinding to12ns. Its1ns admission overlap and
+SC/electrical guards are distinct from full thermal recovery. Native p/n/gap
+fields and balances remain archived;0D evolves only the three circuit states.
+The historical native15/50ns horizons above do not limit the new0D observation.
+
 ## Scope and reproducibility
 
 The native evolution kernel is unchanged from1.2.3. The frozen pipeline13 is
 retained under its historical identity for source-authenticated reuse; use18/19
-for new1.2.4 work. No population/capacity floors, tolerance relaxation, new
+for the unchanged native stages, then25/26 for the new electrical phase.
+Historical native manifests deliberately retain their authenticated producer
+version. No population/capacity floors, tolerance relaxation, new
 latency fit, statistical emulator or promised full-reset runtime are introduced.
 Historical Allmaras/Korzh input controls remain explicitly isolated in16/17.
 

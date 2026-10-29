@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.5 - 2026-10-29
+
+- Add a separate authenticated electrical0D phase after native1D, preserving all
+  2D/1D source hashes, fields, checkpoints, physical inputs and energy/work history.
+- Restore the resolved strip's frozen DC inductance to the three-state circuit;
+  retain its inductive terminal voltage instead of setting the film voltage to zero.
+- Admit reduction only after a persistent superconducting window and independent
+  circuit/voltage/current overlap, preserving prior physical/domain/energy failures.
+- Store a local0D archive/checkpoint with read-only links to historical1.2.3/1.2.4
+  native prefixes, exact deviations from DC, independent work integration and a
+  separately labeled reduced energy ledger; clean pause/resume preserves originals.
+- Add one-thread pair coordination through the shared atomic CPU registry and a
+  three-phase history reader. Record the unresolved thermal-recovery audit without
+  changing the native thermal model or claiming full reset/retrigger validation.
+- Validate82regression checks,16final electrical-phase tests and both real low-bias checkpoints through100ns in isolated
+  0D outputs, retaining byte-identical native manifest/checkpoint/DC evidence.
+
 ## 1.2.4 - 2026-10-23
 
 - Add explicit retained-energy/transverse-position inputs and a conserving reflecting Gaussian preparation; sum Neumann images before a single native internal-energy inversion with positive-capacity guards.
